@@ -17,9 +17,6 @@ object Settings : ConfigKt("${FeeshMod.MOD_ID}/config") {
             description = "A fishing enhancement mod for Hypixel Skyblock"
         }
         
-        // Settings categories
-        category(General)
-        
         button {
             title = "GitHub"
             description = "View the source code"
@@ -28,11 +25,10 @@ object Settings : ConfigKt("${FeeshMod.MOD_ID}/config") {
                 Util.getOperatingSystem().open("https://github.com/yourname/feesh")
             }
         }
+
+        // Settings categories
+        category(General)        
     }
-    
-    // Accessor for settings
-    val general: General
-        get() = getCategory(General::class.java)
     
     fun save() = FeeshMod.settings.save()
 }

@@ -3,5 +3,6 @@ plugins {
 }
 
 preprocess {
-    "1.21.10-fabric"(1_21_10, "yarn")
+    "1.21.10-fabric"(1_21_10, "yarn") {
+    }
 }

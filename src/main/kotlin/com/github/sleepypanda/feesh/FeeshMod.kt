@@ -1,6 +1,9 @@
 package com.github.sleepypanda.feesh
 
 import net.fabricmc.api.ModInitializer
+import com.github.sleepypanda.feesh.settings.Settings
+import com.github.sleepypanda.feesh.settings.categories.General
+import com.teamresourceful.resourcefulconfig.api.loader.Configurator
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents
 import net.fabricmc.loader.api.FabricLoader
@@ -13,15 +16,16 @@ object FeeshMod : ModInitializer {
     
     private val LOGGER = LoggerFactory.getLogger(MOD_ID)
     
+    val configurator = Configurator("feesh")
+    val settings = Settings.register(configurator)
+
     override fun onInitialize() {
         LOGGER.info("Initializing $MOD_NAME v$VERSION")
         
-        // Initialize settings
-        settings.Settings
         
         // Register chat listener
         ClientReceiveMessageEvents.ALLOW_GAME.register { message, _ ->
-            if (settings.Settings.general.rareCatchesEnabled) {
+            if (General.rareCatchesAlert) {
                 if (message.string.contains("What is this creature?!")) {
                     // Show title on screen
                     displayRareCatchTitle()
@@ -43,8 +47,10 @@ object FeeshMod : ModInitializer {
         client.inGameHud.setSubtitle(net.minecraft.text.Text.literal("§7Yeti"))
         
         // Reset title timer
-        client.inGameHud.titleRemainTicks = 20
-        client.inGameHud.titleFadeInTicks = 10
-        client.inGameHud.titleFadeOutTicks = 10
+        client.inGameHud.apply {
+            setTitleTicks(10, 20, 10)
+            setTitle(net.minecraft.text.Text.of("§6§lRARE CATCH!"))
+            setSubtitle(net.minecraft.text.Text.of("§7Yeti"))
+        }
     }
 }

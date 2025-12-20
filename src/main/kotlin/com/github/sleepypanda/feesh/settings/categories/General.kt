@@ -4,14 +4,17 @@ import com.teamresourceful.resourcefulconfig.api.annotations.Category
 import com.teamresourceful.resourcefulconfig.api.annotations.Comment
 import com.teamresourceful.resourcefulconfig.api.annotations.ConfigEntry
 import com.teamresourceful.resourcefulconfig.api.types.options.EntryType
+import com.teamresourceful.resourcefulconfigkt.api.CategoryKt
 
-@Category("general")
-object General {
-    @ConfigEntry(
-        type = EntryType.BOOLEAN,
-        id = "rare_catches",
-        translation = "feesh.config.rare_catches"
-    )
-    @Comment("Show title notification when catching rare creatures")
-    var rareCatchesEnabled = true
+object General : CategoryKt("General") {
+    init {
+        separator {
+            this.title = "Overlays"
+        }
+    }
+
+    var rareCatchesAlert by boolean(false) {
+        this.name = Translated("Rare Catches")
+        this.description = Translated("Show title notification when catching rare creatures")
+    }
 }
