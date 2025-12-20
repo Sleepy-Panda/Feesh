@@ -8,9 +8,9 @@ pluginManagement {
         maven("https://maven.architectury.dev/")
         maven("https://maven.minecraftforge.net")
 
-        maven("https://maven.terraformersmc.com/")
+        //maven("https://maven.terraformersmc.com/")
         maven("https://repo.essential.gg/repository/maven-public")
-        maven("https://server.bbkr.space/artifactory/libs-release/")
+        //maven("https://server.bbkr.space/artifactory/libs-release/")
 
         mavenLocal()
         mavenCentral()

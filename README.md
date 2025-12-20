@@ -8,5 +8,5 @@ For setup instructions please see the [fabric documentation page](https://docs.f
 
 This template is available under the CC0 license. Feel free to learn from it and incorporate it in your own projects.
 
-./gradlew --refresh-dependencies
+./gradlew --refresh-dependencies --stacktrace
 ./gradlew build
