@@ -1,0 +1,29 @@
+{
+	"schemaVersion": 1,
+	"id": "${mod_id}",
+	"version": "${mod_version}",
+	"name": "${mod_name}",
+	"description": "Fishing enhancements for Hypixel Skyblock",
+	"authors": ["YourName"],
+	"contact": {
+	  "homepage": "https://github.com/yourname/feesh",
+	  "sources": "https://github.com/yourname/feesh"
+	},
+	"license": "Apache 2.0",
+	"icon": "assets/feesh/icon.png",
+	"environment": "client",
+	"entrypoints": {
+	  "main": ["com.github.sleepypanda.feesh.FeeshMod"]
+	},
+	"mixins": ["feesh.mixins.json"],
+	"depends": {
+	  "fabricloader": ">=0.15.11",
+	  "fabric-api": "*",
+	  "fabric-language-kotlin": "*",
+	  "minecraft": "~${minor_mc_version}",
+	  "java": ">=21"
+	},
+	"suggests": {
+	  "resourcefulconfig": "*"
+	}
+  }
