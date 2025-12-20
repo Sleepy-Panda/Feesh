@@ -17,11 +17,11 @@
 	},
 	"mixins": ["feesh.mixins.json"],
 	"depends": {
-	  "fabricloader": ">=0.15.11",
-	  "fabric-api": "*",
-	  "fabric-language-kotlin": "*",
-	  "minecraft": "~${minor_mc_version}",
-	  "java": ">=21"
+		"fabricloader": "*",
+		"minecraft": "~${minor_mc_version}",
+		"java": ">=21",
+		"fabric-api": "*",
+		"fabric-language-kotlin": "*"
 	},
 	"suggests": {
 	  "resourcefulconfig": "*"
