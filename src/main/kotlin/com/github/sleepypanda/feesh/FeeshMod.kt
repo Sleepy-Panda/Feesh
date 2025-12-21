@@ -7,17 +7,21 @@ import com.teamresourceful.resourcefulconfig.api.loader.Configurator
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents
 import net.fabricmc.loader.api.FabricLoader
+import net.minecraft.client.MinecraftClient
 import org.slf4j.LoggerFactory
 
 object FeeshMod : ModInitializer {
-    const val MOD_ID = "feesh"
-    const val MOD_NAME = "Feesh"
-    const val VERSION = "1.0.0"
+    internal const val MOD_ID = "feesh"
+    internal const val MOD_NAME = "Feesh"
+    internal const val VERSION = "1.0.0"
     
-    private val LOGGER = LoggerFactory.getLogger(MOD_ID)
+    internal val LOGGER = LoggerFactory.getLogger(MOD_ID)
     
+    @JvmField
+	val mc: MinecraftClient = MinecraftClient.getInstance()
+
     val configurator = Configurator("feesh")
-    val settings = Settings.register(configurator)
+    public val settings = Settings.register(configurator)
 
     override fun onInitialize() {
         LOGGER.info("Initializing $MOD_NAME v$VERSION")
@@ -38,16 +42,13 @@ object FeeshMod : ModInitializer {
         LOGGER.info("$MOD_NAME initialized successfully!")
     }
     
-    private fun displayRareCatchTitle() {
-        // Get Minecraft client
-        val client = net.minecraft.client.MinecraftClient.getInstance()
-        
+    private fun displayRareCatchTitle() {      
         // Show title on player's screen
-        client.inGameHud.setTitle(net.minecraft.text.Text.literal("§6§lRARE CATCH!"))
-        client.inGameHud.setSubtitle(net.minecraft.text.Text.literal("§7Yeti"))
+        mc.inGameHud.setTitle(net.minecraft.text.Text.literal("§6§lRARE CATCH!"))
+        mc.inGameHud.setSubtitle(net.minecraft.text.Text.literal("§7Yeti"))
         
         // Reset title timer
-        client.inGameHud.apply {
+        mc.inGameHud.apply {
             setTitleTicks(10, 20, 10)
             setTitle(net.minecraft.text.Text.of("§6§lRARE CATCH!"))
             setSubtitle(net.minecraft.text.Text.of("§7Yeti"))
