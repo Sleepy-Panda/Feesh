@@ -30,5 +30,5 @@ object Settings : ConfigKt("${FeeshMod.MOD_ID}/config") {
         category(General)        
     }
     
-    fun save() = FeeshMod.settings.save()
+    fun save() = FeeshMod.INSTANCE.settings.save()
 }

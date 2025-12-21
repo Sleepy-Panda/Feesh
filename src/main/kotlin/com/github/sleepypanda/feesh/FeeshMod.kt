@@ -10,18 +10,28 @@ import net.fabricmc.loader.api.FabricLoader
 import net.minecraft.client.MinecraftClient
 import org.slf4j.LoggerFactory
 
-object FeeshMod : ModInitializer {
-    internal const val MOD_ID = "feesh"
-    internal const val MOD_NAME = "Feesh"
-    internal const val VERSION = "1.0.0"
-    
-    internal val LOGGER = LoggerFactory.getLogger(MOD_ID)
+class FeeshMod : ModInitializer {
+    companion object {
+        internal const val MOD_ID = "feesh"
+        internal const val MOD_NAME = "Feesh"
+        internal const val VERSION = "1.0.0"
+        
+        internal val LOGGER = LoggerFactory.getLogger(MOD_ID)
+        
+        @JvmStatic
+        lateinit var INSTANCE: FeeshMod
+            private set
+    }
     
     @JvmField
 	val mc: MinecraftClient = MinecraftClient.getInstance()
 
     val configurator = Configurator("feesh")
     public val settings = Settings.register(configurator)
+    
+    init {
+        INSTANCE = this
+    }
 
     override fun onInitialize() {
         LOGGER.info("Initializing $MOD_NAME v$VERSION")
