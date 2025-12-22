@@ -12,19 +12,21 @@ import net.minecraft.text.Text
 
 object CompactCatchMessages {
     fun init() {
-        RegisterUtils.chatCancellable(Regex("Double Hook")) { _, _ ->
-            ChatUtils.send("${ColorCodes.BLUE.code}${FormattingCodes.BOLD.code}DOUBLE HOOK!${FormattingCodes.RESET.code}")
-            false
-        }
-
-        SeaCreatures.allSeaCreatures.forEach { sc ->
-            RegisterUtils.chatCancellable(Regex(sc.pattern)) { _, _ ->
-                if (ChatSettings.compactSeaCreaturesMessages) {
-                    ChatUtils.send("${ColorCodes.WHITE.code}You caught ${FormattingCodes.BOLD.code}${sc.displayName}${ColorCodes.WHITE.code}!")
-                    return@chatCancellable false
-                }
-                true
+        if (ChatSettings.compactSeaCreaturesMessages) { // TODO make it dynamic, so far it cancels messages for other handlers
+            RegisterUtils.chatCancellable(Regex("Double Hook")) { _, _ ->
+                ChatUtils.send("${ColorCodes.BLUE.code}${FormattingCodes.BOLD.code}DOUBLE HOOK!${FormattingCodes.RESET.code}")
+                false
             }
+    
+            SeaCreatures.allSeaCreatures.forEach { sc ->
+                RegisterUtils.chatCancellable(Regex(sc.pattern)) { _, _ ->
+                    if (ChatSettings.compactSeaCreaturesMessages) {
+                        ChatUtils.send("${ColorCodes.WHITE.code}You caught ${FormattingCodes.BOLD.code}${sc.displayName}${ColorCodes.WHITE.code}!")
+                        return@chatCancellable false
+                    }
+                    true
+                }
+            }    
         }
     }
 }

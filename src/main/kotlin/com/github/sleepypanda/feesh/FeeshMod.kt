@@ -15,8 +15,11 @@ import net.minecraft.text.Text
 import com.teamresourceful.resourcefulconfig.api.client.ResourcefulConfigScreen
 import org.slf4j.LoggerFactory
 import com.github.sleepypanda.feesh.features.alerts.RareCatches
+import com.github.sleepypanda.feesh.features.alerts.ChumBucketAutoPickup
+import com.github.sleepypanda.feesh.features.alerts.PetLevelUp
 import com.github.sleepypanda.feesh.features.chat.CompactCatchMessages
 import com.github.sleepypanda.feesh.features.commands.SpiderRainSchedule
+import com.github.sleepypanda.feesh.features.commands.Feesh as FeeshCommand
 
 class FeeshMod : ModInitializer {
     companion object {
@@ -49,10 +52,12 @@ class FeeshMod : ModInitializer {
 
         LOGGER.info("Loading $MOD_NAME v$version...")
 
-        registerFeeshCommand()
+        FeeshCommand.init()
         
         // Alerts
         RareCatches.init()
+        ChumBucketAutoPickup.init()
+        PetLevelUp.init()
 
         // Chat
         CompactCatchMessages.init()
@@ -61,13 +66,5 @@ class FeeshMod : ModInitializer {
         SpiderRainSchedule.init()   
                 
         LOGGER.info("$MOD_NAME loaded successfully!")
-    }
-    
-    private fun registerFeeshCommand() {
-        RegisterUtils.command("feesh", "feeshnotifier", "fn") {
-			mc.send {
-				mc.setScreen(ResourcefulConfigScreen.getFactory("feesh").apply(null))
-			}
-		}
     }
 }

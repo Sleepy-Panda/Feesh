@@ -26,4 +26,14 @@ object Alerts : CategoryKt("Alerts") {
         this.name = Translated("Alert on catching rare sea creatures")
         this.description = Translated("")
     }
+
+    var alertOnChumBucketAutoPickup by boolean(true) {
+        this.name = Translated("Alert on Chum Bucket auto pickup")
+        this.description = Translated("Alert when the Chum Bucket is automatically picked up")
+    }
+
+    var alertOnPetLevelUp by boolean(true) {
+        this.name = Translated("Alert on Pet level up")
+        this.description = Translated("Alert when the Pet levels up")
+    }
 }
