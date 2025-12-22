@@ -6,12 +6,20 @@ import com.teamresourceful.resourcefulconfig.api.annotations.ConfigEntry
 import com.teamresourceful.resourcefulconfig.api.types.options.EntryType
 import com.teamresourceful.resourcefulconfigkt.api.CategoryKt
 
-object General : CategoryKt("General") {
+object Chat : CategoryKt("Chat") {
     init {
         separator {
-            this.title = "Overlays"
+            this.title = "Chat"
         }
     }
 
+    var shareRareSeaCreatures by boolean(true) {
+        this.name = Translated("Share rare sea creatures to PARTY chat")
+        this.description = Translated("Send party chat message when catching rare creatures")
+    }
 
+    var compactSeaCreaturesMessages by boolean(false) {
+        this.name = Translated("Compact chat messages")
+        this.description = Translated("")
+    }
 }

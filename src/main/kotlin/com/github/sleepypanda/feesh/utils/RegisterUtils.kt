@@ -6,7 +6,7 @@ import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents
 
-object Register {
+object RegisterUtils {
 
     fun chat(
         regex: Regex,

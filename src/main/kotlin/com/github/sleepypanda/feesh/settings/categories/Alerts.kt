@@ -21,4 +21,9 @@ object Alerts : CategoryKt("Alerts") {
         this.name = Translated("Select Sea Creatures")
         this.description = Translated("Alert on catching the following Sea Creatures")
     }
+
+    var alertOnRareSeaCreatures by boolean(true) {
+        this.name = Translated("Alert on catching rare sea creatures")
+        this.description = Translated("")
+    }
 }

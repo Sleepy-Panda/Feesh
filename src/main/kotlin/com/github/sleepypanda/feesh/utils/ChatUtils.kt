@@ -7,7 +7,7 @@ import net.minecraft.util.Formatting
 import java.util.*
 import com.github.sleepypanda.feesh.FeeshMod
 
-object Chat {
+object ChatUtils {
     fun send(message: String) {
         if (message.isNotEmpty()) FeeshMod.mc.inGameHud.chatHud.addMessage(Text.literal(message))
     }
@@ -27,7 +27,7 @@ object Chat {
     }
 
     private fun Style.getFormatCodes() = buildString {
-        this@getFormatCodes.color?.let(Chat::getColorFormatChar)?.run { append("§").append(this) }
+        this@getFormatCodes.color?.let(ChatUtils::getColorFormatChar)?.run { append("§").append(this) }
 
         if (this@getFormatCodes.isBold) append("§l")
         if (this@getFormatCodes.isItalic) append("§o")
