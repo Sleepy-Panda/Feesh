@@ -10,6 +10,7 @@ import com.github.sleepypanda.feesh.utils.enums.FormattingCodes
 
 object RareCatches {
     fun init() {
+        // TODO: Add formatted message patterns
         // TODO: Add Vanquisher
         // TODO: Add party source
         // TODO: Add SH format
@@ -17,7 +18,7 @@ object RareCatches {
             RegisterUtils.chat(Regex(sc.pattern)) { _, _ ->
                 if (Alerts.alertOnRareSeaCreatures) {
                     val playerName = PlayerUtils.getName()
-                    CommonUtils.showTitle("${sc.rarityColorCode}${FormattingCodes.BOLD.code}${sc.name}", playerName)
+                    CommonUtils.showTitle("${sc.rarityColorCode}${FormattingCodes.BOLD}${sc.name}", playerName)
                     SoundUtils.playSound()
                 }
             }

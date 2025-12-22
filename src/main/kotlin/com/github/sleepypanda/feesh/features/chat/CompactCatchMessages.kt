@@ -14,14 +14,14 @@ object CompactCatchMessages {
     fun init() {
         if (ChatSettings.compactSeaCreaturesMessages) { // TODO make it dynamic, so far it cancels messages for other handlers
             RegisterUtils.chatCancellable(Regex("Double Hook")) { _, _ ->
-                ChatUtils.send("${ColorCodes.BLUE.code}${FormattingCodes.BOLD.code}DOUBLE HOOK!${FormattingCodes.RESET.code}")
+                ChatUtils.send("${ColorCodes.BLUE}${FormattingCodes.BOLD}DOUBLE HOOK!${FormattingCodes.RESET}")
                 false
             }
     
             SeaCreatures.allSeaCreatures.forEach { sc ->
                 RegisterUtils.chatCancellable(Regex(sc.pattern)) { _, _ ->
                     if (ChatSettings.compactSeaCreaturesMessages) {
-                        ChatUtils.send("${ColorCodes.WHITE.code}You caught ${FormattingCodes.BOLD.code}${sc.displayName}${ColorCodes.WHITE.code}!")
+                        ChatUtils.send("${ColorCodes.WHITE}You caught ${FormattingCodes.BOLD}${sc.displayName}${ColorCodes.WHITE}!")
                         return@chatCancellable false
                     }
                     true

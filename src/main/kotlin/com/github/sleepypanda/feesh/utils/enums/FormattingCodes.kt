@@ -6,5 +6,7 @@ enum class FormattingCodes(val code: String) {
     ITALIC("§o"),
     STRIKETHROUGH("§m"),
     UNDERLINE("§n"),
-    OBFUSCATED("§k"),
+    OBFUSCATED("§k");
+
+    override fun toString(): String = code
 }

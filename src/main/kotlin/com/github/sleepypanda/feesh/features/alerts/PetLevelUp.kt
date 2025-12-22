@@ -13,7 +13,7 @@ object PetLevelUp {
             if (Alerts.alertOnPetLevelUp) {
                 val petDisplayName = matchResult.groupValues[1]
                 val petLevel = matchResult.groupValues[2]
-                CommonUtils.showTitle("${petDisplayName} ${FormattingCodes.RESET.code}is maxed", petLevel)
+                CommonUtils.showTitle("${petDisplayName} ${FormattingCodes.RESET}is maxed", petLevel)
                 SoundUtils.playSound()
             }
         }

@@ -57,7 +57,7 @@ object SpiderRainSchedule {
 
     private fun showSpidersDenRainSchedule() {
         if (!isInSkyblock()) {
-            ChatUtils.send("${ColorCodes.RED.code}You must be on Hypixel Skyblock to use this command!")
+            ChatUtils.send("${ColorCodes.RED}You must be on Hypixel Skyblock to use this command!")
             return
         }
 
@@ -83,9 +83,9 @@ object SpiderRainSchedule {
            
             if (isRaining) {
                 val weatherType = if (isThunderstorm) "Thunderstorm" else "Rain"
-                message.append("${ColorCodes.WHITE.code}Now: ${ColorCodes.AQUA.code}$weatherType ${FormattingCodes.RESET.code}(${formatElapsedTime(rainTimeLeft)} left)\n\n")
+                message.append("${ColorCodes.WHITE}Now: ${ColorCodes.AQUA}$weatherType ${FormattingCodes.RESET}(${formatElapsedTime(rainTimeLeft)} left)\n\n")
             } else {
-                message.append("${ColorCodes.WHITE.code}Now: ${ColorCodes.YELLOW.code}Sunny\n\n")
+                message.append("${ColorCodes.WHITE}Now: ${ColorCodes.YELLOW}Sunny\n\n")
             }
 
             nextEvents.forEach { startsIn ->
@@ -94,10 +94,10 @@ object SpiderRainSchedule {
                 val weatherType = if (isNextEventThunderstorm) "Thunderstorm" else "Rain"
                 val startsAtStr = formatDate(secondsToDate(eventTime))
                 val startsInStr = formatTimeElapsedBetweenDates(secondsToDate(nowSeconds), secondsToDate(eventTime))
-                message.append("${ColorCodes.GRAY.code}- ${ColorCodes.AQUA.code}$weatherType ${FormattingCodes.RESET.code}starts at $startsAtStr (in $startsInStr)\n")
+                message.append("${ColorCodes.GRAY}- ${ColorCodes.AQUA}$weatherType ${FormattingCodes.RESET}starts at $startsAtStr (in $startsInStr)\n")
             }
 
-            message.append("\n${ColorCodes.DARK_GRAY.code}Gain +50☂ Fishing Speed during Rain, and +3α Sea Creature Chance during Thunderstorm.\n")
+            message.append("\n${ColorCodes.DARK_GRAY}Gain +50☂ Fishing Speed during Rain, and +3α Sea Creature Chance during Thunderstorm.\n")
 
             ChatUtils.send(message.toString())
         } catch (e: Exception) {

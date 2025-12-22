@@ -10,7 +10,7 @@ object ChumBucketAutoPickup {
     fun init() {    
         RegisterUtils.chat(Regex("Automatically picked up the Chum Bucket you left back there\\!")) { _, _ ->
             if (Alerts.alertOnChumBucketAutoPickup) {
-                CommonUtils.showTitle("${ColorCodes.YELLOW.code}Chum Bucket is gone", null)
+                CommonUtils.showTitle("${ColorCodes.YELLOW}Chum Bucket is gone", null)
                 SoundUtils.playSound()
             }
         }
