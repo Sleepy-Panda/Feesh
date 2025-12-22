@@ -4,11 +4,12 @@ import com.teamresourceful.resourcefulconfig.api.types.options.TranslatableValue
 import com.teamresourceful.resourcefulconfigkt.api.ConfigKt
 import com.github.sleepypanda.feesh.FeeshMod
 import com.github.sleepypanda.feesh.settings.categories.General
+import com.github.sleepypanda.feesh.settings.categories.Alerts
 import net.minecraft.util.Util
 
 object Settings : ConfigKt("${FeeshMod.MOD_ID}/config") {
     override val name: TranslatableValue
-        get() = Literal("${FeeshMod.MOD_NAME} ${FeeshMod.VERSION}")
+        get() = Literal("${FeeshMod.MOD_NAME} ${FeeshMod.version}")
     override val description = Literal("Feesh mod for Hypixel Skyblock fishing enhancements")
     
     init {
@@ -22,12 +23,13 @@ object Settings : ConfigKt("${FeeshMod.MOD_ID}/config") {
             description = "View the source code"
             text = "Open"
             onClick {
-                Util.getOperatingSystem().open("https://github.com/yourname/feesh")
+                Util.getOperatingSystem().open("https://github.com/Sleepy-Panda/Feesh")
             }
         }
 
         // Settings categories
-        category(General)        
+        category(General)
+        category(Alerts)        
     }
     
     fun save() = FeeshMod.INSTANCE.settings.save()

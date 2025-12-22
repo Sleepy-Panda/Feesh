@@ -1,12 +1,17 @@
-package com.github.sleepypanda.feesh.features.alerts
+package com.github.sleepypanda.feesh.features.chat
 
+import com.github.sleepypanda.feesh.FeeshMod
 import com.github.sleepypanda.feesh.constants.SeaCreatures
+import com.github.sleepypanda.feesh.features.alerts.RareCatches
 import com.github.sleepypanda.feesh.utils.Common
 import com.github.sleepypanda.feesh.utils.Register
 import com.github.sleepypanda.feesh.utils.Player
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes
+import com.github.sleepypanda.feesh.utils.enums.FormattingCodes
+import com.github.sleepypanda.feesh.utils.Chat
+import net.minecraft.text.Text
 
-object RareCatches {
+object CompactCatchMessages {
     private data class SeaCreatureAlert(val name: String, val displayName: String, val pattern: String)
 
     private val alerts = listOf(
@@ -94,11 +99,15 @@ object RareCatches {
         )
 
     fun init() {
-        val playerName = Player.getName()
+        Register.chatCancellable(Regex("Double Hook")) { _, _ ->
+            Chat.send("${ColorCodes.DARK_BLUE.code}${FormattingCodes.BOLD.code}DOUBLE HOOK!${FormattingCodes.RESET.code}")
+            true
+        }
 
         alerts.forEach { alert ->
-            Register.chat(Regex(alert.pattern)) { _, _ ->
-                Common.showTitle(alert.displayName, playerName)
+            Register.chatCancellable(Regex(alert.pattern)) { _, _ ->
+                Chat.send("${ColorCodes.WHITE.code}You caught ${alert.displayName}${ColorCodes.WHITE.code}!")
+                true
             }
         }
     }
