@@ -11,17 +11,17 @@ import net.minecraft.util.Util
 object Settings : ConfigKt("${FeeshMod.MOD_ID}/config") {
     override val name: TranslatableValue
         get() = Literal("${FeeshMod.MOD_NAME} ${FeeshMod.version}")
-    override val description = Literal("Feesh mod for Hypixel Skyblock fishing enhancements")
+    override val description = Literal("QOL mod for Hypixel Skyblock fishing.")
     
     init {
         separator {
             title = "Welcome to ${FeeshMod.MOD_NAME}!"
-            description = "A fishing enhancement mod for Hypixel Skyblock"
+            description = "A fishing enhancement mod for Hypixel Skyblock. From MoonTheSadFisher with ❤"
         }
         
         button {
             title = "GitHub"
-            description = "View the source code"
+            description = "Find latest release notes, docs and README here."
             text = "Open"
             onClick {
                 Util.getOperatingSystem().open("https://github.com/Sleepy-Panda/Feesh")

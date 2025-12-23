@@ -3,7 +3,7 @@ package com.github.sleepypanda.feesh.utils
 import com.github.sleepypanda.feesh.FeeshMod
 
 object CommonUtils {
-    fun showTitle(title: String, subtitle: String?, fadeIn: Int = 0, stay: Int = 20, fadeOut: Int = 10) {      
+    fun showTitle(title: String, subtitle: String? = null, fadeIn: Int = 0, stay: Int = 20, fadeOut: Int = 10) {      
         var mc = FeeshMod.mc
 
         mc.inGameHud.apply {

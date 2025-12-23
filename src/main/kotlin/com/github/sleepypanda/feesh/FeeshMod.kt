@@ -2,24 +2,18 @@ package com.github.sleepypanda.feesh
 
 import net.fabricmc.api.ModInitializer
 import com.github.sleepypanda.feesh.settings.Settings
-import com.github.sleepypanda.feesh.settings.categories.General
-import com.github.sleepypanda.feesh.utils.RegisterUtils
 import com.teamresourceful.resourcefulconfig.api.loader.Configurator
-import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager
-import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
-import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents
 import net.fabricmc.loader.api.FabricLoader
 import net.minecraft.client.MinecraftClient
-import net.minecraft.text.Text
-import com.teamresourceful.resourcefulconfig.api.client.ResourcefulConfigScreen
 import org.slf4j.LoggerFactory
-import com.github.sleepypanda.feesh.features.alerts.RareCatches
-import com.github.sleepypanda.feesh.features.alerts.ChumBucketAutoPickup
-import com.github.sleepypanda.feesh.features.alerts.PetLevelUp
+import com.github.sleepypanda.feesh.features.alerts.RareCatchAlert
+import com.github.sleepypanda.feesh.features.alerts.ChumBucketAutoPickupAlert
+import com.github.sleepypanda.feesh.features.alerts.PetLevelUpAlert
+import com.github.sleepypanda.feesh.features.alerts.SpiritMaskAlert
 import com.github.sleepypanda.feesh.features.chat.CompactCatchMessages
 import com.github.sleepypanda.feesh.features.commands.SpiderRainSchedule
-import com.github.sleepypanda.feesh.features.commands.Feesh as FeeshCommand
+import com.github.sleepypanda.feesh.features.commands.FeeshCommand
+import com.github.sleepypanda.feesh.features.inventory.ThunderBottleProgress
 
 class FeeshMod : ModInitializer {
     companion object {
@@ -46,25 +40,32 @@ class FeeshMod : ModInitializer {
     }
 
     override fun onInitialize() {   
-        version = FabricLoader.getInstance().getModContainer(MOD_ID)
-			.map { it.metadata.version.friendlyString }
-			.orElse("unspecified")
-
+        version = getModVersion()
         LOGGER.info("Loading $MOD_NAME v$version...")
 
         FeeshCommand.init()
         
         // Alerts
-        RareCatches.init()
-        ChumBucketAutoPickup.init()
-        PetLevelUp.init()
+        RareCatchAlert.init()
+        SpiritMaskAlert.init()
+        ChumBucketAutoPickupAlert.init()
+        PetLevelUpAlert.init()
 
         // Chat
         CompactCatchMessages.init()
 
         // Commands
-        SpiderRainSchedule.init()   
+        SpiderRainSchedule.init()
+
+        // Inventory
+        ThunderBottleProgress.init()
                 
         LOGGER.info("$MOD_NAME loaded successfully!")
+    }
+
+    private fun getModVersion(): String {
+        return FabricLoader.getInstance().getModContainer(MOD_ID)
+            .map { it.metadata.version.friendlyString }
+            .orElse("unspecified")
     }
 }

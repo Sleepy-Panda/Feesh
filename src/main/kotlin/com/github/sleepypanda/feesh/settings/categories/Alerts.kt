@@ -1,39 +1,71 @@
 package com.github.sleepypanda.feesh.settings.categories
 
-import com.teamresourceful.resourcefulconfig.api.annotations.Category
-import com.teamresourceful.resourcefulconfig.api.annotations.Comment
-import com.teamresourceful.resourcefulconfig.api.annotations.ConfigEntry
-import com.teamresourceful.resourcefulconfig.api.types.options.EntryType
+import com.github.sleepypanda.feesh.utils.enums.ColorCodes
+import com.github.sleepypanda.feesh.utils.enums.FormattingCodes
+import com.github.sleepypanda.feesh.constants.RareSeaCreatureTypes
 import com.teamresourceful.resourcefulconfigkt.api.CategoryKt
 
 object Alerts : CategoryKt("Alerts") {
-    enum class RareSeaCreatureTypes {
-        YETI, THE_LOCH_EMPEROR
-    }
-
     init {
         separator {
             this.title = "Alerts"
         }
     }
 
-    var AlertOnSeaCreatures by select(RareSeaCreatureTypes.YETI, RareSeaCreatureTypes.THE_LOCH_EMPEROR) {
-        this.name = Translated("Select Sea Creatures")
-        this.description = Translated("Alert on catching the following Sea Creatures")
+    init {
+        separator {
+            this.title = "Sea creatures"
+        }
     }
 
     var alertOnRareSeaCreatures by boolean(true) {
-        this.name = Translated("Alert on catching rare sea creatures")
-        this.description = Translated("")
+        this.name = Translated("Alert on rare sea creatures")
+        this.description = Translated("Shows a title and plays a sound when a rare sea creature is caught by you or your party members. You need to enable ${ColorCodes.YELLOW}Skyblock Settings -> Personal -> Fishing Settings -> Sea Creature Chat ${ColorCodes.GRAY}for this functionality to work!")
+    }
+
+    var alertOnSeaCreaturesTypes by select(RareSeaCreatureTypes.CARROT_KING, *RareSeaCreatureTypes.values()) {
+        this.name = Translated("Select sea creatures to alert on")
+    }
+
+    var alertOnAnyReindrake by boolean(false) {
+        this.name = Translated("Alert on any Reindrake spawned in lobby")
+        this.description = Translated("Shows a title and plays a sound when any Reindrake spawned in the lobby, even if it was caught not by you or your party members.")
+    }
+
+    init {
+        separator {
+            this.title = "Spirit Mask"
+        }
+    }
+
+    var alertOnSpiritMaskUsed by boolean(true) {
+        this.name = Translated("Alert on Spirit Mask used")
+        this.description = Translated("Shows a title and plays a sound when your Spirit Mask's Second Wind ability is activated.")
+    }
+
+    var alertOnSpiritMaskBack by boolean(false) {
+        this.name = Translated("Alert on Spirit Mask is back")
+        this.description = Translated("Shows a title and plays a sound when your Spirit Mask's Second Wind ability is back after it was activated.")
+    }
+
+    init {
+        separator {
+            this.title = "Other"
+        }
     }
 
     var alertOnChumBucketAutoPickup by boolean(true) {
-        this.name = Translated("Alert on Chum Bucket auto pickup")
-        this.description = Translated("Alert when the Chum Bucket is automatically picked up")
+        this.name = Translated("Alert when a Chum / Chumcap bucket is automatically picked up")
+        this.description = Translated("Shows a title and plays a sound when your Chum / Chumcap bucket is automatically picked up because you went too far away.")
     }
 
     var alertOnPetLevelUp by boolean(true) {
-        this.name = Translated("Alert on Pet level up")
-        this.description = Translated("Alert when the Pet levels up")
+        this.name = Translated("Alert when a pet reached max level")
+        this.description = Translated("Shows a title and plays a sound when a pet reached max level.")
+    }
+
+    var alertOnGoldenFishSpawn by boolean(true) {
+        this.name = Translated("Alert when a Golden Fish has spawned")
+        this.description = Translated("Shows a title and plays a sound when a Golden Fish has spawned.")
     }
 }

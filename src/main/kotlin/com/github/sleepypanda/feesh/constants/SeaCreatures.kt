@@ -2,6 +2,29 @@ package com.github.sleepypanda.feesh.constants
 
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes
 
+enum class RareSeaCreatureTypes {
+    CARROT_KING,
+    WATER_HYDRA,
+    GREAT_WHITE_SHARK,
+    NUTCRACKER,
+    YETI,
+    REINDRAKE,
+    PHANTOM_FISHER,
+    GRIM_REAPER,
+    FIERY_SCUTTLER,
+    THUNDER,
+    LORD_JAWBUS,
+    PLHLEGBLAST,
+    RAGNAROK,
+    VANQUISHER,
+    ABYSSAL_MINER,
+    ALLIGATOR,
+    BLUE_RINGED_OCTOPUS,
+    WIKI_TIKI,
+    TITANOBOA,
+    THE_LOCH_EMPEROR
+}
+
 class SeaCreatures {
     companion object {
         // WATER SEA CREATURES
@@ -149,6 +172,7 @@ class SeaCreatures {
             SeaCreatureInfo("Lord Jawbus", ColorCodes.MYTHIC.code, LORD_JAWBUS_MESSAGE, true),
             SeaCreatureInfo("Plhlegblast", ColorCodes.MYTHIC.code, PLHLEGBLAST_MESSAGE, true),
             SeaCreatureInfo("Ragnarok", ColorCodes.MYTHIC.code, RAGNAROK_MESSAGE, true),
+            SeaCreatureInfo("Vanquisher", ColorCodes.EPIC.code, VANQUISHER_MESSAGE, true),
 
             SeaCreatureInfo("Oasis Rabbit", ColorCodes.UNCOMMON.code, OASIS_RABBIT_MESSAGE, false),
             SeaCreatureInfo("Oasis Sheep", ColorCodes.UNCOMMON.code, OASIS_SHEEP_MESSAGE, false),

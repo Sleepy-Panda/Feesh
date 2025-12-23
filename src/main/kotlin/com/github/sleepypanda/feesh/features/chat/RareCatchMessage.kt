@@ -1,0 +1,43 @@
+package com.github.sleepypanda.feesh.features.chat
+
+import com.github.sleepypanda.feesh.constants.SeaCreatures
+import com.github.sleepypanda.feesh.constants.RareSeaCreatureTypes
+import com.github.sleepypanda.feesh.settings.categories.Chat
+import com.github.sleepypanda.feesh.utils.CommonUtils
+import com.github.sleepypanda.feesh.utils.SoundUtils
+import com.github.sleepypanda.feesh.utils.RegisterUtils
+import com.github.sleepypanda.feesh.utils.PlayerUtils
+import com.github.sleepypanda.feesh.utils.enums.FormattingCodes
+import com.github.sleepypanda.feesh.utils.ChatUtils
+import com.github.sleepypanda.feesh.utils.WorldUtils
+
+object RareCatches {
+    fun init() {
+        // TODO: Add Vanquisher
+        // TODO: DOUBLE HOOK
+        SeaCreatures.allSeaCreatures
+            .filter { it.isRare }
+            .forEach { sc -> RegisterUtils.chat(Regex(sc.pattern)) { _, _ -> onSeaCreature(sc.name) }
+        }
+    }
+
+    private fun onSeaCreature(seaCreatureName: String) {
+        if (seaCreatureName.isNullOrEmpty()) return
+        if (!WorldUtils.isInSkyblock() || !Chat.shareRareSeaCreatures) return
+
+        val type = try {
+            RareSeaCreatureTypes.valueOf(seaCreatureName.uppercase().replace(" ", "_"))
+        } catch (_: IllegalArgumentException) {
+            return
+        }
+
+        if (!Chat.shareSeaCreaturesTypes.contains(type)) return
+
+        val message = getRareCatchMessage(seaCreatureName, false)
+        ChatUtils.sendPartyChat(message)
+    }
+
+    private fun getRareCatchMessage(name: String, isDoubleHook: Boolean): String {
+        return if (isDoubleHook) "DOUBLE FEESH! ${name}" else "FEESH! ${name}"
+    }
+}

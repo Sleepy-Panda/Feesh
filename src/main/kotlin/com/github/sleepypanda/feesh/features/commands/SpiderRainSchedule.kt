@@ -2,6 +2,7 @@ package com.github.sleepypanda.feesh.features.commands
 
 import com.github.sleepypanda.feesh.utils.RegisterUtils
 import com.github.sleepypanda.feesh.utils.ChatUtils
+import com.github.sleepypanda.feesh.utils.WorldUtils
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes
 import com.github.sleepypanda.feesh.utils.enums.FormattingCodes
 import com.github.sleepypanda.feesh.FeeshMod
@@ -17,11 +18,12 @@ object SpiderRainSchedule {
     private const val SKYBLOCK_EPOCH_START_MS = 1560275700000L
     private const val SKYBLOCK_EPOCH_START_SECONDS = SKYBLOCK_EPOCH_START_MS / 1000
 
-    private fun isInSkyblock(): Boolean {
-        val serverAddress = FeeshMod.mc.currentServerEntry?.address ?: return false
-        return serverAddress.contains("hypixel", ignoreCase = true)
+    fun init() {
+        RegisterUtils.command("feeshSpiderDenRainSchedule") {
+            showSpidersDenRainSchedule()
+        }
     }
-
+    
     private fun formatElapsedTime(seconds: Long): String {
         val hours = TimeUnit.SECONDS.toHours(seconds)
         val minutes = TimeUnit.SECONDS.toMinutes(seconds) % 60
@@ -49,15 +51,9 @@ object SpiderRainSchedule {
         return java.util.Date(seconds * 1000)
     }
 
-    fun init() {
-        RegisterUtils.command("feeshSpiderDenRainSchedule") {
-            showSpidersDenRainSchedule()
-        }
-    }
-
     private fun showSpidersDenRainSchedule() {
-        if (!isInSkyblock()) {
-            ChatUtils.send("${ColorCodes.RED}You must be on Hypixel Skyblock to use this command!")
+        if (!WorldUtils.isInSkyblock()) {
+            ChatUtils.sendLocalChat("${ColorCodes.RED}You must be on Hypixel Skyblock to use this command!")
             return
         }
 
@@ -99,7 +95,7 @@ object SpiderRainSchedule {
 
             message.append("\n${ColorCodes.DARK_GRAY}Gain +50☂ Fishing Speed during Rain, and +3α Sea Creature Chance during Thunderstorm.\n")
 
-            ChatUtils.send(message.toString())
+            ChatUtils.sendLocalChat(message.toString())
         } catch (e: Exception) {
             FeeshMod.LOGGER.error("[Feesh] Failed to show Spider's Den rain schedule.", e)
         }

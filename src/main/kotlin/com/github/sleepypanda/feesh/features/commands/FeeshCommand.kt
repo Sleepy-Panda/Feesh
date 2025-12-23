@@ -4,7 +4,7 @@ import com.github.sleepypanda.feesh.utils.RegisterUtils
 import com.github.sleepypanda.feesh.FeeshMod
 import com.teamresourceful.resourcefulconfig.api.client.ResourcefulConfigScreen
 
-object Feesh {
+object FeeshCommand {
     fun init() {
         RegisterUtils.command("feesh") {
             val mc = FeeshMod.mc
