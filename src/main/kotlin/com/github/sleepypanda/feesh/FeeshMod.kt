@@ -10,6 +10,7 @@ import com.github.sleepypanda.feesh.features.alerts.RareCatchAlert
 import com.github.sleepypanda.feesh.features.alerts.ChumBucketAutoPickupAlert
 import com.github.sleepypanda.feesh.features.alerts.PetLevelUpAlert
 import com.github.sleepypanda.feesh.features.alerts.SpiritMaskAlert
+import com.github.sleepypanda.feesh.features.chat.RareCatchMessage
 import com.github.sleepypanda.feesh.features.chat.CompactCatchMessages
 import com.github.sleepypanda.feesh.features.commands.SpiderRainSchedule
 import com.github.sleepypanda.feesh.features.commands.FeeshCommand
@@ -52,6 +53,7 @@ class FeeshMod : ModInitializer {
         PetLevelUpAlert.init()
 
         // Chat
+        RareCatchMessage.init()
         CompactCatchMessages.init()
 
         // Commands

@@ -1,5 +1,6 @@
 package com.github.sleepypanda.feesh.features.alerts
 
+import com.github.sleepypanda.feesh.FeeshMod
 import com.github.sleepypanda.feesh.constants.SeaCreatures
 import com.github.sleepypanda.feesh.constants.RareSeaCreatureTypes
 import com.github.sleepypanda.feesh.settings.categories.Alerts
@@ -7,7 +8,9 @@ import com.github.sleepypanda.feesh.utils.CommonUtils
 import com.github.sleepypanda.feesh.utils.SoundUtils
 import com.github.sleepypanda.feesh.utils.RegisterUtils
 import com.github.sleepypanda.feesh.utils.PlayerUtils
+import com.github.sleepypanda.feesh.utils.ChatUtils
 import com.github.sleepypanda.feesh.utils.WorldUtils
+import com.github.sleepypanda.feesh.utils.enums.ColorCodes
 import com.github.sleepypanda.feesh.utils.enums.FormattingCodes
 
 object RareCatchAlert {
@@ -41,8 +44,11 @@ object RareCatchAlert {
 
         if (!Alerts.alertOnSeaCreaturesTypes.contains(type)) return
 
+        val isDoubleHook = ChatUtils.isDoubleHook()
         val playerName = PlayerUtils.getName()
-        CommonUtils.showTitle("${rarityColorCode}${FormattingCodes.BOLD}${seaCreatureName}", playerName)
+        val seaCreatureDisplayName = getSeaCreatureDisplayName(seaCreatureName, rarityColorCode)
+        val title = if (isDoubleHook) "${seaCreatureDisplayName} ${ColorCodes.RED}${FormattingCodes.BOLD}X2" else seaCreatureDisplayName
+        CommonUtils.showTitle(title, playerName)
         SoundUtils.playSound()
     }
 
@@ -50,7 +56,12 @@ object RareCatchAlert {
         if (seaCreatureName.isNullOrEmpty() || rarityColorCode.isNullOrEmpty()) return
         if (!WorldUtils.isInSkyblock() || !Alerts.alertOnAnyReindrake) return
 
-        CommonUtils.showTitle("${rarityColorCode}${FormattingCodes.BOLD}${seaCreatureName}")
+        CommonUtils.showTitle(getSeaCreatureDisplayName(seaCreatureName, rarityColorCode))
         SoundUtils.playSound()
+    }
+
+    private fun getSeaCreatureDisplayName(seaCreatureName: String, rarityColorCode: String): String {
+        return if (rarityColorCode == ColorCodes.MYTHIC.code) "${ColorCodes.YELLOW}${FormattingCodes.OBFUSCATED}x${FormattingCodes.RESET} ${rarityColorCode}${FormattingCodes.BOLD}${seaCreatureName}${FormattingCodes.RESET} ${ColorCodes.YELLOW}${FormattingCodes.OBFUSCATED}x${FormattingCodes.RESET}" 
+        else "${rarityColorCode}${FormattingCodes.BOLD}${seaCreatureName}"
     }
 }

@@ -11,7 +11,7 @@ import com.github.sleepypanda.feesh.utils.enums.FormattingCodes
 import com.github.sleepypanda.feesh.utils.ChatUtils
 import com.github.sleepypanda.feesh.utils.WorldUtils
 
-object RareCatches {
+object RareCatchMessage {
     fun init() {
         // TODO: Add Vanquisher
         // TODO: DOUBLE HOOK
@@ -32,8 +32,9 @@ object RareCatches {
         }
 
         if (!Chat.shareSeaCreaturesTypes.contains(type)) return
+        val isDoubleHook = ChatUtils.isDoubleHook()
 
-        val message = getRareCatchMessage(seaCreatureName, false)
+        val message = getRareCatchMessage(seaCreatureName, isDoubleHook)
         ChatUtils.sendPartyChat(message)
     }
 
