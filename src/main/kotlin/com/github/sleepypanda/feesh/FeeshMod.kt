@@ -17,6 +17,7 @@ import com.github.sleepypanda.feesh.features.commands.SpiderRainSchedule
 import com.github.sleepypanda.feesh.features.commands.FeeshCommand
 import com.github.sleepypanda.feesh.features.overlays.JerryWorkshopTracker
 import com.github.sleepypanda.feesh.features.inventory.ThunderBottleProgress
+import com.github.sleepypanda.feesh.events.EventBus
 
 class FeeshMod : ModInitializer {
     companion object {
@@ -47,6 +48,9 @@ class FeeshMod : ModInitializer {
         LOGGER.info("Loading $MOD_NAME v$version...")
 
         FeeshCommand.init()
+        
+        // Events
+        EventBus.init()
         
         // Alerts
         RareCatchAlert.init()

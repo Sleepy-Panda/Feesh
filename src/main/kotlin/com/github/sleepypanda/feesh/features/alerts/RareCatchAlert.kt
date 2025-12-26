@@ -1,8 +1,9 @@
 package com.github.sleepypanda.feesh.features.alerts
 
-import com.github.sleepypanda.feesh.FeeshMod
 import com.github.sleepypanda.feesh.constants.SeaCreatures
 import com.github.sleepypanda.feesh.constants.RareSeaCreatureTypes
+import com.github.sleepypanda.feesh.events.EventBus
+import com.github.sleepypanda.feesh.events.SeaCreatureSpawnedEvent
 import com.github.sleepypanda.feesh.settings.categories.Alerts
 import com.github.sleepypanda.feesh.utils.CommonUtils
 import com.github.sleepypanda.feesh.utils.SoundUtils
@@ -23,18 +24,20 @@ object RareCatchAlert {
         // TODO: Add SH format
         // TODO: Check ANY reindrake logic
         // TODO: 
-        SeaCreatures.allSeaCreatures
-            .filter { it.isRare }
-            .forEach { sc -> RegisterUtils.chat(Regex(sc.pattern)) { _, _ -> onSeaCreature(sc.name, sc.rarityColorCode) }
-        }
+        EventBus.subscribe(SeaCreatureSpawnedEvent::class, ::onSeaCreature)
 
         val reindrake = SeaCreatures.allSeaCreatures.find { it.name == "Reindrake" }!!
         RegisterUtils.chat(Regex(REINDRAKE_PATTERN)) { _, _ -> onAnyReindrake(reindrake.name, reindrake.rarityColorCode) }
     }
 
-    private fun onSeaCreature(seaCreatureName: String, rarityColorCode: String) {
-        if (seaCreatureName.isNullOrEmpty() || rarityColorCode.isNullOrEmpty()) return
+    private fun onSeaCreature(event: SeaCreatureSpawnedEvent) {
         if (!WorldUtils.isInSkyblock() || !Alerts.alertOnRareSeaCreatures) return
+
+        val seaCreatureName = event.seaCreatureName
+        var seaCreatureInfo = SeaCreatures.allSeaCreatures.find { it.name == event.seaCreatureName } ?: return
+        if (!seaCreatureInfo.isRare) return
+
+        val rarityColorCode = seaCreatureInfo.rarityColorCode
 
         val type = try {
             RareSeaCreatureTypes.valueOf(seaCreatureName.uppercase().replace(" ", "_"))

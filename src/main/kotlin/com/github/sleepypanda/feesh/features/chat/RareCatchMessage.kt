@@ -10,20 +10,22 @@ import com.github.sleepypanda.feesh.utils.PlayerUtils
 import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
 import com.github.sleepypanda.feesh.utils.ChatUtils
 import com.github.sleepypanda.feesh.utils.WorldUtils
+import com.github.sleepypanda.feesh.events.EventBus
+import com.github.sleepypanda.feesh.events.SeaCreatureSpawnedEvent
 
 object RareCatchMessage {
     fun init() {
         // TODO: Add Vanquisher
         // TODO: DOUBLE HOOK
-        SeaCreatures.allSeaCreatures
-            .filter { it.isRare }
-            .forEach { sc -> RegisterUtils.chat(Regex(sc.pattern)) { _, _ -> onSeaCreature(sc.name) }
-        }
+        EventBus.subscribe(SeaCreatureSpawnedEvent::class, ::onSeaCreature)
     }
-
-    private fun onSeaCreature(seaCreatureName: String) {
-        if (seaCreatureName.isNullOrEmpty()) return
+    
+    private fun onSeaCreature(event: SeaCreatureSpawnedEvent) {
         if (!WorldUtils.isInSkyblock() || !Chat.shareRareSeaCreatures) return
+
+        val seaCreatureName = event.seaCreatureName
+        var seaCreatureInfo = SeaCreatures.allSeaCreatures.find { it.name == event.seaCreatureName } ?: return
+        if (!seaCreatureInfo.isRare) return
 
         val type = try {
             RareSeaCreatureTypes.valueOf(seaCreatureName.uppercase().replace(" ", "_"))

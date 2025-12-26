@@ -7,6 +7,8 @@ import com.github.sleepypanda.feesh.utils.ChatUtils
 import com.github.sleepypanda.feesh.utils.RegisterUtils
 import com.github.sleepypanda.feesh.utils.WorldUtils
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
+import com.github.sleepypanda.feesh.events.EventBus
+import com.github.sleepypanda.feesh.events.WorldChangedEvent
 import java.util.Timer
 import kotlin.concurrent.timerTask
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientWorldEvents
@@ -18,9 +20,7 @@ object SpiritMaskAlert {
     fun init() {
         RegisterUtils.chat(Regex(SPIRIT_MASK_USED_PATTERN)) { _, _ -> onSpiritMaskUsed() }
 
-        ClientWorldEvents.AFTER_CLIENT_WORLD_CHANGE.register { _, _ ->
-            resetTimer()
-        }
+        EventBus.subscribe(WorldChangedEvent::class, ::onWorldChanged)
     }
 
     private fun onSpiritMaskUsed() {
@@ -45,6 +45,10 @@ object SpiritMaskAlert {
         if (!Alerts.alertOnSpiritMaskBack) return
         CommonUtils.showTitle("${GREEN}Spirit Mask is ready")
         SoundUtils.playSound()
+    }
+
+    private fun onWorldChanged(event: WorldChangedEvent) {
+        resetTimer()
     }
 
     private fun resetTimer() {

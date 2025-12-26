@@ -208,4 +208,6 @@ class SeaCreatures {
             SeaCreatureInfo("Stridersurfer", ColorCodes.RARE.code, STRIDERSURFER_MESSAGE, false),
         )
     }
+
+    val rareSeaCreatures = allSeaCreatures.filter { it.isRare }
 }

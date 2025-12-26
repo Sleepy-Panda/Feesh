@@ -17,10 +17,10 @@ object CompactCatchMessages {
         // Also it cancels the message for other handlers
         // TODO: Fix this
         if (ChatSettings.compactSeaCreaturesMessages) { // TODO make it dynamic, so far it cancels messages for other handlers
-            RegisterUtils.chatCancellable(Regex("Double Hook")) { _, _ ->
-                ChatUtils.sendLocalChat("${ColorCodes.BLUE}${FormattingCodes.BOLD}DOUBLE HOOK!${FormattingCodes.RESET}")
-                false
-            }
+            //RegisterUtils.chatCancellable(Regex("Double Hook")) { _, _ ->
+            //    ChatUtils.sendLocalChat("${ColorCodes.BLUE}${FormattingCodes.BOLD}DOUBLE HOOK!${FormattingCodes.RESET}")
+            //    false
+            //}
     
             SeaCreatures.allSeaCreatures.forEach { sc ->
                 RegisterUtils.chatCancellable(Regex(sc.pattern)) { _, _ ->
