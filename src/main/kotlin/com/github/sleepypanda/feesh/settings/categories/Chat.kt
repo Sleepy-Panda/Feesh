@@ -32,7 +32,7 @@ object Chat : CategoryKt("Chat") {
     }
 
     var compactSeaCreaturesMessages by boolean(false) {
-        this.name = Translated("Compact chat messages")
-        this.description = Translated("")
+        this.name = Translated("Compact sea creature catch messages")
+        this.description = Translated("Shortens double hook message and catch message that says what sea creature you caught.")
     }
 }

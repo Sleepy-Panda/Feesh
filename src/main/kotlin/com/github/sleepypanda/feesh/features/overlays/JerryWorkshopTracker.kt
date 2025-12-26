@@ -24,13 +24,13 @@ object JerryWorkshopTracker {
     val reindrake = SeaCreatures.allSeaCreatures.find { it.name === "Reindrake" }!!
 
     fun init() {
-        RegisterUtils.chat(Regex(yeti.pattern)) { _, _ -> onYeti() }
+        RegisterUtils.chat(yeti.pattern) { _, _ -> onYeti() }
 
-        RegisterUtils.chat(Regex(reindrake.pattern)) { _, _ -> onReindrake() }
+        RegisterUtils.chat(reindrake.pattern) { _, _ -> onReindrake() }
 
         SeaCreatures.allSeaCreatures
             .filter { it.name != yeti.name && it.name != reindrake.name }
-            .forEach { sc -> RegisterUtils.chat(Regex(sc.pattern)) { _, _ -> onOtherSeaCreature() }
+            .forEach { sc -> RegisterUtils.chat(sc.pattern) { _, _ -> onOtherSeaCreature() }
         }
 
         HudRenderCallback.EVENT.register { drawContext, tickDelta ->

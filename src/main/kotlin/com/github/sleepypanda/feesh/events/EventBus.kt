@@ -1,9 +1,8 @@
 package com.github.sleepypanda.feesh.events
 
-import com.github.sleepypanda.feesh.constants.SeaCreatures
-import com.github.sleepypanda.feesh.utils.RegisterUtils
 import kotlin.reflect.KClass
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientWorldEvents
+import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents
 import net.minecraft.text.Text
 import net.minecraft.client.MinecraftClient
 import net.minecraft.world.World
@@ -25,12 +24,15 @@ object EventBus {
             publish(WorldChangedEvent(mc, world))
         }
 
-        // TODO - All chat listener, move to SeaCreaturesApi
-        // Register chat listeners for all rare sea creatures
-        SeaCreatures.allSeaCreatures
-            .forEach { sc ->
-                RegisterUtils.chat(Regex(sc.pattern)) { message, _ -> publish(SeaCreatureSpawnedEvent(sc.name, message.string)) }
-            }
+        ClientReceiveMessageEvents.GAME.register { message, _ ->
+            publish(ChatEvent(message))
+        }
+
+        ClientReceiveMessageEvents.ALLOW_GAME.register { message, _ ->
+            var event = ChatCancellableEvent(message, false)
+            publish(event)
+            !event.isCancelled
+        }
     }
 }
 

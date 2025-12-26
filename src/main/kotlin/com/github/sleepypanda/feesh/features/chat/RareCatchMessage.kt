@@ -11,16 +11,15 @@ import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
 import com.github.sleepypanda.feesh.utils.ChatUtils
 import com.github.sleepypanda.feesh.utils.WorldUtils
 import com.github.sleepypanda.feesh.events.EventBus
-import com.github.sleepypanda.feesh.events.SeaCreatureSpawnedEvent
+import com.github.sleepypanda.feesh.events.OwnSeaCreatureCaughtEvent
 
 object RareCatchMessage {
     fun init() {
-        // TODO: Add Vanquisher
         // TODO: DOUBLE HOOK
-        EventBus.subscribe(SeaCreatureSpawnedEvent::class, ::onSeaCreature)
+        EventBus.subscribe(OwnSeaCreatureCaughtEvent::class, ::onSeaCreature)
     }
     
-    private fun onSeaCreature(event: SeaCreatureSpawnedEvent) {
+    private fun onSeaCreature(event: OwnSeaCreatureCaughtEvent) {
         if (!WorldUtils.isInSkyblock() || !Chat.shareRareSeaCreatures) return
 
         val seaCreatureName = event.seaCreatureName
@@ -34,7 +33,7 @@ object RareCatchMessage {
         }
 
         if (!Chat.shareSeaCreaturesTypes.contains(type)) return
-        val isDoubleHook = ChatUtils.isDoubleHook()
+        val isDoubleHook = event.isDoubleHook
 
         val message = getRareCatchMessage(seaCreatureName, isDoubleHook)
         ChatUtils.sendPartyChat(message)

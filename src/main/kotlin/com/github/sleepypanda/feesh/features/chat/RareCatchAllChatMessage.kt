@@ -16,7 +16,7 @@ object RareCatchAllChatMessage {
     fun init() {
         SeaCreatures.allSeaCreatures
             .filter { it.name == "Lord Jawbus" }
-            .forEach { sc -> RegisterUtils.chat(Regex(sc.pattern)) { _, _ -> onSeaCreature(sc.name) }
+            .forEach { sc -> RegisterUtils.chat(sc.pattern) { _, _ -> onSeaCreature(sc.name) }
         }
     }
 
@@ -31,7 +31,7 @@ object RareCatchAllChatMessage {
         }
 
         if (!Chat.shareSeaCreaturesTypes.contains(type)) return
-        val isDoubleHook = ChatUtils.isDoubleHook()
+        val isDoubleHook = false
 
         val message = getAllChatMessage(seaCreatureName, isDoubleHook)
         ChatUtils.sendAllChat(message)

@@ -1,16 +1,11 @@
 package com.github.sleepypanda.feesh
 
-import net.fabricmc.api.ModInitializer
-import com.github.sleepypanda.feesh.settings.Settings
-import com.teamresourceful.resourcefulconfig.api.loader.Configurator
-import net.fabricmc.loader.api.FabricLoader
-import net.minecraft.client.MinecraftClient
-import org.slf4j.LoggerFactory
 import com.github.sleepypanda.feesh.features.alerts.RareCatchAlert
 import com.github.sleepypanda.feesh.features.alerts.ChumBucketAutoPickupAlert
 import com.github.sleepypanda.feesh.features.alerts.PetLevelUpAlert
 import com.github.sleepypanda.feesh.features.alerts.SpiritMaskAlert
 import com.github.sleepypanda.feesh.features.alerts.ThunderBottleChargedAlert
+import com.github.sleepypanda.feesh.features.alerts.AnyReindrakeAlert
 import com.github.sleepypanda.feesh.features.chat.RareCatchMessage
 import com.github.sleepypanda.feesh.features.chat.CompactCatchMessages
 import com.github.sleepypanda.feesh.features.commands.SpiderRainSchedule
@@ -18,6 +13,13 @@ import com.github.sleepypanda.feesh.features.commands.FeeshCommand
 import com.github.sleepypanda.feesh.features.overlays.JerryWorkshopTracker
 import com.github.sleepypanda.feesh.features.inventory.ThunderBottleProgress
 import com.github.sleepypanda.feesh.events.EventBus
+import com.github.sleepypanda.feesh.api.SeaCreaturesApi
+import com.github.sleepypanda.feesh.settings.Settings
+import net.fabricmc.api.ModInitializer
+import com.teamresourceful.resourcefulconfig.api.loader.Configurator
+import net.fabricmc.loader.api.FabricLoader
+import net.minecraft.client.MinecraftClient
+import org.slf4j.LoggerFactory
 
 class FeeshMod : ModInitializer {
     companion object {
@@ -51,6 +53,9 @@ class FeeshMod : ModInitializer {
         
         // Events
         EventBus.init()
+
+        // APIs
+        SeaCreaturesApi.init()
         
         // Alerts
         RareCatchAlert.init()
@@ -58,6 +63,7 @@ class FeeshMod : ModInitializer {
         ChumBucketAutoPickupAlert.init()
         PetLevelUpAlert.init() // TODO formatting
         ThunderBottleChargedAlert.init()
+        AnyReindrakeAlert.init()
 
         // Chat
         RareCatchMessage.init()

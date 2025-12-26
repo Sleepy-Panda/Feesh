@@ -1,0 +1,41 @@
+package com.github.sleepypanda.feesh.api
+
+import com.github.sleepypanda.feesh.events.EventBus
+import com.github.sleepypanda.feesh.events.ChatCancellableEvent
+import com.github.sleepypanda.feesh.events.OwnSeaCreatureCaughtEvent
+import com.github.sleepypanda.feesh.constants.SeaCreatures
+import com.github.sleepypanda.feesh.settings.categories.Chat
+import com.github.sleepypanda.feesh.utils.WorldUtils
+
+object SeaCreaturesApi {
+    var isDoubleHook = false
+    val doubleHookPattern = Regex("^It's a Double Hook!")
+
+    fun init() {
+        EventBus.subscribe(ChatCancellableEvent::class, ::onChat)
+    }
+
+    private fun onChat(event: ChatCancellableEvent) {
+        if (!WorldUtils.isInSkyblock()) return
+        
+        var chatMessage = event.message.string
+
+        if (doubleHookPattern.containsMatchIn(chatMessage)) {
+            isDoubleHook = true
+            if (Chat.compactSeaCreaturesMessages) {
+                event.isCancelled = true
+            }
+            return
+        }
+
+        SeaCreatures.allSeaCreatures
+            .find { sc -> sc.pattern.containsMatchIn(chatMessage) }
+            ?.let { sc ->
+                EventBus.publish(OwnSeaCreatureCaughtEvent(sc.name, isDoubleHook, chatMessage))
+                isDoubleHook = false
+                if (Chat.compactSeaCreaturesMessages) {
+                    event.isCancelled = true
+                }
+            }
+    }
+}

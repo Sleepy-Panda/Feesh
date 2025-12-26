@@ -31,22 +31,6 @@ object ChatUtils {
         FeeshMod.mc.player?.networkHandler?.sendChatCommand("pchat ${message}")
     }
 
-    fun isDoubleHook(): Boolean {
-        val pattern = Regex("§eIt's a §r§aDouble Hook§r§e!(?: Woot woot!)?")
-        val chatHud = FeeshMod.mc.inGameHud.chatHud
-        val history = chatHud.messageHistory
-        val isDoubleHook = if (history.size >= 2) {
-            val previousMessage = history[1]
-            FeeshMod.LOGGER.info("FEESH PREV MSG : ${previousMessage}")
-            pattern.matches(previousMessage)
-            //previousMessage.removeFormatting().contains("It\'s a Double Hook!")
-        } else {
-            false
-        }
-
-        return isDoubleHook
-    }
-
     fun String.removeFormatting(): String {
         if (this.isNullOrEmpty()) return ""
         return this.replace(Regex("§."), "")
