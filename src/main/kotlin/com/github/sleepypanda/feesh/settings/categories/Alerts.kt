@@ -68,4 +68,9 @@ object Alerts : CategoryKt("Alerts") {
         this.name = Translated("Alert when a Golden Fish has spawned")
         this.description = Translated("Shows a title and plays a sound when a Golden Fish has spawned.")
     }
+
+    var alertOnThunderBottleCharged by boolean(true) {
+        this.name = Translated("Alert when Thunder/Storm/Hurricane Bottle is charged")
+        this.description = Translated("Shows a title and plays a sound when your Thunder, Storm, or Hurricane Bottle is fully charged.")
+    }
 }

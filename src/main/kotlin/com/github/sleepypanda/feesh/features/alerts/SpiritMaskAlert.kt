@@ -7,14 +7,13 @@ import com.github.sleepypanda.feesh.utils.ChatUtils
 import com.github.sleepypanda.feesh.utils.RegisterUtils
 import com.github.sleepypanda.feesh.utils.WorldUtils
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
-import java.util.*
+import java.util.Timer
 import kotlin.concurrent.timerTask
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientWorldEvents
 
 object SpiritMaskAlert {
     const val SPIRIT_MASK_USED_PATTERN = "^Second Wind Activated\\! Your Spirit Mask saved your life\\!$"
     private var timer: Timer? = null
-    var secondsLeft = 30
 
     fun init() {
         RegisterUtils.chat(Regex(SPIRIT_MASK_USED_PATTERN)) { _, _ -> onSpiritMaskUsed() }
@@ -33,14 +32,10 @@ object SpiritMaskAlert {
         resetTimer()
 
         val task = timerTask {
-            if (secondsLeft > 0) {
-                secondsLeft--
-            } else {
-                resetTimer()
-                onSpiritMaskBack()
-            }
+            resetTimer()
+            onSpiritMaskBack()
         }
-        timer?.schedule(task, 0, 1000) // Schedule with 1 second interval
+        timer?.schedule(task, 30000)
     }
 
     private fun onSpiritMaskBack() {
@@ -55,6 +50,5 @@ object SpiritMaskAlert {
     private fun resetTimer() {
         timer?.cancel()
         timer = Timer()
-        secondsLeft = 30
     }
 }
