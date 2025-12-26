@@ -1,7 +1,7 @@
 package com.github.sleepypanda.feesh.settings.categories
 
-import com.github.sleepypanda.feesh.utils.enums.ColorCodes
-import com.github.sleepypanda.feesh.utils.enums.FormattingCodes
+import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
+import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
 import com.github.sleepypanda.feesh.constants.RareSeaCreatureTypes
 import com.teamresourceful.resourcefulconfigkt.api.CategoryKt
 
@@ -20,7 +20,7 @@ object Alerts : CategoryKt("Alerts") {
 
     var alertOnRareSeaCreatures by boolean(true) {
         this.name = Translated("Alert on rare sea creatures")
-        this.description = Translated("Shows a title and plays a sound when a rare sea creature is caught by you or your party members. You need to enable ${ColorCodes.YELLOW}Skyblock Settings -> Personal -> Fishing Settings -> Sea Creature Chat ${FormattingCodes.RESET}for this functionality to work!")
+        this.description = Translated("Shows a title and plays a sound when a rare sea creature is caught by you or your party members. You need to enable ${YELLOW}Skyblock Settings -> Personal -> Fishing Settings -> Sea Creature Chat ${RESET}for this functionality to work!")
     }
 
     var alertOnSeaCreaturesTypes by select(RareSeaCreatureTypes.CARROT_KING, *RareSeaCreatureTypes.values()) {

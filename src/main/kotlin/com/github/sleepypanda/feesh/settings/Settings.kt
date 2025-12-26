@@ -1,11 +1,11 @@
 package com.github.sleepypanda.feesh.settings
 
-import com.teamresourceful.resourcefulconfig.api.types.options.TranslatableValue
-import com.teamresourceful.resourcefulconfigkt.api.ConfigKt
 import com.github.sleepypanda.feesh.FeeshMod
 import com.github.sleepypanda.feesh.settings.categories.General
 import com.github.sleepypanda.feesh.settings.categories.Alerts
 import com.github.sleepypanda.feesh.settings.categories.Chat
+import com.teamresourceful.resourcefulconfig.api.types.options.TranslatableValue
+import com.teamresourceful.resourcefulconfigkt.api.ConfigKt
 import net.minecraft.util.Util
 
 object Settings : ConfigKt("${FeeshMod.MOD_ID}/config") {

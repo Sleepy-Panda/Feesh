@@ -7,16 +7,15 @@ import com.github.sleepypanda.feesh.utils.CommonUtils
 import com.github.sleepypanda.feesh.utils.SoundUtils
 import com.github.sleepypanda.feesh.utils.RegisterUtils
 import com.github.sleepypanda.feesh.utils.PlayerUtils
-import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
+import com.github.sleepypanda.feesh.utils.enums.FormattingCodes
 import com.github.sleepypanda.feesh.utils.ChatUtils
 import com.github.sleepypanda.feesh.utils.WorldUtils
+import com.github.sleepypanda.feesh.FeeshMod
 
-object RareCatchMessage {
+object RareCatchAllChatMessage {
     fun init() {
-        // TODO: Add Vanquisher
-        // TODO: DOUBLE HOOK
         SeaCreatures.allSeaCreatures
-            .filter { it.isRare }
+            .filter { it.name == "Lord Jawbus" }
             .forEach { sc -> RegisterUtils.chat(Regex(sc.pattern)) { _, _ -> onSeaCreature(sc.name) }
         }
     }
@@ -34,11 +33,18 @@ object RareCatchMessage {
         if (!Chat.shareSeaCreaturesTypes.contains(type)) return
         val isDoubleHook = ChatUtils.isDoubleHook()
 
-        val message = getRareCatchMessage(seaCreatureName, isDoubleHook)
-        ChatUtils.sendPartyChat(message)
+        val message = getAllChatMessage(seaCreatureName, isDoubleHook)
+        ChatUtils.sendAllChat(message)
     }
 
-    private fun getRareCatchMessage(name: String, isDoubleHook: Boolean): String {
-        return if (isDoubleHook) "DOUBLE FEESH! ${name}" else "FEESH! ${name}"
+    private fun getAllChatMessage(seaCreatureName: String, isDoubleHooked: Boolean): String {
+        val player = FeeshMod.mc.player ?: return ""
+        val location = "x: ${Math.round(player.getX())}, y: ${Math.round(player.getY())}, z: ${Math.round(player.getZ())}"
+        val zone = null as String? //getZoneName()
+        val messageId = null as String? //getMessageId()
+    
+        var message = ""
+        //message += "${location} | ${seaCreatureName} ${isDoubleHooked ? 'x2' : '' }${!zone.isNullOrEmpty() ? ' at ' + zone : ''} | ${messageId}"
+        return message
     }
 }

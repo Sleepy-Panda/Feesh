@@ -10,8 +10,8 @@ import com.github.sleepypanda.feesh.utils.RegisterUtils
 import com.github.sleepypanda.feesh.utils.PlayerUtils
 import com.github.sleepypanda.feesh.utils.ChatUtils
 import com.github.sleepypanda.feesh.utils.WorldUtils
-import com.github.sleepypanda.feesh.utils.enums.ColorCodes
-import com.github.sleepypanda.feesh.utils.enums.FormattingCodes
+import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
+import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
 
 object RareCatchAlert {
     const val REINDRAKE_PATTERN = "^WOAH\\! A Reindrake was summoned from the depths\\!$"
@@ -47,7 +47,7 @@ object RareCatchAlert {
         val isDoubleHook = ChatUtils.isDoubleHook()
         val playerName = PlayerUtils.getName()
         val seaCreatureDisplayName = getSeaCreatureDisplayName(seaCreatureName, rarityColorCode)
-        val title = if (isDoubleHook) "${seaCreatureDisplayName} ${ColorCodes.RED}${FormattingCodes.BOLD}X2" else seaCreatureDisplayName
+        val title = if (isDoubleHook) "${seaCreatureDisplayName} ${RED}${BOLD}X2" else seaCreatureDisplayName
         CommonUtils.showTitle(title, playerName)
         SoundUtils.playSound()
     }
@@ -61,7 +61,7 @@ object RareCatchAlert {
     }
 
     private fun getSeaCreatureDisplayName(seaCreatureName: String, rarityColorCode: String): String {
-        return if (rarityColorCode == ColorCodes.MYTHIC.code) "${ColorCodes.YELLOW}${FormattingCodes.OBFUSCATED}x${FormattingCodes.RESET} ${rarityColorCode}${FormattingCodes.BOLD}${seaCreatureName}${FormattingCodes.RESET} ${ColorCodes.YELLOW}${FormattingCodes.OBFUSCATED}x${FormattingCodes.RESET}" 
-        else "${rarityColorCode}${FormattingCodes.BOLD}${seaCreatureName}"
+        return if (rarityColorCode == MYTHIC.code) "${YELLOW}${OBFUSCATED}x${RESET} ${rarityColorCode}${BOLD}${seaCreatureName}${RESET} ${YELLOW}${OBFUSCATED}x${RESET}" 
+        else "${rarityColorCode}${BOLD}${seaCreatureName}"
     }
 }

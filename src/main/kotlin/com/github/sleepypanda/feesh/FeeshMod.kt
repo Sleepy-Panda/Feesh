@@ -14,6 +14,7 @@ import com.github.sleepypanda.feesh.features.chat.RareCatchMessage
 import com.github.sleepypanda.feesh.features.chat.CompactCatchMessages
 import com.github.sleepypanda.feesh.features.commands.SpiderRainSchedule
 import com.github.sleepypanda.feesh.features.commands.FeeshCommand
+import com.github.sleepypanda.feesh.features.overlays.JerryWorkshopTracker
 import com.github.sleepypanda.feesh.features.inventory.ThunderBottleProgress
 
 class FeeshMod : ModInitializer {
@@ -58,6 +59,9 @@ class FeeshMod : ModInitializer {
 
         // Commands
         SpiderRainSchedule.init()
+          
+        // Overlays
+        JerryWorkshopTracker.init()
 
         // Inventory
         ThunderBottleProgress.init()

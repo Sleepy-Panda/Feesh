@@ -5,7 +5,7 @@ import com.github.sleepypanda.feesh.utils.CommonUtils
 import com.github.sleepypanda.feesh.utils.RegisterUtils
 import com.github.sleepypanda.feesh.utils.SoundUtils
 import com.github.sleepypanda.feesh.utils.WorldUtils
-import com.github.sleepypanda.feesh.utils.enums.ColorCodes
+import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 
 object GoldenFishSpawnAlert {
     const val PATTERN = "^You spot a Golden Fish surface from beneath the lava\\!$"
@@ -17,7 +17,7 @@ object GoldenFishSpawnAlert {
     private fun onGoldenFishSpawn() {
         if (!WorldUtils.isInSkyblock() || !Alerts.alertOnGoldenFishSpawn) return
 
-        CommonUtils.showTitle("${ColorCodes.WHITE}Catch the ${ColorCodes.GOLD}Golden Fish")
+        CommonUtils.showTitle("${WHITE}Catch the ${GOLD}Golden Fish")
         SoundUtils.playSound()
     }
 }

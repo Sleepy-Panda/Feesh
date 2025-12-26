@@ -5,8 +5,8 @@ import com.github.sleepypanda.feesh.utils.CommonUtils
 import com.github.sleepypanda.feesh.utils.RegisterUtils
 import com.github.sleepypanda.feesh.utils.SoundUtils
 import com.github.sleepypanda.feesh.utils.WorldUtils
-import com.github.sleepypanda.feesh.utils.enums.ColorCodes
-import com.github.sleepypanda.feesh.utils.enums.FormattingCodes
+import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
+import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
 
 object PetLevelUpAlert {
     const val PATTERN = "^Your (.*?) leveled up to level (.*?)!$"
@@ -21,7 +21,7 @@ object PetLevelUpAlert {
 
         val petDisplayName = matchResult.groupValues[1]
         val petLevel = matchResult.groupValues[2]
-        CommonUtils.showTitle("${petDisplayName} ${FormattingCodes.RESET}is maxed", petLevel)
+        CommonUtils.showTitle("${petDisplayName} ${RESET}is maxed", petLevel)
         SoundUtils.playSound()
     }
 }

@@ -1,8 +1,8 @@
 package com.github.sleepypanda.feesh.settings.categories
 
 import com.github.sleepypanda.feesh.constants.RareSeaCreatureTypes
-import com.github.sleepypanda.feesh.utils.enums.ColorCodes
-import com.github.sleepypanda.feesh.utils.enums.FormattingCodes
+import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
+import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
 import com.teamresourceful.resourcefulconfig.api.annotations.Category
 import com.teamresourceful.resourcefulconfig.api.annotations.Comment
 import com.teamresourceful.resourcefulconfig.api.annotations.ConfigEntry
@@ -24,7 +24,7 @@ object Chat : CategoryKt("Chat") {
 
     var shareRareSeaCreatures by boolean(true) {
         this.name = Translated("Share rare sea creatures to the PARTY chat")
-        this.description = Translated("Sends a PARTY chat message when a rare sea creature is caught by you. You need to enable ${ColorCodes.YELLOW}Skyblock Settings -> Personal -> Fishing Settings -> Sea Creature Chat ${FormattingCodes.RESET}for this functionality to work!")
+        this.description = Translated("Sends a PARTY chat message when a rare sea creature is caught by you. You need to enable ${YELLOW}Skyblock Settings -> Personal -> Fishing Settings -> Sea Creature Chat ${RESET}for this functionality to work!")
     }
 
     var shareSeaCreaturesTypes by select(RareSeaCreatureTypes.CARROT_KING, *RareSeaCreatureTypes.values()) {

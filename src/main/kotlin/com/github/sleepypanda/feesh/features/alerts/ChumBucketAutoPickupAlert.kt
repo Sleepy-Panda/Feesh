@@ -5,7 +5,7 @@ import com.github.sleepypanda.feesh.utils.CommonUtils
 import com.github.sleepypanda.feesh.utils.RegisterUtils
 import com.github.sleepypanda.feesh.utils.SoundUtils
 import com.github.sleepypanda.feesh.utils.WorldUtils
-import com.github.sleepypanda.feesh.utils.enums.ColorCodes
+import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 
 object ChumBucketAutoPickupAlert {
     const val PATTERN = "^Automatically picked up the Chum Bucket you left back there\\!$"
@@ -17,7 +17,7 @@ object ChumBucketAutoPickupAlert {
     private fun onBucketPickedUp() {
         if (!WorldUtils.isInSkyblock() || !Alerts.alertOnChumBucketAutoPickup) return
 
-        CommonUtils.showTitle("${ColorCodes.YELLOW}Chum Bucket is gone")
+        CommonUtils.showTitle("${YELLOW}Chum Bucket is gone")
         SoundUtils.playSound()
     }
 }
