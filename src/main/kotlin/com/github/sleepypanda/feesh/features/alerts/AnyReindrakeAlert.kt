@@ -8,6 +8,7 @@ import com.github.sleepypanda.feesh.utils.RegisterUtils
 import com.github.sleepypanda.feesh.utils.WorldUtils
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
+import com.github.sleepypanda.feesh.utils.ChatUtils
 
 object AnyReindrakeAlert {
     const val REINDRAKE_PATTERN = "^WOAH\\! A Reindrake was summoned from the depths\\!$"
@@ -23,10 +24,12 @@ object AnyReindrakeAlert {
 
         CommonUtils.showTitle(getSeaCreatureDisplayName(boldDisplayName, rarityColorCode))
         SoundUtils.playSound()
+        ChatUtils.sendLocalChatWithCommand("Click to warp to Jerry's Workshop spawn point!", "warp jerry", true)
     }
 
+    // TODO reuse getTitle from RareCatchAlert
     private fun getSeaCreatureDisplayName(boldDisplayName: String, rarityColorCode: String): String {
-        return if (rarityColorCode == MYTHIC.code) "${YELLOW}${OBFUSCATED}x${RESET} ${boldDisplayName}${RESET} ${YELLOW}${OBFUSCATED}x${RESET}" 
+        return if (rarityColorCode == MYTHIC.code) "${GOLD}${OBFUSCATED}x${RESET} ${boldDisplayName}${RESET} ${GOLD}${OBFUSCATED}x${RESET}" 
         else boldDisplayName
     }
 }

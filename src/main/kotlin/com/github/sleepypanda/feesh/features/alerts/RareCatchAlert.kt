@@ -21,10 +21,10 @@ object RareCatchAlert {
         // TODO: Add SH format
         // TODO: Check ANY reindrake logic
         // TODO: 
-        EventBus.subscribe(OwnSeaCreatureCaughtEvent::class, ::onSeaCreature)
+        EventBus.subscribe(OwnSeaCreatureCaughtEvent::class, ::onOwnSeaCreature)
     }
 
-    private fun onSeaCreature(event: OwnSeaCreatureCaughtEvent) {
+    private fun onOwnSeaCreature(event: OwnSeaCreatureCaughtEvent) {
         if (!WorldUtils.isInSkyblock() || !Alerts.alertOnRareSeaCreatures) return
 
         val seaCreatureName = event.seaCreatureName
@@ -43,14 +43,14 @@ object RareCatchAlert {
 
         val isDoubleHook = event.isDoubleHook
         val playerName = PlayerUtils.getName()
-        val seaCreatureDisplayName = getSeaCreatureDisplayName(seaCreatureInfo.boldDisplayName, rarityColorCode)
-        val title = if (isDoubleHook) "${seaCreatureDisplayName} ${RED}${BOLD}X2" else seaCreatureDisplayName
+        val title = getTitle(seaCreatureInfo.boldDisplayName, rarityColorCode, isDoubleHook)
         CommonUtils.showTitle(title, playerName)
         SoundUtils.playSound()
     }
 
-    private fun getSeaCreatureDisplayName(boldDisplayName: String, rarityColorCode: String): String {
-        return if (rarityColorCode == MYTHIC.code) "${YELLOW}${OBFUSCATED}x${RESET} ${boldDisplayName}${RESET} ${YELLOW}${OBFUSCATED}x${RESET}" 
-        else boldDisplayName
+    private fun getTitle(boldDisplayName: String, rarityColorCode: String, isDoubleHook: Boolean): String {
+        val dh = if (isDoubleHook) " ${RESET}${RED}${BOLD}X2${RESET}" else ""
+        return if (rarityColorCode == MYTHIC.code) "${GOLD}${OBFUSCATED}x${RESET} ${boldDisplayName}${dh} ${GOLD}${OBFUSCATED}x${RESET}" 
+        else "${boldDisplayName}${RESET}${dh}${RESET}"
     }
 }
