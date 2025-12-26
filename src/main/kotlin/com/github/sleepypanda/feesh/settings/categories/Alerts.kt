@@ -20,7 +20,7 @@ object Alerts : CategoryKt("Alerts") {
 
     var alertOnRareSeaCreatures by boolean(true) {
         this.name = Translated("Alert on rare sea creatures")
-        this.description = Translated("Shows a title and plays a sound when a rare sea creature is caught by you or your party members. You need to enable ${YELLOW}Skyblock Settings -> Personal -> Fishing Settings -> Sea Creature Chat ${RESET}for this functionality to work!")
+        this.description = Translated("Shows a title and plays a sound when a rare sea creature is caught by you or your party members. Please enable ${YELLOW}Skyblock Settings -> Personal -> Fishing Settings -> Sea Creature Chat")
     }
 
     var alertOnSeaCreaturesTypes by select(RareSeaCreatureTypes.CARROT_KING, *RareSeaCreatureTypes.values()) {

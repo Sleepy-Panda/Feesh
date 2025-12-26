@@ -24,7 +24,7 @@ object Chat : CategoryKt("Chat") {
 
     var shareRareSeaCreatures by boolean(true) {
         this.name = Translated("Share rare sea creatures to the PARTY chat")
-        this.description = Translated("Sends a PARTY chat message when a rare sea creature is caught by you. You need to enable ${YELLOW}Skyblock Settings -> Personal -> Fishing Settings -> Sea Creature Chat ${RESET}for this functionality to work!")
+        this.description = Translated("Sends a PARTY chat message when a rare sea creature is caught by you. Please enable ${YELLOW}Skyblock Settings -> Personal -> Fishing Settings -> Sea Creature Chat")
     }
 
     var shareSeaCreaturesTypes by select(RareSeaCreatureTypes.CARROT_KING, *RareSeaCreatureTypes.values()) {
