@@ -8,12 +8,6 @@ import com.teamresourceful.resourcefulconfigkt.api.CategoryKt
 object Alerts : CategoryKt("Alerts") {
     init {
         separator {
-            this.title = "Alerts"
-        }
-    }
-
-    init {
-        separator {
             this.title = "Sea creatures"
         }
     }

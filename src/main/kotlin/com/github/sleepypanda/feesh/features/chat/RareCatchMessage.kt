@@ -15,7 +15,6 @@ import com.github.sleepypanda.feesh.events.OwnSeaCreatureCaughtEvent
 
 object RareCatchMessage {
     fun init() {
-        // TODO: DOUBLE HOOK
         EventBus.subscribe(OwnSeaCreatureCaughtEvent::class, ::onSeaCreature)
     }
     
@@ -32,7 +31,7 @@ object RareCatchMessage {
             return
         }
 
-        if (!Chat.shareSeaCreaturesTypes.contains(type)) return
+        if (!Chat.shareRareSeaCreaturesTypes.contains(type)) return
         val isDoubleHook = event.isDoubleHook
 
         val message = getRareCatchMessage(seaCreatureName, isDoubleHook)

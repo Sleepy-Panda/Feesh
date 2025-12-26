@@ -7,6 +7,7 @@ import com.github.sleepypanda.feesh.features.alerts.SpiritMaskAlert
 import com.github.sleepypanda.feesh.features.alerts.ThunderBottleChargedAlert
 import com.github.sleepypanda.feesh.features.alerts.AnyReindrakeAlert
 import com.github.sleepypanda.feesh.features.chat.RareCatchMessage
+import com.github.sleepypanda.feesh.features.chat.RareCatchAllChatMessage
 import com.github.sleepypanda.feesh.features.chat.CompactCatchMessages
 import com.github.sleepypanda.feesh.features.commands.SpiderRainSchedule
 import com.github.sleepypanda.feesh.features.commands.FeeshCommand
@@ -67,6 +68,7 @@ class FeeshMod : ModInitializer {
 
         // Chat
         RareCatchMessage.init()
+        RareCatchAllChatMessage.init()
         CompactCatchMessages.init()
 
         // Commands

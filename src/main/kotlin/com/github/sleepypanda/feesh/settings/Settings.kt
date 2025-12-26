@@ -21,7 +21,7 @@ object Settings : ConfigKt("${FeeshMod.MOD_ID}/config") {
         
         button {
             title = "GitHub"
-            description = "Find latest release notes, docs and README here."
+            description = "Find code, latest release notes, docs and README here."
             text = "Open"
             onClick {
                 Util.getOperatingSystem().open("https://github.com/Sleepy-Panda/Feesh")

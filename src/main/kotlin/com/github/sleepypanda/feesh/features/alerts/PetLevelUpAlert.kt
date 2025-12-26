@@ -21,6 +21,9 @@ object PetLevelUpAlert {
 
         val petDisplayName = matchResult.groupValues[1]
         val petLevel = matchResult.groupValues[2]
+
+        if (petLevel != "100" && petLevel != "200") return
+        
         CommonUtils.showTitle("${petDisplayName} ${RESET}is maxed", petLevel)
         SoundUtils.playSound()
     }

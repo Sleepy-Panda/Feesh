@@ -17,9 +17,9 @@ object ThunderBottleChargedAlert {
     data class BottleChargedTrigger(val trigger: String, val bottleName: String)
 
     private val BOTTLE_CHARGED_TRIGGERS = listOf(
-        BottleChargedTrigger(THUNDER_BOTTLE_CHARGED_MESSAGE, "Thunder bottle"),
-        BottleChargedTrigger(STORM_BOTTLE_CHARGED_MESSAGE, "Storm bottle"),
-        BottleChargedTrigger(HURRICANE_BOTTLE_CHARGED_MESSAGE, "Hurricane bottle")
+        BottleChargedTrigger(THUNDER_BOTTLE_CHARGED_MESSAGE, "Thunder Bottle"),
+        BottleChargedTrigger(STORM_BOTTLE_CHARGED_MESSAGE, "Storm Bottle"),
+        BottleChargedTrigger(HURRICANE_BOTTLE_CHARGED_MESSAGE, "Hurricane Bottle")
     )
 
     private var timer: Timer? = null

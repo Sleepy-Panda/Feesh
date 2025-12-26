@@ -26,6 +26,15 @@ enum class RareSeaCreatureTypes {
     THE_LOCH_EMPEROR
 }
 
+enum class RareSeaCreatureTypesAllChat {
+    THUNDER,
+    LORD_JAWBUS,
+    RAGNAROK,
+    VANQUISHER,
+    WIKI_TIKI,
+    TITANOBOA,
+}
+
 class SeaCreatures {
     companion object {
         // WATER SEA CREATURES
