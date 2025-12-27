@@ -3,6 +3,7 @@ package com.github.sleepypanda.feesh.events
 import kotlin.reflect.KClass
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientWorldEvents
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents
+import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents
 import net.minecraft.text.Text
 import net.minecraft.client.MinecraftClient
 import net.minecraft.world.World
@@ -32,6 +33,12 @@ object EventBus {
             var event = ChatCancellableEvent(message, false)
             publish(event)
             !event.isCancelled
+        }
+
+        ScreenEvents.AFTER_INIT.register { client, screen, scaledWidth, scaledHeight ->
+            ScreenEvents.afterRender(screen).register { afterRenderScreen, drawContext, mouseX, mouseY, tickDelta ->
+                publish(ScreenPostRenderEvent(drawContext, client.textRenderer, client, afterRenderScreen, mouseX, mouseY, tickDelta))
+            }
         }
     }
 }

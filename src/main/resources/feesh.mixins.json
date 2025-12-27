@@ -1,8 +1,10 @@
 {
 	"required": true,
-	"package": "com.github.sleepypanda.mixin",
+	"package": "com.github.sleepypanda.feesh.mixin",
 	"compatibilityLevel": "JAVA_21",
-	"mixins": [
+	"client": [
+		"ScreenMixin",
+		"InGameHudMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1
