@@ -9,7 +9,7 @@ import com.teamresourceful.resourcefulconfigkt.api.CategoryKt
 object General : CategoryKt("General") {
     init {
         separator {
-            this.title = "Overlays"
+            this.title = "General"
         }
     }
 

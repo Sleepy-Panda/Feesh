@@ -8,6 +8,10 @@ import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents
 
 object RegisterUtils {
 
+    fun tick() {
+
+    }
+    
     fun chat(
         regex: Regex,
         action: (message: Text, matchResult: MatchResult) -> Unit
@@ -34,7 +38,7 @@ object RegisterUtils {
     }
 
     /**
-     * Registers a command with the specified name and aliases.
+     * Registers a command with the specified name and optional aliases.
      * The action is executed when the command is invoked, with the provided arguments.
      *
      * @param name The name of the command.
