@@ -41,8 +41,8 @@ object RareCatchAllChatMessage {
         val player = FeeshMod.mc.player ?: return ""
         val location = "x: ${Math.round(player.getX())}, y: ${Math.round(player.getY())}, z: ${Math.round(player.getZ())}"
         val scMessage = if (isDoubleHooked) "${seaCreatureName} x2" else "${seaCreatureName}"
-        val zone = "at ..." //getZoneName() at ...
-        val messageId = "@" + (1..10).map { ('0'..'z').random() }.joinToString("")
+        val zone = "at ${WorldUtils.getZoneName() ?: "Unknown"}"
+        val messageId = "@" + (1..10).map { (('0'..'9') + ('a'..'z') + ('A'..'Z')).random() }.joinToString("")
     
         var message = "${location} | ${scMessage} ${zone} | ${messageId}"
         return message

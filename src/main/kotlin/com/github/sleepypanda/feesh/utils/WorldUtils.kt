@@ -67,4 +67,8 @@ object WorldUtils {
         val worldName = TabListUtils.getLineAfter("Area:")
         return if (worldName.isNotEmpty()) worldName else null
     }
+
+    fun getZoneName(): String? {
+        return null
+    }
 }
