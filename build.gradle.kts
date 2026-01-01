@@ -28,6 +28,7 @@ toolkitMultiversion {
 
 dependencies {
     modImplementation("net.fabricmc:fabric-language-kotlin:${mcData.dependencies.fabric.fabricLanguageKotlinVersion}")
+   // implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.3")
 
     //modImplementation(include("gg.essential:elementa:${property("elementa.version")}")!!)
    // modImplementation(include("net.azureaaron:hm-api:${property("hmapi.version")}")!!)

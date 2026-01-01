@@ -13,4 +13,14 @@ object CommonUtils {
                 setSubtitle(net.minecraft.text.Text.literal(subtitle))
         }
     }
+
+    fun formatNumberWithSpaces(number: Int): String {
+        return number.toString().reversed().chunked(3).joinToString(" ").reversed()
+    }
+
+    fun fromUppercaseToCapitalizedFirstLetters(text: String): String {
+        return text.split(" ").joinToString(" ") { word ->
+            word.lowercase().replaceFirstChar { it.uppercase() }
+        }
+    }
 }

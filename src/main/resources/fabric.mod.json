@@ -3,11 +3,11 @@
 	"id": "${mod_id}",
 	"version": "${mod_version}",
 	"name": "${mod_name}",
-	"description": "Fishing enhancements for Hypixel Skyblock",
-	"authors": ["YourName"],
+	"description": "QOL fishing mod for Hypixel Skyblock. Introduces a bit of fun for fishing parties :3",
+	"authors": ["MoonTheSadFisher"],
 	"contact": {
-	  "homepage": "https://github.com/yourname/feesh",
-	  "sources": "https://github.com/yourname/feesh"
+	  "homepage": "https://github.com/Sleepy-Panda/Feesh",
+	  "sources": "https://github.com/Sleepy-Panda/Feesh"
 	},
 	"license": "Apache 2.0",
 	"icon": "assets/feesh/icon.png",
@@ -17,7 +17,7 @@
 	},
 	"mixins": ["feesh.mixins.json"],
 	"depends": {
-		"fabricloader": "*",
+		"fabricloader": ">=0.18.1",
 		"minecraft": "~${minor_mc_version}",
 		"java": ">=21",
 		"fabric-api": "*",

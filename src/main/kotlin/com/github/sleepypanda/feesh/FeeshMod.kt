@@ -14,10 +14,13 @@ import com.github.sleepypanda.feesh.features.commands.SpiderRainSchedule
 import com.github.sleepypanda.feesh.features.commands.FeeshCommand
 import com.github.sleepypanda.feesh.features.overlays.JerryWorkshopTracker
 import com.github.sleepypanda.feesh.features.overlays.LegionBobbingTimeTracker
+import com.github.sleepypanda.feesh.features.overlays.SeaCreaturesTracker
 import com.github.sleepypanda.feesh.features.inventory.ThunderBottleProgress
 import com.github.sleepypanda.feesh.events.EventBus
 import com.github.sleepypanda.feesh.api.SeaCreaturesApi
 import com.github.sleepypanda.feesh.settings.Settings
+import com.github.sleepypanda.feesh.utils.WorldUtils
+import com.github.sleepypanda.feesh.utils.PlayerUtils
 import net.fabricmc.api.ModInitializer
 import com.teamresourceful.resourcefulconfig.api.loader.Configurator
 import net.fabricmc.loader.api.FabricLoader
@@ -57,6 +60,10 @@ class FeeshMod : ModInitializer {
         // Events
         EventBus.init()
 
+        // Utils
+        WorldUtils.init()
+        PlayerUtils.init()
+
         // APIs
         SeaCreaturesApi.init()
         
@@ -80,6 +87,7 @@ class FeeshMod : ModInitializer {
         // Overlays
         JerryWorkshopTracker.init()
         LegionBobbingTimeTracker.init()
+        SeaCreaturesTracker.init()
 
         // Inventory
         ThunderBottleProgress.init()

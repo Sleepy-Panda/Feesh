@@ -225,8 +225,9 @@ class SeaCreatures {
         fun getTitle(seaCreatureName: String, isDoubleHook: Boolean): String {
             val info = allSeaCreatures.find { it.name == seaCreatureName } ?: return ""
             val dh = if (isDoubleHook) " ${RESET}${RED}${BOLD}X2${RESET}" else ""
-            return if (info.rarityColorCode == MYTHIC.code) "${GOLD}${OBFUSCATED}x${RESET} ${info.displayName}${dh} ${GOLD}${OBFUSCATED}x${RESET}" 
-            else "${info.displayName}${RESET}${dh}${RESET}"
+            val baseTitle = "${info.boldDisplayName}${RESET}${dh}${RESET}"
+            return if (info.rarityColorCode == MYTHIC.code) "${GOLD}${OBFUSCATED}x${RESET} ${baseTitle} ${GOLD}${OBFUSCATED}x${RESET}" 
+            else "${baseTitle}"
         }
     }
 }

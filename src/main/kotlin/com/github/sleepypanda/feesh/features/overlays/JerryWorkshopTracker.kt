@@ -8,6 +8,7 @@ import com.github.sleepypanda.feesh.utils.ChatUtils
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
 import com.github.sleepypanda.feesh.utils.TabListUtils
+import com.github.sleepypanda.feesh.utils.PlayerUtils
 import com.github.sleepypanda.feesh.events.EventBus
 import com.github.sleepypanda.feesh.events.OwnSeaCreatureCaughtEvent
 import com.github.sleepypanda.feesh.events.ScreenRenderEvent
@@ -84,6 +85,7 @@ object JerryWorkshopTracker {
     private fun onRender(event: GameRenderEvent) {
         if (!Overlays.jerryWorkshopTrackerOverlay || !WorldUtils.isInSkyblock() || WorldUtils.getWorldName() != WorldUtils.JERRY_WORKSHOP) return
         if (!hasData()) return
+        if (!PlayerUtils.isFishingHookSeenMinutesAgo(5)) return
         // TODO (new Date() - getLastFishingHookSeenAt() > 10 * 60 * 1000) ||
         
         event.drawContext.matrices.pushMatrix()

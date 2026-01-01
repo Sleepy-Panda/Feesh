@@ -1,6 +1,8 @@
 package com.github.sleepypanda.feesh.utils
 
 import com.github.sleepypanda.feesh.FeeshMod
+import java.util.Timer
+import kotlin.concurrent.timerTask
 
 object WorldUtils {
     val CRIMSON_ISLE = "Crimson Isle"
@@ -34,10 +36,39 @@ object WorldUtils {
         GLACITE_MINESHAFTS
     )
 
-    fun isInSkyblock(): Boolean {
-        //val title = ScoreBoard.getTitle().lowercase()
+    private var cachedIsInSkyblock: Boolean = false
+    private var cachedWorldName: String? = null
+    private var timer: Timer? = null
+
+    fun init() {
+        startTimer()
+    }
+
+    private fun startTimer() {
+        timer?.cancel()
+        timer = Timer()
+        
+        val task = timerTask {
+            updateCache()
+        }
+        timer?.scheduleAtFixedRate(task, 0, 1000) // Every second
+    }
+
+    private fun updateCache() {
+        cachedIsInSkyblock = checkIsInSkyblock()
+        cachedWorldName = if (cachedIsInSkyblock) {
+            val worldName = TabListUtils.getLineAfter("Area:")
+            if (worldName.isNotEmpty()) worldName else null
+        } else null
+    }
+
+    private fun checkIsInSkyblock(): Boolean {
         val serverAddress = FeeshMod.mc.currentServerEntry?.address ?: return false
         return serverAddress.contains("hypixel", ignoreCase = true)
+    }
+
+    fun isInSkyblock(): Boolean {
+        return cachedIsInSkyblock
     }
 
     /**
@@ -45,6 +76,7 @@ object WorldUtils {
     * @returns {Boolean}
     */
     fun isInFishingWorld(worldName: String?): Boolean {
+        if (!isInSkyblock()) return false
     	if (worldName.isNullOrEmpty()) return false
     	return !NO_FISHING_WORLDS.contains(worldName)
     }
@@ -54,21 +86,26 @@ object WorldUtils {
     * @returns {Boolean}
     */
     fun isInFishingWorld(): Boolean {
+        if (!isInSkyblock()) return false
         val worldName = getWorldName()
     	if (worldName.isNullOrEmpty()) return false
     	return !NO_FISHING_WORLDS.contains(worldName)
     }
 
     /**
-    * Get the current world name or null if not found.
-    * @returns {String?}
-    */
+     * Get the current Skyblock world name or null if not found / outside of Skyblock.
+     * @returns {String?}
+     */
     fun getWorldName(): String? {
-        val worldName = TabListUtils.getLineAfter("Area:")
-        return if (worldName.isNotEmpty()) worldName else null
+        return cachedWorldName
     }
 
+    /**
+    * Get the current Skyblock zone name or null if not found / outside of Skyblock.
+    * @returns {String?}
+    */
     fun getZoneName(): String? {
+        if (!isInSkyblock()) return null
         return null
     }
 }
