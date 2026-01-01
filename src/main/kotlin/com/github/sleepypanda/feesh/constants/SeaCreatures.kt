@@ -218,7 +218,15 @@ class SeaCreatures {
             SeaCreatureInfo("Wetwing", RARE.code, Regex(WETWING_MESSAGE), false),
             SeaCreatureInfo("Stridersurfer", RARE.code, Regex(STRIDERSURFER_MESSAGE), false),
         )
-    }
 
-    val rareSeaCreatures = allSeaCreatures.filter { it.isRare }
+        val rareSeaCreatures = allSeaCreatures.filter { it.isRare }
+
+        @JvmStatic
+        fun getTitle(seaCreatureName: String, isDoubleHook: Boolean): String {
+            val info = allSeaCreatures.find { it.name == seaCreatureName } ?: return ""
+            val dh = if (isDoubleHook) " ${RESET}${RED}${BOLD}X2${RESET}" else ""
+            return if (info.rarityColorCode == MYTHIC.code) "${GOLD}${OBFUSCATED}x${RESET} ${info.displayName}${dh} ${GOLD}${OBFUSCATED}x${RESET}" 
+            else "${info.displayName}${RESET}${dh}${RESET}"
+        }
+    }
 }

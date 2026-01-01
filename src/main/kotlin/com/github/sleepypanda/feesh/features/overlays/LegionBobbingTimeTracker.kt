@@ -2,19 +2,17 @@ package com.github.sleepypanda.feesh.features.overlays
 
 import com.github.sleepypanda.feesh.FeeshMod
 import com.github.sleepypanda.feesh.events.EventBus
-import com.github.sleepypanda.feesh.events.GameRenderEvent
 import com.github.sleepypanda.feesh.events.ClientTickEvent
 import com.github.sleepypanda.feesh.events.WorldChangedEvent
 import com.github.sleepypanda.feesh.settings.categories.Overlays
 import com.github.sleepypanda.feesh.utils.WorldUtils
 import com.github.sleepypanda.feesh.utils.PlayerUtils
+import com.github.sleepypanda.feesh.utils.EntityUtils
+import com.github.sleepypanda.feesh.utils.gui.FeeshGui
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.entity.projectile.FishingBobberEntity
-import net.minecraft.text.Text
 import net.minecraft.client.MinecraftClient
-import kotlin.math.sqrt
-import java.awt.Color
 import java.util.UUID
 
 object LegionBobbingTimeTracker {
@@ -28,10 +26,26 @@ object LegionBobbingTimeTracker {
     private const val MAX_BOBBING_TIME_COUNT = 5
     private const val TICKS_PER_CHECK = 10
 
+    private val gui = FeeshGui()
+        .setX(300)
+        .setY(20)
+        .setClickable(false)
+        .setCondition {
+            Overlays.legionBobbingTimeTrackerOverlay &&
+            WorldUtils.isInSkyblock() &&
+            PlayerUtils.hasFishingRodInHotbar() &&
+            WorldUtils.isInFishingWorld()
+        }
+
     fun init() {
         EventBus.subscribe(ClientTickEvent::class, ::onClientTick)
-        EventBus.subscribe(GameRenderEvent::class, ::onRenderGame)
         EventBus.subscribe(WorldChangedEvent::class, ::onWorldChanged)
+    }
+
+    private fun onWorldChanged(@Suppress("UNUSED_PARAMETER") event: WorldChangedEvent) {
+        playersCount = 0
+        fishingHooksCount = 0
+        gui.clearLines()
     }
 
     private fun onClientTick(@Suppress("UNUSED_PARAMETER") event: ClientTickEvent) {
@@ -43,9 +57,13 @@ object LegionBobbingTimeTracker {
             !WorldUtils.isInSkyblock() ||
             !PlayerUtils.hasFishingRodInHotbar() ||
             !WorldUtils.isInFishingWorld()
-        ) return
+        ) {
+            gui.clearLines()
+            return
+        }
 
         trackPlayersAndFishingHooksNearby()
+        updateGuiLines()
     }
 
     private fun trackPlayersAndFishingHooksNearby() {
@@ -64,7 +82,7 @@ object LegionBobbingTimeTracker {
                 getPlayerPing(FeeshMod.mc, it.uuid) > 0 // -1 is watchdog and ghost players, also there is a ghost player with high ping value when joining a world
             }
             .filter { it ->
-                val distance = getDistance(player.x, player.y, player.z, it.x, it.y, it.z)
+                val distance = EntityUtils.getDistance(player, it)
                 return@filter distance <= LEGION_DISTANCE
             }
             .distinctBy { it -> it.uuid }
@@ -79,7 +97,7 @@ object LegionBobbingTimeTracker {
         val fishingHooks = world.entities
             .filterIsInstance<FishingBobberEntity>()
             .filter { hook ->
-                val distance = getDistance(player.x, player.y, player.z, hook.x, hook.y, hook.z)
+                val distance = EntityUtils.getDistance(player, hook)
                 if (distance > BOBBING_TIME_DISTANCE) return@filter false
 
                 val owner = hook.playerOwner
@@ -96,33 +114,13 @@ object LegionBobbingTimeTracker {
         return client.networkHandler?.getPlayerListEntry(uuid)?.latency ?: 0
     }
 
-    private fun getDistance(x1: Double, y1: Double, z1: Double, x2: Double, y2: Double, z2: Double): Double {
-        val dx = x2 - x1
-        val dy = y2 - y1
-        val dz = z2 - z1
-        return sqrt(dx * dx + dy * dy + dz * dz)
-    }
-
-    private fun onRenderGame(event: GameRenderEvent) {
-        if (!Overlays.legionBobbingTimeTrackerOverlay ||
-            !WorldUtils.isInSkyblock() ||
-            !PlayerUtils.hasFishingRodInHotbar() ||
-            !WorldUtils.isInFishingWorld()
-        ) return
-
+    private fun updateGuiLines() {
         val playersColor = if (playersCount >= MAX_LEGION_COUNT) GREEN else WHITE
         val playersText = "${GOLD}Legion: ${playersColor}${playersCount} ${GRAY}${if (playersCount == 1) "player" else "players"}"
 
         val hooksColor = if (fishingHooksCount >= MAX_BOBBING_TIME_COUNT) GREEN else WHITE
         val hooksText = "${GOLD}Bobbin' time: ${hooksColor}${fishingHooksCount} ${GRAY}${if (fishingHooksCount == 1) "hook" else "hooks"}"
 
-        val textRenderer = event.textRenderer
-        event.drawContext.drawText(textRenderer, Text.literal(playersText), 300, 20, Color(255, 255, 255, 255).rgb, true)
-        event.drawContext.drawText(textRenderer, Text.literal(hooksText), 300, 20 + textRenderer.fontHeight + 2, Color(255, 255, 255, 255).rgb, true)
-    }
-
-    private fun onWorldChanged(@Suppress("UNUSED_PARAMETER") event: WorldChangedEvent) {
-        playersCount = 0
-        fishingHooksCount = 0
+        gui.setLines(listOf(playersText, hooksText))
     }
 }

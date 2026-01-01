@@ -11,7 +11,6 @@ import com.github.sleepypanda.feesh.utils.TabListUtils
 import com.github.sleepypanda.feesh.events.EventBus
 import com.github.sleepypanda.feesh.events.OwnSeaCreatureCaughtEvent
 import com.github.sleepypanda.feesh.events.ScreenRenderEvent
-import com.github.sleepypanda.feesh.events.ScreenPostRenderEvent
 import com.github.sleepypanda.feesh.events.GameRenderEvent
 import com.github.sleepypanda.feesh.settings.categories.Overlays
 import net.minecraft.client.gui.DrawContext

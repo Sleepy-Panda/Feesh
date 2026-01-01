@@ -12,24 +12,18 @@ import com.github.sleepypanda.feesh.utils.ChatUtils
 
 object AnyReindrakeAlert {
     const val REINDRAKE_PATTERN = "^WOAH\\! A Reindrake was summoned from the depths\\!$"
+    val reindrake = SeaCreatures.allSeaCreatures.find { it.name == "Reindrake" }!!
 
     fun init() {
-        val reindrake = SeaCreatures.allSeaCreatures.find { it.name == "Reindrake" }!!
         RegisterUtils.chat(Regex(REINDRAKE_PATTERN)) { _, _ -> onAnyReindrake(reindrake.boldDisplayName, reindrake.rarityColorCode) }
     }
 
     private fun onAnyReindrake(boldDisplayName: String, rarityColorCode: String) {
         if (boldDisplayName.isNullOrEmpty() || rarityColorCode.isNullOrEmpty()) return
-        if (!WorldUtils.isInSkyblock() || !Alerts.alertOnAnyReindrake) return
+        if (!WorldUtils.isInSkyblock() || !Alerts.alertOnAnyReindrake || WorldUtils.getZoneName() != WorldUtils.JERRY_WORKSHOP) return
 
-        CommonUtils.showTitle(getSeaCreatureDisplayName(boldDisplayName, rarityColorCode))
+        CommonUtils.showTitle(SeaCreatures.getTitle(reindrake.name, false))
         SoundUtils.playSound()
         ChatUtils.sendLocalChatWithCommand("Click to warp to Jerry's Workshop spawn point!", "warp jerry", true)
-    }
-
-    // TODO reuse getTitle from RareCatchAlert
-    private fun getSeaCreatureDisplayName(boldDisplayName: String, rarityColorCode: String): String {
-        return if (rarityColorCode == MYTHIC.code) "${GOLD}${OBFUSCATED}x${RESET} ${boldDisplayName}${RESET} ${GOLD}${OBFUSCATED}x${RESET}" 
-        else boldDisplayName
     }
 }

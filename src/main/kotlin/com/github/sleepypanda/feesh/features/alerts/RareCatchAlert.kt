@@ -31,8 +31,6 @@ object RareCatchAlert {
         var seaCreatureInfo = SeaCreatures.allSeaCreatures.find { it.name == event.seaCreatureName } ?: return
         if (!seaCreatureInfo.isRare) return
 
-        val rarityColorCode = seaCreatureInfo.rarityColorCode
-
         val type = try {
             RareSeaCreatureTypes.valueOf(seaCreatureName.uppercase().replace(" ", "_"))
         } catch (_: IllegalArgumentException) {
@@ -43,14 +41,8 @@ object RareCatchAlert {
 
         val isDoubleHook = event.isDoubleHook
         val playerName = PlayerUtils.getName()
-        val title = getTitle(seaCreatureInfo.boldDisplayName, rarityColorCode, isDoubleHook)
+        val title = SeaCreatures.getTitle(seaCreatureInfo.name, isDoubleHook)
         CommonUtils.showTitle(title, playerName)
         SoundUtils.playSound()
-    }
-
-    private fun getTitle(boldDisplayName: String, rarityColorCode: String, isDoubleHook: Boolean): String {
-        val dh = if (isDoubleHook) " ${RESET}${RED}${BOLD}X2${RESET}" else ""
-        return if (rarityColorCode == MYTHIC.code) "${GOLD}${OBFUSCATED}x${RESET} ${boldDisplayName}${dh} ${GOLD}${OBFUSCATED}x${RESET}" 
-        else "${boldDisplayName}${RESET}${dh}${RESET}"
     }
 }
