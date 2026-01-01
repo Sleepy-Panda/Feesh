@@ -14,6 +14,7 @@ import kotlin.concurrent.timerTask
 
 object PlayerUtils {
     private var cachedLastFishingHookSeenAt: Date? = null
+    private var cachedHasFishingRodInHotbar: Boolean = false
     private var timer: Timer? = null
 
     fun init() {
@@ -27,12 +28,14 @@ object PlayerUtils {
         
         val task = timerTask {
             setLastFishingHookSeenAt()
+            setHasFishingRodInHotbar()
         }
         timer?.scheduleAtFixedRate(task, 0, 500)
     }
 
     private fun onWorldChanged(@Suppress("UNUSED_PARAMETER") event: WorldChangedEvent) {
         cachedLastFishingHookSeenAt = null
+        cachedHasFishingRodInHotbar = false
     }
 
     fun getName() : String {      
@@ -44,12 +47,22 @@ object PlayerUtils {
     }
 
     fun hasFishingRodInHotbar(): Boolean {
-        val player = FeeshMod.mc.player ?: return false
+        return cachedHasFishingRodInHotbar
+    }
+
+    private fun setHasFishingRodInHotbar() {
+        val player = FeeshMod.mc.player ?: run {
+            cachedHasFishingRodInHotbar = false
+            return
+        }
         for (i in 0..8) {
             val stack = player.inventory.getStack(i)
-            if (isFishingRod(stack)) return true
+            if (isFishingRod(stack)) {
+                cachedHasFishingRodInHotbar = true
+                return
+            }
         }
-        return false
+        cachedHasFishingRodInHotbar = false
     }
 
     fun lastFishingHookSeenAt(): Date? {

@@ -53,7 +53,7 @@ object SeaCreaturesTracker {
     private val gui = FeeshGui()
         .setX(10)
         .setY(10)
-        .setClickable(false)
+        .setClickable(true)
         .setCondition {
             Overlays.seaCreaturesTrackerOverlay &&
             WorldUtils.isInSkyblock() &&
