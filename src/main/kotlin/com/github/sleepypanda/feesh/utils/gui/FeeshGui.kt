@@ -58,6 +58,7 @@ class FeeshGui {
     
     fun getX(): Int = x
     fun getY(): Int = y
+    fun getScale(): Float = scale
     fun getSampleLines(): List<String> = sampleLines
     fun getLines(): List<String> = lines
     fun getSettingsKey(): (() -> Boolean)? = settingsKey
@@ -119,6 +120,7 @@ class FeeshGui {
         if (!WorldUtils.isInSkyblock()) return
         if (!condition()) return
         if (settingsKey != null && !settingsKey!!()) return
+        if (mcClient.currentScreen is MoveGuisScreen) return
 
         drawContext.matrices.pushMatrix()
         drawContext.matrices.scale(scale, scale)
