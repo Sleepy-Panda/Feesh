@@ -128,16 +128,19 @@ class FeeshGui {
         val screenWidth = mcClient.window.scaledWidth
         val scaledScreenWidth = (screenWidth / scale).toInt()
 
-        var currentY = y
+        val scaledX = (x / scale).toInt()
+        val scaledY = (y / scale).toInt()
+
+        var currentY = scaledY
 
         for (line in lines) {
             val text = Text.literal(line)
             val textWidth = textRenderer.getWidth(text)
             
             val actualX = when (alignment) {
-                Alignment.LEFT -> x
-                Alignment.RIGHT -> scaledScreenWidth - textWidth - x
-                Alignment.CENTER -> (scaledScreenWidth - textWidth) / 2 + x
+                Alignment.LEFT -> scaledX
+                Alignment.RIGHT -> scaledScreenWidth - textWidth - scaledX
+                Alignment.CENTER -> (scaledScreenWidth - textWidth) / 2 + scaledX
             }
 
             drawContext.drawText(textRenderer, text, actualX, currentY, color, true)
@@ -147,7 +150,7 @@ class FeeshGui {
         drawContext.matrices.popMatrix()
     }
 
-    fun postDraw(event: ScreenPostRenderEvent) { // Draw in front of background when Inventory GUI is opened
+    fun postDraw(event: ScreenPostRenderEvent) { // Draw in front of background but under Inventory GUI
         if (!isClickable) return
         if (event.screen !is InventoryScreen) return
 
