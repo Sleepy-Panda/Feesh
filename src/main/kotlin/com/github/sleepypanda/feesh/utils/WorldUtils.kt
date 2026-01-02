@@ -3,6 +3,7 @@ package com.github.sleepypanda.feesh.utils
 import com.github.sleepypanda.feesh.FeeshMod
 import java.util.Timer
 import kotlin.concurrent.timerTask
+import net.minecraft.scoreboard.ScoreboardDisplaySlot
 
 object WorldUtils {
     val CRIMSON_ISLE = "Crimson Isle"
@@ -64,7 +65,12 @@ object WorldUtils {
 
     private fun checkIsInSkyblock(): Boolean {
         val serverAddress = FeeshMod.mc.currentServerEntry?.address ?: return false
-        return serverAddress.contains("hypixel", ignoreCase = true)
+        if (!serverAddress.contains("hypixel", ignoreCase = true)) return false
+        
+        val scoreboard = FeeshMod.mc.world?.scoreboard ?: return false
+        val objective = scoreboard.getObjectiveForSlot(ScoreboardDisplaySlot.SIDEBAR) ?: return false
+        val title = objective.displayName?.string ?: return false
+        return title.contains("skyblock", ignoreCase = true)
     }
 
     fun isInSkyblock(): Boolean {

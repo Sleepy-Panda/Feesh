@@ -18,8 +18,16 @@ enum class Alignment {
 }
 
 class FeeshGui {
-    private var x: Int = 0
-    private var y: Int = 0
+    companion object {
+        private val registeredGuis = mutableListOf<FeeshGui>()
+        
+        fun getAllRegisteredGuis(): List<FeeshGui> {
+            return registeredGuis.toList()
+        }
+    }
+
+    private var x: Int = 10
+    private var y: Int = 10
     private var scale: Float = 1.0f
     private var alignment: Alignment = Alignment.LEFT
     private var condition: () -> Boolean = { true }
@@ -30,9 +38,15 @@ class FeeshGui {
     private var color: Int = Color(255, 255, 255, 255).rgb
 
     constructor() {
+        registeredGuis.add(this)
         EventBus.subscribe(GameRenderEvent::class, { event -> draw(event.drawContext, event.textRenderer, event.mcClient) })
         EventBus.subscribe(ScreenPostRenderEvent::class, ::postDraw)
     }
+    
+    fun getX(): Int = x
+    fun getY(): Int = y
+    fun getSampleLines(): List<String> = sampleLines
+    fun getLines(): List<String> = lines
 
     fun setX(x: Int): FeeshGui {
         this.x = x
@@ -114,5 +128,35 @@ class FeeshGui {
         if (event.screen !is InventoryScreen) return
 
         draw(event.drawContext, event.textRenderer, event.mcClient)
+    }
+    
+    fun drawSample(drawContext: DrawContext, textRenderer: TextRenderer, mcClient: MinecraftClient, x: Int, y: Int) {
+        if (sampleLines.isEmpty()) return
+
+        drawContext.matrices.pushMatrix()
+        drawContext.matrices.scale(scale, scale)
+
+        val screenWidth = mcClient.window.scaledWidth
+        val scaledScreenWidth = (screenWidth / scale).toInt()
+        val scaledX = (x / scale).toInt()
+        val scaledY = (y / scale).toInt()
+
+        var currentY = scaledY
+
+        for (line in sampleLines) {
+            val text = Text.literal(line)
+            val textWidth = textRenderer.getWidth(text)
+            
+            val actualX = when (alignment) {
+                Alignment.LEFT -> scaledX
+                Alignment.RIGHT -> scaledScreenWidth - textWidth - scaledX
+                Alignment.CENTER -> (scaledScreenWidth - textWidth) / 2 + scaledX
+            }
+
+            drawContext.drawText(textRenderer, text, actualX, currentY, color, true)
+            currentY += textRenderer.fontHeight + 2
+        }
+
+        drawContext.matrices.popMatrix()
     }
 }

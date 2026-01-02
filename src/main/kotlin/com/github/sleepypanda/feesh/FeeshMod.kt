@@ -21,6 +21,7 @@ import com.github.sleepypanda.feesh.api.SeaCreaturesApi
 import com.github.sleepypanda.feesh.settings.Settings
 import com.github.sleepypanda.feesh.utils.WorldUtils
 import com.github.sleepypanda.feesh.utils.PlayerUtils
+import com.github.sleepypanda.feesh.utils.gui.MoveGuis
 import net.fabricmc.api.ModInitializer
 import com.teamresourceful.resourcefulconfig.api.loader.Configurator
 import net.fabricmc.loader.api.FabricLoader
@@ -82,6 +83,7 @@ class FeeshMod : ModInitializer {
         PlayerDeathMessage.init()
 
         // Commands
+        MoveGuis.init()
         SpiderRainSchedule.init()
           
         // Overlays

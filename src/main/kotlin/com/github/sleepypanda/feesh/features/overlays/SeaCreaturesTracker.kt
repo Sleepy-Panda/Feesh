@@ -54,6 +54,7 @@ object SeaCreaturesTracker {
         .setX(10)
         .setY(10)
         .setClickable(true)
+        .setSampleLines(listOf("Sea creatures tracker: 0 catches"))
         .setCondition {
             Overlays.seaCreaturesTrackerOverlay &&
             WorldUtils.isInSkyblock() &&

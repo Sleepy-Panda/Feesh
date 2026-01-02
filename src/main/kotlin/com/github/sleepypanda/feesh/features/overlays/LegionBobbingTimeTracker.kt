@@ -30,6 +30,7 @@ object LegionBobbingTimeTracker {
         .setX(300)
         .setY(20)
         .setClickable(false)
+        .setSampleLines(listOf("Legion: 0 players", "Bobbin' time: 0 hooks"))
         .setCondition {
             Overlays.legionBobbingTimeTrackerOverlay &&
             WorldUtils.isInSkyblock() &&
