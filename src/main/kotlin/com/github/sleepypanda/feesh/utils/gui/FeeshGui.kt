@@ -2,6 +2,7 @@ package com.github.sleepypanda.feesh.utils.gui
 
 import com.github.sleepypanda.feesh.events.GameRenderEvent
 import com.github.sleepypanda.feesh.events.ScreenPostRenderEvent
+import com.github.sleepypanda.feesh.events.ScreenAfterBackgroundRenderEvent
 import com.github.sleepypanda.feesh.events.EventBus
 import com.github.sleepypanda.feesh.utils.WorldUtils
 import net.minecraft.text.Text
@@ -53,7 +54,7 @@ class FeeshGui {
     constructor() {
         registeredGuis.add(this)
         EventBus.subscribe(GameRenderEvent::class, { event -> draw(event.drawContext, event.textRenderer, event.mcClient) })
-        EventBus.subscribe(ScreenPostRenderEvent::class, ::postDraw)
+        EventBus.subscribe(ScreenAfterBackgroundRenderEvent::class, ::postDrawAfterBackground)
     }
     
     fun getX(): Int = x
@@ -150,7 +151,7 @@ class FeeshGui {
         drawContext.matrices.popMatrix()
     }
 
-    fun postDraw(event: ScreenPostRenderEvent) { // Draw in front of background but under Inventory GUI
+    fun postDrawAfterBackground(event: ScreenAfterBackgroundRenderEvent) { // Draw in front of background but under Inventory GUI
         if (!isClickable) return
         if (event.screen !is InventoryScreen) return
 
