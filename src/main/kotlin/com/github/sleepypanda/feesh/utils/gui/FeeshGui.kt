@@ -5,18 +5,13 @@ import com.github.sleepypanda.feesh.events.ScreenPostRenderEvent
 import com.github.sleepypanda.feesh.events.ScreenAfterBackgroundRenderEvent
 import com.github.sleepypanda.feesh.events.EventBus
 import com.github.sleepypanda.feesh.utils.WorldUtils
+import com.github.sleepypanda.feesh.utils.enums.Alignment
 import net.minecraft.text.Text
 import net.minecraft.client.gui.screen.ingame.InventoryScreen
 import net.minecraft.client.gui.DrawContext
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.font.TextRenderer
 import java.awt.Color
-
-enum class Alignment {
-    LEFT,
-    RIGHT,
-    CENTER
-}
 
 /**
  * A class that represents a GUI for the Feesh mod. GUI is shown when in Skyblock and the condition is met.
