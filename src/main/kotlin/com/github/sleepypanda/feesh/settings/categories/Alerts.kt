@@ -3,12 +3,13 @@ package com.github.sleepypanda.feesh.settings.categories
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
 import com.github.sleepypanda.feesh.constants.RareSeaCreatureTypes
+import com.github.sleepypanda.feesh.constants.RareDropTypes
 import com.teamresourceful.resourcefulconfigkt.api.CategoryKt
 
 object Alerts : CategoryKt("Alerts") {
     init {
         separator {
-            this.title = "Sea creatures"
+            this.title = "${AQUA}${BOLD}Sea creatures"
         }
     }
 
@@ -28,7 +29,22 @@ object Alerts : CategoryKt("Alerts") {
 
     init {
         separator {
-            this.title = "Spirit Mask"
+            this.title = "${AQUA}${BOLD}Rare drops"
+        }
+    }
+
+    var alertOnRareDrops by boolean(true) {
+        this.name = Translated("Alert on rare drops")
+        this.description = Translated("Shows a title and plays a sound when a rare item has dropped by you or your party members.")
+    }
+
+    var alertOnRareDropTypes by select(RareDropTypes.LUCKY_CLOVER_CORE, *RareDropTypes.values()) {
+        this.name = Translated("Select rare drops to alert on")
+    }
+
+    init {
+        separator {
+            this.title = "${AQUA}${BOLD}Spirit Mask"
         }
     }
 
@@ -44,7 +60,7 @@ object Alerts : CategoryKt("Alerts") {
 
     init {
         separator {
-            this.title = "Other"
+            this.title = "${AQUA}${BOLD}Other"
         }
     }
 

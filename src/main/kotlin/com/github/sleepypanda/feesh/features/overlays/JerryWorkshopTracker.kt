@@ -36,9 +36,9 @@ object JerryWorkshopTracker {
         .setClickable(false)
         .setSampleLines(listOf(
             title, 
-            "${GOLD}${yeti.name}: 10 ${GRAY}catches ago ${DARK_GRAY}(${GRAY}avg: 50${DARK_GRAY})",
+            "${GOLD}${yeti.name}${GRAY}: ${WHITE}10 ${GRAY}catches ago ${DARK_GRAY}(${GRAY}avg: ${WHITE}50${DARK_GRAY})",
             "${GRAY}Last on: ${WHITE}1 minute ago",
-            "${LIGHT_PURPLE}${reindrake.name}: 100 ${GRAY}catches ago ${DARK_GRAY}(${GRAY}avg: 500${DARK_GRAY})",
+            "${LIGHT_PURPLE}${reindrake.name}${GRAY}: ${WHITE}100 ${GRAY}catches ago ${DARK_GRAY}(${GRAY}avg: ${WHITE}500${DARK_GRAY})",
             "${GRAY}Last on: ${WHITE}1 hour ago"
         ))
         .setSettingsKey { Overlays.jerryWorkshopTrackerOverlay }
@@ -70,7 +70,7 @@ object JerryWorkshopTracker {
         ChatUtils.sendLocalChat(getMessage(catchesSinceLast, data.yeti.lastCatchTime, yeti.name, yeti.rarityColorCode), true)
 
         data.yeti.lastCatchTime = Date()
-        data.yeti.catchesHistory = (listOf(catchesSinceLast) + data.yeti.catchesHistory).take(5)
+        data.yeti.catchesHistory = (listOf(catchesSinceLast) + data.yeti.catchesHistory).take(100)
         data.yeti.averageCatches = data.yeti.catchesHistory.average().toInt()
         data.yeti.catchesSinceLast = 0
         data.reindrake.catchesSinceLast++
@@ -84,7 +84,7 @@ object JerryWorkshopTracker {
         ChatUtils.sendLocalChat(getMessage(catchesSinceLast, data.reindrake.lastCatchTime, reindrake.name, reindrake.rarityColorCode), true)
 
         data.reindrake.lastCatchTime = Date()
-        data.reindrake.catchesHistory = (listOf(catchesSinceLast) + data.reindrake.catchesHistory).take(5)
+        data.reindrake.catchesHistory = (listOf(catchesSinceLast) + data.reindrake.catchesHistory).take(100)
         data.reindrake.averageCatches = data.reindrake.catchesHistory.average().toInt()
         data.reindrake.catchesSinceLast = 0
         data.yeti.catchesSinceLast++

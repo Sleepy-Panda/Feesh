@@ -69,54 +69,48 @@ object ChatUtils {
         return this.replace(Regex("§."), "")
     }
 
-    fun Text.getFormatted(): String {
-        val rawCodes = this.siblings.joinToString("") { sibling ->
-            when {
-                sibling.style.color != null -> "§" + getColorFormatChar(sibling.style.color!!)
-                else -> ""
-            } +
-            when {
-                sibling.style.isBold() -> BOLD.code
-                sibling.style.isItalic() -> ITALIC.code
-                sibling.style.isUnderlined() -> UNDERLINE.code
-                sibling.style.isStrikethrough() -> STRIKETHROUGH.code
-                sibling.style.isObfuscated() -> OBFUSCATED.code          
-                else -> ""
-            } + sibling.string
-        }
-        return rawCodes
+    /**
+     * Get a string with color and formatting codes.
+     * Credits to SkyblockOverhaul
+     */
+    fun Text.getFormattedString(): String {
+        val builder = StringBuilder()
+
+        this.visit(
+            { style, str ->
+                builder.append(style.getFormatting())
+                builder.append(str)
+                Optional.empty<Any>()
+            },
+            Style.EMPTY
+        )
+        return builder.toString()
     }
 
-    //fun Text.formattedString(): String {
-    //    val builder = StringBuilder()
-//
-    //    this.visit(
-    //        { style, content ->
-    //            builder.append(style.getFormatCodes())
-    //            builder.append(content)
-    //            Optional.empty<Any>()
-    //        },
-    //        Style.EMPTY
-    //    )
-    //    return builder.toString()
-    //}
-//
-    //private fun Style.getFormatCodes() = buildString {
-    //    this@getFormatCodes.color?.let(ChatUtils::getColorFormatChar)?.run { append("§").append(this) }
-//
-    //    if (this@getFormatCodes.isBold) append("§l")
-    //    if (this@getFormatCodes.isItalic) append("§o")
-    //    if (this@getFormatCodes.isUnderlined) append("§n")
-    //    if (this@getFormatCodes.isStrikethrough) append("§m")
-    //    if (this@getFormatCodes.isObfuscated) append("§k")
-    //}
+    /**
+     * Get color and formatting codes for the Style, e.g. §b§l
+     */
+    private fun Style.getFormatting() = buildString {
+        val color = this@getFormatting.color
+        if (color != null) append("§").append(getColorChar(color))
 
-    private fun getColorFormatChar(color: TextColor): Char? {
-        val formatting = colorToFormatChar[color]
+        val formatting = when {
+            this@getFormatting.isBold() -> BOLD.code
+            this@getFormatting.isItalic() -> ITALIC.code
+            this@getFormatting.isUnderlined() -> UNDERLINE.code
+            this@getFormatting.isStrikethrough() -> STRIKETHROUGH.code
+            this@getFormatting.isObfuscated() -> OBFUSCATED.code          
+            else -> ""
+        }
+        append(formatting)
+    }
+
+    private fun getColorChar(color: TextColor): Char? {
+        val formatting = colorToChar[color]
         return formatting?.code
     }
 
-    private val colorToFormatChar: Map<TextColor, Formatting> = Formatting.entries.mapNotNull { format ->
+    private val colorToChar: Map<TextColor, Formatting> = Formatting.entries.mapNotNull { format ->
         TextColor.fromFormatting(format)?.let { it to format }
     }.toMap()
 }

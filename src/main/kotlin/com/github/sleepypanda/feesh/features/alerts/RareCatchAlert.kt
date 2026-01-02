@@ -15,12 +15,8 @@ import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
 
 object RareCatchAlert {
     fun init() {
-        // TODO: DOUBLE HOOK
-        // TODO: Add Vanquisher
         // TODO: Add party source
         // TODO: Add SH format
-        // TODO: Check ANY reindrake logic
-        // TODO: 
         EventBus.subscribe(OwnSeaCreatureCaughtEvent::class, ::onOwnSeaCreature)
     }
 

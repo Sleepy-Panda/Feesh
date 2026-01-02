@@ -24,6 +24,6 @@ object CompactCatchMessages {
         var seaCreatureInfo = SeaCreatures.allSeaCreatures.find { it.name == event.seaCreatureName } ?: return
         val isDoubleHook = event.isDoubleHook
         val dhMessage = if (isDoubleHook) "${BLUE}${FormattingCodes.BOLD}DOUBLE HOOK! " else ""
-        ChatUtils.sendLocalChat("${dhMessage}${seaCreatureInfo.boldDisplayName} ${GRAY}has spawned!")
+        ChatUtils.sendLocalChat("${dhMessage}${GRAY}You caught ${seaCreatureInfo.boldDisplayName}${GRAY}!")
     }
 }
