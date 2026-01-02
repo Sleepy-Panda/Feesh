@@ -17,6 +17,18 @@ enum class Alignment {
     CENTER
 }
 
+/**
+ * A class that represents a GUI for the Feesh mod. GUI is shown when in Skyblock and the condition is met.
+ * @property x The x position of the GUI.
+ * @property y The y position of the GUI.
+ * @property scale The scale of the GUI.
+ * @property alignment The alignment of the GUI.
+ * @property condition The condition that must be met for the GUI to be displayed.
+ * @property settingsKey The settings key that must be enabled for the GUI to be displayed.
+ * @property isClickable Whether the GUI is clickable, and will be rendered in front of background when Inventory GUI is opened.
+ * @property lines The lines of the GUI.
+ * @property sampleLines The sample lines of the GUI.
+ */
 class FeeshGui {
     companion object {
         private val registeredGuis = mutableListOf<FeeshGui>()
@@ -31,6 +43,7 @@ class FeeshGui {
     private var scale: Float = 1.0f
     private var alignment: Alignment = Alignment.LEFT
     private var condition: () -> Boolean = { true }
+    private var settingsKey: (() -> Boolean)? = null
     private var isClickable: Boolean = false
     private var lines: List<String> = emptyList()
     private var sampleLines: List<String> = emptyList()
@@ -47,6 +60,9 @@ class FeeshGui {
     fun getY(): Int = y
     fun getSampleLines(): List<String> = sampleLines
     fun getLines(): List<String> = lines
+    fun getSettingsKey(): (() -> Boolean)? = settingsKey
+    fun getCondition(): () -> Boolean = condition
+    fun getIsClickable(): Boolean = isClickable
 
     fun setX(x: Int): FeeshGui {
         this.x = x
@@ -70,6 +86,11 @@ class FeeshGui {
 
     fun setCondition(condition: () -> Boolean): FeeshGui {
         this.condition = condition
+        return this
+    }
+
+    fun setSettingsKey(settingsKey: () -> Boolean): FeeshGui {
+        this.settingsKey = settingsKey
         return this
     }
 
@@ -97,6 +118,7 @@ class FeeshGui {
         if (lines.isEmpty()) return
         if (!WorldUtils.isInSkyblock()) return
         if (!condition()) return
+        if (settingsKey != null && !settingsKey!!()) return
 
         drawContext.matrices.pushMatrix()
         drawContext.matrices.scale(scale, scale)
@@ -132,6 +154,7 @@ class FeeshGui {
     
     fun drawSample(drawContext: DrawContext, textRenderer: TextRenderer, mcClient: MinecraftClient, x: Int, y: Int) {
         if (sampleLines.isEmpty()) return
+        if (!WorldUtils.isInSkyblock()) return
 
         drawContext.matrices.pushMatrix()
         drawContext.matrices.scale(scale, scale)

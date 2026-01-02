@@ -3,6 +3,7 @@ package com.github.sleepypanda.feesh.utils.gui
 import com.github.sleepypanda.feesh.FeeshMod
 import com.github.sleepypanda.feesh.features.overlays.SeaCreaturesTracker
 import com.github.sleepypanda.feesh.features.overlays.LegionBobbingTimeTracker
+import com.github.sleepypanda.feesh.features.overlays.JerryWorkshopTracker
 import com.github.sleepypanda.feesh.settings.categories.Overlays
 import com.github.sleepypanda.feesh.utils.RegisterUtils
 import com.github.sleepypanda.feesh.utils.WorldUtils
@@ -25,12 +26,16 @@ object MoveGuis {
     fun init() {
         initializeGuiMappings()
         RegisterUtils.command("feeshMoveAllGuis") {
-            if (!WorldUtils.isInSkyblock()) return@command
+            moveAllGuis()
+        }
+    }
 
-            val mc = FeeshMod.mc
-            mc.send {
-                mc.setScreen(MoveGuisScreen())
-            }
+    fun moveAllGuis() {
+        if (!WorldUtils.isInSkyblock()) return
+
+        val mc = FeeshMod.mc
+        mc.send {
+            mc.setScreen(MoveGuisScreen())
         }
     }
 
@@ -43,7 +48,7 @@ object MoveGuis {
             val guiInstance = guiField.get(null) as? FeeshGui
             if (guiInstance != null) {
                 guiMappings.add(GuiMapping(
-                    settingGetter = { Overlays.seaCreaturesTrackerOverlay },
+                    settingGetter = guiInstance.getSettingsKey() ?: { false },
                     guiGetter = { guiInstance }
                 ))
             }
@@ -59,7 +64,7 @@ object MoveGuis {
             val guiInstance = guiField.get(null) as? FeeshGui
             if (guiInstance != null) {
                 guiMappings.add(GuiMapping(
-                    settingGetter = { Overlays.legionBobbingTimeTrackerOverlay },
+                    settingGetter = guiInstance.getSettingsKey() ?: { false },
                     guiGetter = { guiInstance }
                 ))
             }
@@ -67,13 +72,28 @@ object MoveGuis {
             FeeshMod.LOGGER.error("[Feesh] Failed to register LegionBobbingTimeTracker gui", e)
         }
         
-        // Установка дефолтных значений для всех зарегистрированных Gui
+        // JerryWorkshopTracker
+        try {
+            val jerryTrackerClass = JerryWorkshopTracker::class.java
+            val guiField = jerryTrackerClass.getDeclaredField("gui")
+            guiField.isAccessible = true
+            val guiInstance = guiField.get(null) as? FeeshGui
+            if (guiInstance != null) {
+                guiMappings.add(GuiMapping(
+                    settingGetter = guiInstance.getSettingsKey() ?: { false },
+                    guiGetter = { guiInstance }
+                ))
+            }
+        } catch (e: Exception) {
+            FeeshMod.LOGGER.error("[Feesh] Failed to register JerryWorkshopTracker gui", e)
+        }
+        
         FeeshGui.getAllRegisteredGuis().forEach { gui ->
             if (gui.getX() == 0 && gui.getY() == 0) {
                 gui.setX(10).setY(10)
             }
             gui.setScale(1.0f)
-            // Alignment уже LEFT по умолчанию
+            gui.setAlignment(Alignment.LEFT)
         }
     }
     

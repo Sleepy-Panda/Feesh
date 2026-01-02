@@ -31,9 +31,8 @@ object LegionBobbingTimeTracker {
         .setY(20)
         .setClickable(false)
         .setSampleLines(listOf("Legion: 0 players", "Bobbin' time: 0 hooks"))
+        .setSettingsKey { Overlays.legionBobbingTimeTrackerOverlay }
         .setCondition {
-            Overlays.legionBobbingTimeTrackerOverlay &&
-            WorldUtils.isInSkyblock() &&
             PlayerUtils.hasFishingRodInHotbar() &&
             WorldUtils.isInFishingWorld()
         }

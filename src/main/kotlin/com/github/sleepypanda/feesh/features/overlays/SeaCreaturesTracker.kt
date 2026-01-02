@@ -46,6 +46,8 @@ object SeaCreaturesTracker {
     private var data = SeaCreaturesTrackerData()
     private val decimalFormat = DecimalFormat("#.#")
     private var tickCounter = 0
+    private val baseTitle = "${AQUA}${BOLD}Sea creatures tracker"
+
     private const val TICKS_PER_UPDATE = 20
     private const val RESET_SESSION = "feeshResetSeaCreatures"
     private const val RESET_TOTAL = "feeshResetSeaCreaturesTotal"
@@ -54,10 +56,9 @@ object SeaCreaturesTracker {
         .setX(10)
         .setY(10)
         .setClickable(true)
-        .setSampleLines(listOf("Sea creatures tracker: 0 catches"))
+        .setSampleLines(listOf(baseTitle, "Sea creatures tracker: 0 catches"))
+        .setSettingsKey { Overlays.seaCreaturesTrackerOverlay }
         .setCondition {
-            Overlays.seaCreaturesTrackerOverlay &&
-            WorldUtils.isInSkyblock() &&
             WorldUtils.isInFishingWorld() &&
             PlayerUtils.isFishingHookSeenMinutesAgo(5)
         }
@@ -265,7 +266,7 @@ object SeaCreaturesTracker {
 
         val lines = mutableListOf<String>()
         val viewModeText = getViewModeDisplayText(viewMode)
-        lines.add("${AQUA}${BOLD}Sea creatures tracker ${viewModeText}")
+        lines.add("${baseTitle} ${viewModeText}")
 
         sortedEntries.forEach { entry ->
             val seaCreatureText = if (entry.seaCreatureInfo.isRare) "${entry.seaCreatureInfo.boldDisplayName}" else "${entry.seaCreatureInfo.displayName}"

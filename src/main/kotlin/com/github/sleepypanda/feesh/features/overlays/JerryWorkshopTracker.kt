@@ -11,30 +11,45 @@ import com.github.sleepypanda.feesh.utils.TabListUtils
 import com.github.sleepypanda.feesh.utils.PlayerUtils
 import com.github.sleepypanda.feesh.events.EventBus
 import com.github.sleepypanda.feesh.events.OwnSeaCreatureCaughtEvent
-import com.github.sleepypanda.feesh.events.ScreenRenderEvent
-import com.github.sleepypanda.feesh.events.GameRenderEvent
+import com.github.sleepypanda.feesh.events.ClientTickEvent
+import com.github.sleepypanda.feesh.utils.gui.FeeshGui
 import com.github.sleepypanda.feesh.settings.categories.Overlays
-import net.minecraft.client.gui.DrawContext
-import net.minecraft.text.Text
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.concurrent.TimeUnit
-import java.awt.Color
 
 object JerryWorkshopTracker {
     data class CatchCounterData(var catchesSinceLast: Int = 0, var lastCatchTime: Date? = null, var averageCatches: Int = 0, var catchesHistory: List<Int> = emptyList())
     data class JerryWorkshopTrackerData(val yeti: CatchCounterData = CatchCounterData(), val reindrake: CatchCounterData = CatchCounterData())
 
     private var data = JerryWorkshopTrackerData()
+    private var tickCounter = 0
+    private const val TICKS_PER_UPDATE = 20
 
+    private val title = "${AQUA}${BOLD}Jerry Workshop tracker"
     private val yeti = SeaCreatures.allSeaCreatures.find { it.name === "Yeti" }!!
     private val reindrake = SeaCreatures.allSeaCreatures.find { it.name === "Reindrake" }!!
 
-    private val color = Color(255, 255, 255, 255).rgb
+    private val gui = FeeshGui()
+        .setX(10)
+        .setY(10)
+        .setClickable(false)
+        .setSampleLines(listOf(
+            title, 
+            "${GOLD}${yeti.name}: 10 ${GRAY}catches ago ${DARK_GRAY}(${GRAY}avg: 50${DARK_GRAY})",
+            "${GRAY}Last on: ${WHITE}1 minute ago",
+            "${LIGHT_PURPLE}${reindrake.name}: 100 ${GRAY}catches ago ${DARK_GRAY}(${GRAY}avg: 500${DARK_GRAY})",
+            "${GRAY}Last on: ${WHITE}1 hour ago"
+        ))
+        .setSettingsKey { Overlays.jerryWorkshopTrackerOverlay }
+        .setCondition {
+            WorldUtils.getWorldName() == WorldUtils.JERRY_WORKSHOP &&
+            PlayerUtils.isFishingHookSeenMinutesAgo(5)
+        }
 
     fun init() {
         EventBus.subscribe(OwnSeaCreatureCaughtEvent::class, ::onSeaCreature)
-        EventBus.subscribe(GameRenderEvent::class, ::onRender)
+        EventBus.subscribe(ClientTickEvent::class, ::onClientTick)
     }
 
     private fun onSeaCreature(event: OwnSeaCreatureCaughtEvent) {
@@ -70,7 +85,7 @@ object JerryWorkshopTracker {
 
         data.reindrake.lastCatchTime = Date()
         data.reindrake.catchesHistory = (listOf(catchesSinceLast) + data.reindrake.catchesHistory).take(5)
-        data.reindrake.averageCatches = data.yeti.catchesHistory.average().toInt()
+        data.reindrake.averageCatches = data.reindrake.catchesHistory.average().toInt()
         data.reindrake.catchesSinceLast = 0
         data.yeti.catchesSinceLast++
     }
@@ -82,66 +97,68 @@ object JerryWorkshopTracker {
         data.reindrake.catchesSinceLast++
     }
 
-    private fun onRender(event: GameRenderEvent) {
-        if (!Overlays.jerryWorkshopTrackerOverlay || !WorldUtils.isInSkyblock() || WorldUtils.getWorldName() != WorldUtils.JERRY_WORKSHOP) return
-        if (!hasData()) return
-        if (!PlayerUtils.isFishingHookSeenMinutesAgo(5)) return
-        // TODO (new Date() - getLastFishingHookSeenAt() > 10 * 60 * 1000) ||
-        
-        event.drawContext.matrices.pushMatrix()
-        event.drawContext.matrices.scale(1.0f, 1.0f)
+    private fun onClientTick(@Suppress("UNUSED_PARAMETER") event: ClientTickEvent) {
+        tickCounter++
+        if (tickCounter < TICKS_PER_UPDATE) return
+        tickCounter = 0
 
-        val textRenderer = event.mcClient.textRenderer
-        var y = 10
+        if (!Overlays.jerryWorkshopTrackerOverlay || 
+            !WorldUtils.isInSkyblock() || 
+            WorldUtils.getWorldName() != WorldUtils.JERRY_WORKSHOP ||
+            !PlayerUtils.isFishingHookSeenMinutesAgo(5)) {
+            gui.clearLines()
+            return
+        }
 
-        val title = "${AQUA}${BOLD}Jerry Workshop tracker"
-        event.drawContext.drawText(textRenderer, Text.literal(title), 10, y, color, true)
-        y += textRenderer.fontHeight + 2
+        if (!hasData()) {
+            gui.clearLines()
+            return
+        }
+
+        updateGuiLines()
+    }
+
+    private fun updateGuiLines() {
+        val lines = mutableListOf<String>()
+        lines.add(title)
 
         val yetiLine = "${GOLD}${yeti.name}: ${WHITE}${data.yeti.catchesSinceLast} ${GRAY}catches ago ${DARK_GRAY}(${GRAY}avg: ${WHITE}${data.yeti.averageCatches}${DARK_GRAY})"
-        event.drawContext.drawText(textRenderer, Text.literal(yetiLine), 10, y, color, true)
-        y += textRenderer.fontHeight + 2
+        lines.add(yetiLine)
 
         var yetiLastOnLine: String
         if (data.yeti.lastCatchTime != null) {
             val lastOn = formatDate(data.yeti.lastCatchTime)
             val since = formatTimeElapsed(data.yeti.lastCatchTime)
-            yetiLastOnLine = "${GRAY}Last on: ${WHITE}${lastOn} ${GRAY}(${WHITE}${since} ago${GRAY})"
+            yetiLastOnLine = "${GRAY}Last on: ${WHITE}${since} ago ${GRAY}(${WHITE}${lastOn}${GRAY})"
         } else {
             yetiLastOnLine = "${GRAY}Last on: ${WHITE}N/A${GRAY}"
         }
-        event.drawContext.drawText(textRenderer, Text.literal(yetiLastOnLine), 10, y, color, true)
-        y += textRenderer.fontHeight + 2
+        lines.add(yetiLastOnLine)
 
         val reindrakeLine = "${LIGHT_PURPLE}${reindrake.name}: ${WHITE}${data.reindrake.catchesSinceLast} ${GRAY}catches ago ${DARK_GRAY}(${GRAY}avg: ${WHITE}${data.reindrake.averageCatches}${DARK_GRAY})"
-        event.drawContext.drawText(textRenderer, Text.literal(reindrakeLine), 10, y, color, true)
-        y += textRenderer.fontHeight + 2
+        lines.add(reindrakeLine)
 
         var reindrakeLastOnLine: String
         if (data.reindrake.lastCatchTime != null) {
             val lastOn = formatDate(data.reindrake.lastCatchTime)
             val since = formatTimeElapsed(data.reindrake.lastCatchTime)
-            reindrakeLastOnLine = "${GRAY}Last on: ${WHITE}${lastOn} ${GRAY}(${WHITE}${since} ago${GRAY})"
+            reindrakeLastOnLine = "${GRAY}Last on: ${WHITE}${since} ago ${GRAY}(${WHITE}${lastOn}${GRAY})"
         } else {
             reindrakeLastOnLine = "${GRAY}Last on: ${WHITE}N/A${GRAY}"
         }
-        event.drawContext.drawText(textRenderer, Text.literal(reindrakeLastOnLine), 10, y, color, true)
-        y += textRenderer.fontHeight + 2
+        lines.add(reindrakeLastOnLine)
 
-        // TODO do not check every render event, check once per second in separate function executed on timer
         val islandOpen = TabListUtils.getLineAfter("Island open:")
         val islandClosesIn = TabListUtils.getLineAfter("Island closes in:")
         if (!islandOpen.isNullOrEmpty()) {
             val islandOpenLine = "${GRAY}Island open: ${WHITE}${islandOpen}"
-            event.drawContext.drawText(textRenderer, Text.literal(islandOpenLine), 10, y, color, true)
-            y += textRenderer.fontHeight + 2
+            lines.add(islandOpenLine)
         } else if (!islandClosesIn.isNullOrEmpty()) {
             val islandClosesInLine = "${GRAY}Island closes in: ${WHITE}${islandClosesIn}"
-            event.drawContext.drawText(textRenderer, Text.literal(islandClosesInLine), 10, y, color, true)
-            y += textRenderer.fontHeight + 2
+            lines.add(islandClosesInLine)
         }
 
-        event.drawContext.matrices.popMatrix()
+        gui.setLines(lines)
     }
 
     private fun hasData(): Boolean {
