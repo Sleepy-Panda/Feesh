@@ -11,13 +11,15 @@ import com.github.sleepypanda.feesh.features.chat.RareCatchAllChatMessage
 import com.github.sleepypanda.feesh.features.chat.CompactCatchMessages
 import com.github.sleepypanda.feesh.features.chat.PlayerDeathMessage
 import com.github.sleepypanda.feesh.features.commands.SpiderRainSchedule
-import com.github.sleepypanda.feesh.features.commands.FeeshCommand
+import com.github.sleepypanda.feesh.features.commands.FeeshSettingsCommand
 import com.github.sleepypanda.feesh.features.overlays.JerryWorkshopTracker
 import com.github.sleepypanda.feesh.features.overlays.LegionBobbingTimeTracker
 import com.github.sleepypanda.feesh.features.overlays.SeaCreaturesTracker
 import com.github.sleepypanda.feesh.features.inventory.ThunderBottleProgress
 import com.github.sleepypanda.feesh.events.EventBus
+import com.github.sleepypanda.feesh.utils.data.FeeshDataManager
 import com.github.sleepypanda.feesh.api.SeaCreaturesApi
+import com.github.sleepypanda.feesh.api.RareDropsApi
 import com.github.sleepypanda.feesh.settings.Settings
 import com.github.sleepypanda.feesh.utils.WorldUtils
 import com.github.sleepypanda.feesh.utils.PlayerUtils
@@ -56,10 +58,9 @@ class FeeshMod : ModInitializer {
         version = getModVersion()
         LOGGER.info("Loading $MOD_NAME v$version...")
 
-        FeeshCommand.init()
-        
-        // Events
+        FeeshDataManager.init()
         EventBus.init()
+        FeeshSettingsCommand.init()
 
         // Utils
         WorldUtils.init()
@@ -67,6 +68,7 @@ class FeeshMod : ModInitializer {
 
         // APIs
         SeaCreaturesApi.init()
+        RareDropsApi.init()
         
         // Alerts
         RareCatchAlert.init()
@@ -87,10 +89,10 @@ class FeeshMod : ModInitializer {
         LegionBobbingTimeTracker.init()
         SeaCreaturesTracker.init()
 
-        MoveGuis.init() // After all overlays are initialized
+        MoveGuis.init() // After all overlays are initialized and registered FeeshGui objects
 
         // Inventory
-        ThunderBottleProgress.init()
+        //ThunderBottleProgress.init()
             
         // Commands
         SpiderRainSchedule.init() 

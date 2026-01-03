@@ -29,7 +29,10 @@ object LegionBobbingTimeTracker {
     private val gui = FeeshGui()
         .setCoordsDataKey("legionBobbingTimeTracker")
         .setClickable(false)
-        .setSampleLines(listOf("Legion: 0 players", "Bobbin' time: 0 hooks"))
+        .setSampleLines(listOf(
+            "${GOLD}Legion: ${WHITE}2 ${GRAY}players",
+            "${GOLD}Bobbin' time: ${WHITE}3 ${GRAY}hooks"
+        ))
         .setSettingsKey { Overlays.legionBobbingTimeTrackerOverlay }
         .setCondition {
             PlayerUtils.hasFishingRodInHotbar() &&

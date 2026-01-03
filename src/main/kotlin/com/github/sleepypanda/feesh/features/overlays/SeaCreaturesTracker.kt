@@ -55,7 +55,12 @@ object SeaCreaturesTracker {
     private val gui = FeeshGui()
         .setCoordsDataKey("seaCreaturesTracker")
         .setClickable(true)
-        .setSampleLines(listOf(baseTitle, "Sea creatures tracker: 0 catches"))
+        .setSampleLines(listOf(
+            baseTitle,
+            "${GRAY}- ${GOLD}Yeti: ${WHITE}10 ${GRAY}1% | DH: ${WHITE}1 ${GRAY}20%",
+            "${GRAY}- ${LIGHT_PURPLE}Reindrake: ${WHITE}1 ${GRAY}0.1%",
+            "${GRAY}Total: ${WHITE}11 ${GRAY}rare out of ${WHITE}1000",
+        ))
         .setSettingsKey { Overlays.seaCreaturesTrackerOverlay }
         .setCondition {
             WorldUtils.isInFishingWorld() &&

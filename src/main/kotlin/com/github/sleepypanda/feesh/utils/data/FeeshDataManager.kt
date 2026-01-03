@@ -12,7 +12,14 @@ import java.nio.file.StandardOpenOption
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.Executors
 
-object FeeshData {
+object FeeshDataManager {
+    private val configDir: File = FabricLoader.getInstance().configDir.toFile()
+    private val feeshConfigDir: File = File(configDir, "feesh")
+
+    private var overlayCoordsData: MutableMap<String, OverlayCoordsData> = mutableMapOf()
+    private val overlayCoordsFile: File = File(feeshConfigDir, "overlayCoordsData.json")
+
+    private val saveLock = Any()
     private val gson: Gson = GsonBuilder().setPrettyPrinting().create()
     private val executor = Executors.newSingleThreadExecutor { r ->
         Thread(r, "Feesh-Data-Saver").apply {
@@ -20,22 +27,8 @@ object FeeshData {
         }
     }
     
-    private val configDir: File = FabricLoader.getInstance().configDir.toFile()
-    private val feeshConfigDir: File = File(configDir, "feesh")
-    private val overlayCoordsFile: File = File(feeshConfigDir, "overlayCoordsData.json")
-    
-    private var overlayCoordsData: MutableMap<String, OverlayCoordsData> = mutableMapOf()
-    private val saveLock = Any()
-    
-    data class OverlayCoordsData(
-        val x: Int = 10,
-        val y: Int = 10,
-        val scale: Float = 1.0f,
-        val alignment: Alignment = Alignment.LEFT
-    )
-    
-    init {
-        loadOverlayCoordsData()
+    fun init() {
+        loadOverlayCoordsDataFromFile()
     }
     
     fun getOverlayCoordsData(key: String): OverlayCoordsData {
@@ -45,11 +38,11 @@ object FeeshData {
     fun updateOverlayCoordsData(key: String, x: Int, y: Int, scale: Float, alignment: Alignment) {
         synchronized(saveLock) {
             overlayCoordsData[key] = OverlayCoordsData(x, y, scale, alignment)
-            saveOverlayCoordsDataAsync()
+            saveOverlayCoordsDataToFileAsync()
         }
     }
     
-    private fun loadOverlayCoordsData() {
+    private fun loadOverlayCoordsDataFromFile() {
         try {
             if (!overlayCoordsFile.exists() || !overlayCoordsFile.canRead()) {
                 FeeshMod.LOGGER.info("[Feesh] Overlay coords file does not exist, using defaults")
@@ -73,7 +66,7 @@ object FeeshData {
         }
     }
     
-    private fun saveOverlayCoordsDataAsync() {
+    private fun saveOverlayCoordsDataToFileAsync() {
         CompletableFuture.runAsync({
             try {
                 synchronized(saveLock) {
