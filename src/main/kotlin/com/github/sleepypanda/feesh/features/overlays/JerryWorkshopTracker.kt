@@ -31,9 +31,8 @@ object JerryWorkshopTracker {
     private val reindrake = SeaCreatures.allSeaCreatures.find { it.name === "Reindrake" }!!
 
     private val gui = FeeshGui()
-        .setX(10)
-        .setY(10)
-        .setClickable(false)
+        .setCoordsDataKey("jerryWorkshopTracker")
+        .setClickable(true)
         .setSampleLines(listOf(
             title, 
             "${GOLD}${yeti.name}${GRAY}: ${WHITE}10 ${GRAY}catches ago ${DARK_GRAY}(${GRAY}avg: ${WHITE}50${DARK_GRAY})",

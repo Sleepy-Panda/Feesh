@@ -53,8 +53,7 @@ object SeaCreaturesTracker {
     private const val RESET_TOTAL = "feeshResetSeaCreaturesTotal"
 
     private val gui = FeeshGui()
-        .setX(10)
-        .setY(10)
+        .setCoordsDataKey("seaCreaturesTracker")
         .setClickable(true)
         .setSampleLines(listOf(baseTitle, "Sea creatures tracker: 0 catches"))
         .setSettingsKey { Overlays.seaCreaturesTrackerOverlay }

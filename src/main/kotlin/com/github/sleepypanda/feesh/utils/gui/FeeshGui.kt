@@ -6,6 +6,7 @@ import com.github.sleepypanda.feesh.events.ScreenAfterBackgroundRenderEvent
 import com.github.sleepypanda.feesh.events.EventBus
 import com.github.sleepypanda.feesh.utils.WorldUtils
 import com.github.sleepypanda.feesh.utils.enums.Alignment
+import com.github.sleepypanda.feesh.utils.data.FeeshData
 import net.minecraft.text.Text
 import net.minecraft.client.gui.screen.ingame.InventoryScreen
 import net.minecraft.client.gui.DrawContext
@@ -15,6 +16,7 @@ import java.awt.Color
 
 /**
  * A class that represents a GUI for the Feesh mod. GUI is shown when in Skyblock and the condition is met.
+ * @property key The unique key for this GUI, used for saving/loading configuration.
  * @property x The x position of the GUI.
  * @property y The y position of the GUI.
  * @property scale The scale of the GUI.
@@ -34,6 +36,7 @@ class FeeshGui {
         }
     }
 
+    private var coordsDataKey: String = ""
     private var x: Int = 10
     private var y: Int = 10
     private var scale: Float = 1.0f
@@ -52,14 +55,26 @@ class FeeshGui {
         EventBus.subscribe(ScreenAfterBackgroundRenderEvent::class, ::postDrawAfterBackground)
     }
     
+    fun getCoordsDataKey(): String = coordsDataKey
     fun getX(): Int = x
     fun getY(): Int = y
     fun getScale(): Float = scale
-    fun getSampleLines(): List<String> = sampleLines
+    fun getAlignment(): Alignment = alignment
     fun getLines(): List<String> = lines
+    fun getSampleLines(): List<String> = sampleLines
     fun getSettingsKey(): (() -> Boolean)? = settingsKey
     fun getCondition(): () -> Boolean = condition
     fun getIsClickable(): Boolean = isClickable
+
+    fun setCoordsDataKey(coordsDataKey: String): FeeshGui {
+        this.coordsDataKey = coordsDataKey
+        val savedData = FeeshData.getOverlayCoordsData(coordsDataKey)
+        this.x = savedData.x
+        this.y = savedData.y
+        this.scale = savedData.scale
+        this.alignment = savedData.alignment
+        return this
+    }
 
     fun setX(x: Int): FeeshGui {
         this.x = x
@@ -156,6 +171,7 @@ class FeeshGui {
     fun drawSample(drawContext: DrawContext, textRenderer: TextRenderer, mcClient: MinecraftClient, x: Int, y: Int) {
         if (sampleLines.isEmpty()) return
         if (!WorldUtils.isInSkyblock()) return
+        if (mcClient.currentScreen !is MoveGuisScreen) return
 
         drawContext.matrices.pushMatrix()
         drawContext.matrices.scale(scale, scale)

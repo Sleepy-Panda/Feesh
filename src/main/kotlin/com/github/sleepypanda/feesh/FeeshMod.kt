@@ -82,18 +82,19 @@ class FeeshMod : ModInitializer {
         CompactCatchMessages.init()
         PlayerDeathMessage.init()
 
-        // Commands
-        MoveGuis.init()
-        SpiderRainSchedule.init()
-          
         // Overlays
         JerryWorkshopTracker.init()
         LegionBobbingTimeTracker.init()
         SeaCreaturesTracker.init()
 
+        MoveGuis.init() // After all overlays are initialized
+
         // Inventory
         ThunderBottleProgress.init()
-                
+            
+        // Commands
+        SpiderRainSchedule.init() 
+
         LOGGER.info("$MOD_NAME loaded successfully!")
     }
 

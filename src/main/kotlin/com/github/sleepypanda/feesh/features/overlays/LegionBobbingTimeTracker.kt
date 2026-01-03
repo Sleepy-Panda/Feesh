@@ -27,8 +27,7 @@ object LegionBobbingTimeTracker {
     private const val TICKS_PER_CHECK = 10
 
     private val gui = FeeshGui()
-        .setX(300)
-        .setY(20)
+        .setCoordsDataKey("legionBobbingTimeTracker")
         .setClickable(false)
         .setSampleLines(listOf("Legion: 0 players", "Bobbin' time: 0 hooks"))
         .setSettingsKey { Overlays.legionBobbingTimeTrackerOverlay }
