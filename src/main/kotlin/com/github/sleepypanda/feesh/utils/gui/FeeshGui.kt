@@ -168,7 +168,7 @@ class FeeshGui {
         draw(event.drawContext, event.textRenderer, event.mcClient)
     }
     
-    fun drawSample(drawContext: DrawContext, textRenderer: TextRenderer, mcClient: MinecraftClient, x: Int, y: Int) {
+    fun drawSample(drawContext: DrawContext, textRenderer: TextRenderer, mcClient: MinecraftClient) {
         if (sampleLines.isEmpty()) return
         if (!WorldUtils.isInSkyblock()) return
         if (mcClient.currentScreen !is MoveGuisScreen) return
@@ -182,6 +182,10 @@ class FeeshGui {
         val scaledY = (y / scale).toInt()
 
         var currentY = scaledY
+
+        val maxWidth = (sampleLines.maxOfOrNull { textRenderer.getWidth(Text.literal(it)) } ?: 175)
+        val height = (sampleLines.size * (textRenderer.fontHeight + 2))
+        drawContext.fill(scaledX - 2, scaledY - 2, scaledX + maxWidth.toInt() + 2, scaledY + height.toInt() + 2, Color(0, 0, 0, 80).rgb)
 
         for (line in sampleLines) {
             val text = Text.literal(line)

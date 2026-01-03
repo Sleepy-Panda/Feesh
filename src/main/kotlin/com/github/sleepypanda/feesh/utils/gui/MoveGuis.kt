@@ -73,17 +73,8 @@ class MoveGuisScreen : Screen(Text.literal("Feesh Move Guis")) {
         context.drawText(textRenderer, hint, x, 20, color, true)
         
         enabledGuis.forEach { mapping ->
-            val gui = mapping.gui
-            val x = gui.getX()
-            val y = gui.getY()
-            
-            val sampleLines = gui.getSampleLines()
-            val maxWidth = sampleLines.maxOfOrNull { textRenderer.getWidth(Text.literal(it)) } ?: 175
-            val height = sampleLines.size * (textRenderer.fontHeight + 2)
-            
-            context.fill(x - 2, y - 2, x + maxWidth + 2, y + height + 2, Color(0, 0, 0, 80).rgb)
-            
-            gui.drawSample(context, textRenderer, client!!, x, y)
+            val gui = mapping.gui           
+            gui.drawSample(context, textRenderer, client!!)
         }
         
         super.render(context, mouseX, mouseY, delta)

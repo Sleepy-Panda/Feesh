@@ -44,7 +44,7 @@ object FishingHookTimer {
     private val gui = FeeshGui()
         .setCoordsDataKey("fishingHookTimer")
         .setClickable(false)
-        //.setAlignment(Alignment.CENTER)
+        .setAlignment(Alignment.CENTER)
         .setSampleLines(listOf(
             "${YELLOW}${BOLD}2.0s"
         ))
