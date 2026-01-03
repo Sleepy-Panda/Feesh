@@ -7,7 +7,7 @@ import com.github.sleepypanda.feesh.features.overlays.JerryWorkshopTracker
 import com.github.sleepypanda.feesh.settings.categories.Overlays
 import com.github.sleepypanda.feesh.utils.RegisterUtils
 import com.github.sleepypanda.feesh.utils.WorldUtils
-import com.github.sleepypanda.feesh.utils.data.FeeshData
+import com.github.sleepypanda.feesh.utils.data.PersistentDataManager
 import com.github.sleepypanda.feesh.utils.enums.Alignment
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
@@ -102,8 +102,8 @@ class MoveGuisScreen : Screen(Text.literal("Feesh Move Guis")) {
             val y = gui.getY()
             val scale = gui.getScale()
             
-            val sampleLines = if (gui.getSampleLines().isNotEmpty()) gui.getSampleLines() else if (gui.getLines().isNotEmpty()) gui.getLines() else listOf("Sample Text")
-            val maxWidth = (sampleLines.maxOfOrNull { textRenderer.getWidth(Text.literal(it)) } ?: 100) * scale
+            val sampleLines = gui.getSampleLines()
+            val maxWidth = (sampleLines.maxOfOrNull { textRenderer.getWidth(Text.literal(it)) } ?: 175) * scale
             val height = (sampleLines.size * (textRenderer.fontHeight + 2)) * scale
             
             if (mouseX >= x - 2 && mouseX <= x + maxWidth + 2 &&
@@ -186,6 +186,6 @@ class MoveGuisScreen : Screen(Text.literal("Feesh Move Guis")) {
     }
     
     private fun saveGuiCoords(gui: FeeshGui) {
-        FeeshData.updateOverlayCoordsData(gui.getCoordsDataKey(), gui.getX(), gui.getY(), gui.getScale(), gui.getAlignment())
+        PersistentDataManager.updateOverlayCoordsData(gui.getCoordsDataKey(), gui.getX(), gui.getY(), gui.getScale(), gui.getAlignment())
     }
 }

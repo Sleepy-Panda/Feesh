@@ -12,7 +12,7 @@ import java.nio.file.StandardOpenOption
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.Executors
 
-object FeeshDataManager {
+object PersistentDataManager {
     private val configDir: File = FabricLoader.getInstance().configDir.toFile()
     private val feeshConfigDir: File = File(configDir, "feesh")
 

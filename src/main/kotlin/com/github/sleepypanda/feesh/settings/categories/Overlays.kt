@@ -18,10 +18,15 @@ enum class SeaCreaturesTrackerSorting {
     CATCHES_COUNT_ASC
 }
 
+enum class FishingHookTimerMode {
+    UNTIL_REEL_IN,
+    SINCE_CASTED
+}
+
 object Overlays : CategoryKt("Overlays") {
     init {
         separator {
-            this.title = "Jerry's Workshop"
+            this.title = "${AQUA}${BOLD}Jerry's Workshop"
         }
     }
 
@@ -32,7 +37,7 @@ object Overlays : CategoryKt("Overlays") {
 
     init {
         separator {
-            this.title = "Legion & Bobbin' Time"
+            this.title = "${AQUA}${BOLD}Legion & Bobbin' Time"
         }
     }
 
@@ -43,7 +48,7 @@ object Overlays : CategoryKt("Overlays") {
 
     init {
         separator {
-            this.title = "Sea creatures"
+            this.title = "${AQUA}${BOLD}Sea creatures"
         }
     }
 
@@ -70,5 +75,31 @@ object Overlays : CategoryKt("Overlays") {
     var seaCreaturesTrackerSorting by enum(SeaCreaturesTrackerSorting.CATCHES_COUNT_DESC) {
         this.name = Translated("Sea creatures sorting")
         this.description = Translated("Setups sorting order for the sea creatures.")
+    }
+
+    init {
+        separator {
+            this.title = "${AQUA}${BOLD}Fishing Hook"
+        }
+    }
+
+    var fishingHookTimerOverlay by boolean(false) {
+        this.name = Translated("Fishing hook timer")
+        this.description = Translated("Displays the timer of your fishing hook, as well as the sign when a fish arrived and can be reeled in. For this to work, please enable ${YELLOW}Skyblock Settings -> Personal -> Fishing Settings -> Fishing Timer")
+    }
+
+    var fishingHookTimerMode by enum(FishingHookTimerMode.UNTIL_REEL_IN) {
+        this.name = Translated("Fishing hook timer mode")
+        this.description = Translated("'Until reel in' shows countdown while fish is swimming towards the fishing hook. 'Since casted' shows the timer while the fishing hook is casted.")
+    }
+
+    var fishingHookFishArrivedTemplate by string("§c§l!!!") {
+        this.name = Translated("Custom fish arrived template")
+        this.description = Translated("Replace default !!! with your custom text when a fish arrived to your hook. Leave empty to use default.")
+    }
+
+    var fishingHookFishTimerTemplate by string("§e§l{timer}") {
+        this.name = Translated("Custom timer format")
+        this.description = Translated("Replace default with your custom timer text. Use {timer} to insert timer seconds into the template. Leave empty to use default.")
     }
 }

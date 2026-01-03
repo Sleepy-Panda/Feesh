@@ -15,9 +15,10 @@ import com.github.sleepypanda.feesh.features.commands.FeeshSettingsCommand
 import com.github.sleepypanda.feesh.features.overlays.JerryWorkshopTracker
 import com.github.sleepypanda.feesh.features.overlays.LegionBobbingTimeTracker
 import com.github.sleepypanda.feesh.features.overlays.SeaCreaturesTracker
+import com.github.sleepypanda.feesh.features.overlays.FishingHookTimer
 import com.github.sleepypanda.feesh.features.inventory.ThunderBottleProgress
 import com.github.sleepypanda.feesh.events.EventBus
-import com.github.sleepypanda.feesh.utils.data.FeeshDataManager
+import com.github.sleepypanda.feesh.utils.data.PersistentDataManager
 import com.github.sleepypanda.feesh.api.SeaCreaturesApi
 import com.github.sleepypanda.feesh.api.RareDropsApi
 import com.github.sleepypanda.feesh.settings.Settings
@@ -58,10 +59,12 @@ class FeeshMod : ModInitializer {
         version = getModVersion()
         LOGGER.info("Loading $MOD_NAME v$version...")
 
-        FeeshDataManager.init()
+        PersistentDataManager.init()
         EventBus.init()
         FeeshSettingsCommand.init()
 
+        // Last version changelog, hello message
+        
         // Utils
         WorldUtils.init()
         PlayerUtils.init()
@@ -88,6 +91,7 @@ class FeeshMod : ModInitializer {
         JerryWorkshopTracker.init()
         LegionBobbingTimeTracker.init()
         SeaCreaturesTracker.init()
+        FishingHookTimer.init()
 
         MoveGuis.init() // After all overlays are initialized and registered FeeshGui objects
 

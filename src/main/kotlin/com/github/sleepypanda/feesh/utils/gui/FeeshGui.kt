@@ -6,7 +6,7 @@ import com.github.sleepypanda.feesh.events.ScreenAfterBackgroundRenderEvent
 import com.github.sleepypanda.feesh.events.EventBus
 import com.github.sleepypanda.feesh.utils.WorldUtils
 import com.github.sleepypanda.feesh.utils.enums.Alignment
-import com.github.sleepypanda.feesh.utils.data.FeeshData
+import com.github.sleepypanda.feesh.utils.data.PersistentDataManager
 import net.minecraft.text.Text
 import net.minecraft.client.gui.screen.ingame.InventoryScreen
 import net.minecraft.client.gui.DrawContext
@@ -68,7 +68,7 @@ class FeeshGui {
 
     fun setCoordsDataKey(coordsDataKey: String): FeeshGui {
         this.coordsDataKey = coordsDataKey
-        val savedData = FeeshData.getOverlayCoordsData(coordsDataKey)
+        val savedData = PersistentDataManager.getOverlayCoordsData(coordsDataKey)
         this.x = savedData.x
         this.y = savedData.y
         this.scale = savedData.scale

@@ -13,7 +13,7 @@ import com.teamresourceful.resourcefulconfig.api.types.options.EntryType
 object Chat : CategoryKt("Chat") {
     init {
         separator {
-            this.title = "Sea creatures"
+            this.title = "${AQUA}${BOLD}Sea creatures"
         }
     }
 
