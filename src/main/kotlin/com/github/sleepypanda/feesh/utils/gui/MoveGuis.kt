@@ -86,19 +86,21 @@ class MoveGuisScreen : Screen(Text.literal("Feesh Move Guis")) {
         val mouseX = click.x()
         val mouseY = click.y()
         val textRenderer = client!!.textRenderer
+        val screenWidth = client!!.window.scaledWidth
         
         enabledGuis.forEach { mapping ->
             val gui = mapping.gui
             val x = gui.getX()
             val y = gui.getY()
-            val scale = gui.getScale()
+            //val scale = gui.getScale()
+            //val alignment = gui.getAlignment()
             
-            val sampleLines = gui.getSampleLines()
-            val maxWidth = (sampleLines.maxOfOrNull { textRenderer.getWidth(Text.literal(it)) } ?: 175) * scale
-            val height = (sampleLines.size * (textRenderer.fontHeight + 2)) * scale
+            //val sampleLines = gui.getSampleLines()
+            //val maxWidth = (sampleLines.maxOfOrNull { textRenderer.getWidth(Text.literal(it)) } ?: 175) * scale
+            //val height = (sampleLines.size * (textRenderer.fontHeight + 2)) * scale
             
-            if (mouseX >= x - 2 && mouseX <= x + maxWidth + 2 &&
-                mouseY >= y - 2 && mouseY <= y + height + 2) {
+            val (isInSample, actualX) = gui.isInSample(textRenderer, client!!, mouseX, mouseY)
+            if (isInSample) {
                 isDraggingGui = gui
                 lastDraggedGui = gui
                 dragOffsetX = (mouseX - x).toInt()

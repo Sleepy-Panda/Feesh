@@ -185,7 +185,13 @@ class FeeshGui {
 
         val maxWidth = (sampleLines.maxOfOrNull { textRenderer.getWidth(Text.literal(it)) } ?: 175)
         val height = (sampleLines.size * (textRenderer.fontHeight + 2))
-        drawContext.fill(scaledX - 2, scaledY - 2, scaledX + maxWidth.toInt() + 2, scaledY + height.toInt() + 2, Color(0, 0, 0, 80).rgb)
+        
+        val backgroundX = when (alignment) {
+            Alignment.LEFT -> scaledX
+            Alignment.RIGHT -> scaledScreenWidth - maxWidth - scaledX
+            Alignment.CENTER -> (scaledScreenWidth - maxWidth) / 2 + scaledX
+        }
+        drawContext.fill(backgroundX - 2, scaledY - 2, backgroundX + maxWidth.toInt() + 2, scaledY + height.toInt() + 2, Color(0, 0, 0, 80).rgb)
 
         for (line in sampleLines) {
             val text = Text.literal(line)
@@ -202,5 +208,27 @@ class FeeshGui {
         }
 
         drawContext.matrices.popMatrix()
+    }
+
+    fun isInSample(textRenderer: TextRenderer, client: MinecraftClient, mouseX: Double, mouseY: Double): Pair<Boolean, Float?> {
+        if (sampleLines.isEmpty()) return Pair(false, null)
+
+        val screenWidth = client.window.scaledWidth.toFloat()
+        val maxWidth = (sampleLines.maxOfOrNull { textRenderer.getWidth(Text.literal(it)) } ?: 175) * scale
+        val height = (sampleLines.size * (textRenderer.fontHeight + 2)) * scale
+            
+        val actualX = when (alignment) {
+            Alignment.LEFT -> x.toFloat()
+            Alignment.RIGHT -> screenWidth - maxWidth - x.toFloat()
+            Alignment.CENTER -> (screenWidth - maxWidth) / 2f + x.toFloat()
+        }
+            
+        if (mouseX >= actualX - 2 &&
+            mouseX <= actualX + maxWidth + 2 &&
+            mouseY >= y - 2 &&
+            mouseY <= y + height + 2) {        
+            return Pair(true, actualX)
+        }
+        return Pair(false, null)
     }
 }
