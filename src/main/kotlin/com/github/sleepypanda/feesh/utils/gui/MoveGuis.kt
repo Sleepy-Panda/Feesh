@@ -114,9 +114,14 @@ class MoveGuisScreen : Screen(Text.literal("Feesh Move Guis")) {
     
     override fun mouseDragged(click: Click, deltaX: Double, deltaY: Double): Boolean {
         if (click.button() == 0 && isDraggingGui != null) {
-            val newX = ((click.x() - dragOffsetX).toInt().coerceAtLeast(0))
+            val gui = isDraggingGui!!
+            val rawX = (click.x() - dragOffsetX).toInt()
+            val newX = when (gui.getAlignment()) {
+                Alignment.LEFT, Alignment.RIGHT -> rawX.coerceAtLeast(0)
+                Alignment.CENTER -> rawX
+            }
             val newY = ((click.y() - dragOffsetY).toInt().coerceAtLeast(0))
-            isDraggingGui!!.setX(newX).setY(newY)
+            gui.setX(newX).setY(newY)
             return true
         }
         return super.mouseDragged(click, deltaX, deltaY)
