@@ -102,4 +102,35 @@ object Overlays : CategoryKt("Overlays") {
         this.name = Translated("Custom timer format")
         this.description = Translated("Replace default with your custom timer text. Use {timer} to insert timer seconds into the template. Leave empty to use default.")
     }
+
+    init {
+        separator {
+            this.title = "${AQUA}${BOLD}Treasure fishing tracker"
+        }
+    }
+
+    var treasureFishingTrackerOverlay by boolean(false) {
+        this.name = Translated("Treasure fishing tracker")
+        this.description = Translated("Shows an overlay with the overview of the treasure fishing catches, and different related statistics.")
+    }
+
+    init {
+        button {
+            title = "Set Treasure Dyes count"
+            description = "Explains in your chat how to setup Treasure Dyes count and last drop date."
+            text = "Click for help"
+            onClick {
+                com.github.sleepypanda.feesh.utils.ChatUtils.sendLocalChat("""
+${AQUA}${BOLD}Treasure Dyes setup${RESET}
+
+Do ${AQUA}/feeshSetTrackerDrops <ITEM_ID> <COUNT> <LAST_ON_DATE>${RESET} to initialize your drops history:
+  - <ITEM_ID> is a mandatory item ID - DYE_TREASURE.
+  - <COUNT> is a mandatory number of times you've dropped it.
+  - <LAST_ON_DATE> is optional and, if provided, should be in YYYY-MM-DD hh:mm:ss format. Can not be in future!
+
+Example: ${AQUA}/feeshSetTrackerDrops DYE_TREASURE 2 2025-05-30 23:59:00
+                """.trimIndent(), true)
+            }
+        }
+    }
 }

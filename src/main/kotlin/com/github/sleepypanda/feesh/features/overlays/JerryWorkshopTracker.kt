@@ -9,6 +9,7 @@ import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
 import com.github.sleepypanda.feesh.utils.TabListUtils
 import com.github.sleepypanda.feesh.utils.PlayerUtils
+import com.github.sleepypanda.feesh.utils.CommonUtils
 import com.github.sleepypanda.feesh.events.EventBus
 import com.github.sleepypanda.feesh.events.OwnSeaCreatureCaughtEvent
 import com.github.sleepypanda.feesh.events.ClientTickEvent
@@ -16,7 +17,6 @@ import com.github.sleepypanda.feesh.utils.gui.FeeshGui
 import com.github.sleepypanda.feesh.settings.categories.Overlays
 import java.text.SimpleDateFormat
 import java.util.Date
-import java.util.concurrent.TimeUnit
 
 object JerryWorkshopTracker {
     data class CatchCounterData(var catchesSinceLast: Int = 0, var lastCatchTime: Date? = null, var averageCatches: Int = 0, var catchesHistory: List<Int> = emptyList())
@@ -127,7 +127,7 @@ object JerryWorkshopTracker {
         var yetiLastOnLine: String
         if (data.yeti.lastCatchTime != null) {
             val lastOn = formatDate(data.yeti.lastCatchTime)
-            val since = formatTimeElapsed(data.yeti.lastCatchTime)
+            val since = CommonUtils.formatTimeElapsed(data.yeti.lastCatchTime)
             yetiLastOnLine = "${GRAY}Last on: ${WHITE}${since} ago ${GRAY}(${WHITE}${lastOn}${GRAY})"
         } else {
             yetiLastOnLine = "${GRAY}Last on: ${WHITE}N/A${GRAY}"
@@ -140,7 +140,7 @@ object JerryWorkshopTracker {
         var reindrakeLastOnLine: String
         if (data.reindrake.lastCatchTime != null) {
             val lastOn = formatDate(data.reindrake.lastCatchTime)
-            val since = formatTimeElapsed(data.reindrake.lastCatchTime)
+            val since = CommonUtils.formatTimeElapsed(data.reindrake.lastCatchTime)
             reindrakeLastOnLine = "${GRAY}Last on: ${WHITE}${since} ago ${GRAY}(${WHITE}${lastOn}${GRAY})"
         } else {
             reindrakeLastOnLine = "${GRAY}Last on: ${WHITE}N/A${GRAY}"
@@ -172,24 +172,6 @@ object JerryWorkshopTracker {
         return data.reindrake.catchesSinceLast > 0 || data.reindrake.catchesHistory.isNotEmpty() || data.reindrake.lastCatchTime != null
     }
 
-    private fun formatTimeElapsed(lastCatchTime: Date?): String {
-        if (lastCatchTime == null) return ""
-
-        val now = Date()
-        val diffMillis = now.time - lastCatchTime.time
-        val diffSeconds = diffMillis / 1000
-
-        val days = TimeUnit.SECONDS.toDays(diffSeconds)
-        val hours = TimeUnit.SECONDS.toHours(diffSeconds) % 24
-        val minutes = TimeUnit.SECONDS.toMinutes(diffSeconds) % 60
-
-        return when {
-            days > 0 -> "${days}d ${hours}h ${minutes}m"
-            hours > 0 -> "${hours}h ${minutes}m"
-            minutes < 1 -> "less than 1m"
-            else -> "${minutes}m"
-        }
-    }
 
     private fun formatDate(date: Date?): String {
         if (date == null) return ""
@@ -199,7 +181,7 @@ object JerryWorkshopTracker {
 
     private fun getMessage(catchesSinceLast: Int, lastCatchTime: Date?, seaCreatureName: String, rarityCode: String): String {
         val b2bText = if (catchesSinceLast == 1) "${RED}B2B! " else ""
-        val elapsedTimeText = if (lastCatchTime != null) " ${GRAY}(${WHITE}${formatTimeElapsed(lastCatchTime)}${GRAY})" else ""
+        val elapsedTimeText = if (lastCatchTime != null) " ${GRAY}(${WHITE}${CommonUtils.formatTimeElapsed(lastCatchTime)}${GRAY})" else ""
         val catchesText = "${WHITE}${catchesSinceLast} ${GRAY}${if (catchesSinceLast == 1) "catch" else "catches"}"
         val seaCreatureDisplayName = "${rarityCode}${seaCreatureName}"
         return "${b2bText}${GRAY}It took ${catchesText}${elapsedTimeText} to get the ${seaCreatureDisplayName}${GRAY}."

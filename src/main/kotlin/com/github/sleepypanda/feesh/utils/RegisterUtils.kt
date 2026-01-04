@@ -1,5 +1,6 @@
 package com.github.sleepypanda.feesh.utils
 
+import com.github.sleepypanda.feesh.utils.ChatUtils.getFormattedString
 import net.minecraft.text.Text
 import com.mojang.brigadier.arguments.StringArgumentType
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager
@@ -14,10 +15,11 @@ object RegisterUtils {
     
     fun chat(
         regex: Regex,
+        noFormatting: Boolean = true,
         action: (message: Text, matchResult: MatchResult) -> Unit
     ) {
         ClientReceiveMessageEvents.GAME.register { message, _, ->
-            var text = message.string
+            var text = if (noFormatting) message.string else message.getFormattedString()
             regex.find(text)?.let { result ->
                 action(message, result)
             }
@@ -26,10 +28,11 @@ object RegisterUtils {
 
     fun chatCancellable(
         regex: Regex,
+        noFormatting: Boolean = true,
         action: (message: Text, matchResult: MatchResult) -> Boolean
     ) {
         ClientReceiveMessageEvents.ALLOW_GAME.register { message, _ ->
-            var text = message.string
+            var text = if (noFormatting) message.string else message.getFormattedString()
             regex.find(text)?.let { result ->
                 return@register action(message, result)
             }
@@ -45,14 +48,22 @@ object RegisterUtils {
      */
     fun command(name: String, action: (Array<String>) -> Unit) {
         ClientCommandRegistrationCallback.EVENT.register { registrationCallback, _ ->
-            fun createCommand(commandName: String) =
-                ClientCommandManager.literal(commandName)
-                    .executes {
-                        action(emptyArray())
-                        1
-                    }
+            val command = ClientCommandManager.literal(name)
+                .executes {
+                    action(emptyArray())
+                    1
+                }
+                .then(
+                    ClientCommandManager.argument("args", StringArgumentType.greedyString())
+                        .executes { context ->
+                            val argsString = StringArgumentType.getString(context, "args")
+                            val args = argsString.split(" ").toTypedArray()
+                            action(args)
+                            1
+                        }
+                )
                     
-            registrationCallback.register(createCommand(name))
+            registrationCallback.register(command)
         }
     }
 }
