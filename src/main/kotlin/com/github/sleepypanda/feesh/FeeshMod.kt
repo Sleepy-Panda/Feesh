@@ -22,8 +22,9 @@ import com.github.sleepypanda.feesh.features.overlays.TreasureFishingTracker
 import com.github.sleepypanda.feesh.features.inventory.ThunderBottleProgress
 import com.github.sleepypanda.feesh.events.EventBus
 import com.github.sleepypanda.feesh.utils.data.PersistentDataManager
-import com.github.sleepypanda.feesh.api.SeaCreaturesApi
-import com.github.sleepypanda.feesh.api.RareDropsApi
+import com.github.sleepypanda.feesh.events.publishers.SeaCreaturesPublisher
+import com.github.sleepypanda.feesh.events.publishers.RareDropsPublisher
+import com.github.sleepypanda.feesh.events.publishers.PartyChatPublisher
 import com.github.sleepypanda.feesh.settings.Settings
 import com.github.sleepypanda.feesh.utils.WorldUtils
 import com.github.sleepypanda.feesh.utils.PlayerUtils
@@ -73,14 +74,15 @@ class FeeshMod : ModInitializer {
         PlayerUtils.init()
 
         // APIs
-        SeaCreaturesApi.init()
-        RareDropsApi.init()
+        SeaCreaturesPublisher.init()
+        RareDropsPublisher.init()
+        PartyChatPublisher.init()
         
         // Alerts
         RareCatchAlert.init()
         SpiritMaskAlert.init()
         ChumBucketAutoPickupAlert.init()
-        PetLevelUpAlert.init() // TODO formatting
+        PetLevelUpAlert.init()
         ThunderBottleChargedAlert.init()
         AnyReindrakeAlert.init()
         NonFishingArmorAlert.init()

@@ -25,17 +25,12 @@ object EventBus {
     }
 
     fun init() {
-        val PCHAT_PATTERN = Regex("^§9[\\p{L}]+ §8> (?<rankAndPlayer>(.*))§f: (?<message>(.*))$")
-
         ClientWorldEvents.AFTER_CLIENT_WORLD_CHANGE.register { mc, world ->
             publish(WorldChangedEvent(mc, world))
         }
 
         ClientReceiveMessageEvents.GAME.register { message, _ ->
             publish(ChatEvent(message))
-
-            val match = PCHAT_PATTERN.matchEntire(message.getFormattedString()) ?: return@register
-            publish(PartyChatEvent(message, match.groups.get("rankAndPlayer")?.value ?: "", match.groups.get("message")?.value ?: ""))
         }
 
         ClientReceiveMessageEvents.ALLOW_GAME.register { message, _ ->

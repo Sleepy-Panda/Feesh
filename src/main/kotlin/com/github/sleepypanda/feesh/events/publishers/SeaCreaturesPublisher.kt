@@ -1,4 +1,4 @@
-package com.github.sleepypanda.feesh.api
+package com.github.sleepypanda.feesh.events.publishers
 
 import com.github.sleepypanda.feesh.events.EventBus
 import com.github.sleepypanda.feesh.events.ChatCancellableEvent
@@ -7,7 +7,7 @@ import com.github.sleepypanda.feesh.constants.SeaCreatures
 import com.github.sleepypanda.feesh.settings.categories.Chat
 import com.github.sleepypanda.feesh.utils.WorldUtils
 
-object SeaCreaturesApi {
+object SeaCreaturesPublisher {
     var isDoubleHook = false
     val doubleHookPattern = Regex("^It's a Double Hook!")
 
@@ -40,3 +40,4 @@ object SeaCreaturesApi {
             }
     }
 }
+

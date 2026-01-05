@@ -1,12 +1,11 @@
-package com.github.sleepypanda.feesh.api
+package com.github.sleepypanda.feesh.events.publishers
 
 import com.github.sleepypanda.feesh.events.EventBus
 import com.github.sleepypanda.feesh.events.ChatEvent
 import com.github.sleepypanda.feesh.events.RareDropEvent
-import com.github.sleepypanda.feesh.settings.categories.Chat
 import com.github.sleepypanda.feesh.utils.WorldUtils
 
-object RareDropsApi {
+object RareDropsPublisher {
     val rareDropPattern = Regex("^RARE DROP! (?<item>(.+)) \\([+](?<mf>\\d+) ✯ Magic Find\\)$")
     val petDropPattern = Regex("^PET DROP! (?<pet>(.+))$")
     // TODO: PET DROP
@@ -31,3 +30,4 @@ object RareDropsApi {
         EventBus.publish(RareDropEvent(itemName, magicFind))
     }
 }
+
