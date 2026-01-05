@@ -1,5 +1,8 @@
 package com.github.sleepypanda.feesh.events
 
+import com.github.sleepypanda.feesh.utils.ChatUtils.getFormattedString
+import kotlin.text.MatchResult
+
 import kotlin.reflect.KClass
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientWorldEvents
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents
@@ -22,12 +25,17 @@ object EventBus {
     }
 
     fun init() {
+        val PCHAT_PATTERN = Regex("^§9[\\p{L}]+ §8> (?<rankAndPlayer>(.*))§f: (?<message>(.*))$")
+
         ClientWorldEvents.AFTER_CLIENT_WORLD_CHANGE.register { mc, world ->
             publish(WorldChangedEvent(mc, world))
         }
 
         ClientReceiveMessageEvents.GAME.register { message, _ ->
             publish(ChatEvent(message))
+
+            val match = PCHAT_PATTERN.matchEntire(message.getFormattedString()) ?: return@register
+            publish(PartyChatEvent(message, match.groups.get("rankAndPlayer")?.value ?: "", match.groups.get("message")?.value ?: ""))
         }
 
         ClientReceiveMessageEvents.ALLOW_GAME.register { message, _ ->

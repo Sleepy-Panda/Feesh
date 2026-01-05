@@ -38,7 +38,10 @@ object RareCatchMessage {
         ChatUtils.sendPartyChat(message)
     }
 
-    private fun getRareCatchMessage(name: String, isDoubleHook: Boolean): String {
-        return if (isDoubleHook) "DOUBLE FEESH! ${name}" else "FEESH! ${name}"
+    private fun getRareCatchMessage(seaCreatureName: String, isDoubleHook: Boolean): String {
+        val article = CommonUtils.getArticle(seaCreatureName)
+        val scName = seaCreatureName.uppercase()
+        return if (isDoubleHook) "--> DOUBLE HOOK! Two ${scName}s have spawned <--" 
+            else "--> ${article} ${seaCreatureName} has spawned <--"
     }
 }

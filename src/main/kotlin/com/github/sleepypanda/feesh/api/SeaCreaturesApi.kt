@@ -31,7 +31,8 @@ object SeaCreaturesApi {
         SeaCreatures.allSeaCreatures
             .find { sc -> sc.pattern.containsMatchIn(chatMessage) }
             ?.let { sc ->
-                EventBus.publish(OwnSeaCreatureCaughtEvent(sc.name, isDoubleHook, chatMessage))
+                val doubleHooked = if (sc.name == "Vanquisher" || sc.name == "Reindrake") false else isDoubleHook
+                EventBus.publish(OwnSeaCreatureCaughtEvent(sc.name, doubleHooked, chatMessage))
                 isDoubleHook = false
                 if (Chat.compactSeaCreaturesMessages) {
                     event.isCancelled = true

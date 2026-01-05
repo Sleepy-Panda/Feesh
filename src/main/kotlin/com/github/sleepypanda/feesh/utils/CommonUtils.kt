@@ -27,6 +27,18 @@ object CommonUtils {
     }
 
     /**
+    * Get suitable article (A/An) depending on the passed string.
+    * @param str The string to get the article for.
+    * @param makeLowerCase Whether to make the returned string lowercase (a/an).
+    * @returns {string} Article (A/An)
+    */
+    fun getArticle(str: String, makeLowerCase: Boolean = false): String {
+        val isFirstLetterVowel = listOf('a', 'e', 'i', 'o', 'u').contains(str[0].lowercaseChar())
+        val article = if (isFirstLetterVowel) "An" else "A"
+        return if (makeLowerCase) article.lowercase() else article
+    }
+
+    /**
      * Formats the time elapsed between two dates.
      * @param lastTime The last time.
      * @return The formatted time elapsed.
