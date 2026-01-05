@@ -5,9 +5,6 @@ import com.github.sleepypanda.feesh.utils.ChatUtils.getFormattedString
 import com.github.sleepypanda.feesh.events.EventBus
 import com.github.sleepypanda.feesh.events.WorldChangedEvent
 import net.minecraft.text.Text
-import net.minecraft.item.ItemStack
-import net.minecraft.component.DataComponentTypes
-import net.minecraft.entity.projectile.FishingBobberEntity
 import java.util.Date
 import java.util.Timer
 import kotlin.concurrent.timerTask
@@ -56,7 +53,7 @@ object PlayerUtils {
         }
         for (i in 0..8) {
             val stack = player.inventory.getStack(i)
-            if (isFishingRod(stack)) {
+            if (ItemUtils.isFishingRod(stack)) {
                 cachedHasFishingRodInHotbar = true
                 return
             }
@@ -78,38 +75,11 @@ object PlayerUtils {
 
     private fun setLastFishingHookSeenAt() {
         if (!WorldUtils.isInSkyblock()) return
+        val player = FeeshMod.mc.player ?: return
     
-        val isHookActive = isFishingHookActive()
+        val isHookActive = EntityUtils.isFishingHookActive(player)
         if (isHookActive) {
             cachedLastFishingHookSeenAt = Date()
         }
-    }
-
-    private fun isFishingHookActive(): Boolean {
-        if (!WorldUtils.isInSkyblock()) return false
-        val player = FeeshMod.mc.player ?: return false
-        val world = FeeshMod.mc.world ?: return false
-
-        val heldItem = player.mainHandStack
-        if (!isFishingRod(heldItem)) return false
-
-        val fishingHook = world.entities.filterIsInstance<FishingBobberEntity>().firstOrNull { it.owner == player }
-        if (fishingHook == null) return false
-        if (fishingHook.isInLava() || fishingHook.isTouchingWater()) return true
-
-        val isDirtRod = heldItem.name.string.contains("Dirt Rod")
-        if (isDirtRod) return true // For dirt rod, the player's hook can be in dirt
-
-        return false
-    }
-
-    private fun isFishingRod(item: ItemStack?): Boolean {
-        if (item == null || item.isEmpty) return false
-
-        val name = item.name.string      
-        if (name.contains("Carnival Rod")) return false
-
-        val loreLines = item.get(DataComponentTypes.LORE)?.lines?.map { it.string } ?: listOf()
-        return loreLines.any { it.contains("FISHING ROD", ignoreCase = true) || it.contains("FISHING WEAPON", ignoreCase = true) }
     }
 }

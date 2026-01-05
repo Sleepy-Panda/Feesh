@@ -7,24 +7,25 @@ import com.github.sleepypanda.feesh.utils.SoundUtils
 import com.github.sleepypanda.feesh.utils.WorldUtils
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
+import com.github.sleepypanda.feesh.utils.ChatUtils.removeFormatting
 
 object PetLevelUpAlert {
-    const val PATTERN = "^Your (.*?) leveled up to level (.*?)!$"
+    // §r§aYour §r§5Ender Dragon §r§aleveled up to level §r§981§r§a!
+    const val PATTERN = "^§r§aYour (.*?) §r§aleveled up to level (.*?)§r§a\\!$"
 
     fun init() {
-        RegisterUtils.chat(Regex(PATTERN)) { _, matchResult -> onPetLevelUp(matchResult) }
+        RegisterUtils.chat(Regex(PATTERN), false) { _, matchResult -> onPetLevelUp(matchResult) }
     }
 
-    // TODO: Process formatted message to get pet display name and level
     private fun onPetLevelUp(matchResult: MatchResult) {
         if (!WorldUtils.isInSkyblock() || !Alerts.alertOnPetLevelUp) return
 
         val petDisplayName = matchResult.groupValues[1]
-        val petLevel = matchResult.groupValues[2]
+        val petLevel = matchResult.groupValues[2].removeFormatting().toInt()
 
-        if (petLevel != "100" && petLevel != "200") return
+       // if (petLevel != 100 && petLevel != 200) return
         
-        CommonUtils.showTitle("${petDisplayName} ${RESET}is maxed", petLevel)
+        CommonUtils.showTitle("${petDisplayName} ${RESET}is maxed", "${WHITE}Level ${petLevel}")
         SoundUtils.playSound()
     }
 }

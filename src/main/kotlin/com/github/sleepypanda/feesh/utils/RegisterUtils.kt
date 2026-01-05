@@ -13,6 +13,12 @@ object RegisterUtils {
 
     }
     
+    /*
+     * Registers a chat message listener with the specified regex.
+     * @param regex The regex to match the chat message.
+     * @param noFormatting Whether to remove formatting codes from the chat message. Then the pattern should be without formatting codes.
+     * @param action The action to execute when the chat message is matched.
+     */
     fun chat(
         regex: Regex,
         noFormatting: Boolean = true,
@@ -26,6 +32,12 @@ object RegisterUtils {
         }
     }
 
+    /*
+     * Registers a chat message listener with the specified regex. This lets you cancel the chat message using the return value.
+     * @param regex The regex to match the chat message.
+     * @param noFormatting Whether to remove formatting codes from the chat message. Then the pattern should be without formatting codes.
+     * @param action The action to execute when the chat message is matched.
+     */
     fun chatCancellable(
         regex: Regex,
         noFormatting: Boolean = true,

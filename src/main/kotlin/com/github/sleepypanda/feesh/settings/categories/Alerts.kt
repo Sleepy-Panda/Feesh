@@ -83,4 +83,9 @@ object Alerts : CategoryKt("Alerts") {
         this.name = Translated("Alert when Thunder/Storm/Hurricane Bottle is charged")
         this.description = Translated("Shows a title and plays a sound when your Thunder, Storm, or Hurricane Bottle is fully charged.")
     }
+
+    var alertOnNonFishingArmor by boolean(true) {
+        this.name = Translated("Alert when no fishing armor equipped")
+        this.description = Translated("Shows a title and plays a sound when current player is fishing in a non-fishing armor.")
+    }
 }

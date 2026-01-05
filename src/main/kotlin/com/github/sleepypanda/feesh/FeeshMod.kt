@@ -6,6 +6,7 @@ import com.github.sleepypanda.feesh.features.alerts.PetLevelUpAlert
 import com.github.sleepypanda.feesh.features.alerts.SpiritMaskAlert
 import com.github.sleepypanda.feesh.features.alerts.ThunderBottleChargedAlert
 import com.github.sleepypanda.feesh.features.alerts.AnyReindrakeAlert
+import com.github.sleepypanda.feesh.features.alerts.NonFishingArmorAlert
 import com.github.sleepypanda.feesh.features.chat.RareCatchMessage
 import com.github.sleepypanda.feesh.features.chat.RareCatchAllChatMessage
 import com.github.sleepypanda.feesh.features.chat.CompactCatchMessages
@@ -81,6 +82,7 @@ class FeeshMod : ModInitializer {
         PetLevelUpAlert.init() // TODO formatting
         ThunderBottleChargedAlert.init()
         AnyReindrakeAlert.init()
+        NonFishingArmorAlert.init()
 
         // Chat
         RareCatchMessage.init()

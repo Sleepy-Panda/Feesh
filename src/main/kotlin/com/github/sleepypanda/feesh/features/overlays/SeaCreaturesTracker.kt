@@ -277,7 +277,7 @@ object SeaCreaturesTracker {
             val countText = "${WHITE}${CommonUtils.formatNumberWithSpaces(entry.amount)}"
             val percentText = if (showPercentage) " ${GRAY}${decimalFormat.format(entry.percent)}%" else ""
             
-            val doubleHookText = if (showDoubleHook && entry.seaCreature != "Vanquisher" && entry.seaCreature != "Reindrake") {
+            val doubleHookText = if (showDoubleHook && entry.seaCreatureInfo.name != "Vanquisher" && entry.seaCreatureInfo.name != "Reindrake") {
                 val dhAmount = CommonUtils.formatNumberWithSpaces(entry.doubleHookAmount)
                 val dhPercent = decimalFormat.format(entry.doubleHookPercent)
                 " ${DARK_GRAY}| ${GRAY}DH: ${WHITE}$dhAmount ${GRAY}$dhPercent%"
