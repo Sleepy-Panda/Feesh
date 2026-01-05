@@ -34,15 +34,16 @@ object RareCatchAlert {
     private fun onOwnSeaCreature(event: OwnSeaCreatureCaughtEvent) {
         if (!WorldUtils.isInSkyblock() || !Alerts.alertOnRareSeaCreatures) return
 
+        val playerName = PlayerUtils.getName()
         val seaCreatureName = event.seaCreatureName
         val isDoubleHook = event.isDoubleHook
-        showAlert(seaCreatureName, isDoubleHook)
+        showAlert(seaCreatureName, isDoubleHook, playerName)
     }
 
     private fun onPartyChatSeaCreature(event: PartyChatEvent) {
         if (!WorldUtils.isInSkyblock() || !Alerts.alertOnRareSeaCreatures) return
 
-        val playerName = FeeshMod.mc.player?.getName()?.string
+        val playerName = FeeshMod.mc.player?.getName()?.string ?: ""
         if (!playerName.isNullOrEmpty() && event.rankAndPlayer.removeFormatting().contains(playerName, ignoreCase = true)) return
 
         val message = event.messagePayload.removeFormatting()
@@ -50,22 +51,22 @@ object RareCatchAlert {
         if (FEESH_PCHAT_PATTERN.containsMatchIn(message)) {
             val match = FEESH_PCHAT_PATTERN.matchEntire(message) ?: return
             val uppercaseSeaCreatureName = match.groups.get("uppercaseScName")?.value ?: return
-            showAlert(uppercaseSeaCreatureName, false)
+            showAlert(uppercaseSeaCreatureName, false, playerName)
         } else if (FEESH_PCHAT_DH_PATTERN.containsMatchIn(message)) {
             val match = FEESH_PCHAT_DH_PATTERN.matchEntire(message) ?: return
             val uppercaseSeaCreatureName = match.groups.get("uppercaseScName")?.value ?: return
-            showAlert(uppercaseSeaCreatureName, true)
+            showAlert(uppercaseSeaCreatureName, true, playerName)
         } else if (SH_PCHAT_PATTERN.containsMatchIn(message)) {
             val match = SH_PCHAT_PATTERN.matchEntire(message) ?: return
             val dh = match.groups.get("dh")?.value ?: return
             var seaCreatureName = match.groups.get("scName")?.value ?: return
             if (seaCreatureName == "The Sea Emperor") seaCreatureName = "The Loch Emperor"
             val isDoubleHook = dh.isNotEmpty()
-            showAlert(seaCreatureName, isDoubleHook)
+            showAlert(seaCreatureName, isDoubleHook, playerName)
         }
     }
 
-    private fun showAlert(seaCreatureName: String, isDoubleHook: Boolean) {
+    private fun showAlert(seaCreatureName: String, isDoubleHook: Boolean, playerName: String) {
         var seaCreatureInfo = SeaCreatures.allSeaCreatures.find { it.name.uppercase() == seaCreatureName.uppercase() } ?: return
         if (!seaCreatureInfo.isRare) return
 
@@ -77,7 +78,6 @@ object RareCatchAlert {
 
         if (!Alerts.alertOnSeaCreaturesTypes.contains(type)) return
 
-        val playerName = PlayerUtils.getName()
         val title = SeaCreatures.getTitle(seaCreatureInfo.name, isDoubleHook)
         CommonUtils.showTitle(title, playerName)
         SoundUtils.playSound()
