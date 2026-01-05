@@ -10,8 +10,8 @@ import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
 import com.github.sleepypanda.feesh.utils.ChatUtils.removeFormatting
 
 object PetLevelUpAlert {
-    // §r§aYour §r§5Ender Dragon §r§aleveled up to level §r§981§r§a!
-    const val PATTERN = "^§r§aYour (.*?) §r§aleveled up to level (.*?)§r§a\\!$"
+    // §aYour §5Ender Dragon §aleveled up to level §981§a!
+    const val PATTERN = "^§aYour (.*?) §aleveled up to level (.*?)§a\\!$"
 
     fun init() {
         RegisterUtils.chat(Regex(PATTERN), false) { _, matchResult -> onPetLevelUp(matchResult) }
@@ -23,7 +23,7 @@ object PetLevelUpAlert {
         val petDisplayName = matchResult.groupValues[1]
         val petLevel = matchResult.groupValues[2].removeFormatting().toInt()
 
-       // if (petLevel != 100 && petLevel != 200) return
+        if (petLevel != 100 && petLevel != 200) return
         
         CommonUtils.showTitle("${petDisplayName} ${RESET}is maxed", "${WHITE}Level ${petLevel}")
         SoundUtils.playSound()
