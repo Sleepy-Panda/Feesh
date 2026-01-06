@@ -12,11 +12,20 @@ object Commands : CategoryKt("Commands") {
         }
 
         button {
-            title = "Pets level up prices"
-            description = "Calculates the profits for leveling up the fishing pets from level 1 to level 100, and displays the statistics in the chat. Executes ${AQUA}/feeshPetLevelUpPrices"
+            title = "Pets level up profits"
+            description = "Calculates the profits for leveling up the fishing pets from level 1 to level 100, and displays the results in the chat. Executes ${AQUA}/feeshPetLevelUpPrices"
             text = "Click to execute"
             onClick {
                 ChatUtils.command("feeshPetLevelUpPrices")
+            }
+        }
+
+        button {
+            title = "Gear craft prices"
+            description = "Calculates the profits for crafting different gear pieces from fishing drops, and displays the results in the chat. Executes ${AQUA}/feeshGearCraftPrices"
+            text = "Click to execute"
+            onClick {
+                ChatUtils.command("feeshGearCraftPrices")
             }
         }
 

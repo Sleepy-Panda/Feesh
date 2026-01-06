@@ -75,9 +75,9 @@ object SpiderDenRainScheduleCommand {
                 nextRain + 2 * CYCLE_DURATION
             )
 
-            val message = StringBuilder()
-            message.append("${GREEN}${BOLD}Spider's Den rain schedule${RESET}\n")
+            ChatUtils.sendLocalChat("${GREEN}${BOLD}Spider's Den rain schedule${RESET}", true)
            
+            val message = StringBuilder()
             if (isRaining) {
                 val weatherType = if (isThunderstorm) "Thunderstorm" else "Rain"
                 message.append("${WHITE}Now: ${AQUA}$weatherType ${RESET}(${formatElapsedTime(rainTimeLeft)} left)\n\n")

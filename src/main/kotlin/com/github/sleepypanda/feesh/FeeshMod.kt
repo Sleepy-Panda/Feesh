@@ -14,6 +14,7 @@ import com.github.sleepypanda.feesh.features.chat.CompactCatchMessages
 import com.github.sleepypanda.feesh.features.chat.PlayerDeathMessage
 import com.github.sleepypanda.feesh.features.commands.SpiderDenRainScheduleCommand
 import com.github.sleepypanda.feesh.features.commands.PetLevelUpPricesCommand
+import com.github.sleepypanda.feesh.features.commands.GearCraftPricesCommand
 import com.github.sleepypanda.feesh.features.commands.FeeshSettingsCommand
 import com.github.sleepypanda.feesh.features.overlays.JerryWorkshopTracker
 import com.github.sleepypanda.feesh.features.overlays.LegionBobbingTimeTracker
@@ -112,6 +113,7 @@ class FeeshMod : ModInitializer {
         // Commands
         SpiderDenRainScheduleCommand.init()
         PetLevelUpPricesCommand.init()
+        GearCraftPricesCommand.init()
 
         LOGGER.info("$MOD_NAME loaded successfully!")
     }

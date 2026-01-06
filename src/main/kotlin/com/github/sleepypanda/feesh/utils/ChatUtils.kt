@@ -25,6 +25,10 @@ object ChatUtils {
         FeeshMod.mc.inGameHud.chatHud.addMessage(Text.literal(formattedMessage))
     }
 
+    fun sendLocalChat(message: Text) {
+        FeeshMod.mc.inGameHud.chatHud.addMessage(message)
+    }
+
     fun sendAllChat(message: String) {
         if (message.isNullOrEmpty()) return
         sendLocalChat(message) // TODO replace

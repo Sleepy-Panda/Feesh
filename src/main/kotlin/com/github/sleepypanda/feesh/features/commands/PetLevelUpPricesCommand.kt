@@ -20,10 +20,10 @@ object PetLevelUpPricesCommand {
     
     data class PetPriceInfo(
         val petDisplayName: String,
-        val level1Price: Double,
-        val level100Price: Double,
-        val coinsPerXp: Double,
-        val diff: Double
+        val level1Price: Double?,
+        val level100Price: Double?,
+        val coinsPerXp: Double?,
+        val diff: Double?
     )
     
     private val PETS_TO_CHECK = listOf(
@@ -59,14 +59,14 @@ object PetLevelUpPricesCommand {
                 
                 val level1ItemId = petName.split(" ").joinToString("_").uppercase() + ";$rarityCode" // FLYING_FISH;4
                 val level1AuctionPrice = PriceUtils.getAuctionItemPrice(level1ItemId)
-                val level1Price = level1AuctionPrice?.lbin ?: 0.0
+                val level1Price = level1AuctionPrice?.lbin
                 
                 val level100ItemId = level1ItemId + "+100" // FLYING_FISH;4+100
                 val level100AuctionPrice = PriceUtils.getAuctionItemPrice(level100ItemId)
-                val level100Price = level100AuctionPrice?.lbin ?: 0.0
+                val level100Price = level100AuctionPrice?.lbin
                 
-                val diff = if (level1Price > 0 && level100Price > 0) level100Price - level1Price else 0.0
-                val coinsPerXp = if (diff > 0) (diff / MAX_XP) * pet.xpGainMultiplier else 0.0
+                val diff = if (level1Price != null && level100Price != null) level100Price - level1Price else null
+                val coinsPerXp = if (diff != null) (diff / MAX_XP) * pet.xpGainMultiplier else null
                 
                 PetPriceInfo(
                     petDisplayName = pet.petDisplayName,
@@ -77,9 +77,8 @@ object PetLevelUpPricesCommand {
                 )
             }.sortedByDescending { it.coinsPerXp }
             
-            var message = "${GREEN}${BOLD}Pets level up prices:\n"
-            message += "${DARK_GRAY}Profits for leveling up the fishing pets from level 1 to level 100.\n"
-            ChatUtils.sendLocalChat(message)
+            ChatUtils.sendLocalChat("${GREEN}${BOLD}Pets level up prices", true)
+            ChatUtils.sendLocalChat("${DARK_GRAY}Profits for leveling up the fishing pets from level 1 to level 100.")
 
             for (petInfo in prices) {
                 val diffStr = CommonUtils.toShortNumber(petInfo.diff) ?: "N/A"
@@ -87,7 +86,7 @@ object PetLevelUpPricesCommand {
                 val level100PriceStr = CommonUtils.toShortNumber(petInfo.level100Price) ?: "N/A"
                 val coinsPerXpStr = String.format("%.2f", petInfo.coinsPerXp)
                 
-                ChatUtils.sendLocalChat(" - ${petInfo.petDisplayName}${RESET}: ${GREEN}+$diffStr${RESET} (${GOLD}$level1PriceStr${RESET} -> ${GOLD}$level100PriceStr${RESET}) | ${GOLD}$coinsPerXpStr ${RESET}coins/XP\n")
+                ChatUtils.sendLocalChat(" - ${petInfo.petDisplayName}${RESET}: ${GREEN}+$diffStr${RESET} (${GOLD}$level1PriceStr${RESET} -> ${GOLD}$level100PriceStr${RESET}) | ${GOLD}$coinsPerXpStr ${RESET}coins/XP")
             }
         } catch (e: Exception) {
             FeeshMod.LOGGER.error("[Feesh] Failed to calculate pet price statistics.", e)
