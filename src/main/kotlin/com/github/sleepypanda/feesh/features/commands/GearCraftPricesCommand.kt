@@ -9,6 +9,7 @@ import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
 import com.github.sleepypanda.feesh.utils.ChatUtils
 import com.github.sleepypanda.feesh.FeeshMod
+import com.github.sleepypanda.feesh.settings.categories.Commands
 import net.minecraft.text.Text
 import net.minecraft.text.Style
 import net.minecraft.text.ClickEvent.RunCommand
@@ -115,7 +116,7 @@ object GearCraftPricesCommand {
                         .setStyle(
                             Style.EMPTY
                                 .withClickEvent(RunCommand("/recipe $itemNameWithoutFormatting"))
-                                .withHoverEvent(ShowText(Text.literal("Click to craft using Supercraft menu")))
+                                .withHoverEvent(ShowText(Text.literal("Click to Supercraft $itemNameWithoutFormatting")))
                         )
                     ChatUtils.sendLocalChat(clickableText)
                 }
@@ -127,7 +128,7 @@ object GearCraftPricesCommand {
     
     private fun getPrice(itemId: String): Double {
         val bazaarPrices = PriceUtils.getBazaarItemPrices(itemId)
-        var itemPrice = bazaarPrices?.sellOffer
+        var itemPrice = if (Commands.gearCraftPricesPriceMode == PricingMode.SELL_OFFER) bazaarPrices?.sellOffer else bazaarPrices?.instaSell
         
         if (bazaarPrices == null) {
             val auctionPrices = PriceUtils.getAuctionItemPrice(itemId)

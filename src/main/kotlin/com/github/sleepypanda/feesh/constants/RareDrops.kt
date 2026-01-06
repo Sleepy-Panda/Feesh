@@ -42,6 +42,11 @@ class RareDrops {
             RareDropInfo("Titanoboa Shed", "TITANOBOA_SHED", LEGENDARY.code),
             RareDropInfo("Scuttler Shell", "SCUTTLER_SHELL", LEGENDARY.code),
             RareDropInfo("Burnt Texts", "BURNT_TEXTS", LEGENDARY.code),
+            RareDropInfo("Baby Yeti (Legendary)", "BABY_YETI;4", LEGENDARY.code),
+            RareDropInfo("Flying Fish (Legendary)", "FLYING_FISH;4", LEGENDARY.code),
+            RareDropInfo("Megalodon (Legendary)", "MEGALODON;4", LEGENDARY.code),
+            RareDropInfo("Megalodon (Epic)", "MEGALODON;3", EPIC.code),
+            RareDropInfo("Phoenix", "PHOENIX;?", SPECIAL.code),
         )
     }
 }

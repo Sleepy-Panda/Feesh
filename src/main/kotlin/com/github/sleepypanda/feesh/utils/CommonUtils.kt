@@ -97,4 +97,23 @@ object CommonUtils {
             else -> 0
         }
     }
+
+    /**
+     * Converts a rarity color code (e.g., "§6") to a rarity description (e.g., "Legendary").
+     * @param rarityColorCode The color code (2 characters, e.g., "§6")
+     * @return The rarity description
+     */
+    fun getRarityDescription(rarityColorCode: String): String {
+        return when (rarityColorCode) {
+            COMMON.code -> "Common"
+            UNCOMMON.code -> "Uncommon"
+            RARE.code -> "Rare"
+            EPIC.code -> "Epic"
+            LEGENDARY.code -> "Legendary"
+            MYTHIC.code -> "Mythic"
+            DIVINE.code -> "Divine"
+            SPECIAL.code -> "Special"
+            else -> ""
+        }
+    }
 }
