@@ -10,7 +10,7 @@ import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.util.concurrent.TimeUnit
 
-object SpiderRainSchedule {
+object SpiderDenRainScheduleCommand {
     private const val RAIN_COOLDOWN = 2400L
     private const val RAIN_DURATION = 1200L
     private const val CYCLE_DURATION = RAIN_COOLDOWN + RAIN_DURATION
@@ -76,6 +76,7 @@ object SpiderRainSchedule {
             )
 
             val message = StringBuilder()
+            message.append("${GREEN}${BOLD}Spider's Den rain schedule${RESET}\n")
            
             if (isRaining) {
                 val weatherType = if (isThunderstorm) "Thunderstorm" else "Rain"

@@ -12,7 +12,8 @@ import com.github.sleepypanda.feesh.features.chat.RareCatchMessage
 import com.github.sleepypanda.feesh.features.chat.RareCatchAllChatMessage
 import com.github.sleepypanda.feesh.features.chat.CompactCatchMessages
 import com.github.sleepypanda.feesh.features.chat.PlayerDeathMessage
-import com.github.sleepypanda.feesh.features.commands.SpiderRainSchedule
+import com.github.sleepypanda.feesh.features.commands.SpiderDenRainScheduleCommand
+import com.github.sleepypanda.feesh.features.commands.PetLevelUpPricesCommand
 import com.github.sleepypanda.feesh.features.commands.FeeshSettingsCommand
 import com.github.sleepypanda.feesh.features.overlays.JerryWorkshopTracker
 import com.github.sleepypanda.feesh.features.overlays.LegionBobbingTimeTracker
@@ -21,16 +22,17 @@ import com.github.sleepypanda.feesh.features.overlays.FishingHookTimer
 import com.github.sleepypanda.feesh.features.overlays.TreasureFishingTracker
 import com.github.sleepypanda.feesh.features.inventory.ThunderBottleProgress
 import com.github.sleepypanda.feesh.events.EventBus
-import com.github.sleepypanda.feesh.utils.data.PersistentDataManager
 import com.github.sleepypanda.feesh.events.publishers.SeaCreaturesPublisher
 import com.github.sleepypanda.feesh.events.publishers.RareDropsPublisher
 import com.github.sleepypanda.feesh.events.publishers.PartyChatPublisher
 import com.github.sleepypanda.feesh.settings.Settings
 import com.github.sleepypanda.feesh.utils.WorldUtils
 import com.github.sleepypanda.feesh.utils.PlayerUtils
+import com.github.sleepypanda.feesh.utils.PriceUtils
+import com.github.sleepypanda.feesh.utils.data.PersistentDataManager
 import com.github.sleepypanda.feesh.utils.gui.MoveGuis
-import net.fabricmc.api.ModInitializer
 import com.teamresourceful.resourcefulconfig.api.loader.Configurator
+import net.fabricmc.api.ModInitializer
 import net.fabricmc.loader.api.FabricLoader
 import net.minecraft.client.MinecraftClient
 import org.slf4j.LoggerFactory
@@ -72,6 +74,7 @@ class FeeshMod : ModInitializer {
         // Utils
         WorldUtils.init()
         PlayerUtils.init()
+        PriceUtils.init()
 
         // APIs
         SeaCreaturesPublisher.init()
@@ -107,7 +110,8 @@ class FeeshMod : ModInitializer {
         //ThunderBottleProgress.init()
             
         // Commands
-        SpiderRainSchedule.init() 
+        SpiderDenRainScheduleCommand.init()
+        PetLevelUpPricesCommand.init()
 
         LOGGER.info("$MOD_NAME loaded successfully!")
     }

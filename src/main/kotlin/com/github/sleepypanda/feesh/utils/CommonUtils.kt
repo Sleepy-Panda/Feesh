@@ -1,6 +1,7 @@
 package com.github.sleepypanda.feesh.utils
 
 import com.github.sleepypanda.feesh.FeeshMod
+import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import java.util.Date
 import java.util.concurrent.TimeUnit
 
@@ -59,6 +60,41 @@ object CommonUtils {
             hours > 0 -> "${hours}h ${minutes}m"
             minutes < 1 -> "less than 1m"
             else -> "${minutes}m"
+        }
+    }
+
+    /**
+     * Formats a number to a short representation (e.g., 1000 -> "1K", 1000000 -> "1M")
+     * @param number The number to format.
+     * @return The formatted string or null if the number is 0 or invalid.
+     */
+    fun toShortNumber(number: Double?): String? {
+        if (number == null || number <= 0) return null
+        
+        return when {
+            number >= 1_000_000_000 -> String.format("%.1fB", number / 1_000_000_000.0).removeSuffix(".0")
+            number >= 1_000_000 -> String.format("%.1fM", number / 1_000_000.0).removeSuffix(".0")
+            number >= 1_000 -> String.format("%.1fK", number / 1_000.0).removeSuffix(".0")
+            else -> number.toLong().toString()
+        }
+    }
+
+    /**
+     * Converts a rarity color code (e.g., "§6") to a rarity code number (e.g., 4 for LEGENDARY).
+     * @param rarityColorCode The color code (2 characters, e.g., "§6")
+     * @return The rarity code as a number
+     */
+    fun getRarityNumericCode(rarityColorCode: String): Int {
+        return when (rarityColorCode) {
+            COMMON.code -> 0
+            UNCOMMON.code -> 1
+            RARE.code -> 2
+            EPIC.code -> 3
+            LEGENDARY.code -> 4
+            MYTHIC.code -> 5
+            DIVINE.code -> 6
+            SPECIAL.code -> 7
+            else -> 0
         }
     }
 }

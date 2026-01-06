@@ -5,6 +5,7 @@ import com.github.sleepypanda.feesh.settings.categories.General
 import com.github.sleepypanda.feesh.settings.categories.Alerts
 import com.github.sleepypanda.feesh.settings.categories.Chat
 import com.github.sleepypanda.feesh.settings.categories.Overlays
+import com.github.sleepypanda.feesh.settings.categories.Commands
 import com.teamresourceful.resourcefulconfig.api.types.options.TranslatableValue
 import com.teamresourceful.resourcefulconfigkt.api.ConfigKt
 import net.minecraft.util.Util
@@ -34,6 +35,7 @@ object Settings : ConfigKt("${FeeshMod.MOD_ID}/config") {
         category(Alerts)        
         category(Chat)
         category(Overlays)
+        category(Commands)
     }
     
     fun save() = FeeshMod.INSTANCE.settings.save()

@@ -15,7 +15,9 @@ enum class SeaCreaturesTrackerDisplayMode {
 
 enum class SeaCreaturesTrackerSorting {
     CATCHES_COUNT_DESC,
-    CATCHES_COUNT_ASC
+    CATCHES_COUNT_ASC,
+    RARITY_ASC,
+    RARITY_DESC
 }
 
 enum class FishingHookTimerMode {

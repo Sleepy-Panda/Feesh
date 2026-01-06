@@ -265,6 +265,14 @@ object SeaCreaturesTracker {
         val sortedEntries = when (sorting) {
             SeaCreaturesTrackerSorting.CATCHES_COUNT_DESC -> entries.sortedByDescending { it.amount }
             SeaCreaturesTrackerSorting.CATCHES_COUNT_ASC -> entries.sortedBy { it.amount }
+            SeaCreaturesTrackerSorting.RARITY_ASC -> entries.sortedWith(
+                compareBy<TrackerLineEntry> { CommonUtils.getRarityNumericCode(it.seaCreatureInfo.rarityColorCode) }
+                .thenBy { it.seaCreatureInfo.name }
+            )
+            SeaCreaturesTrackerSorting.RARITY_DESC -> entries.sortedWith(
+                compareByDescending<TrackerLineEntry> { CommonUtils.getRarityNumericCode(it.seaCreatureInfo.rarityColorCode) }
+                .thenBy { it.seaCreatureInfo.name }
+            )
             else -> entries.sortedByDescending { it.amount }
         }
 
