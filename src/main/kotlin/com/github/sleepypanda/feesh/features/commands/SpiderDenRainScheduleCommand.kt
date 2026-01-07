@@ -53,7 +53,7 @@ object SpiderDenRainScheduleCommand {
 
     private fun showSpidersDenRainSchedule() {
         if (!WorldUtils.isInSkyblock()) {
-            ChatUtils.sendLocalChat("${RED}You must be on Hypixel Skyblock to use this command!")
+            ChatUtils.sendLocalChat("${RED}You must be on Hypixel Skyblock to use this command!", true)
             return
         }
 
@@ -91,7 +91,7 @@ object SpiderDenRainScheduleCommand {
                 val weatherType = if (isNextEventThunderstorm) "Thunderstorm" else "Rain"
                 val startsAtStr = formatDate(secondsToDate(eventTime))
                 val startsInStr = formatTimeElapsedBetweenDates(secondsToDate(nowSeconds), secondsToDate(eventTime))
-                message.append("${GRAY}- ${AQUA}$weatherType ${RESET}starts at $startsAtStr (in $startsInStr)\n")
+                message.append("${GRAY}- ${AQUA}$weatherType ${WHITE}starts at $startsAtStr (in $startsInStr)\n")
             }
 
             message.append("\n${DARK_GRAY}Gain +50☂ Fishing Speed during Rain, and +3α Sea Creature Chance during Thunderstorm.\n")

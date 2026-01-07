@@ -50,7 +50,10 @@ object PetLevelUpPricesCommand {
     
     private fun calculateFishingPetPrices() {
         try {
-            if (!WorldUtils.isInSkyblock()) return
+            if (!WorldUtils.isInSkyblock()) {
+                ChatUtils.sendLocalChat("${RED}You must be on Hypixel Skyblock to use this command!", true)
+                return
+            }
             
             val prices = PETS_TO_CHECK.map { pet ->
                 val petName = pet.petDisplayName.removeFormatting()
@@ -84,7 +87,7 @@ object PetLevelUpPricesCommand {
                 val diffStr = CommonUtils.toShortNumber(petInfo.diff) ?: "N/A"
                 val level1PriceStr = CommonUtils.toShortNumber(petInfo.level1Price) ?: "N/A"
                 val level100PriceStr = CommonUtils.toShortNumber(petInfo.level100Price) ?: "N/A"
-                val coinsPerXpStr = String.format("%.2f", petInfo.coinsPerXp)
+                val coinsPerXpStr = petInfo.coinsPerXp?.let { String.format("%.2f", it) } ?: "N/A"
                 
                 ChatUtils.sendLocalChat(" - ${petInfo.petDisplayName}${RESET}: ${GREEN}+$diffStr${RESET} (${GOLD}$level1PriceStr${RESET} -> ${GOLD}$level100PriceStr${RESET}) | ${GOLD}$coinsPerXpStr ${RESET}coins/XP")
             }

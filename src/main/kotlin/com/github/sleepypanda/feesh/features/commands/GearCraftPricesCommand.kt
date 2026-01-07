@@ -87,7 +87,10 @@ object GearCraftPricesCommand {
     
     private fun calculateGearCraftPrices() {
         try {
-            if (!WorldUtils.isInSkyblock()) return
+            if (!WorldUtils.isInSkyblock()) {
+                ChatUtils.sendLocalChat("${RED}You must be on Hypixel Skyblock to use this command!", true)
+                return
+            }
                         
             ChatUtils.sendLocalChat("${GREEN}${BOLD}Gear craft prices", true)
             ChatUtils.sendLocalChat("${DARK_GRAY}Prices for crafted gear compared with price for selling base items via sell offer. Click a line to open Supercraft menu.")
