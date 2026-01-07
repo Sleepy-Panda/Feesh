@@ -104,12 +104,12 @@ object GearCraftPricesCommand {
                     )
                 }.sortedByDescending { it.profitPerBaseItem }
                 
-                val baseItemPriceStr = CommonUtils.toShortNumber(baseItemPrice)
-                ChatUtils.sendLocalChat("${WHITE}Gear crafted from ${category.baseItemName}${WHITE} (${GOLD}$baseItemPriceStr ${RESET}per item):")
+                val baseItemPriceStr = CommonUtils.toShortNumber(baseItemPrice) ?: "N/A"
+                ChatUtils.sendLocalChat("\n${WHITE}Gear crafted from ${category.baseItemName}${WHITE} (${GOLD}$baseItemPriceStr ${RESET}per item):")
                 
                 craftProfits.forEach { craftProfit ->
-                    val itemPriceStr = CommonUtils.toShortNumber(craftProfit.itemPrice)
-                    val profitPerBaseItemStr = CommonUtils.toShortNumber(craftProfit.profitPerBaseItem)
+                    val itemPriceStr = CommonUtils.toShortNumber(craftProfit.itemPrice) ?: "N/A"
+                    val profitPerBaseItemStr = CommonUtils.toShortNumber(craftProfit.profitPerBaseItem) ?: "N/A"
                     val itemNameWithoutFormatting = craftProfit.itemName.removeFormatting()
                     
                     val clickableText = Text.literal(" - ${craftProfit.itemName}${RESET}: ${GOLD}$itemPriceStr${RESET} (${GOLD}$profitPerBaseItemStr${RESET} per item)")

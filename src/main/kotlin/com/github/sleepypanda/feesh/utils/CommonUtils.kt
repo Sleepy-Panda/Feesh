@@ -69,7 +69,7 @@ object CommonUtils {
      * @return The formatted string or null if the number is 0 or invalid.
      */
     fun toShortNumber(number: Double?): String? {
-        if (number == null || number <= 0) return null
+        if (number == null || number < 0) return null
         
         return when {
             number >= 1_000_000_000 -> String.format("%.1fB", number / 1_000_000_000.0).removeSuffix(".0")

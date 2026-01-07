@@ -9,6 +9,7 @@ import com.github.sleepypanda.feesh.features.alerts.AnyReindrakeAlert
 import com.github.sleepypanda.feesh.features.alerts.NonFishingArmorAlert
 import com.github.sleepypanda.feesh.features.alerts.GoldenFishSpawnAlert
 import com.github.sleepypanda.feesh.features.chat.RareCatchMessage
+import com.github.sleepypanda.feesh.features.alerts.RareDropAlert
 import com.github.sleepypanda.feesh.features.chat.RareCatchAllChatMessage
 import com.github.sleepypanda.feesh.features.chat.CompactCatchMessages
 import com.github.sleepypanda.feesh.features.chat.PlayerDeathMessage
@@ -84,6 +85,7 @@ class FeeshMod : ModInitializer {
         
         // Alerts
         RareCatchAlert.init()
+        RareDropAlert.init()
         SpiritMaskAlert.init()
         ChumBucketAutoPickupAlert.init()
         PetLevelUpAlert.init()

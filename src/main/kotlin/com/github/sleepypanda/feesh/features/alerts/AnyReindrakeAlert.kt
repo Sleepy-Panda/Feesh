@@ -20,7 +20,7 @@ object AnyReindrakeAlert {
 
     private fun onAnyReindrake(boldDisplayName: String, rarityColorCode: String) {
         if (boldDisplayName.isNullOrEmpty() || rarityColorCode.isNullOrEmpty()) return
-        if (!WorldUtils.isInSkyblock() || !Alerts.alertOnAnyReindrake || WorldUtils.getZoneName() != WorldUtils.JERRY_WORKSHOP) return
+        if (!WorldUtils.isInSkyblock() || !Alerts.alertOnAnyReindrake || WorldUtils.getWorldName() != WorldUtils.JERRY_WORKSHOP) return
 
         CommonUtils.showTitle(SeaCreatures.getTitle(reindrake.name, false))
         SoundUtils.playSound()
