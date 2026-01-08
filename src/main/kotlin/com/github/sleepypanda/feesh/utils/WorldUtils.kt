@@ -37,6 +37,13 @@ object WorldUtils {
         GLACITE_MINESHAFTS
     )
 
+    private val HOTSPOT_WORLDS = listOf(
+        BACKWATER_BAYOU,
+        SPIDERS_DEN,
+        HUB,
+        CRIMSON_ISLE
+    )
+
     private var cachedIsInSkyblock: Boolean = false
     private var cachedWorldName: String? = null
     private var timer: Timer? = null
@@ -94,8 +101,19 @@ object WorldUtils {
     fun isInFishingWorld(): Boolean {
         if (!isInSkyblock()) return false
         val worldName = getWorldName()
-    	if (worldName.isNullOrEmpty()) return false
+        if (worldName.isNullOrEmpty()) return false
     	return !NO_FISHING_WORLDS.contains(worldName)
+    }
+
+    /**
+    * Check whether current world name supports hotspot fishing features.
+    * @returns {Boolean}
+    */
+    fun isInHotspotFishingWorld(): Boolean {
+        if (!isInSkyblock()) return false
+        val worldName = getWorldName()
+    	if (worldName.isNullOrEmpty()) return false
+        return HOTSPOT_WORLDS.contains(getWorldName())
     }
 
     /**

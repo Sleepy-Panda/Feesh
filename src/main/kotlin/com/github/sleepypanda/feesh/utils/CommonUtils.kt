@@ -116,4 +116,23 @@ object CommonUtils {
             else -> ""
         }
     }
+
+    /**
+     * Generates a random message ID to avoid "You cannot send the same message twice" in all chat.
+     * @return The message ID.
+     */
+    fun getMessageId(): String {
+        return "@" + (1..10).map { (('0'..'9') + ('a'..'z') + ('A'..'Z')).random() }.joinToString("")
+    }
+
+    /**
+     * Formats the location coordinates to a Patcher formattted string.
+     * @param x The x coordinate.
+     * @param y The y coordinate.
+     * @param z The z coordinate.
+     * @return The formatted location: "x: 123, y: 123, z: 123".
+     */
+    fun getFormattedLocation(x: Double, y: Double, z: Double): String {
+        return "x: ${Math.round(x)}, y: ${Math.round(y)}, z: ${Math.round(z)}"
+    }
 }

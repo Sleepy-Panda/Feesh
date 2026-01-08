@@ -8,11 +8,13 @@ import com.github.sleepypanda.feesh.features.alerts.ThunderBottleChargedAlert
 import com.github.sleepypanda.feesh.features.alerts.AnyReindrakeAlert
 import com.github.sleepypanda.feesh.features.alerts.NonFishingArmorAlert
 import com.github.sleepypanda.feesh.features.alerts.GoldenFishSpawnAlert
+import com.github.sleepypanda.feesh.features.alerts.HotspotGoneAlert
 import com.github.sleepypanda.feesh.features.chat.RareCatchMessage
 import com.github.sleepypanda.feesh.features.alerts.RareDropAlert
 import com.github.sleepypanda.feesh.features.chat.RareCatchAllChatMessage
 import com.github.sleepypanda.feesh.features.chat.CompactCatchMessages
 import com.github.sleepypanda.feesh.features.chat.PlayerDeathMessage
+import com.github.sleepypanda.feesh.features.chat.HotspotFoundMessage
 import com.github.sleepypanda.feesh.features.commands.SpiderDenRainScheduleCommand
 import com.github.sleepypanda.feesh.features.commands.PetLevelUpPricesCommand
 import com.github.sleepypanda.feesh.features.commands.GearCraftPricesCommand
@@ -93,12 +95,14 @@ class FeeshMod : ModInitializer {
         AnyReindrakeAlert.init()
         NonFishingArmorAlert.init()
         GoldenFishSpawnAlert.init()
+        HotspotGoneAlert.init()
 
         // Chat
         RareCatchMessage.init()
         RareCatchAllChatMessage.init()
         CompactCatchMessages.init()
         PlayerDeathMessage.init()
+        HotspotFoundMessage.init()
 
         // Overlays
         JerryWorkshopTracker.init()

@@ -66,7 +66,7 @@ object JerryWorkshopTracker {
         
         data.yeti.catchesSinceLast++
         val catchesSinceLast = data.yeti.catchesSinceLast
-        ChatUtils.sendLocalChat(getMessage(catchesSinceLast, data.yeti.lastCatchTime, yeti.name, yeti.rarityColorCode), true)
+        ChatUtils.sendLocalChat(getMessage(catchesSinceLast, data.yeti.lastCatchTime, yeti.boldDisplayName), true)
 
         data.yeti.lastCatchTime = Date()
         data.yeti.catchesHistory = (listOf(catchesSinceLast) + data.yeti.catchesHistory).take(100)
@@ -80,7 +80,7 @@ object JerryWorkshopTracker {
 
         data.reindrake.catchesSinceLast++
         val catchesSinceLast = data.reindrake.catchesSinceLast
-        ChatUtils.sendLocalChat(getMessage(catchesSinceLast, data.reindrake.lastCatchTime, reindrake.name, reindrake.rarityColorCode), true)
+        ChatUtils.sendLocalChat(getMessage(catchesSinceLast, data.reindrake.lastCatchTime, reindrake.boldDisplayName), true)
 
         data.reindrake.lastCatchTime = Date()
         data.reindrake.catchesHistory = (listOf(catchesSinceLast) + data.reindrake.catchesHistory).take(100)
@@ -179,11 +179,10 @@ object JerryWorkshopTracker {
         return formatter.format(date)
     }
 
-    private fun getMessage(catchesSinceLast: Int, lastCatchTime: Date?, seaCreatureName: String, rarityCode: String): String {
+    private fun getMessage(catchesSinceLast: Int, lastCatchTime: Date?, seaCreatureDisplayName: String): String {
         val b2bText = if (catchesSinceLast == 1) "${RED}B2B! " else ""
         val elapsedTimeText = if (lastCatchTime != null) " ${GRAY}(${WHITE}${CommonUtils.formatTimeElapsed(lastCatchTime)}${GRAY})" else ""
         val catchesText = "${WHITE}${catchesSinceLast} ${GRAY}${if (catchesSinceLast == 1) "catch" else "catches"}"
-        val seaCreatureDisplayName = "${rarityCode}${seaCreatureName}"
         return "${b2bText}${GRAY}It took ${catchesText}${elapsedTimeText} to get the ${seaCreatureDisplayName}${GRAY}."
     }
 }

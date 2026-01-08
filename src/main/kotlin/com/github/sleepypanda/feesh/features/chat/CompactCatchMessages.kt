@@ -4,6 +4,7 @@ import com.github.sleepypanda.feesh.FeeshMod
 import com.github.sleepypanda.feesh.constants.SeaCreatures
 import com.github.sleepypanda.feesh.utils.RegisterUtils
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
+import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
 import com.github.sleepypanda.feesh.utils.enums.FormattingCodes
 import com.github.sleepypanda.feesh.utils.ChatUtils
 import com.github.sleepypanda.feesh.utils.WorldUtils
@@ -23,7 +24,7 @@ object CompactCatchMessages {
 
         var seaCreatureInfo = SeaCreatures.allSeaCreatures.find { it.name == event.seaCreatureName } ?: return
         val isDoubleHook = event.isDoubleHook
-        val dhMessage = if (isDoubleHook) "${BLUE}${FormattingCodes.BOLD}DOUBLE HOOK! " else ""
+        val dhMessage = if (isDoubleHook) "${AQUA}${BOLD}DOUBLE HOOK! " else ""
         ChatUtils.sendLocalChat("${dhMessage}${GRAY}You caught ${seaCreatureInfo.boldDisplayName}${GRAY}!")
     }
 }

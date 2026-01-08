@@ -10,6 +10,11 @@ import com.teamresourceful.resourcefulconfig.api.annotations.Comment
 import com.teamresourceful.resourcefulconfig.api.annotations.ConfigEntry
 import com.teamresourceful.resourcefulconfig.api.types.options.EntryType
 
+enum class HotspotChatSource {
+    PARTY_CHAT,
+    ALL_CHAT
+}
+
 object Chat : CategoryKt("Chat") {
     init {
         separator {
@@ -43,5 +48,33 @@ object Chat : CategoryKt("Chat") {
     var messageOnPlayerDeath by boolean(true) {
         this.name = Translated("Send a party chat message when killed by a Mythic lava creature")
         this.description = Translated("Sends a message to the party chat when you are killed by Thunder / Lord Jawbus / Ragnarok. It enables the alerts for your party members so they can wait for you.")
+    }
+
+    init {
+        separator {
+            this.title = "${AQUA}${BOLD}Hotspots"
+        }
+    }
+
+    var messageOnHotspotFound by boolean(true) {
+        this.name = Translated("Offer sharing the found hotspots on click")
+        this.description = Translated("Shows clickable chat message that offers sharing Hotspot location and its perk to ALL chat or PARTY chat. You need to be close to the hotspot in order to trigger it.")
+    }
+
+    init {
+        separator {
+            this.title = "Share hotspot button"
+            this.description = "Set a keybind in Minecraft's Controls menu to share the nearest Hotspot to PARTY chat or ALL chat on button pressed. You need to be close to the hotspot when pressing the button."
+        }
+    }
+
+    var autoMessageOnHotspotFound by boolean(false) {
+        this.name = Translated("Autoshare the found hotspots")
+        this.description = Translated("Sends a chat message with Hotspot location and its perk to the selected chat. You need to be close to the hotspot in order to trigger it.")
+    }
+
+    var autoMessageOnHotspotFoundSource by enum(HotspotChatSource.PARTY_CHAT) {
+        this.name = Translated("Autoshare to")
+        this.description = Translated("Source chat type to autoshare the found hotspots (if autosharing enabled).")
     }
 }
