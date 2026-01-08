@@ -1,9 +1,14 @@
 package com.github.sleepypanda.feesh.utils
 
 import com.github.sleepypanda.feesh.FeeshMod
+import com.github.sleepypanda.feesh.utils.ChatUtils.getFormattedString
+import com.github.sleepypanda.feesh.utils.ChatUtils.removeFormatting
 import java.util.Timer
 import kotlin.concurrent.timerTask
 import net.minecraft.scoreboard.ScoreboardDisplaySlot
+import net.minecraft.scoreboard.Scoreboard
+import net.minecraft.scoreboard.ScoreboardObjective
+import net.minecraft.scoreboard.Team
 
 object WorldUtils {
     val CRIMSON_ISLE = "Crimson Isle"
@@ -46,6 +51,7 @@ object WorldUtils {
 
     private var cachedIsInSkyblock: Boolean = false
     private var cachedWorldName: String? = null
+    private var cachedZoneName: String? = null
     private var timer: Timer? = null
 
     fun init() {
@@ -63,14 +69,58 @@ object WorldUtils {
     }
 
     private fun updateCache() {
-        cachedIsInSkyblock = checkIsInSkyblock()
+        cachedIsInSkyblock = readIsInSkyblock()
+        
         cachedWorldName = if (cachedIsInSkyblock) {
-            val worldName = TabListUtils.getLineAfter("Area:")
-            if (worldName.isNotEmpty()) worldName else null
+            readWorldName()
+        } else null
+        
+        cachedZoneName = if (cachedIsInSkyblock && !cachedWorldName.isNullOrEmpty()) {
+            readZoneName()
         } else null
     }
+    
+    private fun readWorldName(): String? {
+        val worldName = TabListUtils.getLineAfter("Area:")
+        return if (worldName.isNotEmpty()) worldName else null
+    }
 
-    private fun checkIsInSkyblock(): Boolean {
+    private fun readZoneName(): String? {
+        val scoreboard = FeeshMod.mc.world?.scoreboard ?: return null
+        val objective = scoreboard.getObjectiveForSlot(ScoreboardDisplaySlot.SIDEBAR) ?: return null
+        
+        val zoneLine = scoreboard.getScoreboardEntries(objective)
+            .filter { entry -> entry?.owner != null && !entry.hidden() }
+            .map { entry -> Team.decorateName(scoreboard.getScoreHolderTeam(entry.owner()), entry.name()).string.removeFormatting() }
+            .find { line -> line.contains("⏣") || line.contains("ф") }
+        if (zoneLine.isNullOrEmpty()) return null
+
+        // ⏣ Abandoned🐍 Quarry -> Abandoned Quarry
+        var zoneName = zoneLine.replace("⏣", "").replace("ф", "").replace(Regex("[^\\u0000-\\u007F]"), "").trim()
+        
+        // Some lava in Phlegblast area does not belong to Phlegblast Pool zone but needs to be counted
+        val worldName = cachedWorldName
+        if (worldName == CRIMSON_ISLE && zoneName == CRIMSON_ISLE) {
+            val player = FeeshMod.mc.player ?: return zoneName
+            val x = player.x
+            val y = player.y
+            val z = player.z
+            
+            if (isBetweenIncluding(x, -381.0, -370.0) && 
+                isBetweenIncluding(y, 68.0, 72.0) && 
+                isBetweenIncluding(z, -708.0, -697.0)) {
+                zoneName = PLHLEGBLAST_POOL
+            }
+        }
+        
+        return zoneName
+    }
+    
+    private fun isBetweenIncluding(value: Double, num1: Double, num2: Double): Boolean {
+        return value >= num1 && value <= num2
+    }
+
+    private fun readIsInSkyblock(): Boolean {
         val serverAddress = FeeshMod.mc.currentServerEntry?.address ?: return false
         if (!serverAddress.contains("hypixel", ignoreCase = true)) return false
         
@@ -130,6 +180,6 @@ object WorldUtils {
     */
     fun getZoneName(): String? {
         if (!isInSkyblock()) return null
-        return null
+        return cachedZoneName
     }
 }

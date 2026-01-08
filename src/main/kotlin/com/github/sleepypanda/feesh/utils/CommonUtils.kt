@@ -6,7 +6,7 @@ import java.util.Date
 import java.util.concurrent.TimeUnit
 
 object CommonUtils {
-    fun showTitle(title: String, subtitle: String? = null, fadeIn: Int = 0, stay: Int = 20, fadeOut: Int = 10) {      
+    fun showTitle(title: String, subtitle: String? = null, fadeIn: Int = 0, stay: Int = 25, fadeOut: Int = 10) {      
         var mc = FeeshMod.mc
 
         mc.inGameHud.apply {
