@@ -15,11 +15,8 @@ plugins {
 }
 
 repositories {
-    //maven("https://pkgs.dev.azure.com/djtheredstoner/DevAuth/_packaging/public/maven/v1")
     maven("https://repo.essential.gg/repository/maven-public")
     maven("https://maven.teamresourceful.com/repository/maven-public/")
-    //maven("https://maven.terraformersmc.com/")
-    //maven("https://maven.azureaaron.net/releases")
 }
 
 toolkitMultiversion {
@@ -28,29 +25,13 @@ toolkitMultiversion {
 
 dependencies {
     modImplementation("net.fabricmc:fabric-language-kotlin:${mcData.dependencies.fabric.fabricLanguageKotlinVersion}")
-   // implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.3")
-
-    //modImplementation(include("gg.essential:elementa:${property("elementa.version")}")!!)
-   // modImplementation(include("net.azureaaron:hm-api:${property("hmapi.version")}")!!)
     modImplementation(include("com.teamresourceful.resourcefulconfigkt:resourcefulconfigkt-fabric-1.21.5:${property("rconfig.version.1.21.5")}")!!)
 
-    // modImplementation(include("xyz.meowing:vexel-${mcData}:${property("vexel.version")}")!!)
     when (mcData.version) {
         MinecraftVersions.VERSION_1_21_10 -> {
             modImplementation("net.fabricmc.fabric-api:fabric-api:0.138.3+1.21.10")
-            modImplementation("com.terraformersmc:modmenu:${property("modmenu.version.1.21.10")}")
             modImplementation(include("com.teamresourceful.resourcefulconfig:resourcefulconfig-fabric-1.21.9:${property("rconfig.version.1.21.10")}")!!)
-            //modImplementation(include("gg.essential:universalcraft-1.21.9-fabric:${property("uc.version")}")!!)
         }
         else -> {}
     }
-
-    //runtimeOnly("me.djtheredstoner:DevAuth-fabric:${property("devauth.version")}")
 }
-
-//tasks.findByName("preprocessCode")?.apply {
-//    when (mcData.version) {
-//        MinecraftVersions.VERSION_1_21_10 -> dependsOn(":1.21.7-fabric:kspKotlin")
-//        else -> {}
-//    }
-//}

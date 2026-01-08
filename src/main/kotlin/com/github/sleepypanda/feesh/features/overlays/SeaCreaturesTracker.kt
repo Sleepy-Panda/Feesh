@@ -23,19 +23,16 @@ enum class ViewMode {
     TOTAL
 }
 
-//@Serializable
 data class SeaCreatureCatchData(
     var amount: Int = 0,
     var doubleHookAmount: Int = 0
 )
 
-//@Serializable
 data class SeaCreaturesData(
     val catches: MutableMap<String, SeaCreatureCatchData> = mutableMapOf(),
     var totalCount: Int = 0
 )
 
-//@Serializable
 data class SeaCreaturesTrackerData(
     var session: SeaCreaturesData = SeaCreaturesData(),
     var total: SeaCreaturesData = SeaCreaturesData(),
