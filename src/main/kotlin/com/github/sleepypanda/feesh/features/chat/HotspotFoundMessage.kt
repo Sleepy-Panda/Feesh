@@ -10,6 +10,7 @@ import com.github.sleepypanda.feesh.utils.HotspotUtils
 import com.github.sleepypanda.feesh.utils.ChatUtils
 import com.github.sleepypanda.feesh.utils.ChatUtils.removeFormatting
 import com.github.sleepypanda.feesh.utils.SoundUtils
+import com.github.sleepypanda.feesh.utils.KeybindUtils
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
 import com.github.sleepypanda.feesh.events.EventBus
@@ -24,20 +25,13 @@ import net.minecraft.text.HoverEvent
 import net.minecraft.text.ClickEvent.RunCommand
 import net.minecraft.text.HoverEvent.ShowText
 import net.minecraft.client.option.KeyBinding
-import net.minecraft.client.util.InputUtil
-import net.minecraft.util.Identifier
-import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper
 import org.lwjgl.glfw.GLFW
 
 object HotspotFoundMessage {
-    private lateinit var shareNearestHotspotToPartyChatKeyBind: KeyBinding
-    private lateinit var shareNearestHotspotToAllChatKeyBind: KeyBinding
-    private val FEESH_CATEGORY = KeyBinding.Category(Identifier.of("feesh", "keybinds")) // Keys are localized in resources/assets/feesh/lang/en_us.json
-
     private var lastClosestHotspot: HotspotUtils.HotspotData? = null
     private var lastFoundHotspotIds = mutableListOf<UUID>()
     private var tickCounter = 0
-    private const val TICKS_PER_CHECK = 20
+    private const val TICKS_PER_CHECK = 10
 
     fun init() {
         registerKeybinds()
@@ -47,21 +41,13 @@ object HotspotFoundMessage {
     }
 
     private fun registerKeybinds() {
-        shareNearestHotspotToPartyChatKeyBind = KeyBinding(
-            "key.feesh.shareHotspotPartyChat",
-            InputUtil.Type.KEYSYM,
-            GLFW.GLFW_KEY_UNKNOWN,
-            FEESH_CATEGORY
-        )
-        KeyBindingHelper.registerKeyBinding(shareNearestHotspotToPartyChatKeyBind)
+        KeybindUtils.registerKeybind("key.feesh.shareHotspotPartyChat", GLFW.GLFW_KEY_UNKNOWN) {
+            sendMessageWithNearestHotspot(true)
+        }
 
-        shareNearestHotspotToAllChatKeyBind = KeyBinding(
-            "key.feesh.shareHotspotAllChat",
-            InputUtil.Type.KEYSYM,
-            GLFW.GLFW_KEY_UNKNOWN,
-            FEESH_CATEGORY
-        )
-        KeyBindingHelper.registerKeyBinding(shareNearestHotspotToAllChatKeyBind)
+        KeybindUtils.registerKeybind("key.feesh.shareHotspotAllChat", GLFW.GLFW_KEY_UNKNOWN) {
+            sendMessageWithNearestHotspot(false)
+        }
     }
 
     private fun onWorldChanged(@Suppress("UNUSED_PARAMETER") event: WorldChangedEvent) {
@@ -72,13 +58,6 @@ object HotspotFoundMessage {
     private fun onClientTick(@Suppress("UNUSED_PARAMETER") event: ClientTickEvent) {
         if (!Chat.messageOnHotspotFound && !Chat.autoMessageOnHotspotFound) return
         if (!WorldUtils.isInSkyblock() || !WorldUtils.isInHotspotFishingWorld() || !PlayerUtils.hasFishingRodInHotbar()) return
-
-        if (shareNearestHotspotToPartyChatKeyBind.wasPressed()) {
-            sendMessageWithNearestHotspot(true)
-        }
-        if (shareNearestHotspotToAllChatKeyBind.wasPressed()) {
-            sendMessageWithNearestHotspot(false)
-        }
 
         tickCounter++
         if (tickCounter < TICKS_PER_CHECK) return

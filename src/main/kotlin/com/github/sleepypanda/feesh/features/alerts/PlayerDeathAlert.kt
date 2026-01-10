@@ -1,4 +1,4 @@
-package com.github.sleepypanda.feesh.features.chat
+package com.github.sleepypanda.feesh.features.alerts
 
 import com.github.sleepypanda.feesh.settings.categories.Alerts
 import com.github.sleepypanda.feesh.utils.ChatUtils

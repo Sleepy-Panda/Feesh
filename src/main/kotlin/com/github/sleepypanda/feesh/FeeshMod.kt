@@ -10,13 +10,15 @@ import com.github.sleepypanda.feesh.features.alerts.NonFishingArmorAlert
 import com.github.sleepypanda.feesh.features.alerts.GoldenFishSpawnAlert
 import com.github.sleepypanda.feesh.features.alerts.HotspotGoneAlert
 import com.github.sleepypanda.feesh.features.alerts.SaltExpiredAlert
-import com.github.sleepypanda.feesh.features.chat.RareCatchMessage
+import com.github.sleepypanda.feesh.features.alerts.PlayerDeathAlert
+import com.github.sleepypanda.feesh.features.alerts.LootshareAlert
 import com.github.sleepypanda.feesh.features.alerts.RareDropAlert
+import com.github.sleepypanda.feesh.features.chat.RareCatchMessage
 import com.github.sleepypanda.feesh.features.chat.RareCatchAllChatMessage
 import com.github.sleepypanda.feesh.features.chat.CompactCatchMessages
 import com.github.sleepypanda.feesh.features.chat.PlayerDeathMessage
 import com.github.sleepypanda.feesh.features.chat.HotspotFoundMessage
-import com.github.sleepypanda.feesh.features.chat.PlayerDeathAlert
+import com.github.sleepypanda.feesh.features.chat.LootshareMessage
 import com.github.sleepypanda.feesh.features.commands.SpiderDenRainScheduleCommand
 import com.github.sleepypanda.feesh.features.commands.PetLevelUpPricesCommand
 import com.github.sleepypanda.feesh.features.commands.GearCraftPricesCommand
@@ -32,6 +34,7 @@ import com.github.sleepypanda.feesh.events.publishers.SeaCreaturesPublisher
 import com.github.sleepypanda.feesh.events.publishers.RareDropsPublisher
 import com.github.sleepypanda.feesh.events.publishers.PartyChatPublisher
 import com.github.sleepypanda.feesh.settings.Settings
+import com.github.sleepypanda.feesh.utils.KeybindUtils
 import com.github.sleepypanda.feesh.utils.WorldUtils
 import com.github.sleepypanda.feesh.utils.PlayerUtils
 import com.github.sleepypanda.feesh.utils.PriceUtils
@@ -81,6 +84,7 @@ class FeeshMod : ModInitializer {
         WorldUtils.init()
         PlayerUtils.init()
         PriceUtils.init()
+        KeybindUtils.init()
 
         // Event publishers
         SeaCreaturesPublisher.init()
@@ -100,6 +104,7 @@ class FeeshMod : ModInitializer {
         HotspotGoneAlert.init()
         SaltExpiredAlert.init()
         PlayerDeathAlert.init()
+        LootshareAlert.init()
 
         // Chat
         RareCatchMessage.init()
@@ -107,6 +112,7 @@ class FeeshMod : ModInitializer {
         CompactCatchMessages.init()
         PlayerDeathMessage.init()
         HotspotFoundMessage.init()
+        LootshareMessage.init()
 
         // Overlays
         JerryWorkshopTracker.init()
