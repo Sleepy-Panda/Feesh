@@ -9,6 +9,7 @@ import com.github.sleepypanda.feesh.features.alerts.AnyReindrakeAlert
 import com.github.sleepypanda.feesh.features.alerts.NonFishingArmorAlert
 import com.github.sleepypanda.feesh.features.alerts.GoldenFishSpawnAlert
 import com.github.sleepypanda.feesh.features.alerts.HotspotGoneAlert
+import com.github.sleepypanda.feesh.features.alerts.SaltExpiredAlert
 import com.github.sleepypanda.feesh.features.chat.RareCatchMessage
 import com.github.sleepypanda.feesh.features.alerts.RareDropAlert
 import com.github.sleepypanda.feesh.features.chat.RareCatchAllChatMessage
@@ -96,6 +97,7 @@ class FeeshMod : ModInitializer {
         NonFishingArmorAlert.init()
         GoldenFishSpawnAlert.init()
         HotspotGoneAlert.init()
+        SaltExpiredAlert.init()
 
         // Chat
         RareCatchMessage.init()

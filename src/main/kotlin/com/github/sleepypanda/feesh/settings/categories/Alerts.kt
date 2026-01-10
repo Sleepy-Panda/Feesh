@@ -99,4 +99,9 @@ object Alerts : CategoryKt("Alerts") {
         this.name = Translated("Alert when no fishing armor equipped")
         this.description = Translated("Shows a title and plays a sound when current player is fishing in a non-fishing armor.")
     }
+    
+    var alertOnSaltExpired by boolean(true) {
+        this.name = Translated("Alert when a Salt has expired")
+        this.description = Translated("Shows a title and plays a sound when a Salt has expired.")
+    }
 }
