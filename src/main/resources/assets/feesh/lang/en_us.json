@@ -1,7 +1,8 @@
 {
+  "key.category.feesh.keybinds": "Feesh",
   "key.feesh.shareHotspotPartyChat": "Share nearest Hotspot to PARTY chat",
   "key.feesh.shareHotspotAllChat": "Share nearest Hotspot to ALL chat",
   "key.feesh.lootshareToPartyChat": "Send lootshare message to PARTY chat",
-  "key.category.feesh.keybinds": "Feesh"
+  "key.feesh.resetBarnFishingTimer": "Reset Barn fishing timer"
 }
 

@@ -7,6 +7,7 @@ import com.teamresourceful.resourcefulconfig.api.annotations.Comment
 import com.teamresourceful.resourcefulconfig.api.annotations.ConfigEntry
 import com.teamresourceful.resourcefulconfig.api.types.options.EntryType
 import com.teamresourceful.resourcefulconfigkt.api.CategoryKt
+import net.minecraft.util.Util
 
 enum class SeaCreaturesTrackerDisplayMode {
     ONLY_RARE,
@@ -48,6 +49,24 @@ object Overlays : CategoryKt("Overlays") {
         this.description = Translated("Shows an overlay with the amount of players within 30 blocks (excluding you), and amount of fishing hooks within 30 blocks (including your own hook). Hidden if you have no fishing rod in your hotbar!")
     }
 
+    init {
+        separator {
+            this.title = "${AQUA}${BOLD}Barn fishing timer"
+        }
+    }
+
+    var barnFishingTimerOverlay by boolean(false) {
+        this.name = Translated("Barn fishing timer overlay")
+        this.description = Translated("Shows an overlay with the count of sea creatures nearby and how long they have been alive. Mostly useful for barn fishing. Hidden if you have no fishing rod in your hotbar or if you are wearing Hunter armor!\nUse /feeshResetBarnFishingTimer to reset.")
+    }
+
+    init {
+        separator {
+            this.title = "Reset barn fishing timer keybind"
+            this.description = "Set a keybind in Minecraft's Controls menu to reset the barn fishing timer."
+        }
+    }
+    
     init {
         separator {
             this.title = "${AQUA}${BOLD}Sea creatures"
@@ -103,6 +122,17 @@ object Overlays : CategoryKt("Overlays") {
     var fishingHookFishTimerTemplate by string("§e§l{timer}") {
         this.name = Translated("Custom timer format")
         this.description = Translated("Replace default with your custom timer text. Use {timer} to insert timer seconds into the template. Leave empty to use default.")
+    }
+
+    init {
+        button {
+            title = "Colors & formatting guide"
+            description = "For settings above with custom text templates, please explore color codes and formatting codes."
+            text = "Click to open"
+            onClick {
+                Util.getOperatingSystem().open("https://github.com/Sleepy-Panda/Feesh/blob/develop/docs/Colors%20and%20formatting%20guide.md")
+            }
+        }
     }
 
     init {

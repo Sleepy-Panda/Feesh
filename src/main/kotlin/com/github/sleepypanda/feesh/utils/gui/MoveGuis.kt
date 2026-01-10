@@ -68,7 +68,7 @@ class MoveGuisScreen : Screen(Text.literal("Feesh Move Guis")) {
     override fun render(context: DrawContext, mouseX: Int, mouseY: Int, delta: Float) {       
         val textRenderer = client?.textRenderer ?: return
         
-        val hint = Text.literal("${YELLOW}${BOLD}Move / scale the GUIs using your mouse. Press +/- or scroll to scale. Press ESC to exit.")
+        val hint = Text.literal("${RED}${BOLD}Enable GUIs in settings to see them here!\n${YELLOW}${BOLD}Move / scale the GUIs using your mouse. Press +/- or scroll to scale. Press ESC to exit.")
         val x = client!!.window.scaledWidth / 2 - textRenderer.getWidth(hint) / 2
         context.drawText(textRenderer, hint, x, 20, color, true)
         
@@ -92,13 +92,7 @@ class MoveGuisScreen : Screen(Text.literal("Feesh Move Guis")) {
             val gui = mapping.gui
             val x = gui.getX()
             val y = gui.getY()
-            //val scale = gui.getScale()
-            //val alignment = gui.getAlignment()
-            
-            //val sampleLines = gui.getSampleLines()
-            //val maxWidth = (sampleLines.maxOfOrNull { textRenderer.getWidth(Text.literal(it)) } ?: 175) * scale
-            //val height = (sampleLines.size * (textRenderer.fontHeight + 2)) * scale
-            
+
             val (isInSample, actualX) = gui.isInSample(textRenderer, client!!, mouseX, mouseY)
             if (isInSample) {
                 isDraggingGui = gui
