@@ -46,8 +46,8 @@ object Chat : CategoryKt("Chat") {
     }
 
     var messageOnPlayerDeath by boolean(true) {
-        this.name = Translated("Send a party chat message when killed by a Mythic lava creature")
-        this.description = Translated("Sends a message to the party chat when you are killed by Thunder / Lord Jawbus / Ragnarok. It enables the alerts for your party members so they can wait for you.")
+        this.name = Translated("Send a party chat message when killed by a Mythic sea creature")
+        this.description = Translated("Sends a message to the party chat when you are killed by Thunder / Lord Jawbus / Ragnarok / Wiki Tiki / Titanoboa. It enables the alerts for your party members so they can wait for you.")
     }
 
     init {

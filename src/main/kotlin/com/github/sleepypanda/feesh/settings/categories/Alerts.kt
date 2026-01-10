@@ -60,7 +60,7 @@ object Alerts : CategoryKt("Alerts") {
 
     init {
         separator {
-            this.title = "${AQUA}${BOLD}Hotspot"
+            this.title = "${AQUA}${BOLD}Hotspots"
         }
     }
 
@@ -73,6 +73,11 @@ object Alerts : CategoryKt("Alerts") {
         separator {
             this.title = "${AQUA}${BOLD}Other"
         }
+    }
+
+    var alertOnPlayerDeath by boolean(true) {
+        this.name = Translated("Alert when you or your party members are killed by a Mythic sea creature")
+        this.description = Translated("Shows a title and plays a sound when you or your party members are killed by Thunder / Lord Jawbus / Ragnarok / Wiki Tiki / Titanoboa.")
     }
 
     var alertOnChumBucketAutoPickup by boolean(true) {

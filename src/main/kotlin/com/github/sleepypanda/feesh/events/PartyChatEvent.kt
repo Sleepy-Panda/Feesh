@@ -4,7 +4,7 @@ import net.minecraft.text.Text
 
 /*
  * Called when a party chat message is received.
- * @param message The rawmessage.
+ * @param message The raw message.
  * @param rankAndPlayer The rank and player name.
  * @param messagePayload The message payload (the part after the rank and player name).
  */

@@ -16,6 +16,7 @@ import com.github.sleepypanda.feesh.features.chat.RareCatchAllChatMessage
 import com.github.sleepypanda.feesh.features.chat.CompactCatchMessages
 import com.github.sleepypanda.feesh.features.chat.PlayerDeathMessage
 import com.github.sleepypanda.feesh.features.chat.HotspotFoundMessage
+import com.github.sleepypanda.feesh.features.chat.PlayerDeathAlert
 import com.github.sleepypanda.feesh.features.commands.SpiderDenRainScheduleCommand
 import com.github.sleepypanda.feesh.features.commands.PetLevelUpPricesCommand
 import com.github.sleepypanda.feesh.features.commands.GearCraftPricesCommand
@@ -81,7 +82,7 @@ class FeeshMod : ModInitializer {
         PlayerUtils.init()
         PriceUtils.init()
 
-        // APIs
+        // Event publishers
         SeaCreaturesPublisher.init()
         RareDropsPublisher.init()
         PartyChatPublisher.init()
@@ -98,6 +99,7 @@ class FeeshMod : ModInitializer {
         GoldenFishSpawnAlert.init()
         HotspotGoneAlert.init()
         SaltExpiredAlert.init()
+        PlayerDeathAlert.init()
 
         // Chat
         RareCatchMessage.init()
