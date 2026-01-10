@@ -10,6 +10,7 @@ import com.github.sleepypanda.feesh.utils.PlayerUtils
 import com.github.sleepypanda.feesh.utils.EntityUtils
 import com.github.sleepypanda.feesh.utils.gui.FeeshGui
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
+import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.entity.projectile.FishingBobberEntity
 import net.minecraft.client.MinecraftClient
@@ -30,8 +31,8 @@ object LegionBobbingTimeTracker {
         .setCoordsDataKey("legionBobbingTimeTracker")
         .setClickable(false)
         .setSampleLines(listOf(
-            "${GOLD}Legion: ${WHITE}2 ${GRAY}players",
-            "${GOLD}Bobbin' time: ${WHITE}3 ${GRAY}hooks"
+            "${LIGHT_PURPLE}${BOLD}Legion${GRAY}: ${WHITE}2 ${GRAY}players",
+            "${LIGHT_PURPLE}${BOLD}Bobbin' Time${GRAY}: ${WHITE}3 ${GRAY}hooks"
         ))
         .setSettingsKey { Overlays.legionBobbingTimeTrackerOverlay }
         .setCondition {
@@ -118,10 +119,10 @@ object LegionBobbingTimeTracker {
 
     private fun updateGuiLines() {
         val playersColor = if (playersCount >= MAX_LEGION_COUNT) GREEN else WHITE
-        val playersText = "${GOLD}Legion: ${playersColor}${playersCount} ${GRAY}${if (playersCount == 1) "player" else "players"}"
+        val playersText = "${LIGHT_PURPLE}${BOLD}Legion${GRAY}: ${playersColor}${playersCount} ${GRAY}${if (playersCount == 1) "player" else "players"}"
 
         val hooksColor = if (fishingHooksCount >= MAX_BOBBING_TIME_COUNT) GREEN else WHITE
-        val hooksText = "${GOLD}Bobbin' time: ${hooksColor}${fishingHooksCount} ${GRAY}${if (fishingHooksCount == 1) "hook" else "hooks"}"
+        val hooksText = "${LIGHT_PURPLE}${BOLD}Bobbin' Time${GRAY}: ${hooksColor}${fishingHooksCount} ${GRAY}${if (fishingHooksCount == 1) "hook" else "hooks"}"
 
         gui.setLines(listOf(playersText, hooksText))
     }
