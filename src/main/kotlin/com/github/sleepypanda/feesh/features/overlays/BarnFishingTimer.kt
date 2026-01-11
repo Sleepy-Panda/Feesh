@@ -100,7 +100,7 @@ object BarnFishingTimer {
         updateGuiLines()
     }
 
-    fun resetSeaCreaturesCountAndTimer() {
+    private fun resetSeaCreaturesCountAndTimer() {
         startTime = null
         mobsCount = 0
         countNotificationShownAt = null
@@ -188,7 +188,7 @@ object BarnFishingTimer {
         }
     }
 
-    fun updateGuiLines() {
+    private fun updateGuiLines() {
         gui.clearLines()
 
         if (!Overlays.barnFishingTimerOverlay ||

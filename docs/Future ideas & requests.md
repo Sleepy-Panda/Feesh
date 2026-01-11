@@ -27,6 +27,8 @@ Support for 1.21.11.
 ## Deployables
 
 - See other players' Black Holes around.
+  Context: About the Black Hole list for parties: my idea was simply to show which players have already placed a Black Hole. When several Black Holes are stacked in the same spot, it can be a bit hard to visually tell who has placed one and who hasn’t. The main reason I thought of this is that some players still use vanilla or other third-party clients (such as BLC) and might not have access to this mod. In those situations, having a simple list can help party members coordinate and gently remind each other if needed.
+
 - Allow viewing other players deployables in the overlay. Does someone need it?
 - Overflux and its variations
 
