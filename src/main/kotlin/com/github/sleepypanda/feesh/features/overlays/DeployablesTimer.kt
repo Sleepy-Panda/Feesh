@@ -437,25 +437,25 @@ object DeployablesTimer {
 
         val lines = mutableListOf<String>()
 
-        if (Overlays.deployablesOverlayTypes.contains(DeployableTypes.UMBERELLA) && umberellaData.remainingTime != null) {
+        if (Overlays.deployablesOverlayTypes.contains(DeployableTypes.UMBERELLA) && !umberellaData.remainingTime.isNullOrEmpty() && umberellaData.remainingTime != "00s") {
             val timerColor = fromTimeStringToSeconds(umberellaData.remainingTime!!) <= SECONDS_BEFORE_EXPIRATION
             val colorCode = if (timerColor) RED.code else WHITE.code
             lines.add("${BLUE.code}Umberella: $colorCode${umberellaData.remainingTime}")
         }
 
-        if (Overlays.deployablesOverlayTypes.contains(DeployableTypes.FLARE) && flareData.remainingTime != null) {
+        if (Overlays.deployablesOverlayTypes.contains(DeployableTypes.FLARE) && !flareData.remainingTime.isNullOrEmpty() && flareData.remainingTime != "00s") {
             val timerColor = (flareData.remainingSeconds ?: 0) <= SECONDS_BEFORE_EXPIRATION
             val colorCode = if (timerColor) RED.code else WHITE.code
             lines.add("${flareData.itemDisplayName}: $colorCode${flareData.remainingTime}")
         }
 
-        if (Overlays.deployablesOverlayTypes.contains(DeployableTypes.BLACK_HOLE) && blackHoleData.remainingTime != null) {
+        if (Overlays.deployablesOverlayTypes.contains(DeployableTypes.BLACK_HOLE) && !blackHoleData.remainingTime.isNullOrEmpty() && blackHoleData.remainingTime != "00s") {
             val timerColor = fromTimeStringToSeconds(blackHoleData.remainingTime!!) <= SECONDS_BEFORE_EXPIRATION
             val colorCode = if (timerColor) RED.code else WHITE.code
             lines.add("${DARK_PURPLE.code}Black Hole: $colorCode${blackHoleData.remainingTime}")
         }
 
-        if (Overlays.deployablesOverlayTypes.contains(DeployableTypes.TOTEM_OF_CORRUPTION) && totemData.remainingTime != null && totemData.remainingTime != "00s") {
+        if (Overlays.deployablesOverlayTypes.contains(DeployableTypes.TOTEM_OF_CORRUPTION) && !totemData.remainingTime.isNullOrEmpty() && totemData.remainingTime != "00s") {
             val remainingSeconds = fromTimeStringToSeconds(totemData.remainingTime!!)
             val timerColor = remainingSeconds > 0 && remainingSeconds <= SECONDS_BEFORE_EXPIRATION && !totemData.remainingTime!!.contains("m")
             val colorCode = if (timerColor) RED.code else WHITE.code

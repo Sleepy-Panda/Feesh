@@ -68,7 +68,7 @@ class MoveGuisScreen : Screen(Text.literal("Feesh Move Guis")) {
     override fun render(context: DrawContext, mouseX: Int, mouseY: Int, delta: Float) {       
         val textRenderer = client?.textRenderer ?: return
         
-        val hint = Text.literal("${RED}${BOLD}Enable GUIs in settings to see them here!\n${YELLOW}${BOLD}Move / scale the GUIs using your mouse. Press +/- or scroll to scale. Press ESC to exit.")
+        val hint = Text.literal("${RED}${BOLD}Enable GUIs in settings to see them here! ${YELLOW}Move them using your mouse. Press +/- or scroll to scale. Press ESC to exit.")
         val x = client!!.window.scaledWidth / 2 - textRenderer.getWidth(hint) / 2
         context.drawText(textRenderer, hint, x, 20, color, true)
         

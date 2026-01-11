@@ -85,6 +85,24 @@ object Overlays : CategoryKt("Overlays") {
 
     init {
         separator {
+            this.title = "${AQUA}${BOLD}Sea creatures HP"
+        }
+    }
+
+    var seaCreaturesHpOverlay by boolean(false) {
+        this.name = Translated("Sea creatures HP")
+        this.description = Translated("Shows an overlay with the HP of nearby rare sea creatures when they're in lootshare range. Displays ~5 seconds immunity indicator for damage reduction period that some sea creature types have. Not 100% precise!")
+    }
+
+    var seaCreaturesHpOverlayMaxCount by int(7) {
+        this.name = Translated("Maximum entries count")
+        this.description = Translated("Show maximum N sea creatures nearby (to limit overlay size). Sea creatures with lower HP come first.")
+        this.range = 1..20
+        this.slider = true
+    }
+
+    init {
+        separator {
             this.title = "${AQUA}${BOLD}Sea creatures"
         }
     }

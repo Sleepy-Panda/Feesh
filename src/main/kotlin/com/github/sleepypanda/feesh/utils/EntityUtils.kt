@@ -79,4 +79,14 @@ object EntityUtils {
 
         return armorStands
     }
+
+    /**
+     * Get an entity by its numeric ID from the world.
+     * @param entityId The numeric ID of the entity.
+     * @return The entity if found, null otherwise.
+     */
+    fun getMcEntityById(entityId: Int): Entity? {
+        val world = FeeshMod.mc.world ?: return null
+        return world.getEntityById(entityId)
+    }
 }

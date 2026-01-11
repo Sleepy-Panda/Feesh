@@ -26,6 +26,7 @@ import com.github.sleepypanda.feesh.features.commands.FeeshSettingsCommand
 import com.github.sleepypanda.feesh.features.overlays.JerryWorkshopTracker
 import com.github.sleepypanda.feesh.features.overlays.LegionBobbingTimeTracker
 import com.github.sleepypanda.feesh.features.overlays.SeaCreaturesTracker
+import com.github.sleepypanda.feesh.features.overlays.SeaCreatureHpTracker
 import com.github.sleepypanda.feesh.features.overlays.FishingHookTimer
 import com.github.sleepypanda.feesh.features.overlays.TreasureFishingTracker
 import com.github.sleepypanda.feesh.features.overlays.BarnFishingTimer
@@ -120,6 +121,7 @@ class FeeshMod : ModInitializer {
         JerryWorkshopTracker.init()
         LegionBobbingTimeTracker.init()
         SeaCreaturesTracker.init()
+        SeaCreatureHpTracker.init()
         TreasureFishingTracker.init()
         FishingHookTimer.init()
         BarnFishingTimer.init()

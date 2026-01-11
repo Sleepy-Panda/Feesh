@@ -220,7 +220,7 @@ object BarnFishingTimer {
 
         val overlayText = "${seaCreaturesColor}${mobsCount} ${GRAY}${seaCreaturesText} ${DARK_GRAY}(${timerColor}${timerText}${DARK_GRAY})"
         
-        val resetCommand = "/feeshResetSeaCreaturesCountAndTimer"
+        val resetCommand = "/feeshResetBarnFishingTimer"
         val resetButtonText = "${RED}${BOLD}[Click to reset] ${DARK_GRAY}($resetCommand)"
 
         gui.setLines(listOf(overlayText, resetButtonText))

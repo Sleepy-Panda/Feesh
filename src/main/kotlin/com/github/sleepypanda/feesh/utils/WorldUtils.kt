@@ -42,11 +42,29 @@ object WorldUtils {
         GLACITE_MINESHAFTS
     )
 
-    private val HOTSPOT_WORLDS = listOf(
+    val WATER_FISHING_WORLDS = listOf(
+        BACKWATER_BAYOU,
+        SPIDERS_DEN,
+        HUB,
+        CRYSTAL_HOLLOWS,
+        DWARVEN_MINES,
+        JERRY_WORKSHOP,
+        PARK,
+        FARMING_ISLANDS,
+        GALATEA
+    )
+
+    val HOTSPOT_WORLDS = listOf(
         BACKWATER_BAYOU,
         SPIDERS_DEN,
         HUB,
         CRIMSON_ISLE
+    )
+
+    val WATER_HOTSPOT_WORLDS = listOf(
+        BACKWATER_BAYOU,
+        SPIDERS_DEN,
+        HUB,
     )
 
     private var cachedIsInSkyblock: Boolean = false

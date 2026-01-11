@@ -6,7 +6,7 @@ import java.util.Date
 import java.util.concurrent.TimeUnit
 
 object CommonUtils {
-    fun showTitle(title: String, subtitle: String? = null, fadeIn: Int = 0, stay: Int = 25, fadeOut: Int = 10) {      
+    fun showTitle(title: String, subtitle: String? = null, fadeIn: Int = 0, stay: Int = 35, fadeOut: Int = 10) {      
         var mc = FeeshMod.mc
 
         mc.inGameHud.apply {
@@ -76,6 +76,36 @@ object CommonUtils {
             number >= 1_000_000 -> String.format("%.1fM", number / 1_000_000.0).removeSuffix(".0")
             number >= 1_000 -> String.format("%.1fK", number / 1_000.0).removeSuffix(".0")
             else -> number.toLong().toString()
+        }
+    }
+
+    /**
+     * Parses a short number string to a Double (e.g., "1K" -> 1000.0, "69M" -> 69000000.0, "521.8k" -> 521800.0)
+     * @param shortNumber The short number string to parse.
+     * @return The parsed number as Double, or 0.0 if parsing fails.
+     */
+    fun parseShortNumber(shortNumber: String): Double {
+        if (shortNumber.isBlank()) return 0.0
+        
+        val cleaned = shortNumber.trim().uppercase()
+        
+        return try {
+            when {
+                cleaned.endsWith("B") -> {
+                    cleaned.dropLast(1).toDoubleOrNull()?.let { it * 1_000_000_000 } ?: 0.0
+                }
+                cleaned.endsWith("M") -> {
+                    cleaned.dropLast(1).toDoubleOrNull()?.let { it * 1_000_000 } ?: 0.0
+                }
+                cleaned.endsWith("K") -> {
+                    cleaned.dropLast(1).toDoubleOrNull()?.let { it * 1_000 } ?: 0.0
+                }
+                else -> {
+                    cleaned.replace(",", "").toDoubleOrNull() ?: 0.0
+                }
+            }
+        } catch (e: Exception) {
+            0.0
         }
     }
 
