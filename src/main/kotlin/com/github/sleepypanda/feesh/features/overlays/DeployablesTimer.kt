@@ -164,7 +164,7 @@ object DeployablesTimer {
 
             if (flareRockets.isNotEmpty()) {
                 flareData.remainingSeconds = 180
-                flareData.remainingTime = formatTime(flareData.remainingSeconds!!)
+                flareData.remainingTime = fromSecondsToTimeString(flareData.remainingSeconds!!)
                 flareData.lastPlacedAt = Date()
                 flareData.itemDisplayName = heldItemName
             }
@@ -345,7 +345,7 @@ object DeployablesTimer {
             val seconds = if (timer.isNotEmpty()) {
                 timer.replace("s", "").toIntOrNull() ?: 180
             } else 180
-            blackHoleData.remainingTime = formatTime(seconds)
+            blackHoleData.remainingTime = fromSecondsToTimeString(seconds)
 
             if (Alerts.alertOnDeployableExpiresSoon &&
                 Alerts.alertOnDeployableTypes.contains(DeployableTypes.BLACK_HOLE) &&
@@ -378,7 +378,7 @@ object DeployablesTimer {
 
             val name = umberellaArmorStand.customName?.string ?: ""
             val seconds = name.split("Umberella ").lastOrNull()?.replace("s", "")?.toIntOrNull() ?: return
-            umberellaData.remainingTime = formatTime(seconds)
+            umberellaData.remainingTime = fromSecondsToTimeString(seconds)
 
             if (Alerts.alertOnDeployableExpiresSoon &&
                 Alerts.alertOnDeployableTypes.contains(DeployableTypes.UMBERELLA) &&
@@ -402,7 +402,11 @@ object DeployablesTimer {
             val remainingSeconds = flareData.remainingSeconds ?: 0
             if (remainingSeconds <= 0) {
                 resetFlare()
+                return
             }
+
+            flareData.remainingSeconds = remainingSeconds - 1
+            flareData.remainingTime = fromSecondsToTimeString(flareData.remainingSeconds!!)
 
             if (Alerts.alertOnDeployableExpiresSoon &&
                 Alerts.alertOnDeployableTypes.contains(DeployableTypes.FLARE) &&
@@ -423,17 +427,6 @@ object DeployablesTimer {
         SoundUtils.playSound()
     }
 
-    private fun formatTime(totalSeconds: Int): String {
-        if (totalSeconds <= 0) return ""
-        val minutes = (totalSeconds % 3600) / 60
-        val seconds = totalSeconds % 60
-        return if (minutes > 0) {
-            "${minutes.toString().padStart(2, '0')}m ${seconds.toString().padStart(2, '0')}s"
-        } else {
-            "${seconds.toString().padStart(2, '0')}s"
-        }
-    }
-
     private fun updateGuiLines() {
         gui.clearLines()
 
@@ -445,7 +438,7 @@ object DeployablesTimer {
         val lines = mutableListOf<String>()
 
         if (Overlays.deployablesOverlayTypes.contains(DeployableTypes.UMBERELLA) && umberellaData.remainingTime != null) {
-            val timerColor = getSecondsFromTime(umberellaData.remainingTime!!) <= SECONDS_BEFORE_EXPIRATION
+            val timerColor = fromTimeStringToSeconds(umberellaData.remainingTime!!) <= SECONDS_BEFORE_EXPIRATION
             val colorCode = if (timerColor) RED.code else WHITE.code
             lines.add("${BLUE.code}Umberella: $colorCode${umberellaData.remainingTime}")
         }
@@ -457,13 +450,13 @@ object DeployablesTimer {
         }
 
         if (Overlays.deployablesOverlayTypes.contains(DeployableTypes.BLACK_HOLE) && blackHoleData.remainingTime != null) {
-            val timerColor = getSecondsFromTime(blackHoleData.remainingTime!!) <= SECONDS_BEFORE_EXPIRATION
+            val timerColor = fromTimeStringToSeconds(blackHoleData.remainingTime!!) <= SECONDS_BEFORE_EXPIRATION
             val colorCode = if (timerColor) RED.code else WHITE.code
             lines.add("${DARK_PURPLE.code}Black Hole: $colorCode${blackHoleData.remainingTime}")
         }
 
         if (Overlays.deployablesOverlayTypes.contains(DeployableTypes.TOTEM_OF_CORRUPTION) && totemData.remainingTime != null && totemData.remainingTime != "00s") {
-            val remainingSeconds = getSecondsFromTime(totemData.remainingTime!!)
+            val remainingSeconds = fromTimeStringToSeconds(totemData.remainingTime!!)
             val timerColor = remainingSeconds > 0 && remainingSeconds <= SECONDS_BEFORE_EXPIRATION && !totemData.remainingTime!!.contains("m")
             val colorCode = if (timerColor) RED.code else WHITE.code
             lines.add("${DARK_PURPLE.code}Totem of Corruption: $colorCode${totemData.remainingTime}")
@@ -474,7 +467,18 @@ object DeployablesTimer {
         }
     }
 
-    private fun getSecondsFromTime(timeStr: String): Int {
+    private fun fromSecondsToTimeString(totalSeconds: Int): String {
+        if (totalSeconds <= 0) return ""
+        val minutes = (totalSeconds % 3600) / 60
+        val seconds = totalSeconds % 60
+        return if (minutes > 0) {
+            "${minutes.toString().padStart(2, '0')}m ${seconds.toString().padStart(2, '0')}s"
+        } else {
+            "${seconds.toString().padStart(2, '0')}s"
+        }
+    }
+
+    private fun fromTimeStringToSeconds(timeStr: String): Int {
         return try {
             if (timeStr.contains("m")) {
                 val parts = timeStr.split("m")
