@@ -34,7 +34,7 @@ object RareCatchAlert {
     private fun onOwnSeaCreature(event: OwnSeaCreatureCaughtEvent) {
         if (!WorldUtils.isInSkyblock() || !Alerts.alertOnRareSeaCreatures) return
 
-        val playerName = PlayerUtils.getName()
+        val playerName = PlayerUtils.getFormattedName() ?: return
         val seaCreatureName = event.seaCreatureName
         val isDoubleHook = event.isDoubleHook
         showAlert(seaCreatureName, isDoubleHook, playerName)
@@ -43,7 +43,7 @@ object RareCatchAlert {
     private fun onPartyChatSeaCreature(event: PartyChatEvent) {
         if (!WorldUtils.isInSkyblock() || !Alerts.alertOnRareSeaCreatures) return
 
-        val playerName = FeeshMod.mc.player?.getName()?.string ?: ""
+        val playerName = PlayerUtils.getName() ?: ""
         if (!playerName.isNullOrEmpty() && event.rankAndPlayer.removeFormatting().contains(playerName, ignoreCase = true)) return
 
         val message = event.messagePayload.removeFormatting()

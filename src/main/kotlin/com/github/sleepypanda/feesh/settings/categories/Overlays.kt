@@ -2,6 +2,7 @@ package com.github.sleepypanda.feesh.settings.categories
 
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
+import com.github.sleepypanda.feesh.utils.enums.DeployableTypes
 import com.teamresourceful.resourcefulconfig.api.annotations.Category
 import com.teamresourceful.resourcefulconfig.api.annotations.Comment
 import com.teamresourceful.resourcefulconfig.api.annotations.ConfigEntry
@@ -66,7 +67,22 @@ object Overlays : CategoryKt("Overlays") {
             this.description = "Set a keybind in Minecraft's Controls menu to reset the barn fishing timer."
         }
     }
-    
+      
+    init {
+        separator {
+            this.title = "${AQUA}${BOLD}Deployables"
+        }
+    }
+
+    var deployablesTimerOverlay by boolean(false) {
+        this.name = Translated("Deployables timer")
+        this.description = Translated("Shows an overlay with the remaining time of your deployable items placed nearby.")
+    }
+
+    var deployablesOverlayTypes by select(DeployableTypes.TOTEM_OF_CORRUPTION, *DeployableTypes.values()) {
+        this.name = Translated("Select deployables to show in overlay")
+    }
+
     init {
         separator {
             this.title = "${AQUA}${BOLD}Sea creatures"

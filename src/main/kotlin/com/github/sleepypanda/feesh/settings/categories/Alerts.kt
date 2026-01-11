@@ -4,6 +4,7 @@ import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
 import com.github.sleepypanda.feesh.constants.RareSeaCreatureTypes
 import com.github.sleepypanda.feesh.constants.RareDropTypes
+import com.github.sleepypanda.feesh.utils.enums.DeployableTypes
 import com.teamresourceful.resourcefulconfigkt.api.CategoryKt
 
 object Alerts : CategoryKt("Alerts") {
@@ -97,6 +98,21 @@ object Alerts : CategoryKt("Alerts") {
     var seaCreaturesCountThreshold_Default by int(50) {
         this.name = Translated("Sea creatures count threshold - Other")
         this.description = Translated("Count of sea creatures nearby required to see the alert when you are in other locations. Ignored if the sea creatures count alert is disabled.")
+    }
+
+    init {
+        separator {
+            this.title = "${AQUA}${BOLD}Deployables"
+        }
+    }
+
+    var alertOnDeployableExpiresSoon by boolean(true) {
+        this.name = Translated("Alert when deployable item expires soon")
+        this.description = Translated("Shows a title and plays a sound when your deployable item expires in 10 seconds.")
+    }
+
+    var alertOnDeployableTypes by select(DeployableTypes.TOTEM_OF_CORRUPTION, *DeployableTypes.values()) {
+        this.name = Translated("Select deployables to alert on")
     }
 
     init {

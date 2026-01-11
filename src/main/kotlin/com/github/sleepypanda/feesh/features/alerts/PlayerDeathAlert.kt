@@ -3,6 +3,7 @@ package com.github.sleepypanda.feesh.features.alerts
 import com.github.sleepypanda.feesh.settings.categories.Alerts
 import com.github.sleepypanda.feesh.utils.ChatUtils
 import com.github.sleepypanda.feesh.utils.SoundUtils
+import com.github.sleepypanda.feesh.utils.PlayerUtils
 import com.github.sleepypanda.feesh.utils.RegisterUtils
 import com.github.sleepypanda.feesh.utils.WorldUtils
 import com.github.sleepypanda.feesh.utils.CommonUtils
@@ -33,7 +34,7 @@ object PlayerDeathAlert {
         if (!Alerts.alertOnPlayerDeath || !WorldUtils.isInSkyblock()) return
         if (!event.messagePayload.contains(PARTY_MEMBER_DIED_PATTERN)) return
 
-        val playerName = FeeshMod.mc.player?.getName()?.string ?: return
+        val playerName = PlayerUtils.getName() ?: return
         if (event.rankAndPlayer.removeFormatting().contains(playerName)) return
 
         val title = "${event.rankAndPlayer} ${RED}was killed ☠";

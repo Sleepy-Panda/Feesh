@@ -4,6 +4,7 @@ import com.github.sleepypanda.feesh.events.EventBus
 import com.github.sleepypanda.feesh.events.ChatEvent
 import com.github.sleepypanda.feesh.events.RareDropEvent
 import com.github.sleepypanda.feesh.utils.WorldUtils
+import com.github.sleepypanda.feesh.utils.PlayerUtils
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.utils.ChatUtils.getFormattedString
 import com.github.sleepypanda.feesh.utils.ChatUtils.removeFormatting
@@ -42,7 +43,7 @@ object RareDropsPublisher {
         if (formattedMessage.isNullOrEmpty()) return
         val unformattedMessage = event.message.string ?: return
 
-        val playerName = FeeshMod.mc.player?.getName()?.string ?: return
+        val playerName = PlayerUtils.getName() ?: return
         
         if (RARE_DROP_PATTERN.containsMatchIn(formattedMessage)) {
             val match = RARE_DROP_PATTERN.matchEntire(formattedMessage) ?: return

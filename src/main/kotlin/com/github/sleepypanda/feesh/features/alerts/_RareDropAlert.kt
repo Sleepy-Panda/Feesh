@@ -32,7 +32,7 @@ object RareDropAlert {
 
         if (!Alerts.alertOnRareDropTypes.contains(type)) return
 
-        val playerName = PlayerUtils.getName()
+        val playerName = PlayerUtils.getFormattedName()
         val title = dropInfo.boldDisplayName
         CommonUtils.showTitle(title, playerName)
         SoundUtils.playSound()

@@ -4,6 +4,7 @@ import com.github.sleepypanda.feesh.settings.categories.Alerts
 import com.github.sleepypanda.feesh.utils.SoundUtils
 import com.github.sleepypanda.feesh.utils.WorldUtils
 import com.github.sleepypanda.feesh.utils.CommonUtils
+import com.github.sleepypanda.feesh.utils.PlayerUtils
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
 import com.github.sleepypanda.feesh.events.EventBus
@@ -22,8 +23,8 @@ object LootshareAlert {
         if (!Alerts.alertOnLootshareMessage || !WorldUtils.isInSkyblock()) return
         if (!event.messagePayload.contains(LOOTSHARE_PATTERN)) return
 
-        val playerName = FeeshMod.mc.player?.getName()?.string ?: return
-        if (event.rankAndPlayer.removeFormatting().contains(playerName)) return
+        val playerName = PlayerUtils.getName()
+        if (!playerName.isNullOrEmpty() && event.rankAndPlayer.removeFormatting().contains(playerName)) return
 
         CommonUtils.showTitle("${GREEN}${BOLD}Lootshare!")
         SoundUtils.playSound()

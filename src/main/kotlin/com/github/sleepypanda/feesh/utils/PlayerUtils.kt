@@ -35,9 +35,23 @@ object PlayerUtils {
         cachedHasFishingRodInHotbar = false
     }
 
-    fun getName() : String {      
+    /*
+     * Get the player's name without formatting.
+     * @returns {String} The player's name.
+     */
+    fun getName() : String? {      
         val mc = FeeshMod.mc
-        val nameText = mc.player?.getCustomName() ?: mc.player?.displayName ?: return ""
+        val nameText = mc.player?.name?.string ?: return null
+        return nameText
+    }
+
+    /*
+     * Get the player's formatted name.
+     * @returns {String} The player's formatted name.
+     */
+    fun getFormattedName() : String? {      
+        val mc = FeeshMod.mc
+        val nameText = mc.player?.getCustomName() ?: mc.player?.displayName ?: return null
         val displayName = nameText.getFormattedString()
         return displayName
     }
