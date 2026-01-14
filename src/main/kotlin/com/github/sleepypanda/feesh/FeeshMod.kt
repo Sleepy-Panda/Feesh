@@ -14,6 +14,7 @@ import com.github.sleepypanda.feesh.features.alerts.PlayerDeathAlert
 import com.github.sleepypanda.feesh.features.alerts.LootshareAlert
 import com.github.sleepypanda.feesh.features.alerts.RareDropAlert
 import com.github.sleepypanda.feesh.features.chat.RareCatchMessage
+import com.github.sleepypanda.feesh.features.chat.RareDropMessage
 import com.github.sleepypanda.feesh.features.chat.RareCatchAllChatMessage
 import com.github.sleepypanda.feesh.features.chat.CompactCatchMessages
 import com.github.sleepypanda.feesh.features.chat.PlayerDeathMessage
@@ -23,6 +24,7 @@ import com.github.sleepypanda.feesh.features.commands.SpiderDenRainScheduleComma
 import com.github.sleepypanda.feesh.features.commands.PetLevelUpPricesCommand
 import com.github.sleepypanda.feesh.features.commands.GearCraftPricesCommand
 import com.github.sleepypanda.feesh.features.commands.FeeshSettingsCommand
+import com.github.sleepypanda.feesh.features.commands.PlayTestSoundCommand
 import com.github.sleepypanda.feesh.features.overlays.JerryWorkshopTracker
 import com.github.sleepypanda.feesh.features.overlays.LegionBobbingTimeTracker
 import com.github.sleepypanda.feesh.features.overlays.SeaCreaturesTracker
@@ -113,6 +115,7 @@ class FeeshMod : ModInitializer {
 
         // Chat
         RareCatchMessage.init()
+        RareDropMessage.init()
         RareCatchAllChatMessage.init()
         CompactCatchMessages.init()
         PlayerDeathMessage.init()
@@ -138,6 +141,7 @@ class FeeshMod : ModInitializer {
         SpiderDenRainScheduleCommand.init()
         PetLevelUpPricesCommand.init()
         GearCraftPricesCommand.init()
+        PlayTestSoundCommand.init()
 
         LOGGER.info("$MOD_NAME loaded successfully!")
     }

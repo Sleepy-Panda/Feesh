@@ -31,6 +31,8 @@ class RareDrops {
         data class RareDropInfo(val itemName: String, val id: String, val rarityColorCode: String) {
             val displayName: String get() = rarityColorCode + itemName
             val boldDisplayName: String get() = rarityColorCode + BOLD + itemName
+
+            // TODO: Separate message for extremely rare drops (Dye, Mythic, etc.)
         }
 
         val rareDrops = listOf(
@@ -46,7 +48,19 @@ class RareDrops {
             RareDropInfo("Flying Fish (Legendary)", "FLYING_FISH;4", LEGENDARY.code),
             RareDropInfo("Megalodon (Legendary)", "MEGALODON;4", LEGENDARY.code),
             RareDropInfo("Megalodon (Epic)", "MEGALODON;3", EPIC.code),
+            RareDropInfo("Squid (Legendary)", "SQUID;4", EPIC.code),
+            RareDropInfo("Squid (Epic)", "SQUID;3", EPIC.code),
+            RareDropInfo("Squid (Rare)", "SQUID;2", EPIC.code),
+            RareDropInfo("Squid (Uncommon)", "SQUID;1", EPIC.code),
+            RareDropInfo("Squid (Common)", "SQUID;0", EPIC.code),
             RareDropInfo("Phoenix", "PHOENIX;?", SPECIAL.code),
+            RareDropInfo("Carmine Dye", "DYE_CARMINE", DARK_RED.code),
+            RareDropInfo("Midnight Dye", "DYE_MIDNIGHT", DARK_PURPLE.code),
+            RareDropInfo("Aquamarine Dye", "DYE_AQUAMARINE", AQUA.code),
+            RareDropInfo("Iceberg Dye", "DYE_ICEBERG", DARK_AQUA.code),
+            RareDropInfo("Treasure Dye", "DYE_TREASURE", GOLD.code),
+            RareDropInfo("Periwinkle Dye", "DYE_PERIWINKLE", DARK_AQUA.code),
+            RareDropInfo("Bone Dye", "DYE_BONE", WHITE.code),
         )
     }
 }

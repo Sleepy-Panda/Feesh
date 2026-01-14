@@ -2,6 +2,7 @@ package com.github.sleepypanda.feesh.settings.categories
 
 import com.github.sleepypanda.feesh.constants.RareSeaCreatureTypes
 import com.github.sleepypanda.feesh.constants.RareSeaCreatureTypesAllChat
+import com.github.sleepypanda.feesh.constants.RareDropTypes
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
 import com.teamresourceful.resourcefulconfigkt.api.CategoryKt
@@ -48,6 +49,26 @@ object Chat : CategoryKt("Chat") {
     var messageOnPlayerDeath by boolean(true) {
         this.name = Translated("Send a party chat message when killed by a Mythic sea creature")
         this.description = Translated("Sends a message to the party chat when you are killed by Thunder / Lord Jawbus / Ragnarok / Wiki Tiki / Titanoboa. It enables the alerts for your party members so they can wait for you.")
+    }
+
+    init {
+        separator {
+            this.title = "${AQUA}${BOLD}Rare drops"
+        }
+    }
+
+    var messageOnRareDrops by boolean(true) {
+        this.name = Translated("Share rare drops to the PARTY chat")
+        this.description = Translated("Sends a PARTY chat message when a rare item has dropped.")
+    }
+
+    var messageOnRareDropTypes by select(RareDropTypes.LUCKY_CLOVER_CORE, *RareDropTypes.values()) {
+        this.name = Translated("Select rare drops to share to the PARTY chat")
+    }
+
+    var includeMagicFindIntoRareDropMessage by boolean(true) {
+        this.name = Translated("Include Magic Find")
+        this.description = Translated("Send the drop's ✯ Magic Find value as part of the party chat message.")
     }
 
     init {

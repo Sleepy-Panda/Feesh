@@ -43,6 +43,11 @@ object Alerts : CategoryKt("Alerts") {
         this.name = Translated("Select rare drops to alert on")
     }
 
+    val includePriceIntoRareDropAlert by boolean(true) {
+        this.name = Translated("Show dropped item price")
+        this.description = Translated("Show the price of the dropped item in the alert.")
+    }
+
     init {
         separator {
             this.title = "${AQUA}${BOLD}Spirit Mask"
