@@ -3,6 +3,8 @@ package com.github.sleepypanda.feesh.constants
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
 
+// This should be aligned with Rare Sea Creatures names using the following logic:
+// Carrot King -> CARROT_KING
 enum class RareSeaCreatureTypes {
     CARROT_KING,
     WATER_HYDRA,
@@ -111,7 +113,7 @@ class SeaCreatures {
         val BLOATED_MITHRIL_GRUBBER_MESSAGE = "^A leech of the mines surfaces\\.\\.\\. you\\'ve caught a Bloated Mithril Grubber\\.$"
 
         // BACKWATER BAYOU SEA CREATURES
-        val FROG_MAN_MESSAGE = "^Is it a frog\\? Is it a man\\? Well, yes, sorta, IT\\'S FROG MAN\\!\\!\\!\\!\\!\\!\\!$"
+        val FROG_MAN_MESSAGE = "^Is it a frog\\? Is it a man\\? Well, yes, sorta, IT\\'S FROG MAN\\!\\!\\!\\!\\!\\!$"
         val TRASH_GOBBLER_MESSAGE = "^The Trash Gobbler is hungry for you\\!$"
         val DUMPSTER_DIVER_MESSAGE = "^A Dumpster Diver has emerged from the swamp\\!$"
         val BANSHEE_MESSAGE = "^The desolate wail of a Banshee breaks the silence\\.$"

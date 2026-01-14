@@ -28,7 +28,8 @@ object RareDropMessage {
         var dropInfo = RareDrops.rareDrops.find { it.itemName == event.itemName } ?: return
 
         val type = try {
-            RareDropTypes.valueOf(itemName.uppercase().replace(" ", "_"))
+            // TODO this is not aligned for Megalodon or Squid drops
+            RareDropTypes.valueOf(itemName.uppercase().replace(" (", "").replace(") ", "").replace(" ", "_")) // Baby Yeti (Epic) -> BABY_YETI_EPIC
         } catch (_: IllegalArgumentException) {
             return
         }
