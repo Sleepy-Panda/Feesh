@@ -21,6 +21,7 @@ import com.github.sleepypanda.feesh.utils.SoundUtils
 import com.github.sleepypanda.feesh.utils.RegisterUtils
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
+import com.github.sleepypanda.feesh.constants.Sounds
 import com.github.sleepypanda.feesh.events.InteractActionType
 import net.minecraft.entity.decoration.ArmorStandEntity
 import net.minecraft.entity.projectile.FireworkRocketEntity
@@ -424,7 +425,7 @@ object DeployablesTimer {
         CommonUtils.showTitle("$itemDisplayName ${RED}expires soon")
         ChatUtils.sendLocalChat("${WHITE}Your $itemDisplayName ${WHITE}expires soon.", true)
         data.lastAlertAt = Date()
-        SoundUtils.playSound()
+        SoundUtils.playCustomSound(Sounds.FEESH_NOTIFICATION_BELL)
     }
 
     private fun updateGuiLines() {

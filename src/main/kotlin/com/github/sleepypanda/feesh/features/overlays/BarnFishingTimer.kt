@@ -21,6 +21,7 @@ import com.github.sleepypanda.feesh.utils.KeybindUtils
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
 import com.github.sleepypanda.feesh.constants.SeaCreatures
+import com.github.sleepypanda.feesh.constants.Sounds
 import org.lwjgl.glfw.GLFW
 import net.minecraft.entity.decoration.ArmorStandEntity
 import net.minecraft.entity.EquipmentSlot
@@ -159,7 +160,7 @@ object BarnFishingTimer {
         if (mobsCount >= seaCreaturesCountThreshold && countNotificationShownAt == null) {
             countNotificationShownAt = Date()
             CommonUtils.showTitle("${RED}Kill sea creatures", "${WHITE}${seaCreaturesCountThreshold}+ mobs")
-            SoundUtils.playSound()
+            SoundUtils.playCustomSound(Sounds.FEESH_NOTIFICATION_BELL)
         } else if (mobsCount < seaCreaturesCountThreshold && countNotificationShownAt != null) {
             countNotificationShownAt = null
         }
@@ -182,7 +183,7 @@ object BarnFishingTimer {
         if (deltaInSeconds >= thresholdInSeconds && timerNotificationShownAt == null) {
             timerNotificationShownAt = Date()
             CommonUtils.showTitle("${RED}Kill sea creatures", "${WHITE}${TIMER_THRESHOLD_IN_MINUTES}+ minutes")
-            SoundUtils.playSound()
+            SoundUtils.playCustomSound(Sounds.FEESH_NOTIFICATION_BELL)
         } else if (deltaInSeconds < thresholdInSeconds && timerNotificationShownAt != null) {
             timerNotificationShownAt = null
         }

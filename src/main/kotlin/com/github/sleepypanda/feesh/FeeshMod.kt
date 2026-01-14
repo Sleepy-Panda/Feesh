@@ -42,6 +42,7 @@ import com.github.sleepypanda.feesh.utils.WorldUtils
 import com.github.sleepypanda.feesh.utils.PlayerUtils
 import com.github.sleepypanda.feesh.utils.PriceUtils
 import com.github.sleepypanda.feesh.utils.data.PersistentDataManager
+import com.github.sleepypanda.feesh.utils.data.CustomSoundsManager
 import com.github.sleepypanda.feesh.utils.gui.MoveGuis
 import com.teamresourceful.resourcefulconfig.api.loader.Configurator
 import net.fabricmc.api.ModInitializer
@@ -78,6 +79,7 @@ class FeeshMod : ModInitializer {
         LOGGER.info("Loading $MOD_NAME v$version...")
 
         PersistentDataManager.init()
+        CustomSoundsManager.init()
         EventBus.init()
         FeeshSettingsCommand.init()
 

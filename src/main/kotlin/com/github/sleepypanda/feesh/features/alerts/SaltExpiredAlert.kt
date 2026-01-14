@@ -9,6 +9,7 @@ import com.github.sleepypanda.feesh.utils.WorldUtils
 import com.github.sleepypanda.feesh.utils.ChatUtils.removeFormatting
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
+import com.github.sleepypanda.feesh.constants.Sounds
 import net.minecraft.text.Text
 import kotlin.text.MatchResult
 
@@ -30,7 +31,7 @@ object SaltExpiredAlert {
             val cleanSaltName = saltName.removeFormatting()
             val title = "${RED}${cleanSaltName} ${RED}has expired"
             CommonUtils.showTitle(title)
-            SoundUtils.playSound()
+            SoundUtils.playCustomSound(Sounds.FEESH_NOTIFICATION_BELL)
         } catch (e: Exception) {
             FeeshMod.LOGGER.error("Failed to play alert on Salt expired", e)
         }

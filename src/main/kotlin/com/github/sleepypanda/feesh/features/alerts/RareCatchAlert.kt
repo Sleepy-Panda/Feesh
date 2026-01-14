@@ -13,8 +13,10 @@ import com.github.sleepypanda.feesh.utils.SoundUtils
 import com.github.sleepypanda.feesh.utils.RegisterUtils
 import com.github.sleepypanda.feesh.utils.PlayerUtils
 import com.github.sleepypanda.feesh.utils.WorldUtils
+import com.github.sleepypanda.feesh.utils.data.CustomSoundsManager
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
+import com.github.sleepypanda.feesh.constants.Sounds
 import net.minecraft.text.Text
 import kotlin.text.MatchResult
 
@@ -80,6 +82,11 @@ object RareCatchAlert {
 
         val title = SeaCreatures.getTitle(seaCreatureInfo.name, isDoubleHook)
         CommonUtils.showTitle(title, playerName)
-        SoundUtils.playSound()
+        
+        // TODO: Play custom sound for this sea creature
+        val soundData = CustomSoundsManager.getCatchSoundData(seaCreatureInfo.name)
+        val soundFileName = soundData?.source
+        SoundUtils.playCustomSound(Sounds.FEESH_NOTIFICATION_BELL)
+        //SoundUtils.playSoundFromFileName(soundFileName)
     }
 }

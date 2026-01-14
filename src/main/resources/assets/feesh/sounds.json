@@ -1,0 +1,68 @@
+{
+  "feesh_augh": {
+    "sounds": [
+      "feesh:feesh_augh"
+    ],
+    "subtitle": "Feesh AAAAAAAAAAAAAAAUGH sound"
+  },
+  "feesh_giga-chad": {
+    "sounds": [
+      "feesh:feesh_giga-chad"
+    ],
+    "subtitle": "Feesh GIGA CHADsound"
+  },
+  "feesh_goofy-laugh": {
+    "sounds": [
+      "feesh:feesh_goofy-laugh"
+    ],
+    "subtitle": "Feesh GOOFY LAUGH sound"
+  },
+  "feesh_minecraft-challenge-completed": {
+    "sounds": [
+      "feesh:feesh_minecraft-challenge-completed"
+    ],
+    "subtitle": "Feesh MINECRAFT CHALLENGE COMPLETED sound"
+  },
+  "feesh_notification-bell": {
+    "sounds": [
+      "feesh:feesh_notification-bell"
+    ],
+    "subtitle": "Feesh NOTIFICATION BELL (TIMER) sound"
+  },
+  "feesh_notification": {
+    "sounds": [
+      "feesh:feesh_notification"
+    ],
+    "subtitle": "Feesh NOTIFICATION sound"
+  },
+  "feesh_oh-my-god": {
+    "sounds": [
+      "feesh:feesh_oh-my-god"
+    ],
+    "subtitle": "Feesh OH MY GOD sound"
+  },
+  "feesh_rare-drop": {
+    "sounds": [
+      "feesh:feesh_rare-drop"
+    ],
+    "subtitle": "Feesh SKYBLOCK RARE DROP sound"
+  },
+  "feesh_sad-trombone": {
+    "sounds": [
+      "feesh:feesh_sad-trombone"
+    ],
+    "subtitle": "Feesh SAD TROMBONE sound"
+  },
+  "feesh_sheesh": {
+    "sounds": [
+      "feesh:feesh_sheesh"
+    ],
+    "subtitle": "Feesh SHEEEEEEEEEEEEEEEESH sound"
+  },
+  "feesh_wow": {
+    "sounds": [
+      "feesh:feesh_wow"
+    ],
+    "subtitle": "Feesh WOW sound"
+  }
+}

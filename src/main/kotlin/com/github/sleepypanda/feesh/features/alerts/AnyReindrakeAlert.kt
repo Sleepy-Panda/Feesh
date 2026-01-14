@@ -9,6 +9,7 @@ import com.github.sleepypanda.feesh.utils.WorldUtils
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
 import com.github.sleepypanda.feesh.utils.ChatUtils
+import com.github.sleepypanda.feesh.constants.Sounds
 
 object AnyReindrakeAlert {
     const val REINDRAKE_PATTERN = "^WOAH\\! A Reindrake was summoned from the depths\\!$"
@@ -23,7 +24,7 @@ object AnyReindrakeAlert {
         if (!WorldUtils.isInSkyblock() || !Alerts.alertOnAnyReindrake || WorldUtils.getWorldName() != WorldUtils.JERRY_WORKSHOP) return
 
         CommonUtils.showTitle(SeaCreatures.getTitle(reindrake.name, false))
-        SoundUtils.playSound()
+        SoundUtils.playCustomSound(Sounds.FEESH_NOTIFICATION)
         ChatUtils.sendLocalChatWithCommand("Click to warp to Jerry's Workshop spawn point!", "warp jerry", true)
     }
 }

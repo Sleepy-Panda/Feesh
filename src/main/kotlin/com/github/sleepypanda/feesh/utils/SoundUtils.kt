@@ -4,6 +4,7 @@ import com.github.sleepypanda.feesh.FeeshMod
 import net.minecraft.sound.SoundCategory
 import net.minecraft.sound.SoundEvents
 import net.minecraft.sound.SoundEvent
+import net.minecraft.util.Identifier
 import net.minecraft.client.sound.PositionedSoundInstance
 import net.minecraft.client.sound.SoundInstance
 
@@ -28,5 +29,23 @@ object SoundUtils {
         )
 
         mc.soundManager.play(soundInstance)
+    }
+    
+    fun playCustomSound(fileName: String?) {
+        if (fileName == null || fileName.isBlank()) {
+            playSound() // Fallback to default
+            return
+        }
+        
+        try {
+            // Use file name as-is (remove .ogg extension)
+            val nameWithoutExtension = fileName.removeSuffix(".ogg")
+            val identifier = Identifier.of("feesh", nameWithoutExtension)
+            val soundEvent = SoundEvent.of(identifier)
+            playSound(soundEvent)
+        } catch (e: Exception) {
+            FeeshMod.LOGGER.error("[Feesh] Failed to play sound from file name: $fileName", e)
+            playSound() // Fallback to default
+        }
     }
 }
