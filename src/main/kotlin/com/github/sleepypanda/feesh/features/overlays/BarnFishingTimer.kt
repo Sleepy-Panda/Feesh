@@ -47,7 +47,7 @@ object BarnFishingTimer {
         .setCoordsDataKey("barnFishingTimer")
         .setClickable(true)
         .setSampleLines(listOf(
-            "${GREEN}25 ${GRAY}sea creatures ${DARK_GRAY}(${GREEN}2m 30s${DARK_GRAY})",
+            "${WHITE}25 ${GRAY}sea creatures ${DARK_GRAY}(${WHITE}2m 30s${DARK_GRAY})",
         ))
         .setSettingsKey { Overlays.barnFishingTimerOverlay }
         .setCondition {
@@ -215,9 +215,9 @@ object BarnFishingTimer {
             if (seconds > 0 || minutes > 0) append("${seconds}s")
         }
         
-        val timerColor = if (minutes >= TIMER_THRESHOLD_IN_MINUTES) RED else GREEN
+        val timerColor = if (minutes >= TIMER_THRESHOLD_IN_MINUTES) RED else WHITE
         val seaCreaturesText = if (mobsCount > 1) "sea creatures" else "sea creature"
-        val seaCreaturesColor = if (mobsCount >= getSeaCreaturesCountThreshold()) RED else GREEN
+        val seaCreaturesColor = if (mobsCount >= getSeaCreaturesCountThreshold()) RED else WHITE
 
         val overlayText = "${seaCreaturesColor}${mobsCount} ${GRAY}${seaCreaturesText} ${DARK_GRAY}(${timerColor}${timerText}${DARK_GRAY})"
         
