@@ -26,10 +26,13 @@ object RareDropsPublisher {
     val DYE_DROP_PATTERN = Regex("^§d§lWOW! (?<playerAndRank>.+?) §6found (a|an) (?<dyeName>.+?)( §8#\\d+)?§6!.*$")
 
     // Wow! [MVP+] MoonTheSadFisher found a Phoenix pet!
-    // &eWow! &r&b[MVP&r&c+&r&b] &bMoonTheSadFisher&r&r&f &r&efound a &r&cPhoenix &r&epet!
-    val PHOENIX_PET_DROP_PATTERN = Regex("^Wow\\! (?<playerAndRank>.+?) found a Phoenix pet\\!.*")
+    // §eWow! §b[MVP§r§c+§r§b] §bMoonTheSadFisher§f §efound a §cPhoenix §epet!
+    val PHOENIX_PET_DROP_PATTERN = Regex("^§eWow\\! (?<playerAndRank>.+?) §efound a §cPhoenix §epet\\!.*")
 
     // TODO: Squid pet catch
+    // §6⛃ §6§lGREAT CATCH! §fYou caught a §7[Lvl 1] §9Squid§f!
+    // §d⛃ §d§lOUTSTANDING CATCH! §fYou caught a §7[Lvl 1] §6Squid§f!
+    val PET_CATCH_PATTERN = Regex("^(§6⛃ §6§lGREAT CATCH!|§d⛃ §d§lOUTSTANDING CATCH!) §fYou caught a §7\\[Lvl 1\\] (?<pet>.+?)§f\\!$")
 
     fun init() {
         EventBus.subscribe(ChatEvent::class, ::onChat)
@@ -40,35 +43,53 @@ object RareDropsPublisher {
         
         val formattedMessage = event.message.getFormattedString()
         if (formattedMessage.isNullOrEmpty()) return
-        val unformattedMessage = event.message.string ?: return
 
         val playerName = PlayerUtils.getName() ?: return
         
-        if (RARE_DROP_PATTERN.containsMatchIn(formattedMessage)) {
-            val match = RARE_DROP_PATTERN.matchEntire(formattedMessage) ?: return
-            val item = match.groups.get("item")?.value ?: return
-            val magicFind = match.groups.get("mf")?.value?.toIntOrNull()
+        val rareDropMatch = RARE_DROP_PATTERN.matchEntire(formattedMessage)
+        if (rareDropMatch != null) {
+            val item = rareDropMatch.groups.get("item")?.value ?: return
+            val magicFind = rareDropMatch.groups.get("mf")?.value?.toIntOrNull()
             EventBus.publish(RareDropEvent(item.removeFormatting(), item, magicFind))
-        } else if (PET_DROP_PATTERN.containsMatchIn(formattedMessage)) {
-            val match = PET_DROP_PATTERN.matchEntire(formattedMessage) ?: return
-            val petDisplayName = match.groups.get("pet")?.value ?: return
+            return
+        }
+        
+        val petDropMatch = PET_DROP_PATTERN.matchEntire(formattedMessage)
+        if (petDropMatch != null) {
+            val petDisplayName = petDropMatch.groups.get("pet")?.value ?: return
             val rarityStr = CommonUtils.getRarityDescription(petDisplayName.substring(0, 2))
             val petName = "${petDisplayName.removeFormatting()} ($rarityStr)"
             EventBus.publish(RareDropEvent(petName, petDisplayName, null))
-        } else if (PHOENIX_PET_DROP_PATTERN.containsMatchIn(unformattedMessage)) {
-            val match = PHOENIX_PET_DROP_PATTERN.matchEntire(unformattedMessage) ?: return
-            val playerAndRank = match.groups.get("playerAndRank")?.value ?: return
-            if (!playerAndRank.contains(playerName, ignoreCase = false)) return
+            return
+        }
+        
+        val petCatchMatch = PET_CATCH_PATTERN.matchEntire(formattedMessage)
+        if (petCatchMatch != null) {
+            val petDisplayName = petCatchMatch.groups.get("pet")?.value ?: return
+            val rarityStr = CommonUtils.getRarityDescription(petDisplayName.substring(0, 2))
+            val petName = "${petDisplayName.removeFormatting()} ($rarityStr)"
+            EventBus.publish(RareDropEvent(petName, petDisplayName, null))
+            return
+        }
 
-            EventBus.publish(RareDropEvent("Phoenix", "${SPECIAL}Phoenix", null))
-        } else if (DYE_DROP_PATTERN.containsMatchIn(formattedMessage)) {
-            val match = DYE_DROP_PATTERN.matchEntire(formattedMessage) ?: return
-            val playerAndRank = match.groups.get("playerAndRank")?.value ?: return
-            if (!playerAndRank.removeFormatting().contains(playerName, ignoreCase = false)) return
-
-            val dyeName = match.groups.get("dyeName")?.value ?: return
-            EventBus.publish(RareDropEvent(dyeName.removeFormatting(), dyeName, null))
+        val phoenixMatch = PHOENIX_PET_DROP_PATTERN.matchEntire(formattedMessage)
+        if (phoenixMatch != null) {
+            val playerAndRank = phoenixMatch.groups.get("playerAndRank")?.value ?: return
+            if (playerAndRank.removeFormatting().contains(playerName, ignoreCase = false)) {
+                EventBus.publish(RareDropEvent("Phoenix", "${SPECIAL}Phoenix", null))
+            }
+            return
+        }
+        
+        val dyeMatch = DYE_DROP_PATTERN.matchEntire(formattedMessage)
+        if (dyeMatch != null) {
+            val playerAndRank = dyeMatch.groups.get("playerAndRank")?.value ?: return
+            val playerAndRankUnformatted = playerAndRank.removeFormatting()
+            if (playerAndRankUnformatted.contains(playerName, ignoreCase = false)) {
+                val dyeName = dyeMatch.groups.get("dyeName")?.value ?: return
+                EventBus.publish(RareDropEvent(dyeName.removeFormatting(), dyeName, null))
+            }
+            return
         }
     }
 }
-

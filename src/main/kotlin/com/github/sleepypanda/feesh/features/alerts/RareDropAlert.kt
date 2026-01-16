@@ -56,7 +56,6 @@ object RareDropAlert {
         val dropInfo = RareDrops.rareDrops.find { it.itemName == itemName } ?: return
 
         val type = try {
-            // TODO this is not aligned for Megalodon or Squid drops
             RareDropTypes.valueOf(itemName.uppercase().replace(" (", "").replace(") ", "").replace(" ", "_")) // Baby Yeti (Epic) -> BABY_YETI_EPIC
         } catch (_: IllegalArgumentException) {
             return
@@ -64,7 +63,7 @@ object RareDropAlert {
 
         if (!Alerts.alertOnRareDropTypes.contains(type)) return
 
-        val title = dropInfo.boldDisplayName
+        val title = dropInfo.getTitle() 
         val price = if (Alerts.includePriceIntoRareDropAlert) getPrice(dropInfo.id) else 0.0
         val priceStr = if (price > 0.0) " ${GRAY}(${GREEN}+${GOLD}${CommonUtils.toShortNumber(price)}${GRAY})" else ""
 
