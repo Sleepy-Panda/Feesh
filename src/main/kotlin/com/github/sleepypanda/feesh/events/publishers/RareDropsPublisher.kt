@@ -20,21 +20,20 @@ object RareDropsPublisher {
     // §6§lPET DROP! §6Baby Yeti
     val PET_DROP_PATTERN = Regex("^§6§lPET DROP! (?<shRarity>(§6§lLEGENDARY |§5§lEPIC |§9§lRARE |§a§lUNCOMMON |§f§lCOMMON ))?+(?<pet>(.+))$")
 
-    // 
-    val DYE_DROP_PATTERN = Regex("^§6§lDYE DROP! (?<dye>(.+))$")
+    // WOW! [MVP+] MoonTheSadFisher found an Aquamarine Dye #95!
+    // WOW! [MVP+] MoonTheSadFisher found a Treasure Dye!
+    // §d§lWOW! §b[MVP§r§c+§r§b] §bMoonTheSadFisher§f §6found an §bAquamarine Dye §8#95§6!
+    val DYE_DROP_PATTERN = Regex("^§d§lWOW! (?<playerAndRank>.+?) §6found (a|an) (?<dyeName>.+?)( §8#\\d+)?§6!.*$")
 
     // Wow! [MVP+] MoonTheSadFisher found a Phoenix pet!
+    // &eWow! &r&b[MVP&r&c+&r&b] &bMoonTheSadFisher&r&r&f &r&efound a &r&cPhoenix &r&epet!
     val PHOENIX_PET_DROP_PATTERN = Regex("^Wow\\! (?<playerAndRank>.+?) found a Phoenix pet\\!.*")
 
-    // TODO: DYE DROP
     // TODO: Squid pet catch
 
     fun init() {
         EventBus.subscribe(ChatEvent::class, ::onChat)
     }
-
-
-    // TODO remove debug logging
 
     private fun onChat(event: ChatEvent) {
         if (!WorldUtils.isInSkyblock()) return
@@ -50,26 +49,25 @@ object RareDropsPublisher {
             val item = match.groups.get("item")?.value ?: return
             val magicFind = match.groups.get("mf")?.value?.toIntOrNull()
             EventBus.publish(RareDropEvent(item.removeFormatting(), item, magicFind))
-
-            FeeshMod.LOGGER.info("Rare drop: $item, $magicFind")
         } else if (PET_DROP_PATTERN.containsMatchIn(formattedMessage)) {
             val match = PET_DROP_PATTERN.matchEntire(formattedMessage) ?: return
             val petDisplayName = match.groups.get("pet")?.value ?: return
             val rarityStr = CommonUtils.getRarityDescription(petDisplayName.substring(0, 2))
             val petName = "${petDisplayName.removeFormatting()} ($rarityStr)"
-            EventBus.publish(RareDropEvent(petName, petDisplayName))
-
-
-
-            FeeshMod.LOGGER.info("Pet drop: $petName $petDisplayName")
+            EventBus.publish(RareDropEvent(petName, petDisplayName, null))
         } else if (PHOENIX_PET_DROP_PATTERN.containsMatchIn(unformattedMessage)) {
             val match = PHOENIX_PET_DROP_PATTERN.matchEntire(unformattedMessage) ?: return
             val playerAndRank = match.groups.get("playerAndRank")?.value ?: return
             if (!playerAndRank.contains(playerName, ignoreCase = false)) return
-            EventBus.publish(RareDropEvent("Phoenix", "${SPECIAL}Phoenix"))
 
-            
-            FeeshMod.LOGGER.info("Phoenix pet drop")
+            EventBus.publish(RareDropEvent("Phoenix", "${SPECIAL}Phoenix", null))
+        } else if (DYE_DROP_PATTERN.containsMatchIn(formattedMessage)) {
+            val match = DYE_DROP_PATTERN.matchEntire(formattedMessage) ?: return
+            val playerAndRank = match.groups.get("playerAndRank")?.value ?: return
+            if (!playerAndRank.removeFormatting().contains(playerName, ignoreCase = false)) return
+
+            val dyeName = match.groups.get("dyeName")?.value ?: return
+            EventBus.publish(RareDropEvent(dyeName.removeFormatting(), dyeName, null))
         }
     }
 }
