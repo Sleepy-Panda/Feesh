@@ -1,8 +1,10 @@
 package com.github.sleepypanda.feesh.utils.enums
 
-enum class DeployableTypes {
-    TOTEM_OF_CORRUPTION,
-    BLACK_HOLE,
-    UMBERELLA,
-    FLARE
+enum class DeployableTypes(val displayName: String) {
+    TOTEM_OF_CORRUPTION("Totem of Corruption"),
+    BLACK_HOLE("Black Hole"),
+    UMBERELLA("Umberella"),
+    FLARE("Flare");
+
+    override fun toString(): String = displayName // Show display name in UI, but internally it uses name
 }

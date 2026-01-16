@@ -11,9 +11,11 @@ import com.teamresourceful.resourcefulconfig.api.annotations.Comment
 import com.teamresourceful.resourcefulconfig.api.annotations.ConfigEntry
 import com.teamresourceful.resourcefulconfig.api.types.options.EntryType
 
-enum class HotspotChatSource {
-    PARTY_CHAT,
-    ALL_CHAT
+enum class HotspotChatSource(val displayName: String) {
+    PARTY_CHAT("Party Chat"),
+    ALL_CHAT("All Chat");
+
+    override fun toString(): String = displayName
 }
 
 object Chat : CategoryKt("Chat") {

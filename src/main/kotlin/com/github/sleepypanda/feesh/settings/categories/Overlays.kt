@@ -10,21 +10,27 @@ import com.teamresourceful.resourcefulconfig.api.types.options.EntryType
 import com.teamresourceful.resourcefulconfigkt.api.CategoryKt
 import net.minecraft.util.Util
 
-enum class SeaCreaturesTrackerDisplayMode {
-    ONLY_RARE,
-    ALL
+enum class SeaCreaturesTrackerDisplayMode(val displayName: String) {
+    ONLY_RARE("Only rare"),
+    ALL("All");
+
+    override fun toString(): String = displayName
 }
 
-enum class SeaCreaturesTrackerSorting {
-    CATCHES_COUNT_DESC,
-    CATCHES_COUNT_ASC,
-    RARITY_ASC,
-    RARITY_DESC
+enum class SeaCreaturesTrackerSorting(val displayName: String) {
+    CATCHES_COUNT_DESC("Catches count (DESC)"),
+    CATCHES_COUNT_ASC("Catches count (ASC)"),
+    RARITY_DESC("Rarity (DESC)"),
+    RARITY_ASC("Rarity (ASC)");
+
+    override fun toString(): String = displayName
 }
 
-enum class FishingHookTimerMode {
-    UNTIL_REEL_IN,
-    SINCE_CASTED
+enum class FishingHookTimerMode(val displayName: String) {
+    UNTIL_REEL_IN("Until reel in"),
+    SINCE_CASTED("Since casted");
+
+    override fun toString(): String = displayName
 }
 
 object Overlays : CategoryKt("Overlays") {

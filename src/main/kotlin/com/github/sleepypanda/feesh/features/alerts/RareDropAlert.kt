@@ -66,7 +66,7 @@ object RareDropAlert {
 
         val title = dropInfo.boldDisplayName
         val price = if (Alerts.includePriceIntoRareDropAlert) getPrice(dropInfo.id) else 0.0
-        val priceStr = if (price > 0.0) " ${GRAY}(${GREEN}+${CommonUtils.toShortNumber(price)}${GRAY})" else ""
+        val priceStr = if (price > 0.0) " ${GRAY}(${GREEN}+${GOLD}${CommonUtils.toShortNumber(price)}${GRAY})" else ""
 
         CommonUtils.showTitle(title + priceStr, playerName)
         SoundUtils.playSound() // TODO: custom sounds

@@ -27,7 +27,9 @@ enum class RareDropTypes(val displayName: String) {
     MIDNIGHT_DYE("Midnight Dye"),
     TREASURE_DYE("Treasure Dye"),
     PERIWINKLE_DYE("Periwinkle Dye"),
-    BONE_DYE("Bone Dye"),
+    BONE_DYE("Bone Dye");
+
+    override fun toString(): String = displayName // Show display name in UI, but internally it uses name
 }
 
 class RareDrops {

@@ -5,36 +5,40 @@ import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
 
 // This should be aligned with Rare Sea Creatures names using the following logic:
 // Carrot King -> CARROT_KING
-enum class RareSeaCreatureTypes {
-    CARROT_KING,
-    WATER_HYDRA,
-    GREAT_WHITE_SHARK,
-    NUTCRACKER,
-    YETI,
-    REINDRAKE,
-    PHANTOM_FISHER,
-    GRIM_REAPER,
-    FIERY_SCUTTLER,
-    THUNDER,
-    LORD_JAWBUS,
-    PLHLEGBLAST,
-    RAGNAROK,
-    VANQUISHER,
-    ABYSSAL_MINER,
-    ALLIGATOR,
-    BLUE_RINGED_OCTOPUS,
-    WIKI_TIKI,
-    TITANOBOA,
-    THE_LOCH_EMPEROR
+enum class RareSeaCreatureTypes(val displayName: String) {
+    CARROT_KING("Carrot King"),
+    WATER_HYDRA("Water Hydra"),
+    GREAT_WHITE_SHARK("Great White Shark"),
+    NUTCRACKER("Nutcracker"),
+    YETI("Yeti"),
+    REINDRAKE("Reindrake"),
+    PHANTOM_FISHER("Phantom Fisher"),
+    GRIM_REAPER("Grim Reaper"),
+    FIERY_SCUTTLER("Fiery Scuttler"),
+    THUNDER("Thunder"),
+    LORD_JAWBUS("Lord Jawbus"),
+    PLHLEGBLAST("Plhlegblast"),
+    RAGNAROK("Ragnarok"),
+    VANQUISHER("Vanquisher"),
+    ABYSSAL_MINER("Abyssal Miner"),
+    ALLIGATOR("Alligator"),
+    BLUE_RINGED_OCTOPUS("Blue Ringed Octopus"),
+    WIKI_TIKI("Wiki Tiki"),
+    TITANOBOA("Titanoboa"),
+    THE_LOCH_EMPEROR("The Loch Emperor");
+
+    override fun toString(): String = displayName // Show display name in UI, but internally it uses name
 }
 
-enum class RareSeaCreatureTypesAllChat {
-    THUNDER,
-    LORD_JAWBUS,
-    RAGNAROK,
-    VANQUISHER,
-    WIKI_TIKI,
-    TITANOBOA,
+enum class RareSeaCreatureTypesAllChat(val displayName: String) {
+    THUNDER("Thunder"),
+    LORD_JAWBUS("Lord Jawbus"),
+    RAGNAROK("Ragnarok"),
+    VANQUISHER("Vanquisher"),
+    WIKI_TIKI("Wiki Tiki"),
+    TITANOBOA("Titanoboa");
+
+    override fun toString(): String = displayName // Show display name in UI, but internally it uses name
 }
 
 class SeaCreatures {
@@ -138,8 +142,8 @@ class SeaCreatures {
         }
 
         val allSeaCreatures = listOf(
-            SeaCreatureInfo("Water Hydra", LEGENDARY.code, Regex(WATER_HYDRA_MESSAGE), true),
-            SeaCreatureInfo("Carrot King", RARE.code, Regex(CARROT_KING_MESSAGE), true),
+            SeaCreatureInfo(RareSeaCreatureTypes.WATER_HYDRA.displayName, LEGENDARY.code, Regex(WATER_HYDRA_MESSAGE), true),
+            SeaCreatureInfo(RareSeaCreatureTypes.CARROT_KING.displayName, RARE.code, Regex(CARROT_KING_MESSAGE), true),
             SeaCreatureInfo("Squid", COMMON.code, Regex(SQUID_MESSAGE), false),
             SeaCreatureInfo("Night Squid", COMMON.code, Regex(NIGHT_SQUID_MESSAGE), false),
             SeaCreatureInfo("Sea Walker", COMMON.code, Regex(SEA_WALKER_MESSAGE), false),
@@ -153,20 +157,20 @@ class SeaCreatures {
             SeaCreatureInfo("Deep Sea Protector", EPIC.code, Regex(DEEP_SEA_PROTECTOR_MESSAGE), false),
             SeaCreatureInfo("Agarimoo", RARE.code, Regex(AGARIMOO_MESSAGE), false),
 
-            SeaCreatureInfo("Great White Shark", LEGENDARY.code, Regex(GREAT_WHITE_SHARK_MESSAGE), true),
+            SeaCreatureInfo(RareSeaCreatureTypes.GREAT_WHITE_SHARK.displayName, LEGENDARY.code, Regex(GREAT_WHITE_SHARK_MESSAGE), true),
             SeaCreatureInfo("Nurse Shark", UNCOMMON.code, Regex(NURSE_SHARK_MESSAGE), false),
             SeaCreatureInfo("Blue Shark", RARE.code, Regex(BLUE_SHARK_MESSAGE), false),
             SeaCreatureInfo("Tiger Shark", EPIC.code, Regex(TIGER_SHARK_MESSAGE), false),
 
-            SeaCreatureInfo("Yeti", LEGENDARY.code, Regex(YETI_MESSAGE), true),
-            SeaCreatureInfo("Reindrake", MYTHIC.code, Regex(REINDRAKE_MESSAGE), true),
-            SeaCreatureInfo("Nutcracker", RARE.code, Regex(NUTCRACKER_MESSAGE), true),
+            SeaCreatureInfo(RareSeaCreatureTypes.YETI.displayName, LEGENDARY.code, Regex(YETI_MESSAGE), true),
+            SeaCreatureInfo(RareSeaCreatureTypes.REINDRAKE.displayName, MYTHIC.code, Regex(REINDRAKE_MESSAGE), true),
+            SeaCreatureInfo(RareSeaCreatureTypes.NUTCRACKER.displayName, RARE.code, Regex(NUTCRACKER_MESSAGE), true),
             SeaCreatureInfo("Frozen Steve", COMMON.code, Regex(FROZEN_STEVE_MESSAGE), false),
             SeaCreatureInfo("Frosty", COMMON.code, Regex(FROSTY_MESSAGE), false),
             SeaCreatureInfo("Grinch", UNCOMMON.code, Regex(GRINCH_MESSAGE), false),
 
-            SeaCreatureInfo("Phantom Fisher", LEGENDARY.code, Regex(PHANTOM_FISHER_MESSAGE), true),
-            SeaCreatureInfo("Grim Reaper", LEGENDARY.code, Regex(GRIM_REAPER_MESSAGE), true),
+            SeaCreatureInfo(RareSeaCreatureTypes.PHANTOM_FISHER.displayName, LEGENDARY.code, Regex(PHANTOM_FISHER_MESSAGE), true),
+            SeaCreatureInfo(RareSeaCreatureTypes.GRIM_REAPER.displayName, LEGENDARY.code, Regex(GRIM_REAPER_MESSAGE), true),
             SeaCreatureInfo("Scarecrow", COMMON.code, Regex(SCARECROW_MESSAGE), false),
             SeaCreatureInfo("Nightmare", RARE.code, Regex(NIGHTMARE_MESSAGE), false),
             SeaCreatureInfo("Werewolf", EPIC.code, Regex(WEREWOLF_MESSAGE), false),
@@ -181,16 +185,16 @@ class SeaCreatures {
             SeaCreatureInfo("Fire Eel", RARE.code, Regex(FIRE_EEL_MESSAGE), false),
             SeaCreatureInfo("Taurus", EPIC.code, Regex(TAURUS_MESSAGE), false),
             SeaCreatureInfo("Fiery Scuttler", LEGENDARY.code, Regex(FIERY_SCUTTLER_MESSAGE), true),
-            SeaCreatureInfo("Thunder", MYTHIC.code, Regex(THUNDER_MESSAGE), true),
-            SeaCreatureInfo("Lord Jawbus", MYTHIC.code, Regex(LORD_JAWBUS_MESSAGE), true),
-            SeaCreatureInfo("Plhlegblast", MYTHIC.code, Regex(PLHLEGBLAST_MESSAGE), true),
-            SeaCreatureInfo("Ragnarok", MYTHIC.code, Regex(RAGNAROK_MESSAGE), true),
-            SeaCreatureInfo("Vanquisher", EPIC.code, Regex(VANQUISHER_MESSAGE), true),
+            SeaCreatureInfo(RareSeaCreatureTypes.THUNDER.displayName, MYTHIC.code, Regex(THUNDER_MESSAGE), true),
+            SeaCreatureInfo(RareSeaCreatureTypes.LORD_JAWBUS.displayName, MYTHIC.code, Regex(LORD_JAWBUS_MESSAGE), true),
+            SeaCreatureInfo(RareSeaCreatureTypes.PLHLEGBLAST.displayName, MYTHIC.code, Regex(PLHLEGBLAST_MESSAGE), true),
+            SeaCreatureInfo(RareSeaCreatureTypes.RAGNAROK.displayName, MYTHIC.code, Regex(RAGNAROK_MESSAGE), true),
+            SeaCreatureInfo(RareSeaCreatureTypes.VANQUISHER.displayName, EPIC.code, Regex(VANQUISHER_MESSAGE), true),
 
             SeaCreatureInfo("Oasis Rabbit", UNCOMMON.code, Regex(OASIS_RABBIT_MESSAGE), false),
             SeaCreatureInfo("Oasis Sheep", UNCOMMON.code, Regex(OASIS_SHEEP_MESSAGE), false),
 
-            SeaCreatureInfo("Abyssal Miner", LEGENDARY.code, Regex(ABYSSAL_MINER_MESSAGE), true),
+            SeaCreatureInfo(RareSeaCreatureTypes.ABYSSAL_MINER.displayName, LEGENDARY.code, Regex(ABYSSAL_MINER_MESSAGE), true),
             SeaCreatureInfo("Water Worm", RARE.code, Regex(WATER_WORM_MESSAGE), false),
             SeaCreatureInfo("Poisoned Water Worm", RARE.code, Regex(POISONED_WATER_WORM_MESSAGE), false),
             SeaCreatureInfo("Flaming Worm", RARE.code, Regex(FLAMING_WORM_MESSAGE), false),
@@ -208,12 +212,12 @@ class SeaCreatures {
             SeaCreatureInfo("Banshee", RARE.code, Regex(BANSHEE_MESSAGE), false),
             SeaCreatureInfo("Snapping Turtle", RARE.code, Regex(SNAPPING_TURTLE_MESSAGE), false),
             SeaCreatureInfo("Bayou Sludge", RARE.code, Regex(BAYOU_SLUDGE_MESSAGE), false),
-            SeaCreatureInfo("Alligator", LEGENDARY.code, Regex(ALLIGATOR_MESSAGE), true),
-            SeaCreatureInfo("Blue Ringed Octopus", LEGENDARY.code, Regex(BLUE_RINGED_OCTOPUS_MESSAGE), true),
-            SeaCreatureInfo("Wiki Tiki", MYTHIC.code, Regex(WIKI_TIKI_MESSAGE), true),
-            SeaCreatureInfo("Titanoboa", MYTHIC.code, Regex(TITANOBOA_MESSAGE), true),
+            SeaCreatureInfo(RareSeaCreatureTypes.ALLIGATOR.displayName, LEGENDARY.code, Regex(ALLIGATOR_MESSAGE), true),
+            SeaCreatureInfo(RareSeaCreatureTypes.BLUE_RINGED_OCTOPUS.displayName, LEGENDARY.code, Regex(BLUE_RINGED_OCTOPUS_MESSAGE), true),
+            SeaCreatureInfo(RareSeaCreatureTypes.WIKI_TIKI.displayName, MYTHIC.code, Regex(WIKI_TIKI_MESSAGE), true),
+            SeaCreatureInfo(RareSeaCreatureTypes.TITANOBOA.displayName, MYTHIC.code, Regex(TITANOBOA_MESSAGE), true),
 
-            SeaCreatureInfo("The Loch Emperor", LEGENDARY.code, Regex(THE_LOCH_EMPEROR_MESSAGE), true),
+            SeaCreatureInfo(RareSeaCreatureTypes.THE_LOCH_EMPEROR.displayName, LEGENDARY.code, Regex(THE_LOCH_EMPEROR_MESSAGE), true),
             SeaCreatureInfo("Bogged", COMMON.code, Regex(BOGGED_MESSAGE), false),
             SeaCreatureInfo("Tadgang", UNCOMMON.code, Regex(TADGANG_MESSAGE), false),
             SeaCreatureInfo("Ent", UNCOMMON.code, Regex(ENT_MESSAGE), false),

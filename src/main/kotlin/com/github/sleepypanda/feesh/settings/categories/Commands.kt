@@ -41,6 +41,10 @@ object Commands : CategoryKt("Commands") {
     }
 
     init {
+        separator {
+            this.title = "${AQUA}${BOLD}Spider's Den rain schedule"
+        }
+
         button {
             title = "Spider's Den rain schedule"
             description = "Displays the nearest Spider's Den Rain / Thunderstorm events in the chat. Executes ${AQUA}/feeshSpiderDenRainSchedule"
