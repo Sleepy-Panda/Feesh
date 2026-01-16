@@ -18,38 +18,38 @@ import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
 import java.text.SimpleDateFormat
 import java.util.Date
 
-data class TreasureCatchesData(
-    var good: Int = 0,
-    var great: Int = 0,
-    var outstanding: Int = 0
-)
-
-data class TreasureDyeData(
-    var count: Int = 0,
-    var catchesSinceLast: Int = 0,
-    var dropsHistory: MutableList<DropHistoryEntry> = mutableListOf()
-)
-
-data class DropHistoryEntry(
-    val catches: Int,
-    val lastDropTime: Date?
-)
-
-data class TreasureFishingSessionData(
-    val catches: TreasureCatchesData = TreasureCatchesData()
-)
-
-data class TreasureFishingTotalData(
-    val catches: TreasureCatchesData = TreasureCatchesData(),
-    val treasureDyes: TreasureDyeData = TreasureDyeData()
-)
-
-data class TreasureFishingData(
-    var session: TreasureFishingSessionData = TreasureFishingSessionData(),
-    var total: TreasureFishingTotalData = TreasureFishingTotalData()
-)
-
 object TreasureFishingTracker {
+    data class TreasureCatchesData(
+        var good: Int = 0,
+        var great: Int = 0,
+        var outstanding: Int = 0
+    )
+
+    data class TreasureDyeData(
+        var count: Int = 0,
+        var catchesSinceLast: Int = 0,
+        var dropsHistory: MutableList<DropHistoryEntry> = mutableListOf()
+    )
+
+    data class DropHistoryEntry(
+        val catches: Int,
+        val lastDropTime: Date?
+    )
+
+    data class TreasureFishingSessionData(
+        val catches: TreasureCatchesData = TreasureCatchesData()
+    )
+
+    data class TreasureFishingTotalData(
+        val catches: TreasureCatchesData = TreasureCatchesData(),
+        val treasureDyes: TreasureDyeData = TreasureDyeData()
+    )
+
+    data class TreasureFishingData(
+        var session: TreasureFishingSessionData = TreasureFishingSessionData(),
+        var total: TreasureFishingTotalData = TreasureFishingTotalData()
+    )
+
     private var data = TreasureFishingData()
     private var lastTreasureCaughtAt: Date? = null
     private var tickCounter = 0

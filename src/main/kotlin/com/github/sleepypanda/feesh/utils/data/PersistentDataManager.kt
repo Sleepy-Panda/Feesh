@@ -16,6 +16,9 @@ object PersistentDataManager {
     private val configDir: File = FabricLoader.getInstance().configDir.toFile()
     private val feeshConfigDir: File = File(configDir, "feesh")
 
+    var feeshData: FeeshData = FeeshData()
+    private val feeshDataFile: File = File(feeshConfigDir, "data.json")
+
     private var overlayCoordsData: MutableMap<String, OverlayCoordsData> = mutableMapOf()
     private val overlayCoordsFile: File = File(feeshConfigDir, "overlayCoordsData.json")
 
@@ -28,6 +31,7 @@ object PersistentDataManager {
     }
     
     fun init() {
+        loadFeeshDataFromFile()
         loadOverlayCoordsDataFromFile()
     }
     
@@ -65,6 +69,30 @@ object PersistentDataManager {
             overlayCoordsData = mutableMapOf()
         }
     }
+
+    private fun loadFeeshDataFromFile() {
+        try {
+            if (!feeshDataFile.exists() || !feeshDataFile.canRead()) {
+                FeeshMod.LOGGER.info("[Feesh] Data file does not exist, using defaults")
+                return
+            }
+            
+            val content = feeshDataFile.readText()
+            if (content.isBlank()) {
+                FeeshMod.LOGGER.info("[Feesh] Data file is empty, using defaults")
+                return
+            }
+            
+            val type = object : TypeToken<FeeshData>() {}.type
+            val loaded = gson.fromJson<FeeshData>(content, type)
+            feeshData = loaded ?: FeeshData()
+            
+            FeeshMod.LOGGER.info("[Feesh] Successfully loaded data entries")
+        } catch (e: Exception) {
+            FeeshMod.LOGGER.error("[Feesh] Failed to load data, using defaults", e)
+            feeshData = FeeshData()
+        }
+    }
     
     private fun saveOverlayCoordsDataToFileAsync() {
         CompletableFuture.runAsync({
@@ -83,6 +111,27 @@ object PersistentDataManager {
                 }
             } catch (e: Exception) {
                 FeeshMod.LOGGER.error("[Feesh] Failed to save overlay coords data", e)
+            }
+        }, executor)
+    }
+
+    fun saveFeeshDataToFileAsync() {
+        CompletableFuture.runAsync({
+            try {
+                synchronized(saveLock) {
+                    feeshConfigDir.mkdirs()
+                    
+                    val json = gson.toJson(feeshData)
+                    Files.write(
+                        feeshDataFile.toPath(),
+                        json.toByteArray(),
+                        StandardOpenOption.CREATE,
+                        StandardOpenOption.TRUNCATE_EXISTING,
+                        StandardOpenOption.WRITE
+                    )
+                }
+            } catch (e: Exception) {
+                FeeshMod.LOGGER.error("[Feesh] Failed to save data", e)
             }
         }, executor)
     }

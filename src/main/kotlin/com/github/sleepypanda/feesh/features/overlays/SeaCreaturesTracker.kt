@@ -16,31 +16,32 @@ import com.github.sleepypanda.feesh.utils.gui.FeeshGui
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
 import com.github.sleepypanda.feesh.utils.PlayerUtils
+import com.github.sleepypanda.feesh.utils.data.PersistentDataManager
 import java.text.DecimalFormat
 
-enum class ViewMode {
-    SESSION,
-    TOTAL
-}
-
-data class SeaCreatureCatchData(
-    var amount: Int = 0,
-    var doubleHookAmount: Int = 0
-)
-
-data class SeaCreaturesData(
-    val catches: MutableMap<String, SeaCreatureCatchData> = mutableMapOf(),
-    var totalCount: Int = 0
-)
-
-data class SeaCreaturesTrackerData(
-    var session: SeaCreaturesData = SeaCreaturesData(),
-    var total: SeaCreaturesData = SeaCreaturesData(),
-    var viewMode: String = ViewMode.SESSION.name
-)
-
 object SeaCreaturesTracker {
-    private var data = SeaCreaturesTrackerData()
+    enum class ViewMode {
+        SESSION,
+        TOTAL
+    }
+    
+    data class SeaCreatureCatchData(
+        var amount: Int = 0,
+        var doubleHookAmount: Int = 0
+    )
+    
+    data class SeaCreaturesData(
+        val catches: MutableMap<String, SeaCreatureCatchData> = mutableMapOf(),
+        var totalCount: Int = 0
+    )
+    
+    data class SeaCreaturesTrackerData(
+        var session: SeaCreaturesData = SeaCreaturesData(),
+        var total: SeaCreaturesData = SeaCreaturesData(),
+        var viewMode: String = ViewMode.SESSION.name
+    )
+    
+    private var data = PersistentDataManager.feeshData.seaCreatures
     private val decimalFormat = DecimalFormat("#.#")
     private var tickCounter = 0
     private val baseTitle = "${AQUA}${BOLD}Sea creatures tracker"
@@ -71,27 +72,8 @@ object SeaCreaturesTracker {
         EventBus.subscribe(ClientTickEvent::class, ::onClientTick)
     }
 
-    //private fun loadData() {
-    //    try {
-    //        if (dataFile.exists() && dataFile.canRead()) {
-    //            val content = dataFile.readText()
-    //            if (content.isNotEmpty()) {
-    //                data = json.decodeFromString<SeaCreaturesTrackerData>(content)
-    //            }
-    //        }
-    //    } catch (e: Exception) {
-    //        FeeshMod.LOGGER.error("[Feesh] Failed to load Sea creatures tracker data.", e)
-    //    }
-    //}
-//
     private fun saveData() {
-    //    try {
-    //        dataFile.parentFile?.mkdirs()
-    //        val content = json.encodeToString(data)
-    //        Files.write(dataFile.toPath(), content.toByteArray(), StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING, StandardOpenOption.WRITE)
-    //    } catch (e: Exception) {
-    //        FeeshMod.LOGGER.error("[Feesh] Failed to save Sea creatures tracker data.", e)
-    //    }
+        PersistentDataManager.saveFeeshDataToFileAsync()
     }
 
     private fun onClientTick(@Suppress("UNUSED_PARAMETER") event: ClientTickEvent) {
@@ -117,8 +99,8 @@ object SeaCreaturesTracker {
         trackSeaCreatureCatch(data.session, seaCreatureName, valueToAdd, isDoubleHook)
         trackSeaCreatureCatch(data.total, seaCreatureName, valueToAdd, isDoubleHook)
 
-        saveData()
         updateGuiLines()
+        saveData()
     }
 
     private fun trackSeaCreatureCatch(sourceObj: SeaCreaturesData, seaCreatureName: String, valueToAdd: Int, isDoubleHook: Boolean) {
@@ -143,6 +125,7 @@ object SeaCreaturesTracker {
         val currentMode = getCurrentViewMode()
         val newMode = if (currentMode == ViewMode.SESSION) ViewMode.TOTAL else ViewMode.SESSION
         data.viewMode = newMode.name
+        updateGuiLines()
         saveData()
     }
 
@@ -192,6 +175,7 @@ object SeaCreaturesTracker {
                 ViewMode.TOTAL -> resetTotal()
             }
 
+            updateGuiLines()
             ChatUtils.sendLocalChat("${WHITE}Sea creatures tracker ${viewModeText} ${WHITE}was reset.", true)
         } catch (e: Exception) {
             FeeshMod.LOGGER.error("[Feesh] Failed to reset Sea creatures tracker.", e)

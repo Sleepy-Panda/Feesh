@@ -172,7 +172,6 @@ object JerryWorkshopTracker {
         return data.reindrake.catchesSinceLast > 0 || data.reindrake.catchesHistory.isNotEmpty() || data.reindrake.lastCatchTime != null
     }
 
-
     private fun formatDate(date: Date?): String {
         if (date == null) return ""
         val formatter = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
