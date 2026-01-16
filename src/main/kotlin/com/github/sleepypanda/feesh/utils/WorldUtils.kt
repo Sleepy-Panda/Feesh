@@ -139,8 +139,9 @@ object WorldUtils {
     }
 
     private fun readIsInSkyblock(): Boolean {
-        val serverAddress = FeeshMod.mc.currentServerEntry?.address ?: return false
-        if (!serverAddress.contains("hypixel", ignoreCase = true)) return false
+        //val serverAddress = FeeshMod.mc.currentServerEntry?.address ?: return false
+        //if (!serverAddress.contains("hypixel", ignoreCase = true)) return false
+        // ^ Commented out for now, because people with reverse proxy have other server addresses
         
         val scoreboard = FeeshMod.mc.world?.scoreboard ?: return false
         val objective = scoreboard.getObjectiveForSlot(ScoreboardDisplaySlot.SIDEBAR) ?: return false
