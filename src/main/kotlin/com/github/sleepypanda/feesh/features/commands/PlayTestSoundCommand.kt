@@ -9,16 +9,25 @@ import net.minecraft.sound.SoundEvent
 import net.minecraft.sound.SoundEvents
 import net.minecraft.util.Identifier
 
+/**
+ * This command allows you to play test sounds in the game.
+ * Examples:
+ * /feeshPlayTestSound mc:entity.experience_orb.pickup
+ * /feeshPlayTestSound fileName.ogg
+ * @param args The arguments passed to the command.
+ * @param fileName The file name of the sound to play.
+ * @param soundName The name of the sound event to play.
+ */
 object PlayTestSoundCommand {
     const val COMMAND_NAME = "feeshPlayTestSound"
 
     fun init() {
         RegisterUtils.command(COMMAND_NAME, ::handleCommand)
     }
-    
+
     private fun handleCommand(args: Array<String>) {
         if (args.isEmpty()) {
-            ChatUtils.sendLocalChat("${RED}Usage: /${COMMAND_NAME} <fileName.ogg|mc:soundEventName>", true)
+            ChatUtils.sendLocalChat("${RED}Usage: /${COMMAND_NAME} <fileName.ogg|mc:soundName>", true)
             return
         }
         
@@ -38,28 +47,20 @@ object PlayTestSoundCommand {
                 try {
                     val soundEvent = getSoundEvent(soundName)
                     SoundUtils.playSound(soundEvent)
-                    ChatUtils.sendLocalChat("${GREEN}Playing Minecraft sound: ${YELLOW}${soundEvent.id}", true)
                 } catch (e: Exception) {
                     FeeshMod.LOGGER.error("[Feesh] Failed to play Minecraft sound: $soundName", e)
                     ChatUtils.sendLocalChat("${RED}Failed to play sound: ${YELLOW}$soundName${RED}. Check logs for details.", true)
                 }
             }
             else -> {
-                ChatUtils.sendLocalChat("${RED}Invalid format. Use ${YELLOW}fileName.ogg${RED} or ${YELLOW}mc:soundEventName", true)
+                ChatUtils.sendLocalChat("${RED}Invalid format. Use ${YELLOW}fileName.ogg${RED} or ${YELLOW}mc:soundName", true)
             }
         }
-    }
-    
+    } 
+
     private fun getSoundEvent(soundName: String): SoundEvent {
-        // Use getDeclaredField to access all fields (including non-public ones)
-        val field = SoundEvents::class.java.getDeclaredField(soundName)
-        field.isAccessible = true // Make field accessible even if it's private
-        
-        if (SoundEvent::class.java.isAssignableFrom(field.type)) {
-            @Suppress("UNCHECKED_CAST")
-            return field.get(null) as SoundEvent
-        } else {
-            throw IllegalArgumentException("$soundName is not a SoundEvents field")
-        }
+        val path = soundName.lowercase()
+        val id = Identifier.of("minecraft", path)
+        return SoundEvent.of(id)
     }
 }
