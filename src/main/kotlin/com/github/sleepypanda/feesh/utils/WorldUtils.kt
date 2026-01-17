@@ -3,7 +3,7 @@ package com.github.sleepypanda.feesh.utils
 import com.github.sleepypanda.feesh.FeeshMod
 import com.github.sleepypanda.feesh.utils.ChatUtils.getFormattedString
 import com.github.sleepypanda.feesh.utils.ChatUtils.removeFormatting
-import com.github.sleepypanda.feesh.utils.SRVUtils.isHypixel
+import com.github.sleepypanda.feesh.utils.SrvUtils.isHypixel
 import java.util.Timer
 import kotlin.concurrent.timerTask
 import net.minecraft.scoreboard.ScoreboardDisplaySlot
@@ -147,7 +147,7 @@ object WorldUtils {
         // Check if server address changed, if so update the cached isHypixel result
         if (cachedServerAddress != serverAddress) {
             cachedServerAddress = serverAddress
-            cachedIsHypixel = SRVUtils.isHypixel(serverAddress) || serverAddress.contains("hypixel", ignoreCase = true)
+            cachedIsHypixel = SrvUtils.isHypixel(serverAddress) || serverAddress.contains("hypixel", ignoreCase = true)
         }
 
         if (!cachedIsHypixel) return false

@@ -6,7 +6,7 @@ import javax.naming.directory.Attribute
 import javax.naming.directory.InitialDirContext
 import javax.naming.NamingException
 
-object SRVUtils {
+object SrvUtils {
     data class SrvRecord(val priority: Int, val weight: Int, val port: Int, val target: String)
 
     private fun extractDomain(address: String?): String? {
