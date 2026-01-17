@@ -259,11 +259,11 @@ object SeaCreaturesTracker {
             SeaCreaturesTrackerSorting.CATCHES_COUNT_ASC -> entries.sortedBy { it.amount }
             SeaCreaturesTrackerSorting.RARITY_ASC -> entries.sortedWith(
                 compareBy<TrackerLineEntry> { CommonUtils.getRarityNumericCode(it.seaCreatureInfo.rarityColorCode) }
-                .thenBy { it.amount }
+                .thenByDescending { it.amount }
             )
             SeaCreaturesTrackerSorting.RARITY_DESC -> entries.sortedWith(
                 compareByDescending<TrackerLineEntry> { CommonUtils.getRarityNumericCode(it.seaCreatureInfo.rarityColorCode) }
-                .thenBy { it.amount }
+                .thenByDescending { it.amount }
             )
             else -> entries.sortedByDescending { it.amount }
         }
