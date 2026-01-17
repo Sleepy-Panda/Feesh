@@ -1,5 +1,6 @@
 package com.github.sleepypanda.feesh.settings.categories
 
+import com.github.sleepypanda.feesh.FeeshMod
 import com.github.sleepypanda.feesh.constants.RareSeaCreatureTypes
 import com.github.sleepypanda.feesh.constants.RareSeaCreatureTypesAllChat
 import com.github.sleepypanda.feesh.constants.RareDropTypes
@@ -10,6 +11,7 @@ import com.teamresourceful.resourcefulconfig.api.annotations.Category
 import com.teamresourceful.resourcefulconfig.api.annotations.Comment
 import com.teamresourceful.resourcefulconfig.api.annotations.ConfigEntry
 import com.teamresourceful.resourcefulconfig.api.types.options.EntryType
+import net.minecraft.client.gui.screen.option.KeybindsScreen
 
 enum class HotspotChatSource(val displayName: String) {
     PARTY_CHAT("Party Chat"),
@@ -85,9 +87,16 @@ object Chat : CategoryKt("Chat") {
     }
 
     init {
-        separator {
-            this.title = "Share hotspot button"
-            this.description = "Set a keybind in Minecraft's Controls menu to share the nearest Hotspot to PARTY chat or ALL chat on button pressed. You need to be close to the hotspot when pressing the button."
+        button {
+            title = "Share hotspot button"
+            description = "Set a keybind in Minecraft's Controls menu to share the nearest Hotspot to PARTY chat or ALL chat on button pressed. You need to be close to the hotspot when pressing the button."
+            text = "Click to open"
+            onClick {
+                val mc = FeeshMod.mc
+                mc.send {
+                    mc.setScreen(KeybindsScreen(mc.currentScreen, mc.options))
+                }
+            }
         }
     }
 

@@ -1,5 +1,6 @@
 package com.github.sleepypanda.feesh.settings.categories
 
+import com.github.sleepypanda.feesh.FeeshMod
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
 import com.github.sleepypanda.feesh.utils.enums.DeployableTypes
@@ -9,6 +10,7 @@ import com.teamresourceful.resourcefulconfig.api.annotations.ConfigEntry
 import com.teamresourceful.resourcefulconfig.api.types.options.EntryType
 import com.teamresourceful.resourcefulconfigkt.api.CategoryKt
 import net.minecraft.util.Util
+import net.minecraft.client.gui.screen.option.KeybindsScreen
 
 enum class SeaCreaturesTrackerDisplayMode(val displayName: String) {
     ONLY_RARE("Only rare"),
@@ -68,9 +70,16 @@ object Overlays : CategoryKt("Overlays") {
     }
 
     init {
-        separator {
-            this.title = "Reset barn fishing timer keybind"
-            this.description = "Set a keybind in Minecraft's Controls menu to reset the barn fishing timer."
+        button {
+            title = "Reset barn fishing timer keybind"
+            description = "Set a keybind in Minecraft's Controls menu to reset the barn fishing timer."
+            text = "Click to open"
+            onClick {
+                val mc = FeeshMod.mc
+                mc.send {
+                    mc.setScreen(KeybindsScreen(mc.currentScreen, mc.options))
+                }
+            }
         }
     }
       
@@ -133,7 +142,7 @@ object Overlays : CategoryKt("Overlays") {
         this.description = Translated("Show statistics how often the sea creatures were double hooked.")
     }
 
-    var seaCreaturesTrackerSorting by enum(SeaCreaturesTrackerSorting.CATCHES_COUNT_DESC) {
+    var seaCreaturesTrackerSorting by enum(SeaCreaturesTrackerSorting.RARITY_DESC) {
         this.name = Translated("Sea creatures sorting")
         this.description = Translated("Setups sorting order for the sea creatures.")
     }
