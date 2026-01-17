@@ -15,7 +15,6 @@ import com.github.sleepypanda.feesh.utils.ChatUtils
 import com.github.sleepypanda.feesh.utils.ChatUtils.getFormattedString
 import com.github.sleepypanda.feesh.utils.ChatUtils.removeFormatting
 import com.github.sleepypanda.feesh.utils.gui.FeeshGui
-import com.github.sleepypanda.feesh.utils.gui.MoveGuisScreen
 import com.github.sleepypanda.feesh.utils.CommonUtils
 import com.github.sleepypanda.feesh.utils.SoundUtils
 import com.github.sleepypanda.feesh.utils.RegisterUtils
@@ -182,11 +181,6 @@ object DeployablesTimer {
         if (tickCounter < TICKS_PER_CHECK) return
         tickCounter = 0
 
-        if (!WorldUtils.isInSkyblock()) {
-            gui.clearLines()
-            return
-        }
-
         if (isAnyAlertEnabled() || isOverlayEnabled()) {
             trackDeployablesStatus()
         }
@@ -241,6 +235,8 @@ object DeployablesTimer {
     }
 
     private fun trackDeployablesStatus() {
+        if (!WorldUtils.isInSkyblock()) return
+
         val world = FeeshMod.mc.world ?: return
         val entities = world.entities.filterIsInstance<ArmorStandEntity>()
 
@@ -431,10 +427,7 @@ object DeployablesTimer {
     private fun updateGuiLines() {
         gui.clearLines()
 
-        if (!Overlays.deployablesTimerOverlay ||
-            !WorldUtils.isInSkyblock() ||
-            FeeshMod.mc.currentScreen is MoveGuisScreen
-        ) return
+        if (!Overlays.deployablesTimerOverlay || !WorldUtils.isInSkyblock()) return
 
         val lines = mutableListOf<String>()
 

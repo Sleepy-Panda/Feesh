@@ -186,7 +186,12 @@ object Overlays : CategoryKt("Overlays") {
 
     var jerryWorkshopTrackerOverlay by boolean(false) {
         this.name = Translated("Jerry's Workshop tracker")
-        this.description = Translated("Shows an overlay with Yeti / Reindrake catch statistics while in the Jerry Workshop.")
+        this.description = Translated("Shows an overlay with Yeti / Reindrake catch statistics while in the Jerry Workshop.\nTo reset: ${AQUA}/feeshResetJerryWorkshop")
+    }
+
+    var resetJerryWorkshopTrackerOnGameClosed by boolean(false) {
+        this.name = Translated("Autoreset on closing game")
+        this.description = Translated("Automatically reset the Jerry Workshop tracker when you close Minecraft.")
     }
 
     init {

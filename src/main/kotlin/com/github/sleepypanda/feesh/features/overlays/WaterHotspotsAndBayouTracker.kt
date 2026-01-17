@@ -98,12 +98,14 @@ object WaterHotspotsAndBayouTracker {
 
     private fun onTitanoboa() {
         data.titanoboa.updateAfterCatch(titanoboa.boldDisplayName)
+        data.wikiTiki.incrementCatches()
         saveData()
         updateGuiLines()
     }
 
     private fun onWikiTiki() {
         data.wikiTiki.updateAfterCatch(wikiTiki.boldDisplayName)
+        data.titanoboa.incrementCatches()
         saveData()
         updateGuiLines()
     }
@@ -156,23 +158,16 @@ object WaterHotspotsAndBayouTracker {
     }
 
     private fun updateGuiLines() {
-        if (!hasData()) {
-            gui.clearLines()
-            return
-        }
+        gui.clearLines()
+        
+        if (!hasData()) return
+        if (!Overlays.waterHotspotsAndBayouTrackerOverlay || !WorldUtils.isInSkyblock() || !PlayerUtils.isFishingHookSeenMinutesAgo(5)) return
 
         val worldName = WorldUtils.getWorldName()
         val isInHotspotWorld = WorldUtils.isInWaterHotspotFishingWorld()
         val isInBayou = worldName == WorldUtils.BACKWATER_BAYOU
         val isInHotspot = isInHotspotWorld && isFishingInHotspot()
-
-        if (!Overlays.waterHotspotsAndBayouTrackerOverlay ||
-            !WorldUtils.isInSkyblock() ||
-            (!isInHotspot && !isInBayou) ||
-            !PlayerUtils.isFishingHookSeenMinutesAgo(5)) {
-            gui.clearLines()
-            return
-        }
+        if (!isInHotspot && !isInBayou) return
 
         val lines = mutableListOf<String>()
 

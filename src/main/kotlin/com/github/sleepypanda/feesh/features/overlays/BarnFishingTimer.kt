@@ -13,7 +13,6 @@ import com.github.sleepypanda.feesh.utils.ChatUtils
 import com.github.sleepypanda.feesh.utils.ChatUtils.getFormattedString
 import com.github.sleepypanda.feesh.utils.ChatUtils.removeFormatting
 import com.github.sleepypanda.feesh.utils.gui.FeeshGui
-import com.github.sleepypanda.feesh.utils.gui.MoveGuisScreen
 import com.github.sleepypanda.feesh.utils.CommonUtils
 import com.github.sleepypanda.feesh.utils.SoundUtils
 import com.github.sleepypanda.feesh.utils.RegisterUtils
@@ -83,11 +82,6 @@ object BarnFishingTimer {
         tickCounter++
         if (tickCounter < TICKS_PER_CHECK) return
         tickCounter = 0
-
-        if (!WorldUtils.isInSkyblock() || !WorldUtils.isInFishingWorld()) {
-            gui.clearLines()
-            return
-        }
 
         if (Alerts.alertOnSeaCreaturesCountThreshold ||  Alerts.alertOnSeaCreaturesTimerThreshold || Overlays.barnFishingTimerOverlay) {
             trackSeaCreaturesCount()
@@ -198,8 +192,7 @@ object BarnFishingTimer {
             !WorldUtils.isInSkyblock() ||
             !WorldUtils.isInFishingWorld() ||
             !PlayerUtils.hasFishingRodInHotbar() ||
-            isInHunterArmor() ||
-            FeeshMod.mc.currentScreen is MoveGuisScreen
+            isInHunterArmor()
         ) return
 
         val deltaInMillis = System.currentTimeMillis() - startTime!!

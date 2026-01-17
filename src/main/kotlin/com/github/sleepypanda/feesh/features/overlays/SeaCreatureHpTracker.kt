@@ -13,7 +13,6 @@ import com.github.sleepypanda.feesh.utils.ChatUtils.getFormattedString
 import com.github.sleepypanda.feesh.utils.ChatUtils.removeFormatting
 import com.github.sleepypanda.feesh.utils.SoundUtils
 import com.github.sleepypanda.feesh.utils.gui.FeeshGui
-import com.github.sleepypanda.feesh.utils.gui.MoveGuisScreen
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
 import net.minecraft.entity.Entity
@@ -230,11 +229,8 @@ object SeaCreatureHpTracker {
         if (!Overlays.seaCreaturesHpOverlay ||
             !WorldUtils.isInSkyblock() ||
             !TRACKED_WORLD_NAMES.contains(WorldUtils.getWorldName()) ||
-            mobs.isEmpty() ||
-            FeeshMod.mc.currentScreen is MoveGuisScreen
-        ) {
-            return
-        }
+            mobs.isEmpty()
+        ) return
 
         val lines = mutableListOf<String>()
         mobs.forEach { mob ->

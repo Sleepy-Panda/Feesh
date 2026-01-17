@@ -9,36 +9,40 @@ import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
 import com.github.sleepypanda.feesh.utils.TabListUtils
 import com.github.sleepypanda.feesh.utils.PlayerUtils
-import com.github.sleepypanda.feesh.utils.CommonUtils
 import com.github.sleepypanda.feesh.events.EventBus
 import com.github.sleepypanda.feesh.events.OwnSeaCreatureCaughtEvent
 import com.github.sleepypanda.feesh.events.ClientTickEvent
+import com.github.sleepypanda.feesh.events.GameClosedEvent
 import com.github.sleepypanda.feesh.utils.gui.FeeshGui
 import com.github.sleepypanda.feesh.settings.categories.Overlays
-import java.text.SimpleDateFormat
-import java.util.Date
+import com.github.sleepypanda.feesh.utils.data.PersistentDataManager
 
 object JerryWorkshopTracker {
-    data class CatchCounterData(var catchesSinceLast: Int = 0, var lastCatchTime: Date? = null, var averageCatches: Int = 0, var catchesHistory: List<Int> = emptyList())
-    data class JerryWorkshopTrackerData(val yeti: CatchCounterData = CatchCounterData(), val reindrake: CatchCounterData = CatchCounterData())
+    data class JerryWorkshopTrackerData(
+        val yeti: CatchCounterData = CatchCounterData(),
+        val reindrake: CatchCounterData = CatchCounterData()
+    )
 
-    private var data = JerryWorkshopTrackerData()
+    private var data = PersistentDataManager.feeshData.jerryWorkshop
     private var tickCounter = 0
-    private const val TICKS_PER_UPDATE = 20
+    private val baseTitle = "${AQUA}${BOLD}Jerry Workshop tracker"
 
-    private val title = "${AQUA}${BOLD}Jerry Workshop tracker"
-    private val yeti = SeaCreatures.allSeaCreatures.find { it.name === "Yeti" }!!
-    private val reindrake = SeaCreatures.allSeaCreatures.find { it.name === "Reindrake" }!!
+    private const val TICKS_PER_UPDATE = 20
+    private val RESET_COMMAND = "feeshResetJerryWorkshop"
+
+    private val yeti = SeaCreatures.allSeaCreatures.find { it.name == "Yeti" }!!
+    private val reindrake = SeaCreatures.allSeaCreatures.find { it.name == "Reindrake" }!!
 
     private val gui = FeeshGui()
         .setCoordsDataKey("jerryWorkshopTracker")
         .setClickable(true)
         .setSampleLines(listOf(
-            title, 
-            "${GOLD}${yeti.name}${GRAY}: ${WHITE}10 ${GRAY}catches ago ${DARK_GRAY}(${GRAY}avg: ${WHITE}50${DARK_GRAY})",
-            "${GRAY}Last on: ${WHITE}1 minute ago",
-            "${LIGHT_PURPLE}${reindrake.name}${GRAY}: ${WHITE}100 ${GRAY}catches ago ${DARK_GRAY}(${GRAY}avg: ${WHITE}500${DARK_GRAY})",
-            "${GRAY}Last on: ${WHITE}1 hour ago"
+            baseTitle,
+            "${yeti.displayName}${GRAY}: ${WHITE}10 ${GRAY}catches ago ${DARK_GRAY}(${GRAY}avg: ${WHITE}50${DARK_GRAY})",
+            "${GRAY}Last on: ${WHITE}1 minute ago ${GRAY}(${WHITE}2025-01-15 14:30:00${GRAY})",
+            "${reindrake.displayName}${GRAY}: ${WHITE}100 ${GRAY}catches ago ${DARK_GRAY}(${GRAY}avg: ${WHITE}500${DARK_GRAY})",
+            "${GRAY}Last on: ${WHITE}1 hour ago ${GRAY}(${WHITE}2025-01-15 13:30:00${GRAY})",
+            "${GRAY}Island closes in: 1h"
         ))
         .setSettingsKey { Overlays.jerryWorkshopTrackerOverlay }
         .setCondition {
@@ -47,8 +51,17 @@ object JerryWorkshopTracker {
         }
 
     fun init() {
+        registerCommands()
         EventBus.subscribe(OwnSeaCreatureCaughtEvent::class, ::onSeaCreature)
         EventBus.subscribe(ClientTickEvent::class, ::onClientTick)
+        EventBus.subscribe(GameClosedEvent::class, ::onGameClosed)
+    }
+    
+    private fun registerCommands() {
+        RegisterUtils.command(RESET_COMMAND) { args ->
+            val isConfirmed = args.isNotEmpty() && args[0] == "noconfirm"
+            resetJerryWorkshopTracker(isConfirmed)
+        }
     }
 
     private fun onSeaCreature(event: OwnSeaCreatureCaughtEvent) {
@@ -56,44 +69,34 @@ object JerryWorkshopTracker {
 
         val seaCreatureName = event.seaCreatureName
 
-        if (seaCreatureName == yeti.name) onYeti()
-        else if (seaCreatureName == reindrake.name) onReindrake()
-        else onOtherSeaCreature()
+        if (seaCreatureName == yeti.name) {
+            onYeti()
+        } else if (seaCreatureName == reindrake.name) {
+            onReindrake()
+        } else {
+            onOtherSeaCreature()
+        }
     }
 
     private fun onYeti() {
-        if (!Overlays.jerryWorkshopTrackerOverlay || !WorldUtils.isInSkyblock() || WorldUtils.getWorldName() != WorldUtils.JERRY_WORKSHOP) return
-        
-        data.yeti.catchesSinceLast++
-        val catchesSinceLast = data.yeti.catchesSinceLast
-        ChatUtils.sendLocalChat(getMessage(catchesSinceLast, data.yeti.lastCatchTime, yeti.boldDisplayName), true)
-
-        data.yeti.lastCatchTime = Date()
-        data.yeti.catchesHistory = (listOf(catchesSinceLast) + data.yeti.catchesHistory).take(100)
-        data.yeti.averageCatches = data.yeti.catchesHistory.average().toInt()
-        data.yeti.catchesSinceLast = 0
-        data.reindrake.catchesSinceLast++
+        data.yeti.updateAfterCatch(yeti.boldDisplayName)
+        data.reindrake.incrementCatches()
+        saveData()
+        updateGuiLines()
     }
 
     private fun onReindrake() {
-        if (!Overlays.jerryWorkshopTrackerOverlay || !WorldUtils.isInSkyblock() || WorldUtils.getWorldName() != WorldUtils.JERRY_WORKSHOP) return
-
-        data.reindrake.catchesSinceLast++
-        val catchesSinceLast = data.reindrake.catchesSinceLast
-        ChatUtils.sendLocalChat(getMessage(catchesSinceLast, data.reindrake.lastCatchTime, reindrake.boldDisplayName), true)
-
-        data.reindrake.lastCatchTime = Date()
-        data.reindrake.catchesHistory = (listOf(catchesSinceLast) + data.reindrake.catchesHistory).take(100)
-        data.reindrake.averageCatches = data.reindrake.catchesHistory.average().toInt()
-        data.reindrake.catchesSinceLast = 0
-        data.yeti.catchesSinceLast++
+        data.reindrake.updateAfterCatch(reindrake.boldDisplayName)
+        data.yeti.incrementCatches()
+        saveData()
+        updateGuiLines()
     }
 
     private fun onOtherSeaCreature() {
-        if (!Overlays.jerryWorkshopTrackerOverlay || !WorldUtils.isInSkyblock() || WorldUtils.getWorldName() != WorldUtils.JERRY_WORKSHOP) return
-
-        data.yeti.catchesSinceLast++
-        data.reindrake.catchesSinceLast++
+        data.yeti.incrementCatches()
+        data.reindrake.incrementCatches()
+        saveData()
+        updateGuiLines()
     }
 
     private fun onClientTick(@Suppress("UNUSED_PARAMETER") event: ClientTickEvent) {
@@ -101,51 +104,22 @@ object JerryWorkshopTracker {
         if (tickCounter < TICKS_PER_UPDATE) return
         tickCounter = 0
 
-        if (!Overlays.jerryWorkshopTrackerOverlay || 
-            !WorldUtils.isInSkyblock() || 
-            WorldUtils.getWorldName() != WorldUtils.JERRY_WORKSHOP ||
-            !PlayerUtils.isFishingHookSeenMinutesAgo(5)) {
-            gui.clearLines()
-            return
-        }
-
-        if (!hasData()) {
-            gui.clearLines()
-            return
-        }
-
         updateGuiLines()
     }
 
     private fun updateGuiLines() {
+        gui.clearLines()
+
+        if (!hasData()) return
+        if (!Overlays.jerryWorkshopTrackerOverlay || !WorldUtils.isInSkyblock() || WorldUtils.getWorldName() != WorldUtils.JERRY_WORKSHOP || !PlayerUtils.isFishingHookSeenMinutesAgo(5)) return
+
         val lines = mutableListOf<String>()
-        lines.add(title)
 
-        val yetiLine = "${GOLD}${yeti.name}: ${WHITE}${data.yeti.catchesSinceLast} ${GRAY}catches ago ${DARK_GRAY}(${GRAY}avg: ${WHITE}${data.yeti.averageCatches}${DARK_GRAY})"
-        lines.add(yetiLine)
+        lines.add("${GRAY}[${RED}Click to reset${GRAY}] ${DARK_GRAY}(/${RESET_COMMAND})")
+        lines.add(baseTitle)
 
-        var yetiLastOnLine: String
-        if (data.yeti.lastCatchTime != null) {
-            val lastOn = formatDate(data.yeti.lastCatchTime)
-            val since = CommonUtils.formatTimeElapsed(data.yeti.lastCatchTime)
-            yetiLastOnLine = "${GRAY}Last on: ${WHITE}${since} ago ${GRAY}(${WHITE}${lastOn}${GRAY})"
-        } else {
-            yetiLastOnLine = "${GRAY}Last on: ${WHITE}N/A${GRAY}"
-        }
-        lines.add(yetiLastOnLine)
-
-        val reindrakeLine = "${LIGHT_PURPLE}${reindrake.name}: ${WHITE}${data.reindrake.catchesSinceLast} ${GRAY}catches ago ${DARK_GRAY}(${GRAY}avg: ${WHITE}${data.reindrake.averageCatches}${DARK_GRAY})"
-        lines.add(reindrakeLine)
-
-        var reindrakeLastOnLine: String
-        if (data.reindrake.lastCatchTime != null) {
-            val lastOn = formatDate(data.reindrake.lastCatchTime)
-            val since = CommonUtils.formatTimeElapsed(data.reindrake.lastCatchTime)
-            reindrakeLastOnLine = "${GRAY}Last on: ${WHITE}${since} ago ${GRAY}(${WHITE}${lastOn}${GRAY})"
-        } else {
-            reindrakeLastOnLine = "${GRAY}Last on: ${WHITE}N/A${GRAY}"
-        }
-        lines.add(reindrakeLastOnLine)
+        lines.addAll(data.yeti.getOverlayText(yeti.displayName))
+        lines.addAll(data.reindrake.getOverlayText(reindrake.displayName))
 
         val islandOpen = TabListUtils.getLineAfter("Island open:")
         val islandClosesIn = TabListUtils.getLineAfter("Island closes in:")
@@ -161,27 +135,44 @@ object JerryWorkshopTracker {
     }
 
     private fun hasData(): Boolean {
-        return hasYetiData() || hasReindrakeData()
+        return data.yeti.hasData() || data.reindrake.hasData()
     }
 
-    private fun hasYetiData(): Boolean {
-        return data.yeti.catchesSinceLast > 0 || data.yeti.catchesHistory.isNotEmpty() || data.yeti.lastCatchTime != null
+    private fun onGameClosed(@Suppress("UNUSED_PARAMETER") event: GameClosedEvent) {
+        if (Overlays.resetJerryWorkshopTrackerOnGameClosed &&
+            Overlays.jerryWorkshopTrackerOverlay &&
+            hasData()) {
+            reset()
+            FeeshMod.LOGGER.info("[Feesh] Automatically reset Jerry Workshop tracker on game closed.")
+        }
     }
 
-    private fun hasReindrakeData(): Boolean {
-        return data.reindrake.catchesSinceLast > 0 || data.reindrake.catchesHistory.isNotEmpty() || data.reindrake.lastCatchTime != null
+    private fun reset() {
+        data.yeti.reset()
+        data.reindrake.reset()
+        saveData()
     }
 
-    private fun formatDate(date: Date?): String {
-        if (date == null) return ""
-        val formatter = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
-        return formatter.format(date)
+    private fun resetJerryWorkshopTracker(isConfirmed: Boolean) {
+        try {
+            if (!isConfirmed) {
+                ChatUtils.sendLocalChatWithCommand(
+                    "${WHITE}Do you want to reset Jerry Workshop tracker? ${RED}${BOLD}[Click to confirm]",
+                    "${RESET_COMMAND} noconfirm",
+                    true
+                )
+                return
+            }
+
+            reset()
+            updateGuiLines()
+            ChatUtils.sendLocalChat("${WHITE}Jerry Workshop tracker was reset.", true)
+        } catch (e: Exception) {
+            FeeshMod.LOGGER.error("[Feesh] Failed to reset Jerry Workshop tracker.", e)
+        }
     }
 
-    private fun getMessage(catchesSinceLast: Int, lastCatchTime: Date?, seaCreatureDisplayName: String): String {
-        val b2bText = if (catchesSinceLast == 1) "${RED}B2B! " else ""
-        val elapsedTimeText = if (lastCatchTime != null) " ${GRAY}(${WHITE}${CommonUtils.formatTimeElapsed(lastCatchTime)}${GRAY})" else ""
-        val catchesText = "${WHITE}${catchesSinceLast} ${GRAY}${if (catchesSinceLast == 1) "catch" else "catches"}"
-        return "${b2bText}${GRAY}It took ${catchesText}${elapsedTimeText} to get the ${seaCreatureDisplayName}${GRAY}."
+    private fun saveData() {
+        PersistentDataManager.saveFeeshDataToFileAsync()
     }
 }
