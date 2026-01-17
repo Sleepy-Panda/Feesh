@@ -34,6 +34,7 @@ import com.github.sleepypanda.feesh.features.overlays.FishingHookTimer
 import com.github.sleepypanda.feesh.features.overlays.TreasureFishingTracker
 import com.github.sleepypanda.feesh.features.overlays.BarnFishingTimer
 import com.github.sleepypanda.feesh.features.overlays.DeployablesTimer
+import com.github.sleepypanda.feesh.features.overlays.WaterHotspotsAndBayouTracker
 import com.github.sleepypanda.feesh.features.inventory.ThunderBottleProgress
 import com.github.sleepypanda.feesh.events.EventBus
 import com.github.sleepypanda.feesh.events.publishers.SeaCreaturesPublisher
@@ -131,6 +132,7 @@ class FeeshMod : ModInitializer {
         FishingHookTimer.init()
         BarnFishingTimer.init()
         DeployablesTimer.init()
+        WaterHotspotsAndBayouTracker.init()
 
         MoveGuis.init() // After all overlays are initialized and registered FeeshGui objects
 

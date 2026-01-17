@@ -38,17 +38,6 @@ enum class FishingHookTimerMode(val displayName: String) {
 object Overlays : CategoryKt("Overlays") {
     init {
         separator {
-            this.title = "${AQUA}${BOLD}Jerry's Workshop"
-        }
-    }
-
-    var jerryWorkshopTrackerOverlay by boolean(false) {
-        this.name = Translated("Jerry's Workshop tracker")
-        this.description = Translated("Shows an overlay with Yeti / Reindrake catch statistics while in the Jerry Workshop.")
-    }
-
-    init {
-        separator {
             this.title = "${AQUA}${BOLD}Legion & Bobbin' Time"
         }
     }
@@ -187,6 +176,36 @@ object Overlays : CategoryKt("Overlays") {
                 Util.getOperatingSystem().open("https://github.com/Sleepy-Panda/Feesh/blob/develop/docs/Colors%20and%20formatting%20guide.md")
             }
         }
+    }
+
+    init {
+        separator {
+            this.title = "${AQUA}${BOLD}Jerry's Workshop"
+        }
+    }
+
+    var jerryWorkshopTrackerOverlay by boolean(false) {
+        this.name = Translated("Jerry's Workshop tracker")
+        this.description = Translated("Shows an overlay with Yeti / Reindrake catch statistics while in the Jerry Workshop.")
+    }
+
+    init {
+        separator {
+            this.title = "${AQUA}${BOLD}Water hotspots & Bayou tracker"
+        }
+    }
+
+    var waterHotspotsAndBayouTrackerOverlay by boolean(false) {
+        this.name = Translated("Water hotspots & Bayou tracker")
+        this.description = Translated("""
+Shows an overlay with Titanoboa (when fishing in Backwater Bayou) and Wiki Tiki (when in Water Hotspots) catch statistics. Also has Titanoboa Shed and Tiki Mask drop statistics.
+To reset: ${AQUA}/feeshResetWaterHotspotsAndBayou
+        """.trimIndent())
+    }
+
+    var resetWaterHotspotsAndBayouTrackerOnGameClosed by boolean(false) {
+        this.name = Translated("Autoreset on closing game")
+        this.description = Translated("Automatically reset the Water hotspots & Bayou tracker when you close Minecraft.")
     }
 
     init {

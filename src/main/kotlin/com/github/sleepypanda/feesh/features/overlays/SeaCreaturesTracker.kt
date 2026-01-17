@@ -83,11 +83,6 @@ object SeaCreaturesTracker {
         if (tickCounter < TICKS_PER_UPDATE) return
         tickCounter = 0
 
-        if (!Overlays.seaCreaturesTrackerOverlay || !WorldUtils.isInSkyblock() || !WorldUtils.isInFishingWorld() || !PlayerUtils.isFishingHookSeenMinutesAgo(5)) {
-            gui.clearLines()
-            return
-        }
-
         updateGuiLines()
     }
 
@@ -214,6 +209,11 @@ object SeaCreaturesTracker {
     }
 
     private fun updateGuiLines() {
+        if (!Overlays.seaCreaturesTrackerOverlay || !WorldUtils.isInSkyblock() || !WorldUtils.isInFishingWorld() || !PlayerUtils.isFishingHookSeenMinutesAgo(5)) {
+            gui.clearLines()
+            return
+        }
+
         val viewMode = getCurrentViewMode()
         val sourceObj = getSourceObject(viewMode)
 

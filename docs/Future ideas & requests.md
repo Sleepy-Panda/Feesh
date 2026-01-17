@@ -6,6 +6,7 @@ Support for 1.21.11.
 
 ## Fishing profit tracker
 
+- Propose compacting or selling items like raw fish going to the inventory (full sack).
 - Add confirmation for deleting items from the tracker.
 - Rare drop sound on expensive items added to sacks (e.g. Emperor's Skull).
 - Track Agatha tickets / Forest Essence on Galatea based on contest results.
@@ -53,13 +54,8 @@ Support for 1.21.11.
 ## Alerts & chat
 
 - Rare SC cocooned alert
+- Spooky festival event ending alert (to kill mobs before despawn)
 - Phoenix proc'ed alert / Phoenix back alert (same as Spirit Mask)
-- Customized sounds for rare catches and rare drops
-  - People want to customize sounds for Jawbus etc, individually for mobs and drops
-  - Sounds folder: assets
-  - Ability to open folder from settings
-  - Ability to test sound from settings
-  - Toggle setting to enable customization
 - Multiple drops that happen at the same time lead to "You're sending messages too fast" error.
 - Write smarter logic to detect personal cap alert (20 for CH, 5 for Crimson)
 - Do not include baby magma slugs when producing cap alert.

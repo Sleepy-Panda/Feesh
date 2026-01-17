@@ -186,6 +186,17 @@ object WorldUtils {
     }
 
     /**
+    * Check whether current world name supports water hotspot fishing features.
+    * @returns {Boolean}
+    */
+    fun isInWaterHotspotFishingWorld(): Boolean {
+        if (!isInSkyblock()) return false
+        val worldName = getWorldName()
+    	if (worldName.isNullOrEmpty()) return false
+        return WATER_HOTSPOT_WORLDS.contains(getWorldName())
+    }
+
+    /**
      * Get the current Skyblock world name or null if not found / outside of Skyblock.
      * @returns {String?}
      */

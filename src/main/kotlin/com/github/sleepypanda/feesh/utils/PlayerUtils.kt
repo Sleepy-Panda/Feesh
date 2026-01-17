@@ -11,6 +11,7 @@ import kotlin.concurrent.timerTask
 
 object PlayerUtils {
     private var cachedLastFishingHookSeenAt: Date? = null
+    private var cachedLastFishingHookInHotspotSeenAt: Date? = null
     private var cachedHasFishingRodInHotbar: Boolean = false
     private var timer: Timer? = null
 
@@ -32,6 +33,7 @@ object PlayerUtils {
 
     private fun onWorldChanged(@Suppress("UNUSED_PARAMETER") event: WorldChangedEvent) {
         cachedLastFishingHookSeenAt = null
+        cachedLastFishingHookInHotspotSeenAt = null
         cachedHasFishingRodInHotbar = false
     }
 
@@ -79,9 +81,21 @@ object PlayerUtils {
         return cachedLastFishingHookSeenAt
     }
 
+    fun lastFishingHookInHotspotSeenAt(): Date? {
+        return cachedLastFishingHookInHotspotSeenAt
+    }
+
     fun isFishingHookSeenMinutesAgo(minutes: Int): Boolean {
         val now = Date()
         val lastFishingHookSeenAt = lastFishingHookSeenAt()
+        if (lastFishingHookSeenAt == null) return false
+
+        return now.time - lastFishingHookSeenAt.time <= minutes * 60 * 1000
+    }
+
+    fun isFishingHookInHotspotSeenMinutesAgo(minutes: Int): Boolean {
+        val now = Date()
+        val lastFishingHookSeenAt = lastFishingHookInHotspotSeenAt()
         if (lastFishingHookSeenAt == null) return false
 
         return now.time - lastFishingHookSeenAt.time <= minutes * 60 * 1000
@@ -94,6 +108,10 @@ object PlayerUtils {
         val isHookActive = EntityUtils.isFishingHookActive(player)
         if (isHookActive) {
             cachedLastFishingHookSeenAt = Date()
+
+            val playerHook = EntityUtils.getPlayersFishingHook() ?: return
+	        HotspotUtils.findClosestHotspotInRange(playerHook) ?: return
+	        cachedLastFishingHookInHotspotSeenAt = Date()
         }
     }
 }

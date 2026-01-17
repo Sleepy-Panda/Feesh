@@ -4,6 +4,7 @@ import com.github.sleepypanda.feesh.FeeshMod
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import java.util.Date
 import java.util.concurrent.TimeUnit
+import java.text.SimpleDateFormat
 
 object CommonUtils {
     fun showTitle(title: String, subtitle: String? = null, fadeIn: Int = 0, stay: Int = 35, fadeOut: Int = 10) {      
@@ -61,6 +62,17 @@ object CommonUtils {
             minutes < 1 -> "less than 1m"
             else -> "${minutes}m"
         }
+    }
+
+    /**
+     * Formats a date to a string in the format "yyyy-MM-dd HH:mm:ss".
+     * @param date The date to format.
+     * @return The formatted date string.
+     */
+    fun formatDate(date: Date?): String {
+        if (date == null) return ""
+        val formatter = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+        return formatter.format(date)
     }
 
     /**
