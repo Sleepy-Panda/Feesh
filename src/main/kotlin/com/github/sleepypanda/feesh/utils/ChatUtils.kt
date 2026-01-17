@@ -117,4 +117,23 @@ object ChatUtils {
     private val colorToChar: Map<TextColor, Formatting> = Formatting.entries.mapNotNull { format ->
         TextColor.fromFormatting(format)?.let { it to format }
     }.toMap()
+
+    /**
+     * Creates a chat break line (separator) that spans the full width of the chat.
+     * The number of characters is calculated based on chat width, character width, and font.
+     * @param character The character to use for the break line (default: "-")
+     * @return A string with the break line
+     */
+    fun getChatBreak(character: String = "-"): String {
+        if (character.isNullOrEmpty()) return ""
+
+        val mc = FeeshMod.mc
+        val textRenderer = mc.textRenderer ?: return ""
+
+        val chatWidth = mc.inGameHud?.chatHud?.width ?: return ""
+        val characterWidth = textRenderer.getWidth(Text.literal(character))
+        val characterCount = if (characterWidth > 0) (chatWidth / characterWidth).coerceAtLeast(1).coerceAtMost(200) else 50
+
+        return character.repeat(characterCount)
+    }
 }

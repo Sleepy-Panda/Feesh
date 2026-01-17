@@ -20,6 +20,7 @@ import com.github.sleepypanda.feesh.features.chat.CompactCatchMessages
 import com.github.sleepypanda.feesh.features.chat.PlayerDeathMessage
 import com.github.sleepypanda.feesh.features.chat.HotspotFoundMessage
 import com.github.sleepypanda.feesh.features.chat.LootshareMessage
+import com.github.sleepypanda.feesh.features.help.Welcome
 import com.github.sleepypanda.feesh.features.commands.SpiderDenRainScheduleCommand
 import com.github.sleepypanda.feesh.features.commands.PetLevelUpPricesCommand
 import com.github.sleepypanda.feesh.features.commands.GearCraftPricesCommand
@@ -84,8 +85,7 @@ class FeeshMod : ModInitializer {
         CustomSoundsManager.init()
         EventBus.init()
         FeeshSettingsCommand.init()
-
-        // Last version changelog, hello message
+        Welcome.init()
         
         // Utils
         WorldUtils.init()
