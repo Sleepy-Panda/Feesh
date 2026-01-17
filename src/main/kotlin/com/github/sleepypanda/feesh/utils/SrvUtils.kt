@@ -31,7 +31,7 @@ object SrvUtils {
         val env = Hashtable<String, String>().apply {
             put("java.naming.factory.initial", "com.sun.jndi.dns.DnsContextFactory")
             put("java.naming.provider.url", "dns:")
-            put("com.sun.jndi.dns.timeout.initial", "5000")
+            put("com.sun.jndi.dns.timeout.initial", "2000")
             put("com.sun.jndi.dns.timeout.retries", "1")
         }
 

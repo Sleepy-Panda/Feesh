@@ -10,6 +10,7 @@ import net.minecraft.scoreboard.ScoreboardDisplaySlot
 import net.minecraft.scoreboard.Scoreboard
 import net.minecraft.scoreboard.ScoreboardObjective
 import net.minecraft.scoreboard.Team
+import java.util.concurrent.Executors
 
 object WorldUtils {
     val CRIMSON_ISLE = "Crimson Isle"
@@ -72,8 +73,16 @@ object WorldUtils {
     private var cachedWorldName: String? = null
     private var cachedZoneName: String? = null
     private var timer: Timer? = null
+
+    @Volatile
     private var cachedServerAddress: String? = null
+
+    @Volatile
     private var cachedIsHypixel: Boolean = false
+
+    private val dnsExecutor = Executors.newSingleThreadExecutor { runnable ->
+            Thread(runnable, "feesh-dns").apply { isDaemon = true }
+    }
 
     fun init() {
         startTimer()
@@ -147,7 +156,22 @@ object WorldUtils {
         // Check if server address changed, if so update the cached isHypixel result
         if (cachedServerAddress != serverAddress) {
             cachedServerAddress = serverAddress
-            cachedIsHypixel = SrvUtils.isHypixel(serverAddress) || serverAddress.contains("hypixel", ignoreCase = true)
+
+            val immediate = serverAddress.contains("hypixel", ignoreCase = true)
+            cachedIsHypixel = immediate
+
+            dnsExecutor.submit {
+                try {
+                    // This runs off the main thread; SrvUtils.isHypixel performs the SRV lookup
+                    val srvResult = SrvUtils.isHypixel(serverAddress)
+
+                    if (srvResult) {
+                        cachedIsHypixel = true
+                    }
+                } catch (t: Throwable) {
+                    FeeshMod.LOGGER.debug("[Feesh] Async SRV lookup failed for $serverAddress: ${t.message}")
+                }
+            }
         }
 
         if (!cachedIsHypixel) return false
