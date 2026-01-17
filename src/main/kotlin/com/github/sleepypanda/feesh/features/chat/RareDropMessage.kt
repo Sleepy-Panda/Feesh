@@ -25,14 +25,7 @@ object RareDropMessage {
         if (!WorldUtils.isInSkyblock() || !Chat.messageOnRareDrops) return
 
         val itemName = event.itemName
-        var dropInfo = RareDrops.rareDrops.find { it.itemName == event.itemName } ?: return
-
-        val type = try {
-            // TODO this is not aligned for Megalodon or Squid drops
-            RareDropTypes.valueOf(itemName.uppercase().replace(" (", "").replace(") ", "").replace(" ", "_")) // Baby Yeti (Epic) -> BABY_YETI_EPIC
-        } catch (_: IllegalArgumentException) {
-            return
-        }
+        val type = RareDropTypes.values().find { it.displayName == itemName } ?: return
 
         if (!Chat.messageOnRareDropTypes.contains(type)) return
 
