@@ -138,6 +138,11 @@ object Overlays : CategoryKt("Overlays") {
         this.description = Translated("Setups sorting order for the sea creatures.")
     }
 
+    var resetSeaCreaturesTrackerSessionOnGameClosed by boolean(true) {
+        this.name = Translated("Autoreset [Session] on closing game")
+        this.description = Translated("Automatically reset the Sea creatures tracker [Session] when you close Minecraft.")
+    }
+
     init {
         separator {
             this.title = "${AQUA}${BOLD}Fishing Hook"

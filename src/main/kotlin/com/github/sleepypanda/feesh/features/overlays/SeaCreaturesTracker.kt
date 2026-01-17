@@ -5,6 +5,7 @@ import com.github.sleepypanda.feesh.constants.SeaCreatures
 import com.github.sleepypanda.feesh.events.EventBus
 import com.github.sleepypanda.feesh.events.ClientTickEvent
 import com.github.sleepypanda.feesh.events.OwnSeaCreatureCaughtEvent
+import com.github.sleepypanda.feesh.events.GameClosedEvent
 import com.github.sleepypanda.feesh.settings.categories.Overlays
 import com.github.sleepypanda.feesh.settings.categories.SeaCreaturesTrackerDisplayMode
 import com.github.sleepypanda.feesh.settings.categories.SeaCreaturesTrackerSorting
@@ -70,6 +71,7 @@ object SeaCreaturesTracker {
 
         EventBus.subscribe(OwnSeaCreatureCaughtEvent::class, ::onSeaCreatureCaught)
         EventBus.subscribe(ClientTickEvent::class, ::onClientTick)
+        EventBus.subscribe(GameClosedEvent::class, ::onGameClosed)
     }
 
     private fun saveData() {
@@ -140,6 +142,15 @@ object SeaCreaturesTracker {
         return when (viewMode) {
             ViewMode.SESSION -> "${GRAY}[${GREEN}Session${GRAY}]"
             ViewMode.TOTAL -> "${GRAY}[${GREEN}Total${GRAY}]"
+        }
+    }
+
+    private fun onGameClosed(@Suppress("UNUSED_PARAMETER") event: GameClosedEvent) {
+        if (Overlays.resetSeaCreaturesTrackerSessionOnGameClosed && 
+            Overlays.seaCreaturesTrackerOverlay && 
+            data.session.totalCount > 0) {
+            resetSession()
+            FeeshMod.LOGGER.info("[Feesh] Automatically reset Sea creatures tracker [Session] on game closed.")
         }
     }
 
@@ -258,6 +269,17 @@ object SeaCreaturesTracker {
         }
 
         val lines = mutableListOf<String>()
+
+        val nextMode = if (viewMode == ViewMode.SESSION) ViewMode.TOTAL else ViewMode.SESSION
+        val nextModeText = getViewModeDisplayText(nextMode)
+        lines.add("${GRAY}[Click to show $nextModeText${GRAY}] ${DARK_GRAY}(/feeshToggleSeaCreaturesViewMode)")
+
+        val resetCommand = when (viewMode) {
+            ViewMode.SESSION -> "/$RESET_SESSION"
+            ViewMode.TOTAL -> "/$RESET_TOTAL"
+        }
+        lines.add("${GRAY}[${RED}Click to reset${GRAY}] ${DARK_GRAY}($resetCommand)")
+      
         val viewModeText = getViewModeDisplayText(viewMode)
         lines.add("${baseTitle} ${viewModeText}")
 
@@ -288,16 +310,6 @@ object SeaCreaturesTracker {
             "${GRAY}Total: ${WHITE}${CommonUtils.formatNumberWithSpaces(rareTotal)} ${GRAY}rare out of ${WHITE}${CommonUtils.formatNumberWithSpaces(sourceObj.totalCount)}"
         }
         lines.add(totalText)
-
-        val nextMode = if (viewMode == ViewMode.SESSION) ViewMode.TOTAL else ViewMode.SESSION
-        val nextModeText = getViewModeDisplayText(nextMode)
-        lines.add("${GRAY}[${AQUA}Switch to $nextModeText${GRAY}] ${DARK_GRAY}(/feeshToggleSeaCreaturesViewMode)")
-
-        val resetCommand = when (viewMode) {
-            ViewMode.SESSION -> "/$RESET_SESSION"
-            ViewMode.TOTAL -> "/$RESET_TOTAL"
-        }
-        lines.add("${RED}${BOLD}[Click to reset] ${DARK_GRAY}($resetCommand)")
 
         gui.setLines(lines)
     }
