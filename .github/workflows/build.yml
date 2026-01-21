@@ -30,3 +30,11 @@ jobs:
 
       - name: Build
         run: ./gradlew build --no-daemon
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: feesh-build-jars
+          path: |
+            **/build/versions/*.jar
+          if-no-files-found: warn
