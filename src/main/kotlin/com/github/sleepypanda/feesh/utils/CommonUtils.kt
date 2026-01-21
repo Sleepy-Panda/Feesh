@@ -19,7 +19,10 @@ object CommonUtils {
     }
 
     fun formatNumberWithSpaces(number: Int): String {
-        return number.toString().reversed().chunked(3).joinToString(" ").reversed()
+        val isNegative = number < 0
+        val absNumber = Math.abs(number)
+        val formatted = absNumber.toString().reversed().chunked(3).joinToString(" ").reversed()
+        return if (isNegative) "-$formatted" else formatted
     }
 
     fun fromUppercaseToCapitalizedFirstLetters(text: String): String {

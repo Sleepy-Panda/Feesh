@@ -11,11 +11,14 @@ import java.util.Date
 data class CatchCounterData(
     var catchesSinceLast: Int = 0,
     var lastCatchTime: Date? = null,
-    var averageCatches: Int = 0,
+    var averageCatches: Int? = null,
     var catchesHistory: List<Int> = emptyList()
 ) {
     fun getOverlayText(seaCreatureDisplayName: String): List<String> {
-        val counterText = "${seaCreatureDisplayName}${GRAY}: ${WHITE}${catchesSinceLast} ${GRAY}catches ago ${DARK_GRAY}(${GRAY}avg: ${WHITE}${averageCatches}${DARK_GRAY})"
+        val averageCatchesText = if (averageCatches != null) "${GRAY}avg: ${WHITE}${CommonUtils.formatNumberWithSpaces(averageCatches!!)}" else "${GRAY}avg: ${WHITE}N/A"
+        val catchesText = CommonUtils.formatNumberWithSpaces(catchesSinceLast)
+        val catchesSinceLastText = if (catchesSinceLast == 1) "${WHITE}${catchesText} ${GRAY}catch ago" else "${WHITE}${catchesText} ${GRAY}catches ago"
+        val counterText = "${seaCreatureDisplayName}${GRAY}: ${catchesSinceLastText} ${DARK_GRAY}(${averageCatchesText}${DARK_GRAY})"
         val lastOnText = getLastOnOverlayText()
         return listOf(counterText, lastOnText)
     }
@@ -51,7 +54,7 @@ data class CatchCounterData(
     private fun getCatchChatMessage(seaCreatureDisplayName: String, prevCatchTime: Date?, catchesSinceLast: Int): String {
         val b2bText = if (catchesSinceLast == 1) "${RED}B2B! " else ""
         val elapsedTimeText = if (prevCatchTime != null) " ${GRAY}(${WHITE}${CommonUtils.formatTimeElapsed(prevCatchTime)}${GRAY})" else ""
-        val catchesText = "${WHITE}${catchesSinceLast} ${GRAY}${if (catchesSinceLast == 1) "catch" else "catches"}"
+        val catchesText = "${WHITE}${CommonUtils.formatNumberWithSpaces(catchesSinceLast)} ${GRAY}${if (catchesSinceLast == 1) "catch" else "catches"}"
         return "${b2bText}${GRAY}It took ${catchesText}${elapsedTimeText} to get the ${seaCreatureDisplayName}${GRAY}."
     }
 
@@ -102,8 +105,8 @@ data class DropCounterData(
 
     private fun getDropChatMessage(itemDisplayName: String, prevDropTime: Date?, prevCatchesSinceLast: Int): String {
         val elapsedTimeText = if (prevDropTime != null) " ${GRAY}(${WHITE}${CommonUtils.formatTimeElapsed(prevDropTime)}${GRAY})" else ""
-        val catchesText = "${WHITE}${prevCatchesSinceLast} ${GRAY}${if (prevCatchesSinceLast == 1) "catch" else "catches"}"
-        return "${GRAY}It took ${catchesText}${elapsedTimeText} to get the ${itemDisplayName} ${WHITE}#${count}${GRAY}. Congratulations!"
+        val catchesText = "${WHITE}${CommonUtils.formatNumberWithSpaces(prevCatchesSinceLast)} ${GRAY}${if (prevCatchesSinceLast == 1) "catch" else "catches"}"
+        return "${GRAY}It took ${catchesText}${elapsedTimeText} to get the ${itemDisplayName} ${WHITE}#${CommonUtils.formatNumberWithSpaces(count)}${GRAY}. Congratulations!"
     }
 
     fun reset() {

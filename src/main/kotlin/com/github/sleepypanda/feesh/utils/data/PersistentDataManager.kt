@@ -9,6 +9,7 @@ import net.fabricmc.loader.api.FabricLoader
 import java.io.File
 import java.nio.file.Files
 import java.nio.file.StandardOpenOption
+import java.util.Date
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.Executors
 
@@ -23,7 +24,10 @@ object PersistentDataManager {
     private val overlayCoordsFile: File = File(feeshConfigDir, "overlayCoordsData.json")
 
     private val saveLock = Any()
-    private val gson: Gson = GsonBuilder().setPrettyPrinting().create()
+    private val gson: Gson = GsonBuilder()
+        .setPrettyPrinting()
+        .registerTypeAdapter(Date::class.java, UtcDateTypeAdapter)
+        .create()
     private val executor = Executors.newSingleThreadExecutor { r ->
         Thread(r, "Feesh-Data-Saver").apply {
             isDaemon = true
