@@ -31,13 +31,11 @@ object ChatUtils {
 
     fun sendAllChat(message: String) {
         if (message.isNullOrEmpty()) return
-        sendLocalChat(message) // TODO replace
-        //FeeshMod.mc.player?.networkHandler?.sendChatCommand("ac ${message}")
+        FeeshMod.mc.player?.networkHandler?.sendChatCommand("ac ${message}")
     }
 
     fun sendPartyChat(message: String) {
         if (message.isNullOrEmpty()) return
-        sendLocalChat(message) // TODO replace
         FeeshMod.mc.player?.networkHandler?.sendChatCommand("pchat ${message}")
     }
 

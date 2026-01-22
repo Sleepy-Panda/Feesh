@@ -4,6 +4,9 @@
 
 This mod is an evolution of [FeeshNotifier ChatTriggers module](https://chattriggers.com/modules/v/FeeshNotifier) made for earlier MC versions.
 
+**THIS MOD IS IN EARLY DEVELOPMENT STAGE!** It's not assumed to be widely used yet, due to incomplete / not well tested features.
+Once it's ready for beta, I plan to publish it on Modrinth.
+
 ## Links
 
 [Modrinth](https://modrinth.com/project/feesh) - nothing to see there yet
@@ -13,6 +16,8 @@ This mod is an evolution of [FeeshNotifier ChatTriggers module](https://chattrig
 This mod requires Fabric API and Fabric Language Kotlin mods for respective Minecraft version.
 
 ## Build
+
+Github automatically builds every version pushed to develop branch.
 
 For manual building the solution:
 
