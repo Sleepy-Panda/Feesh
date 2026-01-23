@@ -12,6 +12,7 @@ import com.github.sleepypanda.feesh.features.alerts.HotspotGoneAlert
 import com.github.sleepypanda.feesh.features.alerts.SaltExpiredAlert
 import com.github.sleepypanda.feesh.features.alerts.PlayerDeathAlert
 import com.github.sleepypanda.feesh.features.alerts.LootshareAlert
+import com.github.sleepypanda.feesh.features.alerts.FishingBagDisabledAlert
 import com.github.sleepypanda.feesh.features.alerts.RareDropAlert
 import com.github.sleepypanda.feesh.features.chat.RareCatchMessage
 import com.github.sleepypanda.feesh.features.chat.RareDropMessage
@@ -114,6 +115,7 @@ class FeeshMod : ModInitializer {
         SaltExpiredAlert.init()
         PlayerDeathAlert.init()
         LootshareAlert.init()
+        FishingBagDisabledAlert.init()
 
         // Chat
         RareCatchMessage.init()

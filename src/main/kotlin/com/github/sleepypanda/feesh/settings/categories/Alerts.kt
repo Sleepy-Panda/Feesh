@@ -137,6 +137,16 @@ object Alerts : CategoryKt("Alerts") {
         }
     }
 
+    var alertOnFishingBagDisabled by boolean(true) {
+        this.name = Translated("Alert when Fishing Bag is disabled")
+        this.description = Translated("Shows a title and plays a sound when current player starts fishing with Fishing Bag disabled.\n${YELLOW}After enabling the setting, please open your fishing bag once to initialize its state!")
+    }
+
+    var alertOnNonFishingArmor by boolean(true) {
+        this.name = Translated("Alert when no fishing armor equipped")
+        this.description = Translated("Shows a title and plays a sound when current player is fishing in a non-fishing armor.")
+    }
+    
     var alertOnPlayerDeath by boolean(true) {
         this.name = Translated("Alert when you or your party members are killed by a Mythic sea creature")
         this.description = Translated("Shows a title and plays a sound when you or your party members are killed by Thunder / Lord Jawbus / Ragnarok / Wiki Tiki / Titanoboa.")
@@ -165,11 +175,6 @@ object Alerts : CategoryKt("Alerts") {
     var alertOnThunderBottleCharged by boolean(true) {
         this.name = Translated("Alert when Thunder/Storm/Hurricane Bottle is charged")
         this.description = Translated("Shows a title and plays a sound when your Thunder, Storm, or Hurricane Bottle is fully charged.")
-    }
-
-    var alertOnNonFishingArmor by boolean(true) {
-        this.name = Translated("Alert when no fishing armor equipped")
-        this.description = Translated("Shows a title and plays a sound when current player is fishing in a non-fishing armor.")
     }
     
     var alertOnSaltExpired by boolean(true) {

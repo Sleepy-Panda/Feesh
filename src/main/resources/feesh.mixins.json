@@ -5,7 +5,8 @@
 	"client": [
 		"ScreenMixin",
 		"InGameHudMixin",
-		"ClientPlayerInteractionManagerMixin"
+		"ClientPlayerInteractionManagerMixin",
+		"MinecraftClientMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1
