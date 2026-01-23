@@ -94,6 +94,58 @@ class FeeshGui {
         this.alignment = alignment
         return this
     }
+    
+    /**
+     * Recalculates x coordinate when alignment changes to keep overlay at the same visual position.
+     * @param textRenderer TextRenderer to calculate text widths
+     * @param oldAlignment Previous alignment
+     * @param newAlignment New alignment
+     */
+    fun recalculateXForAlignment(textRenderer: TextRenderer, oldAlignment: Alignment, newAlignment: Alignment) {
+        if (oldAlignment == newAlignment) return
+        
+        // Use sampleLines if available, otherwise use lines
+        val linesToUse = if (sampleLines.isNotEmpty()) sampleLines else lines
+        if (linesToUse.isEmpty()) return
+        
+        val maxWidth = linesToUse.maxOfOrNull { textRenderer.getWidth(Text.literal(it)) } ?: 0
+        
+        // Convert current x from old alignment reference point to actual left edge
+        val leftEdge = when (oldAlignment) {
+            Alignment.LEFT -> x
+            Alignment.CENTER -> x - maxWidth / 2
+            Alignment.RIGHT -> x - maxWidth
+        }
+        
+        // Convert left edge to new alignment reference point
+        val newX = when (newAlignment) {
+            Alignment.LEFT -> leftEdge
+            Alignment.CENTER -> leftEdge + maxWidth / 2
+            Alignment.RIGHT -> leftEdge + maxWidth
+        }
+        
+        this.x = newX
+    }
+    
+    /**
+     * Gets the maximum width of the overlay using sampleLines if available, otherwise lines.
+     */
+    private fun getMaxWidth(textRenderer: TextRenderer): Int {
+        val linesToUse = if (sampleLines.isNotEmpty()) sampleLines else lines
+        return linesToUse.maxOfOrNull { textRenderer.getWidth(Text.literal(it)) } ?: 0
+    }
+    
+    /**
+     * Converts x coordinate (which represents different points based on alignment) to actual left edge.
+     */
+    private fun getLeftEdge(textRenderer: TextRenderer): Int {
+        val maxWidth = getMaxWidth(textRenderer)
+        return when (alignment) {
+            Alignment.LEFT -> x
+            Alignment.CENTER -> x - maxWidth / 2
+            Alignment.RIGHT -> x - maxWidth
+        }
+    }
 
     fun setCondition(condition: () -> Boolean): FeeshGui {
         this.condition = condition
@@ -135,11 +187,14 @@ class FeeshGui {
         drawContext.matrices.pushMatrix()
         drawContext.matrices.scale(scale, scale)
 
-        val screenWidth = mcClient.window.scaledWidth
-        val scaledScreenWidth = (screenWidth / scale).toInt()
-
-        val scaledX = (x / scale).toInt()
         val scaledY = (y / scale).toInt()
+        
+        // Use sampleLines for maxWidth calculation to match drawSample behavior
+        val maxWidth = getMaxWidth(textRenderer)
+        
+        // Convert x (which represents different points based on alignment) to left edge
+        val leftEdge = getLeftEdge(textRenderer)
+        val scaledLeftEdge = (leftEdge / scale).toInt()
 
         var currentY = scaledY
 
@@ -147,10 +202,11 @@ class FeeshGui {
             val text = Text.literal(line)
             val textWidth = textRenderer.getWidth(text)
             
+            // Text is aligned within the overlay block based on alignment
             val actualX = when (alignment) {
-                Alignment.LEFT -> scaledX
-                Alignment.RIGHT -> scaledScreenWidth - textWidth - scaledX
-                Alignment.CENTER -> (scaledScreenWidth - textWidth) / 2 + scaledX
+                Alignment.LEFT -> scaledLeftEdge
+                Alignment.RIGHT -> scaledLeftEdge + maxWidth - textWidth
+                Alignment.CENTER -> scaledLeftEdge + (maxWidth - textWidth) / 2
             }
 
             drawContext.drawText(textRenderer, text, actualX, currentY, color, true)
@@ -175,31 +231,29 @@ class FeeshGui {
         drawContext.matrices.pushMatrix()
         drawContext.matrices.scale(scale, scale)
 
-        val screenWidth = mcClient.window.scaledWidth
-        val scaledScreenWidth = (screenWidth / scale).toInt()
-        val scaledX = (x / scale).toInt()
         val scaledY = (y / scale).toInt()
-
-        var currentY = scaledY
-
-        val maxWidth = (sampleLines.maxOfOrNull { textRenderer.getWidth(Text.literal(it)) } ?: 175)
+        
+        val maxWidth = getMaxWidth(textRenderer)
         val height = (sampleLines.size * (textRenderer.fontHeight + 2))
         
-        val backgroundX = when (alignment) {
-            Alignment.LEFT -> scaledX
-            Alignment.RIGHT -> scaledScreenWidth - maxWidth - scaledX
-            Alignment.CENTER -> (scaledScreenWidth - maxWidth) / 2 + scaledX
-        }
+        // Convert x (which represents different points based on alignment) to left edge
+        val leftEdge = getLeftEdge(textRenderer)
+        val scaledLeftEdge = (leftEdge / scale).toInt()
+        
+        // Background is always drawn from left edge
+        val backgroundX = scaledLeftEdge
         drawContext.fill(backgroundX - 2, scaledY - 2, backgroundX + maxWidth.toInt() + 2, scaledY + height.toInt() + 2, Color(0, 0, 0, 80).rgb)
 
+        var currentY = scaledY
         for (line in sampleLines) {
             val text = Text.literal(line)
             val textWidth = textRenderer.getWidth(text)
             
+            // Text is aligned within the overlay block based on alignment
             val actualX = when (alignment) {
-                Alignment.LEFT -> scaledX
-                Alignment.RIGHT -> scaledScreenWidth - textWidth - scaledX
-                Alignment.CENTER -> (scaledScreenWidth - textWidth) / 2 + scaledX
+                Alignment.LEFT -> scaledLeftEdge
+                Alignment.RIGHT -> scaledLeftEdge + maxWidth - textWidth
+                Alignment.CENTER -> scaledLeftEdge + (maxWidth - textWidth) / 2
             }
 
             drawContext.drawText(textRenderer, text, actualX, currentY, color, true)
@@ -212,18 +266,14 @@ class FeeshGui {
     fun isInSample(textRenderer: TextRenderer, client: MinecraftClient, mouseX: Double, mouseY: Double): Boolean {
         if (sampleLines.isEmpty()) return false
 
-        val screenWidth = client.window.scaledWidth.toFloat()
-        val maxWidth = (sampleLines.maxOfOrNull { textRenderer.getWidth(Text.literal(it)) } ?: 175) * scale
+        val maxWidth = getMaxWidth(textRenderer) * scale
         val height = (sampleLines.size * (textRenderer.fontHeight + 2)) * scale
+        
+        // Convert x to left edge for hitbox calculation
+        val leftEdge = getLeftEdge(textRenderer).toFloat()
             
-        val actualX = when (alignment) {
-            Alignment.LEFT -> x.toFloat()
-            Alignment.RIGHT -> screenWidth - maxWidth - x.toFloat()
-            Alignment.CENTER -> (screenWidth - maxWidth) / 2f + x.toFloat()
-        }
-            
-        if (mouseX >= actualX - 2 &&
-            mouseX <= actualX + maxWidth + 2 &&
+        if (mouseX >= leftEdge - 2 &&
+            mouseX <= leftEdge + maxWidth + 2 &&
             mouseY >= y - 2 &&
             mouseY <= y + height + 2) {        
             return true

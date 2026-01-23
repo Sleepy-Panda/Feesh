@@ -8,11 +8,11 @@ Make sure old file from CT module can be moved to the mod with minor data loss.
 
 ## Fishing Hook timer
 
-Does not cancel the original armor stand.
+Should cancel rendering of the original armor stand.
 
 ## Player death alert
 
-Sound is not played. :c
+Own death sound is not played. :c Probably because player's world is not loaded while they go to spawn on death.
 
 ## Sounds
 
@@ -21,4 +21,8 @@ Sound is not played. :c
 
 ## Overlays
 
-Changing alignment is broken in /feeshMoveAllGuis
+- Make lines clickable for Reset/Pause/etc
+- Remove command hint from overlays
+- Check that it works fine after loading the module without coords file
+- Use Center alignment as default for some widgets
+- Make overlays rendered until TabList

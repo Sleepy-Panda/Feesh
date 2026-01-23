@@ -92,15 +92,23 @@ class MoveGuisScreen : Screen(Text.literal("Feesh Move Guis")) {
         
         enabledGuis.forEach { mapping ->
             val gui = mapping.gui
-            val x = gui.getX()
-            val y = gui.getY()
-
+            
             val isInSample = gui.isInSample(textRenderer, client!!, mouseX, mouseY)
             if (isInSample) {
                 isDraggingGui = gui
                 lastDraggedGui = gui
-                dragOffsetX = (mouseX - x).toInt()
-                dragOffsetY = (mouseY - y).toInt()
+                
+                // Calculate left edge for drag offset
+                val linesToUse = if (gui.getSampleLines().isNotEmpty()) gui.getSampleLines() else gui.getLines()
+                val maxWidth = linesToUse.maxOfOrNull { textRenderer.getWidth(Text.literal(it)) } ?: 0
+                val leftEdge = when (gui.getAlignment()) {
+                    Alignment.LEFT -> gui.getX()
+                    Alignment.CENTER -> gui.getX() - maxWidth / 2
+                    Alignment.RIGHT -> gui.getX() - maxWidth
+                }
+                
+                dragOffsetX = (mouseX - leftEdge).toInt()
+                dragOffsetY = (mouseY - gui.getY()).toInt()
                 return true
             }
         }
@@ -111,11 +119,22 @@ class MoveGuisScreen : Screen(Text.literal("Feesh Move Guis")) {
     override fun mouseDragged(click: Click, deltaX: Double, deltaY: Double): Boolean {
         if (click.button() == 0 && isDraggingGui != null) {
             val gui = isDraggingGui!!
-            val rawX = (click.x() - dragOffsetX).toInt()
+            val textRenderer = client!!.textRenderer
+            
+            // Calculate the left edge of the overlay based on current alignment
+            val linesToUse = if (gui.getSampleLines().isNotEmpty()) gui.getSampleLines() else gui.getLines()
+            val maxWidth = linesToUse.maxOfOrNull { textRenderer.getWidth(Text.literal(it)) } ?: 0
+            
+            // Calculate new left edge from mouse position
+            val newLeftEdge = (click.x() - dragOffsetX).toInt().coerceAtLeast(0)
+            
+            // Convert new left edge back to x coordinate based on alignment
             val newX = when (gui.getAlignment()) {
-                Alignment.LEFT, Alignment.RIGHT -> rawX.coerceAtLeast(0)
-                Alignment.CENTER -> rawX
+                Alignment.LEFT -> newLeftEdge
+                Alignment.CENTER -> newLeftEdge + maxWidth / 2
+                Alignment.RIGHT -> newLeftEdge + maxWidth
             }
+            
             val newY = ((click.y() - dragOffsetY).toInt().coerceAtLeast(0))
             gui.setX(newX).setY(newY)
             return true
@@ -184,12 +203,14 @@ class MoveGuisScreen : Screen(Text.literal("Feesh Move Guis")) {
     }
     
     private fun changeAlignment(gui: FeeshGui) {
+        val textRenderer = client!!.textRenderer
         val currentAlignment = gui.getAlignment()
         val newAlignment = when (currentAlignment) {
             Alignment.LEFT -> Alignment.CENTER
             Alignment.CENTER -> Alignment.RIGHT
             Alignment.RIGHT -> Alignment.LEFT
         }
+        gui.recalculateXForAlignment(textRenderer, currentAlignment, newAlignment)
         gui.setAlignment(newAlignment)
         saveGuiCoords(gui)
     }
