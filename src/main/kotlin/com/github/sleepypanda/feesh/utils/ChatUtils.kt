@@ -21,7 +21,7 @@ object ChatUtils {
      */
     fun sendLocalChat(message: String, addModPrefix: Boolean = false) {
         if (message.isNullOrEmpty()) return
-        val formattedMessage = if (addModPrefix) "${GRAY}[${GOLD}Feesh${GRAY}] ${RESET}${message}" else message
+        val formattedMessage = if (addModPrefix) "${GRAY}[${AQUA}Feesh${GRAY}] ${RESET}${message}" else message
         FeeshMod.mc.inGameHud.chatHud.addMessage(Text.literal(formattedMessage))
     }
 
