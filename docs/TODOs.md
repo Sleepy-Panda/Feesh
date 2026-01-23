@@ -13,3 +13,8 @@ Does not cancel the original armor stand.
 ## Player death alert
 
 Sound is not played. :c
+
+## Sounds
+
+- Sounds for Rare Drops.
+- Custom sounds setup by user.

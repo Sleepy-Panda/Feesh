@@ -138,13 +138,13 @@ object WaterHotspotsAndBayouTracker {
     }
 
     private fun onTitanoboaShed(magicFind: Int?) {
-        data.titanoboaSheds.updateAfterDrop(titanoboaShed.boldDisplayName, magicFind)
+        data.titanoboaSheds.updateAfterDrop(titanoboaShed.boldDisplayName, titanoboa.boldDisplayName, magicFind)
         saveData()
         updateGuiLines()
     }
 
     private fun onTikiMask(magicFind: Int?) {
-        data.tikiMasks.updateAfterDrop(tikiMask.boldDisplayName, magicFind)
+        data.tikiMasks.updateAfterDrop(tikiMask.boldDisplayName, wikiTiki.boldDisplayName, magicFind)
         saveData()
         updateGuiLines()
     }
@@ -237,8 +237,49 @@ object WaterHotspotsAndBayouTracker {
         PersistentDataManager.saveFeeshDataToFileAsync()
     }
 
-    fun isFishingInHotspot(): Boolean {
+    private fun isFishingInHotspot(): Boolean {
         if (!WorldUtils.isInWaterHotspotFishingWorld()) return false
         return PlayerUtils.isFishingHookInHotspotSeenMinutesAgo(1)
+    }
+    
+    fun setTitanoboaSheds(count: Int, lastOn: Date?) {
+        try {
+            if (!WorldUtils.isInSkyblock()) return
+            
+            initDropCountInOverlay(data.titanoboaSheds, count, lastOn)         
+            saveData()
+            ChatUtils.sendLocalChat("${GRAY}Successfully changed Titanoboa Sheds count to ${count} for the Water Hotspots & Bayou tracker.", true)
+        } catch (e: Exception) {
+            FeeshMod.LOGGER.error("[Feesh] Failed to set Titanoboa Sheds.", e)
+            ChatUtils.sendLocalChat("${RED}Failed to set Titanoboa Sheds.", true)
+        }
+    }
+    
+    fun setTikiMasks(count: Int, lastOn: Date?) {
+        try {
+            if (!WorldUtils.isInSkyblock()) return
+
+            initDropCountInOverlay(data.tikiMasks, count, lastOn)       
+            saveData()
+            ChatUtils.sendLocalChat("${GRAY}Successfully changed Tiki Masks count to ${count} for the Water Hotspots & Bayou tracker.", true)
+        } catch (e: Exception) {
+            FeeshMod.LOGGER.error("[Feesh] Failed to set Tiki Masks.", e)
+            ChatUtils.sendLocalChat("${RED}Failed to set Tiki Masks.", true)
+        }
+    }
+    
+    private fun initDropCountInOverlay(dropObj: DropCounterData, count: Int, lastOn: Date?) {
+        dropObj.count = count
+        dropObj.lastDropTime = lastOn
+
+        if (lastOn != null) {
+            val dropsHistory = dropObj.dropsHistory.toMutableList()
+            if (dropsHistory.isNotEmpty()) {
+                dropsHistory[0] = dropsHistory[0].copy(time = lastOn)
+            } else {
+                dropsHistory.add(0, DropsHistoryEntry(catches = 0, time = lastOn, magicFind = null))
+            }
+            dropObj.dropsHistory = dropsHistory
+        }
     }
 }

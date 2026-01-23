@@ -4,6 +4,7 @@ import com.github.sleepypanda.feesh.FeeshMod
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
 import com.github.sleepypanda.feesh.utils.enums.DeployableTypes
+import com.github.sleepypanda.feesh.utils.ChatUtils
 import com.teamresourceful.resourcefulconfig.api.annotations.Category
 import com.teamresourceful.resourcefulconfig.api.annotations.Comment
 import com.teamresourceful.resourcefulconfig.api.annotations.ConfigEntry
@@ -214,6 +215,28 @@ To reset: ${AQUA}/feeshResetWaterHotspotsAndBayou
     }
 
     init {
+        button {
+            title = "Set Titanoboa Sheds / Tiki Masks count"
+            description = "Explains in your chat how to init Titanoboa Sheds / Tiki Masks count and last drop date."
+            text = "Click for help"
+            onClick {
+                ChatUtils.sendLocalChat("""
+${WHITE}${BOLD}Titanoboa Sheds / Tiki Masks setup${RESET}
+
+Do ${AQUA}/feeshSetTrackerDrops <ITEM_ID> <COUNT> [LAST_ON_DATE]${RESET} to initialize your drops history:
+  - <ITEM_ID> is a mandatory item ID - TITANOBOA_SHED or TIKI_MASK.
+  - <COUNT> is a mandatory number of times you've dropped it.
+  - [LAST_ON_DATE] is optional and, if provided, should be in YYYY-MM-DD hh:mm:ss format. Can not be in future!
+
+Examples:
+${AQUA}/feeshSetTrackerDrops TITANOBOA_SHED 5 2025-05-30 23:59:00${RESET}
+${AQUA}/feeshSetTrackerDrops TIKI_MASK 5 2025-05-30 23:59:00${RESET}
+                """.trimIndent(), true)
+            }
+        }
+    }
+
+    init {
         separator {
             this.title = "${AQUA}${BOLD}Treasure fishing tracker"
         }
@@ -230,15 +253,16 @@ To reset: ${AQUA}/feeshResetWaterHotspotsAndBayou
             description = "Explains in your chat how to setup Treasure Dyes count and last drop date."
             text = "Click for help"
             onClick {
-                com.github.sleepypanda.feesh.utils.ChatUtils.sendLocalChat("""
-${AQUA}${BOLD}Treasure Dyes setup${RESET}
+                ChatUtils.sendLocalChat("""
+${WHITE}${BOLD}Treasure Dyes setup${RESET}
 
-Do ${AQUA}/feeshSetTrackerDrops <ITEM_ID> <COUNT> <LAST_ON_DATE>${RESET} to initialize your drops history:
+Do ${AQUA}/feeshSetTrackerDrops <ITEM_ID> <COUNT> [LAST_ON_DATE]${RESET} to initialize your drops history:
   - <ITEM_ID> is a mandatory item ID - DYE_TREASURE.
   - <COUNT> is a mandatory number of times you've dropped it.
-  - <LAST_ON_DATE> is optional and, if provided, should be in YYYY-MM-DD hh:mm:ss format. Can not be in future!
+  - [LAST_ON_DATE] is optional and, if provided, should be in YYYY-MM-DD hh:mm:ss format. Can not be in future!
 
-Example: ${AQUA}/feeshSetTrackerDrops DYE_TREASURE 2 2025-05-30 23:59:00
+Example:
+${AQUA}/feeshSetTrackerDrops DYE_TREASURE 2 2025-05-30 23:59:00
                 """.trimIndent(), true)
             }
         }

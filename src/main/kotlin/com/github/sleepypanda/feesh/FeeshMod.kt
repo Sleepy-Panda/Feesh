@@ -26,6 +26,7 @@ import com.github.sleepypanda.feesh.features.commands.PetLevelUpPricesCommand
 import com.github.sleepypanda.feesh.features.commands.GearCraftPricesCommand
 import com.github.sleepypanda.feesh.features.commands.FeeshSettingsCommand
 import com.github.sleepypanda.feesh.features.commands.PlayTestSoundCommand
+import com.github.sleepypanda.feesh.features.commands.SetTrackerDropsCommand
 import com.github.sleepypanda.feesh.features.overlays.JerryWorkshopTracker
 import com.github.sleepypanda.feesh.features.overlays.LegionBobbingTimeTracker
 import com.github.sleepypanda.feesh.features.overlays.SeaCreaturesTracker
@@ -144,6 +145,7 @@ class FeeshMod : ModInitializer {
         PetLevelUpPricesCommand.init()
         GearCraftPricesCommand.init()
         PlayTestSoundCommand.init()
+        SetTrackerDropsCommand.init()
 
         LOGGER.info("$MOD_NAME loaded successfully!")
     }

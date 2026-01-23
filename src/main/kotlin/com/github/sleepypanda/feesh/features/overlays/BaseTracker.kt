@@ -91,7 +91,7 @@ data class DropCounterData(
         catchesSinceLast += valueToAdd
     }
 
-    fun updateAfterDrop(displayName: String, magicFind: Int?) {
+    fun updateAfterDrop(itemDisplayName: String, seaCreatureDisplayName: String, magicFind: Int?) {
         val prevDropTime = lastDropTime
         val prevCatchesSinceLast = catchesSinceLast
 
@@ -100,12 +100,12 @@ data class DropCounterData(
         dropsHistory = (listOf(DropsHistoryEntry(catchesSinceLast, Date(), magicFind)) + dropsHistory)
         catchesSinceLast = 0
 
-        ChatUtils.sendLocalChat(getDropChatMessage(displayName, prevDropTime, prevCatchesSinceLast), true)
+        ChatUtils.sendLocalChat(getDropChatMessage(itemDisplayName, seaCreatureDisplayName, prevDropTime, prevCatchesSinceLast), true)
     }
 
-    private fun getDropChatMessage(itemDisplayName: String, prevDropTime: Date?, prevCatchesSinceLast: Int): String {
+    private fun getDropChatMessage(itemDisplayName: String, seaCreatureDisplayName: String, prevDropTime: Date?, prevCatchesSinceLast: Int): String {
         val elapsedTimeText = if (prevDropTime != null) " ${GRAY}(${WHITE}${CommonUtils.formatTimeElapsed(prevDropTime)}${GRAY})" else ""
-        val catchesText = "${WHITE}${CommonUtils.formatNumberWithSpaces(prevCatchesSinceLast)} ${GRAY}${if (prevCatchesSinceLast == 1) "catch" else "catches"}"
+        val catchesText = "${WHITE}${CommonUtils.formatNumberWithSpaces(prevCatchesSinceLast)} ${seaCreatureDisplayName} ${GRAY}${if (prevCatchesSinceLast == 1) "catch" else "catches"}"
         return "${GRAY}It took ${catchesText}${elapsedTimeText} to get the ${itemDisplayName} ${WHITE}#${CommonUtils.formatNumberWithSpaces(count)}${GRAY}. Congratulations!"
     }
 
