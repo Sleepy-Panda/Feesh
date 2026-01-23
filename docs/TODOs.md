@@ -18,3 +18,7 @@ Sound is not played. :c
 
 - Sounds for Rare Drops.
 - Custom sounds setup by user.
+
+## Overlays
+
+Changing alignment is broken in /feeshMoveAllGuis

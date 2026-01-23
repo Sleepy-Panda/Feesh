@@ -209,8 +209,8 @@ class FeeshGui {
         drawContext.matrices.popMatrix()
     }
 
-    fun isInSample(textRenderer: TextRenderer, client: MinecraftClient, mouseX: Double, mouseY: Double): Pair<Boolean, Float?> {
-        if (sampleLines.isEmpty()) return Pair(false, null)
+    fun isInSample(textRenderer: TextRenderer, client: MinecraftClient, mouseX: Double, mouseY: Double): Boolean {
+        if (sampleLines.isEmpty()) return false
 
         val screenWidth = client.window.scaledWidth.toFloat()
         val maxWidth = (sampleLines.maxOfOrNull { textRenderer.getWidth(Text.literal(it)) } ?: 175) * scale
@@ -226,8 +226,8 @@ class FeeshGui {
             mouseX <= actualX + maxWidth + 2 &&
             mouseY >= y - 2 &&
             mouseY <= y + height + 2) {        
-            return Pair(true, actualX)
+            return true
         }
-        return Pair(false, null)
+        return false
     }
 }

@@ -68,9 +68,12 @@ class MoveGuisScreen : Screen(Text.literal("Feesh Move Guis")) {
     override fun render(context: DrawContext, mouseX: Int, mouseY: Int, delta: Float) {       
         val textRenderer = client?.textRenderer ?: return
         
-        val hint = Text.literal("${RED}${BOLD}Enable GUIs in settings to see them here! ${YELLOW}Move them using your mouse. Press +/- or scroll to scale. Press ESC to exit.")
-        val x = client!!.window.scaledWidth / 2 - textRenderer.getWidth(hint) / 2
-        context.drawText(textRenderer, hint, x, 20, color, true)
+        val hint1 = Text.literal("${RED}${BOLD}Enable GUIs in settings to see them here!")
+        val x1 = client!!.window.scaledWidth / 2 - textRenderer.getWidth(hint1) / 2
+        context.drawText(textRenderer, hint1, x1, 10, color, true)
+        val hint2 = Text.literal("${YELLOW}Move them using your mouse. Press +/- or scroll to scale. Press 0 to change alignment. Press ESC to exit.")
+        val x2 = client!!.window.scaledWidth / 2 - textRenderer.getWidth(hint2) / 2
+        context.drawText(textRenderer, hint2, x2, 20, color, true)
         
         enabledGuis.forEach { mapping ->
             val gui = mapping.gui           
@@ -86,14 +89,13 @@ class MoveGuisScreen : Screen(Text.literal("Feesh Move Guis")) {
         val mouseX = click.x()
         val mouseY = click.y()
         val textRenderer = client!!.textRenderer
-        val screenWidth = client!!.window.scaledWidth
         
         enabledGuis.forEach { mapping ->
             val gui = mapping.gui
             val x = gui.getX()
             val y = gui.getY()
 
-            val (isInSample, actualX) = gui.isInSample(textRenderer, client!!, mouseX, mouseY)
+            val isInSample = gui.isInSample(textRenderer, client!!, mouseX, mouseY)
             if (isInSample) {
                 isDraggingGui = gui
                 lastDraggedGui = gui
@@ -155,6 +157,10 @@ class MoveGuisScreen : Screen(Text.literal("Feesh Move Guis")) {
                     changeScale(lastDraggedGui!!, -0.1f)
                     return true
                 }
+                48 -> { // 0
+                    changeAlignment(lastDraggedGui!!)
+                    return true
+                }
             }
         }
         
@@ -174,6 +180,17 @@ class MoveGuisScreen : Screen(Text.literal("Feesh Move Guis")) {
         val currentScale = gui.getScale()
         val newScale = (currentScale + delta).coerceAtLeast(0.2f)
         gui.setScale(newScale)
+        saveGuiCoords(gui)
+    }
+    
+    private fun changeAlignment(gui: FeeshGui) {
+        val currentAlignment = gui.getAlignment()
+        val newAlignment = when (currentAlignment) {
+            Alignment.LEFT -> Alignment.CENTER
+            Alignment.CENTER -> Alignment.RIGHT
+            Alignment.RIGHT -> Alignment.LEFT
+        }
+        gui.setAlignment(newAlignment)
         saveGuiCoords(gui)
     }
     

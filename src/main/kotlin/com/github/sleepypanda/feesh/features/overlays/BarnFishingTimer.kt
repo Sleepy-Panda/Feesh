@@ -30,6 +30,7 @@ import java.util.Date
 object BarnFishingTimer {
     private const val TIMER_THRESHOLD_IN_MINUTES = 5
     private const val TICKS_PER_CHECK = 10
+    private const val RESET_COMMAND = "feeshResetBarnFishingTimer"
 
     private var mobsCount = 0
     private var startTime: Long? = null
@@ -63,7 +64,7 @@ object BarnFishingTimer {
     }
 
     private fun registerCommands() {
-        RegisterUtils.command("feeshResetBarnFishingTimer") {
+        RegisterUtils.command(RESET_COMMAND) {
             resetSeaCreaturesCountAndTimer()
         }
     }
@@ -214,10 +215,9 @@ object BarnFishingTimer {
 
         val overlayText = "${seaCreaturesColor}${mobsCount} ${GRAY}${seaCreaturesText} ${DARK_GRAY}(${timerColor}${timerText}${DARK_GRAY})"
         
-        val resetCommand = "/feeshResetBarnFishingTimer"
-        val resetButtonText = "${RED}${BOLD}[Click to reset] ${DARK_GRAY}($resetCommand)"
+        val resetButtonText = "${GRAY}[${RED}Click to reset${GRAY}] ${DARK_GRAY}(/$RESET_COMMAND)"
 
-        gui.setLines(listOf(overlayText, resetButtonText))
+        gui.setLines(listOf(resetButtonText, overlayText))
     }
 
     private fun getSeaCreaturesCountThreshold(): Int {
