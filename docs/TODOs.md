@@ -25,4 +25,5 @@ Own death sound is not played. :c Probably because player's world is not loaded 
 - Remove command hint from overlays
 - Check that it works fine after loading the module without coords file
 - Use Center alignment as default for some widgets
-- Make overlays rendered until TabList
+- Make overlays rendered under TabList
+- Check if "0" key works for numpad in /feeshMoveAllGuis

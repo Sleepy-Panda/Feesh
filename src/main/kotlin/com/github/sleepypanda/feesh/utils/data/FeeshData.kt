@@ -4,6 +4,7 @@ import com.github.sleepypanda.feesh.features.overlays.JerryWorkshopTracker
 import com.github.sleepypanda.feesh.features.overlays.TreasureFishingTracker
 import com.github.sleepypanda.feesh.features.overlays.SeaCreaturesTracker
 import com.github.sleepypanda.feesh.features.overlays.WaterHotspotsAndBayouTracker
+import com.github.sleepypanda.feesh.features.overlays.ArchfiendDiceProfitTracker
 
 data class FeeshData(
     var isWelcomeMessageShown: Boolean = false,
@@ -13,4 +14,5 @@ data class FeeshData(
     val treasureFishing: TreasureFishingTracker.TreasureFishingData = TreasureFishingTracker.TreasureFishingData(),
     val seaCreatures: SeaCreaturesTracker.SeaCreaturesTrackerData = SeaCreaturesTracker.SeaCreaturesTrackerData(),
     val waterHotspotsAndBayou: WaterHotspotsAndBayouTracker.WaterHotspotsAndBayouTrackerData = WaterHotspotsAndBayouTracker.WaterHotspotsAndBayouTrackerData(),
+    val archfiendDiceProfit: ArchfiendDiceProfitTracker.ArchfiendDiceProfitData = ArchfiendDiceProfitTracker.ArchfiendDiceProfitData(),
 )

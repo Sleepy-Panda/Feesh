@@ -267,4 +267,20 @@ ${AQUA}/feeshSetTrackerDrops DYE_TREASURE 2 2025-05-30 23:59:00
             }
         }
     }
+
+    init {
+        separator {
+            this.title = "${AQUA}${BOLD}Archfiend Dice profit tracker"
+        }
+    }
+
+    var archfiendDiceProfitTrackerOverlay by boolean(false) {
+        this.name = Translated("Archfiend Dice profit tracker")
+        this.description = Translated("Shows an overlay with your Archfiend Dice / High Class Archfiend Dice profits. This overlay has [Session] and [Total] view mode.")
+    }
+
+    var resetArchfiendDiceProfitTrackerSessionOnGameClosed by boolean(true) {
+        this.name = Translated("Autoreset [Session] on closing game")
+        this.description = Translated("Automatically reset the Archfiend Dice profit tracker [Session] when you close Minecraft.")
+    }
 }

@@ -84,14 +84,19 @@ object CommonUtils {
      * @return The formatted string or null if the number is 0 or invalid.
      */
     fun toShortNumber(number: Double?): String? {
-        if (number == null || number < 0) return null
-        
-        return when {
-            number >= 1_000_000_000 -> String.format("%.1fB", number / 1_000_000_000.0).removeSuffix(".0")
-            number >= 1_000_000 -> String.format("%.1fM", number / 1_000_000.0).removeSuffix(".0")
-            number >= 1_000 -> String.format("%.1fk", number / 1_000.0).removeSuffix(".0")
-            else -> number.toLong().toString()
+        if (number == null) return null
+
+        val isNegative = number < 0
+        val absNumber = Math.abs(number)
+ 
+        val formattedNumber = when {
+            absNumber >= 1_000_000_000 -> String.format("%.1fB", absNumber / 1_000_000_000.0).removeSuffix(".0")
+            absNumber >= 1_000_000 -> String.format("%.1fM", absNumber / 1_000_000.0).removeSuffix(".0")
+            absNumber >= 1_000 -> String.format("%.1fk", absNumber / 1_000.0).removeSuffix(".0")
+            else -> absNumber.toLong().toString()
         }
+
+        return if (isNegative) "-$formattedNumber" else formattedNumber
     }
 
     /**
