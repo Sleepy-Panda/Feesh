@@ -7,7 +7,7 @@ import java.util.concurrent.TimeUnit
 import java.text.SimpleDateFormat
 
 object CommonUtils {
-    fun showTitle(title: String, subtitle: String? = null, fadeIn: Int = 0, stay: Int = 35, fadeOut: Int = 10) {      
+    fun showTitle(title: String, subtitle: String? = null, fadeIn: Int = 0, stay: Int = 40, fadeOut: Int = 10) {      
         var mc = FeeshMod.mc
 
         mc.inGameHud.apply {
