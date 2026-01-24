@@ -3,6 +3,7 @@
   "key.feesh.shareHotspotPartyChat": "Share nearest Hotspot to PARTY chat",
   "key.feesh.shareHotspotAllChat": "Share nearest Hotspot to ALL chat",
   "key.feesh.lootshareToPartyChat": "Send lootshare message to PARTY chat",
-  "key.feesh.resetBarnFishingTimer": "Reset Barn fishing timer"
+  "key.feesh.resetBarnFishingTimer": "Reset Barn fishing timer",
+  "key.feesh.pauseAllTrackers": "Pause all trackers"
 }
 

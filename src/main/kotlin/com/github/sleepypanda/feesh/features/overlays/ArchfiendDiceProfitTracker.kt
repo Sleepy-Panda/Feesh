@@ -72,7 +72,7 @@ object ArchfiendDiceProfitTracker {
     private val baseTitle = "${AQUA}${BOLD}Archfiend Dice profit tracker"
 
     private val gui = FeeshGui()
-        .setCoordsDataKey("archfiendDiceProfitTrackerOverlay")
+        .setCoordsDataKey("archfiendDiceProfitTracker")
         .setClickable(true)
         .setSampleLines(listOf(
             "${baseTitle} ${GRAY}[${GREEN}Session${GRAY}]",

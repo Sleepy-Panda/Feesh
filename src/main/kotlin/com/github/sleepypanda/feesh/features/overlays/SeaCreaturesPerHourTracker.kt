@@ -1,0 +1,194 @@
+package com.github.sleepypanda.feesh.features.overlays
+
+import com.github.sleepypanda.feesh.FeeshMod
+import com.github.sleepypanda.feesh.events.EventBus
+import com.github.sleepypanda.feesh.events.ClientTickEvent
+import com.github.sleepypanda.feesh.events.OwnSeaCreatureCaughtEvent
+import com.github.sleepypanda.feesh.events.WorldChangedEvent
+import com.github.sleepypanda.feesh.settings.categories.Overlays
+import com.github.sleepypanda.feesh.utils.CommonUtils
+import com.github.sleepypanda.feesh.utils.WorldUtils
+import com.github.sleepypanda.feesh.utils.PlayerUtils
+import com.github.sleepypanda.feesh.utils.ChatUtils
+import com.github.sleepypanda.feesh.utils.RegisterUtils
+import com.github.sleepypanda.feesh.utils.gui.FeeshGui
+import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
+import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
+import java.util.Date
+import java.util.concurrent.TimeUnit
+
+object SeaCreaturesPerHourTracker {
+    private var totalSeaCreaturesCaughtCount = 0
+    private var lastSeaCreatureCaughtAt: Date? = null
+    private var isSessionActive = false
+    private var elapsedSeconds = 0
+    private var tickCounter = 0
+    private val baseTitle = "${AQUA}${BOLD}Sea creatures per hour"
+
+    private const val TICKS_PER_UPDATE = 20
+    private const val MAX_SECONDS_ELAPSED_SINCE_LAST_ACTION = 60 * 5
+    private const val RESET_COMMAND = "feeshResetSeaCreaturesPerHour"
+    private const val PAUSE_COMMAND = "feeshPauseSeaCreaturesPerHour"
+
+    private val gui = FeeshGui()
+        .setCoordsDataKey("seaCreaturesPerHourTracker")
+        .setClickable(true)
+        .setSampleLines(listOf(
+            baseTitle,
+            "${WHITE}1 234 ${GRAY}per hour (${WHITE}2 000 ${GRAY}total)",
+            "",
+            "${AQUA}Elapsed time: ${WHITE}1h 23m 45s",
+        ))
+        .setSettingsKey { Overlays.seaCreaturesPerHourTrackerOverlay }
+        .setCondition {
+            WorldUtils.isInFishingWorld() &&
+            PlayerUtils.isFishingHookSeenMinutesAgo(5)
+        }
+
+    fun init() {
+        registerCommands()
+        EventBus.subscribe(OwnSeaCreatureCaughtEvent::class, ::onSeaCreatureCaught)
+        EventBus.subscribe(ClientTickEvent::class, ::onClientTick)
+        EventBus.subscribe(WorldChangedEvent::class, ::onWorldChanged)
+    }
+
+    private fun registerCommands() {
+        RegisterUtils.command(RESET_COMMAND) { args ->
+            val isConfirmed = args.isNotEmpty() && args[0] == "noconfirm"
+            reset(isConfirmed)
+        }
+
+        RegisterUtils.command(PAUSE_COMMAND) {
+            pause()
+        }
+    }
+
+    private fun onWorldChanged(@Suppress("UNUSED_PARAMETER") event: WorldChangedEvent) {
+        isSessionActive = false
+        gui.clearLines()
+    }
+
+    private fun onClientTick(@Suppress("UNUSED_PARAMETER") event: ClientTickEvent) {
+        tickCounter++
+        if (tickCounter < TICKS_PER_UPDATE) return
+        tickCounter = 0
+        
+        refreshElapsedTime() // Once per second!
+        updateGuiLines()
+    }
+
+    private fun refreshElapsedTime() {
+        try {
+            if (!isSessionActive || 
+                !Overlays.seaCreaturesPerHourTrackerOverlay || 
+                !WorldUtils.isInSkyblock() || 
+                !WorldUtils.isInFishingWorld()) {
+                isSessionActive = false
+                return
+            }
+
+            val now = Date()
+            val lastCatch = lastSeaCreatureCaughtAt ?: run {
+                isSessionActive = false
+                return
+            }
+
+            val elapsedSecondsSinceLastCatch = (now.time - lastCatch.time) / 1000
+
+            if (elapsedSecondsSinceLastCatch < MAX_SECONDS_ELAPSED_SINCE_LAST_ACTION) {
+                isSessionActive = true
+                elapsedSeconds += 1
+                updateGuiLines()
+            } else {
+                isSessionActive = false
+            }
+        } catch (e: Exception) {
+            FeeshMod.LOGGER.error("[Feesh] Failed to refresh elapsed time.", e)
+        }
+    }
+
+    private fun onSeaCreatureCaught(event: OwnSeaCreatureCaughtEvent) {
+        try {
+            if (!Overlays.seaCreaturesPerHourTrackerOverlay || 
+                !WorldUtils.isInSkyblock() || 
+                !WorldUtils.isInFishingWorld()) return
+
+            val isDoubleHooked = event.isDoubleHook
+            isSessionActive = true
+
+            val diff = if (isDoubleHooked) 2 else 1
+            totalSeaCreaturesCaughtCount += diff
+            lastSeaCreatureCaughtAt = Date()
+
+            updateGuiLines()
+        } catch (e: Exception) {
+            FeeshMod.LOGGER.error("[Feesh] Failed to track sea creature catch.", e)
+        }
+    }
+
+    private fun updateGuiLines() {
+        gui.clearLines()
+
+        if (!Overlays.seaCreaturesPerHourTrackerOverlay ||
+            !WorldUtils.isInSkyblock() ||
+            !WorldUtils.isInFishingWorld() ||
+            (totalSeaCreaturesCaughtCount == 0) ||
+            !PlayerUtils.isFishingHookSeenMinutesAgo(5)
+        ) return
+
+        val elapsedHours = elapsedSeconds / 3600.0
+        val seaCreaturesPerHour = if (elapsedHours > 0) {
+            (totalSeaCreaturesCaughtCount / elapsedHours).toInt()
+        } else 0
+
+        val pausedText = if (isSessionActive) "" else " ${GRAY}[Paused]"
+        val lines = mutableListOf<String>()
+        
+        lines.add("${GRAY}[${YELLOW}Click to pause${GRAY}] ${DARK_GRAY}($PAUSE_COMMAND)")
+        lines.add("${GRAY}[${RED}Click to reset${GRAY}] ${DARK_GRAY}($RESET_COMMAND)")
+
+        lines.add(baseTitle)
+        lines.add("${WHITE}${CommonUtils.formatNumberWithSpaces(seaCreaturesPerHour)} ${GRAY}per hour (${WHITE}${CommonUtils.formatNumberWithSpaces(totalSeaCreaturesCaughtCount)} ${GRAY}total)")
+        lines.add("")
+        lines.add("${AQUA}Elapsed time: ${WHITE}${CommonUtils.formatTimeElapsed(elapsedSeconds)}${pausedText}")
+
+        gui.setLines(lines)
+    }
+
+    private fun reset(isConfirmed: Boolean) {
+        try {
+            if (!isConfirmed) {
+                ChatUtils.sendLocalChatWithCommand(
+                    "${WHITE}Do you want to reset Sea creatures per hour tracker? ${RED}${BOLD}[Click to confirm]",
+                    "$RESET_COMMAND noconfirm",
+                    true
+                )
+                return
+            }
+
+            totalSeaCreaturesCaughtCount = 0
+            lastSeaCreatureCaughtAt = null
+            isSessionActive = false
+            elapsedSeconds = 0
+
+            updateGuiLines()
+            ChatUtils.sendLocalChat("${WHITE}Sea creatures per hour tracker was reset.", true)
+        } catch (e: Exception) {
+            FeeshMod.LOGGER.error("[Feesh] Failed to reset Sea creatures per hour tracker.", e)
+        }
+    }
+
+    fun pause() {
+        try {
+            if (!Overlays.seaCreaturesPerHourTrackerOverlay || 
+                !WorldUtils.isInSkyblock() || 
+                !isSessionActive) return
+
+            isSessionActive = false
+            updateGuiLines()
+            ChatUtils.sendLocalChat("${WHITE}Sea creatures per hour tracker is paused. Continue fishing to resume it.", true)
+        } catch (e: Exception) {
+            FeeshMod.LOGGER.error("[Feesh] Failed to pause Sea creatures per hour tracker.", e)
+        }
+    }
+}

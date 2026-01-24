@@ -28,6 +28,7 @@ import com.github.sleepypanda.feesh.features.commands.GearCraftPricesCommand
 import com.github.sleepypanda.feesh.features.commands.FeeshSettingsCommand
 import com.github.sleepypanda.feesh.features.commands.PlayTestSoundCommand
 import com.github.sleepypanda.feesh.features.commands.SetTrackerDropsCommand
+import com.github.sleepypanda.feesh.features.commands.PauseAllTrackersCommand
 import com.github.sleepypanda.feesh.features.overlays.JerryWorkshopTracker
 import com.github.sleepypanda.feesh.features.overlays.LegionBobbingTimeTracker
 import com.github.sleepypanda.feesh.features.overlays.SeaCreaturesTracker
@@ -38,6 +39,7 @@ import com.github.sleepypanda.feesh.features.overlays.BarnFishingTimer
 import com.github.sleepypanda.feesh.features.overlays.DeployablesTimer
 import com.github.sleepypanda.feesh.features.overlays.WaterHotspotsAndBayouTracker
 import com.github.sleepypanda.feesh.features.overlays.ArchfiendDiceProfitTracker
+import com.github.sleepypanda.feesh.features.overlays.SeaCreaturesPerHourTracker
 import com.github.sleepypanda.feesh.features.inventory.ThunderBottleProgress
 import com.github.sleepypanda.feesh.events.EventBus
 import com.github.sleepypanda.feesh.events.publishers.SeaCreaturesPublisher
@@ -138,6 +140,7 @@ class FeeshMod : ModInitializer {
         DeployablesTimer.init()
         WaterHotspotsAndBayouTracker.init()
         ArchfiendDiceProfitTracker.init()
+        SeaCreaturesPerHourTracker.init()
 
         MoveGuis.init() // After all overlays are initialized and registered FeeshGui objects
 
@@ -150,6 +153,7 @@ class FeeshMod : ModInitializer {
         GearCraftPricesCommand.init()
         PlayTestSoundCommand.init()
         SetTrackerDropsCommand.init()
+        PauseAllTrackersCommand.init()
 
         LOGGER.info("$MOD_NAME loaded successfully!")
     }
