@@ -14,6 +14,8 @@ import net.minecraft.util.Formatting
 import java.util.*
 
 object ChatUtils {
+    val MOD_PREFIX = "${GRAY}[${AQUA}Feesh${GRAY}]"
+    
     /*
      * Sends a message to the local chat. It is visible to the player only.
      * @param message The message to send.
@@ -21,7 +23,7 @@ object ChatUtils {
      */
     fun sendLocalChat(message: String, addModPrefix: Boolean = false) {
         if (message.isNullOrEmpty()) return
-        val formattedMessage = if (addModPrefix) "${GRAY}[${AQUA}Feesh${GRAY}] ${RESET}${message}" else message
+        val formattedMessage = if (addModPrefix) "${MOD_PREFIX} ${RESET}${message}" else message
         FeeshMod.mc.inGameHud.chatHud.addMessage(Text.literal(formattedMessage))
     }
 
@@ -60,7 +62,7 @@ object ChatUtils {
         val text = Text.literal(message).setStyle(style)
         
         val finalText = if (addModPrefix) {
-            Text.literal("${GOLD}[Feesh] ${RESET}").append(text)
+            Text.literal("${MOD_PREFIX} ${RESET}").append(text)
         } else text
         
         FeeshMod.mc.inGameHud.chatHud.addMessage(finalText)
