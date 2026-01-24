@@ -5,6 +5,16 @@ import net.minecraft.component.DataComponentTypes
 
 object ItemUtils {
     /*
+     * Checks if the item is a Dirt Rod.
+     * @param item The item to check.
+     * @returns {Boolean} True if the item is a Dirt Rod, false otherwise.
+     */
+    fun isDirtRod(item: ItemStack?): Boolean {
+        if (item == null || item.isEmpty) return false
+        return item.name.string.contains("Dirt Rod")
+    }
+
+    /*
      * Checks if the item is a Skyblock fishing rod.
      * @param item The item to check.
      * @returns {Boolean} True if the item is a fishing rod, false otherwise.

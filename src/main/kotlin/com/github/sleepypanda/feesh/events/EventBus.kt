@@ -6,9 +6,11 @@ import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientEntityEvents
 import net.minecraft.text.Text
 import net.minecraft.client.MinecraftClient
 import net.minecraft.world.World
+import net.minecraft.entity.ItemEntity
 
 object EventBus {
     private val subscribers = mutableMapOf<KClass<*>, MutableList<(Any) -> Unit>>()
@@ -37,7 +39,7 @@ object EventBus {
             !event.isCancelled
         }
 
-        ScreenEvents.AFTER_INIT.register { client, screen, scaledWidth, scaledHeight ->
+        ScreenEvents.AFTER_INIT.register { client, screen, _, _ ->
             ScreenEvents.afterRender(screen).register { afterRenderScreen, drawContext, mouseX, mouseY, tickDelta ->
                 publish(ScreenPostRenderEvent(drawContext, client.textRenderer, client, afterRenderScreen, mouseX, mouseY, tickDelta))
             }
@@ -53,6 +55,12 @@ object EventBus {
 
         ClientLifecycleEvents.CLIENT_STARTED.register { _ ->
             publish(GameStartedEvent())
+        }
+
+        ClientEntityEvents.ENTITY_LOAD.register { entity, _ ->
+            if (entity is ItemEntity) {
+                publish(ItemEntitySpawnedEvent(entity))
+            }
         }
     }
 }

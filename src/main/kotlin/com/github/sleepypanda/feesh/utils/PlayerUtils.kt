@@ -13,6 +13,7 @@ object PlayerUtils {
     private var cachedLastFishingHookSeenAt: Date? = null
     private var cachedLastFishingHookInHotspotSeenAt: Date? = null
     private var cachedHasFishingRodInHotbar: Boolean = false
+    private var cachedHasDirtRodInHand: Boolean = false
     private var timer: Timer? = null
 
     fun init() {
@@ -27,6 +28,7 @@ object PlayerUtils {
         val task = timerTask {
             setLastFishingHookSeenAt()
             setHasFishingRodInHotbar()
+            setHasDirtRodInHand()
         }
         timer?.scheduleAtFixedRate(task, 0, 500)
     }
@@ -35,6 +37,7 @@ object PlayerUtils {
         cachedLastFishingHookSeenAt = null
         cachedLastFishingHookInHotspotSeenAt = null
         cachedHasFishingRodInHotbar = false
+        cachedHasDirtRodInHand = false
     }
 
     /*
@@ -62,6 +65,10 @@ object PlayerUtils {
         return cachedHasFishingRodInHotbar
     }
 
+    fun hasDirtRodInHand(): Boolean {
+        return cachedHasDirtRodInHand
+    }
+
     private fun setHasFishingRodInHotbar() {
         val player = FeeshMod.mc.player ?: run {
             cachedHasFishingRodInHotbar = false
@@ -75,6 +82,18 @@ object PlayerUtils {
             }
         }
         cachedHasFishingRodInHotbar = false
+    }
+
+    private fun setHasDirtRodInHand() {
+        val player = FeeshMod.mc.player ?: run {
+            cachedHasDirtRodInHand = false
+            return
+        }
+        val heldItem = player.mainHandStack ?: run {
+            cachedHasDirtRodInHand = false
+            return
+        }
+        cachedHasDirtRodInHand = ItemUtils.isDirtRod(heldItem)
     }
 
     fun lastFishingHookSeenAt(): Date? {

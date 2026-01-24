@@ -14,6 +14,7 @@ import com.github.sleepypanda.feesh.features.alerts.PlayerDeathAlert
 import com.github.sleepypanda.feesh.features.alerts.LootshareAlert
 import com.github.sleepypanda.feesh.features.alerts.FishingBagDisabledAlert
 import com.github.sleepypanda.feesh.features.alerts.RareDropAlert
+import com.github.sleepypanda.feesh.features.alerts.WormTheFishCaughtAlert
 import com.github.sleepypanda.feesh.features.chat.RareCatchMessage
 import com.github.sleepypanda.feesh.features.chat.RareDropMessage
 import com.github.sleepypanda.feesh.features.chat.RareCatchAllChatMessage
@@ -119,6 +120,7 @@ class FeeshMod : ModInitializer {
         PlayerDeathAlert.init()
         LootshareAlert.init()
         FishingBagDisabledAlert.init()
+        WormTheFishCaughtAlert.init()
 
         // Chat
         RareCatchMessage.init()

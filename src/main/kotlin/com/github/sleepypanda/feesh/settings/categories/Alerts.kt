@@ -181,4 +181,9 @@ object Alerts : CategoryKt("Alerts") {
         this.name = Translated("Alert when a Salt has expired")
         this.description = Translated("Shows a title and plays a sound when a Salt has expired.")
     }
+    
+    var alertOnWormTheFishCaught by boolean(false) {
+        this.name = Translated("Alert when a Worm the Fish is caught")
+        this.description = Translated("Shows a title and plays a sound when a Worm the Fish is detected in the world (Dirt Rod fishing).")
+    }
 }
