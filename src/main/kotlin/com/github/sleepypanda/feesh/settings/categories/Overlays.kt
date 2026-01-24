@@ -38,6 +38,20 @@ enum class FishingHookTimerMode(val displayName: String) {
 
 object Overlays : CategoryKt("Overlays") {
     init {
+        button {
+            title = "Pause all trackers keybind"
+            description = "Set a keybind in Minecraft's Controls menu to pause all active trackers on button pressed (so the timers stop). Default is PAUSE.\nExecutes ${AQUA}/feeshPauseAllTrackers"
+            text = "Click to open"
+            onClick {
+                val mc = FeeshMod.mc
+                mc.send {
+                    mc.setScreen(KeybindsScreen(mc.currentScreen, mc.options))
+                }
+            }
+        }
+    }
+
+    init {
         separator {
             this.title = "${AQUA}${BOLD}Legion & Bobbin' Time"
         }
@@ -178,6 +192,17 @@ object Overlays : CategoryKt("Overlays") {
             }
         }
     }
+    
+    init {
+        separator {
+            this.title = "${AQUA}${BOLD}Sea creatures per hour"
+        }
+    }
+
+    var seaCreaturesPerHourTrackerOverlay by boolean(false) {
+        this.name = Translated("Sea creatures per hour tracker")
+        this.description = Translated("Shows an overlay with the sea creatures per hour, and total sea creatures caught per session. Not persistent - resets on MC restart.")
+    }
 
     init {
         separator {
@@ -238,7 +263,7 @@ ${AQUA}/feeshSetTrackerDrops TIKI_MASK 5 2025-05-30 23:59:00${RESET}
 
     init {
         separator {
-            this.title = "${AQUA}${BOLD}Treasure fishing tracker"
+            this.title = "${AQUA}${BOLD}Treasure fishing"
         }
     }
 
@@ -270,7 +295,7 @@ ${AQUA}/feeshSetTrackerDrops DYE_TREASURE 2 2025-05-30 23:59:00
 
     init {
         separator {
-            this.title = "${AQUA}${BOLD}Archfiend Dice profit tracker"
+            this.title = "${AQUA}${BOLD}Archfiend Dice profit"
         }
     }
 

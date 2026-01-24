@@ -44,7 +44,7 @@ object CommonUtils {
     }
 
     /**
-     * Formats the time elapsed between two dates.
+     * Formats the time elapsed between some date and now.
      * @param lastTime The last time.
      * @return The formatted time elapsed.
      */
@@ -64,6 +64,23 @@ object CommonUtils {
             hours > 0 -> "${hours}h ${minutes}m"
             minutes < 1 -> "less than 1m"
             else -> "${minutes}m"
+        }
+    }
+
+    /**
+     * Formats a number of seconds to a time elapsed string (e.g., 120 -> "2m", 3600 -> "1h", 86400 -> "1d 0h").
+     * @param seconds The number of seconds to format.
+     * @return The formatted time elapsed string.
+     */
+    fun formatTimeElapsed(seconds: Int): String {
+        val hours = TimeUnit.SECONDS.toHours(seconds.toLong())
+        val minutes = TimeUnit.SECONDS.toMinutes(seconds.toLong()) % 60
+        val secs = seconds % 60
+
+        return when {
+            hours > 0 -> "${hours}h ${minutes}m ${secs}s"
+            minutes > 0 -> "${minutes}m ${secs}s"
+            else -> "${secs}s"
         }
     }
 
