@@ -42,6 +42,6 @@ object RareCatchMessage {
         val article = CommonUtils.getArticle(seaCreatureName)
         val scName = seaCreatureName.uppercase()
         return if (isDoubleHook) "--> DOUBLE HOOK! Two ${scName}s have spawned <--" 
-            else "--> ${article} ${seaCreatureName} has spawned <--"
+            else "--> ${article} ${scName} has spawned <--"
     }
 }
