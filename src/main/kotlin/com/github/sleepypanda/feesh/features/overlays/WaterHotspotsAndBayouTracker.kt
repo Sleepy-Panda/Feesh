@@ -88,24 +88,26 @@ object WaterHotspotsAndBayouTracker {
         val isInHotspot = isInHotspotWorld && isFishingInHotspot()
 
         if (seaCreatureName == titanoboa.name && isInBayou) {
-            onTitanoboa()
+            onTitanoboa(event.isDoubleHook)
         } else if (seaCreatureName == wikiTiki.name && isInHotspot) {
-            onWikiTiki()
+            onWikiTiki(event.isDoubleHook)
         } else if (isInHotspot || isInBayou) {
             onOtherSeaCreature(isInHotspot, isInBayou)
         }
     }
 
-    private fun onTitanoboa() {
+    private fun onTitanoboa(isDoubleHook: Boolean) {
         data.titanoboa.updateAfterCatch(titanoboa.boldDisplayName)
         data.wikiTiki.incrementCatches()
+        data.titanoboaSheds.updateAfterCatch(isDoubleHook)
         saveData()
         updateGuiLines()
     }
 
-    private fun onWikiTiki() {
+    private fun onWikiTiki(isDoubleHook: Boolean) {
         data.wikiTiki.updateAfterCatch(wikiTiki.boldDisplayName)
         data.titanoboa.incrementCatches()
+        data.tikiMasks.updateAfterCatch(isDoubleHook)
         saveData()
         updateGuiLines()
     }
