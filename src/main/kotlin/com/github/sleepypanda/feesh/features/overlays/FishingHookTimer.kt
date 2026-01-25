@@ -12,8 +12,6 @@ import com.github.sleepypanda.feesh.utils.PlayerUtils
 import com.github.sleepypanda.feesh.utils.EntityUtils
 import com.github.sleepypanda.feesh.utils.ChatUtils.getFormattedString
 import com.github.sleepypanda.feesh.utils.gui.FeeshGui
-import com.github.sleepypanda.feesh.utils.gui.MoveGuis
-import com.github.sleepypanda.feesh.utils.gui.MoveGuisScreen
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
 import com.github.sleepypanda.feesh.utils.enums.Alignment
@@ -102,8 +100,7 @@ object FishingHookTimer {
             !Overlays.fishingHookTimerOverlay ||
             !WorldUtils.isInSkyblock() ||
             !PlayerUtils.hasFishingRodInHotbar() ||
-            !WorldUtils.isInFishingWorld() ||
-            FeeshMod.mc.currentScreen is MoveGuisScreen
+            !WorldUtils.isInFishingWorld()
         ) {
             gui.clearLines()
             return

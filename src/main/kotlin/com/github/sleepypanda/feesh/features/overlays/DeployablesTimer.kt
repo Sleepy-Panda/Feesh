@@ -21,6 +21,8 @@ import com.github.sleepypanda.feesh.utils.RegisterUtils
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
 import com.github.sleepypanda.feesh.constants.Sounds
+import com.github.sleepypanda.feesh.settings.categories.General
+import com.github.sleepypanda.feesh.settings.categories.SoundMode
 import com.github.sleepypanda.feesh.events.InteractActionType
 import net.minecraft.entity.decoration.ArmorStandEntity
 import net.minecraft.entity.projectile.FireworkRocketEntity
@@ -68,9 +70,6 @@ object DeployablesTimer {
             "${DARK_PURPLE}SOS Flare: ${WHITE}180s"
         ))
         .setSettingsKey { Overlays.deployablesTimerOverlay }
-        .setCondition {
-            WorldUtils.isInSkyblock()
-        }
 
     fun init() {
         EventBus.subscribe(ClientTickEvent::class, ::onClientTick)
@@ -418,10 +417,11 @@ object DeployablesTimer {
     }
 
     private fun playAlert(itemDisplayName: String, data: BaseDeployableData) {
+        data.lastAlertAt = Date()
         CommonUtils.showTitle("$itemDisplayName ${RED}expires soon")
         ChatUtils.sendLocalChat("${WHITE}Your $itemDisplayName ${WHITE}expires soon.", true)
-        data.lastAlertAt = Date()
-        SoundUtils.playCustomSound(Sounds.FEESH_NOTIFICATION_BELL)
+        if (General.soundMode == SoundMode.MEME) SoundUtils.playCustomSound(Sounds.FEESH_NOTIFICATION_BELL)
+        else SoundUtils.playSound()
     }
 
     private fun updateGuiLines() {

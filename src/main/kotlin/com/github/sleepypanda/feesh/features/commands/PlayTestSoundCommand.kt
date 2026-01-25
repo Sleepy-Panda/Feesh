@@ -36,7 +36,7 @@ object PlayTestSoundCommand {
         when {
             soundParam.endsWith(".ogg", ignoreCase = true) -> {
                 try {
-                    SoundUtils.playCustomSound(soundParam)
+                    SoundUtils.playCustomSound(soundParam, skipSoundModeCheck = true)
                 } catch (e: Exception) {
                     FeeshMod.LOGGER.error("[Feesh] Failed to play custom sound: $soundParam", e)
                     ChatUtils.sendLocalChat("${RED}Failed to play custom sound: ${YELLOW}$soundParam${RED}. Check logs for details.", true)
