@@ -4,6 +4,7 @@ import com.github.sleepypanda.feesh.FeeshMod
 import com.github.sleepypanda.feesh.constants.RareDrops
 import com.github.sleepypanda.feesh.constants.SeaCreatures
 import com.github.sleepypanda.feesh.constants.Sounds
+import com.github.sleepypanda.feesh.utils.FileUtils
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
@@ -11,9 +12,6 @@ import net.fabricmc.loader.api.FabricLoader
 import net.minecraft.SharedConstants
 import net.minecraft.resource.ResourceType
 import java.io.File
-import java.nio.file.Files
-import java.nio.file.StandardOpenOption
-import java.util.concurrent.CompletableFuture
 import java.util.concurrent.Executors
 
 data class UserCatchSoundData(
@@ -110,97 +108,43 @@ object CustomSoundsManager {
     }
     
     private fun loadUserDropSoundsDataFromFile() {
-        try {
-            if (!dropSoundsFile.exists() || !dropSoundsFile.canRead()) {
-                FeeshMod.LOGGER.info("[Feesh] Drop sounds file does not exist, will create with defaults")
-                return
-            }
-            
-            val content = dropSoundsFile.readText()
-            if (content.isBlank()) {
-                FeeshMod.LOGGER.info("[Feesh] Drop sounds file is empty, will create with defaults")
-                return
-            }
-            
-            val type = object : TypeToken<Map<String, UserDropSoundData>>() {}.type
-            val loaded = gson.fromJson<Map<String, UserDropSoundData>>(content, type)
-            dropSoundsData = loaded?.toMutableMap() ?: mutableMapOf()
-            
-            FeeshMod.LOGGER.info("[Feesh] Loaded ${dropSoundsData.size} drop sound entries")
-        } catch (e: Exception) {
-            FeeshMod.LOGGER.error("[Feesh] Failed to load drop sounds data", e)
-            dropSoundsData = mutableMapOf()
+        val type = object : TypeToken<Map<String, UserDropSoundData>>() {}.type
+        val loaded: Map<String, UserDropSoundData>? = FileUtils.loadJsonFromFile(dropSoundsFile, type, gson, "Drop sounds")
+        dropSoundsData = loaded?.toMutableMap() ?: mutableMapOf()
+        if (loaded != null) {
+            FeeshMod.LOGGER.info("[Feesh] Loaded ${dropSoundsData.size} drop sounds entries")
         }
     }
     
     private fun saveDropSoundsDataToFileAsync() {
-        CompletableFuture.runAsync({
-            try {
-                synchronized(saveLock) {
-                    feeshConfigDir.mkdirs()
-                    
-                    addDefaultDropSoundForMissingDrops()
-                    
-                    val json = gson.toJson(dropSoundsData)
-                    Files.write(
-                        dropSoundsFile.toPath(),
-                        json.toByteArray(),
-                        StandardOpenOption.CREATE,
-                        StandardOpenOption.TRUNCATE_EXISTING,
-                        StandardOpenOption.WRITE
-                    )
-                }
-            } catch (e: Exception) {
-                FeeshMod.LOGGER.error("[Feesh] Failed to save drop sounds data", e)
-            }
-        }, executor)
+        FileUtils.saveJsonToFileAsync(
+            dropSoundsFile, 
+            dropSoundsData, 
+            gson, 
+            executor, 
+            saveLock, 
+            "Drop sounds"
+        )
     }
         
     private fun loadUserCatchSoundsDataFromFile() {
-        try {
-            if (!catchSoundsFile.exists() || !catchSoundsFile.canRead()) {
-                FeeshMod.LOGGER.info("[Feesh] Catch sounds file does not exist, will create with defaults")
-                return
-            }
-            
-            val content = catchSoundsFile.readText()
-            if (content.isBlank()) {
-                FeeshMod.LOGGER.info("[Feesh] Catch sounds file is empty, will create with defaults")
-                return
-            }
-            
-            val type = object : TypeToken<Map<String, UserCatchSoundData>>() {}.type
-            val loaded = gson.fromJson<Map<String, UserCatchSoundData>>(content, type)
-            catchSoundsData = loaded?.toMutableMap() ?: mutableMapOf()
-            
-            FeeshMod.LOGGER.info("[Feesh] Loaded ${catchSoundsData.size} catch sound entries")
-        } catch (e: Exception) {
-            FeeshMod.LOGGER.error("[Feesh] Failed to load catch sounds data", e)
-            catchSoundsData = mutableMapOf()
+        val type = object : TypeToken<Map<String, UserCatchSoundData>>() {}.type
+        val loaded: Map<String, UserCatchSoundData>? = FileUtils.loadJsonFromFile(catchSoundsFile, type, gson, "Catch sounds")
+        catchSoundsData = loaded?.toMutableMap() ?: mutableMapOf()
+        if (loaded != null) {
+            FeeshMod.LOGGER.info("[Feesh] Loaded ${catchSoundsData.size} catch sounds entries")
         }
     }
     
     private fun saveCatchSoundsDataToFileAsync() {
-        CompletableFuture.runAsync({
-            try {
-                synchronized(saveLock) {
-                    feeshConfigDir.mkdirs()
-                    
-                    addDefaultCatchSoundForMissingSeaCreatures()
-                    
-                    val json = gson.toJson(catchSoundsData)
-                    Files.write(
-                        catchSoundsFile.toPath(),
-                        json.toByteArray(),
-                        StandardOpenOption.CREATE,
-                        StandardOpenOption.TRUNCATE_EXISTING,
-                        StandardOpenOption.WRITE
-                    )
-                }
-            } catch (e: Exception) {
-                FeeshMod.LOGGER.error("[Feesh] Failed to save catch sounds data", e)
-            }
-        }, executor)
+        FileUtils.saveJsonToFileAsync(
+            catchSoundsFile, 
+            catchSoundsData, 
+            gson, 
+            executor, 
+            saveLock, 
+            "Catch sounds"
+        )
     }
     
     private fun initResourcePackStructure() {

@@ -1,16 +1,14 @@
 package com.github.sleepypanda.feesh.utils.data
 
 import com.github.sleepypanda.feesh.FeeshMod
+import com.github.sleepypanda.feesh.utils.FileUtils
 import com.github.sleepypanda.feesh.utils.enums.Alignment
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
 import net.fabricmc.loader.api.FabricLoader
 import java.io.File
-import java.nio.file.Files
-import java.nio.file.StandardOpenOption
 import java.util.Date
-import java.util.concurrent.CompletableFuture
 import java.util.concurrent.Executors
 
 object PersistentDataManager {
@@ -51,92 +49,28 @@ object PersistentDataManager {
     }
     
     private fun loadOverlayCoordsDataFromFile() {
-        try {
-            if (!overlayCoordsFile.exists() || !overlayCoordsFile.canRead()) {
-                FeeshMod.LOGGER.info("[Feesh] Overlay coords file does not exist, using defaults")
-                return
-            }
-            
-            val content = overlayCoordsFile.readText()
-            if (content.isBlank()) {
-                FeeshMod.LOGGER.info("[Feesh] Overlay coords file is empty, using defaults")
-                return
-            }
-            
-            val type = object : TypeToken<Map<String, OverlayCoordsData>>() {}.type
-            val loaded = gson.fromJson<Map<String, OverlayCoordsData>>(content, type)
-            overlayCoordsData = loaded?.toMutableMap() ?: mutableMapOf()
-            
+        val type = object : TypeToken<Map<String, OverlayCoordsData>>() {}.type
+        val loaded: Map<String, OverlayCoordsData>? = FileUtils.loadJsonFromFile(overlayCoordsFile, type, gson, "Overlay coords")
+        overlayCoordsData = loaded?.toMutableMap() ?: mutableMapOf()
+        if (loaded != null) {
             FeeshMod.LOGGER.info("[Feesh] Loaded ${overlayCoordsData.size} overlay coordinate entries")
-        } catch (e: Exception) {
-            FeeshMod.LOGGER.error("[Feesh] Failed to load overlay coords data", e)
-            overlayCoordsData = mutableMapOf()
         }
     }
 
     private fun loadFeeshDataFromFile() {
-        try {
-            if (!feeshDataFile.exists() || !feeshDataFile.canRead()) {
-                FeeshMod.LOGGER.info("[Feesh] Data file does not exist, using defaults")
-                return
-            }
-            
-            val content = feeshDataFile.readText()
-            if (content.isBlank()) {
-                FeeshMod.LOGGER.info("[Feesh] Data file is empty, using defaults")
-                return
-            }
-            
-            val type = object : TypeToken<FeeshData>() {}.type
-            val loaded = gson.fromJson<FeeshData>(content, type)
-            feeshData = loaded ?: FeeshData()
-            
-            FeeshMod.LOGGER.info("[Feesh] Successfully loaded data entries")
-        } catch (e: Exception) {
-            FeeshMod.LOGGER.error("[Feesh] Failed to load data, using defaults", e)
-            feeshData = FeeshData()
+        val type = object : TypeToken<FeeshData>() {}.type
+        val loaded: FeeshData? = FileUtils.loadJsonFromFile(feeshDataFile, type, gson, "Feesh data")
+        feeshData = loaded ?: FeeshData()
+        if (loaded != null) {
+            FeeshMod.LOGGER.info("[Feesh] Successfully loaded Feesh data entries")
         }
     }
     
     private fun saveOverlayCoordsDataToFileAsync() {
-        CompletableFuture.runAsync({
-            try {
-                synchronized(saveLock) {
-                    feeshConfigDir.mkdirs()
-                    
-                    val json = gson.toJson(overlayCoordsData)
-                    Files.write(
-                        overlayCoordsFile.toPath(),
-                        json.toByteArray(),
-                        StandardOpenOption.CREATE,
-                        StandardOpenOption.TRUNCATE_EXISTING,
-                        StandardOpenOption.WRITE
-                    )
-                }
-            } catch (e: Exception) {
-                FeeshMod.LOGGER.error("[Feesh] Failed to save overlay coords data", e)
-            }
-        }, executor)
+        FileUtils.saveJsonToFileAsync(overlayCoordsFile, overlayCoordsData, gson, executor, saveLock, "Overlay coords")
     }
 
     fun saveFeeshDataToFileAsync() {
-        CompletableFuture.runAsync({
-            try {
-                synchronized(saveLock) {
-                    feeshConfigDir.mkdirs()
-                    
-                    val json = gson.toJson(feeshData)
-                    Files.write(
-                        feeshDataFile.toPath(),
-                        json.toByteArray(),
-                        StandardOpenOption.CREATE,
-                        StandardOpenOption.TRUNCATE_EXISTING,
-                        StandardOpenOption.WRITE
-                    )
-                }
-            } catch (e: Exception) {
-                FeeshMod.LOGGER.error("[Feesh] Failed to save data", e)
-            }
-        }, executor)
+        FileUtils.saveJsonToFileAsync(feeshDataFile, feeshData, gson, executor, saveLock, "Feesh data")
     }
 }
