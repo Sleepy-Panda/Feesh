@@ -17,6 +17,8 @@ import com.github.sleepypanda.feesh.utils.data.CustomSoundsManager
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
 import com.github.sleepypanda.feesh.constants.Sounds
+import com.github.sleepypanda.feesh.settings.categories.General
+import com.github.sleepypanda.feesh.settings.categories.SoundMode
 import net.minecraft.text.Text
 import kotlin.text.MatchResult
 
@@ -86,6 +88,8 @@ object RareCatchAlert {
         
         val soundData = CustomSoundsManager.getCatchSoundData(seaCreatureInfo.name)
         val soundFileName = soundData?.source
-        SoundUtils.playCustomSound(soundFileName)
+
+        if (General.soundMode == SoundMode.MEME) SoundUtils.playCustomSound(soundFileName)
+        else SoundUtils.playSound()
     }
 }

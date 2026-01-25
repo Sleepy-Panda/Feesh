@@ -12,6 +12,8 @@ import com.github.sleepypanda.feesh.events.PartyChatEvent
 import com.github.sleepypanda.feesh.utils.ChatUtils.removeFormatting
 import com.github.sleepypanda.feesh.FeeshMod
 import com.github.sleepypanda.feesh.constants.Sounds
+import com.github.sleepypanda.feesh.settings.categories.General
+import com.github.sleepypanda.feesh.settings.categories.SoundMode
 
 object LootshareAlert {
     const val LOOTSHARE_PATTERN = "^Lootshare!$"
@@ -28,6 +30,7 @@ object LootshareAlert {
         if (!playerName.isNullOrEmpty() && event.rankAndPlayer.removeFormatting().contains(playerName)) return
 
         CommonUtils.showTitle("${GREEN}${BOLD}Lootshare!")
-        SoundUtils.playCustomSound(Sounds.FEESH_NOTIFICATION_BELL)
+        if (General.soundMode == SoundMode.MEME) SoundUtils.playCustomSound(Sounds.FEESH_NOTIFICATION_BELL)
+        else SoundUtils.playSound()
     }
 }

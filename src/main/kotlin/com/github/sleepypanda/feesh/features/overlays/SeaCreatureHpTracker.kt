@@ -91,7 +91,7 @@ object SeaCreatureHpTracker {
         ))
         .setSettingsKey { Overlays.seaCreaturesHpOverlay }
         .setCondition {
-            WorldUtils.isInSkyblock() && TRACKED_WORLD_NAMES.contains(WorldUtils.getWorldName())
+            TRACKED_WORLD_NAMES.contains(WorldUtils.getWorldName())
         }
 
     fun init() {

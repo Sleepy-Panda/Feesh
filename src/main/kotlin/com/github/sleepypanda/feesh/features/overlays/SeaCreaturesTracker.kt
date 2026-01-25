@@ -202,17 +202,13 @@ object SeaCreaturesTracker {
         // TODO delete
         RegisterUtils.command("feeshToggleSeaCreaturesViewMode") {
             toggleViewMode()
-            val viewMode = getCurrentViewMode()
-            val viewModeText = getViewModeDisplayText(viewMode)
-            ChatUtils.sendLocalChat("${WHITE}Switched to ${viewModeText}${WHITE} view mode.", true)
         }
     }
 
     private fun updateGuiLines() {
-        if (!Overlays.seaCreaturesTrackerOverlay || !WorldUtils.isInSkyblock() || !WorldUtils.isInFishingWorld() || !PlayerUtils.isFishingHookSeenMinutesAgo(5)) {
-            gui.clearLines()
-            return
-        }
+        gui.clearLines()
+
+        if (!Overlays.seaCreaturesTrackerOverlay || !WorldUtils.isInSkyblock() || !WorldUtils.isInFishingWorld() || !PlayerUtils.isFishingHookSeenMinutesAgo(5)) return
 
         val viewMode = getCurrentViewMode()
         val sourceObj = getSourceObject(viewMode)
