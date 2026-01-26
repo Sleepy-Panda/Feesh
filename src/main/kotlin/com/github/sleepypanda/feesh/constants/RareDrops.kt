@@ -83,7 +83,7 @@ class RareDrops {
                 rarityColorCode = RARE.code,
                 npcPrice = 200_000,
                 isExtremelyRare = false,
-                defaultSoundFileName = Sounds.FEESH_RARE_DROP
+                defaultSoundFileName = Sounds.FEESH_OH_MY_GOD
             ),
             RareDropInfo(
                 id = "TIKI_MASK",
