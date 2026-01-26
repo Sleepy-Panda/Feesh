@@ -270,7 +270,7 @@ ${AQUA}/feeshSetTrackerDrops TIKI_MASK 5 2025-05-30 23:59:00${RESET}
     var crimsonIsleTrackerOverlay by boolean(false) {
         this.name = Translated("Crimson Isle tracker")
         this.description = Translated("""
-Shows an overlay with Thunder, Lord Jawbus, and Ragnarok catch statistics when fishing in Crimson Isle. Ragnarok is only tracked when fishing in a Lava Hotspot. Also has Radioactive Vial drop statistics from Lord Jawbus.
+Shows an overlay with Fiery Scuttler & Ragnarok (when fishing in hotspot), Plhlegblast (when in Plhlegblast Pool), Thunder & Lord Jawbus catch statistics. Also has Radioactive Vial drop statistics.
 To reset: ${AQUA}/feeshResetCrimsonIsle
         """.trimIndent())
     }

@@ -23,6 +23,7 @@ object CrimsonIsleTracker {
     data class CrimsonIsleTrackerData(
         val thunder: CatchCounterData = CatchCounterData(),
         val lordJawbus: CatchCounterData = CatchCounterData(),
+        val fieryScuttler: CatchCounterData = CatchCounterData(),
         val ragnarok: CatchCounterData = CatchCounterData(),
         val radioactiveVials: DropCounterData = DropCounterData()
     )
@@ -36,6 +37,7 @@ object CrimsonIsleTracker {
 
     private val thunder = SeaCreatures.allSeaCreatures.find { it.name == "Thunder" }!!
     private val lordJawbus = SeaCreatures.allSeaCreatures.find { it.name == "Lord Jawbus" }!!
+    private val fieryScuttler = SeaCreatures.allSeaCreatures.find { it.name == "Fiery Scuttler" }!!
     private val ragnarok = SeaCreatures.allSeaCreatures.find { it.name == "Ragnarok" }!!
     private val radioactiveVial = RareDrops.rareDrops.find { it.itemName == "Radioactive Vial" }!!
 
@@ -44,6 +46,8 @@ object CrimsonIsleTracker {
         .setClickable(true)
         .setSampleLines(listOf(
             baseTitle,
+            "${fieryScuttler.displayName}${GRAY}: ${WHITE}50 ${GRAY}catches ago ${DARK_GRAY}(${GRAY}avg: ${WHITE}100${DARK_GRAY})",
+            "${GRAY}Last on: ${WHITE}30m ago ${GRAY}(${WHITE}2025-01-15 15:00:00${GRAY})",
             "${ragnarok.displayName}${GRAY}: ${WHITE}500 ${GRAY}catches ago ${DARK_GRAY}(${GRAY}avg: ${WHITE}1 000${DARK_GRAY})",
             "${GRAY}Last on: ${WHITE}3h 45m ago ${GRAY}(${WHITE}2025-01-15 12:00:00${GRAY})",
             "${thunder.displayName}${GRAY}: ${WHITE}10 ${GRAY}catches ago ${DARK_GRAY}(${GRAY}avg: ${WHITE}200${DARK_GRAY})",
@@ -84,6 +88,8 @@ object CrimsonIsleTracker {
             onThunder(isInHotspot)
         } else if (seaCreatureName == lordJawbus.name) {
             onLordJawbus(isInHotspot, event.isDoubleHook)
+        } else if (seaCreatureName == fieryScuttler.name) {
+            onFieryScuttler(isInHotspot)
         } else if (seaCreatureName == ragnarok.name) {
             onRagnarok(isInHotspot)
         } else {
@@ -95,6 +101,7 @@ object CrimsonIsleTracker {
         data.thunder.updateAfterCatch(thunder.boldDisplayName)
         data.lordJawbus.incrementCatches()
         if (isInHotspot) {
+            data.fieryScuttler.incrementCatches()
             data.ragnarok.incrementCatches()
         }
         saveData()
@@ -105,9 +112,21 @@ object CrimsonIsleTracker {
         data.lordJawbus.updateAfterCatch(lordJawbus.boldDisplayName)
         data.thunder.incrementCatches()
         if (isInHotspot) {
+            data.fieryScuttler.incrementCatches()
             data.ragnarok.incrementCatches()
         }
         data.radioactiveVials.updateAfterCatch(isDoubleHook)
+        saveData()
+        updateGuiLines()
+    }
+
+    private fun onFieryScuttler(isInHotspot: Boolean) {
+        data.fieryScuttler.updateAfterCatch(fieryScuttler.boldDisplayName)
+        data.thunder.incrementCatches()
+        data.lordJawbus.incrementCatches()
+        if (isInHotspot) {
+            data.ragnarok.incrementCatches()
+        }
         saveData()
         updateGuiLines()
     }
@@ -116,6 +135,9 @@ object CrimsonIsleTracker {
         data.ragnarok.updateAfterCatch(ragnarok.boldDisplayName)
         data.thunder.incrementCatches()
         data.lordJawbus.incrementCatches()
+        if (isInHotspot) {
+            data.fieryScuttler.incrementCatches()
+        }
         saveData()
         updateGuiLines()
     }
@@ -124,6 +146,7 @@ object CrimsonIsleTracker {
         data.thunder.incrementCatches()
         data.lordJawbus.incrementCatches()
         if (isInHotspot) {
+            data.fieryScuttler.incrementCatches()
             data.ragnarok.incrementCatches()
         }
         saveData()
@@ -165,6 +188,7 @@ object CrimsonIsleTracker {
         lines.add(baseTitle)
 
         if (isInHotspot) {
+            lines.addAll(data.fieryScuttler.getOverlayText(fieryScuttler.displayName))
             lines.addAll(data.ragnarok.getOverlayText(ragnarok.displayName))
         }
 
@@ -176,7 +200,7 @@ object CrimsonIsleTracker {
     }
 
     private fun hasData(): Boolean {
-        return data.thunder.hasData() || data.lordJawbus.hasData() || data.ragnarok.hasData() || data.radioactiveVials.hasData()
+        return data.thunder.hasData() || data.lordJawbus.hasData() || data.fieryScuttler.hasData() || data.ragnarok.hasData() || data.radioactiveVials.hasData()
     }
 
     private fun onGameClosed(@Suppress("UNUSED_PARAMETER") event: GameClosedEvent) {
@@ -191,6 +215,7 @@ object CrimsonIsleTracker {
     private fun reset() {
         data.thunder.reset()
         data.lordJawbus.reset()
+        data.fieryScuttler.reset()
         data.ragnarok.reset()
         data.radioactiveVials.reset()
         saveData()
@@ -235,5 +260,10 @@ object CrimsonIsleTracker {
     private fun isFishingInHotspot(): Boolean {
         if (WorldUtils.getWorldName() != WorldUtils.CRIMSON_ISLE) return false
         return PlayerUtils.isFishingHookInHotspotSeenMinutesAgo(1)
+    }
+
+    private fun isInPlhlegblastPool(): Boolean {
+        if (WorldUtils.getWorldName() != WorldUtils.CRIMSON_ISLE) return false
+        return WorldUtils.getZoneName() == WorldUtils.PLHLEGBLAST_POOL
     }
 }
