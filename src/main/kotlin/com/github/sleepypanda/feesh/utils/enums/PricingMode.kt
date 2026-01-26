@@ -6,8 +6,8 @@ enum class PricingMode(val displayName: String) {
 }
 
 enum class PricingModeWithNpc(val displayName: String) {
-    SELL_OFFER_WITH_NPC("Sell Offer"),
-    INSTA_SELL_WITH_NPC("Insta Sell"),
+    SELL_OFFER("Sell Offer"),
+    INSTA_SELL("Insta Sell"),
     NPC_SELL("NPC Sell");
 
     override fun toString(): String = displayName // Show display name in UI, but internally it uses name
