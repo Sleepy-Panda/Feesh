@@ -36,5 +36,5 @@ jobs:
         with:
           name: feesh-build-jars
           path: |
-            **/build/versions/*.jar
+            **/build/versions/*-fabric.jar
           if-no-files-found: warn
