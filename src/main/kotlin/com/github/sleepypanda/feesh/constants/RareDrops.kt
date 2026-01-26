@@ -40,43 +40,43 @@ enum class RareDropTypes(val displayName: String) {
 
 class RareDrops {
     companion object {
-        data class RareDropInfo(val itemName: String, val id: String, val rarityColorCode: String, val isExtremelyRare: Boolean) {
+        data class RareDropInfo(val itemName: String, val id: String, val rarityColorCode: String, val isExtremelyRare: Boolean, val defaultSoundFileName: String) {
             val displayName: String get() = rarityColorCode + itemName
             val boldDisplayName: String get() = rarityColorCode + BOLD + itemName
 
             fun getTitle(): String {
-                val baseTitle = "${this.boldDisplayName}"
+                val baseTitle = this.boldDisplayName.substringBefore(" (") // Baby Yeti (Legendary) -> Baby Yeti
                 return if (this.isExtremelyRare) "${GOLD}${OBFUSCATED}x${RESET} ${baseTitle} ${GOLD}${OBFUSCATED}x${RESET}" 
                 else "${baseTitle}"
             }
         }
 
         val rareDrops = listOf(
-            RareDropInfo(RareDropTypes.LUCKY_CLOVER_CORE.displayName, "PET_ITEM_LUCKY_CLOVER_DROP", EPIC.code, false),
-            RareDropInfo(RareDropTypes.DEEP_SEA_ORB.displayName, "DEEP_SEA_ORB", EPIC.code, false),
-            RareDropInfo(RareDropTypes.RADIOACTIVE_VIAL.displayName, "RADIOACTIVE_VIAL", MYTHIC.code, true),
-            RareDropInfo(RareDropTypes.MAGMA_CORE.displayName, "MAGMA_CORE", RARE.code, false),
-            RareDropInfo(RareDropTypes.TIKI_MASK.displayName, "TIKI_MASK", LEGENDARY.code, true),
-            RareDropInfo(RareDropTypes.TITANOBOA_SHED.displayName, "TITANOBOA_SHED", LEGENDARY.code, true),
-            RareDropInfo(RareDropTypes.SCUTTLER_SHELL.displayName, "SCUTTLER_SHELL", LEGENDARY.code, false),
-            RareDropInfo(RareDropTypes.BURNT_TEXTS.displayName, "BURNT_TEXTS", LEGENDARY.code, false),
-            RareDropInfo(RareDropTypes.BABY_YETI_LEGENDARY.displayName, "BABY_YETI;4", LEGENDARY.code, false),
-            RareDropInfo(RareDropTypes.FLYING_FISH_LEGENDARY.displayName, "FLYING_FISH;4", LEGENDARY.code, false),
-            RareDropInfo(RareDropTypes.MEGALODON_LEGENDARY.displayName, "MEGALODON;4", LEGENDARY.code, false),
-            RareDropInfo(RareDropTypes.MEGALODON_EPIC.displayName, "MEGALODON;3", EPIC.code, false),
-            RareDropInfo(RareDropTypes.SQUID_LEGENDARY.displayName, "SQUID;4", LEGENDARY.code, false),
-            RareDropInfo(RareDropTypes.SQUID_EPIC.displayName, "SQUID;3", EPIC.code, false),
-            RareDropInfo(RareDropTypes.SQUID_RARE.displayName, "SQUID;2", RARE.code, false),
-            RareDropInfo(RareDropTypes.SQUID_UNCOMMON.displayName, "SQUID;1", UNCOMMON.code, false),
-            RareDropInfo(RareDropTypes.SQUID_COMMON.displayName, "SQUID;0", COMMON.code, false),
-            RareDropInfo(RareDropTypes.PHOENIX.displayName, "PHOENIX;?", SPECIAL.code, true),
-            RareDropInfo(RareDropTypes.CARMINE_DYE.displayName, "DYE_CARMINE", DARK_RED.code, true),
-            RareDropInfo(RareDropTypes.MIDNIGHT_DYE.displayName, "DYE_MIDNIGHT", DARK_PURPLE.code, true),
-            RareDropInfo(RareDropTypes.AQUAMARINE_DYE.displayName, "DYE_AQUAMARINE", AQUA.code, true),
-            RareDropInfo(RareDropTypes.ICEBERG_DYE.displayName, "DYE_ICEBERG", DARK_AQUA.code, true),
-            RareDropInfo(RareDropTypes.TREASURE_DYE.displayName, "DYE_TREASURE", GOLD.code, true),
-            RareDropInfo(RareDropTypes.PERIWINKLE_DYE.displayName, "DYE_PERIWINKLE", DARK_AQUA.code, true),
-            RareDropInfo(RareDropTypes.BONE_DYE.displayName, "DYE_BONE", WHITE.code, true),
+            RareDropInfo(RareDropTypes.LUCKY_CLOVER_CORE.displayName, "PET_ITEM_LUCKY_CLOVER_DROP", EPIC.code, false, Sounds.FEESH_OH_MY_GOD),
+            RareDropInfo(RareDropTypes.DEEP_SEA_ORB.displayName, "DEEP_SEA_ORB", EPIC.code, false, Sounds.FEESH_OH_MY_GOD),
+            RareDropInfo(RareDropTypes.RADIOACTIVE_VIAL.displayName, "RADIOACTIVE_VIAL", MYTHIC.code, true, Sounds.FEESH_MINECRAFT_CHALLENGE_COMPLETED),
+            RareDropInfo(RareDropTypes.MAGMA_CORE.displayName, "MAGMA_CORE", RARE.code, false, Sounds.FEESH_RARE_DROP),
+            RareDropInfo(RareDropTypes.TIKI_MASK.displayName, "TIKI_MASK", LEGENDARY.code, true, Sounds.FEESH_MINECRAFT_CHALLENGE_COMPLETED),
+            RareDropInfo(RareDropTypes.TITANOBOA_SHED.displayName, "TITANOBOA_SHED", LEGENDARY.code, true, Sounds.FEESH_MINECRAFT_CHALLENGE_COMPLETED),
+            RareDropInfo(RareDropTypes.SCUTTLER_SHELL.displayName, "SCUTTLER_SHELL", LEGENDARY.code, false, Sounds.FEESH_OH_MY_GOD),
+            RareDropInfo(RareDropTypes.BURNT_TEXTS.displayName, "BURNT_TEXTS", LEGENDARY.code, false, Sounds.FEESH_OH_MY_GOD),
+            RareDropInfo(RareDropTypes.BABY_YETI_LEGENDARY.displayName, "BABY_YETI;4", LEGENDARY.code, false, Sounds.FEESH_SHEESH),
+            RareDropInfo(RareDropTypes.FLYING_FISH_LEGENDARY.displayName, "FLYING_FISH;4", LEGENDARY.code, false, Sounds.FEESH_WOW),
+            RareDropInfo(RareDropTypes.MEGALODON_LEGENDARY.displayName, "MEGALODON;4", LEGENDARY.code, false, Sounds.FEESH_WOW),
+            RareDropInfo(RareDropTypes.MEGALODON_EPIC.displayName, "MEGALODON;3", EPIC.code, false, Sounds.FEESH_AUGH),
+            RareDropInfo(RareDropTypes.SQUID_LEGENDARY.displayName, "SQUID;4", LEGENDARY.code, false, Sounds.FEESH_WOW),
+            RareDropInfo(RareDropTypes.SQUID_EPIC.displayName, "SQUID;3", EPIC.code, false, Sounds.FEESH_AUGH),
+            RareDropInfo(RareDropTypes.SQUID_RARE.displayName, "SQUID;2", RARE.code, false, Sounds.FEESH_GOOFY_LAUGH),
+            RareDropInfo(RareDropTypes.SQUID_UNCOMMON.displayName, "SQUID;1", UNCOMMON.code, false, Sounds.FEESH_GOOFY_LAUGH),
+            RareDropInfo(RareDropTypes.SQUID_COMMON.displayName, "SQUID;0", COMMON.code, false, Sounds.FEESH_GOOFY_LAUGH),
+            RareDropInfo(RareDropTypes.PHOENIX.displayName, "PHOENIX;?", SPECIAL.code, true, Sounds.FEESH_MINECRAFT_CHALLENGE_COMPLETED),
+            RareDropInfo(RareDropTypes.CARMINE_DYE.displayName, "DYE_CARMINE", DARK_RED.code, true, Sounds.FEESH_GIGA_CHAD),
+            RareDropInfo(RareDropTypes.MIDNIGHT_DYE.displayName, "DYE_MIDNIGHT", DARK_PURPLE.code, true, Sounds.FEESH_GIGA_CHAD),
+            RareDropInfo(RareDropTypes.AQUAMARINE_DYE.displayName, "DYE_AQUAMARINE", AQUA.code, true, Sounds.FEESH_GIGA_CHAD),
+            RareDropInfo(RareDropTypes.ICEBERG_DYE.displayName, "DYE_ICEBERG", DARK_AQUA.code, true, Sounds.FEESH_GIGA_CHAD),
+            RareDropInfo(RareDropTypes.TREASURE_DYE.displayName, "DYE_TREASURE", GOLD.code, true, Sounds.FEESH_GIGA_CHAD),
+            RareDropInfo(RareDropTypes.PERIWINKLE_DYE.displayName, "DYE_PERIWINKLE", DARK_AQUA.code, true, Sounds.FEESH_GIGA_CHAD),
+            RareDropInfo(RareDropTypes.BONE_DYE.displayName, "DYE_BONE", WHITE.code, true, Sounds.FEESH_GIGA_CHAD),
         )
     }
 }
