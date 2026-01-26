@@ -25,6 +25,7 @@ object CrimsonIsleTracker {
         val lordJawbus: CatchCounterData = CatchCounterData(),
         val fieryScuttler: CatchCounterData = CatchCounterData(),
         val ragnarok: CatchCounterData = CatchCounterData(),
+        val plhlegblast: CatchCounterData = CatchCounterData(),
         val radioactiveVials: DropCounterData = DropCounterData()
     )
 
@@ -39,6 +40,7 @@ object CrimsonIsleTracker {
     private val lordJawbus = SeaCreatures.allSeaCreatures.find { it.name == "Lord Jawbus" }!!
     private val fieryScuttler = SeaCreatures.allSeaCreatures.find { it.name == "Fiery Scuttler" }!!
     private val ragnarok = SeaCreatures.allSeaCreatures.find { it.name == "Ragnarok" }!!
+    private val plhlegblast = SeaCreatures.allSeaCreatures.find { it.name == "Plhlegblast" }!!
     private val radioactiveVial = RareDrops.rareDrops.find { it.itemName == "Radioactive Vial" }!!
 
     private val gui = FeeshGui()
@@ -50,6 +52,8 @@ object CrimsonIsleTracker {
             "${GRAY}Last on: ${WHITE}30m ago ${GRAY}(${WHITE}2025-01-15 15:00:00${GRAY})",
             "${ragnarok.displayName}${GRAY}: ${WHITE}500 ${GRAY}catches ago ${DARK_GRAY}(${GRAY}avg: ${WHITE}1 000${DARK_GRAY})",
             "${GRAY}Last on: ${WHITE}3h 45m ago ${GRAY}(${WHITE}2025-01-15 12:00:00${GRAY})",
+            "${plhlegblast.displayName}${GRAY}: ${WHITE}200 ${GRAY}catches ago ${DARK_GRAY}(${GRAY}avg: ${WHITE}400${DARK_GRAY})",
+            "${GRAY}Last on: ${WHITE}1h 20m ago ${GRAY}(${WHITE}2025-01-15 14:00:00${GRAY})",
             "${thunder.displayName}${GRAY}: ${WHITE}10 ${GRAY}catches ago ${DARK_GRAY}(${GRAY}avg: ${WHITE}200${DARK_GRAY})",
             "${GRAY}Last on: ${WHITE}10m ago ${GRAY}(${WHITE}2025-01-15 14:30:00${GRAY})",
             "${lordJawbus.displayName}${GRAY}: ${WHITE}1 000 ${GRAY}catches ago ${DARK_GRAY}(${GRAY}avg: ${WHITE}500${DARK_GRAY})",
@@ -83,71 +87,101 @@ object CrimsonIsleTracker {
 
         val seaCreatureName = event.seaCreatureName
         val isInHotspot = isFishingInHotspot()
+        val isInPlhlegblastPool = isInPlhlegblastPool()
 
         if (seaCreatureName == thunder.name) {
-            onThunder(isInHotspot)
+            onThunder(isInHotspot, isInPlhlegblastPool)
         } else if (seaCreatureName == lordJawbus.name) {
-            onLordJawbus(isInHotspot, event.isDoubleHook)
+            onLordJawbus(isInHotspot, isInPlhlegblastPool, event.isDoubleHook)
         } else if (seaCreatureName == fieryScuttler.name) {
-            onFieryScuttler(isInHotspot)
+            onFieryScuttler(isInHotspot, isInPlhlegblastPool)
         } else if (seaCreatureName == ragnarok.name) {
-            onRagnarok(isInHotspot)
+            onRagnarok(isInHotspot, isInPlhlegblastPool)
+        } else if (seaCreatureName == plhlegblast.name) {
+            onPlhlegblast(isInHotspot)
         } else {
-            onOtherSeaCreature(isInHotspot)
+            onOtherSeaCreature(isInHotspot, isInPlhlegblastPool)
         }
     }
 
-    private fun onThunder(isInHotspot: Boolean) {
+    private fun onThunder(isInHotspot: Boolean, isInPlhlegblastPool: Boolean) {
         data.thunder.updateAfterCatch(thunder.boldDisplayName)
         data.lordJawbus.incrementCatches()
         if (isInHotspot) {
             data.fieryScuttler.incrementCatches()
             data.ragnarok.incrementCatches()
         }
+        if (isInPlhlegblastPool) {
+            data.plhlegblast.incrementCatches()
+        }
         saveData()
         updateGuiLines()
     }
 
-    private fun onLordJawbus(isInHotspot: Boolean, isDoubleHook: Boolean) {
+    private fun onLordJawbus(isInHotspot: Boolean, isInPlhlegblastPool: Boolean, isDoubleHook: Boolean) {
         data.lordJawbus.updateAfterCatch(lordJawbus.boldDisplayName)
         data.thunder.incrementCatches()
         if (isInHotspot) {
             data.fieryScuttler.incrementCatches()
             data.ragnarok.incrementCatches()
         }
+        if (isInPlhlegblastPool) {
+            data.plhlegblast.incrementCatches()
+        }
         data.radioactiveVials.updateAfterCatch(isDoubleHook)
         saveData()
         updateGuiLines()
     }
 
-    private fun onFieryScuttler(isInHotspot: Boolean) {
+    private fun onFieryScuttler(isInHotspot: Boolean, isInPlhlegblastPool: Boolean) {
         data.fieryScuttler.updateAfterCatch(fieryScuttler.boldDisplayName)
         data.thunder.incrementCatches()
         data.lordJawbus.incrementCatches()
         if (isInHotspot) {
             data.ragnarok.incrementCatches()
         }
+        if (isInPlhlegblastPool) {
+            data.plhlegblast.incrementCatches()
+        }
         saveData()
         updateGuiLines()
     }
 
-    private fun onRagnarok(isInHotspot: Boolean) {
+    private fun onRagnarok(isInHotspot: Boolean, isInPlhlegblastPool: Boolean) {
         data.ragnarok.updateAfterCatch(ragnarok.boldDisplayName)
         data.thunder.incrementCatches()
         data.lordJawbus.incrementCatches()
         if (isInHotspot) {
             data.fieryScuttler.incrementCatches()
         }
+        if (isInPlhlegblastPool) {
+            data.plhlegblast.incrementCatches()
+        }
         saveData()
         updateGuiLines()
     }
 
-    private fun onOtherSeaCreature(isInHotspot: Boolean) {
+    private fun onPlhlegblast(isInHotspot: Boolean) {
+        data.plhlegblast.updateAfterCatch(plhlegblast.boldDisplayName)
         data.thunder.incrementCatches()
         data.lordJawbus.incrementCatches()
         if (isInHotspot) {
             data.fieryScuttler.incrementCatches()
             data.ragnarok.incrementCatches()
+        }
+        saveData()
+        updateGuiLines()
+    }
+
+    private fun onOtherSeaCreature(isInHotspot: Boolean, isInPlhlegblastPool: Boolean) {
+        data.thunder.incrementCatches()
+        data.lordJawbus.incrementCatches()
+        if (isInHotspot) {
+            data.fieryScuttler.incrementCatches()
+            data.ragnarok.incrementCatches()
+        }
+        if (isInPlhlegblastPool) {
+            data.plhlegblast.incrementCatches()
         }
         saveData()
         updateGuiLines()
@@ -182,6 +216,7 @@ object CrimsonIsleTracker {
         if (!hasData()) return
 
         val isInHotspot = isFishingInHotspot()
+        val isInPlhlegblastPool = isInPlhlegblastPool()
         val lines = mutableListOf<String>()
 
         lines.add("${GRAY}[${RED}Click to reset${GRAY}] ${DARK_GRAY}(/${RESET_COMMAND})")
@@ -192,6 +227,10 @@ object CrimsonIsleTracker {
             lines.addAll(data.ragnarok.getOverlayText(ragnarok.displayName))
         }
 
+        if (isInPlhlegblastPool) {
+            lines.addAll(data.plhlegblast.getOverlayText(plhlegblast.displayName))
+        }
+
         lines.addAll(data.thunder.getOverlayText(thunder.displayName))
         lines.addAll(data.lordJawbus.getOverlayText(lordJawbus.displayName))
         lines.addAll(data.radioactiveVials.getOverlayText(radioactiveVial.displayName, lordJawbus.displayName))
@@ -200,7 +239,7 @@ object CrimsonIsleTracker {
     }
 
     private fun hasData(): Boolean {
-        return data.thunder.hasData() || data.lordJawbus.hasData() || data.fieryScuttler.hasData() || data.ragnarok.hasData() || data.radioactiveVials.hasData()
+        return data.thunder.hasData() || data.lordJawbus.hasData() || data.fieryScuttler.hasData() || data.ragnarok.hasData() || data.plhlegblast.hasData() || data.radioactiveVials.hasData()
     }
 
     private fun onGameClosed(@Suppress("UNUSED_PARAMETER") event: GameClosedEvent) {
@@ -217,6 +256,7 @@ object CrimsonIsleTracker {
         data.lordJawbus.reset()
         data.fieryScuttler.reset()
         data.ragnarok.reset()
+        data.plhlegblast.reset()
         data.radioactiveVials.reset()
         saveData()
     }
