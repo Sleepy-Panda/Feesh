@@ -3,6 +3,7 @@ package com.github.sleepypanda.feesh.constants
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
 
+// Enum used to list selectable items in Alerts/Chat settings
 // This should be aligned with Rare Drops names using the following logic:
 // Squid (Legendary) -> SQUID_LEGENDARY
 // Deep Sea Orb -> DEEP_SEA_ORB
@@ -40,7 +41,7 @@ enum class RareDropTypes(val displayName: String) {
 
 class RareDrops {
     companion object {
-        data class RareDropInfo(val itemName: String, val id: String, val rarityColorCode: String, val isExtremelyRare: Boolean, val defaultSoundFileName: String) {
+        data class RareDropInfo(val id: String, val itemName: String, val rarityColorCode: String, val npcPrice: Int?, val isExtremelyRare: Boolean, val defaultSoundFileName: String) {
             val displayName: String get() = rarityColorCode + itemName
             val boldDisplayName: String get() = rarityColorCode + BOLD + itemName
 
@@ -52,31 +53,206 @@ class RareDrops {
         }
 
         val rareDrops = listOf(
-            RareDropInfo(RareDropTypes.LUCKY_CLOVER_CORE.displayName, "PET_ITEM_LUCKY_CLOVER_DROP", EPIC.code, false, Sounds.FEESH_OH_MY_GOD),
-            RareDropInfo(RareDropTypes.DEEP_SEA_ORB.displayName, "DEEP_SEA_ORB", EPIC.code, false, Sounds.FEESH_OH_MY_GOD),
-            RareDropInfo(RareDropTypes.RADIOACTIVE_VIAL.displayName, "RADIOACTIVE_VIAL", MYTHIC.code, true, Sounds.FEESH_MINECRAFT_CHALLENGE_COMPLETED),
-            RareDropInfo(RareDropTypes.MAGMA_CORE.displayName, "MAGMA_CORE", RARE.code, false, Sounds.FEESH_RARE_DROP),
-            RareDropInfo(RareDropTypes.TIKI_MASK.displayName, "TIKI_MASK", LEGENDARY.code, true, Sounds.FEESH_MINECRAFT_CHALLENGE_COMPLETED),
-            RareDropInfo(RareDropTypes.TITANOBOA_SHED.displayName, "TITANOBOA_SHED", LEGENDARY.code, true, Sounds.FEESH_MINECRAFT_CHALLENGE_COMPLETED),
-            RareDropInfo(RareDropTypes.SCUTTLER_SHELL.displayName, "SCUTTLER_SHELL", LEGENDARY.code, false, Sounds.FEESH_OH_MY_GOD),
-            RareDropInfo(RareDropTypes.BURNT_TEXTS.displayName, "BURNT_TEXTS", LEGENDARY.code, false, Sounds.FEESH_OH_MY_GOD),
-            RareDropInfo(RareDropTypes.BABY_YETI_LEGENDARY.displayName, "BABY_YETI;4", LEGENDARY.code, false, Sounds.FEESH_SHEESH),
-            RareDropInfo(RareDropTypes.FLYING_FISH_LEGENDARY.displayName, "FLYING_FISH;4", LEGENDARY.code, false, Sounds.FEESH_WOW),
-            RareDropInfo(RareDropTypes.MEGALODON_LEGENDARY.displayName, "MEGALODON;4", LEGENDARY.code, false, Sounds.FEESH_WOW),
-            RareDropInfo(RareDropTypes.MEGALODON_EPIC.displayName, "MEGALODON;3", EPIC.code, false, Sounds.FEESH_AUGH),
-            RareDropInfo(RareDropTypes.SQUID_LEGENDARY.displayName, "SQUID;4", LEGENDARY.code, false, Sounds.FEESH_WOW),
-            RareDropInfo(RareDropTypes.SQUID_EPIC.displayName, "SQUID;3", EPIC.code, false, Sounds.FEESH_AUGH),
-            RareDropInfo(RareDropTypes.SQUID_RARE.displayName, "SQUID;2", RARE.code, false, Sounds.FEESH_GOOFY_LAUGH),
-            RareDropInfo(RareDropTypes.SQUID_UNCOMMON.displayName, "SQUID;1", UNCOMMON.code, false, Sounds.FEESH_GOOFY_LAUGH),
-            RareDropInfo(RareDropTypes.SQUID_COMMON.displayName, "SQUID;0", COMMON.code, false, Sounds.FEESH_GOOFY_LAUGH),
-            RareDropInfo(RareDropTypes.PHOENIX.displayName, "PHOENIX;?", SPECIAL.code, true, Sounds.FEESH_MINECRAFT_CHALLENGE_COMPLETED),
-            RareDropInfo(RareDropTypes.CARMINE_DYE.displayName, "DYE_CARMINE", DARK_RED.code, true, Sounds.FEESH_GIGA_CHAD),
-            RareDropInfo(RareDropTypes.MIDNIGHT_DYE.displayName, "DYE_MIDNIGHT", DARK_PURPLE.code, true, Sounds.FEESH_GIGA_CHAD),
-            RareDropInfo(RareDropTypes.AQUAMARINE_DYE.displayName, "DYE_AQUAMARINE", AQUA.code, true, Sounds.FEESH_GIGA_CHAD),
-            RareDropInfo(RareDropTypes.ICEBERG_DYE.displayName, "DYE_ICEBERG", DARK_AQUA.code, true, Sounds.FEESH_GIGA_CHAD),
-            RareDropInfo(RareDropTypes.TREASURE_DYE.displayName, "DYE_TREASURE", GOLD.code, true, Sounds.FEESH_GIGA_CHAD),
-            RareDropInfo(RareDropTypes.PERIWINKLE_DYE.displayName, "DYE_PERIWINKLE", DARK_AQUA.code, true, Sounds.FEESH_GIGA_CHAD),
-            RareDropInfo(RareDropTypes.BONE_DYE.displayName, "DYE_BONE", WHITE.code, true, Sounds.FEESH_GIGA_CHAD),
+            RareDropInfo(
+                id = "PET_ITEM_LUCKY_CLOVER_DROP",
+                itemName = RareDropTypes.LUCKY_CLOVER_CORE.displayName,
+                rarityColorCode = EPIC.code,
+                npcPrice = 50_000,
+                isExtremelyRare = false,
+                defaultSoundFileName = Sounds.FEESH_OH_MY_GOD
+            ),
+            RareDropInfo(
+                id = "DEEP_SEA_ORB",
+                itemName = RareDropTypes.DEEP_SEA_ORB.displayName,
+                rarityColorCode = EPIC.code,
+                npcPrice = 1,
+                isExtremelyRare = false,
+                defaultSoundFileName = Sounds.FEESH_OH_MY_GOD
+            ),
+            RareDropInfo(
+                id = "RADIOACTIVE_VIAL",
+                itemName = RareDropTypes.RADIOACTIVE_VIAL.displayName,
+                rarityColorCode = MYTHIC.code,
+                npcPrice = 5_000_000,
+                isExtremelyRare = true,
+                defaultSoundFileName = Sounds.FEESH_MINECRAFT_CHALLENGE_COMPLETED
+            ),
+            RareDropInfo(
+                id = "MAGMA_CORE",
+                itemName = RareDropTypes.MAGMA_CORE.displayName,
+                rarityColorCode = RARE.code,
+                npcPrice = 200_000,
+                isExtremelyRare = false,
+                defaultSoundFileName = Sounds.FEESH_RARE_DROP
+            ),
+            RareDropInfo(
+                id = "TIKI_MASK",
+                itemName = RareDropTypes.TIKI_MASK.displayName,
+                rarityColorCode = LEGENDARY.code,
+                npcPrice = 1_000_000,
+                isExtremelyRare = true,
+                defaultSoundFileName = Sounds.FEESH_MINECRAFT_CHALLENGE_COMPLETED
+            ),
+            RareDropInfo(
+                id = "TITANOBOA_SHED",
+                itemName = RareDropTypes.TITANOBOA_SHED.displayName,
+                rarityColorCode = LEGENDARY.code,
+                npcPrice = 500_000,
+                isExtremelyRare = true,
+                defaultSoundFileName = Sounds.FEESH_MINECRAFT_CHALLENGE_COMPLETED
+            ),
+            RareDropInfo(
+                id = "SCUTTLER_SHELL",
+                itemName = RareDropTypes.SCUTTLER_SHELL.displayName,
+                rarityColorCode = LEGENDARY.code,
+                npcPrice = 1_000_000,
+                isExtremelyRare = false,
+                defaultSoundFileName = Sounds.FEESH_OH_MY_GOD
+            ),
+            RareDropInfo(
+                id = "BURNT_TEXTS",
+                itemName = RareDropTypes.BURNT_TEXTS.displayName,
+                rarityColorCode = LEGENDARY.code,
+                npcPrice = 1_000_000,
+                isExtremelyRare = false,
+                defaultSoundFileName = Sounds.FEESH_OH_MY_GOD
+            ),
+            RareDropInfo(
+                id = "BABY_YETI;4",
+                itemName = RareDropTypes.BABY_YETI_LEGENDARY.displayName,
+                rarityColorCode = LEGENDARY.code,
+                npcPrice = 1_000_000,
+                isExtremelyRare = false,
+                defaultSoundFileName = Sounds.FEESH_SHEESH
+            ),
+            RareDropInfo(
+                id = "FLYING_FISH;4",
+                itemName = RareDropTypes.FLYING_FISH_LEGENDARY.displayName,
+                rarityColorCode = LEGENDARY.code,
+                npcPrice = 250_000,
+                isExtremelyRare = false,
+                defaultSoundFileName = Sounds.FEESH_WOW
+            ),
+            RareDropInfo(
+                id = "MEGALODON;4",
+                itemName = RareDropTypes.MEGALODON_LEGENDARY.displayName,
+                rarityColorCode = LEGENDARY.code,
+                npcPrice = 2_500_000,
+                isExtremelyRare = false,
+                defaultSoundFileName = Sounds.FEESH_WOW
+            ),
+            RareDropInfo(
+                id = "MEGALODON;3",
+                itemName = RareDropTypes.MEGALODON_EPIC.displayName,
+                rarityColorCode = EPIC.code,
+                npcPrice = 500_000,
+                isExtremelyRare = false,
+                defaultSoundFileName = Sounds.FEESH_AUGH
+            ),
+            RareDropInfo(
+                id = "SQUID;4",
+                itemName = RareDropTypes.SQUID_LEGENDARY.displayName,
+                rarityColorCode = LEGENDARY.code,
+                npcPrice = 500_000,
+                isExtremelyRare = false,
+                defaultSoundFileName = Sounds.FEESH_WOW
+            ),
+            RareDropInfo(
+                id = "SQUID;3",
+                itemName = RareDropTypes.SQUID_EPIC.displayName,
+                rarityColorCode = EPIC.code,
+                npcPrice = 200_000,
+                isExtremelyRare = false,
+                defaultSoundFileName = Sounds.FEESH_AUGH
+            ),
+            RareDropInfo(
+                id = "SQUID;2",
+                itemName = RareDropTypes.SQUID_RARE.displayName,
+                rarityColorCode = RARE.code,
+                npcPrice = 100_000,
+                isExtremelyRare = false,
+                defaultSoundFileName = Sounds.FEESH_GOOFY_LAUGH
+            ),
+            RareDropInfo(
+                id = "SQUID;1",
+                itemName = RareDropTypes.SQUID_UNCOMMON.displayName,
+                rarityColorCode = UNCOMMON.code,
+                npcPrice = 500,
+                isExtremelyRare = false,
+                defaultSoundFileName = Sounds.FEESH_GOOFY_LAUGH
+            ),
+            RareDropInfo(
+                id = "SQUID;0",
+                itemName = RareDropTypes.SQUID_COMMON.displayName,
+                rarityColorCode = COMMON.code,
+                npcPrice = 100,
+                isExtremelyRare = false,
+                defaultSoundFileName = Sounds.FEESH_GOOFY_LAUGH
+            ),
+            RareDropInfo(
+                id = "PHOENIX;?",
+                itemName = RareDropTypes.PHOENIX.displayName,
+                rarityColorCode = SPECIAL.code,
+                npcPrice = null,
+                isExtremelyRare = true,
+                defaultSoundFileName = Sounds.FEESH_MINECRAFT_CHALLENGE_COMPLETED
+            ),
+            RareDropInfo(
+                id = "DYE_CARMINE",
+                itemName = RareDropTypes.CARMINE_DYE.displayName,
+                rarityColorCode = DARK_RED.code,
+                npcPrice = null,
+                isExtremelyRare = true,
+                defaultSoundFileName = Sounds.FEESH_GIGA_CHAD
+            ),
+            RareDropInfo(
+                id = "DYE_MIDNIGHT",
+                itemName = RareDropTypes.MIDNIGHT_DYE.displayName,
+                rarityColorCode = DARK_PURPLE.code,
+                npcPrice = null,
+                isExtremelyRare = true,
+                defaultSoundFileName = Sounds.FEESH_GIGA_CHAD
+            ),
+            RareDropInfo(
+                id = "DYE_AQUAMARINE",
+                itemName = RareDropTypes.AQUAMARINE_DYE.displayName,
+                rarityColorCode = AQUA.code,
+                npcPrice = null,
+                isExtremelyRare = true,
+                defaultSoundFileName = Sounds.FEESH_GIGA_CHAD
+            ),
+            RareDropInfo(
+                id = "DYE_ICEBERG",
+                itemName = RareDropTypes.ICEBERG_DYE.displayName,
+                rarityColorCode = DARK_AQUA.code,
+                npcPrice = null,
+                isExtremelyRare = true,
+                defaultSoundFileName = Sounds.FEESH_GIGA_CHAD
+            ),
+            RareDropInfo(
+                id = "DYE_TREASURE",
+                itemName = RareDropTypes.TREASURE_DYE.displayName,
+                rarityColorCode = GOLD.code,
+                npcPrice = null,
+                isExtremelyRare = true,
+                defaultSoundFileName = Sounds.FEESH_GIGA_CHAD
+            ),
+            RareDropInfo(
+                id = "DYE_PERIWINKLE",
+                itemName = RareDropTypes.PERIWINKLE_DYE.displayName,
+                rarityColorCode = DARK_AQUA.code,
+                npcPrice = null,
+                isExtremelyRare = true,
+                defaultSoundFileName = Sounds.FEESH_GIGA_CHAD
+            ),
+            RareDropInfo(
+                id = "DYE_BONE",
+                itemName = RareDropTypes.BONE_DYE.displayName,
+                rarityColorCode = WHITE.code,
+                npcPrice = null,
+                isExtremelyRare = true,
+                defaultSoundFileName = Sounds.FEESH_GIGA_CHAD
+            ),
         )
     }
 }

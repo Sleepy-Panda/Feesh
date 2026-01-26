@@ -62,7 +62,7 @@ object RareDropAlert {
         if (!Alerts.alertOnRareDropTypes.contains(type)) return
 
         val title = dropInfo.getTitle() 
-        val price = if (Alerts.includePriceIntoRareDropAlert) getPrice(dropInfo.id) else 0.0
+        val price = if (Alerts.includePriceIntoRareDropAlert) getPrice(dropInfo.id, dropInfo.npcPrice) else 0.0
         val priceStr = if (price > 0.0) " ${GRAY}(${GREEN}+${GOLD}${CommonUtils.toShortNumber(price)}${GRAY})" else ""
 
         CommonUtils.showTitle(title + priceStr, playerName)
@@ -74,11 +74,12 @@ object RareDropAlert {
         // Do not play MC sound if other cases because SB already plays rare drop sound for those items
     }
 
-    // TODO: Sell offer or insta sell
     // TODO: Move this into PriceUtils and reuse
-    private fun getPrice(itemId: String): Double {
+    private fun getPrice(itemId: String, npcPrice: Int?): Double {
+        if (Alerts.alertOnRareDropsPriceMode == PricingModeWithNpc.NPC_SELL) return npcPrice?.toDouble() ?: 0.0
+
         val bazaarPrices = PriceUtils.getBazaarItemPrices(itemId)
-        var itemPrice = bazaarPrices?.sellOffer
+        var itemPrice = if (Alerts.alertOnRareDropsPriceMode == PricingModeWithNpc.SELL_OFFER) bazaarPrices?.sellOffer else bazaarPrices?.instaSell
         
         if (bazaarPrices == null) {
             val auctionPrices = PriceUtils.getAuctionItemPrice(itemId)

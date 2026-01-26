@@ -48,6 +48,11 @@ object Alerts : CategoryKt("Alerts") {
         this.description = Translated("Show the price of the dropped item in the alert.")
     }
 
+    var alertOnRareDropsPriceMode by enum(PricingModeWithNpc.SELL_OFFER) {
+        this.name = Translated("Rare drop price mode")
+        this.description = Translated("Defines how to calculate price for the dropped item.")
+    }
+
     init {
         separator {
             this.title = "${AQUA}${BOLD}Spirit Mask"
