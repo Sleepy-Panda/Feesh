@@ -248,7 +248,7 @@ object WaterHotspotsAndBayouTracker {
         try {
             if (!WorldUtils.isInSkyblock()) return
             
-            initDropCountInOverlay(data.titanoboaSheds, count, lastOn)         
+            data.titanoboaSheds.initDropCount(count, lastOn)         
             saveData()
             ChatUtils.sendLocalChat("${GRAY}Successfully changed Titanoboa Sheds count to ${count} for the Water Hotspots & Bayou tracker.", true)
         } catch (e: Exception) {
@@ -261,27 +261,12 @@ object WaterHotspotsAndBayouTracker {
         try {
             if (!WorldUtils.isInSkyblock()) return
 
-            initDropCountInOverlay(data.tikiMasks, count, lastOn)       
+            data.tikiMasks.initDropCount(count, lastOn)       
             saveData()
             ChatUtils.sendLocalChat("${GRAY}Successfully changed Tiki Masks count to ${count} for the Water Hotspots & Bayou tracker.", true)
         } catch (e: Exception) {
             FeeshMod.LOGGER.error("[Feesh] Failed to set Tiki Masks.", e)
             ChatUtils.sendLocalChat("${RED}Failed to set Tiki Masks.", true)
-        }
-    }
-    
-    private fun initDropCountInOverlay(dropObj: DropCounterData, count: Int, lastOn: Date?) {
-        dropObj.count = count
-        dropObj.lastDropTime = lastOn
-
-        if (lastOn != null) {
-            val dropsHistory = dropObj.dropsHistory.toMutableList()
-            if (dropsHistory.isNotEmpty()) {
-                dropsHistory[0] = dropsHistory[0].copy(time = lastOn)
-            } else {
-                dropsHistory.add(0, DropsHistoryEntry(catches = 0, time = lastOn, magicFind = null))
-            }
-            dropObj.dropsHistory = dropsHistory
         }
     }
 }

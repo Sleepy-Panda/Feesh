@@ -136,6 +136,21 @@ data class DropCounterData(
         )
     }
 
+    fun initDropCount(dropCount: Int, dropLastOn: Date?) {
+        count = dropCount
+        lastDropTime = dropLastOn
+
+        if (dropLastOn != null) {
+            val history = dropsHistory.toMutableList()
+            if (history.isNotEmpty()) {
+                history[0] = history[0].copy(time = dropLastOn)
+            } else {
+                history.add(0, DropsHistoryEntry(catches = 0, time = dropLastOn, magicFind = null))
+            }
+            dropsHistory = history
+        }
+    }
+
     private fun pluralize(word: String): String {
         // This is a simplified version sufficient for my use case
         return when {

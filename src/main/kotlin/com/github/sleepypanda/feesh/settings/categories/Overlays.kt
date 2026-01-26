@@ -263,6 +263,46 @@ ${AQUA}/feeshSetTrackerDrops TIKI_MASK 5 2025-05-30 23:59:00${RESET}
 
     init {
         separator {
+            this.title = "${AQUA}${BOLD}Crimson Isle tracker"
+        }
+    }
+
+    var crimsonIsleTrackerOverlay by boolean(false) {
+        this.name = Translated("Crimson Isle tracker")
+        this.description = Translated("""
+Shows an overlay with Thunder and Lord Jawbus catch statistics when fishing in Crimson Isle. Also has Radioactive Vial drop statistics.
+To reset: ${AQUA}/feeshResetCrimsonIsle
+        """.trimIndent())
+    }
+
+    var resetCrimsonIsleTrackerOnGameClosed by boolean(false) {
+        this.name = Translated("Autoreset on closing game")
+        this.description = Translated("Automatically reset the Crimson Isle tracker when you close Minecraft.")
+    }
+
+    init {
+        button {
+            title = "Set Radioactive Vials count"
+            description = "Explains in your chat how to init Radioactive Vials count and last drop date."
+            text = "Click for help"
+            onClick {
+                ChatUtils.sendLocalChat("""
+${WHITE}${BOLD}Radioactive Vials setup${RESET}
+
+Do ${AQUA}/feeshSetTrackerDrops <ITEM_ID> <COUNT> [LAST_ON_DATE]${RESET} to initialize your drops history:
+  - <ITEM_ID> is a mandatory item ID - RADIOACTIVE_VIAL.
+  - <COUNT> is a mandatory number of times you've dropped it.
+  - [LAST_ON_DATE] is optional and, if provided, should be in YYYY-MM-DD hh:mm:ss format. Can not be in future!
+
+Example:
+${AQUA}/feeshSetTrackerDrops RADIOACTIVE_VIAL 2 2025-05-30 23:59:00
+                """.trimIndent(), true)
+            }
+        }
+    }
+
+    init {
+        separator {
             this.title = "${AQUA}${BOLD}Treasure fishing"
         }
     }

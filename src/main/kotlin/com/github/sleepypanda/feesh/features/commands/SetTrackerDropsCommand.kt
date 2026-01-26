@@ -4,6 +4,7 @@ import com.github.sleepypanda.feesh.utils.RegisterUtils
 import com.github.sleepypanda.feesh.utils.ChatUtils
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.features.overlays.WaterHotspotsAndBayouTracker
+import com.github.sleepypanda.feesh.features.overlays.CrimsonIsleTracker
 import java.util.Date
 import java.text.SimpleDateFormat
 import java.util.Locale
@@ -44,6 +45,7 @@ object SetTrackerDropsCommand {
             when (dropId) {
                 "TITANOBOA_SHED" -> WaterHotspotsAndBayouTracker.setTitanoboaSheds(count, lastOn)
                 "TIKI_MASK" -> WaterHotspotsAndBayouTracker.setTikiMasks(count, lastOn)
+                "RADIOACTIVE_VIAL" -> CrimsonIsleTracker.setRadioactiveVials(count, lastOn)
                 else -> ChatUtils.sendLocalChat("${RED}Unknown drop ID: $dropId.", true)
             }
         }
