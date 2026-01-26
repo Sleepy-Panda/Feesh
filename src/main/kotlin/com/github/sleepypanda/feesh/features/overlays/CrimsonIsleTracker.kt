@@ -23,6 +23,7 @@ object CrimsonIsleTracker {
     data class CrimsonIsleTrackerData(
         val thunder: CatchCounterData = CatchCounterData(),
         val lordJawbus: CatchCounterData = CatchCounterData(),
+        val ragnarok: CatchCounterData = CatchCounterData(),
         val radioactiveVials: DropCounterData = DropCounterData()
     )
 
@@ -35,6 +36,7 @@ object CrimsonIsleTracker {
 
     private val thunder = SeaCreatures.allSeaCreatures.find { it.name == "Thunder" }!!
     private val lordJawbus = SeaCreatures.allSeaCreatures.find { it.name == "Lord Jawbus" }!!
+    private val ragnarok = SeaCreatures.allSeaCreatures.find { it.name == "Ragnarok" }!!
     private val radioactiveVial = RareDrops.rareDrops.find { it.itemName == "Radioactive Vial" }!!
 
     private val gui = FeeshGui()
@@ -42,13 +44,15 @@ object CrimsonIsleTracker {
         .setClickable(true)
         .setSampleLines(listOf(
             baseTitle,
-            "${thunder.displayName}${GRAY}: ${WHITE}10 ${GRAY}catches ago ${DARK_GRAY}(${GRAY}avg: ${WHITE}500${DARK_GRAY})",
-            "${GRAY}Last on: ${WHITE}1h 30m ago ${GRAY}(${WHITE}2025-01-15 14:30:00${GRAY})",
+            "${ragnarok.displayName}${GRAY}: ${WHITE}500 ${GRAY}catches ago ${DARK_GRAY}(${GRAY}avg: ${WHITE}1 000${DARK_GRAY})",
+            "${GRAY}Last on: ${WHITE}3h 45m ago ${GRAY}(${WHITE}2025-01-15 12:00:00${GRAY})",
+            "${thunder.displayName}${GRAY}: ${WHITE}10 ${GRAY}catches ago ${DARK_GRAY}(${GRAY}avg: ${WHITE}200${DARK_GRAY})",
+            "${GRAY}Last on: ${WHITE}10m ago ${GRAY}(${WHITE}2025-01-15 14:30:00${GRAY})",
             "${lordJawbus.displayName}${GRAY}: ${WHITE}1 000 ${GRAY}catches ago ${DARK_GRAY}(${GRAY}avg: ${WHITE}500${DARK_GRAY})",
             "${GRAY}Last on: ${WHITE}5h 20m ago ${GRAY}(${WHITE}2025-01-15 10:10:00${GRAY})",
             "${radioactiveVial.displayName}s${GRAY}: ${WHITE}5",
             "${GRAY}Last on: ${WHITE}2h 15m ${GRAY}(${WHITE}2025-01-15 13:15:00${GRAY})",
-            "${GRAY}Last on: ${WHITE}1 234 ${GRAY}Lord Jawbus ago"
+            "${GRAY}Last on: ${WHITE}5 ${GRAY}Lord Jawbuses ago"
         ))
         .setSettingsKey { Overlays.crimsonIsleTrackerOverlay }
         .setCondition {
@@ -71,54 +75,65 @@ object CrimsonIsleTracker {
     }
 
     private fun onSeaCreature(event: OwnSeaCreatureCaughtEvent) {
-        if (!Overlays.crimsonIsleTrackerOverlay || !WorldUtils.isInSkyblock()) return
+        if (!Overlays.crimsonIsleTrackerOverlay || !WorldUtils.isInSkyblock() || WorldUtils.getWorldName() != WorldUtils.CRIMSON_ISLE) return
 
         val seaCreatureName = event.seaCreatureName
-        val worldName = WorldUtils.getWorldName()
-        val isInCrimsonIsle = worldName == WorldUtils.CRIMSON_ISLE
-
-        if (!isInCrimsonIsle) return
+        val isInHotspot = isFishingInHotspot()
 
         if (seaCreatureName == thunder.name) {
-            onThunder(event.isDoubleHook)
+            onThunder(isInHotspot)
         } else if (seaCreatureName == lordJawbus.name) {
-            onLordJawbus(event.isDoubleHook)
+            onLordJawbus(isInHotspot, event.isDoubleHook)
+        } else if (seaCreatureName == ragnarok.name) {
+            onRagnarok(isInHotspot)
         } else {
-            onOtherSeaCreature()
+            onOtherSeaCreature(isInHotspot)
         }
     }
 
-    private fun onThunder(@Suppress("UNUSED_PARAMETER") isDoubleHook: Boolean) {
+    private fun onThunder(isInHotspot: Boolean) {
         data.thunder.updateAfterCatch(thunder.boldDisplayName)
         data.lordJawbus.incrementCatches()
+        if (isInHotspot) {
+            data.ragnarok.incrementCatches()
+        }
         saveData()
         updateGuiLines()
     }
 
-    private fun onLordJawbus(isDoubleHook: Boolean) {
+    private fun onLordJawbus(isInHotspot: Boolean, isDoubleHook: Boolean) {
         data.lordJawbus.updateAfterCatch(lordJawbus.boldDisplayName)
         data.thunder.incrementCatches()
+        if (isInHotspot) {
+            data.ragnarok.incrementCatches()
+        }
         data.radioactiveVials.updateAfterCatch(isDoubleHook)
         saveData()
         updateGuiLines()
     }
 
-    private fun onOtherSeaCreature() {
+    private fun onRagnarok(isInHotspot: Boolean) {
+        data.ragnarok.updateAfterCatch(ragnarok.boldDisplayName)
         data.thunder.incrementCatches()
         data.lordJawbus.incrementCatches()
+        saveData()
+        updateGuiLines()
+    }
 
+    private fun onOtherSeaCreature(isInHotspot: Boolean) {
+        data.thunder.incrementCatches()
+        data.lordJawbus.incrementCatches()
+        if (isInHotspot) {
+            data.ragnarok.incrementCatches()
+        }
         saveData()
         updateGuiLines()
     }
 
     private fun onRareDrop(event: RareDropEvent) {
-        if (!Overlays.crimsonIsleTrackerOverlay || !WorldUtils.isInSkyblock()) return
+        if (!Overlays.crimsonIsleTrackerOverlay || !WorldUtils.isInSkyblock() || WorldUtils.getWorldName() != WorldUtils.CRIMSON_ISLE) return
 
-        val itemName = event.itemName
-        val worldName = WorldUtils.getWorldName()
-        val isInCrimsonIsle = worldName == WorldUtils.CRIMSON_ISLE
-
-        if (itemName == radioactiveVial.itemName && isInCrimsonIsle) {
+        if (event.itemName == radioactiveVial.itemName) {
             onRadioactiveVial(event.magicFind)
         }
     }
@@ -143,10 +158,15 @@ object CrimsonIsleTracker {
         if (!Overlays.crimsonIsleTrackerOverlay || !WorldUtils.isInSkyblock() || !PlayerUtils.isFishingHookSeenMinutesAgo(5) || WorldUtils.getWorldName() != WorldUtils.CRIMSON_ISLE) return
         if (!hasData()) return
 
+        val isInHotspot = isFishingInHotspot()
         val lines = mutableListOf<String>()
 
         lines.add("${GRAY}[${RED}Click to reset${GRAY}] ${DARK_GRAY}(/${RESET_COMMAND})")
         lines.add(baseTitle)
+
+        if (isInHotspot) {
+            lines.addAll(data.ragnarok.getOverlayText(ragnarok.displayName))
+        }
 
         lines.addAll(data.thunder.getOverlayText(thunder.displayName))
         lines.addAll(data.lordJawbus.getOverlayText(lordJawbus.displayName))
@@ -156,7 +176,7 @@ object CrimsonIsleTracker {
     }
 
     private fun hasData(): Boolean {
-        return data.thunder.hasData() || data.lordJawbus.hasData() || data.radioactiveVials.hasData()
+        return data.thunder.hasData() || data.lordJawbus.hasData() || data.ragnarok.hasData() || data.radioactiveVials.hasData()
     }
 
     private fun onGameClosed(@Suppress("UNUSED_PARAMETER") event: GameClosedEvent) {
@@ -171,6 +191,7 @@ object CrimsonIsleTracker {
     private fun reset() {
         data.thunder.reset()
         data.lordJawbus.reset()
+        data.ragnarok.reset()
         data.radioactiveVials.reset()
         saveData()
     }
@@ -209,5 +230,10 @@ object CrimsonIsleTracker {
             FeeshMod.LOGGER.error("[Feesh] Failed to set Radioactive Vials.", e)
             ChatUtils.sendLocalChat("${RED}Failed to set Radioactive Vials.", true)
         }
+    }
+
+    private fun isFishingInHotspot(): Boolean {
+        if (WorldUtils.getWorldName() != WorldUtils.CRIMSON_ISLE) return false
+        return PlayerUtils.isFishingHookInHotspotSeenMinutesAgo(1)
     }
 }
