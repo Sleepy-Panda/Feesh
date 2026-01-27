@@ -3,6 +3,8 @@ package com.github.sleepypanda.feesh.constants
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
 
+const val TYPE_CRIMSON_ISLE_LAVA = "CRIMSON_ISLE_LAVA"
+
 // This should be aligned with Rare Sea Creatures names using the following logic:
 // Carrot King -> CARROT_KING
 enum class RareSeaCreatureTypes(val displayName: String) {
@@ -136,7 +138,7 @@ class SeaCreatures {
         val STRIDERSURFER_MESSAGE = "^You caught a Stridersurfer\\.$"
         val BOGGED_MESSAGE = "^You\\'ve hooked a Bogged\\!$"
 
-        data class SeaCreatureInfo(val name: String, val rarityColorCode: String, val pattern: Regex, val isRare: Boolean) {
+        data class SeaCreatureInfo(val name: String, val rarityColorCode: String, val pattern: Regex, val isRare: Boolean, val types: List<String> = emptyList()) {
             val displayName: String get() = rarityColorCode + name
             val boldDisplayName: String get() = rarityColorCode + BOLD + name
         }
@@ -175,21 +177,21 @@ class SeaCreatures {
             SeaCreatureInfo("Nightmare", RARE.code, Regex(NIGHTMARE_MESSAGE), false),
             SeaCreatureInfo("Werewolf", EPIC.code, Regex(WEREWOLF_MESSAGE), false),
 
-            SeaCreatureInfo("Fried Chicken", COMMON.code, Regex(FRIED_CHICKEN_MESSAGE), false),
-            SeaCreatureInfo("Fireproof Witch", RARE.code, Regex(FIREPROOF_WITCH_MESSAGE), false),
-            SeaCreatureInfo("Magma Slug", UNCOMMON.code, Regex(MAGMA_SLUG_MESSAGE), false),
-            SeaCreatureInfo("Moogma", UNCOMMON.code, Regex(MOOGMA_MESSAGE), false),
-            SeaCreatureInfo("Lava Leech", RARE.code, Regex(LAVA_LEECH_MESSAGE), false),
-            SeaCreatureInfo("Pyroclastic Worm", RARE.code, Regex(PYROCLASTIC_WORM_MESSAGE), false),
-            SeaCreatureInfo("Lava Flame", RARE.code, Regex(LAVA_FLAME_MESSAGE), false),
-            SeaCreatureInfo("Fire Eel", RARE.code, Regex(FIRE_EEL_MESSAGE), false),
-            SeaCreatureInfo("Taurus", EPIC.code, Regex(TAURUS_MESSAGE), false),
-            SeaCreatureInfo("Fiery Scuttler", LEGENDARY.code, Regex(FIERY_SCUTTLER_MESSAGE), true),
-            SeaCreatureInfo(RareSeaCreatureTypes.THUNDER.displayName, MYTHIC.code, Regex(THUNDER_MESSAGE), true),
-            SeaCreatureInfo(RareSeaCreatureTypes.LORD_JAWBUS.displayName, MYTHIC.code, Regex(LORD_JAWBUS_MESSAGE), true),
-            SeaCreatureInfo(RareSeaCreatureTypes.PLHLEGBLAST.displayName, MYTHIC.code, Regex(PLHLEGBLAST_MESSAGE), true),
-            SeaCreatureInfo(RareSeaCreatureTypes.RAGNAROK.displayName, MYTHIC.code, Regex(RAGNAROK_MESSAGE), true),
-            SeaCreatureInfo(RareSeaCreatureTypes.VANQUISHER.displayName, EPIC.code, Regex(VANQUISHER_MESSAGE), true),
+            SeaCreatureInfo("Fried Chicken", COMMON.code, Regex(FRIED_CHICKEN_MESSAGE), false, listOf(TYPE_CRIMSON_ISLE_LAVA)),
+            SeaCreatureInfo("Fireproof Witch", RARE.code, Regex(FIREPROOF_WITCH_MESSAGE), false, listOf(TYPE_CRIMSON_ISLE_LAVA)),
+            SeaCreatureInfo("Magma Slug", UNCOMMON.code, Regex(MAGMA_SLUG_MESSAGE), false, listOf(TYPE_CRIMSON_ISLE_LAVA)),
+            SeaCreatureInfo("Moogma", UNCOMMON.code, Regex(MOOGMA_MESSAGE), false, listOf(TYPE_CRIMSON_ISLE_LAVA)),
+            SeaCreatureInfo("Lava Leech", RARE.code, Regex(LAVA_LEECH_MESSAGE), false, listOf(TYPE_CRIMSON_ISLE_LAVA)),
+            SeaCreatureInfo("Pyroclastic Worm", RARE.code, Regex(PYROCLASTIC_WORM_MESSAGE), false, listOf(TYPE_CRIMSON_ISLE_LAVA)),
+            SeaCreatureInfo("Lava Flame", RARE.code, Regex(LAVA_FLAME_MESSAGE), false, listOf(TYPE_CRIMSON_ISLE_LAVA)),
+            SeaCreatureInfo("Fire Eel", RARE.code, Regex(FIRE_EEL_MESSAGE), false, listOf(TYPE_CRIMSON_ISLE_LAVA)),
+            SeaCreatureInfo("Taurus", EPIC.code, Regex(TAURUS_MESSAGE), false, listOf(TYPE_CRIMSON_ISLE_LAVA)),
+            SeaCreatureInfo("Fiery Scuttler", LEGENDARY.code, Regex(FIERY_SCUTTLER_MESSAGE), true, listOf(TYPE_CRIMSON_ISLE_LAVA)),
+            SeaCreatureInfo(RareSeaCreatureTypes.THUNDER.displayName, MYTHIC.code, Regex(THUNDER_MESSAGE), true, listOf(TYPE_CRIMSON_ISLE_LAVA)),
+            SeaCreatureInfo(RareSeaCreatureTypes.LORD_JAWBUS.displayName, MYTHIC.code, Regex(LORD_JAWBUS_MESSAGE), true, listOf(TYPE_CRIMSON_ISLE_LAVA)),
+            SeaCreatureInfo(RareSeaCreatureTypes.PLHLEGBLAST.displayName, MYTHIC.code, Regex(PLHLEGBLAST_MESSAGE), true, listOf(TYPE_CRIMSON_ISLE_LAVA)),
+            SeaCreatureInfo(RareSeaCreatureTypes.RAGNAROK.displayName, MYTHIC.code, Regex(RAGNAROK_MESSAGE), true, listOf(TYPE_CRIMSON_ISLE_LAVA)),
+            SeaCreatureInfo(RareSeaCreatureTypes.VANQUISHER.displayName, EPIC.code, Regex(VANQUISHER_MESSAGE), true, listOf(TYPE_CRIMSON_ISLE_LAVA)),
 
             SeaCreatureInfo("Oasis Rabbit", UNCOMMON.code, Regex(OASIS_RABBIT_MESSAGE), false),
             SeaCreatureInfo("Oasis Sheep", UNCOMMON.code, Regex(OASIS_SHEEP_MESSAGE), false),

@@ -3,9 +3,15 @@ package com.github.sleepypanda.feesh.features.overlays
 import com.github.sleepypanda.feesh.FeeshMod
 import com.github.sleepypanda.feesh.constants.SeaCreatures
 import com.github.sleepypanda.feesh.constants.RareDrops
+import com.github.sleepypanda.feesh.constants.TYPE_CRIMSON_ISLE_LAVA
 import com.github.sleepypanda.feesh.utils.RegisterUtils
 import com.github.sleepypanda.feesh.utils.WorldUtils
 import com.github.sleepypanda.feesh.utils.ChatUtils
+import com.github.sleepypanda.feesh.utils.CommonUtils
+import com.github.sleepypanda.feesh.utils.SoundUtils
+import com.github.sleepypanda.feesh.settings.categories.General
+import com.github.sleepypanda.feesh.settings.categories.SoundMode
+import com.github.sleepypanda.feesh.constants.Sounds
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
 import com.github.sleepypanda.feesh.utils.PlayerUtils
@@ -86,6 +92,9 @@ object CrimsonIsleTracker {
         if (!Overlays.crimsonIsleTrackerOverlay || !WorldUtils.isInSkyblock() || WorldUtils.getWorldName() != WorldUtils.CRIMSON_ISLE) return
 
         val seaCreatureName = event.seaCreatureName
+        val seaCreatureInfo = SeaCreatures.allSeaCreatures.find { it.name == seaCreatureName } ?: return
+        if (!seaCreatureInfo.types.contains(TYPE_CRIMSON_ISLE_LAVA)) return
+
         val isInHotspot = isFishingInHotspot()
         val isInPlhlegblastPool = isInPlhlegblastPool()
 
@@ -185,6 +194,13 @@ object CrimsonIsleTracker {
         }
         saveData()
         updateGuiLines()
+
+        if (data.lordJawbus.catchesSinceLast > 0 && data.lordJawbus.catchesSinceLast % 1000 == 0) {
+            CommonUtils.showTitle("", "${RED}No ${LIGHT_PURPLE}Lord Jawbus ${RED}for ${data.lordJawbus.catchesSinceLast} catches");
+            ChatUtils.sendLocalChat("${RED}${BOLD}Yikes! ${RESET}${RED}No ${LIGHT_PURPLE}Lord Jawbus ${RED}for ${data.lordJawbus.catchesSinceLast} catches...", true);
+            if (General.soundMode == SoundMode.MEME) SoundUtils.playCustomSound(Sounds.FEESH_SAD_TROMBONE)
+            else SoundUtils.playSound()
+        }
     }
 
     private fun onRareDrop(event: RareDropEvent) {
