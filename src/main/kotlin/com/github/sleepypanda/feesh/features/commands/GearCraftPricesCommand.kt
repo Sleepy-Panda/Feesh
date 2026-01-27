@@ -10,6 +10,7 @@ import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
 import com.github.sleepypanda.feesh.utils.ChatUtils
 import com.github.sleepypanda.feesh.FeeshMod
 import com.github.sleepypanda.feesh.settings.categories.Commands
+import com.github.sleepypanda.feesh.utils.enums.PricingMode
 import net.minecraft.text.Text
 import net.minecraft.text.Style
 import net.minecraft.text.ClickEvent.RunCommand

@@ -3,8 +3,8 @@ package com.github.sleepypanda.feesh.settings.categories
 import com.github.sleepypanda.feesh.utils.ChatUtils
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
+import com.github.sleepypanda.feesh.utils.enums.PricingMode
 import com.teamresourceful.resourcefulconfigkt.api.CategoryKt
-import PricingMode
 
 object Commands : CategoryKt("Commands") {
     init {
