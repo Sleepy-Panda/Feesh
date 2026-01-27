@@ -8,6 +8,7 @@ import com.github.sleepypanda.feesh.events.EventBus
 import com.github.sleepypanda.feesh.events.GameClosedEvent
 import com.github.sleepypanda.feesh.events.GuiOpenedEvent
 import com.github.sleepypanda.feesh.events.WorldChangedEvent
+import com.github.sleepypanda.feesh.events.PetLevelUpEvent
 import com.github.sleepypanda.feesh.constants.Sounds
 import com.github.sleepypanda.feesh.settings.categories.SoundMode
 import com.github.sleepypanda.feesh.settings.categories.General
@@ -122,6 +123,7 @@ object FishingProfitTracker {
         EventBus.subscribe(GameClosedEvent::class, ::onGameClosed)
         EventBus.subscribe(WorldChangedEvent::class, ::onWorldChanged)
         EventBus.subscribe(GuiOpenedEvent::class, ::onGuiOpened)
+        EventBus.subscribe(PetLevelUpEvent::class, ::onPetReachedMaxLevel)
     }
 
     private fun registerCommands() {
@@ -419,15 +421,13 @@ object FishingProfitTracker {
     private data class ItemAddedToSack(val itemName: String, val difference: Int, val sackName: String)
 
     /**
-     * Parses sack notification using the same approach as the other mod: iterate message.siblings,
-     * for each part containing " item" use part.style.hoverEvent, and when it is ShowText parse
-     * hover value with regex for "+N item (Sack)" lines. Trigger remains Regex("^\\[Sacks\\] \\+.*").
+     * Parses sack notification hover text: "Added items:" with lines like "+1,344 Pufferfish (Fishing Sack)
      */
     private fun getItemsAddedToSacks(message: Text): List<ItemAddedToSack> {
         val items = mutableListOf<ItemAddedToSack>()
         val regex = Regex("""(\+[\d,]+) (.+) \((.+)\)""")
         message.siblings.forEach { part ->
-            if (!part.string.contains(" item")) return@forEach
+            if (!part.string.contains("Added items:")) return@forEach
             val hover = part.style?.hoverEvent ?: return@forEach
             if (hover is HoverEvent.ShowText) {
                 val plain = hover.value.string
@@ -436,7 +436,7 @@ object FishingProfitTracker {
                     val difference = diffStr.toIntOrNull() ?: 0
                     val itemName = match.groupValues[2].trim()
                     val sackName = match.groupValues[3].removeFormatting()
-                    if (difference != 0 && itemName.isNotBlank()) {
+                    if (difference > 0 && itemName.isNotBlank()) {
                         items.add(ItemAddedToSack(itemName = itemName, difference = difference, sackName = sackName))
                     }
                 }
@@ -444,47 +444,6 @@ object FishingProfitTracker {
         }
         return items
     }
-
-    // --- old implementation (reflection-based), commented per request ---
-    // /**
-    //  * Parses sack notification hover text: "Added items:" with lines like "+1,344 Pufferfish (Fishing Sack)".
-    //  * We use reflection to call HoverEvent.getValue(action) because in Kotlin the name "getValue" is reserved
-    //  * for property delegates (kotlin.properties.getValue, Map.getValue, etc.). The compiler then treats
-    //  * `hoverEvent.getValue(action)` as one of those and reports "receiver type mismatch" instead of calling
-    //  * the Java method HoverEvent.getValue(HoverEvent.Action).
-    //  */
-    // private fun getItemsAddedToSacks(message: Text): List<ItemAddedToSack> {
-    //     val items = mutableListOf<ItemAddedToSack>()
-    //     val hoverPart = message.siblings.find { part ->
-    //         getHoverEventText(part)?.contains("Added items:") == true
-    //     } ?: return items
-    //     val addedItemsMessage = getHoverEventText(hoverPart) ?: return items
-    //     val regex = Regex("""(\+[\d,]+) (.+) \((.+)\)""")
-    //     var match = regex.find(addedItemsMessage)
-    //     while (match != null) {
-    //         val diffStr = match.groupValues[1].replace("+", "").replace(",", "")
-    //         val difference = diffStr.toIntOrNull() ?: 0
-    //         val itemName = match.groupValues[2].trim()
-    //         val sackName = match.groupValues[3].removeFormatting()
-    //         if (difference != 0 && itemName.isNotBlank()) {
-    //             items.add(ItemAddedToSack(itemName = itemName, difference = difference, sackName = sackName))
-    //         }
-    //         match = match.next()
-    //     }
-    //     return items
-    // }
-    //
-    // /** Calls HoverEvent.getValue(action) via reflection to avoid Kotlin's reserved getValue. */
-    // private fun getHoverEventText(part: Text): String? {
-    //     val he = part.style?.hoverEvent ?: return null
-    //     return try {
-    //         val method = he.javaClass.methods.find { it.name == "getValue" && it.parameterCount == 1 }
-    //             ?: return null
-    //         (method.invoke(he, he.action) as? Text)?.string
-    //     } catch (_: Exception) {
-    //         null
-    //     }
-    // }
 
     private fun onCoinsFished(coinsStr: String) {
         if (!isSessionActive || !isTrackerVisible()) return
@@ -536,12 +495,12 @@ object FishingProfitTracker {
         findAndAddProfitTrackerItem({ it.itemName.equals(shardName, ignoreCase = true) }, count)
     }
 
-    private fun onPetReachedMaxLevel(level: Int, petDisplayName: String) {
+    private fun onPetReachedMaxLevel(event: PetLevelUpEvent) {
         if (!isSessionActive || !isTrackerVisible()) return
-        val petName = petDisplayName.removeFormatting().ifBlank { "Pet" }
+        val petName = event.petName
+        val rarityCode = CommonUtils.getRarityNumericCode(event.petDisplayName.substring(0, 2))
         val baseItemId = petName.split(" ").joinToString("_").uppercase()
-        val rarityCode = 4
-        val itemIdMaxLevel = "$baseItemId;$rarityCode+$level"
+        val itemIdMaxLevel = "${baseItemId};${rarityCode}+${event.level}"
         addProfitTrackerItem(itemIdMaxLevel, petName, 1, null)
     }
 
@@ -779,6 +738,7 @@ object FishingProfitTracker {
         val toHide = expensive.drop(topN) + cheap
         val elapsedHours = sourceObj.elapsedSeconds / 3600.0
         val profitPerHour = if (elapsedHours > 0) sourceObj.totalProfit / elapsedHours else 0.0
+
         return DisplayTrackerData(
             entriesToShow = toShow,
             entriesToHide = toHide,
