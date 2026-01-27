@@ -18,15 +18,24 @@ object Settings : ConfigKt("${FeeshMod.MOD_ID}/config") {
     init {
         separator {
             title = "Welcome to ${FeeshMod.MOD_NAME}!"
-            description = "A fishing enhancement mod for Hypixel Skyblock. From MoonTheSadFisher with ❤"
+            description = "Fishing enhancements mod for Hypixel Skyblock. From MoonTheSadFisher with ❤"
         }
         
         button {
-            title = "GitHub"
-            description = "Find code, latest release notes, docs and README here."
+            title = "Modrinth"
+            description = "Find available releases here."
             text = "Open"
             onClick {
-                Util.getOperatingSystem().open("https://github.com/Sleepy-Panda/Feesh")
+                openLink("https://modrinth.com/project/feesh")
+            }
+        }
+
+        button {
+            title = "GitHub"
+            description = "Find source code, latest release notes, docs and README here."
+            text = "Open"
+            onClick {
+                openLink("https://github.com/Sleepy-Panda/Feesh")
             }
         }
 
@@ -39,4 +48,8 @@ object Settings : ConfigKt("${FeeshMod.MOD_ID}/config") {
     }
     
     fun save() = FeeshMod.INSTANCE.settings.save()
+
+    private fun openLink(url: String) {
+        Util.getOperatingSystem().open(url)
+    }
 }

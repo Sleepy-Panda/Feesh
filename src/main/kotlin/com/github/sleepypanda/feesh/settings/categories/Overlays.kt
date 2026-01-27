@@ -4,6 +4,7 @@ import com.github.sleepypanda.feesh.FeeshMod
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
 import com.github.sleepypanda.feesh.utils.enums.DeployableTypes
+import com.github.sleepypanda.feesh.utils.enums.PricingModeWithNpc
 import com.github.sleepypanda.feesh.utils.ChatUtils
 import com.teamresourceful.resourcefulconfig.api.annotations.Category
 import com.teamresourceful.resourcefulconfig.api.annotations.Comment
@@ -38,6 +39,10 @@ enum class FishingHookTimerMode(val displayName: String) {
 
 object Overlays : CategoryKt("Overlays") {
     init {
+        separator {
+            this.title = "${AQUA}${BOLD}Common"
+        }
+
         button {
             title = "Pause all trackers keybind"
             description = "Set a keybind in Minecraft's Controls menu to pause all active trackers on button pressed (so the timers stop). Default is PAUSE.\nExecutes ${AQUA}/feeshPauseAllTrackers"
@@ -128,7 +133,11 @@ object Overlays : CategoryKt("Overlays") {
 
     var seaCreaturesTrackerOverlay by boolean(false) {
         this.name = Translated("Sea creatures tracker")
-        this.description = Translated("Shows an overlay with the overview of the sea creatures caught, and different related statistics. This overlay has [Session] and [Total] view mode.\nDo ${AQUA}/feeshResetSeaCreatures${GRAY} to reset [Session], or ${AQUA}/feeshResetSeaCreaturesTotal${GRAY} to reset [Total].")
+        this.description = Translated("""
+Shows an overlay with the overview of the sea creatures caught, and different related statistics. This overlay has [Session] and [Total] view mode.
+To reset [Session]: ${AQUA}/feeshResetSeaCreatures
+To reset [Total]: ${AQUA}/feeshResetSeaCreaturesTotal
+""".trimIndent())
     }
 
     var seaCreaturesTrackerMode by enum(SeaCreaturesTrackerDisplayMode.ALL) {
@@ -212,7 +221,10 @@ object Overlays : CategoryKt("Overlays") {
 
     var jerryWorkshopTrackerOverlay by boolean(false) {
         this.name = Translated("Jerry's Workshop tracker")
-        this.description = Translated("Shows an overlay with Yeti / Reindrake catch statistics while in the Jerry Workshop.\nTo reset: ${AQUA}/feeshResetJerryWorkshop")
+        this.description = Translated("""
+Shows an overlay with Yeti / Reindrake catch statistics while in the Jerry Workshop.
+To reset: ${AQUA}/feeshResetJerryWorkshop
+""".trimIndent())
     }
 
     var resetJerryWorkshopTrackerOnGameClosed by boolean(false) {

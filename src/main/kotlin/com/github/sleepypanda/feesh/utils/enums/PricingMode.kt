@@ -1,3 +1,5 @@
+package com.github.sleepypanda.feesh.utils.enums
+
 enum class PricingMode(val displayName: String) {
     SELL_OFFER("Sell Offer"),
     INSTA_SELL("Insta Sell");

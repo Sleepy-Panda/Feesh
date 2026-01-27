@@ -5,6 +5,7 @@ import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
 import com.github.sleepypanda.feesh.constants.RareSeaCreatureTypes
 import com.github.sleepypanda.feesh.constants.RareDropTypes
 import com.github.sleepypanda.feesh.utils.enums.DeployableTypes
+import com.github.sleepypanda.feesh.utils.enums.PricingModeWithNpc
 import com.teamresourceful.resourcefulconfigkt.api.CategoryKt
 
 object Alerts : CategoryKt("Alerts") {
