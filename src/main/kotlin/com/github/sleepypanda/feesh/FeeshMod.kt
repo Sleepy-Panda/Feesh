@@ -47,6 +47,7 @@ import com.github.sleepypanda.feesh.events.EventBus
 import com.github.sleepypanda.feesh.events.publishers.SeaCreaturesPublisher
 import com.github.sleepypanda.feesh.events.publishers.RareDropsPublisher
 import com.github.sleepypanda.feesh.events.publishers.PartyChatPublisher
+import com.github.sleepypanda.feesh.events.publishers.PetLevelUpPublisher
 import com.github.sleepypanda.feesh.settings.Settings
 import com.github.sleepypanda.feesh.utils.KeybindUtils
 import com.github.sleepypanda.feesh.utils.WorldUtils
@@ -105,6 +106,7 @@ class FeeshMod : ModInitializer {
         SeaCreaturesPublisher.init()
         RareDropsPublisher.init()
         PartyChatPublisher.init()
+        PetLevelUpPublisher.init()
         
         // Alerts
         RareCatchAlert.init()
