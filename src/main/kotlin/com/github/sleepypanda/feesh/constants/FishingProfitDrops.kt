@@ -3,24 +3,24 @@ package com.github.sleepypanda.feesh.constants
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
 
+data class SalvageableItemInfo(
+    val essenceItemId: String,
+    val essenceCount: Int
+)
+
+data class FishingProfitDropInfo(
+    val itemId: String, // Item ID aligned with IDs in Bazaar/Auction APIs
+    val itemName: String, // Unformatted item name
+    val itemAlternateNames: List<String> = listOf(), // Alternate names for the item, to support some popular renamings by mods
+    val itemDisplayName: String, // Formatted item name
+    val npcPrice: Double?,
+    val shouldAnnounceRareDrop: Boolean = false, // If the item should be announced as a rare drop in player's chat (for valuable drops which have no standart RARE DROP! message from Hypixel)
+    val amountOfMagmaFish: Int? = null, // Amount of Magma Fish to exchange a Trophy Fish at Odger
+    val salvage: SalvageableItemInfo? = null // Item to salvage into essence items
+)
+
 class FishingProfitDrops {
     companion object {
-        data class SalvageableItemInfo(
-            val essenceItemId: String,
-            val essenceCount: Int
-        )
-
-        data class FishingProfitDropInfo(
-            val itemId: String, // Item ID aligned with IDs in Bazaar/Auction APIs
-            val itemName: String, // Unformatted item name
-            val itemAlternateNames: List<String> = listOf(), // Alternate names for the item, to support some popular renamings by mods
-            val itemDisplayName: String, // Formatted item name
-            val npcPrice: Double?,
-            val shouldAnnounceRareDrop: Boolean = false, // If the item should be announced as a rare drop in player's chat (for valuable drops which have no standart RARE DROP! message from Hypixel)
-            val amountOfMagmaFish: Int? = null, // Amount of Magma Fish to exchange a Trophy Fish at Odger
-            val salvage: SalvageableItemInfo? = null // Item to salvage into essence items
-        )
-
         val items = listOf(
             // Dyes
             

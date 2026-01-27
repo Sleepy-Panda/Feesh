@@ -397,7 +397,7 @@ To reset [Total]: ${AQUA}/feeshResetProfitTrackerTotal
         this.description = Translated("Items which are cheaper than the specified threshold in coins will be hidden in the fishing profit tracker [Total]. They will be grouped under 'Cheap items' section. Set to 0 to show all items.")
     }
 
-    var fishingProfitTrackerShowTop by int(20) {
+    var fishingProfitTrackerShowTop by int(15) {
         this.name = Translated("Maximum lines count")
         this.description = Translated("Show top N lines for the most expensive items. Other cheaper items will be grouped under 'Cheap items' section. This works on top of 'Hide cheap items' setting.")
         this.range = 1..50

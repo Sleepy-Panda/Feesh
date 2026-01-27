@@ -5,6 +5,7 @@ import com.github.sleepypanda.feesh.utils.WorldUtils
 import com.github.sleepypanda.feesh.utils.KeybindUtils
 import com.github.sleepypanda.feesh.utils.RegisterUtils
 import com.github.sleepypanda.feesh.features.overlays.SeaCreaturesPerHourTracker
+import com.github.sleepypanda.feesh.features.overlays.FishingProfitTracker
 import net.minecraft.client.option.KeyBinding
 import org.lwjgl.glfw.GLFW
 
@@ -22,5 +23,6 @@ object PauseAllTrackersCommand {
     private fun pauseAllTrackers() {
         if (!WorldUtils.isInSkyblock() || !WorldUtils.isInFishingWorld()) return
         SeaCreaturesPerHourTracker.pause()
+        FishingProfitTracker.pauseFishingProfitTracker()
     }
 }
