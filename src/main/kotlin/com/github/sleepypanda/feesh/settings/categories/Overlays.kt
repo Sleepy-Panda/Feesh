@@ -372,8 +372,8 @@ ${AQUA}/feeshSetTrackerDrops DYE_TREASURE 2 2025-05-30 23:59:00
         this.description = Translated("""
 Shows an overlay with your profits you gained while fishing. This overlay has [Session] and [Total] view mode.
 To count items added to your sacks, make sure to enable ${YELLOW}Skyblock Settings -> Personal -> Chat Feedback -> Sack Notifications
-To reset [Session]: ${AQUA}/feeshResetProfitTracker
-To reset [Total]: ${AQUA}/feeshResetProfitTrackerTotal
+To reset [Session]: ${AQUA}/feeshResetFishingProfit
+To reset [Total]: ${AQUA}/feeshResetFishingProfitTotal
         """.trimIndent())
     }
 

@@ -28,6 +28,7 @@ import com.github.sleepypanda.feesh.utils.SoundUtils
 import com.github.sleepypanda.feesh.utils.ChatUtils.removeFormatting
 import net.minecraft.client.gui.screen.ingame.InventoryScreen
 import net.minecraft.client.gui.screen.ChatScreen
+import net.minecraft.client.gui.screen.ingame.HandledScreen
 import net.minecraft.text.HoverEvent
 import net.minecraft.text.Text
 import java.util.Date
@@ -35,12 +36,17 @@ import java.util.Timer
 import kotlin.concurrent.timerTask
 
 // TODO isWorldLoaded
+// TODO Display name for leveled pets
+// Flash book not counted
+// Items taken from backpacks counted
+// Is in sacks, is in supercraft, etc, maybe track item creation date
 // TODO refresh if settings for price modes are changed?
 // TODO Event for pet level up
 // TODO event for pickup item
 // TODO Drops counter for Rare Drop chat message
 // TODO Rely on chat message for some Rare Drops instead of pickup event?
 // Items from sacks are counted
+// BZ/AH prices updated event, to refresh total profits, instead of TICKS_PRICES
 
 object FishingProfitTracker {
     enum class ViewMode {
@@ -67,15 +73,15 @@ object FishingProfitTracker {
         var viewMode: String = ViewMode.SESSION.name
     )
 
-    private const val RESET_COMMAND = "feeshResetProfitTracker"
-    private const val RESET_TOTAL_COMMAND = "feeshResetProfitTrackerTotal"
+    private const val RESET_COMMAND = "feeshResetFishingProfit"
+    private const val RESET_TOTAL_COMMAND = "feeshResetFishingProfitTotal"
     private const val TOGGLE_VIEW_MODE_COMMAND = "feeshToggleFishingProfitViewMode"
-    private const val PAUSE_COMMAND = "feeshPauseFishingProfitTracker"
+    private const val PAUSE_COMMAND = "feeshPauseFishingProfit"
 
     private const val TICKS_OVERLAY_AND_ACTIVATE = 20
     private const val TICKS_ELAPSED_TIME = 20
     private const val TICKS_INVENTORY = 5
-    private const val TICKS_PRICES = 600
+    private const val TICKS_PRICES = 20 * 60
     private const val MAX_SECONDS_SINCE_HOOK = 60 * 5
     private const val HIDE_OVERLAY_AFTER_HOOK_MINUTES = 5
 
@@ -201,9 +207,7 @@ object FishingProfitTracker {
     }
 
     private fun onClientTick(@Suppress("UNUSED_PARAMETER") event: ClientTickEvent) {
-        if (!Overlays.fishingProfitTrackerOverlay || !WorldUtils.isInSkyblock() || !WorldUtils.isInFishingWorld(WorldUtils.getWorldName())) {
-            return
-        }
+        if (!Overlays.fishingProfitTrackerOverlay || !WorldUtils.isInSkyblock() || !WorldUtils.isInFishingWorld(WorldUtils.getWorldName())) return
         tickCounter++
 
         if (tickCounter % TICKS_OVERLAY_AND_ACTIVATE == 0) {
@@ -390,6 +394,10 @@ object FishingProfitTracker {
 
     private fun onAddedToSacks(message: Text) {
         if (!isSessionActive || !isTrackerVisible()) return
+        // If in SACKS or sacks closed recently?
+        if (isInSacksGui()) return
+        //if (isSacksClosedRecently()) return
+
         val added = getItemsAddedToSacks(message)
         var isUpdated = false
         for (item in added) {
@@ -399,6 +407,13 @@ object FishingProfitTracker {
             isUpdated = true
         }
         if (isUpdated) refreshTotalItemsProfits()
+    }
+
+    private fun isInSacksGui(): Boolean {
+        val screen = FeeshMod.mc.currentScreen ?: return false
+        if (screen !is HandledScreen<*>) return false
+        val title = screen.title.string
+        return (title.endsWith("Sack"))
     }
 
     private data class ItemAddedToSack(val itemName: String, val difference: Int, val sackName: String)
