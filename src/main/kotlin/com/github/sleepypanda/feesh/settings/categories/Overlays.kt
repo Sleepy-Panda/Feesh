@@ -360,4 +360,57 @@ ${AQUA}/feeshSetTrackerDrops DYE_TREASURE 2 2025-05-30 23:59:00
         this.name = Translated("Autoreset [Session] on closing game")
         this.description = Translated("Automatically reset the Archfiend Dice profit tracker [Session] when you close Minecraft.")
     }
+
+    init {
+        separator {
+            this.title = "${AQUA}${BOLD}Fishing profit"
+        }
+    }
+
+    var fishingProfitTrackerOverlay by boolean(false) {
+        this.name = Translated("Fishing profit tracker")
+        this.description = Translated("""
+Shows an overlay with your profits you gained while fishing. This overlay has [Session] and [Total] view mode.
+To count items added to your sacks, make sure to enable ${YELLOW}Skyblock Settings -> Personal -> Chat Feedback -> Sack Notifications
+To reset [Session]: ${AQUA}/feeshResetProfitTracker
+To reset [Total]: ${AQUA}/feeshResetProfitTrackerTotal
+        """.trimIndent())
+    }
+
+    var fishingProfitTrackerPriceMode by enum(PricingModeWithNpc.SELL_OFFER) {
+        this.name = Translated("Price mode")
+        this.description = Translated("How to calculate prices for the dropped items in the Fishing profit tracker.")
+    }
+    
+    var calculateProfitInCrimsonEssence by boolean(false) {
+        this.name = Translated("Show profits in Crimson Essence when applicable")
+        this.description = Translated("Calculate price in Crimson Essence for salvageable crimson fishing items e.g. Slug Boots, Moogma Leggings, Flaming Chestplate, Blade of the Volcano, Staff of the Volcano.")
+    }
+
+    var fishingProfitTrackerHideCheaperThan by int(1_000_000) {
+        this.name = Translated("Hide cheap items [Session]")
+        this.description = Translated("Items which are cheaper than the specified threshold in coins will be hidden in the fishing profit tracker [Session]. They will be grouped under 'Cheap items' section. Set to 0 to show all items.")
+    }
+
+    var fishingProfitTrackerHideCheaperThanTotal by int(1_000_000) {
+        this.name = Translated("Hide cheap items [Total]")
+        this.description = Translated("Items which are cheaper than the specified threshold in coins will be hidden in the fishing profit tracker [Total]. They will be grouped under 'Cheap items' section. Set to 0 to show all items.")
+    }
+
+    var fishingProfitTrackerShowTop by int(20) {
+        this.name = Translated("Maximum lines count")
+        this.description = Translated("Show top N lines for the most expensive items. Other cheaper items will be grouped under 'Cheap items' section. This works on top of 'Hide cheap items' setting.")
+        this.range = 1..50
+        this.slider = true
+    }
+
+    var shouldAnnounceRareDropsWhenPickup by boolean(true) {
+        this.name = Translated("Announce rare drops")
+        this.description = Translated("Send RARE DROP! message to player's chat when a rare item is added to the fishing profit tracker (for relatively rare items that have no RARE DROP! message from Hypixel by default).")
+    }
+
+    var resetFishingProfitTrackerOnGameClosed by boolean(false) {
+        this.name = Translated("Autoreset [Session] on closing game")
+        this.description = Translated("Automatically reset the fishing profit tracker [Session] when you close Minecraft.")
+    }
 }
