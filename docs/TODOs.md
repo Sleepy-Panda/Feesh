@@ -33,3 +33,8 @@ Death sound is not played. :c Probably because player's world is not loaded whil
 - Use Center alignment as default for some widgets
 - Make overlays rendered under TabList
 - Check if "0" key works for numpad in /feeshMoveAllGuis
+
+## Sea creatures
+
+- Do not count Vanquisher into overlay if not fishing
+- Vanquisher's message is compacted

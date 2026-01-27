@@ -104,7 +104,7 @@ class RareDrops {
             RareDropInfo(
                 id = "SCUTTLER_SHELL",
                 itemName = RareDropTypes.SCUTTLER_SHELL.displayName,
-                rarityColorCode = LEGENDARY.code,
+                rarityColorCode = MYTHIC.code,
                 npcPrice = 1_000_000,
                 isExtremelyRare = false,
                 defaultSoundFileName = Sounds.FEESH_OH_MY_GOD

@@ -1395,7 +1395,7 @@ class FishingProfitDrops {
             FishingProfitDropInfo(
                 itemId = "SCUTTLER_SHELL",
                 itemName = "Scuttler Shell",
-                itemDisplayName = "${LEGENDARY}Scuttler Shell",
+                itemDisplayName = "${MYTHIC}Scuttler Shell",
                 npcPrice = 1_000_000.0,
             ),
             FishingProfitDropInfo(
@@ -1738,7 +1738,7 @@ class FishingProfitDrops {
             FishingProfitDropInfo(
                 itemId = "PET_ITEM_VAMPIRE_FANG",
                 itemName = "Vampire Fang",
-                itemDisplayName = "${LEGENDARY}Vampire Fang",
+                itemDisplayName = "${MYTHIC}Vampire Fang",
                 npcPrice = 500_000.0,
                 shouldAnnounceRareDrop = true,
             ),
