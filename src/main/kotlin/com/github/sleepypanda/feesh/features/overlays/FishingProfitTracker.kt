@@ -28,6 +28,7 @@ import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
 import com.github.sleepypanda.feesh.utils.SoundUtils
 import com.github.sleepypanda.feesh.utils.ChatUtils.removeFormatting
+import com.github.sleepypanda.feesh.utils.ChatUtils.getFormattedString
 import com.github.sleepypanda.feesh.utils.ItemUtils
 import net.minecraft.client.gui.screen.ingame.InventoryScreen
 import net.minecraft.client.gui.screen.ChatScreen
@@ -42,9 +43,8 @@ import kotlin.concurrent.timerTask
 
 // TODO isWorldLoaded
 // TODO Display name for leveled pets
-// Items readded after closing Booster Cookie menu
-// Flash book not counted
-// Items taken from backpacks counted
+// Fishing exp boost not counted
+// Items taken from Bazaar counted
 // Is in sacks, is in supercraft, etc, maybe track item creation date
 // TODO refresh if settings for price modes are changed?
 // TODO event for pickup item
@@ -52,6 +52,7 @@ import kotlin.concurrent.timerTask
 // TODO Rely on chat message for some Rare Drops instead of pickup event?
 // Items from sacks are counted
 // BZ/AH prices updated event, to refresh total profits, instead of TICKS_PRICES
+// Hide buttons on chat/inventory gui closed, add this to FeeshGui, as well as gui opened
 
 object FishingProfitTracker {
     enum class ViewMode {
@@ -149,16 +150,11 @@ object FishingProfitTracker {
     }
 
     private fun registerChatHandlers() {
-        RegisterUtils.chat(Regex("^⛃ GOOD CATCH! You caught ([\\d,]+) Coins.*")) { _, matchResult ->
+        RegisterUtils.chat(Regex("^⛃ GOOD|GREAT|OUTSTANDING CATCH! You caught ([\\d,]+) Coins.*")) { _, matchResult ->
             onCoinsFished(matchResult.groupValues[1].orEmpty())
         }
-        RegisterUtils.chat(Regex("^⛃ GREAT CATCH! You caught ([\\d,]+) Coins.*")) { _, matchResult ->
-            onCoinsFished(matchResult.groupValues[1].orEmpty())
-        }
-        RegisterUtils.chat(Regex("^⛃ OUTSTANDING CATCH! You caught ([\\d,]+) Coins.*")) { _, matchResult ->
-            onCoinsFished(matchResult.groupValues[1].orEmpty())
-        }
-        RegisterUtils.chat(Regex("^⛃ GOOD CATCH! You caught .* Ice Essence .*x([\\d,]+).*")) { _, matchResult ->
+        // ⛃ GOOD CATCH! You caught Ice Essence x5!
+        RegisterUtils.chat(Regex("^⛃ GOOD|GREAT|OUTSTANDING CATCH! You caught Ice Essence x([\\d,]+).*")) { _, matchResult ->
             if (WorldUtils.getWorldName() == WorldUtils.JERRY_WORKSHOP) {
                 onIceEssenceFished(matchResult.groupValues[1].orEmpty())
             }
@@ -550,22 +546,22 @@ object FishingProfitTracker {
         for (i in 0..35) {
             val stack = player.inventory.getStack(i)
             if (stack.isEmpty) continue
-            var slotItemName = getCleanItemName(stack.name.string)
+            var slotItemName = getCleanItemName(stack.name.getFormattedString())
             if (slotItemName.isBlank()) continue
 
             if (slotItemName == "Enchanted Book") {
                 val loreLines = stack.get(DataComponentTypes.LORE)?.lines?.map { it.string } ?: emptyList()
-                if (loreLines.size > 1) {
-                    val description = loreLines[1].removeFormatting()
+                if (loreLines.size > 0) {
+                    val description = loreLines[0]
                     slotItemName += " ($description)"
                 }
             }
 
             if (slotItemName.endsWith("Exp Boost")) {
                 val loreLines = stack.get(DataComponentTypes.LORE)?.lines?.map { it.string } ?: emptyList()
-                val petItemLine = loreLines.find { it.removeFormatting().endsWith("PET ITEM") }
+                val petItemLine = loreLines.find { it.endsWith("PET ITEM") }
                 if (petItemLine != null) {
-                    val description = petItemLine.removeFormatting().split(" ").firstOrNull() ?: ""
+                    val description = petItemLine.split(" ").firstOrNull() ?: ""
                     slotItemName += " ($description)"
                 }
             }
