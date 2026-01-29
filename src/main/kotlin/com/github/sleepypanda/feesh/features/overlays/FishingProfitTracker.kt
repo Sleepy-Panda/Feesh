@@ -150,43 +150,44 @@ object FishingProfitTracker {
     }
 
     private fun registerChatHandlers() {
-        RegisterUtils.chat(Regex("^⛃ GOOD|GREAT|OUTSTANDING CATCH! You caught ([\\d,]+) Coins.*")) { _, matchResult ->
+        // ⛃ GOOD CATCH! You caught 43,642 Coins!
+        RegisterUtils.chat(Regex("^⛃ (?:GOOD|GREAT|OUTSTANDING) CATCH! You caught ([\\d,]+) Coins.*")) { _, matchResult ->
             onCoinsFished(matchResult.groupValues[1].orEmpty())
         }
         // ⛃ GOOD CATCH! You caught Ice Essence x5!
-        RegisterUtils.chat(Regex("^⛃ GOOD|GREAT|OUTSTANDING CATCH! You caught Ice Essence x([\\d,]+).*")) { _, matchResult ->
+        RegisterUtils.chat(Regex("^⛃ (?:GOOD|GREAT|OUTSTANDING) CATCH! You caught Ice Essence x([\\d,]+).*")) { _, matchResult ->
             if (WorldUtils.getWorldName() == WorldUtils.JERRY_WORKSHOP) {
                 onIceEssenceFished(matchResult.groupValues[1].orEmpty())
             }
         }
-        RegisterUtils.chat(Regex("^⛃ GREAT CATCH! You caught .* Ice Essence .*x([\\d,]+).*")) { _, matchResult ->
-            if (WorldUtils.getWorldName() == WorldUtils.JERRY_WORKSHOP) {
-                onIceEssenceFished(matchResult.groupValues[1].orEmpty())
-            }
-        }
-        RegisterUtils.chat(Regex("^⛃ OUTSTANDING CATCH! You caught .* Ice Essence .*x([\\d,]+).*")) { _, matchResult ->
-            if (WorldUtils.getWorldName() == WorldUtils.JERRY_WORKSHOP) {
-                onIceEssenceFished(matchResult.groupValues[1].orEmpty())
-            }
-        }
-        RegisterUtils.chat(Regex("^⛃ GOOD CATCH! You caught (?:a|an) (.+) Shard.*")) { _, matchResult ->
+        // ⛃ GOOD CATCH! You caught a Shinyfish Shard!
+        // ⛃ GOOD CATCH! You caught an Abyssal Lanternfish Shard!
+        RegisterUtils.chat(Regex("^⛃ (?:GOOD|GREAT|OUTSTANDING) CATCH! You caught (?:a|an) (.+) Shard.*")) { _, matchResult ->
             onShardFished(matchResult.groupValues[1].orEmpty())
         }
-        //RegisterUtils.chat(Regex("^You caught (?:.*) (.+) Shard[s]?.*")) { _, matchResult ->
-        //    if (shouldHandleFishingProfitEvent()) onShardCaughtInBlackHole(matchResult.groupValues[1].orEmpty())
-        //}
-        //RegisterUtils.chat(Regex(".*You charmed (.+) and captured its .* Shard.*")) { _, matchResult ->
-        //    if (shouldHandleFishingProfitEvent()) onShardsCharmed(matchResult.groupValues[1].orEmpty(), 1)
-        //}
-        //RegisterUtils.chat(Regex(".*You charmed (.+) and captured .* ([\\d]+) Shards .*")) { _, matchResult ->
-        //    if (shouldHandleFishingProfitEvent()) {
-        //        val count = matchResult.groupValues[2].toIntOrNull() ?: 1
-        //        onShardsCharmed(matchResult.groupValues[1].orEmpty(), count)
-        //    }
-        //}
-        //RegisterUtils.chat(Regex(".*LOOT SHARE .*You received (.+) .* Shard.*")) { _, matchResult ->
-        //    if (shouldHandleFishingProfitEvent()) onShardLootshared(matchResult.groupValues[1].orEmpty())
-        //}
+        // You caught a Sea Archer Shard!
+        // You caught x4 Sea Archer Shards!
+        // You caught x4 Carrot King Shards!
+        // You caught x2 Loch Emperor Shards!
+        RegisterUtils.chat(Regex("^You caught (.+) Shard[s]?.*")) { _, matchResult ->
+            onShardCaughtInBlackHole(matchResult.groupValues[1].orEmpty())
+        }
+        // CHARM You charmed a Loch Emperor and captured its Shard.
+        // NAGA You charmed a Tadgang and captured its Shard.
+        RegisterUtils.chat(Regex("^(?:CHARM|NAGA|SALT) You charmed (?:a|an) (.+) and captured its Shard.*")) { _, matchResult ->
+            onShardsCharmed(matchResult.groupValues[1].orEmpty(), 1)
+        }
+        // SALT You charmed a Ent and captured 2 Shards from it.
+        // CHARM You charmed a Flaming Spider and captured 2 Shards from it.
+        // SALT You charmed a Tadgang and captured 2 Shards from it.
+        RegisterUtils.chat(Regex("^(?:CHARM|NAGA|SALT) You charmed (?:a|an) (.+) and captured ([\\d]+) Shards from it.*")) { _, matchResult ->
+            val count = matchResult.groupValues[2].toIntOrNull() ?: 1
+            onShardsCharmed(matchResult.groupValues[1].orEmpty(), count)
+        }
+        // LOOT SHARE You received 2 Titanoboa Shards for assisting CuzImCrzz!
+        RegisterUtils.chat(Regex("^LOOT SHARE You received (.+) Shard.*")) { _, matchResult ->
+            onShardLootshared(matchResult.groupValues[1].orEmpty())
+        }
     }
 
     private fun onWorldChanged(@Suppress("UNUSED_PARAMETER") event: WorldChangedEvent) {
@@ -422,16 +423,15 @@ object FishingProfitTracker {
         findAndAddProfitTrackerItem({ it.itemId == "ESSENCE_ICE" }, count)
     }
 
-    private fun onShardFished(shardText: String) {
+    private fun onShardFished(shard: String) {
         if (!isSessionActive || !isTrackerVisible()) return
-        val parts = shardText.removeFormatting().split(" ")
-        val shardName = parts.drop(1).joinToString(" ") + " Shard"
+        val shardName = shard + " Shard"
         findAndAddProfitTrackerItem({ it.itemName.equals(shardName, ignoreCase = true) }, 1)
     }
 
-    private fun onShardCaughtInBlackHole(shardsText: String) {
+    private fun onShardCaughtInBlackHole(shardsText: String) { // a|an|x5 Carrot King
         if (!isSessionActive || !isTrackerVisible()) return
-        val parts = shardsText.removeFormatting().split(" ")
+        val parts = shardsText.split(" ")
         val countText = parts.firstOrNull() ?: "a"
         val count = when (countText) {
             "a", "an" -> 1
@@ -441,16 +441,15 @@ object FishingProfitTracker {
         findAndAddProfitTrackerItem({ it.itemName.equals(shardName, ignoreCase = true) }, count)
     }
 
-    private fun onShardsCharmed(mobNameText: String, shardsCount: Int) {
+    private fun onShardsCharmed(mobName: String, shardsCount: Int) {
         if (!isSessionActive || !isTrackerVisible() || shardsCount <= 0) return
-        val parts = mobNameText.removeFormatting().split(" ")
-        val shardName = parts.drop(1).joinToString(" ") + " Shard"
+        val shardName = mobName + " Shard"
         findAndAddProfitTrackerItem({ it.itemName.equals(shardName, ignoreCase = true) }, shardsCount)
     }
 
-    private fun onShardLootshared(shardsText: String) {
+    private fun onShardLootshared(shardsText: String) { // a|an|2 Titanoboa
         if (!isSessionActive || !isTrackerVisible()) return
-        val parts = shardsText.removeFormatting().split(" ")
+        val parts = shardsText.split(" ")
         val countText = parts.firstOrNull() ?: "a"
         val count = when (countText) {
             "a", "an" -> 1
