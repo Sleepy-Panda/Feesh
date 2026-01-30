@@ -2,7 +2,7 @@ package com.github.sleepypanda.feesh.events.publishers
 
 import com.github.sleepypanda.feesh.events.ChatEvent
 import com.github.sleepypanda.feesh.events.EventBus
-import com.github.sleepypanda.feesh.events.SacksItemPickupEvent
+import com.github.sleepypanda.feesh.events.SacksItemsPickupEvent
 import com.github.sleepypanda.feesh.utils.ChatUtils.removeFormatting
 import com.github.sleepypanda.feesh.utils.WorldUtils
 import net.minecraft.text.HoverEvent
@@ -22,10 +22,14 @@ object SacksItemPickupPublisher {
         val message = event.message
         if (!SACKS_TRIGGER.matches(message.string)) return
 
-        parseItemsFromSacksMessage(message).forEach { (itemName, amount, sackName) ->
-            if (amount > 0 && itemName.isNotBlank()) {
-                EventBus.publish(SacksItemPickupEvent(itemName = itemName, amount = amount, sackName = sackName))
+        val items = parseItemsFromSacksMessage(message)
+            .filter { (itemName, amount, _) -> amount > 0 && itemName.isNotBlank() }
+            .map { (itemName, amount, sackName) ->
+                SacksItemsPickupEvent.SacksPickupItem(itemName = itemName, amount = amount, sackName = sackName)
             }
+            
+        if (items.isNotEmpty()) {
+            EventBus.publish(SacksItemsPickupEvent(items = items))
         }
     }
 

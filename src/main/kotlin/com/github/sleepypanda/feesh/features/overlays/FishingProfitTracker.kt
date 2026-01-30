@@ -9,7 +9,7 @@ import com.github.sleepypanda.feesh.events.GameClosedEvent
 import com.github.sleepypanda.feesh.events.GuiOpenedEvent
 import com.github.sleepypanda.feesh.events.WorldChangedEvent
 import com.github.sleepypanda.feesh.events.PetLevelUpEvent
-import com.github.sleepypanda.feesh.events.SacksItemPickupEvent
+import com.github.sleepypanda.feesh.events.SacksItemsPickupEvent
 import com.github.sleepypanda.feesh.constants.Sounds
 import com.github.sleepypanda.feesh.settings.categories.SoundMode
 import com.github.sleepypanda.feesh.settings.categories.General
@@ -129,7 +129,7 @@ object FishingProfitTracker {
         EventBus.subscribe(WorldChangedEvent::class, ::onWorldChanged)
         EventBus.subscribe(GuiOpenedEvent::class, ::onGuiOpened)
         EventBus.subscribe(PetLevelUpEvent::class, ::onPetReachedMaxLevel)
-        EventBus.subscribe(SacksItemPickupEvent::class, ::onSacksItemPickup)
+        EventBus.subscribe(SacksItemsPickupEvent::class, ::onSacksItemsPickup)
     }
 
     private fun registerCommands() {
@@ -180,11 +180,13 @@ object FishingProfitTracker {
         // SALT You charmed a Ent and captured 2 Shards from it.
         // CHARM You charmed a Flaming Spider and captured 2 Shards from it.
         // SALT You charmed a Tadgang and captured 2 Shards from it.
+        // SALT You charmed a Magma Slug and captured 3 Shards from it.
         RegisterUtils.chat(Regex("^(?:CHARM|NAGA|SALT) You charmed (?:a|an) (.+) and captured ([\\d]+) Shards from it.*")) { _, matchResult ->
             val count = matchResult.groupValues[2].toIntOrNull() ?: 1
             onShardsCharmed(matchResult.groupValues[1].orEmpty(), count)
         }
         // LOOT SHARE You received 2 Titanoboa Shards for assisting CuzImCrzz!
+        // LOOT SHARE You received 3 Magma Slug Shards for assisting OmeRuben!
         RegisterUtils.chat(Regex("^LOOT SHARE You received (.+) Shard.*")) { _, matchResult ->
             onShardLootshared(matchResult.groupValues[1].orEmpty())
         }
@@ -391,17 +393,21 @@ object FishingProfitTracker {
         return dropInfo.npcPrice ?: 0.0
     }
 
-    private fun onSacksItemPickup(event: SacksItemPickupEvent) {
+    private fun onSacksItemsPickup(event: SacksItemsPickupEvent) {
         if (!isSessionActive || !isTrackerVisible()) return
         if (isInSacksGui()) return
-        if (event.amount <= 0 || event.itemName.isBlank()) return
 
         //if (isInSacksGui() || new Date() - lastGuisClosed.lastSacksGuiClosedAt < 15 * 1000) return; // Sacks closed < 15 seconds ago
         //if (isInSupercraftGui() || new Date() - lastGuisClosed.lastSupercraftGuiClosedAt < 15 * 1000) return; // Supercraft closed < 15 seconds ago
 
-        val dropInfo = getFishingProfitItemByName(event.itemName) ?: return
-        addProfitTrackerItem(dropInfo.itemId, dropInfo.itemName, event.amount, null)
-        refreshTotalItemsProfits()
+        var added = false
+        for (item in event.items) {
+            if (item.amount <= 0 || item.itemName.isBlank()) continue
+            val dropInfo = getFishingProfitItemByName(item.itemName) ?: continue
+            addProfitTrackerItem(dropInfo.itemId, dropInfo.itemName, item.amount, null, true)
+            added = true
+        }
+        if (added) refreshTotalItemsProfits()
     }
 
     private fun isInSacksGui(): Boolean {
