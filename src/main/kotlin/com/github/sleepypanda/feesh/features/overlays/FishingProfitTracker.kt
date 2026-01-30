@@ -9,8 +9,10 @@ import com.github.sleepypanda.feesh.events.GameClosedEvent
 import com.github.sleepypanda.feesh.events.GuiOpenedEvent
 import com.github.sleepypanda.feesh.events.WorldChangedEvent
 import com.github.sleepypanda.feesh.events.PetLevelUpEvent
-import com.github.sleepypanda.feesh.events.FishingProfitItemPickupEvent
 import com.github.sleepypanda.feesh.events.SacksItemPickupEvent
+import com.github.sleepypanda.feesh.constants.Sounds
+import com.github.sleepypanda.feesh.settings.categories.SoundMode
+import com.github.sleepypanda.feesh.settings.categories.General
 import com.github.sleepypanda.feesh.settings.categories.Overlays
 import com.github.sleepypanda.feesh.utils.ChatUtils
 import com.github.sleepypanda.feesh.utils.CommonUtils
@@ -25,9 +27,15 @@ import com.github.sleepypanda.feesh.utils.enums.PricingModeWithNpc
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
 import com.github.sleepypanda.feesh.utils.SoundUtils
+import com.github.sleepypanda.feesh.utils.ChatUtils.removeFormatting
+import com.github.sleepypanda.feesh.utils.ChatUtils.getFormattedString
+import com.github.sleepypanda.feesh.utils.ItemUtils
 import net.minecraft.client.gui.screen.ingame.InventoryScreen
 import net.minecraft.client.gui.screen.ChatScreen
 import net.minecraft.client.gui.screen.ingame.HandledScreen
+import com.google.gson.JsonParser
+import net.minecraft.component.DataComponentTypes
+import net.minecraft.item.ItemStack
 import net.minecraft.text.Text
 import java.util.Date
 import java.util.Timer
@@ -78,6 +86,7 @@ object FishingProfitTracker {
 
     private const val TICKS_OVERLAY_AND_ACTIVATE = 20
     private const val TICKS_ELAPSED_TIME = 20
+    private const val TICKS_INVENTORY = 5
     private const val TICKS_PRICES = 20 * 60
     private const val MAX_SECONDS_SINCE_HOOK = 60 * 5
     private const val HIDE_OVERLAY_AFTER_HOOK_MINUTES = 5
@@ -85,6 +94,7 @@ object FishingProfitTracker {
     private val data: FishingProfitData
         get() = PersistentDataManager.feeshData.fishingProfit
 
+    private var previousInventory: MutableMap<String, Int>? = null
     private var isSessionActive = false
     private var isWorldLoaded = false
     private var tickCounter = 0
@@ -119,7 +129,6 @@ object FishingProfitTracker {
         EventBus.subscribe(WorldChangedEvent::class, ::onWorldChanged)
         EventBus.subscribe(GuiOpenedEvent::class, ::onGuiOpened)
         EventBus.subscribe(PetLevelUpEvent::class, ::onPetReachedMaxLevel)
-        EventBus.subscribe(FishingProfitItemPickupEvent::class, ::onItemPickup)
         EventBus.subscribe(SacksItemPickupEvent::class, ::onSacksItemPickup)
     }
 
@@ -204,6 +213,9 @@ object FishingProfitTracker {
         if (tickCounter % TICKS_ELAPSED_TIME == 0) {
             refreshElapsedTime()
         }
+        if (tickCounter % TICKS_INVENTORY == 0) {
+            detectInventoryChanges()
+        }
         if (tickCounter % TICKS_PRICES == 0) {
             refreshTotalItemsProfits()
         }
@@ -229,6 +241,7 @@ object FishingProfitTracker {
     }
 
     private fun pause() {
+        previousInventory = null
         isSessionActive = false
     }
 
@@ -247,6 +260,7 @@ object FishingProfitTracker {
                 )
                 return
             }
+            previousInventory = null
             isSessionActive = false
             when (resetViewMode) {
                 ViewMode.SESSION -> resetSession()
@@ -377,12 +391,6 @@ object FishingProfitTracker {
         return dropInfo.npcPrice ?: 0.0
     }
 
-    private fun onItemPickup(event: FishingProfitItemPickupEvent) {
-        if (!isSessionActive || !isTrackerVisible()) return
-        onItemAddedToInventory(event.itemId, event.difference)
-        refreshTotalItemsProfits()
-    }
-
     private fun onSacksItemPickup(event: SacksItemPickupEvent) {
         if (!isSessionActive || !isTrackerVisible()) return
         if (isInSacksGui()) return
@@ -497,6 +505,98 @@ object FishingProfitTracker {
         saveData()
     }
 
+    private fun detectInventoryChanges() {
+        if (/*!isWorldLoaded || */!isSessionActive || !isTrackerVisible()) {
+            previousInventory = null
+            return
+        }
+        if (previousInventory == null) {
+            previousInventory = getFishingProfitItemsInCurrentInventory().toMutableMap()
+            return
+        }
+
+        if (isPlayerMovingItem()) return
+
+        val currentInventory = getFishingProfitItemsInCurrentInventory()
+        val screen = FeeshMod.mc.currentScreen
+        if (screen != null && screen is HandledScreen<*>) { // In chest
+            previousInventory = currentInventory.toMutableMap()
+            return
+        }
+
+        var isUpdated = false
+
+        for ((itemId, currentTotal) in currentInventory) {
+            val previousTotal = previousInventory!![itemId] ?: 0
+            if (currentTotal > previousTotal) {
+                onItemAddedToInventory(itemId, previousTotal, currentTotal)
+                isUpdated = true
+            }
+        }
+
+        previousInventory = currentInventory.toMutableMap()
+        if (isUpdated) refreshTotalItemsProfits()
+    }
+
+    private fun getFishingProfitItemsInCurrentInventory(): Map<String, Int> {
+        val result = mutableMapOf<String, Int>()
+        val player = FeeshMod.mc.player ?: return result
+
+        for (i in 0..35) {
+            val stack = player.inventory.getStack(i)
+            if (stack.isEmpty) continue
+            var slotItemName = getCleanItemName(stack.name.getFormattedString())
+            if (slotItemName.isBlank()) continue
+
+            if (slotItemName == "Enchanted Book") {
+                val loreLines = stack.get(DataComponentTypes.LORE)?.lines?.map { it.string } ?: emptyList()
+                if (loreLines.size > 0) {
+                    val description = loreLines[0]
+                    slotItemName += " ($description)"
+                }
+            }
+
+            if (slotItemName.endsWith("Exp Boost")) {
+                val loreLines = stack.get(DataComponentTypes.LORE)?.lines?.map { it.string } ?: emptyList()
+                val petItemLine = loreLines.find { it.endsWith("PET ITEM") }
+                if (petItemLine != null) {
+                    val description = petItemLine.split(" ").firstOrNull() ?: ""
+                    slotItemName += " ($description)"
+                }
+            }
+
+            if (slotItemName.startsWith("[Lvl 1] ")) {
+                val customData = ItemUtils.getCustomData(stack)
+                if (customData != null && ItemUtils.getCustomDataId(customData) == "PET") {
+                    val petInfoStr = ItemUtils.getCustomDataPetInfo(customData)
+                    val rarity = petInfoStr?.let { s ->
+                        try {
+                            JsonParser.parseString(s).asJsonObject.get("tier")?.takeIf { it.isJsonPrimitive }?.asString
+                        } catch (_: Exception) {
+                            null
+                        }
+                    }
+                    slotItemName += " (${rarity?.uppercase() ?: ""})"
+                }
+            }
+
+            val dropInfo = getFishingProfitItemByName(slotItemName)
+            if (dropInfo != null) {
+                result[dropInfo.itemId] = (result[dropInfo.itemId] ?: 0) + stack.count
+            }
+        }
+        return result
+    }
+
+    private fun getCleanItemName(itemName: String): String {
+        if (itemName.isBlank()) return ""
+        var s = itemName
+        if (Regex(".+ §8x\\d+$").matches(s)) { // Booster cookie menu or NPCs append the amount to the item name - e.g. §9Fish Affinity Talisman §8x1
+            s = s.split(" ").dropLast(1).joinToString(" ")
+        }
+        return s.removeFormatting()
+    }
+
     private fun getFishingProfitItemByName(itemName: String): FishingProfitDropInfo? {
         val lower = itemName.lowercase()
         return FishingProfitDrops.items.find {
@@ -505,11 +605,24 @@ object FishingProfitTracker {
         }
     }
 
-    private fun onItemAddedToInventory(itemId: String, amountAdded: Int) {
-        if (amountAdded <= 0) return
+    private fun onItemAddedToInventory(itemId: String, previousCount: Int, newCount: Int) {
         val dropInfo = FishingProfitDrops.items.find { it.itemId == itemId } ?: return
+        val difference = newCount - previousCount
+        if (difference <= 0) return
 
-        addProfitTrackerItem(itemId, dropInfo.itemName, amountAdded, null, true) // TODO bulk not working need to restore
+        addProfitTrackerItem(itemId, dropInfo.itemName, difference, null, true)
+
+        if (Overlays.shouldAnnounceRareDropsWhenPickup && dropInfo.shouldAnnounceRareDrop) {
+            val diffText = if (difference > 1) " ${RESET}${GRAY}${difference}x" else ""
+            ChatUtils.sendLocalChat("${GOLD}${BOLD}RARE DROP! ${RESET}${dropInfo.itemDisplayName}$diffText", true)
+            if (General.soundMode != SoundMode.OFF) SoundUtils.playCustomSound(Sounds.FEESH_RARE_DROP)
+        }
+    }
+
+    private fun isPlayerMovingItem(): Boolean {
+        val player = FeeshMod.mc.player ?: return false
+        val cursor = player.currentScreenHandler.cursorStack
+        return !cursor.isEmpty
     }
 
     private fun getCurrentViewMode(): ViewMode {

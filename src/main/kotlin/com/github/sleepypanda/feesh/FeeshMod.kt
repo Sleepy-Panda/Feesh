@@ -14,7 +14,6 @@ import com.github.sleepypanda.feesh.features.alerts.PlayerDeathAlert
 import com.github.sleepypanda.feesh.features.alerts.LootshareAlert
 import com.github.sleepypanda.feesh.features.alerts.FishingBagDisabledAlert
 import com.github.sleepypanda.feesh.features.alerts.RareDropAlert
-import com.github.sleepypanda.feesh.features.alerts.RareDropChatAlert
 import com.github.sleepypanda.feesh.features.alerts.WormTheFishCaughtAlert
 import com.github.sleepypanda.feesh.features.chat.RareCatchMessage
 import com.github.sleepypanda.feesh.features.chat.RareDropMessage
@@ -50,7 +49,6 @@ import com.github.sleepypanda.feesh.events.publishers.SeaCreaturesPublisher
 import com.github.sleepypanda.feesh.events.publishers.RareDropsPublisher
 import com.github.sleepypanda.feesh.events.publishers.PartyChatPublisher
 import com.github.sleepypanda.feesh.events.publishers.PetLevelUpPublisher
-import com.github.sleepypanda.feesh.events.publishers.FishingProfitItemPickupPublisher
 import com.github.sleepypanda.feesh.events.publishers.SacksItemPickupPublisher
 import com.github.sleepypanda.feesh.settings.Settings
 import com.github.sleepypanda.feesh.utils.KeybindUtils
@@ -111,13 +109,11 @@ class FeeshMod : ModInitializer {
         RareDropsPublisher.init()
         PartyChatPublisher.init()
         PetLevelUpPublisher.init()
-        FishingProfitItemPickupPublisher.init()
         SacksItemPickupPublisher.init()
         
         // Alerts
         RareCatchAlert.init()
         RareDropAlert.init()
-        RareDropChatAlert.init()
         SpiritMaskAlert.init()
         ChumBucketAutoPickupAlert.init()
         PetLevelUpAlert.init()
