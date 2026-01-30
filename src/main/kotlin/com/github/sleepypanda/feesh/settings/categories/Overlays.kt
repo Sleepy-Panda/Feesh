@@ -404,11 +404,6 @@ To reset [Total]: ${AQUA}/feeshResetFishingProfitTotal
         this.slider = true
     }
 
-    var shouldAnnounceRareDropsWhenPickup by boolean(true) {
-        this.name = Translated("Announce rare drops")
-        this.description = Translated("Send RARE DROP! message to player's chat when a rare item is added to the fishing profit tracker (for relatively rare items that have no RARE DROP! message from Hypixel by default).")
-    }
-
     var resetFishingProfitTrackerOnGameClosed by boolean(true) {
         this.name = Translated("Autoreset [Session] on closing game")
         this.description = Translated("Automatically reset the fishing profit tracker [Session] when you close Minecraft.")

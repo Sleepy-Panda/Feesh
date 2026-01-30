@@ -44,6 +44,11 @@ object Alerts : CategoryKt("Alerts") {
         this.name = Translated("Select rare drops to alert on")
     }
 
+    var alertOnRareDropsChatWhenPickup by boolean(true) {
+        this.name = Translated("Announce RARE DROP! in chat when some items picked up")
+        this.description = Translated("Send RARE DROP! message to player's chat when a rare item is picked up (for relatively rare items that have no RARE DROP! message from Hypixel by default).")
+    }
+
     val includePriceIntoRareDropAlert by boolean(true) {
         this.name = Translated("Show dropped item price")
         this.description = Translated("Show the price of the dropped item in the alert.")

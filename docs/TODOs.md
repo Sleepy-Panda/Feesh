@@ -1,6 +1,6 @@
 ## Versions
 
-- Add support of 1.21.11
+- Add support of 1.21.11?
 - Publish on Modrinth
 - Make a version checker which announces new versions found on Modrinth
 
@@ -22,16 +22,16 @@ Death sound is not played. :c Probably because player's world is not loaded whil
 
 ## Sounds
 
-- Sounds for Rare Drops.
 - Custom sounds setup by user.
 
 ## Overlays
 
 - Make lines clickable for Reset/Pause/etc
 - Remove command hint from overlays, add buttons to sample overlays in /feeshMoveAllGuis
-- Check that it works fine after loading the module without coords file
+- Refactor logic which counts ticks in each overlay
+- Check that it works fine after loading the module without coords file, without data file
 - Use Center alignment as default for some widgets
-- Make overlays rendered under TabList
+- Make overlays rendered under TabList and Chat
 - Check if "0" key works for numpad in /feeshMoveAllGuis
 
 ## Sea creatures
