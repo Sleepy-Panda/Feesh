@@ -14,6 +14,7 @@ import com.github.sleepypanda.feesh.events.OwnSeaCreatureCaughtEvent
 import com.github.sleepypanda.feesh.events.ClientTickEvent
 import com.github.sleepypanda.feesh.events.GameClosedEvent
 import com.github.sleepypanda.feesh.utils.gui.FeeshGui
+import com.github.sleepypanda.feesh.utils.gui.GuiButton
 import com.github.sleepypanda.feesh.settings.categories.Overlays
 import com.github.sleepypanda.feesh.utils.data.PersistentDataManager
 
@@ -115,8 +116,6 @@ object JerryWorkshopTracker {
         if (!Overlays.jerryWorkshopTrackerOverlay || !WorldUtils.isInSkyblock() || WorldUtils.getWorldName() != WorldUtils.JERRY_WORKSHOP || !PlayerUtils.isFishingHookSeenMinutesAgo(5)) return
 
         val lines = mutableListOf<String>()
-
-        lines.add("${GRAY}[${RED}Click to reset${GRAY}] ${DARK_GRAY}(/${RESET_COMMAND})")
         lines.add(baseTitle)
 
         lines.addAll(data.yeti.getOverlayText(yeti.displayName))
@@ -133,6 +132,7 @@ object JerryWorkshopTracker {
         }
 
         gui.setLines(lines)
+        gui.setButtons(listOf(GuiButton(0, "${GRAY}[${RED}Click to reset${GRAY}]", { resetJerryWorkshopTracker(false) })))
     }
 
     private fun hasData(): Boolean {

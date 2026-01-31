@@ -11,6 +11,7 @@ import com.github.sleepypanda.feesh.utils.ChatUtils
 import com.github.sleepypanda.feesh.utils.RegisterUtils
 import com.github.sleepypanda.feesh.utils.PriceUtils
 import com.github.sleepypanda.feesh.utils.gui.FeeshGui
+import com.github.sleepypanda.feesh.utils.gui.GuiButton
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
 import com.github.sleepypanda.feesh.utils.data.PersistentDataManager
@@ -321,16 +322,12 @@ object ArchfiendDiceProfitTracker {
             val sourceObj = getSourceObject(viewMode)
             val viewModeText = getViewModeDisplayText(viewMode)
             val lines = mutableListOf<String>()
-
             val nextMode = if (viewMode == ViewMode.SESSION) ViewMode.TOTAL else ViewMode.SESSION
             val nextModeText = getViewModeDisplayText(nextMode)
-            lines.add("${GRAY}[Click to show $nextModeText${GRAY}] ${DARK_GRAY}(/$TOGGLE_VIEW_MODE_COMMAND)")
-
             val resetCommand = when (viewMode) {
                 ViewMode.SESSION -> "/$RESET_COMMAND"
                 ViewMode.TOTAL -> "/$RESET_TOTAL_COMMAND"
             }
-            lines.add("${GRAY}[${RED}Click to reset${GRAY}] ${DARK_GRAY}($resetCommand)")
 
             lines.add("${baseTitle} ${viewModeText}")
             lines.add("")
@@ -354,6 +351,10 @@ object ArchfiendDiceProfitTracker {
             lines.add("${AQUA}${BOLD}Total profit: ${profitColor}${profitShort}")
 
             gui.setLines(lines)
+            gui.setButtons(listOf(
+                GuiButton(0, "${GRAY}[Click to show $nextModeText${GRAY}]", { toggleViewMode() }),
+                GuiButton(1, "${GRAY}[${RED}Click to reset${GRAY}]", { resetArchfiendDiceProfitTracker(false, getCurrentViewMode()) })
+            ))
         } catch (e: Exception) {
             FeeshMod.LOGGER.error("[Feesh] Failed to refresh tracker data for Archfiend Dice profit tracker.", e)
         }
