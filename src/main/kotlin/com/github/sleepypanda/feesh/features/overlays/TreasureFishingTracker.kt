@@ -47,17 +47,18 @@ object TreasureFishingTracker {
         var viewMode: String = ViewMode.SESSION.name
     )
 
+    const val RESET_SESSION_COMMAND = "feeshResetTreasureFishing"
+    const val RESET_TOTAL_COMMAND = "feeshResetTreasureFishingTotal"
+
+    private val TOGGLE_VIEW_MODE_COMMAND = "feeshToggleTreasureFishingViewMode"
+    private val PATTERN_TREASURE_CATCH = Regex("^⛃ (GOOD|GOOD JUNK|GREAT|GREAT JUNK|OUTSTANDING|OUTSTANDING JUNK) CATCH!")
+
     private var data = PersistentDataManager.feeshData.treasureFishing
     private var lastTreasureCaughtAt: Date? = null
     private var tickCounter = 0
     private const val TICKS_PER_UPDATE = 20
     private val baseTitle = "${AQUA}${BOLD}Treasure fishing tracker"
     private val treasureDye = RareDrops.rareDrops.find { it.itemName == "Treasure Dye" }!!
-
-    private val RESET_SESSION_COMMAND = "feeshResetTreasureFishing"
-    private val RESET_TOTAL_COMMAND = "feeshResetTreasureFishingTotal"
-    private val TOGGLE_VIEW_MODE_COMMAND = "feeshToggleTreasureFishingViewMode"
-    private val PATTERN_TREASURE_CATCH = Regex("^⛃ (GOOD|GOOD JUNK|GREAT|GREAT JUNK|OUTSTANDING|OUTSTANDING JUNK) CATCH!")
 
     private val gui = FeeshGui()
         .setCoordsDataKey("treasureFishingTracker")

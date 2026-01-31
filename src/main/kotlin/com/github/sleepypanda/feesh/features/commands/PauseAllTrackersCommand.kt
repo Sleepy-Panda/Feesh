@@ -9,8 +9,10 @@ import net.minecraft.client.option.KeyBinding
 import org.lwjgl.glfw.GLFW
 
 object PauseAllTrackersCommand {
-    fun init() {     
-        RegisterUtils.command("feeshPauseAllTrackers") {
+    const val COMMAND_NAME = "feeshPauseAllTrackers"
+
+    fun init() {
+        RegisterUtils.command(COMMAND_NAME) {
             pauseAllTrackers()
         }
 

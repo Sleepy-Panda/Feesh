@@ -7,6 +7,7 @@ import com.github.sleepypanda.feesh.utils.ChatUtils
 import com.github.sleepypanda.feesh.utils.data.PersistentDataManager
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
+import com.github.sleepypanda.feesh.utils.gui.MoveGuis
 
 object Welcome {
     fun init() {
@@ -29,7 +30,7 @@ object Welcome {
         ChatUtils.sendLocalChat(chatBreak)
         ChatUtils.sendLocalChat("${AQUA}α ${WHITE}${BOLD}Welcome to ${GOLD}${BOLD}${FeeshMod.MOD_NAME}${WHITE}${BOLD}!")
         ChatUtils.sendLocalChat("${GRAY}- ${WHITE}To open the settings, do ${AQUA}/feesh")
-        ChatUtils.sendLocalChat("${GRAY}- ${WHITE}To move the enabled GUIs, do ${AQUA}/feeshMoveAllGuis")
+        ChatUtils.sendLocalChat("${GRAY}- ${WHITE}To move the enabled GUIs, do ${AQUA}/${MoveGuis.COMMAND_NAME}")
         ChatUtils.sendLocalChat("${GRAY}Happy Fishing!")
         ChatUtils.sendLocalChat(chatBreak)
     }

@@ -42,14 +42,15 @@ object SeaCreaturesTracker {
         var viewMode: String = ViewMode.SESSION.name
     )
     
+    const val RESET_SESSION = "feeshResetSeaCreatures"
+    const val RESET_TOTAL = "feeshResetSeaCreaturesTotal"
+
+    private const val TICKS_PER_UPDATE = 20
+
     private var data = PersistentDataManager.feeshData.seaCreatures
     private val decimalFormat = DecimalFormat("#.#")
     private var tickCounter = 0
     private val baseTitle = "${AQUA}${BOLD}Sea creatures tracker"
-
-    private const val TICKS_PER_UPDATE = 20
-    private const val RESET_SESSION = "feeshResetSeaCreatures"
-    private const val RESET_TOTAL = "feeshResetSeaCreaturesTotal"
 
     private val gui = FeeshGui()
         .setCoordsDataKey("seaCreaturesTracker")

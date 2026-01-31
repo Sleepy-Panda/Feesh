@@ -17,6 +17,8 @@ import net.minecraft.text.ClickEvent.RunCommand
 import net.minecraft.text.HoverEvent.ShowText
 
 object GearCraftPricesCommand {
+    const val COMMAND_NAME = "feeshGearCraftPrices"
+
     data class CraftableItem(
         val itemId: String,
         val itemName: String,
@@ -81,7 +83,7 @@ object GearCraftPricesCommand {
     )
 
     fun init() {
-        RegisterUtils.command("feeshGearCraftPrices") {
+        RegisterUtils.command(COMMAND_NAME) {
             calculateGearCraftPrices()
         }
     }
@@ -92,7 +94,9 @@ object GearCraftPricesCommand {
                 ChatUtils.sendLocalChat("${RED}You must be on Hypixel Skyblock to use this command!", true)
                 return
             }
-                        
+                 
+            val chatBreak = "${GRAY}${ChatUtils.getChatBreak("-")}"
+            ChatUtils.sendLocalChat(chatBreak)
             ChatUtils.sendLocalChat("${GREEN}${BOLD}Gear craft prices", true)
             ChatUtils.sendLocalChat("${DARK_GRAY}Prices for crafted gear compared with price for selling base items via sell offer. Click a line to open Supercraft menu.")
             

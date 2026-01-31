@@ -11,6 +11,8 @@ import java.time.format.DateTimeFormatter
 import java.util.concurrent.TimeUnit
 
 object SpiderDenRainScheduleCommand {
+    const val COMMAND_NAME = "feeshSpiderDenRainSchedule"
+
     private const val RAIN_COOLDOWN = 2400L
     private const val RAIN_DURATION = 1200L
     private const val CYCLE_DURATION = RAIN_COOLDOWN + RAIN_DURATION
@@ -19,7 +21,7 @@ object SpiderDenRainScheduleCommand {
     private const val SKYBLOCK_EPOCH_START_SECONDS = SKYBLOCK_EPOCH_START_MS / 1000
 
     fun init() {
-        RegisterUtils.command("feeshSpiderDenRainSchedule") {
+        RegisterUtils.command(COMMAND_NAME) {
             showSpidersDenRainSchedule()
         }
     }
@@ -75,6 +77,8 @@ object SpiderDenRainScheduleCommand {
                 nextRain + 2 * CYCLE_DURATION
             )
 
+            val chatBreak = "${GRAY}${ChatUtils.getChatBreak("-")}"
+            ChatUtils.sendLocalChat(chatBreak)
             ChatUtils.sendLocalChat("${GREEN}${BOLD}Spider's Den rain schedule${RESET}", true)
            
             val message = StringBuilder()
