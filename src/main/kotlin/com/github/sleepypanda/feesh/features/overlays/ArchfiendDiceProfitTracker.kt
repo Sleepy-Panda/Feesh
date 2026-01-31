@@ -4,6 +4,7 @@ import com.github.sleepypanda.feesh.FeeshMod
 import com.github.sleepypanda.feesh.events.EventBus
 import com.github.sleepypanda.feesh.events.ClientTickEvent
 import com.github.sleepypanda.feesh.events.GameClosedEvent
+import com.github.sleepypanda.feesh.events.WorldChangedEvent
 import com.github.sleepypanda.feesh.settings.categories.Overlays
 import com.github.sleepypanda.feesh.utils.CommonUtils
 import com.github.sleepypanda.feesh.utils.WorldUtils
@@ -97,6 +98,7 @@ object ArchfiendDiceProfitTracker {
         registerChatHandlers()
         registerCommands()
         EventBus.subscribe(ClientTickEvent::class, ::onClientTick)
+        EventBus.subscribe(WorldChangedEvent::class, ::onWorldChanged)
         EventBus.subscribe(GameClosedEvent::class, ::onGameClosed)
     }
 
@@ -136,7 +138,11 @@ object ArchfiendDiceProfitTracker {
         if (tickCounter < TICKS_PER_UPDATE) return
         tickCounter = 0
 
-        refreshOverlay()
+        updateGuiLines()
+    }
+
+    private fun onWorldChanged(@Suppress("UNUSED_PARAMETER") event: WorldChangedEvent) {
+        lastDiceRolledAt = null
     }
 
     private fun onGameClosed(@Suppress("UNUSED_PARAMETER") event: GameClosedEvent) {
@@ -160,7 +166,7 @@ object ArchfiendDiceProfitTracker {
         val currentMode = getCurrentViewMode()
         val newMode = if (currentMode == ViewMode.SESSION) ViewMode.TOTAL else ViewMode.SESSION
         data.viewMode = newMode.name
-        refreshOverlay()
+        updateGuiLines()
         saveData()
     }
 
@@ -210,7 +216,7 @@ object ArchfiendDiceProfitTracker {
                 ViewMode.TOTAL -> resetTotal()
             }
 
-            refreshOverlay()
+            updateGuiLines()
             ChatUtils.sendLocalChat("${WHITE}Archfiend Dice profit tracker ${viewModeText} ${WHITE}was reset.", true)
         } catch (e: Exception) {
             FeeshMod.LOGGER.error("[Feesh] Failed to reset Archfiend Dice profit tracker.", e)
@@ -300,13 +306,13 @@ object ArchfiendDiceProfitTracker {
             }
 
             saveData()
-            refreshOverlay()
+            updateGuiLines()
         } catch (e: Exception) {
             FeeshMod.LOGGER.error("[Feesh] Failed to track Archfiend Dice roll for Archfiend Dice profit tracker.", e)
         }
     }
 
-    private fun refreshOverlay() {
+    private fun updateGuiLines() {
         try {
             gui.clearLines()
 
@@ -324,10 +330,6 @@ object ArchfiendDiceProfitTracker {
             val lines = mutableListOf<String>()
             val nextMode = if (viewMode == ViewMode.SESSION) ViewMode.TOTAL else ViewMode.SESSION
             val nextModeText = getViewModeDisplayText(nextMode)
-            val resetCommand = when (viewMode) {
-                ViewMode.SESSION -> "/$RESET_COMMAND"
-                ViewMode.TOTAL -> "/$RESET_TOTAL_COMMAND"
-            }
 
             lines.add("${baseTitle} ${viewModeText}")
             lines.add("")

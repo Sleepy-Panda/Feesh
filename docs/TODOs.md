@@ -1,6 +1,8 @@
 ## Tech Debt
 
 - Go through TODOs in the code
+- Rework ticks counters across all overlays
+- Make chat messages sent with queueing - do not let spam into party chat when a lot of events happens
 
 ## Versions
 
@@ -16,6 +18,10 @@ Make sure newly added values in the dropdowns are selected if needed. E.g. if I 
 ## Data
 
 Make sure old file from CT module can be moved to the mod with minor data loss.
+
+## Fishing Hook
+
+Alignment (center) stopped working at some point.
 
 ## Player death alert
 
