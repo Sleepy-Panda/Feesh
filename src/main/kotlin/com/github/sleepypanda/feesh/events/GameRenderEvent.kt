@@ -7,8 +7,8 @@ import net.minecraft.client.font.TextRenderer
 import net.minecraft.client.render.RenderTickCounter
 
 /*
- * This event is triggered when the in-game HUD is rendered.
- * Custom drawings are rendered under the background when a GUI (e.g. Inventory) is opened.
+ * This event is triggered during in-game HUD render, right before TabList (Players list) is drawn.
+ * Use it to draw custom content UNDER TabList and the rest of the HUD.
  */
 data class GameRenderEvent(
     val drawContext: DrawContext,

@@ -1,8 +1,13 @@
+## Tech Debt
+
+- Go through TODOs in the code
+
 ## Versions
 
 - Add support of 1.21.11
 - Publish on Modrinth
 - Make a version checker which announces new versions found on Modrinth
+- Will NEU prices API be available? Do I need to hop to another one?
 
 ## Settings
 
@@ -31,7 +36,6 @@ Death sound is not played. :c Probably because player's world is not loaded whil
 - Remove command hint from overlays, add buttons to sample overlays in /feeshMoveAllGuis
 - Check that it works fine after loading the module without coords file
 - Use Center alignment as default for some widgets
-- Make overlays rendered under TabList
 - Check if "0" key works for numpad in /feeshMoveAllGuis
 
 ## Sea creatures
