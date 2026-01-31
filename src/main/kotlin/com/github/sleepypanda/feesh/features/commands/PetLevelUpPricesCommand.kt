@@ -5,7 +5,7 @@ import com.github.sleepypanda.feesh.utils.ChatUtils
 import com.github.sleepypanda.feesh.utils.WorldUtils
 import com.github.sleepypanda.feesh.utils.PriceUtils
 import com.github.sleepypanda.feesh.utils.CommonUtils
-import com.github.sleepypanda.feesh.utils.ChatUtils.removeFormatting
+import com.github.sleepypanda.feesh.utils.ItemUtils
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
 import com.github.sleepypanda.feesh.FeeshMod
@@ -56,17 +56,10 @@ object PetLevelUpPricesCommand {
             }
             
             val prices = PETS_TO_CHECK.map { pet ->
-                val petName = pet.petDisplayName.removeFormatting()
-                val rarityColorCode = pet.petDisplayName.substring(0, 2)
-                val rarityCode = CommonUtils.getRarityNumericCode(rarityColorCode)
-                
-                val level1ItemId = petName.split(" ").joinToString("_").uppercase() + ";$rarityCode" // FLYING_FISH;4
-                val level1AuctionPrice = PriceUtils.getAuctionItemPrice(level1ItemId)
-                val level1Price = level1AuctionPrice?.lbin
-                
-                val level100ItemId = level1ItemId + "+100" // FLYING_FISH;4+100
-                val level100AuctionPrice = PriceUtils.getAuctionItemPrice(level100ItemId)
-                val level100Price = level100AuctionPrice?.lbin
+                val level1ItemId = ItemUtils.getLevel1PetId(pet.petDisplayName)
+                val level1Price = PriceUtils.getAuctionItemPrice(level1ItemId)?.lbin
+                val level100ItemId = ItemUtils.getMaxedPetId(pet.petDisplayName, 100)
+                val level100Price = PriceUtils.getAuctionItemPrice(level100ItemId)?.lbin
                 
                 val diff = if (level1Price != null && level100Price != null) level100Price - level1Price else null
                 val coinsPerXp = if (diff != null) (diff / MAX_XP) * pet.xpGainMultiplier else null

@@ -8,6 +8,9 @@ import com.github.sleepypanda.feesh.utils.SoundUtils
 import com.github.sleepypanda.feesh.utils.WorldUtils
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
+import com.github.sleepypanda.feesh.utils.PriceUtils
+import com.github.sleepypanda.feesh.utils.ChatUtils
+import com.github.sleepypanda.feesh.utils.ItemUtils
 
 object PetLevelUpAlert {
     fun init() {
@@ -19,5 +22,15 @@ object PetLevelUpAlert {
 
         CommonUtils.showTitle("${event.petDisplayName} ${RESET}${WHITE}is maxed", "${WHITE}Level ${event.level}")
         SoundUtils.playSound()
+
+        val itemIdMaxLevel = ItemUtils.getMaxedPetId(event.petDisplayName, event.level)
+        val itemId1level = ItemUtils.getLevel1PetId(event.petDisplayName)
+        val basePrice = PriceUtils.getAuctionItemPrice(itemId1level)?.lbin ?: 0.0
+        val priceMaxLevel = PriceUtils.getAuctionItemPrice(itemIdMaxLevel)?.lbin ?: 0.0
+        if (priceMaxLevel <= 0.0) return
+
+        val priceStr = "${GOLD}${CommonUtils.toShortNumber(priceMaxLevel)}"
+        val profitStr = "${GOLD}${CommonUtils.toShortNumber(priceMaxLevel - basePrice)}"
+        ChatUtils.sendLocalChat("Estimated cost for this pet is ${priceStr}${RESET}, profit for leveling up is ${profitStr}${RESET}.")
     }
 }
