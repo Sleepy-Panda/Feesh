@@ -140,13 +140,13 @@ object WaterHotspotsAndBayouTracker {
     }
 
     private fun onTitanoboaShed(magicFind: Int?) {
-        data.titanoboaSheds.updateAfterDrop(titanoboaShed.boldDisplayName, titanoboa.boldDisplayName, magicFind)
+        data.titanoboaSheds.updateAfterDrop(titanoboaShed.boldDisplayName, titanoboa.displayName, magicFind)
         saveData()
         updateGuiLines()
     }
 
     private fun onTikiMask(magicFind: Int?) {
-        data.tikiMasks.updateAfterDrop(tikiMask.boldDisplayName, wikiTiki.boldDisplayName, magicFind)
+        data.tikiMasks.updateAfterDrop(tikiMask.boldDisplayName, wikiTiki.displayName, magicFind)
         saveData()
         updateGuiLines()
     }

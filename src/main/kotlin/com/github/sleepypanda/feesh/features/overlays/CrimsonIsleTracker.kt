@@ -212,7 +212,7 @@ object CrimsonIsleTracker {
     }
 
     private fun onRadioactiveVial(magicFind: Int?) {
-        data.radioactiveVials.updateAfterDrop(radioactiveVial.boldDisplayName, lordJawbus.boldDisplayName, magicFind)
+        data.radioactiveVials.updateAfterDrop(radioactiveVial.boldDisplayName, lordJawbus.displayName, magicFind)
         saveData()
         updateGuiLines()
     }
