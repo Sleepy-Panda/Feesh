@@ -2,16 +2,34 @@ package com.github.sleepypanda.feesh.utils.gui
 
 import com.github.sleepypanda.feesh.events.GameRenderEvent
 import com.github.sleepypanda.feesh.events.ScreenAfterBackgroundRenderEvent
+import com.github.sleepypanda.feesh.events.AfterMouseClickEvent
 import com.github.sleepypanda.feesh.events.EventBus
 import com.github.sleepypanda.feesh.utils.WorldUtils
 import com.github.sleepypanda.feesh.utils.enums.Alignment
 import com.github.sleepypanda.feesh.utils.data.PersistentDataManager
 import net.minecraft.text.Text
 import net.minecraft.client.gui.screen.ingame.InventoryScreen
+import net.minecraft.client.gui.screen.ChatScreen
 import net.minecraft.client.gui.DrawContext
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.font.TextRenderer
+import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents
+import net.fabricmc.fabric.api.client.screen.v1.ScreenMouseEvents
+import net.minecraft.client.gui.Click
 import java.awt.Color
+
+/**
+ * A button within an overlay line. Contains the display text and click callback.
+ * Buttons are rendered on top of all other content in the overlay.
+ * @param lineIndex 0-based index of the line in the overlay. Used for hit detection.
+ * @param text The text with formatting to display on the button.
+ * @param onClick The callback to execute when the button is clicked.
+ */
+data class GuiButton(
+    val lineIndex: Int,
+    val text: String,
+    val onClick: () -> Unit
+)
 
 /**
  * A class that represents a GUI for the Feesh mod. GUI is shown when in Skyblock and the condition is met.
@@ -29,7 +47,7 @@ import java.awt.Color
 class FeeshGui {
     companion object {
         private val registeredGuis = mutableListOf<FeeshGui>()
-        
+
         fun getAllRegisteredGuis(): List<FeeshGui> {
             return registeredGuis.toList()
         }
@@ -47,13 +65,28 @@ class FeeshGui {
     private var sampleLines: List<String> = emptyList()
 
     private var color: Int = Color(255, 255, 255, 255).rgb
+    private var buttons: List<GuiButton> = emptyList()
 
     constructor() {
         registeredGuis.add(this)
         EventBus.subscribe(GameRenderEvent::class, { event -> onDraw(event.drawContext, event.textRenderer, event.mcClient) })
         EventBus.subscribe(ScreenAfterBackgroundRenderEvent::class, ::onPostDrawAfterBackground)
+        EventBus.subscribe(AfterMouseClickEvent::class, ::onMouseClick)
     }
     
+    private fun onMouseClick(event: AfterMouseClickEvent) {
+        if (buttons.isEmpty()) return
+        if (event.screen !is InventoryScreen && event.screen !is ChatScreen) return
+        if (!WorldUtils.isInSkyblock()) return
+        if (event.button != 0) return
+
+        val textRenderer = event.screen.textRenderer ?: return
+        val clickedButton = getClickedButton(textRenderer, event.mouseX, event.mouseY)
+        if (clickedButton != null) {
+            clickedButton.onClick()
+        }
+    }
+
     fun getCoordsDataKey(): String = coordsDataKey
     fun getX(): Int = x
     fun getY(): Int = y
@@ -104,8 +137,10 @@ class FeeshGui {
     fun recalculateXForAlignment(textRenderer: TextRenderer, oldAlignment: Alignment, newAlignment: Alignment) {
         if (oldAlignment == newAlignment) return
         
-        // Use sampleLines if available, otherwise use lines
-        val linesToUse = if (sampleLines.isNotEmpty()) sampleLines else lines
+        val linesToUse = when {
+            sampleLines.isNotEmpty() -> sampleLines
+            else -> emptyList()
+        }
         if (linesToUse.isEmpty()) return
         
         val maxWidth = linesToUse.maxOfOrNull { textRenderer.getWidth(Text.literal(it)) } ?: 0
@@ -128,18 +163,52 @@ class FeeshGui {
     }
     
     /**
-     * Gets the maximum width of the overlay using sampleLines if available, otherwise lines.
+     * Gets all display lines in order: buttons first (at their lineIndex), then lines.
+     */
+    private fun getAllDisplayLines(): List<String> {
+        val buttonLines = buttons.sortedBy { it.lineIndex }.map { it.text }
+        return buttonLines + lines
+    }
+
+    /**
+     * Gets the maximum width of the overlay including buttons and lines.
      */
     private fun getMaxWidth(textRenderer: TextRenderer): Int {
-        val linesToUse = if (sampleLines.isNotEmpty()) sampleLines else lines
+        val linesToUse = when {
+            buttons.isNotEmpty() || lines.isNotEmpty() -> getAllDisplayLines()
+            else -> emptyList()
+        }
         return linesToUse.maxOfOrNull { textRenderer.getWidth(Text.literal(it)) } ?: 0
     }
     
+    /**
+     * Gets the maximum width of the sample overlay.
+     */
+    private fun getMaxSampleWidth(textRenderer: TextRenderer): Int {
+        val linesToUse = when {
+            sampleLines.isNotEmpty() -> sampleLines
+            else -> emptyList()
+        }
+        return linesToUse.maxOfOrNull { textRenderer.getWidth(Text.literal(it)) } ?: 0
+    }
+
     /**
      * Converts x coordinate (which represents different points based on alignment) to actual left edge.
      */
     private fun getLeftEdge(textRenderer: TextRenderer): Int {
         val maxWidth = getMaxWidth(textRenderer)
+        return when (alignment) {
+            Alignment.LEFT -> x
+            Alignment.CENTER -> x - maxWidth / 2
+            Alignment.RIGHT -> x - maxWidth
+        }
+    }
+
+    /**
+     * Converts x coordinate (which represents different points based on alignment) to actual left edge.
+     */
+    private fun getLeftSampleEdge(textRenderer: TextRenderer): Int {
+        val maxWidth = getMaxSampleWidth(textRenderer)
         return when (alignment) {
             Alignment.LEFT -> x
             Alignment.CENTER -> x - maxWidth / 2
@@ -167,8 +236,19 @@ class FeeshGui {
         return this
     }
 
+    /**
+     * Sets the list of buttons. Each button has lineIndex, text, and onClick callback.
+     */
+    fun setButtons(buttons: List<GuiButton>): FeeshGui {
+        this.buttons = buttons
+        return this
+    }
+
+    fun getButtons(): List<GuiButton> = buttons
+
     fun clearLines(): FeeshGui {
         this.lines = emptyList()
+        this.buttons = emptyList()
         return this
     }
 
@@ -193,21 +273,17 @@ class FeeshGui {
         drawContext.matrices.scale(scale, scale)
 
         val scaledY = (y / scale).toInt()
-        
-        // Use sampleLines for maxWidth calculation to match drawSample behavior
         val maxWidth = getMaxWidth(textRenderer)
-        
-        // Convert x (which represents different points based on alignment) to left edge
         val leftEdge = getLeftEdge(textRenderer)
         val scaledLeftEdge = (leftEdge / scale).toInt()
 
+        val allLines = getAllDisplayLines()
         var currentY = scaledY
 
-        for (line in lines) {
+        for (line in allLines) {
             val text = Text.literal(line)
             val textWidth = textRenderer.getWidth(text)
-            
-            // Text is aligned within the overlay block based on alignment
+
             val actualX = when (alignment) {
                 Alignment.LEFT -> scaledLeftEdge
                 Alignment.RIGHT -> scaledLeftEdge + maxWidth - textWidth
@@ -238,11 +314,11 @@ class FeeshGui {
 
         val scaledY = (y / scale).toInt()
         
-        val maxWidth = getMaxWidth(textRenderer)
+        val maxWidth = getMaxSampleWidth(textRenderer)
         val height = (sampleLines.size * (textRenderer.fontHeight + 2))
         
         // Convert x (which represents different points based on alignment) to left edge
-        val leftEdge = getLeftEdge(textRenderer)
+        val leftEdge = getLeftSampleEdge(textRenderer)
         val scaledLeftEdge = (leftEdge / scale).toInt()
         
         // Background is always drawn from left edge
@@ -268,14 +344,14 @@ class FeeshGui {
         drawContext.matrices.popMatrix()
     }
 
-    fun isInSample(textRenderer: TextRenderer, client: MinecraftClient, mouseX: Double, mouseY: Double): Boolean {
+    fun isInSample(textRenderer: TextRenderer, @Suppress("UNUSED_PARAMETER") client: MinecraftClient, mouseX: Double, mouseY: Double): Boolean {
         if (sampleLines.isEmpty()) return false
 
-        val maxWidth = getMaxWidth(textRenderer) * scale
+        val maxWidth = getMaxSampleWidth(textRenderer) * scale
         val height = (sampleLines.size * (textRenderer.fontHeight + 2)) * scale
         
         // Convert x to left edge for hitbox calculation
-        val leftEdge = getLeftEdge(textRenderer).toFloat()
+        val leftEdge = getLeftSampleEdge(textRenderer).toFloat()
             
         if (mouseX >= leftEdge - 2 &&
             mouseX <= leftEdge + maxWidth + 2 &&
@@ -284,5 +360,35 @@ class FeeshGui {
             return true
         }
         return false
+    }
+
+    /**
+     * Returns the button if (mouseX, mouseY) hits a button line, null otherwise.
+     * Uses exclusive line boundaries so a click between two lines hits neither.
+     */
+    private fun getClickedButton(textRenderer: TextRenderer, mouseX: Double, mouseY: Double): GuiButton? {
+        if (lines.isEmpty() || buttons.isEmpty()) return null
+
+        val maxWidth = getMaxWidth(textRenderer) * scale
+        val leftEdge = getLeftEdge(textRenderer).toFloat()
+
+        if (mouseX < leftEdge - 2 || mouseX > leftEdge + maxWidth + 2) return null
+
+        val fontHeight = textRenderer.fontHeight
+        val lineHeightPx = (fontHeight + 2) * scale
+
+        val totalLines = buttons.sortedBy { it.lineIndex }.size + lines.size
+        for (button in buttons) {
+            val i = button.lineIndex
+            if (i < 0 || i >= totalLines) continue
+
+            val lineTop = y + i * lineHeightPx
+            val lineBottom = y + (i + 1) * lineHeightPx
+
+            if (mouseY >= lineTop && mouseY < lineBottom) {
+                return button
+            }
+        }
+        return null
     }
 }

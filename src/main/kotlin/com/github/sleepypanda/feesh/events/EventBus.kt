@@ -7,6 +7,7 @@ import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientEntityEvents
+import net.fabricmc.fabric.api.client.screen.v1.ScreenMouseEvents
 import net.minecraft.text.Text
 import net.minecraft.client.MinecraftClient
 import net.minecraft.world.World
@@ -42,6 +43,11 @@ object EventBus {
         ScreenEvents.AFTER_INIT.register { client, screen, _, _ ->
             ScreenEvents.afterRender(screen).register { afterRenderScreen, drawContext, mouseX, mouseY, tickDelta ->
                 publish(ScreenPostRenderEvent(drawContext, client.textRenderer, client, afterRenderScreen, mouseX, mouseY, tickDelta))
+            }
+
+            ScreenMouseEvents.afterMouseClick(screen).register { scr, click, consumed ->
+               publish(AfterMouseClickEvent(scr, click.x(), click.y(), click.buttonInfo().button))
+               consumed
             }
         }
 

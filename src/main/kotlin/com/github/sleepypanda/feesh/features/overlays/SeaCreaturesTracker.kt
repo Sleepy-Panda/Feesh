@@ -14,6 +14,7 @@ import com.github.sleepypanda.feesh.utils.WorldUtils
 import com.github.sleepypanda.feesh.utils.ChatUtils
 import com.github.sleepypanda.feesh.utils.RegisterUtils
 import com.github.sleepypanda.feesh.utils.gui.FeeshGui
+import com.github.sleepypanda.feesh.utils.gui.GuiButton
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
 import com.github.sleepypanda.feesh.utils.PlayerUtils
@@ -265,21 +266,12 @@ object SeaCreaturesTracker {
                 compareByDescending<TrackerLineEntry> { CommonUtils.getRarityNumericCode(it.seaCreatureInfo.rarityColorCode) }
                 .thenByDescending { it.amount }
             )
-            else -> entries.sortedByDescending { it.amount }
         }
 
         val lines = mutableListOf<String>()
-
         val nextMode = if (viewMode == ViewMode.SESSION) ViewMode.TOTAL else ViewMode.SESSION
         val nextModeText = getViewModeDisplayText(nextMode)
-        lines.add("${GRAY}[Click to show ${nextModeText}${GRAY}] ${DARK_GRAY}(/${TOGGLE_VIEW_MODE})")
 
-        val resetCommand = when (viewMode) {
-            ViewMode.SESSION -> "/$RESET_SESSION"
-            ViewMode.TOTAL -> "/$RESET_TOTAL"
-        }
-        lines.add("${GRAY}[${RED}Click to reset${GRAY}] ${DARK_GRAY}($resetCommand)")
-      
         val viewModeText = getViewModeDisplayText(viewMode)
         lines.add("${baseTitle} ${viewModeText}")
 
@@ -312,6 +304,10 @@ object SeaCreaturesTracker {
         lines.add(totalText)
 
         gui.setLines(lines)
+        gui.setButtons(listOf(
+            GuiButton(0, "${GRAY}[Click to show ${nextModeText}${GRAY}]", { toggleViewMode() }),
+            GuiButton(1, "${GRAY}[${RED}Click to reset${GRAY}]", { resetSeaCreaturesTracker(false, getCurrentViewMode()) })
+        ))
     }
 
     private data class TrackerLineEntry(

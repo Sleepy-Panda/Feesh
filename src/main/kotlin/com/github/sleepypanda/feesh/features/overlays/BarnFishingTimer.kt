@@ -13,6 +13,7 @@ import com.github.sleepypanda.feesh.utils.ChatUtils
 import com.github.sleepypanda.feesh.utils.ChatUtils.getFormattedString
 import com.github.sleepypanda.feesh.utils.ChatUtils.removeFormatting
 import com.github.sleepypanda.feesh.utils.gui.FeeshGui
+import com.github.sleepypanda.feesh.utils.gui.GuiButton
 import com.github.sleepypanda.feesh.utils.CommonUtils
 import com.github.sleepypanda.feesh.utils.SoundUtils
 import com.github.sleepypanda.feesh.utils.RegisterUtils
@@ -218,10 +219,9 @@ object BarnFishingTimer {
         val seaCreaturesColor = if (mobsCount >= getSeaCreaturesCountThreshold()) RED else WHITE
 
         val overlayText = "${seaCreaturesColor}${mobsCount} ${GRAY}${seaCreaturesText} ${DARK_GRAY}(${timerColor}${timerText}${DARK_GRAY})"
-        
-        val resetButtonText = "${GRAY}[${RED}Click to reset${GRAY}] ${DARK_GRAY}(/$RESET_COMMAND)"
 
-        gui.setLines(listOf(resetButtonText, overlayText))
+        gui.setLines(listOf(overlayText))
+        gui.setButtons(listOf(GuiButton(0, "${GRAY}[${RED}Click to reset${GRAY}]", { resetSeaCreaturesCountAndTimer() })))
     }
 
     private fun getSeaCreaturesCountThreshold(): Int {
