@@ -7,6 +7,7 @@ import com.github.sleepypanda.feesh.events.ClientTickEvent
 import com.github.sleepypanda.feesh.events.EventBus
 import com.github.sleepypanda.feesh.events.GameClosedEvent
 import com.github.sleepypanda.feesh.events.GuiOpenedEvent
+import com.github.sleepypanda.feesh.events.GuiClosedEvent
 import com.github.sleepypanda.feesh.events.WorldChangedEvent
 import com.github.sleepypanda.feesh.events.PetLevelUpEvent
 import com.github.sleepypanda.feesh.events.SacksItemsPickupEvent
@@ -42,8 +43,9 @@ import java.util.Timer
 import kotlin.concurrent.timerTask
 
 // TODO isWorldLoaded
+// TODO Shards no workie
+// Recalculate lines on gui closed no workie
 // TODO Display name for leveled pets
-// Fishing exp boost not counted
 // Items taken from Bazaar counted
 // Is in sacks, is in supercraft, etc, maybe track item creation date
 // TODO refresh if settings for price modes are changed?
@@ -96,7 +98,6 @@ object FishingProfitTracker {
 
     private var previousInventory: MutableMap<String, Int>? = null
     private var isSessionActive = false
-    private var isWorldLoaded = false
     private var tickCounter = 0
 
     private val baseTitle = "${AQUA}${BOLD}Fishing profit tracker"
@@ -128,6 +129,7 @@ object FishingProfitTracker {
         EventBus.subscribe(GameClosedEvent::class, ::onGameClosed)
         EventBus.subscribe(WorldChangedEvent::class, ::onWorldChanged)
         EventBus.subscribe(GuiOpenedEvent::class, ::onGuiOpened)
+        EventBus.subscribe(GuiClosedEvent::class, ::onGuiClosed)
         EventBus.subscribe(PetLevelUpEvent::class, ::onPetReachedMaxLevel)
         EventBus.subscribe(SacksItemsPickupEvent::class, ::onSacksItemsPickup)
     }
@@ -193,14 +195,22 @@ object FishingProfitTracker {
     }
 
     private fun onWorldChanged(@Suppress("UNUSED_PARAMETER") event: WorldChangedEvent) {
-        isWorldLoaded = false
         pause()
     }
 
-    private fun onGuiOpened(@Suppress("UNUSED_PARAMETER") event: GuiOpenedEvent) {
+    private fun onGuiOpened(@Suppress("UNUSED_PARAMETER") event: GuiOpenedEvent) {       
         Timer().schedule(timerTask {
-            updateGuiLines()
+            updateGuiLines() // TODO update if GUI is a chat or inventory
         }, 50) // Wait for GUI to be fully loaded (~1 tick delay)
+    }
+
+    private fun onGuiClosed(event: GuiClosedEvent) {
+        // TODO detect inventory changes if closed chest?
+        if (event.guiName == "Chat" || event.guiName == "Inventory") {
+            Timer().schedule(timerTask {
+                updateGuiLines()
+            }, 50) // Wait for GUI to be fully closed so we are not in chat or inventory anymore (~1 tick delay)
+        }
     }
 
     private fun onClientTick(@Suppress("UNUSED_PARAMETER") event: ClientTickEvent) {
@@ -208,7 +218,6 @@ object FishingProfitTracker {
         tickCounter++
 
         if (tickCounter % TICKS_OVERLAY_AND_ACTIVATE == 0) {
-            //isWorldLoaded = true // TODO move this
             activateSessionOnPlayersFishingHook()
             updateGuiLines()
         }
@@ -287,7 +296,7 @@ object FishingProfitTracker {
     }
 
     private fun activateSessionOnPlayersFishingHook() {
-        if (!Overlays.fishingProfitTrackerOverlay || /*!isWorldLoaded || */!WorldUtils.isInSkyblock() || !WorldUtils.isInFishingWorld(WorldUtils.getWorldName())) return
+        if (!Overlays.fishingProfitTrackerOverlay || !WorldUtils.isInSkyblock() || !WorldUtils.isInFishingWorld(WorldUtils.getWorldName())) return
         val player = FeeshMod.mc.player ?: return
         val isHookActive = EntityUtils.isFishingHookActive(player)
         if (isHookActive) {
@@ -512,7 +521,7 @@ object FishingProfitTracker {
     }
 
     private fun detectInventoryChanges() {
-        if (/*!isWorldLoaded || */!isSessionActive || !isTrackerVisible()) {
+        if (!isSessionActive || !isTrackerVisible()) {
             previousInventory = null
             return
         }
