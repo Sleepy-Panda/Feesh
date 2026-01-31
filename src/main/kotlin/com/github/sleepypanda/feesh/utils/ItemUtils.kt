@@ -1,5 +1,6 @@
 package com.github.sleepypanda.feesh.utils
 
+import com.github.sleepypanda.feesh.utils.ChatUtils.removeFormatting
 import com.google.gson.JsonObject
 import com.mojang.serialization.JsonOps
 import net.minecraft.component.DataComponentTypes
@@ -65,6 +66,30 @@ object ItemUtils {
 
         val loreLines = item.get(DataComponentTypes.LORE)?.lines?.map { it.string } ?: listOf()
         return loreLines.any { it.contains("FISHING ROD", ignoreCase = true) || it.contains("FISHING WEAPON", ignoreCase = true) }
+    }
+
+    /*
+     * Gets the item ID for a level 1 pet, e.g. FLYING_FISH;4
+     * @param petDisplayName The display name of the pet with formatting.
+     * @returns {String} The item ID for the level 1 pet, e.g. FLYING_FISH;4
+     */
+    fun getLevel1PetId(petDisplayName: String): String {
+        val rarityCode = CommonUtils.getRarityNumericCode(petDisplayName.substring(0, 2))
+        val baseItemId = petDisplayName.removeFormatting().split(" ").joinToString("_").uppercase()
+        val itemIdLevel1 = "${baseItemId};${rarityCode}"
+        return itemIdLevel1
+    }
+
+    /*
+     * Gets the item ID for a maxed (leveled up to 100 or 200) pet, e.g. FLYING_FISH;4+100
+     * @param petDisplayName The display name of the pet with formatting.
+     * @param level The max level the pet reached.
+     * @returns {String} The item ID for the maxed pet, e.g. FLYING_FISH;4+100
+     */
+    fun getMaxedPetId(petDisplayName: String, level: Int): String {
+        val baseItemId = getLevel1PetId(petDisplayName)
+        val itemIdMaxLevel = "${baseItemId}+${level}"
+        return itemIdMaxLevel
     }
 }
 

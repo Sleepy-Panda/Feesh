@@ -18,17 +18,18 @@ import java.util.Date
 import java.util.concurrent.TimeUnit
 
 object SeaCreaturesPerHourTracker {
+    const val RESET_COMMAND = "feeshResetSeaCreaturesPerHour"
+    const val PAUSE_COMMAND = "feeshPauseSeaCreaturesPerHour"
+
+    private const val TICKS_PER_UPDATE = 20
+    private const val MAX_SECONDS_ELAPSED_SINCE_LAST_ACTION = 60 * 5
+
     private var totalSeaCreaturesCaughtCount = 0
     private var lastSeaCreatureCaughtAt: Date? = null
     private var isSessionActive = false
     private var elapsedSeconds = 0
     private var tickCounter = 0
     private val baseTitle = "${AQUA}${BOLD}Sea creatures per hour"
-
-    private const val TICKS_PER_UPDATE = 20
-    private const val MAX_SECONDS_ELAPSED_SINCE_LAST_ACTION = 60 * 5
-    private const val RESET_COMMAND = "feeshResetSeaCreaturesPerHour"
-    private const val PAUSE_COMMAND = "feeshPauseSeaCreaturesPerHour"
 
     private val gui = FeeshGui()
         .setCoordsDataKey("seaCreaturesPerHourTracker")

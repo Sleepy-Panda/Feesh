@@ -15,8 +15,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(InGameHud.class)
 public class InGameHudMixin {
-    @Inject(method = "render", at = @At("TAIL"))
-    private void feesh$onRenderInGameHud(
+    // Lets to draw custom content UNDER TabList and the rest of the HUD.
+    @Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/InGameHud;renderPlayerList(Lnet/minecraft/client/gui/DrawContext;Lnet/minecraft/client/render/RenderTickCounter;)V", shift = At.Shift.BEFORE))
+    private void feesh$onRenderInGameHudBeforePlayerList(
         DrawContext drawContext,
         RenderTickCounter renderTickCounter,
         CallbackInfo ci

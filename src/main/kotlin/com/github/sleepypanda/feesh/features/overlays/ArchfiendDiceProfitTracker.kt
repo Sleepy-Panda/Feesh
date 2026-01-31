@@ -49,8 +49,8 @@ object ArchfiendDiceProfitTracker {
         var viewMode: String = ViewMode.SESSION.name
     )
 
-    private const val RESET_COMMAND = "feeshResetArchfiendDiceProfit"
-    private const val RESET_TOTAL_COMMAND = "feeshResetArchfiendDiceProfitTotal"
+    const val RESET_COMMAND = "feeshResetArchfiendDiceProfit"
+    const val RESET_TOTAL_COMMAND = "feeshResetArchfiendDiceProfitTotal"
     private const val TOGGLE_VIEW_MODE_COMMAND = "feeshToggleArchfiendDiceViewMode"
     private const val ARCHFIEND_DICE_ID = "ARCHFIEND_DICE"
     private const val HIGH_CLASS_ARCHFIEND_DICE_ID = "HIGH_CLASS_ARCHFIEND_DICE"

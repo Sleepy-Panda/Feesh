@@ -24,11 +24,13 @@ data class GuiMapping(
 )
 
 object MoveGuis {
+    const val COMMAND_NAME = "feeshMoveAllGuis"
+
     private val guiMappings = mutableListOf<GuiMapping>()
 
     fun init() {
         initializeGuiMappings()
-        RegisterUtils.command("feeshMoveAllGuis") {
+        RegisterUtils.command(COMMAND_NAME) {
             moveAllGuis()
         }
     }

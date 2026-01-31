@@ -35,12 +35,14 @@ object CrimsonIsleTracker {
         val radioactiveVials: DropCounterData = DropCounterData()
     )
 
+    const val RESET_COMMAND = "feeshResetCrimsonIsle"
+
+    private const val TICKS_PER_UPDATE = 20
+
     private var data = PersistentDataManager.feeshData.crimsonIsle
     private var tickCounter = 0
     private val baseTitle = "${AQUA}${BOLD}Crimson Isle tracker"
 
-    private const val TICKS_PER_UPDATE = 20
-    private val RESET_COMMAND = "feeshResetCrimsonIsle"
 
     private val thunder = SeaCreatures.allSeaCreatures.find { it.name == "Thunder" }!!
     private val lordJawbus = SeaCreatures.allSeaCreatures.find { it.name == "Lord Jawbus" }!!
@@ -212,7 +214,7 @@ object CrimsonIsleTracker {
     }
 
     private fun onRadioactiveVial(magicFind: Int?) {
-        data.radioactiveVials.updateAfterDrop(radioactiveVial.boldDisplayName, lordJawbus.boldDisplayName, magicFind)
+        data.radioactiveVials.updateAfterDrop(radioactiveVial.boldDisplayName, lordJawbus.displayName, magicFind)
         saveData()
         updateGuiLines()
     }

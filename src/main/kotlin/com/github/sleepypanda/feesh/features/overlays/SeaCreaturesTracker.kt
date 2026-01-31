@@ -42,14 +42,16 @@ object SeaCreaturesTracker {
         var viewMode: String = ViewMode.SESSION.name
     )
     
+    const val RESET_SESSION = "feeshResetSeaCreatures"
+    const val RESET_TOTAL = "feeshResetSeaCreaturesTotal"
+    const val TOGGLE_VIEW_MODE = "feeshToggleSeaCreaturesViewMode"
+
+    private const val TICKS_PER_UPDATE = 20
+
     private var data = PersistentDataManager.feeshData.seaCreatures
     private val decimalFormat = DecimalFormat("#.#")
     private var tickCounter = 0
     private val baseTitle = "${AQUA}${BOLD}Sea creatures tracker"
-
-    private const val TICKS_PER_UPDATE = 20
-    private const val RESET_SESSION = "feeshResetSeaCreatures"
-    private const val RESET_TOTAL = "feeshResetSeaCreaturesTotal"
 
     private val gui = FeeshGui()
         .setCoordsDataKey("seaCreaturesTracker")
@@ -92,6 +94,9 @@ object SeaCreaturesTracker {
         val seaCreatureName = event.seaCreatureName
         val isDoubleHook = event.isDoubleHook
         val valueToAdd = if (isDoubleHook) 2 else 1
+
+        // Do not track Vanquishers if not fishing
+        if (seaCreatureName == "Vanquisher" && !PlayerUtils.isFishingHookSeenMinutesAgo(5)) return
 
         trackSeaCreatureCatch(data.session, seaCreatureName, valueToAdd, isDoubleHook)
         trackSeaCreatureCatch(data.total, seaCreatureName, valueToAdd, isDoubleHook)
@@ -199,8 +204,7 @@ object SeaCreaturesTracker {
             resetSeaCreaturesTracker(isConfirmed, ViewMode.TOTAL)
         }
 
-        // TODO delete
-        RegisterUtils.command("feeshToggleSeaCreaturesViewMode") {
+        RegisterUtils.command(TOGGLE_VIEW_MODE) {
             toggleViewMode()
         }
     }
@@ -268,7 +272,7 @@ object SeaCreaturesTracker {
 
         val nextMode = if (viewMode == ViewMode.SESSION) ViewMode.TOTAL else ViewMode.SESSION
         val nextModeText = getViewModeDisplayText(nextMode)
-        lines.add("${GRAY}[Click to show $nextModeText${GRAY}] ${DARK_GRAY}(/feeshToggleSeaCreaturesViewMode)")
+        lines.add("${GRAY}[Click to show ${nextModeText}${GRAY}] ${DARK_GRAY}(/${TOGGLE_VIEW_MODE})")
 
         val resetCommand = when (viewMode) {
             ViewMode.SESSION -> "/$RESET_SESSION"

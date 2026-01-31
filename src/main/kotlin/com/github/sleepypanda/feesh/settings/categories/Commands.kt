@@ -1,5 +1,8 @@
 package com.github.sleepypanda.feesh.settings.categories
 
+import com.github.sleepypanda.feesh.features.commands.GearCraftPricesCommand
+import com.github.sleepypanda.feesh.features.commands.PetLevelUpPricesCommand
+import com.github.sleepypanda.feesh.features.commands.SpiderDenRainScheduleCommand
 import com.github.sleepypanda.feesh.utils.ChatUtils
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
@@ -14,10 +17,10 @@ object Commands : CategoryKt("Commands") {
 
         button {
             title = "Pets level up prices"
-            description = "Calculates the profits for leveling up the fishing pets from level 1 to level 100, and displays the results in the chat. Executes ${AQUA}/feeshPetLevelUpPrices"
+            description = "Calculates the profits for leveling up the fishing pets from level 1 to level 100, and displays the results in the chat. Executes ${WHITE}/${PetLevelUpPricesCommand.COMMAND_NAME}"
             text = "Click to execute"
             onClick {
-                ChatUtils.command("feeshPetLevelUpPrices")
+                ChatUtils.command(PetLevelUpPricesCommand.COMMAND_NAME)
             }
         }
 
@@ -27,10 +30,10 @@ object Commands : CategoryKt("Commands") {
 
         button {
             title = "Gear craft prices"
-            description = "Calculates the profits for crafting different gear pieces from fishing drops, and displays the results in the chat. Executes ${AQUA}/feeshGearCraftPrices"
+            description = "Calculates the profits for crafting different gear pieces from fishing drops, and displays the results in the chat. Executes ${WHITE}/${GearCraftPricesCommand.COMMAND_NAME}"
             text = "Click to execute"
             onClick {
-                ChatUtils.command("feeshGearCraftPrices")
+                ChatUtils.command(GearCraftPricesCommand.COMMAND_NAME)
             }
         }
     }
@@ -47,10 +50,10 @@ object Commands : CategoryKt("Commands") {
 
         button {
             title = "Spider's Den rain schedule"
-            description = "Displays the nearest Spider's Den Rain / Thunderstorm events in the chat. Executes ${AQUA}/feeshSpiderDenRainSchedule"
+            description = "Displays the nearest Spider's Den Rain / Thunderstorm events in the chat. Executes ${WHITE}/${SpiderDenRainScheduleCommand.COMMAND_NAME}"
             text = "Click to execute"
             onClick {
-                ChatUtils.command("feeshSpiderDenRainSchedule")
+                ChatUtils.command(SpiderDenRainScheduleCommand.COMMAND_NAME)
             }
         }
     }

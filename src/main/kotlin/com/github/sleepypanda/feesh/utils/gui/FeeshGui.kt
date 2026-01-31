@@ -50,8 +50,8 @@ class FeeshGui {
 
     constructor() {
         registeredGuis.add(this)
-        EventBus.subscribe(GameRenderEvent::class, { event -> draw(event.drawContext, event.textRenderer, event.mcClient) })
-        EventBus.subscribe(ScreenAfterBackgroundRenderEvent::class, ::postDrawAfterBackground)
+        EventBus.subscribe(GameRenderEvent::class, { event -> onDraw(event.drawContext, event.textRenderer, event.mcClient) })
+        EventBus.subscribe(ScreenAfterBackgroundRenderEvent::class, ::onPostDrawAfterBackground)
     }
     
     fun getCoordsDataKey(): String = coordsDataKey
@@ -177,11 +177,16 @@ class FeeshGui {
         return this
     }
 
+    fun onDraw(drawContext: DrawContext, textRenderer: TextRenderer, mcClient: MinecraftClient) {
+        if (mcClient.currentScreen is InventoryScreen && isClickable) return
+        draw(drawContext, textRenderer, mcClient)
+    }
+
     fun draw(drawContext: DrawContext, textRenderer: TextRenderer, mcClient: MinecraftClient) {
         if (lines.isEmpty()) return
         if (!WorldUtils.isInSkyblock()) return
-        if (!condition()) return
         if (settingsKey != null && !settingsKey!!()) return
+        if (!condition()) return
         if (mcClient.currentScreen is MoveGuisScreen) return
 
         drawContext.matrices.pushMatrix()
@@ -216,7 +221,7 @@ class FeeshGui {
         drawContext.matrices.popMatrix()
     }
 
-    fun postDrawAfterBackground(event: ScreenAfterBackgroundRenderEvent) { // Draw in front of background but under Inventory GUI
+    fun onPostDrawAfterBackground(event: ScreenAfterBackgroundRenderEvent) { // Draw in front of background but under Inventory GUI
         if (!isClickable) return
         if (event.screen !is InventoryScreen) return
 

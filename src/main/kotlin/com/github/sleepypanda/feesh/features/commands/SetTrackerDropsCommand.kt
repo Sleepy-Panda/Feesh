@@ -5,12 +5,13 @@ import com.github.sleepypanda.feesh.utils.ChatUtils
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.features.overlays.WaterHotspotsAndBayouTracker
 import com.github.sleepypanda.feesh.features.overlays.CrimsonIsleTracker
+import com.github.sleepypanda.feesh.features.overlays.TreasureFishingTracker
 import java.util.Date
 import java.text.SimpleDateFormat
 import java.util.Locale
 
 object SetTrackerDropsCommand {
-    private const val COMMAND_NAME = "feeshSetTrackerDrops"
+    const val COMMAND_NAME = "feeshSetTrackerDrops"
     
     fun init() {
         RegisterUtils.command(COMMAND_NAME) { args ->
@@ -46,6 +47,7 @@ object SetTrackerDropsCommand {
                 "TITANOBOA_SHED" -> WaterHotspotsAndBayouTracker.setTitanoboaSheds(count, lastOn)
                 "TIKI_MASK" -> WaterHotspotsAndBayouTracker.setTikiMasks(count, lastOn)
                 "RADIOACTIVE_VIAL" -> CrimsonIsleTracker.setRadioactiveVials(count, lastOn)
+                "DYE_TREASURE" -> TreasureFishingTracker.setTreasureDyes(count, lastOn)
                 else -> ChatUtils.sendLocalChat("${RED}Unknown drop ID: $dropId.", true)
             }
         }

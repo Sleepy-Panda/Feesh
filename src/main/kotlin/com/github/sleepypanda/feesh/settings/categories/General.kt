@@ -1,6 +1,5 @@
 package com.github.sleepypanda.feesh.settings.categories
 
-import com.github.sleepypanda.feesh.utils.gui.MoveGuis
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
 import com.teamresourceful.resourcefulconfig.api.annotations.Category
@@ -21,15 +20,6 @@ object General : CategoryKt("General") {
     init {
         separator {
             this.title = "${AQUA}${BOLD}General"
-        }
-
-        button {
-            title = "Move GUIs"
-            description = "Allows to move and resize all GUIs enabled in the Overlays settings section. Executes ${AQUA}/feeshMoveAllGuis"
-            text = "Click to move"
-            onClick {
-                MoveGuis.moveAllGuis()
-            }
         }
     }
 

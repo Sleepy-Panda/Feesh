@@ -29,12 +29,13 @@ object WaterHotspotsAndBayouTracker {
         val tikiMasks: DropCounterData = DropCounterData()
     )
 
+    const val RESET_COMMAND = "feeshResetWaterHotspotsAndBayou"
+
+    private const val TICKS_PER_UPDATE = 20
+
     private var data = PersistentDataManager.feeshData.waterHotspotsAndBayou
     private var tickCounter = 0
     private val baseTitle = "${AQUA}${BOLD}Water hotspots & Bayou tracker"
-
-    private const val TICKS_PER_UPDATE = 20
-    private val RESET_COMMAND = "feeshResetWaterHotspotsAndBayou"
 
     private val titanoboa = SeaCreatures.allSeaCreatures.find { it.name == "Titanoboa" }!!
     private val wikiTiki = SeaCreatures.allSeaCreatures.find { it.name == "Wiki Tiki" }!!
@@ -140,13 +141,13 @@ object WaterHotspotsAndBayouTracker {
     }
 
     private fun onTitanoboaShed(magicFind: Int?) {
-        data.titanoboaSheds.updateAfterDrop(titanoboaShed.boldDisplayName, titanoboa.boldDisplayName, magicFind)
+        data.titanoboaSheds.updateAfterDrop(titanoboaShed.boldDisplayName, titanoboa.displayName, magicFind)
         saveData()
         updateGuiLines()
     }
 
     private fun onTikiMask(magicFind: Int?) {
-        data.tikiMasks.updateAfterDrop(tikiMask.boldDisplayName, wikiTiki.boldDisplayName, magicFind)
+        data.tikiMasks.updateAfterDrop(tikiMask.boldDisplayName, wikiTiki.displayName, magicFind)
         saveData()
         updateGuiLines()
     }
