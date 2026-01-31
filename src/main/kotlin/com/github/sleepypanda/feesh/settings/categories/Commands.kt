@@ -14,7 +14,7 @@ object Commands : CategoryKt("Commands") {
 
         button {
             title = "Pets level up prices"
-            description = "Calculates the profits for leveling up the fishing pets from level 1 to level 100, and displays the results in the chat. Executes ${AQUA}/feeshPetLevelUpPrices"
+            description = "Calculates the profits for leveling up the fishing pets from level 1 to level 100, and displays the results in the chat. Executes ${LIGHT_PURPLE}/feeshPetLevelUpPrices"
             text = "Click to execute"
             onClick {
                 ChatUtils.command("feeshPetLevelUpPrices")
@@ -27,7 +27,7 @@ object Commands : CategoryKt("Commands") {
 
         button {
             title = "Gear craft prices"
-            description = "Calculates the profits for crafting different gear pieces from fishing drops, and displays the results in the chat. Executes ${AQUA}/feeshGearCraftPrices"
+            description = "Calculates the profits for crafting different gear pieces from fishing drops, and displays the results in the chat. Executes ${LIGHT_PURPLE}/feeshGearCraftPrices"
             text = "Click to execute"
             onClick {
                 ChatUtils.command("feeshGearCraftPrices")
@@ -47,7 +47,7 @@ object Commands : CategoryKt("Commands") {
 
         button {
             title = "Spider's Den rain schedule"
-            description = "Displays the nearest Spider's Den Rain / Thunderstorm events in the chat. Executes ${AQUA}/feeshSpiderDenRainSchedule"
+            description = "Displays the nearest Spider's Den Rain / Thunderstorm events in the chat. Executes ${LIGHT_PURPLE}/feeshSpiderDenRainSchedule"
             text = "Click to execute"
             onClick {
                 ChatUtils.command("feeshSpiderDenRainSchedule")
