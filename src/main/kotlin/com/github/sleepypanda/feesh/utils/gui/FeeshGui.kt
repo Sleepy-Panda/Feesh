@@ -145,19 +145,20 @@ class FeeshGui {
         if (linesToUse.isEmpty()) return
         
         val maxWidth = linesToUse.maxOfOrNull { textRenderer.getWidth(Text.literal(it)) } ?: 0
+        val renderedWidth = (maxWidth * scale).toInt()
         
-        // Convert current x from old alignment reference point to actual left edge
+        // Convert current x from old alignment reference point to actual left edge (screen space)
         val leftEdge = when (oldAlignment) {
             Alignment.LEFT -> x
-            Alignment.CENTER -> x - maxWidth / 2
-            Alignment.RIGHT -> x - maxWidth
+            Alignment.CENTER -> x - renderedWidth / 2
+            Alignment.RIGHT -> x - renderedWidth
         }
         
         // Convert left edge to new alignment reference point
         val newX = when (newAlignment) {
             Alignment.LEFT -> leftEdge
-            Alignment.CENTER -> leftEdge + maxWidth / 2
-            Alignment.RIGHT -> leftEdge + maxWidth
+            Alignment.CENTER -> leftEdge + renderedWidth / 2
+            Alignment.RIGHT -> leftEdge + renderedWidth
         }
         
         this.x = newX
@@ -195,25 +196,29 @@ class FeeshGui {
 
     /**
      * Converts x coordinate (which represents different points based on alignment) to actual left edge.
+     * Uses scaled width for CENTER/RIGHT so that the reference point stays correct after matrices.scale(scale).
      */
     private fun getLeftEdge(textRenderer: TextRenderer): Int {
         val maxWidth = getMaxWidth(textRenderer)
+        val renderedWidth = (maxWidth * scale).toInt()
         return when (alignment) {
             Alignment.LEFT -> x
-            Alignment.CENTER -> x - maxWidth / 2
-            Alignment.RIGHT -> x - maxWidth
+            Alignment.CENTER -> x - renderedWidth / 2
+            Alignment.RIGHT -> x - renderedWidth
         }
     }
 
     /**
      * Converts x coordinate (which represents different points based on alignment) to actual left edge.
+     * Uses scaled width for CENTER/RIGHT so that the reference point stays correct after matrices.scale(scale).
      */
     private fun getLeftSampleEdge(textRenderer: TextRenderer): Int {
         val maxWidth = getMaxSampleWidth(textRenderer)
+        val renderedWidth = (maxWidth * scale).toInt()
         return when (alignment) {
             Alignment.LEFT -> x
-            Alignment.CENTER -> x - maxWidth / 2
-            Alignment.RIGHT -> x - maxWidth
+            Alignment.CENTER -> x - renderedWidth / 2
+            Alignment.RIGHT -> x - renderedWidth
         }
     }
 
