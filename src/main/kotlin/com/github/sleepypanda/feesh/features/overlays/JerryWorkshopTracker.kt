@@ -23,13 +23,14 @@ object JerryWorkshopTracker {
         val reindrake: CatchCounterData = CatchCounterData()
     )
 
-    private var data = PersistentDataManager.feeshData.jerryWorkshop
-    private var tickCounter = 0
-    private val baseTitle = "${AQUA}${BOLD}Jerry Workshop tracker"
+    const val RESET_COMMAND = "feeshResetJerryWorkshop"
 
     private const val TICKS_PER_UPDATE = 20
-    private val RESET_COMMAND = "feeshResetJerryWorkshop"
 
+    private var data = PersistentDataManager.feeshData.jerryWorkshop
+    private var tickCounter = 0
+
+    private val baseTitle = "${AQUA}${BOLD}Jerry Workshop tracker"
     private val yeti = SeaCreatures.allSeaCreatures.find { it.name == "Yeti" }!!
     private val reindrake = SeaCreatures.allSeaCreatures.find { it.name == "Reindrake" }!!
 

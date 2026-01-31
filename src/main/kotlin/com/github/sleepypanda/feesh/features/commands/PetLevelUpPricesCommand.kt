@@ -11,6 +11,7 @@ import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
 import com.github.sleepypanda.feesh.FeeshMod
 
 object PetLevelUpPricesCommand {
+    const val COMMAND_NAME = "feeshPetLevelUpPrices"
     private const val MAX_XP = 25_353_230.0
     
     data class PetInfo(
@@ -43,7 +44,7 @@ object PetLevelUpPricesCommand {
     )
 
     fun init() {
-        RegisterUtils.command("feeshPetLevelUpPrices") {
+        RegisterUtils.command(COMMAND_NAME) {
             calculateFishingPetPrices()
         }
     }
@@ -73,6 +74,8 @@ object PetLevelUpPricesCommand {
                 )
             }.sortedByDescending { it.coinsPerXp }
             
+            val chatBreak = "${GRAY}${ChatUtils.getChatBreak("-")}"
+            ChatUtils.sendLocalChat(chatBreak)
             ChatUtils.sendLocalChat("${GREEN}${BOLD}Pets level up prices", true)
             ChatUtils.sendLocalChat("${DARK_GRAY}Profits for leveling up the fishing pets from level 1 to level 100.")
 

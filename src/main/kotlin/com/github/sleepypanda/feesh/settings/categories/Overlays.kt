@@ -11,6 +11,16 @@ import com.teamresourceful.resourcefulconfig.api.annotations.Comment
 import com.teamresourceful.resourcefulconfig.api.annotations.ConfigEntry
 import com.teamresourceful.resourcefulconfig.api.types.options.EntryType
 import com.teamresourceful.resourcefulconfigkt.api.CategoryKt
+import com.github.sleepypanda.feesh.features.commands.PauseAllTrackersCommand
+import com.github.sleepypanda.feesh.features.commands.SetTrackerDropsCommand
+import com.github.sleepypanda.feesh.features.overlays.ArchfiendDiceProfitTracker
+import com.github.sleepypanda.feesh.features.overlays.BarnFishingTimer
+import com.github.sleepypanda.feesh.features.overlays.CrimsonIsleTracker
+import com.github.sleepypanda.feesh.features.overlays.JerryWorkshopTracker
+import com.github.sleepypanda.feesh.features.overlays.SeaCreaturesPerHourTracker
+import com.github.sleepypanda.feesh.features.overlays.SeaCreaturesTracker
+import com.github.sleepypanda.feesh.features.overlays.TreasureFishingTracker
+import com.github.sleepypanda.feesh.features.overlays.WaterHotspotsAndBayouTracker
 import com.github.sleepypanda.feesh.utils.gui.MoveGuis
 import net.minecraft.util.Util
 import net.minecraft.client.gui.screen.option.KeybindsScreen
@@ -46,7 +56,7 @@ object Overlays : CategoryKt("Overlays") {
 
         button {
             title = "Move GUIs"
-            description = "Allows to move and resize all GUIs enabled in the Overlays settings section. Executes ${LIGHT_PURPLE}/feeshMoveAllGuis"
+            description = "Allows to move and resize all GUIs enabled in the Overlays settings section. Executes ${WHITE}/${MoveGuis.COMMAND_NAME}"
             text = "Click to move"
             onClick {
                 MoveGuis.moveAllGuis()
@@ -55,7 +65,7 @@ object Overlays : CategoryKt("Overlays") {
 
         button {
             title = "Pause all trackers keybind"
-            description = "Set a keybind in Minecraft's Controls menu to pause all active trackers on button pressed (so the timers stop). Default is PAUSE.\nExecutes ${LIGHT_PURPLE}/feeshPauseAllTrackers"
+            description = "Set a keybind in Minecraft's Controls menu to pause all active trackers on button pressed (so the timers stop). Default is PAUSE.\nExecutes ${WHITE}/${PauseAllTrackersCommand.COMMAND_NAME}"
             text = "Click to open"
             onClick {
                 val mc = FeeshMod.mc
@@ -85,7 +95,7 @@ object Overlays : CategoryKt("Overlays") {
 
     var barnFishingTimerOverlay by boolean(false) {
         this.name = Translated("Barn fishing timer overlay")
-        this.description = Translated("Shows an overlay with the count of sea creatures nearby and how long they have been alive. Mostly useful for barn fishing. Hidden if you have no fishing rod in your hotbar or if you are wearing Hunter armor!\nTo reset: ${LIGHT_PURPLE}/feeshResetBarnFishingTimer")
+        this.description = Translated("Shows an overlay with the count of sea creatures nearby and how long they have been alive. Mostly useful for barn fishing. Hidden if you have no fishing rod in your hotbar or if you are wearing Hunter armor!\nTo reset: ${WHITE}/${BarnFishingTimer.RESET_COMMAND}")
     }
 
     init {
@@ -145,8 +155,8 @@ object Overlays : CategoryKt("Overlays") {
         this.name = Translated("Sea creatures tracker")
         this.description = Translated("""
 ${GRAY}Shows an overlay with the overview of the sea creatures caught, and different related statistics. This overlay has [Session] and [Total] view mode.
-${GRAY}To reset [Session]: ${LIGHT_PURPLE}/feeshResetSeaCreatures
-${GRAY}To reset [Total]: ${LIGHT_PURPLE}/feeshResetSeaCreaturesTotal
+${GRAY}To reset [Session]: ${WHITE}/${SeaCreaturesTracker.RESET_SESSION}
+${GRAY}To reset [Total]: ${WHITE}/${SeaCreaturesTracker.RESET_TOTAL}
 """.trimIndent())
     }
 
@@ -222,8 +232,8 @@ ${GRAY}To reset [Total]: ${LIGHT_PURPLE}/feeshResetSeaCreaturesTotal
         this.name = Translated("Sea creatures per hour tracker")
         this.description = Translated("""
 ${GRAY}Shows an overlay with the sea creatures per hour, and total sea creatures caught per session. Not persistent - resets on MC restart.
-${GRAY}To reset: ${LIGHT_PURPLE}/feeshResetSeaCreaturesPerHour
-${GRAY}To pause: ${LIGHT_PURPLE}/feeshPauseSeaCreaturesPerHour
+${GRAY}To reset: ${WHITE}/${SeaCreaturesPerHourTracker.RESET_COMMAND}
+${GRAY}To pause: ${WHITE}/${SeaCreaturesPerHourTracker.PAUSE_COMMAND}
 """.trimIndent())
     }
 
@@ -237,7 +247,7 @@ ${GRAY}To pause: ${LIGHT_PURPLE}/feeshPauseSeaCreaturesPerHour
         this.name = Translated("Jerry's Workshop tracker")
         this.description = Translated("""
 ${GRAY}Shows an overlay with Yeti / Reindrake catch statistics while in the Jerry Workshop.
-${GRAY}To reset: ${LIGHT_PURPLE}/feeshResetJerryWorkshop
+${GRAY}To reset: ${WHITE}/${JerryWorkshopTracker.RESET_COMMAND}
 """.trimIndent())
     }
 
@@ -256,7 +266,7 @@ ${GRAY}To reset: ${LIGHT_PURPLE}/feeshResetJerryWorkshop
         this.name = Translated("Water hotspots & Bayou tracker")
         this.description = Translated("""
 ${GRAY}Shows an overlay with Titanoboa (when fishing in Backwater Bayou) and Wiki Tiki (when in Water Hotspots) catch statistics. Also has Titanoboa Shed and Tiki Mask drop statistics.
-${GRAY}To reset: ${LIGHT_PURPLE}/feeshResetWaterHotspotsAndBayou
+${GRAY}To reset: ${WHITE}/${WaterHotspotsAndBayouTracker.RESET_COMMAND}
         """.trimIndent())
     }
 
@@ -272,13 +282,13 @@ ${GRAY}To reset: ${LIGHT_PURPLE}/feeshResetWaterHotspotsAndBayou
             text = "Click for help"
             onClick {
                 ChatUtils.sendLocalChat("${WHITE}${BOLD}Titanoboa Sheds / Tiki Masks setup${RESET}", true)
-                ChatUtils.sendLocalChat("\nDo ${LIGHT_PURPLE}/feeshSetTrackerDrops <ITEM_ID> <COUNT> [LAST_ON_DATE]${RESET} to initialize your drops history:")
+                ChatUtils.sendLocalChat("\nDo ${WHITE}/${SetTrackerDropsCommand.COMMAND_NAME} <ITEM_ID> <COUNT> [LAST_ON_DATE]${RESET} to initialize your drops history:")
                 ChatUtils.sendLocalChat("  - <ITEM_ID> is a mandatory item ID - TITANOBOA_SHED or TIKI_MASK.")
                 ChatUtils.sendLocalChat("  - <COUNT> is a mandatory number of times you've dropped it.")
                 ChatUtils.sendLocalChat("  - [LAST_ON_DATE] is optional and, if provided, should be in YYYY-MM-DD hh:mm:ss format. Can not be in future!")
                 ChatUtils.sendLocalChat("\nExamples:")
-                ChatUtils.sendLocalChat("/feeshSetTrackerDrops TITANOBOA_SHED 5 2025-05-30 23:59:00${RESET}")
-                ChatUtils.sendLocalChat("/feeshSetTrackerDrops TIKI_MASK 5 2025-05-30 23:59:00${RESET}")
+                ChatUtils.sendLocalChat("/${SetTrackerDropsCommand.COMMAND_NAME} TITANOBOA_SHED 5 2025-05-30 23:59:00${RESET}")
+                ChatUtils.sendLocalChat("/${SetTrackerDropsCommand.COMMAND_NAME} TIKI_MASK 5 2025-05-30 23:59:00${RESET}")
             }
         }
     }
@@ -293,7 +303,7 @@ ${GRAY}To reset: ${LIGHT_PURPLE}/feeshResetWaterHotspotsAndBayou
         this.name = Translated("Crimson Isle tracker")
         this.description = Translated("""
 ${GRAY}Shows an overlay with Fiery Scuttler & Ragnarok (when fishing in hotspot), Plhlegblast (when in Plhlegblast Pool), Thunder & Lord Jawbus catch statistics. Also has Radioactive Vial drop statistics.
-${GRAY}To reset: ${LIGHT_PURPLE}/feeshResetCrimsonIsle
+${GRAY}To reset: ${WHITE}/${CrimsonIsleTracker.RESET_COMMAND}
         """.trimIndent())
     }
 
@@ -309,12 +319,12 @@ ${GRAY}To reset: ${LIGHT_PURPLE}/feeshResetCrimsonIsle
             text = "Click for help"
             onClick {
                 ChatUtils.sendLocalChat("${WHITE}${BOLD}Radioactive Vials setup${RESET}", true)
-                ChatUtils.sendLocalChat("\nDo ${LIGHT_PURPLE}/feeshSetTrackerDrops <ITEM_ID> <COUNT> [LAST_ON_DATE]${RESET} to initialize your drops history:")
+                ChatUtils.sendLocalChat("\nDo ${WHITE}/${SetTrackerDropsCommand.COMMAND_NAME} <ITEM_ID> <COUNT> [LAST_ON_DATE]${RESET} to initialize your drops history:")
                 ChatUtils.sendLocalChat("  - <ITEM_ID> is a mandatory item ID - RADIOACTIVE_VIAL.")
                 ChatUtils.sendLocalChat("  - <COUNT> is a mandatory number of times you've dropped it.")
                 ChatUtils.sendLocalChat("  - [LAST_ON_DATE] is optional and, if provided, should be in YYYY-MM-DD hh:mm:ss format. Can not be in future!")
                 ChatUtils.sendLocalChat("\nExample:")
-                ChatUtils.sendLocalChat("/feeshSetTrackerDrops RADIOACTIVE_VIAL 2 2025-05-30 23:59:00")
+                ChatUtils.sendLocalChat("/${SetTrackerDropsCommand.COMMAND_NAME} RADIOACTIVE_VIAL 2 2025-05-30 23:59:00")
             }
         }
     }
@@ -329,8 +339,8 @@ ${GRAY}To reset: ${LIGHT_PURPLE}/feeshResetCrimsonIsle
         this.name = Translated("Treasure fishing tracker")
         this.description = Translated("""
 ${GRAY}Shows an overlay with Good/Great/Outstanding treasure catches and Treasure Dye drop statistics. This overlay has [Session] and [Total] view mode.
-${GRAY}Reset session: ${LIGHT_PURPLE}/feeshResetTreasureFishing
-${GRAY}Reset total: ${LIGHT_PURPLE}/feeshResetTreasureFishingTotal
+${GRAY}Reset session: ${WHITE}/${TreasureFishingTracker.RESET_SESSION_COMMAND}
+${GRAY}Reset total: ${WHITE}/${TreasureFishingTracker.RESET_TOTAL_COMMAND}
         """.trimIndent())
     }
 
@@ -346,12 +356,12 @@ ${GRAY}Reset total: ${LIGHT_PURPLE}/feeshResetTreasureFishingTotal
             text = "Click for help"
             onClick {
                 ChatUtils.sendLocalChat("${WHITE}${BOLD}Treasure Dyes setup${RESET}", true)
-                ChatUtils.sendLocalChat("\nDo ${LIGHT_PURPLE}/feeshSetTrackerDrops <ITEM_ID> <COUNT> [LAST_ON_DATE]${RESET} to initialize your drops history:")
+                ChatUtils.sendLocalChat("\nDo ${WHITE}/${SetTrackerDropsCommand.COMMAND_NAME} <ITEM_ID> <COUNT> [LAST_ON_DATE]${RESET} to initialize your drops history:")
                 ChatUtils.sendLocalChat("  - <ITEM_ID> is a mandatory item ID - DYE_TREASURE.")
                 ChatUtils.sendLocalChat("  - <COUNT> is a mandatory number of times you've dropped it.")
                 ChatUtils.sendLocalChat("  - [LAST_ON_DATE] is optional and, if provided, should be in YYYY-MM-DD hh:mm:ss format. Can not be in future!")
                 ChatUtils.sendLocalChat("\nExample:")
-                ChatUtils.sendLocalChat("/feeshSetTrackerDrops DYE_TREASURE 2 2025-05-30 23:59:00")
+                ChatUtils.sendLocalChat("/${SetTrackerDropsCommand.COMMAND_NAME} DYE_TREASURE 2 2025-05-30 23:59:00")
             }
         }
     }
@@ -366,8 +376,8 @@ ${GRAY}Reset total: ${LIGHT_PURPLE}/feeshResetTreasureFishingTotal
         this.name = Translated("Archfiend Dice profit tracker")
         this.description = Translated("""
 ${GRAY}Shows an overlay with your Archfiend Dice / High Class Archfiend Dice profits. This overlay has [Session] and [Total] view mode.
-${GRAY}To reset [Session]: ${LIGHT_PURPLE}/feeshResetArchfiendDiceProfit
-${GRAY}To reset [Total]: ${LIGHT_PURPLE}/feeshResetArchfiendDiceProfitTotal
+${GRAY}To reset [Session]: ${WHITE}/${ArchfiendDiceProfitTracker.RESET_COMMAND}
+${GRAY}To reset [Total]: ${WHITE}/${ArchfiendDiceProfitTracker.RESET_TOTAL_COMMAND}
 """.trimIndent())
     }
 

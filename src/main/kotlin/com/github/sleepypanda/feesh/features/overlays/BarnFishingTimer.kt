@@ -32,7 +32,7 @@ import java.util.Date
 object BarnFishingTimer {
     private const val TIMER_THRESHOLD_IN_MINUTES = 5
     private const val TICKS_PER_CHECK = 10
-    private const val RESET_COMMAND = "feeshResetBarnFishingTimer"
+    const val RESET_COMMAND = "feeshResetBarnFishingTimer"
 
     private var mobsCount = 0
     private var startTime: Long? = null

@@ -11,7 +11,7 @@ import java.text.SimpleDateFormat
 import java.util.Locale
 
 object SetTrackerDropsCommand {
-    private const val COMMAND_NAME = "feeshSetTrackerDrops"
+    const val COMMAND_NAME = "feeshSetTrackerDrops"
     
     fun init() {
         RegisterUtils.command(COMMAND_NAME) { args ->
