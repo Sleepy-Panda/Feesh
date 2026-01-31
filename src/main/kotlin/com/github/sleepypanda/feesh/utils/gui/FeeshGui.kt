@@ -76,9 +76,10 @@ class FeeshGui {
     
     private fun onMouseClick(event: AfterMouseClickEvent) {
         if (buttons.isEmpty()) return
-        if (event.screen !is InventoryScreen && event.screen !is ChatScreen) return
+        if (!isClickable) return
         if (!WorldUtils.isInSkyblock()) return
         if (event.button != 0) return
+        if (event.screen !is InventoryScreen && event.screen !is ChatScreen) return
 
         val textRenderer = event.screen.textRenderer ?: return
         val clickedButton = getClickedButton(textRenderer, event.mouseX, event.mouseY)
