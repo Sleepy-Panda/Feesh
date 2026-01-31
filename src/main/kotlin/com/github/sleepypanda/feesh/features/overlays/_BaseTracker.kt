@@ -105,7 +105,7 @@ data class DropCounterData(
 
     private fun getDropChatMessage(itemDisplayName: String, seaCreatureDisplayName: String, prevDropTime: Date?, prevCatchesSinceLast: Int): String {
         val elapsedTimeText = if (prevDropTime != null) " ${GRAY}(${WHITE}${CommonUtils.formatTimeElapsed(prevDropTime)}${GRAY})" else ""
-        val catchesText = "${WHITE}${CommonUtils.formatNumberWithSpaces(prevCatchesSinceLast)} ${seaCreatureDisplayName} ${GRAY}${if (prevCatchesSinceLast == 1) "catch" else "catches"}"
+        val catchesText = "${WHITE}${CommonUtils.formatNumberWithSpaces(prevCatchesSinceLast)} ${RESET}${seaCreatureDisplayName} ${GRAY}${if (prevCatchesSinceLast == 1) "catch" else "catches"}"
         return "${GRAY}It took ${catchesText}${elapsedTimeText} to get the ${itemDisplayName} ${WHITE}#${CommonUtils.formatNumberWithSpaces(count)}${GRAY}. Congratulations!"
     }
 

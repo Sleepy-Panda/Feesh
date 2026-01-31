@@ -321,7 +321,16 @@ ${AQUA}/feeshSetTrackerDrops RADIOACTIVE_VIAL 2 2025-05-30 23:59:00
 
     var treasureFishingTrackerOverlay by boolean(false) {
         this.name = Translated("Treasure fishing tracker")
-        this.description = Translated("Shows an overlay with the overview of the treasure fishing catches, and different related statistics.")
+        this.description = Translated("""
+Shows an overlay with Good/Great/Outstanding treasure catches and Treasure Dye drop statistics. Has [Session] and [Total] view mode.
+${RESET}Reset session: ${AQUA}/feeshResetTreasureFishing
+${RESET}Reset total: ${AQUA}/feeshResetTreasureFishingTotal
+        """.trimIndent())
+    }
+
+    var resetTreasureFishingTrackerSessionOnGameClosed by boolean(true) {
+        this.name = Translated("Autoreset [Session] on closing game")
+        this.description = Translated("Automatically reset the Treasure fishing tracker [Session] when you close Minecraft.")
     }
 
     init {
