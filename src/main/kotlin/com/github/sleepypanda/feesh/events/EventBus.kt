@@ -10,6 +10,7 @@ import net.minecraft.client.gui.screen.ingame.InventoryScreen
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientEntityEvents
+import net.fabricmc.fabric.api.client.screen.v1.ScreenMouseEvents
 import net.minecraft.text.Text
 import net.minecraft.client.MinecraftClient
 import net.minecraft.world.World
@@ -55,6 +56,11 @@ object EventBus {
                     else -> screen.javaClass.getSimpleName()
                 }
                 publish(GuiClosedEvent(guiName))
+            }
+
+            ScreenMouseEvents.afterMouseClick(screen).register { scr, click, consumed ->
+               publish(AfterMouseClickEvent(scr, click.x(), click.y(), click.buttonInfo().button))
+               consumed
             }
         }
 

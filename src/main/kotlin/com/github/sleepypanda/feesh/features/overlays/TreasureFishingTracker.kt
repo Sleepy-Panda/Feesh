@@ -13,6 +13,7 @@ import com.github.sleepypanda.feesh.utils.WorldUtils
 import com.github.sleepypanda.feesh.utils.ChatUtils
 import com.github.sleepypanda.feesh.utils.RegisterUtils
 import com.github.sleepypanda.feesh.utils.gui.FeeshGui
+import com.github.sleepypanda.feesh.utils.gui.GuiButton
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
 import com.github.sleepypanda.feesh.utils.data.PersistentDataManager
@@ -280,14 +281,8 @@ object TreasureFishingTracker {
         val viewModeText = getViewModeDisplayText(viewMode)
         val nextMode = if (viewMode == ViewMode.SESSION) ViewMode.TOTAL else ViewMode.SESSION
         val nextModeText = getViewModeDisplayText(nextMode)
-        val resetCommand = when (viewMode) {
-            ViewMode.SESSION -> "/$RESET_SESSION_COMMAND"
-            ViewMode.TOTAL -> "/$RESET_TOTAL_COMMAND"
-        }
 
         val lines = mutableListOf<String>()
-        lines.add("${GRAY}[Click to show $nextModeText${GRAY}] ${DARK_GRAY}(/$TOGGLE_VIEW_MODE_COMMAND)")
-        lines.add("${GRAY}[${RED}Click to reset${GRAY}] ${DARK_GRAY}($resetCommand)")
         lines.add("$baseTitle $viewModeText")
         lines.add("${GRAY}- ${DARK_PURPLE}Good catch${GRAY}: ${WHITE}${CommonUtils.formatNumberWithSpaces(catches.good)}")
         lines.add("${GRAY}- ${GOLD}Great catch${GRAY}: ${WHITE}${CommonUtils.formatNumberWithSpaces(catches.great)}")
@@ -297,6 +292,10 @@ object TreasureFishingTracker {
         lines.addAll(data.total.treasureDyes.getOverlayText(treasureDye.displayName, "treasure"))
 
         gui.setLines(lines)
+        gui.setButtons(listOf(
+            GuiButton(0, "${GRAY}[Click to show $nextModeText${GRAY}]", { toggleViewMode() }),
+            GuiButton(1, "${GRAY}[${RED}Click to reset${GRAY}]", { resetTreasureFishingTracker(false, getCurrentViewMode()) })
+        ))
     }
 
     private fun saveData() {

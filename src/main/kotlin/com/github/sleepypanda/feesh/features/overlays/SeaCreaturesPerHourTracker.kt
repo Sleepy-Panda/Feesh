@@ -12,6 +12,7 @@ import com.github.sleepypanda.feesh.utils.PlayerUtils
 import com.github.sleepypanda.feesh.utils.ChatUtils
 import com.github.sleepypanda.feesh.utils.RegisterUtils
 import com.github.sleepypanda.feesh.utils.gui.FeeshGui
+import com.github.sleepypanda.feesh.utils.gui.GuiButton
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
 import java.util.Date
@@ -144,16 +145,16 @@ object SeaCreaturesPerHourTracker {
 
         val pausedText = if (isSessionActive) "" else " ${GRAY}[Paused]"
         val lines = mutableListOf<String>()
-        
-        lines.add("${GRAY}[${YELLOW}Click to pause${GRAY}] ${DARK_GRAY}($PAUSE_COMMAND)")
-        lines.add("${GRAY}[${RED}Click to reset${GRAY}] ${DARK_GRAY}($RESET_COMMAND)")
-
         lines.add(baseTitle)
         lines.add("${WHITE}${CommonUtils.formatNumberWithSpaces(seaCreaturesPerHour)} ${GRAY}per hour (${WHITE}${CommonUtils.formatNumberWithSpaces(totalSeaCreaturesCaughtCount)} ${GRAY}total)")
         lines.add("")
         lines.add("${AQUA}Elapsed time: ${WHITE}${CommonUtils.formatTimeElapsed(elapsedSeconds)}${pausedText}")
 
         gui.setLines(lines)
+        gui.setButtons(listOf(
+            GuiButton(0, "${GRAY}[${YELLOW}Click to pause${GRAY}]", { pause() }),
+            GuiButton(1, "${GRAY}[${RED}Click to reset${GRAY}]", { reset(false) })
+        ))
     }
 
     private fun reset(isConfirmed: Boolean) {
