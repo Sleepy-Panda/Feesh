@@ -23,6 +23,7 @@ import com.github.sleepypanda.feesh.utils.WorldUtils
 import com.github.sleepypanda.feesh.utils.PlayerUtils
 import com.github.sleepypanda.feesh.utils.EntityUtils
 import com.github.sleepypanda.feesh.utils.gui.FeeshGui
+import com.github.sleepypanda.feesh.utils.gui.GuiButton
 import com.github.sleepypanda.feesh.utils.data.PersistentDataManager
 import com.github.sleepypanda.feesh.utils.enums.PricingModeWithNpc
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
@@ -682,33 +683,32 @@ object FishingProfitTracker {
     private fun updateGuiLines() {
         try {
             gui.clearLines()
+
             if (!isTrackerVisible()) {
                 pause()
                 return
             }
+
             val viewMode = getCurrentViewMode()
             val viewModeText = getViewModeDisplayText(viewMode)
+            val nextMode = if (viewMode == ViewMode.SESSION) ViewMode.TOTAL else ViewMode.SESSION
+            val nextText = getViewModeDisplayText(nextMode)
+
             val displayData = getDisplayTrackerData(viewMode)
+
             val lines = mutableListOf<String>()
-
-            if (isInChatOrInventoryGui()) {
-                val nextMode = if (viewMode == ViewMode.SESSION) ViewMode.TOTAL else ViewMode.SESSION
-                val nextText = getViewModeDisplayText(nextMode)
-                lines.add("${GRAY}[Click to show $nextText${GRAY}] ${DARK_GRAY}(/$TOGGLE_VIEW_MODE_COMMAND)")
-                lines.add("${GRAY}[${YELLOW}Click to pause${GRAY}] ${DARK_GRAY}(/$PAUSE_COMMAND)")
-                val resetCmd = if (viewMode == ViewMode.SESSION) RESET_COMMAND else RESET_TOTAL_COMMAND
-                lines.add("${GRAY}[${RED}Click to reset${GRAY}] ${DARK_GRAY}(/$resetCmd)")
-            }
-
             lines.add("$baseTitle $viewModeText")
+
             for (entry in displayData.entriesToShow) {
                 val profitStr = CommonUtils.toShortNumber(entry.profit) ?: "0"
                 lines.add("${GRAY}- ${WHITE}${entry.amount}${GRAY}x ${entry.item}${GRAY}: ${GOLD}$profitStr")
             }
+
             if (displayData.entriesToHide.isNotEmpty()) {
                 val profitStr = CommonUtils.toShortNumber(displayData.totalCheapItemsProfit) ?: "0"
                 lines.add("${GRAY}- ${WHITE}${displayData.totalCheapItemsCount}${GRAY}x Cheap items of ${WHITE}${displayData.totalCheapItemsTypesCount} ${GRAY}types: ${GOLD}$profitStr")
             }
+
             val totalStr = CommonUtils.toShortNumber(displayData.totalProfit) ?: "0"
             val perHourStr = CommonUtils.toShortNumber(displayData.profitPerHour) ?: "0"
             lines.add("")
@@ -718,6 +718,12 @@ object FishingProfitTracker {
             lines.add("${AQUA}Elapsed time: ${WHITE}$elapsedStr$pausedSuffix")
 
             gui.setLines(lines)
+
+            if (isInChatOrInventoryGui()) gui.setButtons(listOf(
+                GuiButton(0, "${GRAY}[Click to show $nextText${GRAY}]", { toggleViewMode() }),
+                GuiButton(1, "${GRAY}[${YELLOW}Click to pause${GRAY}]", { pauseFishingProfitTracker() }),
+                GuiButton(2, "${GRAY}[${RED}Click to reset${GRAY}]", { resetFishingProfitTracker(false, getCurrentViewMode()) })
+            ))
         } catch (e: Exception) {
             FeeshMod.LOGGER.error("[Feesh] Failed to refresh tracker data for Fishing profit tracker.", e)
         }
@@ -740,7 +746,7 @@ object FishingProfitTracker {
         return when {
             itemId == "FISHED_COINS" -> "${GOLD}Fished Coins"
             itemId.contains("+100") -> "${GRAY}[Lvl 100] $itemName"
-            itemId.contains("+200") -> "${GRAY}[Lvl 200] $itemName"
+            itemId.contains("+200") -> "${GRAY}[Lvl 200] $itemName"// TODO
             else -> FishingProfitDrops.items.find { it.itemId == itemId }?.itemDisplayName ?: itemName
         }
     }

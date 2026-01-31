@@ -395,10 +395,10 @@ ${GRAY}To reset [Total]: ${WHITE}/${ArchfiendDiceProfitTracker.RESET_TOTAL_COMMA
     var fishingProfitTrackerOverlay by boolean(false) {
         this.name = Translated("Fishing profit tracker")
         this.description = Translated("""
-Shows an overlay with your profits you gained while fishing. This overlay has [Session] and [Total] view mode.
-To count items added to your sacks, make sure to enable ${YELLOW}Skyblock Settings -> Personal -> Chat Feedback -> Sack Notifications
-To reset [Session]: ${AQUA}/feeshResetFishingProfit
-To reset [Total]: ${AQUA}/feeshResetFishingProfitTotal
+${GRAY}Shows an overlay with your profits you gained while fishing. This overlay has [Session] and [Total] view mode.
+${GRAY}To count items added to your sacks, make sure to enable ${YELLOW}Skyblock Settings -> Personal -> Chat Feedback -> Sack Notifications
+${GRAY}To reset [Session]: ${WHITE}/feeshResetFishingProfit
+${GRAY}To reset [Total]: ${WHITE}/feeshResetFishingProfitTotal
         """.trimIndent())
     }
 
