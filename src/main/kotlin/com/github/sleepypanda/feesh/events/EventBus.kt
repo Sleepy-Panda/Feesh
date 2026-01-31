@@ -4,6 +4,9 @@ import kotlin.reflect.KClass
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientWorldEvents
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents
+import net.minecraft.client.gui.screen.ingame.HandledScreen
+import net.minecraft.client.gui.screen.ChatScreen
+import net.minecraft.client.gui.screen.ingame.InventoryScreen
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientEntityEvents
@@ -42,6 +45,16 @@ object EventBus {
         ScreenEvents.AFTER_INIT.register { client, screen, _, _ ->
             ScreenEvents.afterRender(screen).register { afterRenderScreen, drawContext, mouseX, mouseY, tickDelta ->
                 publish(ScreenPostRenderEvent(drawContext, client.textRenderer, client, afterRenderScreen, mouseX, mouseY, tickDelta))
+            }
+
+            ScreenEvents.remove(screen).register {
+                val guiName = when (screen) {
+                    is ChatScreen -> "Chat"
+                    is InventoryScreen -> "Inventory"
+                    is HandledScreen<*> -> screen.getTitle().getString()
+                    else -> screen.javaClass.getSimpleName()
+                }
+                publish(GuiClosedEvent(guiName))
             }
         }
 
