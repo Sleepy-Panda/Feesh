@@ -3,6 +3,8 @@ package com.github.sleepypanda.feesh.utils
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
 import com.github.sleepypanda.feesh.FeeshMod
+import com.github.sleepypanda.feesh.events.ClientTickEvent
+import com.github.sleepypanda.feesh.events.EventBus
 import net.minecraft.text.Style
 import net.minecraft.text.TextColor
 import net.minecraft.text.Text
@@ -15,7 +17,37 @@ import java.util.*
 
 object ChatUtils {
     val MOD_PREFIX = "${GRAY}[${AQUA}Feesh${GRAY}]"
-    
+
+    private enum class ChatType { ALL_CHAT, PARTY_CHAT }
+
+    private data class QueuedChatMessage(val chatType: ChatType, val message: String)
+
+    private val messageQueue = ArrayDeque<QueuedChatMessage>()
+    private var lastSendTime = null as Long?
+    private const val COOLDOWN_MS = 1000L
+
+    fun init() {
+        EventBus.subscribe(ClientTickEvent::class, ::onClientTick)
+    }
+
+    private fun onClientTick(@Suppress("UNUSED_PARAMETER") event: ClientTickEvent) {
+        processQueue()
+    }
+
+    private fun processQueue() {
+        val next = messageQueue.firstOrNull() ?: return
+        val now = System.currentTimeMillis()
+
+        if (lastSendTime == null || now - lastSendTime!! >= COOLDOWN_MS) {
+            messageQueue.removeFirst()
+            lastSendTime = now
+            when (next.chatType) {
+                ChatType.ALL_CHAT -> sendAllChatImmediate(next.message)
+                ChatType.PARTY_CHAT -> sendPartyChatImmediate(next.message)
+            }
+        }
+    }
+
     /*
      * Sends a message to the local chat. It is visible to the player only.
      * @param message The message to send.
@@ -31,14 +63,30 @@ object ChatUtils {
         FeeshMod.mc.inGameHud.chatHud.addMessage(message)
     }
 
+    /**
+     * Queues a message to be sent to All chat. Messages are sent with 1 second cooldown
+     * between them to avoid Hypixel's "You're sending messages too fast" rejection.
+     */
     fun sendAllChat(message: String) {
         if (message.isNullOrEmpty()) return
-        FeeshMod.mc.player?.networkHandler?.sendChatCommand("ac ${message}")
+        messageQueue.add(QueuedChatMessage(ChatType.ALL_CHAT, message.removeFormatting()))
     }
 
+    /**
+     * Queues a message to be sent to Party chat. Messages are sent with 1 second cooldown
+     * between them to avoid Hypixel's "You're sending messages too fast" rejection.
+     */
     fun sendPartyChat(message: String) {
         if (message.isNullOrEmpty()) return
-        FeeshMod.mc.player?.networkHandler?.sendChatCommand("pchat ${message}")
+        messageQueue.add(QueuedChatMessage(ChatType.PARTY_CHAT, message.removeFormatting()))
+    }
+
+    private fun sendAllChatImmediate(message: String) {
+        FeeshMod.mc.player?.networkHandler?.sendChatCommand("ac $message")
+    }
+
+    private fun sendPartyChatImmediate(message: String) {
+        FeeshMod.mc.player?.networkHandler?.sendChatCommand("pchat $message")
     }
 
     fun command(command: String) {

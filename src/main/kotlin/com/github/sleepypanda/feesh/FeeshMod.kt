@@ -49,6 +49,7 @@ import com.github.sleepypanda.feesh.events.publishers.RareDropsPublisher
 import com.github.sleepypanda.feesh.events.publishers.PartyChatPublisher
 import com.github.sleepypanda.feesh.events.publishers.PetLevelUpPublisher
 import com.github.sleepypanda.feesh.settings.Settings
+import com.github.sleepypanda.feesh.utils.ChatUtils
 import com.github.sleepypanda.feesh.utils.KeybindUtils
 import com.github.sleepypanda.feesh.utils.WorldUtils
 import com.github.sleepypanda.feesh.utils.PlayerUtils
@@ -93,6 +94,7 @@ class FeeshMod : ModInitializer {
         PersistentDataManager.init()
         CustomSoundsManager.init()
         EventBus.init()
+        ChatUtils.init()
         FeeshSettingsCommand.init()
         Welcome.init()
         
