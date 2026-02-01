@@ -138,6 +138,22 @@ object Alerts : CategoryKt("Alerts") {
 
     init {
         separator {
+            this.title = "${AQUA}${BOLD}Pets"
+        }
+    }
+
+    var alertOnPetLevelUp by boolean(true) {
+        this.name = Translated("Alert when a pet reached max level")
+        this.description = Translated("Shows a title and plays a sound when a pet reached max level.")
+    }
+
+    var showPetLevelUpPrice by boolean(true) {
+        this.name = Translated("Show estimated price for leveling up a pet")
+        this.description = Translated("Show the estimated price for leveling up a pet in the chat.")
+    }
+
+    init {
+        separator {
             this.title = "${AQUA}${BOLD}Hotspots"
         }
     }
@@ -176,11 +192,6 @@ object Alerts : CategoryKt("Alerts") {
     var alertOnChumBucketAutoPickup by boolean(true) {
         this.name = Translated("Alert when a Chum / Chumcap bucket is automatically picked up")
         this.description = Translated("Shows a title and plays a sound when your Chum / Chumcap bucket is automatically picked up because you went too far away.")
-    }
-
-    var alertOnPetLevelUp by boolean(true) {
-        this.name = Translated("Alert when a pet reached max level")
-        this.description = Translated("Shows a title and plays a sound when a pet reached max level.")
     }
 
     var alertOnGoldenFishSpawn by boolean(true) {
