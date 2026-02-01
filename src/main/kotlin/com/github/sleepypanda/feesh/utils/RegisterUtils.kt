@@ -1,6 +1,7 @@
 package com.github.sleepypanda.feesh.utils
 
 import com.github.sleepypanda.feesh.utils.ChatUtils.getFormattedString
+import com.github.sleepypanda.feesh.utils.ChatUtils.removeFormatting
 import net.minecraft.text.Text
 import com.mojang.brigadier.arguments.StringArgumentType
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager
@@ -25,7 +26,7 @@ object RegisterUtils {
         action: (message: Text, matchResult: MatchResult) -> Unit
     ) {
         ClientReceiveMessageEvents.GAME.register { message, _, ->
-            var text = if (noFormatting) message.string else message.getFormattedString()
+            var text = if (noFormatting) message.string.removeFormatting() else message.getFormattedString()
             regex.find(text)?.let { result ->
                 action(message, result)
             }
@@ -44,7 +45,7 @@ object RegisterUtils {
         action: (message: Text, matchResult: MatchResult) -> Boolean
     ) {
         ClientReceiveMessageEvents.ALLOW_GAME.register { message, _ ->
-            var text = if (noFormatting) message.string else message.getFormattedString()
+            var text = if (noFormatting) message.string.removeFormatting() else message.getFormattedString()
             regex.find(text)?.let { result ->
                 return@register action(message, result)
             }

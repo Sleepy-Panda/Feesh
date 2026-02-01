@@ -29,7 +29,6 @@ object RareDropsPublisher {
     // §eWow! §b[MVP§r§c+§r§b] §bMoonTheSadFisher§f §efound a §cPhoenix §epet!
     val PHOENIX_PET_DROP_PATTERN = Regex("^§eWow\\! (?<playerAndRank>.+?) §efound a §cPhoenix §epet\\!.*")
 
-    // TODO: Squid pet catch
     // §6⛃ §6§lGREAT CATCH! §fYou caught a §7[Lvl 1] §9Squid§f!
     // §d⛃ §d§lOUTSTANDING CATCH! §fYou caught a §7[Lvl 1] §6Squid§f!
     val PET_CATCH_PATTERN = Regex("^(§6⛃ §6§lGREAT CATCH!|§d⛃ §d§lOUTSTANDING CATCH!) §fYou caught a §7\\[Lvl 1\\] (?<pet>.+?)§f\\!$")
