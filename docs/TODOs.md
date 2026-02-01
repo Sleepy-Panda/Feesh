@@ -1,6 +1,6 @@
 ## Tech Debt
 
-- Check if buttons are clickable at different scales (check places before of after the button - x)
+- Check if buttons are clickable at different scales (check places before of after the button - x), same for moving samples.
 - Go through TODOs in the code
 - Rework ticks counters across all overlays
 - Make chat messages sent with queueing - do not let spam into party chat when a lot of events happens
@@ -35,6 +35,7 @@ Death sound is not played. :c Probably because player's world is not loaded whil
 
 ## Overlays
 
+- Hide timer/profit per hour for Total using setting
 - Make lines clickable for Reset/Pause/etc
 - Remove command hint from overlays, add buttons to sample overlays in /feeshMoveAllGuis
 - Refactor logic which counts ticks in each overlay

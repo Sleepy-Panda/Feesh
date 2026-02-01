@@ -6,6 +6,7 @@ Support for 1.21.11.
 
 ## Fishing profit tracker
 
+- Option to hide timer and coins/h for Total.
 - Propose compacting or selling items like raw fish going to the inventory (full sack).
 - Add confirmation for deleting items from the tracker.
 - Rare drop sound on expensive items added to sacks (e.g. Emperor's Skull).
@@ -23,7 +24,6 @@ Support for 1.21.11.
 - Rewrite way to ignore compacted loot in profit tracker
 - [Bug] Some items are tracked by Fishing Profit Tracker when dropped, but drop was prevented by SB settings (basically it drops and picks up again).
 - [Bug] Trading with other players adds items to the profit trackers.
-- [Bug] Adding a Pet to tracker does not increase earned money.
 
 ## Deployables
 
