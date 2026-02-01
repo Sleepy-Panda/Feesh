@@ -741,10 +741,15 @@ object FishingProfitTracker {
     private data class EntryDisplay(val itemId: String, val item: String, val amount: Int, val profit: Double)
 
     private fun getDisplayNameForGui(itemId: String, itemName: String): String {
+        if (itemId.endsWith("+100") || itemId.endsWith("+200")) { // FLYING_FISH;4+100
+            val level = itemId.split("+")[1]
+            val rarityNumericCode = itemId.split(";")[1].substringBefore("+").toInt()
+            val rarityCode = CommonUtils.getRarityColorCode(rarityNumericCode)
+            return "${GRAY}[Lvl ${level}] ${rarityCode}${itemName}"
+        }
+
         return when {
             itemId == "FISHED_COINS" -> "${GOLD}Fished Coins"
-            itemId.contains("+100") -> "${GRAY}[Lvl 100] $itemName"
-            itemId.contains("+200") -> "${GRAY}[Lvl 200] $itemName"// TODO
             else -> FishingProfitDrops.items.find { it.itemId == itemId }?.itemDisplayName ?: itemName
         }
     }

@@ -198,31 +198,31 @@ class FishingProfitDrops {
             FishingProfitDropInfo(
                 itemId = "SQUID;0",
                 itemName = "[Lvl 1] Squid (COMMON)",
-                itemDisplayName = "${COMMON}Squid",
+                itemDisplayName = "${GRAY}[Lvl 1] ${COMMON}Squid",
                 npcPrice = 100.0,
             ),
             FishingProfitDropInfo(
                 itemId = "SQUID;1",
                 itemName = "[Lvl 1] Squid (UNCOMMON)",
-                itemDisplayName = "${UNCOMMON}Squid",
+                itemDisplayName = "${GRAY}[Lvl 1] ${UNCOMMON}Squid",
                 npcPrice = 500.0,
             ),
             FishingProfitDropInfo(
                 itemId = "SQUID;2",
                 itemName = "[Lvl 1] Squid (RARE)",
-                itemDisplayName = "${RARE}Squid",
+                itemDisplayName = "${GRAY}[Lvl 1] ${RARE}Squid",
                 npcPrice = 100_000.0,
             ),
             FishingProfitDropInfo(
                 itemId = "SQUID;3",
                 itemName = "[Lvl 1] Squid (EPIC)",
-                itemDisplayName = "${EPIC}Squid",
+                itemDisplayName = "${GRAY}[Lvl 1] ${EPIC}Squid",
                 npcPrice = 200_000.0,
             ),
             FishingProfitDropInfo(
                 itemId = "SQUID;4",
                 itemName = "[Lvl 1] Squid (LEGENDARY)",
-                itemDisplayName = "${LEGENDARY}Squid",
+                itemDisplayName = "${GRAY}[Lvl 1] ${LEGENDARY}Squid",
                 npcPrice = 500_000.0,
             ),
             FishingProfitDropInfo(
@@ -1111,21 +1111,21 @@ class FishingProfitDrops {
             FishingProfitDropInfo(
                 itemId = "FLYING_FISH;2",
                 itemName = "[Lvl 1] Flying Fish (RARE)",
-                itemDisplayName = "${RARE}Flying Fish",
+                itemDisplayName = "${GRAY}[Lvl 1] ${RARE}Flying Fish",
                 npcPrice = 1_000.0,
                 shouldAnnounceRareDrop = true,
             ),
             FishingProfitDropInfo(
                 itemId = "FLYING_FISH;3",
                 itemName = "[Lvl 1] Flying Fish (EPIC)",
-                itemDisplayName = "${EPIC}Flying Fish",
+                itemDisplayName = "${GRAY}[Lvl 1] ${EPIC}Flying Fish",
                 npcPrice = 100_000.0,
                 shouldAnnounceRareDrop = true,
             ),
             FishingProfitDropInfo(
                 itemId = "FLYING_FISH;4",
                 itemName = "[Lvl 1] Flying Fish (LEGENDARY)",
-                itemDisplayName = "${LEGENDARY}Flying Fish",
+                itemDisplayName = "${GRAY}[Lvl 1] ${LEGENDARY}Flying Fish",
                 npcPrice = 250_000.0,
             ),
 
@@ -1864,14 +1864,14 @@ class FishingProfitDrops {
             FishingProfitDropInfo(
                 itemId = "BABY_YETI;3",
                 itemName = "[Lvl 1] Baby Yeti (EPIC)",
-                itemDisplayName = "${EPIC}Baby Yeti",
+                itemDisplayName = "${GRAY}[Lvl 1] ${EPIC}Baby Yeti",
                 npcPrice = 10_000.0,
                 shouldAnnounceRareDrop = true,
             ),
             FishingProfitDropInfo(
                 itemId = "BABY_YETI;4",
                 itemName = "[Lvl 1] Baby Yeti (LEGENDARY)",
-                itemDisplayName = "${LEGENDARY}Baby Yeti",
+                itemDisplayName = "${GRAY}[Lvl 1] ${LEGENDARY}Baby Yeti",
                 npcPrice = 1_000_000.0,
             ),
 
@@ -1911,13 +1911,13 @@ class FishingProfitDrops {
             FishingProfitDropInfo(
                 itemId = "MEGALODON;3",
                 itemName = "[Lvl 1] Megalodon (EPIC)",
-                itemDisplayName = "${EPIC}Megalodon",
+                itemDisplayName = "${GRAY}[Lvl 1] ${EPIC}Megalodon",
                 npcPrice = 500_000.0,
             ),
             FishingProfitDropInfo(
                 itemId = "MEGALODON;4",
                 itemName = "[Lvl 1] Megalodon (LEGENDARY)",
-                itemDisplayName = "${LEGENDARY}Megalodon",
+                itemDisplayName = "${GRAY}[Lvl 1] ${LEGENDARY}Megalodon",
                 npcPrice = 2_500_000.0,
             ),
 
