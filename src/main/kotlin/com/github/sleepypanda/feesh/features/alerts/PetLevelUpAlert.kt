@@ -18,19 +18,23 @@ object PetLevelUpAlert {
     }
 
     private fun onPetLevelUp(event: PetLevelUpEvent) {
-        if (!WorldUtils.isInSkyblock() || !Alerts.alertOnPetLevelUp) return
+        if (!WorldUtils.isInSkyblock() || (!Alerts.alertOnPetLevelUp && !Alerts.showPetLevelUpPrice)) return
 
-        CommonUtils.showTitle("${event.petDisplayName} ${RESET}${WHITE}is maxed", "${WHITE}Level ${event.level}")
-        SoundUtils.playSound()
+        if (Alerts.alertOnPetLevelUp) {
+            CommonUtils.showTitle("${event.petDisplayName} ${RESET}${WHITE}is maxed", "${WHITE}Level ${event.level}")
+            SoundUtils.playSound()    
+        }
 
-        val itemIdMaxLevel = ItemUtils.getMaxedPetId(event.petDisplayName, event.level)
-        val itemId1level = ItemUtils.getLevel1PetId(event.petDisplayName)
-        val basePrice = PriceUtils.getAuctionItemPrice(itemId1level)?.lbin ?: 0.0
-        val priceMaxLevel = PriceUtils.getAuctionItemPrice(itemIdMaxLevel)?.lbin ?: 0.0
-        if (priceMaxLevel <= 0.0) return
-
-        val priceStr = "${GOLD}${CommonUtils.toShortNumber(priceMaxLevel)}"
-        val profitStr = "${GOLD}${CommonUtils.toShortNumber(priceMaxLevel - basePrice)}"
-        ChatUtils.sendLocalChat("Estimated cost for this pet is ${priceStr}${RESET}, profit for leveling up is ${profitStr}${RESET}.")
+        if (Alerts.showPetLevelUpPrice) {
+            val itemIdMaxLevel = ItemUtils.getMaxedPetId(event.petDisplayName, event.level)
+            val itemId1level = ItemUtils.getLevel1PetId(event.petDisplayName)
+            val basePrice = PriceUtils.getAuctionItemPrice(itemId1level)?.lbin ?: 0.0
+            val priceMaxLevel = PriceUtils.getAuctionItemPrice(itemIdMaxLevel)?.lbin ?: 0.0
+            if (priceMaxLevel <= 0.0) return
+    
+            val priceStr = "${GOLD}${CommonUtils.toShortNumber(priceMaxLevel)}"
+            val profitStr = "${GOLD}${CommonUtils.toShortNumber(priceMaxLevel - basePrice)}"
+            ChatUtils.sendLocalChat("Estimated cost for this pet is ${priceStr}${RESET}, profit for leveling up is ${profitStr}${RESET}.", true)    
+        }
     }
 }
