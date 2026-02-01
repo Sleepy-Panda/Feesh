@@ -43,9 +43,7 @@ import java.util.Date
 import java.util.Timer
 import kotlin.concurrent.timerTask
 
-// TODO isWorldLoaded
 // TODO Shards no workie
-// Recalculate lines on gui closed no workie
 // TODO Display name for leveled pets
 // Items taken from Bazaar counted
 // Is in sacks, is in supercraft, etc, maybe track item creation date
