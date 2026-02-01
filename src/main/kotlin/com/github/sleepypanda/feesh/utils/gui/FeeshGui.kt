@@ -6,6 +6,7 @@ import com.github.sleepypanda.feesh.events.AfterMouseClickEvent
 import com.github.sleepypanda.feesh.events.EventBus
 import com.github.sleepypanda.feesh.utils.WorldUtils
 import com.github.sleepypanda.feesh.utils.enums.Alignment
+import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.utils.data.PersistentDataManager
 import net.minecraft.text.Text
 import net.minecraft.client.gui.screen.ingame.InventoryScreen
@@ -348,6 +349,16 @@ class FeeshGui {
         }
 
         drawContext.matrices.popMatrix()
+
+        val alignmentLabel = when (alignment) {
+            Alignment.LEFT -> "[L]"
+            Alignment.RIGHT -> "[R]"
+            Alignment.CENTER -> "[C]"
+        }
+        val labelText = Text.literal("${GRAY}$alignmentLabel")
+        val labelX = leftEdge - 2
+        val labelY = y - 2 - textRenderer.fontHeight
+        drawContext.drawText(textRenderer, labelText, labelX, labelY, color, true)
     }
 
     fun isInSample(textRenderer: TextRenderer, @Suppress("UNUSED_PARAMETER") client: MinecraftClient, mouseX: Double, mouseY: Double): Boolean {
