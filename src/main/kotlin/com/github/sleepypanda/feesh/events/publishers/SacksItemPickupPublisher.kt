@@ -50,7 +50,7 @@ object SacksItemPickupPublisher {
                 ITEM_LINE_REGEX.findAll(line).forEach { match ->
                     val diffStr = match.groupValues[1].replace("+", "").replace(",", "")
                     val amount = diffStr.toIntOrNull() ?: 0
-                    val itemName = match.groupValues[2].trim()
+                    val itemName = match.groupValues[2].trim().removeFormatting()
                     val sackName = match.groupValues[3].removeFormatting()
                     if (amount > 0 && itemName.isNotBlank()) {
                         items.add(Triple(itemName, amount, sackName))

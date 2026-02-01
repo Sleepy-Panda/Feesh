@@ -411,7 +411,8 @@ object FishingProfitTracker {
         var added = false
         for (item in event.items) {
             if (item.amount <= 0 || item.itemName.isBlank()) continue
-            val dropInfo = getFishingProfitItemByName(item.itemName) ?: continue
+            val itemName = item.itemName.removeFormatting()
+            val dropInfo = getFishingProfitItemByName(itemName) ?: continue
             addProfitTrackerItem(dropInfo.itemId, dropInfo.itemName, item.amount, null, true)
             added = true
         }
