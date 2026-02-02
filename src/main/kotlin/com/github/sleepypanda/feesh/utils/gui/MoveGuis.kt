@@ -1,11 +1,8 @@
 package com.github.sleepypanda.feesh.utils.gui
 
 import com.github.sleepypanda.feesh.FeeshMod
-import com.github.sleepypanda.feesh.features.overlays.SeaCreaturesTracker
-import com.github.sleepypanda.feesh.features.overlays.LegionBobbingTimeTracker
-import com.github.sleepypanda.feesh.features.overlays.JerryWorkshopTracker
-import com.github.sleepypanda.feesh.settings.categories.Overlays
 import com.github.sleepypanda.feesh.utils.RegisterUtils
+import com.github.sleepypanda.feesh.utils.ChatUtils
 import com.github.sleepypanda.feesh.utils.WorldUtils
 import com.github.sleepypanda.feesh.utils.data.PersistentDataManager
 import com.github.sleepypanda.feesh.utils.enums.Alignment
@@ -36,7 +33,10 @@ object MoveGuis {
     }
 
     fun moveAllGuis() {
-        if (!WorldUtils.isInSkyblock()) return
+        if (!WorldUtils.isInSkyblock()) {
+            ChatUtils.sendLocalChat("${RED}You must be on Hypixel Skyblock to use this command!", true)
+            return
+        }
 
         val mc = FeeshMod.mc
         mc.send {
