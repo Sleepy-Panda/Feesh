@@ -35,6 +35,8 @@ object ChatUtils {
     }
 
     private fun processQueue() {
+        if (!WorldUtils.isInSkyblock()) return
+        
         val next = messageQueue.firstOrNull() ?: return
         val now = System.currentTimeMillis()
 
