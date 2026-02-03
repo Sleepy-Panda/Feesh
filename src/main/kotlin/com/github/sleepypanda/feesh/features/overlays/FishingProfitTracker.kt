@@ -44,6 +44,7 @@ import java.util.Date
 import java.util.Timer
 import kotlin.concurrent.timerTask
 
+// Commands to add/decrease items to profit tracker - do we need them? Add guidance for usage.
 // Buttons to add/decrease items to profit tracker
 // TODO refresh if settings for price modes are changed?
 // TODO event for pickup item
@@ -80,6 +81,10 @@ object FishingProfitTracker {
     private const val RESET_TOTAL_COMMAND = "feeshResetFishingProfitTotal"
     private const val TOGGLE_VIEW_MODE_COMMAND = "feeshToggleFishingProfitViewMode"
     private const val PAUSE_COMMAND = "feeshPauseFishingProfit"
+    private const val SET_ITEM_DIFF_COMMAND = "feeshSetItemDiffFishingProfit"
+    private const val SET_ITEM_DIFF_TOTAL_COMMAND = "feeshSetItemDiffFishingProfitTotal"
+    private const val DELETE_ITEM_COMMAND = "feeshDeleteItemFishingProfit"
+    private const val DELETE_ITEM_TOTAL_COMMAND = "feeshDeleteItemFishingProfitTotal"
 
     private const val TICKS_OVERLAY_AND_ACTIVATE = 20
     private const val TICKS_ELAPSED_TIME = 20
@@ -144,6 +149,18 @@ object FishingProfitTracker {
         }
         RegisterUtils.command(PAUSE_COMMAND) {
             pauseFishingProfitTracker()
+        }
+        RegisterUtils.command(SET_ITEM_DIFF_COMMAND) { args ->
+            setItemDiff(args, ViewMode.SESSION)
+        }
+        RegisterUtils.command(SET_ITEM_DIFF_TOTAL_COMMAND) { args ->
+            setItemDiff(args, ViewMode.TOTAL)
+        }
+        RegisterUtils.command(DELETE_ITEM_COMMAND) { args ->
+            deleteItem(args, ViewMode.SESSION)
+        }
+        RegisterUtils.command(DELETE_ITEM_TOTAL_COMMAND) { args ->
+            deleteItem(args, ViewMode.TOTAL)
         }
     }
 
@@ -268,6 +285,151 @@ object FishingProfitTracker {
         } catch (e: Exception) {
             FeeshMod.LOGGER.error("[Feesh] Failed to reset Fishing profit tracker.", e)
         }
+    }
+
+    private fun setItemDiff(args: Array<String>, viewMode: ViewMode) {
+        try {
+            if (args.size < 2) {
+                ChatUtils.sendLocalChat("${RED}Usage: /$SET_ITEM_DIFF_COMMAND <count> <item name or ID>", true)
+                return
+            }
+            val count = args[0].toIntOrNull()
+            if (count == null) {
+                ChatUtils.sendLocalChat("${RED}Invalid count: ${args[0]}", true)
+                return
+            }
+            val itemInput = args.drop(1).joinToString(" ").trim()
+            if (itemInput.isBlank()) {
+                ChatUtils.sendLocalChat("${RED}Item name or ID is required.", true)
+                return
+            }
+
+            val resolved = resolveItemForCommand(itemInput, viewMode) ?: run {
+                ChatUtils.sendLocalChat("${RED}Item not found: $itemInput", true)
+                return
+            }
+
+            val sourceObj = getSourceObject(viewMode)
+            val existing = sourceObj.profitTrackerItems[resolved.itemId]
+            val currentAmount = existing?.amount ?: 0
+
+            if (count < 0) {
+                val newAmount = currentAmount + count
+                if (newAmount < 0) {
+                    ChatUtils.sendLocalChat("${RED}Not enough items. Current: $currentAmount, cannot decrease by ${-count}.", true)
+                    return
+                }
+            }
+
+            val viewModeText = getViewModeDisplayText(viewMode)
+            if (count > 0) {
+                addProfitTrackerItemInMode(viewMode, resolved.itemId, resolved.itemName, count, null)
+                refreshTotalItemsProfitsInMode(viewMode)
+                ChatUtils.sendLocalChat("${WHITE}Added $count ${resolved.itemName} to Fishing profit tracker $viewModeText", true)
+                saveData()
+            } else {
+                val newAmount = currentAmount + count
+                if (newAmount == 0) {
+                    sourceObj.profitTrackerItems.remove(resolved.itemId)
+                } else {
+                    val entry = existing!!
+                    sourceObj.profitTrackerItems[resolved.itemId] = ProfitTrackerItemEntry(
+                        itemName = entry.itemName,
+                        itemId = entry.itemId,
+                        amount = newAmount,
+                        totalItemProfit = 0.0
+                    )
+                }
+                refreshTotalItemsProfitsInMode(viewMode)
+                ChatUtils.sendLocalChat("${WHITE}Decreased ${resolved.itemName} by ${-count} in Fishing profit tracker $viewModeText", true)
+                saveData()
+            }
+            updateGuiLines()
+        } catch (e: Exception) {
+            FeeshMod.LOGGER.error("[Feesh] Failed to set item diff in Fishing profit tracker.", e)
+        }
+    }
+
+    private fun deleteItem(args: Array<String>, viewMode: ViewMode) {
+        try {
+            if (args.isEmpty()) {
+                ChatUtils.sendLocalChat("${RED}Usage: /$DELETE_ITEM_COMMAND <item name or ID>", true)
+                return
+            }
+            val isConfirmed = args.size >= 2 && args.last() == "noconfirm"
+            val itemInput = if (isConfirmed) args.dropLast(1).joinToString(" ").trim() else args.joinToString(" ").trim()
+            if (itemInput.isBlank()) {
+                ChatUtils.sendLocalChat("${RED}Item name or ID is required.", true)
+                return
+            }
+
+            if (!isConfirmed) {
+                val deleteCommand = when (viewMode) {
+                    ViewMode.SESSION -> "$DELETE_ITEM_COMMAND $itemInput noconfirm"
+                    ViewMode.TOTAL -> "$DELETE_ITEM_TOTAL_COMMAND $itemInput noconfirm"
+                }
+                ChatUtils.sendLocalChatWithCommand(
+                    "${WHITE}Do you want to delete ${WHITE}$itemInput${WHITE} from Fishing profit tracker? ${RED}${BOLD}[Click to confirm]",
+                    deleteCommand,
+                    true
+                )
+                return
+            }
+
+            val resolved = resolveItemForCommand(itemInput, viewMode) ?: run {
+                ChatUtils.sendLocalChat("${RED}Item not found: $itemInput", true)
+                return
+            }
+
+            val sourceObj = getSourceObject(viewMode)
+            if (!sourceObj.profitTrackerItems.containsKey(resolved.itemId)) {
+                ChatUtils.sendLocalChat("${RED}Item not in tracker: $itemInput", true)
+                return
+            }
+
+            sourceObj.profitTrackerItems.remove(resolved.itemId)
+            refreshTotalItemsProfitsInMode(viewMode)
+            saveData()
+            updateGuiLines()
+            val viewModeText = getViewModeDisplayText(viewMode)
+            ChatUtils.sendLocalChat("${WHITE}Deleted ${resolved.itemName} from Fishing profit tracker $viewModeText", true)
+        } catch (e: Exception) {
+            FeeshMod.LOGGER.error("[Feesh] Failed to delete item from Fishing profit tracker.", e)
+        }
+    }
+
+    private data class ResolvedItem(val itemId: String, val itemName: String)
+
+    private fun resolveItemForCommand(input: String, viewMode: ViewMode): ResolvedItem? {
+        val inputTrimmed = input.trim()
+        if (inputTrimmed.isBlank()) return null
+
+        val sourceObj = getSourceObject(viewMode)
+
+        // Match in FishingProfitDrops by itemId
+        val dropById = FishingProfitDrops.items.find { it.itemId.equals(inputTrimmed, ignoreCase = true) }
+        if (dropById != null) {
+            val keyInTracker = sourceObj.profitTrackerItems.keys.find {
+                it.equals(dropById.itemId, ignoreCase = true) || it.startsWith("${dropById.itemId}+", ignoreCase = true)
+            }
+            val itemIdToUse = keyInTracker ?: dropById.itemId
+            return ResolvedItem(itemIdToUse, dropById.itemName)
+        }
+
+        // Match in FishingProfitDrops by itemName or itemAlternateNames
+        val dropByName = FishingProfitDrops.items.find {
+            it.itemName.equals(inputTrimmed, ignoreCase = true) ||
+                it.itemAlternateNames.any { alt -> alt.equals(inputTrimmed, ignoreCase = true) }
+        }
+        if (dropByName != null) {
+            val keyInTracker = sourceObj.profitTrackerItems.keys.find {
+                it.equals(dropByName.itemId, ignoreCase = true) || it.startsWith("${dropByName.itemId}+", ignoreCase = true)
+            }
+            val itemIdToUse = keyInTracker ?: dropByName.itemId
+            return ResolvedItem(itemIdToUse, dropByName.itemName)
+        }
+
+        return null
     }
 
     fun pauseFishingProfitTracker() {
