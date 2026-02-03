@@ -25,6 +25,7 @@ import com.github.sleepypanda.feesh.utils.EntityUtils
 import com.github.sleepypanda.feesh.utils.GuiUtils
 import com.github.sleepypanda.feesh.utils.gui.FeeshGui
 import com.github.sleepypanda.feesh.utils.gui.GuiButton
+import com.github.sleepypanda.feesh.utils.gui.LineAction
 import com.github.sleepypanda.feesh.utils.data.PersistentDataManager
 import com.github.sleepypanda.feesh.utils.enums.PricingModeWithNpc
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
@@ -844,6 +845,78 @@ object FishingProfitTracker {
         }
     }
 
+    private fun onLineItemIncrease(itemId: String) {
+        try {
+            if (!isTrackerVisible()) return
+
+            val viewMode = getCurrentViewMode()
+            val viewModeText = getViewModeDisplayText(viewMode)
+            val sourceObj = getSourceObject(viewMode)
+            val entry = sourceObj.profitTrackerItems[itemId] ?: return
+            val dropInfo = FishingProfitDrops.items.find { it.itemId == itemId } ?: return
+            
+            addProfitTrackerItemInMode(viewMode, itemId, entry.itemName, 1, null)
+            refreshTotalItemsProfitsInMode(viewMode)
+            saveData()
+            updateGuiLines()
+
+            val newAmount = entry.amount + 1
+            ChatUtils.sendLocalChat("${WHITE}Changed amount of ${dropInfo.itemDisplayName} ${WHITE}to ${GRAY}${newAmount}x ${WHITE}in the Fishing profit tracker $viewModeText", true)
+        } catch (e: Exception) {
+            FeeshMod.LOGGER.error("[Feesh] Failed to change item amount in Fishing profit tracker.", e)
+        }
+    }
+
+    private fun onLineItemDecrease(itemId: String) {
+        try {
+            if (!isTrackerVisible()) return
+
+            val viewMode = getCurrentViewMode()
+            val viewModeText = getViewModeDisplayText(viewMode)
+            val sourceObj = getSourceObject(viewMode)
+            val entry = sourceObj.profitTrackerItems[itemId] ?: return
+            val dropInfo = FishingProfitDrops.items.find { it.itemId == itemId } ?: return
+
+            val newAmount = entry.amount - 1
+            if (newAmount <= 0) {
+                return
+            }
+
+            sourceObj.profitTrackerItems[itemId] = entry.copy(amount = newAmount)
+            refreshTotalItemsProfitsInMode(viewMode)
+            saveData()
+            updateGuiLines()
+
+            ChatUtils.sendLocalChat("${WHITE}Changed amount of ${dropInfo.itemDisplayName} ${WHITE}to ${GRAY}${newAmount}x ${WHITE}in the Fishing profit tracker $viewModeText", true)
+        } catch (e: Exception) {
+            FeeshMod.LOGGER.error("[Feesh] Failed to change item amount in Fishing profit tracker.", e)
+        }
+    }
+
+    private fun onLineItemDelete(itemId: String) {
+        try {
+            if (!isTrackerVisible()) return
+
+            val viewMode = getCurrentViewMode()
+            val viewModeText = getViewModeDisplayText(viewMode)
+            val sourceObj = getSourceObject(viewMode)
+            val entry = sourceObj.profitTrackerItems[itemId] ?: return
+            val dropInfo = FishingProfitDrops.items.find { it.itemId == itemId } ?: return
+
+            val deleteCommand = when (viewMode) {
+                ViewMode.SESSION -> "$DELETE_ITEM_COMMAND $itemId noconfirm"
+                ViewMode.TOTAL -> "$DELETE_ITEM_TOTAL_COMMAND $itemId noconfirm"
+            }
+            ChatUtils.sendLocalChatWithCommand(
+                "${WHITE}Do you want to delete ${WHITE}${entry.amount}x ${dropInfo.itemDisplayName}${WHITE} from the Fishing profit tracker ${viewModeText}${WHITE}? ${RED}${BOLD}[Click to confirm]",
+                deleteCommand,
+                true
+            )
+        } catch (e: Exception) {
+            FeeshMod.LOGGER.error("[Feesh] Failed to delete item from Fishing profit tracker.", e)
+        }
+    }
+
     private fun resetSession() {
         data.session = FishingProfitSourceData()
         saveData()
@@ -880,7 +953,9 @@ object FishingProfitTracker {
 
             if (displayData.entriesToHide.isNotEmpty()) {
                 val profitStr = CommonUtils.toShortNumber(displayData.totalCheapItemsProfit) ?: "0"
-                lines.add("${GRAY}- ${WHITE}${displayData.totalCheapItemsCount}${GRAY}x Cheap items of ${WHITE}${displayData.totalCheapItemsTypesCount} ${GRAY}types: ${GOLD}$profitStr")
+                val countStr = CommonUtils.formatNumberWithSpaces(displayData.totalCheapItemsCount)
+                val typesStr = CommonUtils.formatNumberWithSpaces(displayData.totalCheapItemsTypesCount)
+                lines.add("${GRAY}- ${WHITE}${countStr}${GRAY}x Cheap items of ${WHITE}${typesStr} ${GRAY}types: ${GOLD}$profitStr")
             }
 
             val totalStr = CommonUtils.toShortNumber(displayData.totalProfit) ?: "0"
@@ -898,6 +973,21 @@ object FishingProfitTracker {
             }
 
             gui.setLines(lines)
+
+            val lineIndexToActions = mutableMapOf<Int, List<LineAction>>()
+            val buttonLinesCount = 3 // Buttons count (view mode, pause, reset)
+            val titleLineIndex = buttonLinesCount
+            displayData.entriesToShow.forEachIndexed { index, entry ->
+                if (entry.itemId != "FISHED_COINS") {
+                    val itemId = entry.itemId
+                    lineIndexToActions[titleLineIndex + 1 + index] = listOf(
+                        LineAction("${GRAY}[${GREEN}+${GRAY}]") { onLineItemIncrease(itemId) },
+                        LineAction("${GRAY}[${RED}-${GRAY}]") { onLineItemDecrease(itemId) },
+                        LineAction("${GRAY}[${RED}x${GRAY}]") { onLineItemDelete(itemId) }
+                    )
+                }
+            }
+            gui.setLineActions(lineIndexToActions)
 
             gui.setButtons(listOf(
                 GuiButton(0, "${GRAY}[Click to show $nextText${GRAY}]", { toggleViewMode() }),

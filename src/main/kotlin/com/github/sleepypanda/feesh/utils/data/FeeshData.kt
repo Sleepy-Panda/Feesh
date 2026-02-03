@@ -10,7 +10,7 @@ import com.github.sleepypanda.feesh.features.overlays.FishingProfitTracker
 
 data class FeeshData(
     var isWelcomeMessageShown: Boolean = false,
-    var lastVersionChangelogShown: String = "0.0.0",
+    var lastChangelogShown: String = "0.0.0",
     var isFishingBagEnabled: Boolean? = null, // Null for unknown state,
     val jerryWorkshop: JerryWorkshopTracker.JerryWorkshopTrackerData = JerryWorkshopTracker.JerryWorkshopTrackerData(),
     val treasureFishing: TreasureFishingTracker.TreasureFishingData = TreasureFishingTracker.TreasureFishingData(),

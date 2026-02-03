@@ -34,6 +34,16 @@ data class GuiButton(
 )
 
 /**
+ * An inline action button for a specific overlay line. Defined by the overlay.
+ * @param text The formatted display text (e.g. "[+]", "[-]", "[x]" with color codes).
+ * @param onClick The callback to execute when the button is clicked.
+ */
+data class LineAction(
+    val text: String,
+    val onClick: () -> Unit
+)
+
+/**
  * A class that represents a GUI for the Feesh mod. GUI is shown when in Skyblock and the condition is met.
  * @property key The unique key for this GUI, used for saving/loading configuration.
  * @property x The x position of the GUI.
@@ -67,28 +77,17 @@ class FeeshGui {
     private var sampleLines: List<String> = emptyList()
 
     private var color: Int = Color(255, 255, 255, 255).rgb
+    // Buttons are shown when in inventory/chat on top of the overlay (e.g. Reset, Pause, switch mode).
     private var buttons: List<GuiButton> = emptyList()
+    // Inline actions are shown when hovering over a line (e.g. [+], [-], [x]).
+    // Index starts from the first overlay line including buttons.
+    private var lineIndexToActions: Map<Int, List<LineAction>> = emptyMap()
 
     constructor() {
         registeredGuis.add(this)
         EventBus.subscribe(GameRenderEvent::class, { event -> onDraw(event.drawContext, event.textRenderer, event.mcClient) })
         EventBus.subscribe(ScreenAfterBackgroundRenderEvent::class, ::onPostDrawAfterBackground)
         EventBus.subscribe(AfterMouseClickEvent::class, ::onMouseClick)
-    }
-    
-    private fun onMouseClick(event: AfterMouseClickEvent) {
-        if (buttons.isEmpty()) return
-        if (!isClickable) return
-        if (!WorldUtils.isInSkyblock()) return
-        if (!GuiUtils.isInInventoryOrChat()) return
-        if (event.button != 0) return
-        if (event.screen !is InventoryScreen && event.screen !is ChatScreen) return
-
-        val textRenderer = event.screen.textRenderer ?: return
-        val clickedButton = getClickedButton(textRenderer, event.mouseX, event.mouseY)
-        if (clickedButton != null) {
-            clickedButton.onClick()
-        }
     }
 
     fun getCoordsDataKey(): String = coordsDataKey
@@ -131,7 +130,98 @@ class FeeshGui {
         this.alignment = alignment
         return this
     }
+        
     
+    fun setCondition(condition: () -> Boolean): FeeshGui {
+        this.condition = condition
+        return this
+    }
+
+    fun setSettingsKey(settingsKey: () -> Boolean): FeeshGui {
+        this.settingsKey = settingsKey
+        return this
+    }
+
+    fun setClickable(isClickable: Boolean): FeeshGui {
+        this.isClickable = isClickable
+        return this
+    }
+
+    fun setLines(lines: List<String>): FeeshGui {
+        this.lines = lines
+        return this
+    }
+
+    /**
+     * Sets the list of buttons. Each button has lineIndex, text, and onClick callback.
+     */
+    fun setButtons(buttons: List<GuiButton>): FeeshGui {
+        this.buttons = buttons
+        return this
+    }
+
+    fun getButtons(): List<GuiButton> = buttons
+
+    /**
+     * Sets the mapping of line index to inline actions. Each overlay defines its own actions
+     * (e.g. [+], [-], [x]) and callbacks. Buttons are shown when in inventory/chat and hovering the line.
+     */
+    fun setLineActions(lineIndexToActions: Map<Int, List<LineAction>>): FeeshGui {
+        this.lineIndexToActions = lineIndexToActions
+        return this
+    }
+
+    fun clearLines(): FeeshGui {
+        this.lines = emptyList()
+        this.buttons = emptyList()
+        this.lineIndexToActions = emptyMap()
+        return this
+    }
+
+    fun setSampleLines(sampleLines: List<String>): FeeshGui {
+        this.sampleLines = sampleLines
+        return this
+    }
+
+    private fun onDraw(drawContext: DrawContext, textRenderer: TextRenderer, mcClient: MinecraftClient) {
+        if (mcClient.currentScreen is InventoryScreen && isClickable) return
+        draw(drawContext, textRenderer, mcClient, null, null)
+    }
+
+    private fun onPostDrawAfterBackground(event: ScreenAfterBackgroundRenderEvent) { // Draw in front of dark background when Inventory is opened
+        if (!isClickable) return
+        if (event.screen !is InventoryScreen) return
+
+        draw(event.drawContext, event.textRenderer, event.mcClient, event.mouseX, event.mouseY)
+    }
+
+    private fun onMouseClick(event: AfterMouseClickEvent) {
+        if (lines.isEmpty() && buttons.isEmpty()) return
+        if (!isClickable) return
+        if (!WorldUtils.isInSkyblock()) return
+        if (!GuiUtils.isInInventoryOrChat()) return
+        if (event.button != 0) return
+        if (event.screen !is InventoryScreen && event.screen !is ChatScreen) return
+
+        val textRenderer = event.screen.textRenderer ?: return
+
+        if (buttons.isNotEmpty()) {
+            val clickedButton = getClickedButton(textRenderer, event.mouseX, event.mouseY)
+            if (clickedButton != null) {
+                clickedButton.onClick()
+                return
+            }
+        }
+   
+        if (lineIndexToActions.isNotEmpty() && event.screen is InventoryScreen) { // TODO: Inline buttons are not rendered when in chat, due to missing mouseX/mouseY for hover.
+            val clickedLineAction = getClickedLineAction(textRenderer, event.mouseX, event.mouseY)
+            if (clickedLineAction != null) {
+                clickedLineAction.onClick()
+                return
+            }
+        }
+    }
+
     /**
      * Recalculates x coordinate when alignment changes to keep overlay at the same visual position.
      * @param textRenderer TextRenderer to calculate text widths
@@ -228,53 +318,7 @@ class FeeshGui {
         }
     }
 
-    fun setCondition(condition: () -> Boolean): FeeshGui {
-        this.condition = condition
-        return this
-    }
-
-    fun setSettingsKey(settingsKey: () -> Boolean): FeeshGui {
-        this.settingsKey = settingsKey
-        return this
-    }
-
-    fun setClickable(isClickable: Boolean): FeeshGui {
-        this.isClickable = isClickable
-        return this
-    }
-
-    fun setLines(lines: List<String>): FeeshGui {
-        this.lines = lines
-        return this
-    }
-
-    /**
-     * Sets the list of buttons. Each button has lineIndex, text, and onClick callback.
-     */
-    fun setButtons(buttons: List<GuiButton>): FeeshGui {
-        this.buttons = buttons
-        return this
-    }
-
-    fun getButtons(): List<GuiButton> = buttons
-
-    fun clearLines(): FeeshGui {
-        this.lines = emptyList()
-        this.buttons = emptyList()
-        return this
-    }
-
-    fun setSampleLines(sampleLines: List<String>): FeeshGui {
-        this.sampleLines = sampleLines
-        return this
-    }
-
-    fun onDraw(drawContext: DrawContext, textRenderer: TextRenderer, mcClient: MinecraftClient) {
-        if (mcClient.currentScreen is InventoryScreen && isClickable) return
-        draw(drawContext, textRenderer, mcClient)
-    }
-
-    fun draw(drawContext: DrawContext, textRenderer: TextRenderer, mcClient: MinecraftClient) {
+    private fun draw(drawContext: DrawContext, textRenderer: TextRenderer, mcClient: MinecraftClient, mouseX: Int? = null, mouseY: Int? = null) {
         if (lines.isEmpty()) return
         if (!WorldUtils.isInSkyblock()) return
         if (settingsKey != null && !settingsKey!!()) return
@@ -286,12 +330,35 @@ class FeeshGui {
 
         val allLines = getDisplayLinesForRender()
         val scaledY = (y / scale).toInt()
-        val maxWidth = getMaxWidth(textRenderer, allLines)
-        val leftEdge = getLeftEdge(textRenderer, allLines)
+        val fontHeight = textRenderer.fontHeight
+        val lineHeightPx = fontHeight + 2
+
+        // Build lines with buttons for all lines that have actions - used for hover bounds so hovering over buttons counts
+        val linesWithAllButtons = allLines.mapIndexed { index, line ->
+            val actions = lineIndexToActions[index]
+            if (actions != null && actions.isNotEmpty()) line + " " + actions.joinToString("") { it.text } else line
+        }
+
+        val hoveredLineIndex = if (mouseX != null && mouseY != null && lineIndexToActions.isNotEmpty()) {
+            getHoveredLineIndex(textRenderer, linesWithAllButtons, mouseX.toDouble(), mouseY.toDouble())
+        } else null
+
+        val hoveredActions = hoveredLineIndex?.let { lineIndexToActions[it] }?.takeIf { it.isNotEmpty() }
+
+        val linesWithButtons = if (hoveredActions != null) {
+            allLines.mapIndexed { index, line ->
+                if (index == hoveredLineIndex) line + " " + hoveredActions.joinToString("") { it.text } else line
+            }
+        } else allLines
+
+        // Use linesWithAllButtons for width when we have actions, so overlay bounds include button area for hover detection
+        val linesForWidth = if (lineIndexToActions.isNotEmpty()) linesWithAllButtons else linesWithButtons
+        val maxWidth = getMaxWidth(textRenderer, linesForWidth)
+        val leftEdge = getLeftEdge(textRenderer, linesForWidth)
         val scaledLeftEdge = (leftEdge / scale).toInt()
         var currentY = scaledY
 
-        for (line in allLines) {
+        for ((index, line) in linesWithButtons.withIndex()) {
             val text = Text.literal(line)
             val textWidth = textRenderer.getWidth(text)
 
@@ -302,19 +369,28 @@ class FeeshGui {
             }
 
             drawContext.drawText(textRenderer, text, actualX, currentY, color, true)
-            currentY += textRenderer.fontHeight + 2
+            currentY += lineHeightPx
         }
 
         drawContext.matrices.popMatrix()
     }
 
-    fun onPostDrawAfterBackground(event: ScreenAfterBackgroundRenderEvent) { // Draw in front of background but under Inventory GUI
-        if (!isClickable) return
-        if (event.screen !is InventoryScreen) return
+    private fun getHoveredLineIndex(textRenderer: TextRenderer, displayLines: List<String>, mouseX: Double, mouseY: Double): Int? {
+        val maxWidth = getMaxWidth(textRenderer, displayLines) * scale
+        val leftEdge = getLeftEdge(textRenderer, displayLines).toFloat()
+        val fontHeight = textRenderer.fontHeight
+        val lineHeightPx = (fontHeight + 2) * scale
 
-        draw(event.drawContext, event.textRenderer, event.mcClient)
+        if (mouseX < leftEdge - 2 || mouseX > leftEdge + maxWidth + 2) return null
+        if (mouseY < y - 2 || mouseY > y + displayLines.size * lineHeightPx + 2) return null
+
+        val lineIndex = ((mouseY - y) / lineHeightPx).toInt()
+        return if (lineIndex in 0 until displayLines.size) lineIndex else null
     }
     
+    /**
+     * Draws the sample overlay from sampleLines, for move GUIs screen.
+     */
     fun drawSample(drawContext: DrawContext, textRenderer: TextRenderer, mcClient: MinecraftClient) {
         if (sampleLines.isEmpty()) return
         if (!WorldUtils.isInSkyblock()) return
@@ -365,6 +441,9 @@ class FeeshGui {
         drawContext.drawText(textRenderer, labelText, labelX, labelY, color, true)
     }
 
+    /**
+     * Checks if the mouse is over the sample overlay.
+     */
     fun isInSample(textRenderer: TextRenderer, @Suppress("UNUSED_PARAMETER") client: MinecraftClient, mouseX: Double, mouseY: Double): Boolean {
         if (sampleLines.isEmpty()) return false
 
@@ -381,6 +460,56 @@ class FeeshGui {
             return true
         }
         return false
+    }
+
+    /**
+     * Returns the LineAction if the click hits an inline action button, null otherwise.
+     */
+    private fun getClickedLineAction(textRenderer: TextRenderer, mouseX: Double, mouseY: Double): LineAction? {
+        if (lines.isEmpty() || lineIndexToActions.isEmpty()) return null
+
+        val allLines = getDisplayLinesForRender()
+        // Use lines with buttons for hover bounds so buttons to the right of longest line are clickable
+        val linesWithAllButtons = allLines.mapIndexed { index, line ->
+            val actions = lineIndexToActions[index]
+            if (actions != null && actions.isNotEmpty()) line + " " + actions.joinToString("") { it.text } else line
+        }
+        val hoveredLineIndex = getHoveredLineIndex(textRenderer, linesWithAllButtons, mouseX, mouseY) ?: return null
+        val actions = lineIndexToActions[hoveredLineIndex] ?: return null
+        if (actions.isEmpty()) return null
+
+        val actionsSuffix = " " + actions.joinToString("") { it.text }
+        val lineWithButtons = allLines[hoveredLineIndex] + actionsSuffix
+        val lineWithoutButtons = allLines[hoveredLineIndex]
+        val lineWidth = textRenderer.getWidth(Text.literal(lineWithoutButtons))
+
+        val maxWidth = getMaxWidth(textRenderer, listOf(lineWithButtons))
+        val leftEdge = getLeftEdge(textRenderer, listOf(lineWithButtons)).toFloat()
+        val fontHeight = textRenderer.fontHeight
+        val lineHeightPx = (fontHeight + 2) * scale
+        val lineTop = y + hoveredLineIndex * lineHeightPx
+        val lineBottom = lineTop + lineHeightPx
+
+        if (mouseY < lineTop || mouseY >= lineBottom) return null
+
+        val lineWithButtonsWidth = textRenderer.getWidth(Text.literal(lineWithButtons))
+        val scaleDouble = scale.toDouble()
+        val actualLineStart = when (alignment) {
+            Alignment.LEFT -> leftEdge.toDouble()
+            Alignment.RIGHT -> leftEdge + (maxWidth * scaleDouble) - lineWithButtonsWidth * scaleDouble
+            Alignment.CENTER -> leftEdge + ((maxWidth * scaleDouble) - lineWithButtonsWidth * scaleDouble) / 2
+        }
+
+        val buttonStartX = actualLineStart + lineWidth * scaleDouble
+        if (mouseX < buttonStartX) return null
+
+        var relX = mouseX - buttonStartX
+        for (action in actions) {
+            val actionWidth = textRenderer.getWidth(Text.literal(action.text)) * scaleDouble
+            if (relX < actionWidth) return action
+            relX -= actionWidth
+        }
+        return null
     }
 
     /**
