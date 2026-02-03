@@ -3,7 +3,6 @@
 - Check if buttons are clickable at different scales (check places before of after the button - x), same for moving samples.
 - Go through TODOs in the code
 - Rework ticks counters across all overlays
-- Make chat messages sent with queueing - do not let spam into party chat when a lot of events happens
 
 ## Versions
 
