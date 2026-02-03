@@ -8,7 +8,7 @@ import com.github.sleepypanda.feesh.utils.RegisterUtils
 import com.github.sleepypanda.feesh.utils.WorldUtils
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.events.EventBus
-import com.github.sleepypanda.feesh.events.WorldChangedEvent
+import com.github.sleepypanda.feesh.events.models.WorldChangedEvent
 import java.util.Timer
 import kotlin.concurrent.timerTask
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientWorldEvents

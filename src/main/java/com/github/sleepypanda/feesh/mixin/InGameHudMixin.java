@@ -2,7 +2,7 @@
 package com.github.sleepypanda.feesh.mixin;
 
 import com.github.sleepypanda.feesh.events.EventBus;
-import com.github.sleepypanda.feesh.events.GameRenderEvent;
+import com.github.sleepypanda.feesh.events.models.GameRenderEvent;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.hud.InGameHud;

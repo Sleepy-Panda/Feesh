@@ -1,4 +1,4 @@
-package com.github.sleepypanda.feesh.events
+package com.github.sleepypanda.feesh.events.models
 
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.world.ClientWorld

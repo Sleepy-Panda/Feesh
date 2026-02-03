@@ -1,7 +1,7 @@
 package com.github.sleepypanda.feesh.utils
 
 import com.github.sleepypanda.feesh.events.EventBus
-import com.github.sleepypanda.feesh.events.ClientTickEvent
+import com.github.sleepypanda.feesh.events.models.ClientTickEvent
 import net.minecraft.client.option.KeyBinding
 import net.minecraft.client.util.InputUtil
 import net.minecraft.util.Identifier

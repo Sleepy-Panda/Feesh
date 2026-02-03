@@ -2,9 +2,9 @@ package com.github.sleepypanda.feesh.features.overlays
 
 import com.github.sleepypanda.feesh.FeeshMod
 import com.github.sleepypanda.feesh.events.EventBus
-import com.github.sleepypanda.feesh.events.ClientTickEvent
-import com.github.sleepypanda.feesh.events.WorldChangedEvent
-import com.github.sleepypanda.feesh.events.PlayerInteractEvent
+import com.github.sleepypanda.feesh.events.models.ClientTickEvent
+import com.github.sleepypanda.feesh.events.models.PlayerInteractEvent
+import com.github.sleepypanda.feesh.events.models.WorldChangedEvent
 import com.github.sleepypanda.feesh.settings.categories.Overlays
 import com.github.sleepypanda.feesh.settings.categories.Alerts
 import com.github.sleepypanda.feesh.utils.enums.DeployableTypes
@@ -23,7 +23,7 @@ import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
 import com.github.sleepypanda.feesh.constants.Sounds
 import com.github.sleepypanda.feesh.settings.categories.General
 import com.github.sleepypanda.feesh.settings.categories.SoundMode
-import com.github.sleepypanda.feesh.events.InteractActionType
+import com.github.sleepypanda.feesh.events.models.InteractActionType
 import net.minecraft.entity.decoration.ArmorStandEntity
 import net.minecraft.entity.projectile.FireworkRocketEntity
 import java.util.*

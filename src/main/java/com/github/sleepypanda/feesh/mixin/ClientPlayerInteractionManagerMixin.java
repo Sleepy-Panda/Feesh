@@ -1,8 +1,8 @@
 package com.github.sleepypanda.feesh.mixin;
 
 import com.github.sleepypanda.feesh.events.EventBus;
-import com.github.sleepypanda.feesh.events.PlayerInteractEvent;
-import com.github.sleepypanda.feesh.events.InteractActionType;
+import com.github.sleepypanda.feesh.events.models.InteractActionType;
+import com.github.sleepypanda.feesh.events.models.PlayerInteractEvent;
 import net.minecraft.client.network.ClientPlayerInteractionManager;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;

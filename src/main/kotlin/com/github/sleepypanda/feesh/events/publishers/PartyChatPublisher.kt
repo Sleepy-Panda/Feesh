@@ -1,9 +1,9 @@
 package com.github.sleepypanda.feesh.events.publishers
 
 import com.github.sleepypanda.feesh.events.EventBus
-import com.github.sleepypanda.feesh.events.ChatEvent
+import com.github.sleepypanda.feesh.events.models.ChatEvent
+import com.github.sleepypanda.feesh.events.models.PartyChatEvent
 import com.github.sleepypanda.feesh.utils.WorldUtils
-import com.github.sleepypanda.feesh.events.PartyChatEvent
 import com.github.sleepypanda.feesh.utils.ChatUtils.getFormattedString
 
 object PartyChatPublisher {
