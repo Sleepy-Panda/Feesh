@@ -43,8 +43,6 @@ import java.util.Date
 import java.util.Timer
 import kotlin.concurrent.timerTask
 
-// TODO Shards no workie
-// TODO Display name for leveled pets
 // Items taken from Bazaar counted
 // Is in sacks, is in supercraft, etc, maybe track item creation date
 // TODO refresh if settings for price modes are changed?
@@ -53,7 +51,6 @@ import kotlin.concurrent.timerTask
 // TODO Rely on chat message for some Rare Drops instead of pickup event?
 // Items from sacks are counted
 // BZ/AH prices updated event, to refresh total profits, instead of TICKS_PRICES
-// Hide buttons on chat/inventory gui closed, add this to FeeshGui, as well as gui opened
 
 object FishingProfitTracker {
     enum class ViewMode {
@@ -106,12 +103,16 @@ object FishingProfitTracker {
         .setClickable(true)
         .setSampleLines(listOf(
             "$baseTitle ${GRAY}[${GREEN}Session${GRAY}]",
-            "${GRAY}- ${WHITE}5${GRAY}x ${GOLD}Fished Coins${GRAY}: ${GOLD}1.2M",
-            "${GRAY}- ${WHITE}2${GRAY}x ${LEGENDARY}Treasure Dye${GRAY}: ${GOLD}500k",
-            "${GRAY}- ${WHITE}100${GRAY}x Cheap items of ${WHITE}3${GRAY} types: ${GOLD}50k",
+            "${GRAY}- ${WHITE}1982${GRAY}x ${BLUE}Scorched Crab Stick${GRAY}: ${GOLD}333.9M",
+            "${GRAY}- ${WHITE}5${GRAY}x ${LIGHT_PURPLE}${BOLD}Radioactive Vial${GRAY}: ${GOLD}288.1M",
+            "${GRAY}- ${WHITE}44954${GRAY}x ${DARK_PURPLE}Silver Magmafish${GRAY}: ${GOLD}269.7M",
+            "${GRAY}- ${WHITE}16${GRAY}x ${GRAY}[Lvl 100] ${LIGHT_PURPLE}Hermit Crab${GRAY}: ${GOLD}240M",
+            "${GRAY}- ${WHITE}4${GRAY}x ${GRAY}[Lvl 100] ${GOLD}Baby Yeti${GRAY}: ${GOLD}53.3M",
+            "${GRAY}- ${WHITE}318${GRAY}x ${GOLD}Nether Star${GRAY}: ${GOLD}45M",
+            "${GRAY}- ${WHITE}100500${GRAY}x Other cheap items: ${GOLD}1.8B",
             "",
-            "${AQUA}Total: ${GOLD}${BOLD}1.7M ${RESET}${GRAY}(${GOLD}2.5M${GRAY}/h)",
-            "${AQUA}Elapsed time: ${WHITE}40m 30s",
+            "${AQUA}Total: ${GOLD}${BOLD}3B ${RESET}${GRAY}(${GOLD}53.9M${GRAY}/h)",
+            "${AQUA}Elapsed time: ${WHITE}56h 23m 3s",
         ))
         .setSettingsKey { Overlays.fishingProfitTrackerOverlay }
         .setCondition {            
