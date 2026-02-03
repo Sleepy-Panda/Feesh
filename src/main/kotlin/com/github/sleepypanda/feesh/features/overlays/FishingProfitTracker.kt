@@ -22,6 +22,7 @@ import com.github.sleepypanda.feesh.utils.RegisterUtils
 import com.github.sleepypanda.feesh.utils.WorldUtils
 import com.github.sleepypanda.feesh.utils.PlayerUtils
 import com.github.sleepypanda.feesh.utils.EntityUtils
+import com.github.sleepypanda.feesh.utils.GuiUtils
 import com.github.sleepypanda.feesh.utils.gui.FeeshGui
 import com.github.sleepypanda.feesh.utils.gui.GuiButton
 import com.github.sleepypanda.feesh.utils.data.PersistentDataManager
@@ -43,13 +44,11 @@ import java.util.Date
 import java.util.Timer
 import kotlin.concurrent.timerTask
 
-// Items taken from Bazaar counted
-// Is in sacks, is in supercraft, etc, maybe track item creation date
+// Buttons to add/decrease items to profit tracker
 // TODO refresh if settings for price modes are changed?
 // TODO event for pickup item
 // TODO Drops counter for Rare Drop chat message
 // TODO Rely on chat message for some Rare Drops instead of pickup event?
-// Items from sacks are counted
 // BZ/AH prices updated event, to refresh total profits, instead of TICKS_PRICES
 
 object FishingProfitTracker {
@@ -196,18 +195,13 @@ object FishingProfitTracker {
     }
 
     private fun onGuiOpened(@Suppress("UNUSED_PARAMETER") event: GuiOpenedEvent) {       
-        Timer().schedule(timerTask {
-            updateGuiLines() // TODO update if GUI is a chat or inventory
-        }, 50) // Wait for GUI to be fully loaded (~1 tick delay)
+        //Timer().schedule(timerTask {
+        //    updateGuiLines() // TODO update if GUI is a chat or inventory
+        //}, 50) // Wait for GUI to be fully loaded (~1 tick delay)
     }
 
-    private fun onGuiClosed(event: GuiClosedEvent) {
-        // TODO detect inventory changes if closed chest?
-        if (event.guiName == "Chat" || event.guiName == "Inventory") {
-            Timer().schedule(timerTask {
-                updateGuiLines()
-            }, 50) // Wait for GUI to be fully closed so we are not in chat or inventory anymore (~1 tick delay)
-        }
+    private fun onGuiClosed(@Suppress("UNUSED_PARAMETER") event: GuiClosedEvent) {
+        detectInventoryChanges() // Actualize inventory state after taking items from chest and quickly closing a GUI
     }
 
     private fun onClientTick(@Suppress("UNUSED_PARAMETER") event: ClientTickEvent) {
@@ -396,28 +390,32 @@ object FishingProfitTracker {
 
     private fun onSacksItemsPickup(event: SacksItemsPickupEvent) {
         if (!isSessionActive || !isTrackerVisible()) return
-        if (isInSacksGui()) return
+        if (GuiUtils.isInSacksGui() || GuiUtils.isInSupercraftGui()) return
 
-        //if (isInSacksGui() || new Date() - lastGuisClosed.lastSacksGuiClosedAt < 15 * 1000) return; // Sacks closed < 15 seconds ago
-        //if (isInSupercraftGui() || new Date() - lastGuisClosed.lastSupercraftGuiClosedAt < 15 * 1000) return; // Supercraft closed < 15 seconds ago
+        val lastGuisClosed = GuiUtils.lastGuisClosed
+        val cooldownMilliseconds = 31_000
+
+        // 30 seconds is the maximum time to receive "[Sacks] +..." message after items were added to the sack
+        if (lastGuisClosed.lastSacksGuiClosedAt != null && Date().time - lastGuisClosed.lastSacksGuiClosedAt!!.time < cooldownMilliseconds) return
+        if (lastGuisClosed.lastSupercraftGuiClosedAt != null && Date().time - lastGuisClosed.lastSupercraftGuiClosedAt!!.time < cooldownMilliseconds) return
 
         var added = false
         for (item in event.items) {
             if (item.amount <= 0 || item.itemName.isBlank()) continue
             val itemName = item.itemName.removeFormatting()
             val dropInfo = getFishingProfitItemByName(itemName) ?: continue
+
+            if (dropInfo.itemId.startsWith("MAGMA_FISH") && 
+                lastGuisClosed.lastOdgerGuiClosedAt != null && Date().time - lastGuisClosed.lastOdgerGuiClosedAt!!.time < cooldownMilliseconds) {
+                continue; // User probably just filleted trophy fish
+            }
+
             addProfitTrackerItem(dropInfo.itemId, dropInfo.itemName, item.amount, null, true)
             added = true
         }
         if (added) refreshTotalItemsProfits()
     }
 
-    private fun isInSacksGui(): Boolean {
-        val screen = FeeshMod.mc.currentScreen ?: return false
-        if (screen !is HandledScreen<*>) return false
-        val title = screen.title.string
-        return (title.endsWith("Sack"))
-    }
 
     private fun onCoinsFished(coinsStr: String) {
         if (!isSessionActive || !isTrackerVisible()) return
@@ -518,6 +516,7 @@ object FishingProfitTracker {
             previousInventory = null
             return
         }
+
         if (previousInventory == null) {
             previousInventory = getFishingProfitItemsInCurrentInventory().toMutableMap()
             return
@@ -526,8 +525,9 @@ object FishingProfitTracker {
         if (isPlayerMovingItem()) return
 
         val currentInventory = getFishingProfitItemsInCurrentInventory()
-        val screen = FeeshMod.mc.currentScreen
-        if (screen != null && screen is HandledScreen<*>) { // In chest
+
+        // Allow being in Wardrobe or Armor GUI, because we often are in them when killing mobs and getting drops
+        if (GuiUtils.isInChest() && !GuiUtils.isInWardrobeOrEquipmentGui()) {
             previousInventory = currentInventory.toMutableMap()
             return
         }
@@ -618,6 +618,8 @@ object FishingProfitTracker {
         val difference = newCount - previousCount
         if (difference <= 0) return
 
+        if (shouldSkipItem(itemId, dropInfo)) return
+
         addProfitTrackerItem(itemId, dropInfo.itemName, difference, null, true)
 
         if (Overlays.shouldAnnounceRareDropsWhenPickup && dropInfo.shouldAnnounceRareDrop) {
@@ -625,6 +627,24 @@ object FishingProfitTracker {
             ChatUtils.sendLocalChat("${GOLD}${BOLD}RARE DROP! ${RESET}${dropInfo.itemDisplayName}$diffText", true)
             if (General.soundMode != SoundMode.OFF) SoundUtils.playCustomSound(Sounds.FEESH_RARE_DROP)
         }
+    }
+
+    private fun shouldSkipItem(itemId: String, dropInfo: FishingProfitDropInfo): Boolean {
+        val now = Date()
+        val lastGuisClosed = GuiUtils.lastGuisClosed
+
+        if (itemId.startsWith("MAGMA_FISH") && lastGuisClosed.lastOdgerGuiClosedAt != null &&
+            now.time - lastGuisClosed.lastOdgerGuiClosedAt!!.time < 1000) return true // User probably just filleted trophy fish
+
+        if (lastGuisClosed.lastAuctionGuiClosedAt != null && now.time - lastGuisClosed.lastAuctionGuiClosedAt!!.time < 3_000) return true
+
+        val lastKatUpgrade = GuiUtils.lastKatUpgrade
+        if (lastKatUpgrade.lastPetClaimedAt != null && now.time - lastKatUpgrade.lastPetClaimedAt!!.time < 7 * 1000) { // It takes some time for pet to appear in the inventory after claiming from Kat
+            val katPetName = lastKatUpgrade.petName?.removeFormatting() ?: return false
+            if (dropInfo.itemName.contains(katPetName)) return true
+        }
+
+        return false
     }
 
     private fun isPlayerMovingItem(): Boolean {
