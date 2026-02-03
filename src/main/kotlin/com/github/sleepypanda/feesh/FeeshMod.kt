@@ -55,6 +55,7 @@ import com.github.sleepypanda.feesh.utils.ChatUtils
 import com.github.sleepypanda.feesh.utils.KeybindUtils
 import com.github.sleepypanda.feesh.utils.WorldUtils
 import com.github.sleepypanda.feesh.utils.PlayerUtils
+import com.github.sleepypanda.feesh.utils.GuiUtils
 import com.github.sleepypanda.feesh.utils.PriceUtils
 import com.github.sleepypanda.feesh.utils.data.PersistentDataManager
 import com.github.sleepypanda.feesh.utils.data.CustomSoundsManager
@@ -96,13 +97,14 @@ class FeeshMod : ModInitializer {
         PersistentDataManager.init()
         CustomSoundsManager.init()
         EventBus.init()
-        ChatUtils.init()
         FeeshSettingsCommand.init()
         Welcome.init()
         
         // Utils
         WorldUtils.init()
         PlayerUtils.init()
+        ChatUtils.init()
+        GuiUtils.init()
         PriceUtils.init()
         KeybindUtils.init()
 

@@ -11,7 +11,7 @@ import com.github.sleepypanda.feesh.utils.ChatUtils
 import com.github.sleepypanda.feesh.utils.WorldUtils
 import com.github.sleepypanda.feesh.settings.categories.Chat as ChatSettings
 import com.github.sleepypanda.feesh.events.EventBus
-import com.github.sleepypanda.feesh.events.OwnSeaCreatureCaughtEvent
+import com.github.sleepypanda.feesh.events.models.OwnSeaCreatureCaughtEvent
 
 import net.minecraft.text.Text
 

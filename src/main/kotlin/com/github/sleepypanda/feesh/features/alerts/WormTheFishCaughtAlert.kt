@@ -9,8 +9,8 @@ import com.github.sleepypanda.feesh.utils.PlayerUtils
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
 import com.github.sleepypanda.feesh.events.EventBus
-import com.github.sleepypanda.feesh.events.ItemEntitySpawnedEvent
-import com.github.sleepypanda.feesh.events.WorldChangedEvent
+import com.github.sleepypanda.feesh.events.models.ItemEntitySpawnedEvent
+import com.github.sleepypanda.feesh.events.models.WorldChangedEvent
 import net.minecraft.entity.ItemEntity
 import net.minecraft.sound.SoundEvents
 import java.util.concurrent.ConcurrentHashMap

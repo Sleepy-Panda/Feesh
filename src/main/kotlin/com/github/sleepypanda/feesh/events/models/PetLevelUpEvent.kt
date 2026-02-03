@@ -1,4 +1,4 @@
-package com.github.sleepypanda.feesh.events
+package com.github.sleepypanda.feesh.events.models
 
 /**
  * Event for when a pet is levelled up to max level (100 or 200).

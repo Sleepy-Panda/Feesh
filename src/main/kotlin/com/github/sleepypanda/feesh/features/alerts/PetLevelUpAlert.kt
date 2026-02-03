@@ -1,7 +1,7 @@
 package com.github.sleepypanda.feesh.features.alerts
 
 import com.github.sleepypanda.feesh.events.EventBus
-import com.github.sleepypanda.feesh.events.PetLevelUpEvent
+import com.github.sleepypanda.feesh.events.models.PetLevelUpEvent
 import com.github.sleepypanda.feesh.settings.categories.Alerts
 import com.github.sleepypanda.feesh.utils.CommonUtils
 import com.github.sleepypanda.feesh.utils.SoundUtils

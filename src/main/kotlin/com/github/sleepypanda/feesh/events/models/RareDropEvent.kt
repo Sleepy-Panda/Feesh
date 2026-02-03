@@ -1,6 +1,4 @@
-package com.github.sleepypanda.feesh.events
-
-import com.github.sleepypanda.feesh.constants.SeaCreatures
+package com.github.sleepypanda.feesh.events.models
 
 /**
  * Event for when a rare drop is found (based on chat messages).

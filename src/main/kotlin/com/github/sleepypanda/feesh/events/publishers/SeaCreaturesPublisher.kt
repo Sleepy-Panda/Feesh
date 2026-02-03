@@ -1,8 +1,8 @@
 package com.github.sleepypanda.feesh.events.publishers
 
 import com.github.sleepypanda.feesh.events.EventBus
-import com.github.sleepypanda.feesh.events.ChatCancellableEvent
-import com.github.sleepypanda.feesh.events.OwnSeaCreatureCaughtEvent
+import com.github.sleepypanda.feesh.events.models.ChatCancellableEvent
+import com.github.sleepypanda.feesh.events.models.OwnSeaCreatureCaughtEvent
 import com.github.sleepypanda.feesh.constants.SeaCreatures
 import com.github.sleepypanda.feesh.settings.categories.Chat
 import com.github.sleepypanda.feesh.utils.WorldUtils

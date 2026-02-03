@@ -14,9 +14,9 @@ import com.github.sleepypanda.feesh.utils.data.PersistentDataManager
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
 import com.github.sleepypanda.feesh.events.EventBus
-import com.github.sleepypanda.feesh.events.ClientTickEvent
-import com.github.sleepypanda.feesh.events.WorldChangedEvent
-import com.github.sleepypanda.feesh.events.GuiOpenedEvent
+import com.github.sleepypanda.feesh.events.models.ClientTickEvent
+import com.github.sleepypanda.feesh.events.models.GuiOpenedEvent
+import com.github.sleepypanda.feesh.events.models.WorldChangedEvent
 import net.minecraft.client.gui.screen.ingame.HandledScreen
 import net.minecraft.text.Text
 import net.minecraft.text.ClickEvent

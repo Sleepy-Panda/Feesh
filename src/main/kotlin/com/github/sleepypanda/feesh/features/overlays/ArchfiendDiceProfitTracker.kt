@@ -2,9 +2,9 @@ package com.github.sleepypanda.feesh.features.overlays
 
 import com.github.sleepypanda.feesh.FeeshMod
 import com.github.sleepypanda.feesh.events.EventBus
-import com.github.sleepypanda.feesh.events.ClientTickEvent
-import com.github.sleepypanda.feesh.events.GameClosedEvent
-import com.github.sleepypanda.feesh.events.WorldChangedEvent
+import com.github.sleepypanda.feesh.events.models.ClientTickEvent
+import com.github.sleepypanda.feesh.events.models.GameClosedEvent
+import com.github.sleepypanda.feesh.events.models.WorldChangedEvent
 import com.github.sleepypanda.feesh.settings.categories.Overlays
 import com.github.sleepypanda.feesh.utils.CommonUtils
 import com.github.sleepypanda.feesh.utils.WorldUtils

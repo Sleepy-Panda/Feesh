@@ -1,5 +1,15 @@
 package com.github.sleepypanda.feesh.events
 
+import com.github.sleepypanda.feesh.events.models.AfterMouseClickEvent
+import com.github.sleepypanda.feesh.events.models.ChatCancellableEvent
+import com.github.sleepypanda.feesh.events.models.ChatEvent
+import com.github.sleepypanda.feesh.events.models.ClientTickEvent
+import com.github.sleepypanda.feesh.events.models.GameClosedEvent
+import com.github.sleepypanda.feesh.events.models.GameStartedEvent
+import com.github.sleepypanda.feesh.events.models.GuiClosedEvent
+import com.github.sleepypanda.feesh.events.models.ItemEntitySpawnedEvent
+import com.github.sleepypanda.feesh.events.models.ScreenPostRenderEvent
+import com.github.sleepypanda.feesh.events.models.WorldChangedEvent
 import kotlin.reflect.KClass
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientWorldEvents
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents

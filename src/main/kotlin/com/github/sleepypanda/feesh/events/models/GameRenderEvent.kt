@@ -1,6 +1,5 @@
-package com.github.sleepypanda.feesh.events
+package com.github.sleepypanda.feesh.events.models
 
-import net.minecraft.client.gui.screen.Screen
 import net.minecraft.client.gui.DrawContext
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.font.TextRenderer

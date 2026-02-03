@@ -1,9 +1,10 @@
 package com.github.sleepypanda.feesh.utils.gui
 
-import com.github.sleepypanda.feesh.events.GameRenderEvent
-import com.github.sleepypanda.feesh.events.ScreenAfterBackgroundRenderEvent
-import com.github.sleepypanda.feesh.events.AfterMouseClickEvent
+import com.github.sleepypanda.feesh.events.models.GameRenderEvent
+import com.github.sleepypanda.feesh.events.models.ScreenAfterBackgroundRenderEvent
+import com.github.sleepypanda.feesh.events.models.AfterMouseClickEvent
 import com.github.sleepypanda.feesh.events.EventBus
+import com.github.sleepypanda.feesh.utils.GuiUtils
 import com.github.sleepypanda.feesh.utils.WorldUtils
 import com.github.sleepypanda.feesh.utils.enums.Alignment
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
@@ -79,6 +80,7 @@ class FeeshGui {
         if (buttons.isEmpty()) return
         if (!isClickable) return
         if (!WorldUtils.isInSkyblock()) return
+        if (!GuiUtils.isInInventoryOrChat()) return
         if (event.button != 0) return
         if (event.screen !is InventoryScreen && event.screen !is ChatScreen) return
 
@@ -174,14 +176,17 @@ class FeeshGui {
     }
 
     /**
-     * Gets the maximum width of the overlay including buttons and lines.
+     * Gets display lines for rendering. Buttons are included only when in inventory or chat.
      */
-    private fun getMaxWidth(textRenderer: TextRenderer): Int {
-        val linesToUse = when {
-            buttons.isNotEmpty() || lines.isNotEmpty() -> getAllDisplayLines()
-            else -> emptyList()
-        }
-        return linesToUse.maxOfOrNull { textRenderer.getWidth(Text.literal(it)) } ?: 0
+    private fun getDisplayLinesForRender(): List<String> {
+        return if (GuiUtils.isInInventoryOrChat()) getAllDisplayLines() else lines
+    }
+
+    /**
+     * Gets the maximum width of the overlay for the given display lines.
+     */
+    private fun getMaxWidth(textRenderer: TextRenderer, displayLines: List<String>): Int {
+        return displayLines.maxOfOrNull { textRenderer.getWidth(Text.literal(it)) } ?: 0
     }
     
     /**
@@ -199,8 +204,8 @@ class FeeshGui {
      * Converts x coordinate (which represents different points based on alignment) to actual left edge.
      * Uses scaled width for CENTER/RIGHT so that the reference point stays correct after matrices.scale(scale).
      */
-    private fun getLeftEdge(textRenderer: TextRenderer): Int {
-        val maxWidth = getMaxWidth(textRenderer)
+    private fun getLeftEdge(textRenderer: TextRenderer, displayLines: List<String>): Int {
+        val maxWidth = getMaxWidth(textRenderer, displayLines)
         val renderedWidth = (maxWidth * scale).toInt()
         return when (alignment) {
             Alignment.LEFT -> x
@@ -279,12 +284,11 @@ class FeeshGui {
         drawContext.matrices.pushMatrix()
         drawContext.matrices.scale(scale, scale)
 
+        val allLines = getDisplayLinesForRender()
         val scaledY = (y / scale).toInt()
-        val maxWidth = getMaxWidth(textRenderer)
-        val leftEdge = getLeftEdge(textRenderer)
+        val maxWidth = getMaxWidth(textRenderer, allLines)
+        val leftEdge = getLeftEdge(textRenderer, allLines)
         val scaledLeftEdge = (leftEdge / scale).toInt()
-
-        val allLines = getAllDisplayLines()
         var currentY = scaledY
 
         for (line in allLines) {
@@ -386,8 +390,9 @@ class FeeshGui {
     private fun getClickedButton(textRenderer: TextRenderer, mouseX: Double, mouseY: Double): GuiButton? {
         if (lines.isEmpty() || buttons.isEmpty()) return null
 
-        val maxWidth = getMaxWidth(textRenderer) * scale
-        val leftEdge = getLeftEdge(textRenderer).toFloat()
+        val displayLines = getAllDisplayLines()
+        val maxWidth = getMaxWidth(textRenderer, displayLines) * scale
+        val leftEdge = getLeftEdge(textRenderer, displayLines).toFloat()
 
         if (mouseX < leftEdge - 2 || mouseX > leftEdge + maxWidth + 2) return null
 
@@ -400,7 +405,7 @@ class FeeshGui {
             if (i < 0 || i >= totalLines) continue
 
             val lineTop = y + i * lineHeightPx
-            val lineBottom = y + (i + 1) * lineHeightPx
+            val lineBottom = y + (i + 1) * lineHeightPx - 2 // -2 to make sure line has less space to be not clickable under text in free space
 
             if (mouseY >= lineTop && mouseY < lineBottom) {
                 return button

@@ -12,7 +12,7 @@ import com.github.sleepypanda.feesh.utils.ChatUtils
 import com.github.sleepypanda.feesh.utils.WorldUtils
 import com.github.sleepypanda.feesh.FeeshMod
 import com.github.sleepypanda.feesh.events.EventBus
-import com.github.sleepypanda.feesh.events.OwnSeaCreatureCaughtEvent
+import com.github.sleepypanda.feesh.events.models.OwnSeaCreatureCaughtEvent
 import kotlin.random.Random
 
 object RareCatchAllChatMessage {

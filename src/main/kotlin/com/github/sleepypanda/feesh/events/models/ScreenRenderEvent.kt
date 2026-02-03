@@ -1,4 +1,4 @@
-package com.github.sleepypanda.feesh.events
+package com.github.sleepypanda.feesh.events.models
 
 import net.minecraft.client.gui.screen.Screen
 import net.minecraft.client.gui.DrawContext
@@ -6,10 +6,10 @@ import net.minecraft.client.MinecraftClient
 import net.minecraft.client.font.TextRenderer
 
 /*
- * This event is triggered after the background is rendered but before GUI elements.
- * It is used to render custom text in front of background but under Inventory GUI.
+ * This event is triggered when a screen is rendered.
+ * It is used to render overlays while a GUI is opened. Custom drawings are rendered on top of the background.
  */
-data class ScreenAfterBackgroundRenderEvent(
+data class ScreenRenderEvent(
     val drawContext: DrawContext,
     val textRenderer: TextRenderer,
     val mcClient: MinecraftClient,
@@ -18,4 +18,3 @@ data class ScreenAfterBackgroundRenderEvent(
     val mouseY: Int,
     val delta: Float
 )
-

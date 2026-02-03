@@ -1,8 +1,8 @@
 package com.github.sleepypanda.feesh.mixin;
 
 import com.github.sleepypanda.feesh.events.EventBus;
-import com.github.sleepypanda.feesh.events.ScreenRenderEvent;
-import com.github.sleepypanda.feesh.events.ScreenAfterBackgroundRenderEvent;
+import com.github.sleepypanda.feesh.events.models.ScreenAfterBackgroundRenderEvent;
+import com.github.sleepypanda.feesh.events.models.ScreenRenderEvent;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;

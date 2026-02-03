@@ -10,8 +10,8 @@ import com.github.sleepypanda.feesh.utils.ItemUtils
 import com.github.sleepypanda.feesh.utils.EntityUtils
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.events.EventBus
-import com.github.sleepypanda.feesh.events.ClientTickEvent
-import com.github.sleepypanda.feesh.events.WorldChangedEvent
+import com.github.sleepypanda.feesh.events.models.ClientTickEvent
+import com.github.sleepypanda.feesh.events.models.WorldChangedEvent
 import net.minecraft.item.ItemStack
 import net.minecraft.component.DataComponentTypes
 import net.minecraft.entity.EquipmentSlot
