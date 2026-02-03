@@ -9,10 +9,6 @@ import com.github.sleepypanda.feesh.utils.WorldUtils
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
 import com.github.sleepypanda.feesh.utils.ChatUtils
-import com.github.sleepypanda.feesh.utils.data.CustomSoundsManager
-import com.github.sleepypanda.feesh.constants.Sounds
-import com.github.sleepypanda.feesh.settings.categories.General
-import com.github.sleepypanda.feesh.settings.categories.SoundMode
 
 object AnyReindrakeAlert {
     const val REINDRAKE_PATTERN = "^WOAH\\! A Reindrake was summoned from the depths\\!$"
@@ -28,11 +24,6 @@ object AnyReindrakeAlert {
 
         CommonUtils.showTitle(SeaCreatures.getTitle(reindrake.name, false))
         ChatUtils.sendLocalChatWithCommand("Click to warp to Jerry's Workshop spawn point!", "warp jerry", true)
-
-        val soundData = CustomSoundsManager.getCatchSoundData(reindrake.name)
-        val soundFileName = soundData?.source
-
-        if (General.soundMode == SoundMode.MEME) SoundUtils.playCustomSound(soundFileName)
-        else SoundUtils.playSound()
+        SoundUtils.playSound()
     }
 }
