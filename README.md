@@ -25,7 +25,7 @@ If you want access to pre-releases, Github automatically builds every version pu
 
 ## Dependencies
 
-This mod requires (Fabric API)[https://modrinth.com/mod/fabric-api] and (Fabric Language Kotlin)[https://modrinth.com/mod/fabric-language-kotlin] mods for 1.21.10 Minecraft version.
+This mod requires [Fabric API](https://modrinth.com/mod/fabric-api) and [Fabric Language Kotlin](https://modrinth.com/mod/fabric-language-kotlin) mods for 1.21.10 Minecraft version.
 
 ## Features
 
@@ -54,7 +54,7 @@ This mod requires (Fabric API)[https://modrinth.com/mod/fabric-api] and (Fabric 
 
 ### Overlays
 
-You can change position, scale and alignment (Left, Center, Right) for each overlay in **/feeshMoveAllGuis**!
+> You can change position, scale and alignment (Left, Center, Right) for each overlay in **/feeshMoveAllGuis**
 
 - **Legion & Bobbin' Time tracker** — Shows players and fishing hooks count within 30 blocks.
 - **Barn fishing timer** — Shows count of sea creatures nearby and how long they've been alive.
@@ -64,7 +64,7 @@ You can change position, scale and alignment (Left, Center, Right) for each over
 - **Fishing hook timer** — Displays hook timer and fish arrival indicator. Requires Skyblock Fishing Timer enabled.
 - **Sea creatures per hour** — Shows sea creatures per hour and total caught per session.
 - **Jerry's Workshop tracker** — Yeti/Reindrake catch statistics in Jerry Workshop.
-- **Water hotspots & Bayou tracker** — Titanoboa, Wiki Tiki, and drop statistics for Backwater Bayou and Water Hotspots.
+- **Water hotspots & Bayou tracker** — Titanoboa, Wiki Tiki, and Titanoboa Shed, Tiki Mask drop statistics for Backwater Bayou and Water Hotspots.
 - **Crimson Isle tracker** — Fiery Scuttler, Ragnarok, Plhlegblast, Thunder, Lord Jawbus catch and Radioactive Vial drop stats.
 - **Treasure fishing tracker** — Good/Great/Outstanding treasure catches and Treasure Dye drop statistics.
 - **Archfiend Dice profit tracker** — Archfiend Dice / High Class Archfiend Dice profit overlay with Session/Total modes.
@@ -72,11 +72,12 @@ You can change position, scale and alignment (Left, Center, Right) for each over
 ### Chat
 
 - **Compact sea creature messages** — Shortens double hook and catch messages in your chat.
-- **Share rare sea creatures** — Sends PARTY chat when you catch a rare sea creature.
-- **Share rare sea creatures location - ALL chat** — Sends ALL chat with coordinates when you catch selected rare creatures.
+- **Share rare sea creatures** — Sends to PARTY chat when you catch a rare sea creature.
+- **Share rare sea creatures location - ALL chat** — Sends to ALL chat with coordinates when you catch selected rare creatures.
 - **Player death message** — Sends party chat when killed by Mythic sea creature (Thunder, Lord Jawbus, etc.).
-- **Share rare drops** — Sends PARTY chat when rare item drops.
+- **Share rare drops** — Sends to PARTY chat when rare item drops.
 - **Hotspot sharing** — Clickable message to share found hotspot location to PARTY or ALL chat. Optional autoshare.
+- **Lootshare message** — Sends to PARTY chat when it's time to lootshare. Available via Keybind.
 
 ### Commands
 
@@ -96,7 +97,7 @@ In case of questions, bug reports, feature requests, bored, feeling alone - plea
 
 - IGN: MoonTheSadFisher
 - Discord: m00nlight_sky
-- Discussions or Issues in the repository (Feesh)[https://github.com/Sleepy-Panda/Feesh/discussions]
+- Discussions or Issues in the repository [Feesh](https://github.com/Sleepy-Panda/Feesh/discussions)
 
 ## Developer's stuff
 
