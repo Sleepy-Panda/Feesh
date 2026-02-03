@@ -6,8 +6,9 @@
 
 ## Versions
 
-- Add support of 1.21.11
 - Publish on Modrinth
+- Add icon and mod descriptions
+- Add support of 1.21.11
 - Make a version checker which announces new versions found on Modrinth
 - Will NEU prices API be available? Do I need to hop to another one?
 
@@ -19,17 +20,12 @@ Make sure newly added values in the dropdowns are selected if needed. E.g. if I 
 
 Make sure old file from CT module can be moved to the mod with minor data loss.
 
-## Fishing Hook
-
-Alignment (center) stopped working at some point.
-
 ## Player death alert
 
 Death sound is not played. :c Probably because player's world is not loaded while they go to spawn on death.
 
 ## Sounds
 
-- Sounds for Rare Drops.
 - Custom sounds setup by user.
 
 ## Overlays
