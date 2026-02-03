@@ -1,7 +1,7 @@
 package com.github.sleepypanda.feesh.features.chat
 
 import com.github.sleepypanda.feesh.events.EventBus
-import com.github.sleepypanda.feesh.events.RareDropEvent
+import com.github.sleepypanda.feesh.events.models.RareDropEvent
 import com.github.sleepypanda.feesh.constants.RareDropTypes
 import com.github.sleepypanda.feesh.constants.RareDrops
 import com.github.sleepypanda.feesh.settings.categories.Chat

@@ -1,6 +1,4 @@
-package com.github.sleepypanda.feesh.events
-
-import net.minecraft.item.ItemStack
+package com.github.sleepypanda.feesh.events.models
 
 enum class InteractActionType {
     USE_ITEM,

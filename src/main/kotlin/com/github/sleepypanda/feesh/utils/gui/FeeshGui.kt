@@ -1,8 +1,8 @@
 package com.github.sleepypanda.feesh.utils.gui
 
-import com.github.sleepypanda.feesh.events.GameRenderEvent
-import com.github.sleepypanda.feesh.events.ScreenAfterBackgroundRenderEvent
-import com.github.sleepypanda.feesh.events.AfterMouseClickEvent
+import com.github.sleepypanda.feesh.events.models.GameRenderEvent
+import com.github.sleepypanda.feesh.events.models.ScreenAfterBackgroundRenderEvent
+import com.github.sleepypanda.feesh.events.models.AfterMouseClickEvent
 import com.github.sleepypanda.feesh.events.EventBus
 import com.github.sleepypanda.feesh.utils.GuiUtils
 import com.github.sleepypanda.feesh.utils.WorldUtils

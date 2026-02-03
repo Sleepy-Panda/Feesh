@@ -3,9 +3,9 @@ package com.github.sleepypanda.feesh.utils
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
 import com.github.sleepypanda.feesh.FeeshMod
-import com.github.sleepypanda.feesh.events.ClientTickEvent
 import com.github.sleepypanda.feesh.events.EventBus
-import com.github.sleepypanda.feesh.events.WorldChangedEvent
+import com.github.sleepypanda.feesh.events.models.ClientTickEvent
+import com.github.sleepypanda.feesh.events.models.WorldChangedEvent
 import net.minecraft.text.Style
 import net.minecraft.text.TextColor
 import net.minecraft.text.Text
