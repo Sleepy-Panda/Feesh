@@ -3,14 +3,14 @@ package com.github.sleepypanda.feesh.features.overlays
 import com.github.sleepypanda.feesh.FeeshMod
 import com.github.sleepypanda.feesh.constants.FishingProfitDrops
 import com.github.sleepypanda.feesh.constants.FishingProfitDropInfo
-import com.github.sleepypanda.feesh.events.ClientTickEvent
 import com.github.sleepypanda.feesh.events.EventBus
-import com.github.sleepypanda.feesh.events.GameClosedEvent
-import com.github.sleepypanda.feesh.events.GuiOpenedEvent
-import com.github.sleepypanda.feesh.events.GuiClosedEvent
-import com.github.sleepypanda.feesh.events.WorldChangedEvent
-import com.github.sleepypanda.feesh.events.PetLevelUpEvent
-import com.github.sleepypanda.feesh.events.SacksItemsPickupEvent
+import com.github.sleepypanda.feesh.events.models.ClientTickEvent
+import com.github.sleepypanda.feesh.events.models.GameClosedEvent
+import com.github.sleepypanda.feesh.events.models.GuiOpenedEvent
+import com.github.sleepypanda.feesh.events.models.GuiClosedEvent
+import com.github.sleepypanda.feesh.events.models.WorldChangedEvent
+import com.github.sleepypanda.feesh.events.models.PetLevelUpEvent
+import com.github.sleepypanda.feesh.events.models.SacksItemsPickupEvent
 import com.github.sleepypanda.feesh.constants.Sounds
 import com.github.sleepypanda.feesh.settings.categories.SoundMode
 import com.github.sleepypanda.feesh.settings.categories.General
@@ -112,9 +112,6 @@ object FishingProfitTracker {
             "",
             "${AQUA}Total: ${GOLD}${BOLD}1.7M ${RESET}${GRAY}(${GOLD}2.5M${GRAY}/h)",
             "${AQUA}Elapsed time: ${WHITE}40m 30s",
-            "${GRAY}[Click to show ${GREEN}Total${GRAY}] ${DARK_GRAY}(/$TOGGLE_VIEW_MODE_COMMAND)",
-            "${GRAY}[${YELLOW}Click to pause${GRAY}] ${DARK_GRAY}(/$PAUSE_COMMAND)",
-            "${GRAY}[${RED}Click to reset${GRAY}] ${DARK_GRAY}(/$RESET_COMMAND)"
         ))
         .setSettingsKey { Overlays.fishingProfitTrackerOverlay }
         .setCondition {            
@@ -243,11 +240,6 @@ object FishingProfitTracker {
         val hasData = if (viewMode == ViewMode.SESSION) hasSessionData else hasTotalData
 
         return hasData
-    }
-
-    private fun isInChatOrInventoryGui(): Boolean {
-        val screen = FeeshMod.mc.currentScreen ?: return false
-        return screen is ChatScreen || screen is InventoryScreen
     }
 
     private fun pause() {
@@ -709,16 +701,22 @@ object FishingProfitTracker {
             }
 
             val totalStr = CommonUtils.toShortNumber(displayData.totalProfit) ?: "0"
-            val perHourStr = CommonUtils.toShortNumber(displayData.profitPerHour) ?: "0"
             lines.add("")
-            lines.add("${AQUA}Total: ${GOLD}${BOLD}$totalStr ${RESET}${GRAY}(${GOLD}$perHourStr${GRAY}/h)")
-            val elapsedStr = CommonUtils.formatTimeElapsed(displayData.elapsedTime)
-            val pausedSuffix = if (isSessionActive) "" else " ${GRAY}[Paused]"
-            lines.add("${AQUA}Elapsed time: ${WHITE}$elapsedStr$pausedSuffix")
+
+            if (Overlays.shouldHideTimerInTotal && viewMode == ViewMode.TOTAL) {
+                lines.add("${AQUA}Total: ${GOLD}${BOLD}$totalStr")
+            } else {
+                val perHourStr = CommonUtils.toShortNumber(displayData.profitPerHour) ?: "0"
+                lines.add("${AQUA}Total: ${GOLD}${BOLD}$totalStr ${RESET}${GRAY}(${GOLD}$perHourStr${GRAY}/h)")
+
+                val elapsedStr = CommonUtils.formatTimeElapsed(displayData.elapsedTime)
+                val pausedSuffix = if (isSessionActive) "" else " ${GRAY}[Paused]"
+                lines.add("${AQUA}Elapsed time: ${WHITE}$elapsedStr$pausedSuffix")    
+            }
 
             gui.setLines(lines)
 
-            if (isInChatOrInventoryGui()) gui.setButtons(listOf(
+            gui.setButtons(listOf(
                 GuiButton(0, "${GRAY}[Click to show $nextText${GRAY}]", { toggleViewMode() }),
                 GuiButton(1, "${GRAY}[${YELLOW}Click to pause${GRAY}]", { pauseFishingProfitTracker() }),
                 GuiButton(2, "${GRAY}[${RED}Click to reset${GRAY}]", { resetFishingProfitTracker(false, getCurrentViewMode()) })

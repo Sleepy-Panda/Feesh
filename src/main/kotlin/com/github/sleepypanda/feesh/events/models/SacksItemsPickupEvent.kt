@@ -1,4 +1,4 @@
-package com.github.sleepypanda.feesh.events
+package com.github.sleepypanda.feesh.events.models
 
 /**
  * Event for when items are added to sacks (parsed from [Sacks] +... chat message).

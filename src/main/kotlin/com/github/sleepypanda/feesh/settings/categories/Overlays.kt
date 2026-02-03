@@ -434,6 +434,11 @@ ${GRAY}To reset [Total]: ${WHITE}/feeshResetFishingProfitTotal
         this.description = Translated("Send RARE DROP! message to player's chat when a rare item is added to the fishing profit tracker (for relatively rare items that have no RARE DROP! message from Hypixel by default).")
     }
 
+    var shouldHideTimerInTotal by boolean(false) {
+        this.name = Translated("Hide timer and coins/h in [Total] view")
+        this.description = Translated("Hide timer and coins/h in the fishing profit tracker [Total] view. Useful if you want to add past drops to the tracker but do not know what is the elapsed time.")
+    }
+
     var resetFishingProfitTrackerOnGameClosed by boolean(true) {
         this.name = Translated("Autoreset [Session] on closing game")
         this.description = Translated("Automatically reset the fishing profit tracker [Session] when you close Minecraft.")

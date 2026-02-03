@@ -1,8 +1,8 @@
 package com.github.sleepypanda.feesh.events.publishers
 
-import com.github.sleepypanda.feesh.events.ChatEvent
 import com.github.sleepypanda.feesh.events.EventBus
-import com.github.sleepypanda.feesh.events.SacksItemsPickupEvent
+import com.github.sleepypanda.feesh.events.models.ChatEvent
+import com.github.sleepypanda.feesh.events.models.SacksItemsPickupEvent
 import com.github.sleepypanda.feesh.utils.ChatUtils.removeFormatting
 import com.github.sleepypanda.feesh.utils.WorldUtils
 import net.minecraft.text.HoverEvent
