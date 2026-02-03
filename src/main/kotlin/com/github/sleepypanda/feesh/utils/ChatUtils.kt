@@ -5,6 +5,7 @@ import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
 import com.github.sleepypanda.feesh.FeeshMod
 import com.github.sleepypanda.feesh.events.ClientTickEvent
 import com.github.sleepypanda.feesh.events.EventBus
+import com.github.sleepypanda.feesh.events.WorldChangedEvent
 import net.minecraft.text.Style
 import net.minecraft.text.TextColor
 import net.minecraft.text.Text
@@ -28,10 +29,15 @@ object ChatUtils {
 
     fun init() {
         EventBus.subscribe(ClientTickEvent::class, ::onClientTick)
+        EventBus.subscribe(WorldChangedEvent::class, ::onWorldChanged)
     }
 
     private fun onClientTick(@Suppress("UNUSED_PARAMETER") event: ClientTickEvent) {
         processQueue()
+    }
+
+    private fun onWorldChanged(@Suppress("UNUSED_PARAMETER") event: WorldChangedEvent) {
+        messageQueue.clear()
     }
 
     private fun processQueue() {
