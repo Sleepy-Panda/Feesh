@@ -21,7 +21,7 @@ Once it's ready for beta, I plan to publish it on Modrinth.
 
 ### Pre-releases
 
-If you want access to pre-releases, Github automatically builds every version pushed to develop branch. They can be found in Actions - <select latest action> - Artifacts - find attached `.zip` which contains `.jar` file(s).
+If you want access to pre-releases, Github automatically builds every version pushed to develop branch. They can be found in Actions - (select latest action) - Artifacts - find attached `.zip` which contains `.jar` file(s).
 
 ## Dependencies
 
