@@ -6,15 +6,13 @@ import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
 import com.github.sleepypanda.feesh.utils.enums.DeployableTypes
 import com.github.sleepypanda.feesh.utils.enums.PricingModeWithNpc
 import com.github.sleepypanda.feesh.utils.ChatUtils
-import com.teamresourceful.resourcefulconfig.api.annotations.Category
-import com.teamresourceful.resourcefulconfig.api.annotations.Comment
-import com.teamresourceful.resourcefulconfig.api.annotations.ConfigEntry
-import com.teamresourceful.resourcefulconfig.api.types.options.EntryType
+import com.teamresourceful.resourcefulconfigkt.api.ObservableEntry
 import com.teamresourceful.resourcefulconfigkt.api.CategoryKt
 import com.github.sleepypanda.feesh.features.commands.PauseAllTrackersCommand
 import com.github.sleepypanda.feesh.features.commands.SetTrackerDropsCommand
 import com.github.sleepypanda.feesh.features.overlays.ArchfiendDiceProfitTracker
 import com.github.sleepypanda.feesh.features.overlays.BarnFishingTimer
+import com.github.sleepypanda.feesh.features.overlays.FishingProfitTracker
 import com.github.sleepypanda.feesh.features.overlays.CrimsonIsleTracker
 import com.github.sleepypanda.feesh.features.overlays.JerryWorkshopTracker
 import com.github.sleepypanda.feesh.features.overlays.SeaCreaturesPerHourTracker
@@ -402,14 +400,26 @@ ${GRAY}To reset [Total]: ${WHITE}/feeshResetFishingProfitTotal
         """.trimIndent())
     }
 
-    var fishingProfitTrackerPriceMode by enum(PricingModeWithNpc.SELL_OFFER) {
-        this.name = Translated("Price mode")
-        this.description = Translated("How to calculate prices for the dropped items in the Fishing profit tracker.")
+    var fishingProfitTrackerPriceMode by ObservableEntry(
+        enum(PricingModeWithNpc.SELL_OFFER) {
+            this.name = Translated("Price mode")
+            this.description = Translated("How to calculate prices for the dropped items in the Fishing profit tracker.")
+        }
+    ) { prev, new ->
+        if (prev != new) {
+            FishingProfitTracker.refreshTotalItemsProfits()
+        }
     }
     
-    var calculateProfitInCrimsonEssence by boolean(false) {
-        this.name = Translated("Show profits in Crimson Essence when applicable")
-        this.description = Translated("Calculate price in Crimson Essence for salvageable crimson fishing items e.g. Slug Boots, Moogma Leggings, Flaming Chestplate, Blade of the Volcano, Staff of the Volcano.")
+    var calculateProfitInCrimsonEssence by ObservableEntry(
+        boolean(false) {
+            this.name = Translated("Show profits in Crimson Essence when applicable")
+            this.description = Translated("Calculate price in Crimson Essence for salvageable crimson fishing items e.g. Slug Boots, Moogma Leggings, Flaming Chestplate, Blade of the Volcano, Staff of the Volcano.")
+        }
+    ) { prev, new ->
+        if (prev != new) {
+            FishingProfitTracker.refreshTotalItemsProfits()
+        }
     }
 
     var fishingProfitTrackerHideCheaperThan by int(1_000_000) {

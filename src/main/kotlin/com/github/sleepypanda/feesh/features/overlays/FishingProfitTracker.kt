@@ -6,7 +6,6 @@ import com.github.sleepypanda.feesh.constants.FishingProfitDropInfo
 import com.github.sleepypanda.feesh.events.EventBus
 import com.github.sleepypanda.feesh.events.models.ClientTickEvent
 import com.github.sleepypanda.feesh.events.models.GameClosedEvent
-import com.github.sleepypanda.feesh.events.models.GuiOpenedEvent
 import com.github.sleepypanda.feesh.events.models.GuiClosedEvent
 import com.github.sleepypanda.feesh.events.models.WorldChangedEvent
 import com.github.sleepypanda.feesh.events.models.PetLevelUpEvent
@@ -82,13 +81,12 @@ object FishingProfitTracker {
     private const val RESET_TOTAL_COMMAND = "feeshResetFishingProfitTotal"
     private const val TOGGLE_VIEW_MODE_COMMAND = "feeshToggleFishingProfitViewMode"
     private const val PAUSE_COMMAND = "feeshPauseFishingProfit"
-    private const val SET_ITEM_DIFF_COMMAND = "feeshSetItemDiffFishingProfit"
-    private const val SET_ITEM_DIFF_TOTAL_COMMAND = "feeshSetItemDiffFishingProfitTotal"
+    private const val SET_ITEM_COUNT_COMMAND = "feeshSetItemCountFishingProfit"
+    private const val SET_ITEM_COUNT_TOTAL_COMMAND = "feeshSetItemCountFishingProfitTotal"
     private const val DELETE_ITEM_COMMAND = "feeshDeleteItemFishingProfit"
     private const val DELETE_ITEM_TOTAL_COMMAND = "feeshDeleteItemFishingProfitTotal"
 
-    private const val TICKS_OVERLAY_AND_ACTIVATE = 20
-    private const val TICKS_ELAPSED_TIME = 20
+    private const val TICKS_TIMER_ELAPSED_TIME = 20
     private const val TICKS_INVENTORY = 5
     private const val TICKS_PRICES = 20 * 60
     private const val MAX_SECONDS_SINCE_HOOK = 60 * 5
@@ -130,7 +128,6 @@ object FishingProfitTracker {
         EventBus.subscribe(ClientTickEvent::class, ::onClientTick)
         EventBus.subscribe(GameClosedEvent::class, ::onGameClosed)
         EventBus.subscribe(WorldChangedEvent::class, ::onWorldChanged)
-        EventBus.subscribe(GuiOpenedEvent::class, ::onGuiOpened)
         EventBus.subscribe(GuiClosedEvent::class, ::onGuiClosed)
         EventBus.subscribe(PetLevelUpEvent::class, ::onPetReachedMaxLevel)
         EventBus.subscribe(SacksItemsPickupEvent::class, ::onSacksItemsPickup)
@@ -151,11 +148,11 @@ object FishingProfitTracker {
         RegisterUtils.command(PAUSE_COMMAND) {
             pauseFishingProfitTracker()
         }
-        RegisterUtils.command(SET_ITEM_DIFF_COMMAND) { args ->
-            setItemDiff(args, ViewMode.SESSION)
+        RegisterUtils.command(SET_ITEM_COUNT_COMMAND) { args ->
+            setItemCount(args, ViewMode.SESSION)
         }
-        RegisterUtils.command(SET_ITEM_DIFF_TOTAL_COMMAND) { args ->
-            setItemDiff(args, ViewMode.TOTAL)
+        RegisterUtils.command(SET_ITEM_COUNT_TOTAL_COMMAND) { args ->
+            setItemCount(args, ViewMode.TOTAL)
         }
         RegisterUtils.command(DELETE_ITEM_COMMAND) { args ->
             deleteItem(args, ViewMode.SESSION)
@@ -212,12 +209,6 @@ object FishingProfitTracker {
         pause()
     }
 
-    private fun onGuiOpened(@Suppress("UNUSED_PARAMETER") event: GuiOpenedEvent) {       
-        //Timer().schedule(timerTask {
-        //    updateGuiLines() // TODO update if GUI is a chat or inventory
-        //}, 50) // Wait for GUI to be fully loaded (~1 tick delay)
-    }
-
     private fun onGuiClosed(@Suppress("UNUSED_PARAMETER") event: GuiClosedEvent) {
         detectInventoryChanges() // Actualize inventory state after taking items from chest and quickly closing a GUI
     }
@@ -226,12 +217,9 @@ object FishingProfitTracker {
         if (!Overlays.fishingProfitTrackerOverlay || !WorldUtils.isInSkyblock() || !WorldUtils.isInFishingWorld(WorldUtils.getWorldName())) return
         tickCounter++
 
-        if (tickCounter % TICKS_OVERLAY_AND_ACTIVATE == 0) {
-            activateSessionOnPlayersFishingHook()
-            updateGuiLines()
-        }
-        if (tickCounter % TICKS_ELAPSED_TIME == 0) {
+        if (tickCounter % TICKS_TIMER_ELAPSED_TIME == 0) {
             refreshElapsedTime()
+            updateGuiLines()
         }
         if (tickCounter % TICKS_INVENTORY == 0) {
             detectInventoryChanges()
@@ -288,149 +276,104 @@ object FishingProfitTracker {
         }
     }
 
-    private fun setItemDiff(args: Array<String>, viewMode: ViewMode) {
+    // TODO: Level 100 pets
+    private fun setItemCount(args: Array<String>, viewMode: ViewMode) {
         try {
             if (args.size < 2) {
-                ChatUtils.sendLocalChat("${RED}Usage: /$SET_ITEM_DIFF_COMMAND <count> <item name or ID>", true)
+                ChatUtils.sendLocalChat("${RED}Usage: /$SET_ITEM_COUNT_COMMAND <itemID> <count>", true)
                 return
             }
-            val count = args[0].toIntOrNull()
-            if (count == null) {
-                ChatUtils.sendLocalChat("${RED}Invalid count: ${args[0]}", true)
-                return
-            }
-            val itemInput = args.drop(1).joinToString(" ").trim()
-            if (itemInput.isBlank()) {
-                ChatUtils.sendLocalChat("${RED}Item name or ID is required.", true)
+         
+            val itemId = args[0].trim()
+            if (itemId.isBlank()) {
+                ChatUtils.sendLocalChat("${RED}Item ID is required.", true)
                 return
             }
 
-            val resolved = resolveItemForCommand(itemInput, viewMode) ?: run {
-                ChatUtils.sendLocalChat("${RED}Item not found: $itemInput", true)
+            val count = args[1].toIntOrNull()
+            if (count == null || count == 0) {
+                ChatUtils.sendLocalChat("${RED}Invalid count, should be a positive number: ${args[0]}", true)
+                return
+            }
+
+            val dropInfo = FishingProfitDrops.items.find { it.itemId == itemId } ?: run {
+                ChatUtils.sendLocalChat("${RED}Item not found by ID: $itemId", true)
                 return
             }
 
             val sourceObj = getSourceObject(viewMode)
-            val existing = sourceObj.profitTrackerItems[resolved.itemId]
-            val currentAmount = existing?.amount ?: 0
+            val existing = sourceObj.profitTrackerItems[itemId]
 
-            if (count < 0) {
-                val newAmount = currentAmount + count
-                if (newAmount < 0) {
-                    ChatUtils.sendLocalChat("${RED}Not enough items. Current: $currentAmount, cannot decrease by ${-count}.", true)
-                    return
-                }
+            if (existing == null) {
+                sourceObj.profitTrackerItems[itemId] = ProfitTrackerItemEntry(
+                    itemId = itemId,
+                    itemName = dropInfo.itemName,
+                    amount = count,
+                    totalItemProfit = 0.0
+                )
+            } else {
+                existing.amount = count
             }
+
+            saveData()
+            refreshTotalItemsProfitsInMode(viewMode)
+            updateGuiLines()
 
             val viewModeText = getViewModeDisplayText(viewMode)
-            if (count > 0) {
-                addProfitTrackerItemInMode(viewMode, resolved.itemId, resolved.itemName, count, null)
-                refreshTotalItemsProfitsInMode(viewMode)
-                ChatUtils.sendLocalChat("${WHITE}Added $count ${resolved.itemName} to Fishing profit tracker $viewModeText", true)
-                saveData()
-            } else {
-                val newAmount = currentAmount + count
-                if (newAmount == 0) {
-                    sourceObj.profitTrackerItems.remove(resolved.itemId)
-                } else {
-                    val entry = existing!!
-                    sourceObj.profitTrackerItems[resolved.itemId] = ProfitTrackerItemEntry(
-                        itemName = entry.itemName,
-                        itemId = entry.itemId,
-                        amount = newAmount,
-                        totalItemProfit = 0.0
-                    )
-                }
-                refreshTotalItemsProfitsInMode(viewMode)
-                ChatUtils.sendLocalChat("${WHITE}Decreased ${resolved.itemName} by ${-count} in Fishing profit tracker $viewModeText", true)
-                saveData()
-            }
-            updateGuiLines()
+            ChatUtils.sendLocalChat("${WHITE}Successfully changed count of ${dropInfo.itemDisplayName} ${WHITE}to ${count} in Fishing profit tracker $viewModeText${WHITE}.", true)
         } catch (e: Exception) {
-            FeeshMod.LOGGER.error("[Feesh] Failed to set item diff in Fishing profit tracker.", e)
+            FeeshMod.LOGGER.error("[Feesh] Failed to change item count in Fishing profit tracker.", e)
         }
     }
 
     private fun deleteItem(args: Array<String>, viewMode: ViewMode) {
         try {
             if (args.isEmpty()) {
-                ChatUtils.sendLocalChat("${RED}Usage: /$DELETE_ITEM_COMMAND <item name or ID>", true)
+                ChatUtils.sendLocalChat("${RED}Usage: /$DELETE_ITEM_COMMAND <itemID>", true)
                 return
             }
-            val isConfirmed = args.size >= 2 && args.last() == "noconfirm"
-            val itemInput = if (isConfirmed) args.dropLast(1).joinToString(" ").trim() else args.joinToString(" ").trim()
-            if (itemInput.isBlank()) {
-                ChatUtils.sendLocalChat("${RED}Item name or ID is required.", true)
+
+            val isConfirmed = args.size == 2 && args.last() == "noconfirm"
+
+            val itemId = args[0].trim()
+            if (itemId.isBlank()) {
+                ChatUtils.sendLocalChat("${RED}Item ID is required.", true)
+                return
+            }
+
+            val viewModeText = getViewModeDisplayText(viewMode)
+            val dropInfo = FishingProfitDrops.items.find { it.itemId == itemId } ?: run {
+                ChatUtils.sendLocalChat("${RED}Item not found by ID: $itemId", true)
                 return
             }
 
             if (!isConfirmed) {
                 val deleteCommand = when (viewMode) {
-                    ViewMode.SESSION -> "$DELETE_ITEM_COMMAND $itemInput noconfirm"
-                    ViewMode.TOTAL -> "$DELETE_ITEM_TOTAL_COMMAND $itemInput noconfirm"
+                    ViewMode.SESSION -> "$DELETE_ITEM_COMMAND $itemId noconfirm"
+                    ViewMode.TOTAL -> "$DELETE_ITEM_TOTAL_COMMAND $itemId noconfirm"
                 }
                 ChatUtils.sendLocalChatWithCommand(
-                    "${WHITE}Do you want to delete ${WHITE}$itemInput${WHITE} from Fishing profit tracker? ${RED}${BOLD}[Click to confirm]",
+                    "${WHITE}Do you want to delete item with ID = $itemId ${WHITE}(${dropInfo.itemDisplayName}${WHITE}) from Fishing profit tracker ${viewModeText}${WHITE}? ${RED}${BOLD}[Click to confirm]",
                     deleteCommand,
                     true
                 )
                 return
             }
 
-            val resolved = resolveItemForCommand(itemInput, viewMode) ?: run {
-                ChatUtils.sendLocalChat("${RED}Item not found: $itemInput", true)
-                return
-            }
-
             val sourceObj = getSourceObject(viewMode)
-            if (!sourceObj.profitTrackerItems.containsKey(resolved.itemId)) {
-                ChatUtils.sendLocalChat("${RED}Item not in tracker: $itemInput", true)
+            if (!sourceObj.profitTrackerItems.containsKey(itemId)) {
+                ChatUtils.sendLocalChat("${RED}Item ID is not found in tracker, nothing to delete: $itemId", true)
                 return
             }
 
-            sourceObj.profitTrackerItems.remove(resolved.itemId)
-            refreshTotalItemsProfitsInMode(viewMode)
+            sourceObj.profitTrackerItems.remove(itemId)
             saveData()
+            refreshTotalItemsProfitsInMode(viewMode)
             updateGuiLines()
-            val viewModeText = getViewModeDisplayText(viewMode)
-            ChatUtils.sendLocalChat("${WHITE}Deleted ${resolved.itemName} from Fishing profit tracker $viewModeText", true)
+            ChatUtils.sendLocalChat("${WHITE}Successfully deleted ${itemId} ${WHITE}(${dropInfo.itemDisplayName}${WHITE}) from Fishing profit tracker ${viewModeText}${WHITE}.", true)
         } catch (e: Exception) {
             FeeshMod.LOGGER.error("[Feesh] Failed to delete item from Fishing profit tracker.", e)
         }
-    }
-
-    private data class ResolvedItem(val itemId: String, val itemName: String)
-
-    private fun resolveItemForCommand(input: String, viewMode: ViewMode): ResolvedItem? {
-        val inputTrimmed = input.trim()
-        if (inputTrimmed.isBlank()) return null
-
-        val sourceObj = getSourceObject(viewMode)
-
-        // Match in FishingProfitDrops by itemId
-        val dropById = FishingProfitDrops.items.find { it.itemId.equals(inputTrimmed, ignoreCase = true) }
-        if (dropById != null) {
-            val keyInTracker = sourceObj.profitTrackerItems.keys.find {
-                it.equals(dropById.itemId, ignoreCase = true) || it.startsWith("${dropById.itemId}+", ignoreCase = true)
-            }
-            val itemIdToUse = keyInTracker ?: dropById.itemId
-            return ResolvedItem(itemIdToUse, dropById.itemName)
-        }
-
-        // Match in FishingProfitDrops by itemName or itemAlternateNames
-        val dropByName = FishingProfitDrops.items.find {
-            it.itemName.equals(inputTrimmed, ignoreCase = true) ||
-                it.itemAlternateNames.any { alt -> alt.equals(inputTrimmed, ignoreCase = true) }
-        }
-        if (dropByName != null) {
-            val keyInTracker = sourceObj.profitTrackerItems.keys.find {
-                it.equals(dropByName.itemId, ignoreCase = true) || it.startsWith("${dropByName.itemId}+", ignoreCase = true)
-            }
-            val itemIdToUse = keyInTracker ?: dropByName.itemId
-            return ResolvedItem(itemIdToUse, dropByName.itemName)
-        }
-
-        return null
     }
 
     fun pauseFishingProfitTracker() {
@@ -444,30 +387,39 @@ object FishingProfitTracker {
         }
     }
 
-    private fun activateSessionOnPlayersFishingHook() {
-        if (!Overlays.fishingProfitTrackerOverlay || !WorldUtils.isInSkyblock() || !WorldUtils.isInFishingWorld(WorldUtils.getWorldName())) return
-        val player = FeeshMod.mc.player ?: return
-        val isHookActive = EntityUtils.isFishingHookActive(player)
-        if (isHookActive) {
-            isSessionActive = true
-            activateTimerInMode(ViewMode.SESSION)
-            activateTimerInMode(ViewMode.TOTAL)
-            refreshTotalItemsProfits()
-        }
-    }
-
     private fun activateTimerInMode(viewMode: ViewMode) {
         val sourceObj = getSourceObject(viewMode)
         if (sourceObj.elapsedSeconds == 0) {
             sourceObj.elapsedSeconds = 1
-            saveData()
         }
     }
 
     private fun refreshElapsedTime() {
+        if (!Overlays.fishingProfitTrackerOverlay || !WorldUtils.isInSkyblock() || !WorldUtils.isInFishingWorld(WorldUtils.getWorldName())) {
+            pause()
+            return
+        }
+
+        val prevIsActive = isSessionActive
+        val player = FeeshMod.mc.player ?: return
+        val isHookActive = EntityUtils.isFishingHookActive(player)
+
+        // Start fishing timer after pause or when tracker was empty
+        if (isHookActive) {
+            isSessionActive = true
+            activateTimerInMode(ViewMode.SESSION)
+            activateTimerInMode(ViewMode.TOTAL)
+            saveData()
+
+            if (!prevIsActive) {
+                refreshTotalItemsProfits()
+                return
+            }
+        }
+
         if (!isSessionActive || !isTrackerVisible()) return
-        val lastHook = PlayerUtils.lastFishingHookSeenAt() ?: return
-        val elapsedSinceHook = (Date().time - lastHook.time) / 1000
+        val lastHookSeenAt = PlayerUtils.lastFishingHookSeenAt() ?: return
+        val elapsedSinceHook = (Date().time - lastHookSeenAt.time) / 1000
         if (elapsedSinceHook < MAX_SECONDS_SINCE_HOOK) {
             data.session.elapsedSeconds += 1
             data.total.elapsedSeconds += 1
@@ -475,10 +427,9 @@ object FishingProfitTracker {
         } else {
             pause()
         }
-        updateGuiLines()
     }
 
-    private fun refreshTotalItemsProfits() {
+    fun refreshTotalItemsProfits() {
         if (!isTrackerVisible()) return
         refreshTotalItemsProfitsInMode(ViewMode.SESSION)
         refreshTotalItemsProfitsInMode(ViewMode.TOTAL)
@@ -857,7 +808,6 @@ object FishingProfitTracker {
             
             addProfitTrackerItemInMode(viewMode, itemId, entry.itemName, 1, null)
             refreshTotalItemsProfitsInMode(viewMode)
-            saveData()
             updateGuiLines()
 
             val newAmount = entry.amount + 1
@@ -883,8 +833,8 @@ object FishingProfitTracker {
             }
 
             sourceObj.profitTrackerItems[itemId] = entry.copy(amount = newAmount)
-            refreshTotalItemsProfitsInMode(viewMode)
             saveData()
+            refreshTotalItemsProfitsInMode(viewMode)
             updateGuiLines()
 
             ChatUtils.sendLocalChat("${WHITE}Changed amount of ${dropInfo.itemDisplayName} ${WHITE}to ${GRAY}${newAmount}x ${WHITE}in the Fishing profit tracker $viewModeText", true)
