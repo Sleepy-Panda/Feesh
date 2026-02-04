@@ -526,6 +526,10 @@ object FishingProfitTracker {
 
             addProfitTrackerItem(dropInfo.itemId, dropInfo.itemName, item.amount, null, true)
             added = true
+
+            if (Overlays.shouldAnnounceRareDropsWhenPickup && dropInfo.shouldAnnounceRareDrop) {
+                announceRareDropInChat(dropInfo, item.amount)
+            }
         }
         if (added) refreshTotalItemsProfits()
     }
@@ -737,10 +741,17 @@ object FishingProfitTracker {
         addProfitTrackerItem(itemId, dropInfo.itemName, difference, null, true)
 
         if (Overlays.shouldAnnounceRareDropsWhenPickup && dropInfo.shouldAnnounceRareDrop) {
-            val diffText = if (difference > 1) " ${RESET}${GRAY}${difference}x" else ""
-            ChatUtils.sendLocalChat("${GOLD}${BOLD}RARE DROP! ${RESET}${dropInfo.itemDisplayName}$diffText", true)
-            if (General.soundMode != SoundMode.OFF) SoundUtils.playCustomSound(Sounds.FEESH_RARE_DROP)
+            announceRareDropInChat(dropInfo, difference)
         }
+    }
+
+    private fun announceRareDropInChat(dropInfo: FishingProfitDropInfo, count: Int) {
+        if (!Overlays.shouldAnnounceRareDropsWhenPickup || !dropInfo.shouldAnnounceRareDrop) return
+
+        val diffText = if (count > 1) " ${RESET}${GRAY}${count}x" else ""
+        ChatUtils.sendLocalChat("${GOLD}${BOLD}RARE DROP! ${RESET}${dropInfo.itemDisplayName}$diffText", true)
+
+        if (General.soundMode != SoundMode.OFF) SoundUtils.playCustomSound(Sounds.FEESH_RARE_DROP)
     }
 
     private fun shouldSkipItem(itemId: String, dropInfo: FishingProfitDropInfo): Boolean {
@@ -897,8 +908,9 @@ object FishingProfitTracker {
             lines.add("$baseTitle $viewModeText")
 
             for (entry in displayData.entriesToShow) {
+                val countStr = CommonUtils.formatNumberWithSpaces(entry.amount)
                 val profitStr = CommonUtils.toShortNumber(entry.profit) ?: "0"
-                lines.add("${GRAY}- ${WHITE}${entry.amount}${GRAY}x ${entry.item}${GRAY}: ${GOLD}$profitStr")
+                lines.add("${GRAY}- ${WHITE}${countStr}${GRAY}x ${entry.item}${GRAY}: ${GOLD}$profitStr")
             }
 
             if (displayData.entriesToHide.isNotEmpty()) {
