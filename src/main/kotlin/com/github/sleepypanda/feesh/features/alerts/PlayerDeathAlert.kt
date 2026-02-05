@@ -33,7 +33,7 @@ object PlayerDeathAlert {
 
     private fun onPartyChatDeath(event: PartyChatEvent) {
         if (!Alerts.alertOnPlayerDeath || !WorldUtils.isInSkyblock()) return
-        if (!event.messagePayload.contains(PARTY_MEMBER_DIED_PATTERN)) return
+        if (!Regex(PARTY_MEMBER_DIED_PATTERN).containsMatchIn(event.messagePayload)) return
 
         val me = PlayerUtils.getName() ?: return
         val playerName = PlayerUtils.getFormattedPlayerNameFromPartyChat(event.rankAndPlayer) ?: return
