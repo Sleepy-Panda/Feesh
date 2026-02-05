@@ -446,7 +446,7 @@ ${GRAY}To reset [Total]: ${WHITE}/feeshResetFishingProfitTotal
 
     var shouldHideTimerInTotal by boolean(false) {
         this.name = Translated("Hide timer and coins/h in [Total] view")
-        this.description = Translated("Hide timer and coins/h in the fishing profit tracker [Total] view. Useful if you want to add past drops to the tracker but do not know what is the elapsed time.")
+        this.description = Translated("Hide timer and coins/h in the fishing profit tracker [Total] view. Useful if you want to add past drops to the tracker but do not know the elapsed time.")
     }
 
     var resetFishingProfitTrackerOnGameClosed by boolean(true) {
@@ -466,7 +466,7 @@ ${GRAY}To reset [Total]: ${WHITE}/feeshResetFishingProfitTotal
                 ChatUtils.sendLocalChat("  - ${WHITE}/feeshSetItemCountFishingProfitTotal <ITEM_ID> <COUNT>${RESET} - sets item count in [Total].")
                 ChatUtils.sendLocalChat("  - ${WHITE}/feeshDeleteItemFishingProfit <ITEM_ID>${RESET} - deletes item from [Session].")
                 ChatUtils.sendLocalChat("  - ${WHITE}/feeshDeleteItemFishingProfitTotal <ITEM_ID>${RESET} - deletes item from [Total].")
-                ChatUtils.sendLocalChat("\n${GRAY}<ITEM_ID>${RESET} - ID of the fishing drop (for example MAGMA_FISH, SILVER_MAGMAFISH, etc.).")
+                ChatUtils.sendLocalChat("\n${GRAY}<ITEM_ID>${RESET} - ID of the fishing drop (for example MAGMA_FISH, SILVER_MAGMAFISH, BABY_YETI;4, etc.).")
                 ChatUtils.sendLocalChat("${GRAY}<COUNT>${RESET} - positive integer with desired total amount of this item in the tracker.")
             }
         }
