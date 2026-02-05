@@ -4,12 +4,11 @@ import com.github.sleepypanda.feesh.settings.categories.Chat
 import com.github.sleepypanda.feesh.utils.ChatUtils
 import com.github.sleepypanda.feesh.utils.RegisterUtils
 import com.github.sleepypanda.feesh.utils.WorldUtils
+import com.github.sleepypanda.feesh.features.alerts.PlayerDeathAlert
 
 object PlayerDeathMessage {
-    const val PATTERN = "^ ☠ You were killed by (Ragnarok|Thunder|Lord Jawbus|Wiki Tiki|Titanoboa)\\.$"
-
     fun init() {
-        RegisterUtils.chat(Regex(PATTERN)) { _, _ -> onPlayerDeath() }
+        RegisterUtils.chat(Regex(PlayerDeathAlert.YOU_DIED_PATTERN)) { _, _ -> onPlayerDeath() }
     }
 
     private fun onPlayerDeath() {

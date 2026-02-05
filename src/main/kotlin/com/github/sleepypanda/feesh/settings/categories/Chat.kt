@@ -23,7 +23,7 @@ enum class HotspotChatSource(val displayName: String) {
 object Chat : CategoryKt("Chat") {
     init {
         separator {
-            this.title = "${AQUA}${BOLD}Sea creatures"
+            this.title = "${AQUA}${BOLD}Rare sea creatures"
         }
     }
 
@@ -52,7 +52,7 @@ object Chat : CategoryKt("Chat") {
 
     var messageOnPlayerDeath by boolean(true) {
         this.name = Translated("Send a party chat message when killed by a Mythic sea creature")
-        this.description = Translated("Sends a message to the party chat when you are killed by Thunder / Lord Jawbus / Ragnarok / Wiki Tiki / Titanoboa. It enables the alerts for your party members so they can wait for you.")
+        this.description = Translated("Sends a message to the party chat when you are killed by Thunder / Lord Jawbus / Ragnarok / Wiki Tiki / Titanoboa. It enables the alerts for your party members so they can wait for you or laugh at you 😈")
     }
 
     init {

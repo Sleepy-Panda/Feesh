@@ -11,7 +11,7 @@ import com.teamresourceful.resourcefulconfigkt.api.CategoryKt
 object Alerts : CategoryKt("Alerts") {
     init {
         separator {
-            this.title = "${AQUA}${BOLD}Sea creatures"
+            this.title = "${AQUA}${BOLD}Rare sea creatures"
         }
     }
 
@@ -27,6 +27,11 @@ object Alerts : CategoryKt("Alerts") {
     var alertOnAnyReindrake by boolean(false) {
         this.name = Translated("Alert on any Reindrake spawned in lobby")
         this.description = Translated("Shows a title and plays a sound when any Reindrake spawned in the lobby, even if it was caught not by you or your party members.")
+    }
+
+    var alertOnPlayerDeath by boolean(true) {
+        this.name = Translated("Alert when you or your party members are killed by a Mythic sea creature")
+        this.description = Translated("Shows a title and plays a sound when you or your party members are killed by Thunder / Lord Jawbus / Ragnarok / Wiki Tiki / Titanoboa.")
     }
 
     init {
@@ -177,11 +182,6 @@ object Alerts : CategoryKt("Alerts") {
     var alertOnNonFishingArmor by boolean(true) {
         this.name = Translated("Alert when no fishing armor equipped")
         this.description = Translated("Shows a title and plays a sound when current player is fishing in a non-fishing armor.")
-    }
-    
-    var alertOnPlayerDeath by boolean(true) {
-        this.name = Translated("Alert when you or your party members are killed by a Mythic sea creature")
-        this.description = Translated("Shows a title and plays a sound when you or your party members are killed by Thunder / Lord Jawbus / Ragnarok / Wiki Tiki / Titanoboa.")
     }
     
     var alertOnLootshareMessage by boolean(true) {

@@ -15,7 +15,7 @@ import com.github.sleepypanda.feesh.FeeshMod
 import net.minecraft.sound.SoundEvents
 
 object PlayerDeathAlert {
-    const val YOU_DIED_PATTERN = "^ ☠ You were killed by (Ragnarok|Thunder|Lord Jawbus|Wiki Tiki|Titanoboa)\\.$"
+    const val YOU_DIED_PATTERN = "^ ☠ You were killed by (Ragnarok|Thunder|Lord Jawbus|Jawbus Follower|Wiki Tiki|Wiki Tiki Laser Totem|Titanoboa)\\.$"
     const val PARTY_MEMBER_DIED_PATTERN = "^--> I was killed, please wait for me until I come back <--$"
 
     fun init() {
@@ -33,7 +33,7 @@ object PlayerDeathAlert {
 
     private fun onPartyChatDeath(event: PartyChatEvent) {
         if (!Alerts.alertOnPlayerDeath || !WorldUtils.isInSkyblock()) return
-        if (!event.messagePayload.contains(PARTY_MEMBER_DIED_PATTERN)) return
+        if (!Regex(PARTY_MEMBER_DIED_PATTERN).containsMatchIn(event.messagePayload)) return
 
         val me = PlayerUtils.getName() ?: return
         val playerName = PlayerUtils.getFormattedPlayerNameFromPartyChat(event.rankAndPlayer) ?: return
