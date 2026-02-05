@@ -35,10 +35,11 @@ object PlayerDeathAlert {
         if (!Alerts.alertOnPlayerDeath || !WorldUtils.isInSkyblock()) return
         if (!event.messagePayload.contains(PARTY_MEMBER_DIED_PATTERN)) return
 
-        val playerName = PlayerUtils.getName() ?: return
-        if (event.rankAndPlayer.removeFormatting().contains(playerName)) return
+        val me = PlayerUtils.getName() ?: return
+        val playerName = PlayerUtils.getFormattedPlayerNameFromPartyChat(event.rankAndPlayer) ?: return
+        if (!playerName.isNullOrEmpty() && !me.isNullOrEmpty() && playerName.removeFormatting().contains(me)) return
 
-        val title = "${event.rankAndPlayer} ${RED}was killed ☠";
+        val title = "${playerName} ${RED}was killed ☠";
 		CommonUtils.showTitle(title, "Wait for them to come back");
 		SoundUtils.playSound(SoundEvents.ENTITY_VILLAGER_DEATH)
     }

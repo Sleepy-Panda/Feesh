@@ -38,7 +38,7 @@ object RareCatchAlert {
     private fun onOwnSeaCreature(event: OwnSeaCreatureCaughtEvent) {
         if (!WorldUtils.isInSkyblock() || !Alerts.alertOnRareSeaCreatures) return
 
-        val playerName = PlayerUtils.getFormattedName() ?: return
+        val playerName = PlayerUtils.getFormattedNameWithoutPrefix() ?: return
         val seaCreatureName = event.seaCreatureName
         val isDoubleHook = event.isDoubleHook
         showAlert(seaCreatureName, isDoubleHook, playerName)
@@ -47,9 +47,9 @@ object RareCatchAlert {
     private fun onPartyChatSeaCreature(event: PartyChatEvent) {
         if (!WorldUtils.isInSkyblock() || !Alerts.alertOnRareSeaCreatures) return
 
-        val me = PlayerUtils.getName() ?: ""
-        val playerName = event.rankAndPlayer
-        if (!playerName.isNullOrEmpty() && !me.isNullOrEmpty() && playerName.removeFormatting().contains(me, ignoreCase = true)) return
+        val me = PlayerUtils.getName() ?: return
+        val playerName = PlayerUtils.getFormattedPlayerNameFromPartyChat(event.rankAndPlayer) ?: return
+        if (!playerName.isNullOrEmpty() && !me.isNullOrEmpty() && playerName.removeFormatting().contains(me)) return
 
         val message = event.messagePayload.removeFormatting()
         

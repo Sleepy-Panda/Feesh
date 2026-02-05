@@ -2,6 +2,7 @@ package com.github.sleepypanda.feesh.utils
 
 import com.github.sleepypanda.feesh.FeeshMod
 import com.github.sleepypanda.feesh.utils.ChatUtils.getFormattedString
+import com.github.sleepypanda.feesh.utils.ChatUtils.removeFormatting
 import com.github.sleepypanda.feesh.events.EventBus
 import com.github.sleepypanda.feesh.events.models.WorldChangedEvent
 import net.minecraft.text.Text
@@ -41,24 +42,41 @@ object PlayerUtils {
     }
 
     /*
-     * Get the player's name without formatting.
+     * Get the player's name without formatting and prefixes, e.g. MoonTheSadFisher.
      * @returns {String} The player's name.
      */
     fun getName() : String? {      
         val mc = FeeshMod.mc
-        val nameText = mc.player?.name?.string ?: return null
+        val nameText = mc.player?.name?.string?.removeFormatting() ?: return null
         return nameText
     }
 
     /*
-     * Get the player's formatted name.
+     * Get the player's formatted name as [Level] Nickname Emblem, e.g. §8[§d326§8] §bMoonTheSadFisher §7α§7
      * @returns {String} The player's formatted name.
      */
-    fun getFormattedName() : String? {      
+    fun getFormattedName() : String? {
         val mc = FeeshMod.mc
         val nameText = mc.player?.getCustomName() ?: mc.player?.displayName ?: return null
         val displayName = nameText.getFormattedString()
         return displayName
+    }
+
+    /*
+     * Get the player's formatted name (e.g. §bMoonTheSadFisher) without level or other prefixes.
+     * @returns {String} The player's formatted name.
+     */
+    fun getFormattedNameWithoutPrefix() : String? {    
+        val nameText = getFormattedName() ?: return null
+        val displayName = nameText.split("] ").lastOrNull()?.split(" ")?.firstOrNull() ?: return null
+        return displayName
+    }
+
+    fun getFormattedPlayerNameFromPartyChat(playerAndRank: String) : String? { // §b[MVP§d+§b] DeadlyMetal§f: blah-blah-blah...
+        if (playerAndRank.isNullOrEmpty()) return null
+        val color = playerAndRank.substring(0, 2)
+        val nameWithoutRank = playerAndRank.split("] ").last();
+        return "${color}${nameWithoutRank}"
     }
 
     fun hasFishingRodInHotbar(): Boolean {
