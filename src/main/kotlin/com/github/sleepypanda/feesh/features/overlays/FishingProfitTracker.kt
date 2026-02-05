@@ -74,14 +74,15 @@ object FishingProfitTracker {
         var viewMode: String = ViewMode.SESSION.name
     )
 
-    private const val RESET_COMMAND = "feeshResetFishingProfit"
-    private const val RESET_TOTAL_COMMAND = "feeshResetFishingProfitTotal"
-    private const val TOGGLE_VIEW_MODE_COMMAND = "feeshToggleFishingProfitViewMode"
-    private const val PAUSE_COMMAND = "feeshPauseFishingProfit"
-    private const val SET_ITEM_COUNT_COMMAND = "feeshSetItemCountFishingProfit"
-    private const val SET_ITEM_COUNT_TOTAL_COMMAND = "feeshSetItemCountFishingProfitTotal"
-    private const val DELETE_ITEM_COMMAND = "feeshDeleteItemFishingProfit"
-    private const val DELETE_ITEM_TOTAL_COMMAND = "feeshDeleteItemFishingProfitTotal"
+    const val RESET_COMMAND = "feeshResetFishingProfit"
+    const val RESET_TOTAL_COMMAND = "feeshResetFishingProfitTotal"
+    const val PAUSE_COMMAND = "feeshPauseFishingProfit"
+
+    const val TOGGLE_VIEW_MODE_COMMAND = "feeshToggleFishingProfitViewMode"
+    const val SET_ITEM_COUNT_COMMAND = "feeshSetItemCountFishingProfit"
+    const val SET_ITEM_COUNT_TOTAL_COMMAND = "feeshSetItemCountFishingProfitTotal"
+    const val DELETE_ITEM_COMMAND = "feeshDeleteItemFishingProfit"
+    const val DELETE_ITEM_TOTAL_COMMAND = "feeshDeleteItemFishingProfitTotal"
 
     private const val TICKS_TIMER_ELAPSED_TIME = 20
     private const val TICKS_INVENTORY = 5

@@ -395,8 +395,9 @@ ${GRAY}To reset [Total]: ${WHITE}/${ArchfiendDiceProfitTracker.RESET_TOTAL_COMMA
         this.description = Translated("""
 ${GRAY}Shows an overlay with your profits you gained while fishing. This overlay has [Session] and [Total] view mode.
 ${GRAY}To count items added to your sacks, make sure to enable ${YELLOW}Skyblock Settings -> Personal -> Chat Feedback -> Sack Notifications
-${GRAY}To reset [Session]: ${WHITE}/feeshResetFishingProfit
-${GRAY}To reset [Total]: ${WHITE}/feeshResetFishingProfitTotal
+${GRAY}To reset [Session]: ${WHITE}/${FishingProfitTracker.RESET_COMMAND}
+${GRAY}To reset [Total]: ${WHITE}/${FishingProfitTracker.RESET_TOTAL_COMMAND}
+${GRAY}To pause: ${WHITE}/${FishingProfitTracker.PAUSE_COMMAND}
         """.trimIndent())
     }
 
@@ -462,10 +463,10 @@ ${GRAY}To reset [Total]: ${WHITE}/feeshResetFishingProfitTotal
             onClick {
                 ChatUtils.sendLocalChat("${WHITE}${BOLD}Fishing profit tracker commands${RESET}", true)
                 ChatUtils.sendLocalChat("\nUse these commands if you want to manually fix or import drops into the tracker:")
-                ChatUtils.sendLocalChat("  - ${WHITE}/feeshSetItemCountFishingProfit <ITEM_ID> <COUNT>${RESET} - sets item count in [Session].")
-                ChatUtils.sendLocalChat("  - ${WHITE}/feeshSetItemCountFishingProfitTotal <ITEM_ID> <COUNT>${RESET} - sets item count in [Total].")
-                ChatUtils.sendLocalChat("  - ${WHITE}/feeshDeleteItemFishingProfit <ITEM_ID>${RESET} - deletes item from [Session].")
-                ChatUtils.sendLocalChat("  - ${WHITE}/feeshDeleteItemFishingProfitTotal <ITEM_ID>${RESET} - deletes item from [Total].")
+                ChatUtils.sendLocalChat("  - ${WHITE}/${FishingProfitTracker.SET_ITEM_COUNT_COMMAND} <ITEM_ID> <COUNT>${RESET} - sets item count in [Session].")
+                ChatUtils.sendLocalChat("  - ${WHITE}/${FishingProfitTracker.SET_ITEM_COUNT_TOTAL_COMMAND} <ITEM_ID> <COUNT>${RESET} - sets item count in [Total].")
+                ChatUtils.sendLocalChat("  - ${WHITE}/${FishingProfitTracker.DELETE_ITEM_COMMAND} <ITEM_ID>${RESET} - deletes item from [Session].")
+                ChatUtils.sendLocalChat("  - ${WHITE}/${FishingProfitTracker.DELETE_ITEM_TOTAL_COMMAND} <ITEM_ID>${RESET} - deletes item from [Total].")
                 ChatUtils.sendLocalChat("\n${GRAY}<ITEM_ID>${RESET} - ID of the fishing drop (for example MAGMA_FISH, SILVER_MAGMAFISH, BABY_YETI;4, etc.).")
                 ChatUtils.sendLocalChat("${GRAY}<COUNT>${RESET} - positive integer with desired total amount of this item in the tracker.")
             }
