@@ -1,6 +1,8 @@
 package com.github.sleepypanda.feesh.utils
 
 import com.github.sleepypanda.feesh.FeeshMod
+import com.github.sleepypanda.feesh.events.EventBus
+import com.github.sleepypanda.feesh.events.models.PricesUpdatedEvent
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import java.io.BufferedReader
@@ -81,8 +83,23 @@ object PriceUtils {
     }
     
     private fun trackAllPrices() {
-        trackBazaarPrices()
-        trackAuctionPrices()
+        val bazaarFuture = trackBazaarPrices()
+        val auctionFuture = trackAuctionPrices()
+
+        // Fire a single aggregated event when at least one source updated successfully.
+        CompletableFuture.allOf(bazaarFuture, auctionFuture).thenRun {
+            val bazaarUpdated = bazaarFuture.get()
+            val auctionUpdated = auctionFuture.get()
+
+            if (bazaarUpdated || auctionUpdated) {
+                EventBus.publish(
+                    PricesUpdatedEvent(
+                        bazaarUpdated = bazaarUpdated,
+                        auctionUpdated = auctionUpdated
+                    )
+                )
+            }
+        }
     }
     
     fun getBazaarItemPrices(itemId: String?): BazaarItemPrice? {
@@ -101,10 +118,10 @@ object PriceUtils {
         }
     }
     
-    private fun trackBazaarPrices() {
-        val executor = httpExecutor ?: return
+    private fun trackBazaarPrices(): CompletableFuture<Boolean> {
+        val executor = httpExecutor ?: return CompletableFuture.completedFuture(false)
         
-        CompletableFuture.runAsync({
+        return CompletableFuture.supplyAsync({
                 try {
                     val url = URI(BAZAAR_API_URL).toURL()
                     val connection = url.openConnection() as HttpURLConnection
@@ -112,7 +129,6 @@ object PriceUtils {
                     connection.requestMethod = "GET"
                     connection.connectTimeout = REQUEST_TIMEOUT_MS
                     connection.readTimeout = REQUEST_TIMEOUT_MS
-                    //connection.setRequestProperty("User-Agent", "FeeshMod/1.0")
                     
                     val responseCode = connection.responseCode
                     if (responseCode != HttpURLConnection.HTTP_OK) {
@@ -166,16 +182,18 @@ object PriceUtils {
                     }
                     
                     FeeshMod.LOGGER.info("[Feesh] Successfully updated bazaar prices (${newPrices.size} items)")
+                    true
                 } catch (error: Exception) {
                     FeeshMod.LOGGER.error("[Feesh] Error loading bazaar data: ", error)
+                    false
                 }
             }, executor)
     }
     
-    private fun trackAuctionPrices() {
-        val executor = httpExecutor ?: return
+    private fun trackAuctionPrices(): CompletableFuture<Boolean> {
+        val executor = httpExecutor ?: return CompletableFuture.completedFuture(false)
         
-        CompletableFuture.runAsync({
+        return CompletableFuture.supplyAsync({
                 try {
                     val url = URI(AUCTION_API_URL).toURL()
                     val connection = url.openConnection() as HttpURLConnection
@@ -218,8 +236,10 @@ object PriceUtils {
                     }
                     
                     FeeshMod.LOGGER.info("[Feesh] Successfully updated auction prices (${newPrices.size} items)")
+                    true
                 } catch (error: Exception) {
                     FeeshMod.LOGGER.error("[Feesh] Error loading auctions data: ", error)
+                    false
                 }
             }, executor)
     }

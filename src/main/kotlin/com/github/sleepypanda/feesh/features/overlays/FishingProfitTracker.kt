@@ -10,6 +10,7 @@ import com.github.sleepypanda.feesh.events.models.GuiClosedEvent
 import com.github.sleepypanda.feesh.events.models.WorldChangedEvent
 import com.github.sleepypanda.feesh.events.models.PetLevelUpEvent
 import com.github.sleepypanda.feesh.events.models.SacksItemsPickupEvent
+import com.github.sleepypanda.feesh.events.models.PricesUpdatedEvent
 import com.github.sleepypanda.feesh.constants.Sounds
 import com.github.sleepypanda.feesh.settings.categories.SoundMode
 import com.github.sleepypanda.feesh.settings.categories.General
@@ -44,13 +45,9 @@ import java.util.Date
 import java.util.Timer
 import kotlin.concurrent.timerTask
 
-// Commands to add/decrease items to profit tracker - do we need them? Add guidance for usage.
-// Buttons to add/decrease items to profit tracker
-// TODO refresh if settings for price modes are changed?
-// TODO event for pickup item
+// TODO: Commands to set count in tracker - add support for level 100 pets.
 // TODO Drops counter for Rare Drop chat message
 // TODO Rely on chat message for some Rare Drops instead of pickup event?
-// BZ/AH prices updated event, to refresh total profits, instead of TICKS_PRICES
 
 object FishingProfitTracker {
     enum class ViewMode {
@@ -88,7 +85,6 @@ object FishingProfitTracker {
 
     private const val TICKS_TIMER_ELAPSED_TIME = 20
     private const val TICKS_INVENTORY = 5
-    private const val TICKS_PRICES = 20 * 60
     private const val MAX_SECONDS_SINCE_HOOK = 60 * 5
     private const val HIDE_OVERLAY_AFTER_HOOK_MINUTES = 5
 
@@ -131,6 +127,7 @@ object FishingProfitTracker {
         EventBus.subscribe(GuiClosedEvent::class, ::onGuiClosed)
         EventBus.subscribe(PetLevelUpEvent::class, ::onPetReachedMaxLevel)
         EventBus.subscribe(SacksItemsPickupEvent::class, ::onSacksItemsPickup)
+        EventBus.subscribe(PricesUpdatedEvent::class, ::onPricesUpdated)
     }
 
     private fun registerCommands() {
@@ -224,9 +221,10 @@ object FishingProfitTracker {
         if (tickCounter % TICKS_INVENTORY == 0) {
             detectInventoryChanges()
         }
-        if (tickCounter % TICKS_PRICES == 0) {
-            refreshTotalItemsProfits()
-        }
+    }
+
+    private fun onPricesUpdated(@Suppress("UNUSED_PARAMETER") event: PricesUpdatedEvent) {
+        refreshTotalItemsProfits()
     }
 
     private fun isTrackerVisible(): Boolean {

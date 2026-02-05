@@ -453,4 +453,22 @@ ${GRAY}To reset [Total]: ${WHITE}/feeshResetFishingProfitTotal
         this.name = Translated("Autoreset [Session] on closing game")
         this.description = Translated("Automatically reset the fishing profit tracker [Session] when you close Minecraft.")
     }
+
+    init {
+        button {
+            title = "Fishing profit tracker commands"
+            description = "Explains in your chat how to use manual commands to adjust items count in the Fishing profit tracker [Session] and [Total]."
+            text = "Click for help"
+            onClick {
+                ChatUtils.sendLocalChat("${WHITE}${BOLD}Fishing profit tracker commands${RESET}", true)
+                ChatUtils.sendLocalChat("\nUse these commands if you want to manually fix or import drops into the tracker:")
+                ChatUtils.sendLocalChat("  - ${WHITE}/feeshSetItemCountFishingProfit <ITEM_ID> <COUNT>${RESET} - sets item count in [Session].")
+                ChatUtils.sendLocalChat("  - ${WHITE}/feeshSetItemCountFishingProfitTotal <ITEM_ID> <COUNT>${RESET} - sets item count in [Total].")
+                ChatUtils.sendLocalChat("  - ${WHITE}/feeshDeleteItemFishingProfit <ITEM_ID>${RESET} - deletes item from [Session].")
+                ChatUtils.sendLocalChat("  - ${WHITE}/feeshDeleteItemFishingProfitTotal <ITEM_ID>${RESET} - deletes item from [Total].")
+                ChatUtils.sendLocalChat("\n${GRAY}<ITEM_ID>${RESET} - ID of the fishing drop (for example MAGMA_FISH, SILVER_MAGMAFISH, etc.).")
+                ChatUtils.sendLocalChat("${GRAY}<COUNT>${RESET} - positive integer with desired total amount of this item in the tracker.")
+            }
+        }
+    }
 }
