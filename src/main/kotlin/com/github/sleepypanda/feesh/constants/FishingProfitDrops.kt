@@ -3,24 +3,24 @@ package com.github.sleepypanda.feesh.constants
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
 
+data class SalvageableItemInfo(
+    val essenceItemId: String,
+    val essenceCount: Int
+)
+
+data class FishingProfitDropInfo(
+    val itemId: String, // Item ID aligned with IDs in Bazaar/Auction APIs
+    val itemName: String, // Unformatted item name
+    val itemAlternateNames: List<String> = listOf(), // Alternate names for the item, to support some popular renamings by mods
+    val itemDisplayName: String, // Formatted item name
+    val npcPrice: Double?,
+    val shouldAnnounceRareDrop: Boolean = false, // If the item should be announced as a rare drop in player's chat (for valuable drops which have no standart RARE DROP! message from Hypixel)
+    val amountOfMagmaFish: Int? = null, // Amount of Magma Fish to exchange a Trophy Fish at Odger
+    val salvage: SalvageableItemInfo? = null // Item to salvage into essence items
+)
+
 class FishingProfitDrops {
     companion object {
-        data class SalvageableItemInfo(
-            val essenceItemId: String,
-            val essenceCount: Int
-        )
-
-        data class FishingProfitDropInfo(
-            val itemId: String, // Item ID aligned with IDs in Bazaar/Auction APIs
-            val itemName: String, // Unformatted item name
-            val itemAlternateNames: List<String> = listOf(), // Alternate names for the item, to support some popular renamings by mods
-            val itemDisplayName: String, // Formatted item name
-            val npcPrice: Double?,
-            val shouldAnnounceRareDrop: Boolean = false, // If the item should be announced as a rare drop in player's chat (for valuable drops which have no standart RARE DROP! message from Hypixel)
-            val amountOfMagmaFish: Int? = null, // Amount of Magma Fish to exchange a Trophy Fish at Odger
-            val salvage: SalvageableItemInfo? = null // Item to salvage into essence items
-        )
-
         val items = listOf(
             // Dyes
             
@@ -198,31 +198,31 @@ class FishingProfitDrops {
             FishingProfitDropInfo(
                 itemId = "SQUID;0",
                 itemName = "[Lvl 1] Squid (COMMON)",
-                itemDisplayName = "${COMMON}Squid",
+                itemDisplayName = "${GRAY}[Lvl 1] ${COMMON}Squid",
                 npcPrice = 100.0,
             ),
             FishingProfitDropInfo(
                 itemId = "SQUID;1",
                 itemName = "[Lvl 1] Squid (UNCOMMON)",
-                itemDisplayName = "${UNCOMMON}Squid",
+                itemDisplayName = "${GRAY}[Lvl 1] ${UNCOMMON}Squid",
                 npcPrice = 500.0,
             ),
             FishingProfitDropInfo(
                 itemId = "SQUID;2",
                 itemName = "[Lvl 1] Squid (RARE)",
-                itemDisplayName = "${RARE}Squid",
+                itemDisplayName = "${GRAY}[Lvl 1] ${RARE}Squid",
                 npcPrice = 100_000.0,
             ),
             FishingProfitDropInfo(
                 itemId = "SQUID;3",
                 itemName = "[Lvl 1] Squid (EPIC)",
-                itemDisplayName = "${EPIC}Squid",
+                itemDisplayName = "${GRAY}[Lvl 1] ${EPIC}Squid",
                 npcPrice = 200_000.0,
             ),
             FishingProfitDropInfo(
                 itemId = "SQUID;4",
                 itemName = "[Lvl 1] Squid (LEGENDARY)",
-                itemDisplayName = "${LEGENDARY}Squid",
+                itemDisplayName = "${GRAY}[Lvl 1] ${LEGENDARY}Squid",
                 npcPrice = 500_000.0,
             ),
             FishingProfitDropInfo(
@@ -1111,21 +1111,21 @@ class FishingProfitDrops {
             FishingProfitDropInfo(
                 itemId = "FLYING_FISH;2",
                 itemName = "[Lvl 1] Flying Fish (RARE)",
-                itemDisplayName = "${RARE}Flying Fish",
+                itemDisplayName = "${GRAY}[Lvl 1] ${RARE}Flying Fish",
                 npcPrice = 1_000.0,
                 shouldAnnounceRareDrop = true,
             ),
             FishingProfitDropInfo(
                 itemId = "FLYING_FISH;3",
                 itemName = "[Lvl 1] Flying Fish (EPIC)",
-                itemDisplayName = "${EPIC}Flying Fish",
+                itemDisplayName = "${GRAY}[Lvl 1] ${EPIC}Flying Fish",
                 npcPrice = 100_000.0,
                 shouldAnnounceRareDrop = true,
             ),
             FishingProfitDropInfo(
                 itemId = "FLYING_FISH;4",
                 itemName = "[Lvl 1] Flying Fish (LEGENDARY)",
-                itemDisplayName = "${LEGENDARY}Flying Fish",
+                itemDisplayName = "${GRAY}[Lvl 1] ${LEGENDARY}Flying Fish",
                 npcPrice = 250_000.0,
             ),
 
@@ -1864,14 +1864,14 @@ class FishingProfitDrops {
             FishingProfitDropInfo(
                 itemId = "BABY_YETI;3",
                 itemName = "[Lvl 1] Baby Yeti (EPIC)",
-                itemDisplayName = "${EPIC}Baby Yeti",
+                itemDisplayName = "${GRAY}[Lvl 1] ${EPIC}Baby Yeti",
                 npcPrice = 10_000.0,
                 shouldAnnounceRareDrop = true,
             ),
             FishingProfitDropInfo(
                 itemId = "BABY_YETI;4",
                 itemName = "[Lvl 1] Baby Yeti (LEGENDARY)",
-                itemDisplayName = "${LEGENDARY}Baby Yeti",
+                itemDisplayName = "${GRAY}[Lvl 1] ${LEGENDARY}Baby Yeti",
                 npcPrice = 1_000_000.0,
             ),
 
@@ -1911,13 +1911,13 @@ class FishingProfitDrops {
             FishingProfitDropInfo(
                 itemId = "MEGALODON;3",
                 itemName = "[Lvl 1] Megalodon (EPIC)",
-                itemDisplayName = "${EPIC}Megalodon",
+                itemDisplayName = "${GRAY}[Lvl 1] ${EPIC}Megalodon",
                 npcPrice = 500_000.0,
             ),
             FishingProfitDropInfo(
                 itemId = "MEGALODON;4",
                 itemName = "[Lvl 1] Megalodon (LEGENDARY)",
-                itemDisplayName = "${LEGENDARY}Megalodon",
+                itemDisplayName = "${GRAY}[Lvl 1] ${LEGENDARY}Megalodon",
                 npcPrice = 2_500_000.0,
             ),
 
@@ -1956,85 +1956,85 @@ class FishingProfitDrops {
 
             FishingProfitDropInfo(
                 itemId = "OBFUSCATED_FISH_1_BRONZE",
-                itemName = "Obfuscated 1 BRONZE",
-                itemDisplayName = "${COMMON}${OBFUSCATED}Obfuscated 1 ${DARK_GRAY}${BOLD} BRONZE",
+                itemName = "Obfuscated-1 BRONZE",
+                itemDisplayName = "${COMMON}${OBFUSCATED}Obfuscated-1 ${DARK_GRAY}${BOLD} BRONZE",
                 npcPrice = null,
                 amountOfMagmaFish = 16,
             ),
             FishingProfitDropInfo(
                 itemId = "OBFUSCATED_FISH_1_SILVER",
-                itemName = "Obfuscated 1 SILVER",
-                itemDisplayName = "${COMMON}${OBFUSCATED}Obfuscated 1 ${GRAY}${BOLD} SILVER",
+                itemName = "Obfuscated-1 SILVER",
+                itemDisplayName = "${COMMON}${OBFUSCATED}Obfuscated-1 ${GRAY}${BOLD} SILVER",
                 npcPrice = null,
                 amountOfMagmaFish = 24,
             ),
             FishingProfitDropInfo(
                 itemId = "OBFUSCATED_FISH_1_GOLD",
-                itemName = "Obfuscated 1 GOLD",
-                itemDisplayName = "${COMMON}${OBFUSCATED}Obfuscated 1 ${GOLD}${BOLD} GOLD",
+                itemName = "Obfuscated-1 GOLD",
+                itemDisplayName = "${COMMON}${OBFUSCATED}Obfuscated-1 ${GOLD}${BOLD} GOLD",
                 npcPrice = null,
                 amountOfMagmaFish = 32,
             ),
             FishingProfitDropInfo(
                 itemId = "OBFUSCATED_FISH_1_DIAMOND",
-                itemName = "Obfuscated 1 DIAMOND",
-                itemDisplayName = "${COMMON}${OBFUSCATED}Obfuscated 1 ${AQUA}${BOLD} DIAMOND",
+                itemName = "Obfuscated-1 DIAMOND",
+                itemDisplayName = "${COMMON}${OBFUSCATED}Obfuscated-1 ${AQUA}${BOLD} DIAMOND",
                 npcPrice = null,
                 amountOfMagmaFish = 48,
             ),
             FishingProfitDropInfo(
                 itemId = "OBFUSCATED_FISH_2_BRONZE",
-                itemName = "Obfuscated 2 BRONZE",
-                itemDisplayName = "${UNCOMMON}${OBFUSCATED}Obfuscated 2 ${DARK_GRAY}${BOLD} BRONZE",
+                itemName = "Obfuscated-2 BRONZE",
+                itemDisplayName = "${UNCOMMON}${OBFUSCATED}Obfuscated-2 ${DARK_GRAY}${BOLD} BRONZE",
                 npcPrice = null,
                 amountOfMagmaFish = 40,
             ),
             FishingProfitDropInfo(
                 itemId = "OBFUSCATED_FISH_2_SILVER",
-                itemName = "Obfuscated 2 SILVER",
-                itemDisplayName = "${UNCOMMON}${OBFUSCATED}Obfuscated 2 ${GRAY}${BOLD} SILVER",
+                itemName = "Obfuscated-2 SILVER",
+                itemDisplayName = "${UNCOMMON}${OBFUSCATED}Obfuscated-2 ${GRAY}${BOLD} SILVER",
                 npcPrice = null,
                 amountOfMagmaFish = 60,
             ),
             FishingProfitDropInfo(
                 itemId = "OBFUSCATED_FISH_2_GOLD",
-                itemName = "Obfuscated 2 GOLD",
-                itemDisplayName = "${UNCOMMON}${OBFUSCATED}Obfuscated 2 ${GOLD}${BOLD} GOLD",
+                itemName = "Obfuscated-2 GOLD",
+                itemDisplayName = "${UNCOMMON}${OBFUSCATED}Obfuscated-2 ${GOLD}${BOLD} GOLD",
                 npcPrice = null,
                 amountOfMagmaFish = 80,
             ),
             FishingProfitDropInfo(
                 itemId = "OBFUSCATED_FISH_2_DIAMOND",
-                itemName = "Obfuscated 2 DIAMOND",
-                itemDisplayName = "${UNCOMMON}${OBFUSCATED}Obfuscated 2 ${AQUA}${BOLD} DIAMOND",
+                itemName = "Obfuscated-2 DIAMOND",
+                itemDisplayName = "${UNCOMMON}${OBFUSCATED}Obfuscated-2 ${AQUA}${BOLD} DIAMOND",
                 npcPrice = null,
                 amountOfMagmaFish = 120,
             ),
             FishingProfitDropInfo(
                 itemId = "OBFUSCATED_FISH_3_BRONZE",
-                itemName = "Obfuscated 3 BRONZE",
-                itemDisplayName = "${RARE}${OBFUSCATED}Obfuscated 3 ${DARK_GRAY}${BOLD} BRONZE",
+                itemName = "Obfuscated-3 BRONZE",
+                itemDisplayName = "${RARE}${OBFUSCATED}Obfuscated-3 ${DARK_GRAY}${BOLD} BRONZE",
                 npcPrice = null,
                 amountOfMagmaFish = 400,
             ),
             FishingProfitDropInfo(
                 itemId = "OBFUSCATED_FISH_3_SILVER",
-                itemName = "Obfuscated 3 SILVER",
-                itemDisplayName = "${RARE}${OBFUSCATED}Obfuscated 3 ${GRAY}${BOLD} SILVER",
+                itemName = "Obfuscated-3 SILVER",
+                itemDisplayName = "${RARE}${OBFUSCATED}Obfuscated-3 ${GRAY}${BOLD} SILVER",
                 npcPrice = null,
                 amountOfMagmaFish = 700,
             ),
             FishingProfitDropInfo(
                 itemId = "OBFUSCATED_FISH_3_GOLD",
-                itemName = "Obfuscated 3 GOLD",
-                itemDisplayName = "${RARE}${OBFUSCATED}Obfuscated 3 ${GOLD}${BOLD} GOLD",
+                itemName = "Obfuscated-3 GOLD",
+                itemDisplayName = "${RARE}${OBFUSCATED}Obfuscated-3 ${GOLD}${BOLD} GOLD",
                 npcPrice = null,
                 amountOfMagmaFish = 1000,
             ),
             FishingProfitDropInfo(
                 itemId = "OBFUSCATED_FISH_3_DIAMOND",
-                itemName = "Obfuscated 3 DIAMOND",
-                itemDisplayName = "${RARE}${OBFUSCATED}Obfuscated 3 ${AQUA}${BOLD} DIAMOND",
+                itemName = "Obfuscated-3 DIAMOND",
+                itemDisplayName = "${RARE}${OBFUSCATED}Obfuscated-3 ${AQUA}${BOLD} DIAMOND",
                 npcPrice = null,
                 amountOfMagmaFish = 1300,
             ),

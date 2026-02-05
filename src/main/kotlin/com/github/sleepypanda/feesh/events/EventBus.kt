@@ -8,7 +8,6 @@ import com.github.sleepypanda.feesh.events.models.GameClosedEvent
 import com.github.sleepypanda.feesh.events.models.GameStartedEvent
 import com.github.sleepypanda.feesh.events.models.GuiClosedEvent
 import com.github.sleepypanda.feesh.events.models.ItemEntitySpawnedEvent
-import com.github.sleepypanda.feesh.events.models.ScreenPostRenderEvent
 import com.github.sleepypanda.feesh.events.models.WorldChangedEvent
 import kotlin.reflect.KClass
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientWorldEvents
@@ -53,11 +52,7 @@ object EventBus {
             !event.isCancelled
         }
 
-        ScreenEvents.AFTER_INIT.register { client, screen, _, _ ->
-            ScreenEvents.afterRender(screen).register { afterRenderScreen, drawContext, mouseX, mouseY, tickDelta ->
-                publish(ScreenPostRenderEvent(drawContext, client.textRenderer, client, afterRenderScreen, mouseX, mouseY, tickDelta))
-            }
-
+        ScreenEvents.AFTER_INIT.register { _, screen, _, _ ->
             ScreenEvents.remove(screen).register {
                 val guiName = when (screen) {
                     is ChatScreen -> "Chat"

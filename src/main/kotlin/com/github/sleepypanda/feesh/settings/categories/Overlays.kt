@@ -6,15 +6,13 @@ import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
 import com.github.sleepypanda.feesh.utils.enums.DeployableTypes
 import com.github.sleepypanda.feesh.utils.enums.PricingModeWithNpc
 import com.github.sleepypanda.feesh.utils.ChatUtils
-import com.teamresourceful.resourcefulconfig.api.annotations.Category
-import com.teamresourceful.resourcefulconfig.api.annotations.Comment
-import com.teamresourceful.resourcefulconfig.api.annotations.ConfigEntry
-import com.teamresourceful.resourcefulconfig.api.types.options.EntryType
+import com.teamresourceful.resourcefulconfigkt.api.ObservableEntry
 import com.teamresourceful.resourcefulconfigkt.api.CategoryKt
 import com.github.sleepypanda.feesh.features.commands.PauseAllTrackersCommand
 import com.github.sleepypanda.feesh.features.commands.SetTrackerDropsCommand
 import com.github.sleepypanda.feesh.features.overlays.ArchfiendDiceProfitTracker
 import com.github.sleepypanda.feesh.features.overlays.BarnFishingTimer
+import com.github.sleepypanda.feesh.features.overlays.FishingProfitTracker
 import com.github.sleepypanda.feesh.features.overlays.CrimsonIsleTracker
 import com.github.sleepypanda.feesh.features.overlays.JerryWorkshopTracker
 import com.github.sleepypanda.feesh.features.overlays.SeaCreaturesPerHourTracker
@@ -384,5 +382,94 @@ ${GRAY}To reset [Total]: ${WHITE}/${ArchfiendDiceProfitTracker.RESET_TOTAL_COMMA
     var resetArchfiendDiceProfitTrackerSessionOnGameClosed by boolean(true) {
         this.name = Translated("Autoreset [Session] on closing game")
         this.description = Translated("Automatically reset the Archfiend Dice profit tracker [Session] when you close Minecraft.")
+    }
+
+    init {
+        separator {
+            this.title = "${AQUA}${BOLD}Fishing profit"
+        }
+    }
+
+    var fishingProfitTrackerOverlay by boolean(false) {
+        this.name = Translated("Fishing profit tracker")
+        this.description = Translated("""
+${GRAY}Shows an overlay with your profits you gained while fishing. This overlay has [Session] and [Total] view mode.
+${GRAY}To count items added to your sacks, make sure to enable ${YELLOW}Skyblock Settings -> Personal -> Chat Feedback -> Sack Notifications
+${GRAY}To reset [Session]: ${WHITE}/${FishingProfitTracker.RESET_COMMAND}
+${GRAY}To reset [Total]: ${WHITE}/${FishingProfitTracker.RESET_TOTAL_COMMAND}
+${GRAY}To pause: ${WHITE}/${FishingProfitTracker.PAUSE_COMMAND}
+        """.trimIndent())
+    }
+
+    var fishingProfitTrackerPriceMode by ObservableEntry(
+        enum(PricingModeWithNpc.SELL_OFFER) {
+            this.name = Translated("Price mode")
+            this.description = Translated("How to calculate prices for the dropped items in the Fishing profit tracker.")
+        }
+    ) { prev, new ->
+        if (prev != new) {
+            FishingProfitTracker.refreshTotalItemsProfits()
+        }
+    }
+    
+    var calculateProfitInCrimsonEssence by ObservableEntry(
+        boolean(false) {
+            this.name = Translated("Show profits in Crimson Essence when applicable")
+            this.description = Translated("Calculate price in Crimson Essence for salvageable crimson fishing items e.g. Slug Boots, Moogma Leggings, Flaming Chestplate, Blade of the Volcano, Staff of the Volcano.")
+        }
+    ) { prev, new ->
+        if (prev != new) {
+            FishingProfitTracker.refreshTotalItemsProfits()
+        }
+    }
+
+    var fishingProfitTrackerHideCheaperThan by int(1_000_000) {
+        this.name = Translated("Hide cheap items [Session]")
+        this.description = Translated("Items which are cheaper than the specified threshold in coins will be hidden in the fishing profit tracker [Session]. They will be grouped under 'Cheap items' section. Set to 0 to show all items.")
+    }
+
+    var fishingProfitTrackerHideCheaperThanTotal by int(1_000_000) {
+        this.name = Translated("Hide cheap items [Total]")
+        this.description = Translated("Items which are cheaper than the specified threshold in coins will be hidden in the fishing profit tracker [Total]. They will be grouped under 'Cheap items' section. Set to 0 to show all items.")
+    }
+
+    var fishingProfitTrackerShowTop by int(15) {
+        this.name = Translated("Maximum lines count")
+        this.description = Translated("Show top N lines for the most expensive items. Other cheaper items will be grouped under 'Cheap items' section. This works on top of 'Hide cheap items' setting.")
+        this.range = 1..50
+        this.slider = true
+    }
+
+    var shouldAnnounceRareDropsWhenPickup by boolean(true) {
+        this.name = Translated("Announce rare drops")
+        this.description = Translated("Send RARE DROP! message to player's chat when a rare item is added to the fishing profit tracker (for relatively rare items that have no RARE DROP! message from Hypixel by default).")
+    }
+
+    var shouldHideTimerInTotal by boolean(false) {
+        this.name = Translated("Hide timer and coins/h in [Total] view")
+        this.description = Translated("Hide timer and coins/h in the fishing profit tracker [Total] view. Useful if you want to add past drops to the tracker but do not know the elapsed time.")
+    }
+
+    var resetFishingProfitTrackerOnGameClosed by boolean(true) {
+        this.name = Translated("Autoreset [Session] on closing game")
+        this.description = Translated("Automatically reset the fishing profit tracker [Session] when you close Minecraft.")
+    }
+
+    init {
+        button {
+            title = "Fishing profit tracker commands"
+            description = "Explains in your chat how to use manual commands to adjust items count in the Fishing profit tracker [Session] and [Total]."
+            text = "Click for help"
+            onClick {
+                ChatUtils.sendLocalChat("${WHITE}${BOLD}Fishing profit tracker commands${RESET}", true)
+                ChatUtils.sendLocalChat("\nUse these commands if you want to manually fix or import drops into the tracker:")
+                ChatUtils.sendLocalChat("  - ${WHITE}/${FishingProfitTracker.SET_ITEM_COUNT_COMMAND} <ITEM_ID> <COUNT>${RESET} - sets item count in [Session].")
+                ChatUtils.sendLocalChat("  - ${WHITE}/${FishingProfitTracker.SET_ITEM_COUNT_TOTAL_COMMAND} <ITEM_ID> <COUNT>${RESET} - sets item count in [Total].")
+                ChatUtils.sendLocalChat("  - ${WHITE}/${FishingProfitTracker.DELETE_ITEM_COMMAND} <ITEM_ID>${RESET} - deletes item from [Session].")
+                ChatUtils.sendLocalChat("  - ${WHITE}/${FishingProfitTracker.DELETE_ITEM_TOTAL_COMMAND} <ITEM_ID>${RESET} - deletes item from [Total].")
+                ChatUtils.sendLocalChat("\n${GRAY}<ITEM_ID>${RESET} - ID of the fishing drop (for example MAGMA_FISH, SILVER_MAGMAFISH, BABY_YETI;4, etc.).")
+                ChatUtils.sendLocalChat("${GRAY}<COUNT>${RESET} - positive integer with desired total amount of this item in the tracker.")
+            }
+        }
     }
 }
