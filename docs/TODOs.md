@@ -20,9 +20,10 @@ Make sure newly added values in the dropdowns are selected if needed. E.g. if I 
 
 Make sure old file from CT module can be moved to the mod with minor data loss.
 
-## Player death alert
+## Alerts
 
-Death sound is not played. :c Probably because player's world is not loaded while they go to spawn on death.
+- Player Death sound is not played. :c Probably because player's world is not loaded while they go to spawn on death.
+- Rare Drop Notifications counter for pchat
 
 ## Sounds
 
