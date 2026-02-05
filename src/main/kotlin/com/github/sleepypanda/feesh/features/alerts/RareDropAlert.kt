@@ -34,7 +34,7 @@ object RareDropAlert {
         if (!WorldUtils.isInSkyblock() || !Alerts.alertOnRareDrops) return
 
         val itemName = event.itemName
-        val playerName = PlayerUtils.getFormattedName() ?: return
+        val playerName = PlayerUtils.getFormattedNameWithoutPrefix() ?: return
 
         showAlert(itemName, playerName)
     }
@@ -49,9 +49,9 @@ object RareDropAlert {
         val match = FEESH_PCHAT_PATTERN.matchEntire(message) ?: return
         val itemName = match.groups.get("itemName")?.value ?: return
 
-        val me = PlayerUtils.getName() ?: ""
-        val playerName = event.rankAndPlayer
-        if (!playerName.isNullOrEmpty() && !me.isNullOrEmpty() && playerName.removeFormatting().contains(me, ignoreCase = true)) return
+        val me = PlayerUtils.getName() ?: return
+        val playerName = PlayerUtils.getFormattedPlayerNameFromPartyChat(event.rankAndPlayer) ?: return
+        if (!playerName.isNullOrEmpty() && !me.isNullOrEmpty() && playerName.removeFormatting().contains(me)) return
 
         showAlert(itemName, playerName)
     }

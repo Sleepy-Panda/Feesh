@@ -20,9 +20,10 @@ Make sure newly added values in the dropdowns are selected if needed. E.g. if I 
 
 Make sure old file from CT module can be moved to the mod with minor data loss.
 
-## Player death alert
+## Alerts
 
-Death sound is not played. :c Probably because player's world is not loaded while they go to spawn on death.
+- Player Death sound is not played. :c Probably because player's world is not loaded while they go to spawn on death.
+- Rare Drop Notifications counter for pchat
 
 ## Sounds
 
@@ -33,6 +34,7 @@ Death sound is not played. :c Probably because player's world is not loaded whil
 - Hide timer/profit per hour for Total using setting
 - Make lines clickable for Reset/Pause/etc
 - Remove command hint from overlays, add buttons to sample overlays in /feeshMoveAllGuis
-- Check that it works fine after loading the module without coords file
+- Refactor logic which counts ticks in each overlay
+- Check that it works fine after loading the module without coords file, without data file
 - Use Center alignment as default for some widgets
 - Check if "0" key works for numpad in /feeshMoveAllGuis
