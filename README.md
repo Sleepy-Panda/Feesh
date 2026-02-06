@@ -4,9 +4,6 @@
 
 This mod is an evolution of [FeeshNotifier ChatTriggers module](https://chattriggers.com/modules/v/FeeshNotifier) made for earlier MC versions.
 
-**THIS MOD IS IN EARLY DEVELOPMENT STAGE!** It's not assumed to be widely used yet, due to incomplete / not well tested features.
-Once it's ready for beta, I plan to publish it on Modrinth.
-
 ## Table of Contents
 
 - [Releases](#releases)
@@ -17,11 +14,11 @@ Once it's ready for beta, I plan to publish it on Modrinth.
 
 ## Releases
 
-[Modrinth](https://modrinth.com/project/feesh) - nothing to see there yet
+[Modrinth](https://modrinth.com/project/feesh)
 
 ### Pre-releases
 
-If you want access to pre-releases, Github automatically builds every version pushed to develop branch. They can be found in Actions - (select latest action) - Artifacts - find attached `.zip` which contains `.jar` file(s).
+If you want access to pre-releases, Github automatically builds every version pushed to `develop` branch. They can be found in Actions - (select latest action) - Artifacts - find attached `.zip` which contains `.jar` file(s).
 
 ## Dependencies
 
