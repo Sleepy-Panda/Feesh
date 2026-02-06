@@ -12,6 +12,7 @@ import com.github.sleepypanda.feesh.events.models.PetLevelUpEvent
 import com.github.sleepypanda.feesh.events.models.SacksItemsPickupEvent
 import com.github.sleepypanda.feesh.events.models.PricesUpdatedEvent
 import com.github.sleepypanda.feesh.constants.Sounds
+import com.github.sleepypanda.feesh.features.chat.RareDropMessage
 import com.github.sleepypanda.feesh.settings.categories.SoundMode
 import com.github.sleepypanda.feesh.settings.categories.General
 import com.github.sleepypanda.feesh.settings.categories.Overlays
@@ -878,8 +879,10 @@ object FishingProfitTracker {
     }
 
     private fun resetSession() {
-        data.session = FishingProfitSourceData()
+        data.session = FishingProfitSourceData()        
         saveData()
+
+        RareDropMessage.reset() // TODO Make them not dependent
     }
 
     private fun resetTotal() {

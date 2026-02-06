@@ -7,6 +7,7 @@ import com.github.sleepypanda.feesh.features.overlays.WaterHotspotsAndBayouTrack
 import com.github.sleepypanda.feesh.features.overlays.CrimsonIsleTracker
 import com.github.sleepypanda.feesh.features.overlays.ArchfiendDiceProfitTracker
 import com.github.sleepypanda.feesh.features.overlays.FishingProfitTracker
+import com.github.sleepypanda.feesh.features.chat.RareDropMessage
 
 data class FeeshData(
     var isWelcomeMessageShown: Boolean = false,
@@ -19,4 +20,5 @@ data class FeeshData(
     val crimsonIsle: CrimsonIsleTracker.CrimsonIsleTrackerData = CrimsonIsleTracker.CrimsonIsleTrackerData(),
     val archfiendDiceProfit: ArchfiendDiceProfitTracker.ArchfiendDiceProfitData = ArchfiendDiceProfitTracker.ArchfiendDiceProfitData(),
     val fishingProfit: FishingProfitTracker.FishingProfitData = FishingProfitTracker.FishingProfitData(),
+    val rareDropNotifications: RareDropMessage.RareDropNotificationsData = RareDropMessage.RareDropNotificationsData(),
 )

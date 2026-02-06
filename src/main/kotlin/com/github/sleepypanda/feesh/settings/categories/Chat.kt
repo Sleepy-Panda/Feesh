@@ -70,6 +70,11 @@ object Chat : CategoryKt("Chat") {
         this.name = Translated("Select rare drops to share to the PARTY chat")
     }
 
+    var includeDropNumberIntoDropMessage by boolean(true) {
+        this.name = Translated("Include drop number")
+        this.description = Translated("${GRAY}Send the drop's ordinal number for the current session in the party chat message..\n${RED}Requires Fishing Profit Tracker to be enabled! ${GRAY}Drop numbers are reset when Fishing Profit Tracker is reset.")
+    }
+
     var includeMagicFindIntoRareDropMessage by boolean(true) {
         this.name = Translated("Include Magic Find")
         this.description = Translated("Send the drop's ✯ Magic Find value as part of the party chat message.")
