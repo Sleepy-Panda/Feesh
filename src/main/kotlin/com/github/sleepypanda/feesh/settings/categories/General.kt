@@ -7,6 +7,7 @@ import com.teamresourceful.resourcefulconfig.api.annotations.Comment
 import com.teamresourceful.resourcefulconfig.api.annotations.ConfigEntry
 import com.teamresourceful.resourcefulconfig.api.types.options.EntryType
 import com.teamresourceful.resourcefulconfigkt.api.CategoryKt
+import net.minecraft.util.Util
 
 enum class SoundMode(val displayName: String) {
     MEME("Meme"),
@@ -26,5 +27,16 @@ object General : CategoryKt("General") {
     var soundMode by enum(SoundMode.MEME) {
         this.name = Translated("Sound mode")
         this.description = Translated("Setups the sound mode for the mod. Meme mode plays meme sounds (customizable), Normal mode plays default MC sounds, Off mode disables all sounds.")
+    }
+
+    init {
+        button {
+            title = "Custom sounds guide"
+            description = "Opens the guide for setting up custom sounds for Meme sound mode."
+            text = "Open"
+            onClick {
+                Util.getOperatingSystem().open("https://github.com/Sleepy-Panda/Feesh/blob/develop/docs/Custom%20sounds%20guide.md")
+            }
+        }
     }
 }
