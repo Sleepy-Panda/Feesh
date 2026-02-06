@@ -21,11 +21,6 @@ Make sure old file from CT module can be moved to the mod with minor data loss.
 ## Alerts
 
 - Player Death sound is not played. :c Probably because player's world is not loaded while they go to spawn on death.
-- Rare Drop Notifications counter for pchat
-
-## Sounds
-
-- Custom sounds setup by user.
 
 ## Overlays
 

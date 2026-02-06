@@ -6,6 +6,7 @@ import com.github.sleepypanda.feesh.settings.categories.Alerts
 import com.github.sleepypanda.feesh.settings.categories.Chat
 import com.github.sleepypanda.feesh.settings.categories.Overlays
 import com.github.sleepypanda.feesh.settings.categories.Commands
+import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.teamresourceful.resourcefulconfig.api.types.options.TranslatableValue
 import com.teamresourceful.resourcefulconfigkt.api.ConfigKt
 import net.minecraft.util.Util
@@ -18,7 +19,7 @@ object Settings : ConfigKt("${FeeshMod.MOD_ID}/config") {
     init {
         separator {
             title = "Welcome to ${FeeshMod.MOD_NAME}!"
-            description = "Fishing enhancements mod for Hypixel Skyblock. From MoonTheSadFisher with ❤"
+            description = "${GRAY}Fishing enhancements mod for Hypixel Skyblock. From ${AQUA}MoonTheSadFisher ${GRAY}with ${RED}❤"
         }
         
         button {
@@ -32,11 +33,18 @@ object Settings : ConfigKt("${FeeshMod.MOD_ID}/config") {
 
         button {
             title = "GitHub"
-            description = "Find source code, latest release notes, docs and README here."
+            description = "Find source code, docs and report issues/suggestions/feedback here."
             text = "Open"
             onClick {
                 openLink("https://github.com/Sleepy-Panda/Feesh")
             }
+        }
+
+        button {
+            title = "Discord"
+            description = "m00nlight_sky - contact me if you have any questions, feedback, or suggestions."
+            text = "Button does nothing"
+            onClick { }
         }
 
         // Settings categories
