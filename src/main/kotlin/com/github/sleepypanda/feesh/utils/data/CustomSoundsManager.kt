@@ -4,7 +4,11 @@ import com.github.sleepypanda.feesh.FeeshMod
 import com.github.sleepypanda.feesh.constants.RareDrops
 import com.github.sleepypanda.feesh.constants.SeaCreatures
 import com.github.sleepypanda.feesh.constants.Sounds
+import com.github.sleepypanda.feesh.utils.RegisterUtils
 import com.github.sleepypanda.feesh.utils.FileUtils
+import com.github.sleepypanda.feesh.utils.ChatUtils
+import com.github.sleepypanda.feesh.utils.PlayerUtils
+import com.github.sleepypanda.feesh.utils.SoundUtils
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
@@ -23,6 +27,8 @@ data class UserDropSoundData(
 )
 
 object CustomSoundsManager {
+    val GENERATE_SOUNDS_RESOURCE_PACK_COMMAND = "feeshGenerateSoundsResourcePack"
+
     private val configDir: File = FabricLoader.getInstance().configDir.toFile() // MC/config
     private val feeshConfigDir: File = File(configDir, FeeshMod.MOD_ID) // MC/config/feesh
 
@@ -48,7 +54,14 @@ object CustomSoundsManager {
     fun init() {
         initUserCatchSoundsData()
         initUserDropSoundsData()
-        //initResourcePackStructure() // Custom user sounds resource pack structure
+        initResourcePackStructure() // Custom user sounds resource pack structure
+        registerCommands()
+    }
+
+    private fun registerCommands() {
+        RegisterUtils.command(GENERATE_SOUNDS_RESOURCE_PACK_COMMAND) {
+            generateSoundsJsonFromFiles()
+        }
     }
 
     private fun initUserCatchSoundsData() {
@@ -149,6 +162,11 @@ object CustomSoundsManager {
     
     private fun initResourcePackStructure() {
         try {
+            if (resourcePackSoundsDir.exists()) {
+                FeeshMod.LOGGER.error("[Feesh] Resource pack sounds directory already exists. Skipping initialization.")
+                return
+            }
+
             resourcePackSoundsDir.mkdirs()
             // 69.0 for 1.21.10
             // 75.0 for 1.21.11
@@ -156,20 +174,20 @@ object CustomSoundsManager {
             val packFormat = SharedConstants.getGameVersion().packVersion(ResourceType.CLIENT_RESOURCES)
             
             if (!resourcePackMcmetaFile.exists()) {
-                val packMcmetaContent = """{
+                val packMcmetaContent = """
+{
     "pack": {
         "pack_format": ${packFormat},
-        "description": "Feesh Custom Sounds"
+        "min_format": 65,
+        "max_format": 999,
+        "description": "Custom sounds for Feesh mod"
     }
 }
 """
                 resourcePackMcmetaFile.writeText(packMcmetaContent)
                 FeeshMod.LOGGER.info("[Feesh] Created pack.mcmeta in resource pack directory")
             }
-            
-            // Automatically generate sounds.json from all .ogg files in the sounds directory
-            generateSoundsJsonFromFiles()
-            
+                   
             if (resourcePackDir.exists()) {
                 FeeshMod.LOGGER.info("[Feesh] Resource pack directory ready: ${resourcePackDir.absolutePath}")
             }
@@ -178,9 +196,10 @@ object CustomSoundsManager {
         }
     }
     
-    private fun generateSoundsJsonFromFiles() {
+    fun generateSoundsJsonFromFiles() {
         try {
             if (!resourcePackSoundsDir.exists()) {
+                ChatUtils.sendLocalChat("Resource pack sounds directory does not exist. Please create it and add your .ogg files to it.", true)
                 return
             }
             
@@ -201,8 +220,8 @@ object CustomSoundsManager {
             oggFiles.forEach { file ->
                 val soundName = file.name.removeSuffix(".ogg")
                 soundsMap[soundName] = mapOf(
-                    "sounds" to listOf("feeshcustom:$soundName"),
-                    "subtitle" to "Feesh custom sound"
+                    "sounds" to listOf("${SoundUtils.SOUNDS_IDENTIFIER_PREFIX}:$soundName"),
+                    "subtitle" to "Feesh custom sound: ${soundName}"
                 )
             }
             
@@ -210,7 +229,7 @@ object CustomSoundsManager {
             resourcePackSoundsJsonFile.parentFile?.mkdirs()
             resourcePackSoundsJsonFile.writeText(json)
             
-            FeeshMod.LOGGER.info("[Feesh] Generated sounds.json with ${oggFiles.size} sound entries")
+            ChatUtils.sendLocalChat("Generated sounds.json with ${oggFiles.size} sound entries", true)
         } catch (e: Exception) {
             FeeshMod.LOGGER.error("[Feesh] Failed to generate sounds.json for custom user resource pack", e)
         }
