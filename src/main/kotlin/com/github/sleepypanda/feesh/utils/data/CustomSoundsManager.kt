@@ -39,8 +39,8 @@ object CustomSoundsManager {
     private val dropSoundsFile: File = File(feeshConfigDir, "userDropSounds.json")
     
     val resourcePackDir: File = File(feeshConfigDir, "feesh-custom-sounds")
-    private val resourcePackSoundsDir: File = File(resourcePackDir, "assets/feeshcustom/sounds")
-    private val resourcePackSoundsJsonFile: File = File(resourcePackDir, "assets/feeshcustom/sounds.json")
+    private val resourcePackSoundsDir: File = File(resourcePackDir, "assets/feesh/sounds")
+    private val resourcePackSoundsJsonFile: File = File(resourcePackDir, "assets/feesh/sounds.json")
     private val resourcePackMcmetaFile: File = File(resourcePackDir, "pack.mcmeta")
 
     private val saveLock = Any()
@@ -162,7 +162,7 @@ object CustomSoundsManager {
     
     private fun initResourcePackStructure() {
         try {
-            if (resourcePackSoundsDir.exists()) {
+            if (resourcePackDir.exists()) {
                 FeeshMod.LOGGER.error("[Feesh] Resource pack sounds directory already exists. Skipping initialization.")
                 return
             }
@@ -219,9 +219,12 @@ object CustomSoundsManager {
             
             oggFiles.forEach { file ->
                 val soundName = file.name.removeSuffix(".ogg")
+                // File structure: https://minecraft.wiki/w/Sounds.json
                 soundsMap[soundName] = mapOf(
-                    "sounds" to listOf("${SoundUtils.SOUNDS_IDENTIFIER_PREFIX}:$soundName"),
-                    "subtitle" to "Feesh custom sound: ${soundName}"
+                    "sounds" to listOf(mapOf(
+                        "name" to "${SoundUtils.SOUNDS_IDENTIFIER_PREFIX}:$soundName",
+                        "stream" to true
+                    ))
                 )
             }
             

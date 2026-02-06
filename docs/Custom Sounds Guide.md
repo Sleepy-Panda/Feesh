@@ -31,12 +31,12 @@ This guide allows you to set custom sounds when you catch a rare sea creature, o
 
 The modern Minecraft requires you to package custom sounds as a resource pack, to make them available ingame.
 
-1. The mod automatically creates a ResourcePack folder structure on game load at:
+1. The mod automatically creates a ResourcePack folder structure at:
 ```
 <MC>/config/feesh/feesh-custom-sounds/
 ```
 
-1. Copy your `.ogg` files into the `feesh-custom-sounds/assets/feeshcustom/sounds/` folder. 
+1. Copy your `.ogg` files into the `feesh-custom-sounds/assets/feesh/sounds/` folder. **Do not use spaces in file names** (use `-` or `_` instead, e.g. `sound-name.ogg` instead of `sound name.ogg`). 
 
 1. Run the `/feeshGenerateSoundsResourcePack` command from the game.
 As the result, the `sounds.json` file will be automatically generated in the folder above.

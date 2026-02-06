@@ -11,7 +11,7 @@ import net.minecraft.client.sound.PositionedSoundInstance
 import net.minecraft.client.sound.SoundInstance
 
 object SoundUtils {
-    val SOUNDS_IDENTIFIER_PREFIX ="feesh"
+    val SOUNDS_IDENTIFIER_PREFIX = "feesh"
 
     fun playSound(sound: SoundEvent = SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP) {
         if (General.soundMode == SoundMode.OFF) return
@@ -21,7 +21,7 @@ object SoundUtils {
         val soundId = sound.id
         val soundInstance = PositionedSoundInstance(
             soundId,
-            SoundCategory.PLAYERS,
+            SoundCategory.MASTER,
             1.0f,
             1.0f,
             currentPlayer.random,
