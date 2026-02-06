@@ -36,19 +36,24 @@ The modern Minecraft requires you to package custom sounds as a resource pack, t
 <MC>/config/feesh/feesh-custom-sounds/
 ```
 
-1. Copy your `.ogg` files into the `feesh-custom-sounds/assets/feesh/sounds/` folder. **Do not use spaces in file names** (use `-` or `_` instead, e.g. `sound-name.ogg` instead of `sound name.ogg`). 
+1. Make sure `Meme` sound mode is selected in the Feesh module settings.
 
-1. Run the `/feeshGenerateSoundsResourcePack` command from the game.
-As the result, the `sounds.json` file will be automatically generated in the folder above.
+1. Exit the game.
 
-1. Package all files inside of `feesh-custom-sounds` folder to `feesh-custom-sounds.zip` (note: there should be no subfolder named `feesh-custom-sounds` inside of zip).
+1. Copy your `.ogg` files into the `feesh-custom-sounds/assets/feesh/sounds/` folder. **IMPORTANT: Do not use spaces in file names** (use `-` or `_` instead, e.g. `my-custom-sound.ogg` instead of `my custom sound.ogg`). 
+
+1. Run the game. As the result, the `sounds.json` file describing the Resource Pack sounds will be automatically generated.
+
+1. Package all files/folders inside of `feesh-custom-sounds` folder to `feesh-custom-sounds.zip` (note: there should be no subfolder named `feesh-custom-sounds` inside of zip, zip should contain resource pack files directly).
 
 1. Install the Resource Pack in Minecraft:
   - Open Minecraft Settings (Options)
   - Go to Resource Packs
   - Click "Open Pack Folder"
-  - Copy your ResourcePack ZIP file to this folder
-  - Return to the game and move the ResourcePack to the active packs list
+  - Copy your Resource Pack zip file to this folder
+  - Return to the game and move the ResourcePack to the Selected resource packs list
+
+1. Now you may want to test the custom sounds ingame using `/feeshPlayTestSound <my-custom-sound.ogg>`.
 
 ### Sound Configuration Files
 
@@ -79,7 +84,7 @@ The file has the following structure:
         "source": "feesh_notification.ogg"
     },
     "THE LOCH EMPEROR": {
-        "source": "custom_emperor_sound.ogg"
+        "source": "custom-emperor-sound.ogg"
     },
 }
 ```
@@ -87,8 +92,8 @@ The file has the following structure:
 Each key is the name of a rare sea creature in uppercase (e.g., "YETI", "REINDRAKE", "THE LOCH EMPEROR").
 
 The `source` field contains the sound file name:
-- For embedded mod sounds: use the full file name with `.ogg` extension (e.g., `"feesh_notification.ogg"`)
-- For custom sounds: use the file name (e.g., `"custom_emperor_sound.ogg"`)
+- For custom sounds: use your file name from the Resource Pack (e.g., `"my-custom-emperor-sound.ogg"`)
+- For embedded mod sounds: keep original sound file name existing in the mod by default (e.g., `"feesh_notification.ogg"`)
 
 ### userDropSounds.json File Structure
 
@@ -115,5 +120,5 @@ Each key is the ID of a rare drop in uppercase.
 For pet IDs, `;4` suffix means Legendary, `;3` - Epic, `;2` - Rare, `;2` - Uncommon, `;1` - Common. E.g. `BABY_YETI;4` is a Legendary Baby Yeti.
 
 The `source` field contains the sound file name:
-- For custom sounds: use the file name (e.g., `"custom_dye_sound.ogg"`)
-- For embedded mod sounds: use the file name with `.ogg` extension (e.g., `"feesh_oh-my-god.ogg"`)
+- For custom sounds: use your file name from the Resource Pack (e.g., `"my-custom-dye-sound.ogg"`)
+- For embedded mod sounds: keep original sound file name existing in the mod by default (e.g., `"feesh_notification.ogg"`)

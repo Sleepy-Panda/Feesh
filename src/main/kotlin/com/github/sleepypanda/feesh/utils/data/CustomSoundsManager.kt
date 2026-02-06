@@ -16,6 +16,7 @@ import net.fabricmc.loader.api.FabricLoader
 import net.minecraft.SharedConstants
 import net.minecraft.resource.ResourceType
 import java.io.File
+import java.io.FileOutputStream
 import java.util.concurrent.Executors
 
 data class UserCatchSoundData(
@@ -27,8 +28,6 @@ data class UserDropSoundData(
 )
 
 object CustomSoundsManager {
-    val GENERATE_SOUNDS_RESOURCE_PACK_COMMAND = "feeshGenerateSoundsResourcePack"
-
     private val configDir: File = FabricLoader.getInstance().configDir.toFile() // MC/config
     private val feeshConfigDir: File = File(configDir, FeeshMod.MOD_ID) // MC/config/feesh
 
@@ -55,13 +54,7 @@ object CustomSoundsManager {
         initUserCatchSoundsData()
         initUserDropSoundsData()
         initResourcePackStructure() // Custom user sounds resource pack structure
-        registerCommands()
-    }
-
-    private fun registerCommands() {
-        RegisterUtils.command(GENERATE_SOUNDS_RESOURCE_PACK_COMMAND) {
-            generateSoundsJsonFromFiles()
-        }
+        generateSoundsJsonFromFiles() // Generate sounds.json from all .ogg files in the sounds directory (for resource pack)
     }
 
     private fun initUserCatchSoundsData() {
@@ -187,6 +180,13 @@ object CustomSoundsManager {
                 resourcePackMcmetaFile.writeText(packMcmetaContent)
                 FeeshMod.LOGGER.info("[Feesh] Created pack.mcmeta in resource pack directory")
             }
+
+            // Copy mod icon as pack icon (pack.png)
+            val packIconFile = File(resourcePackDir, "pack.png")
+            CustomSoundsManager::class.java.classLoader.getResourceAsStream("assets/feesh/icon.png")?.use { input ->
+                FileOutputStream(packIconFile).use { output -> input.copyTo(output) }
+                FeeshMod.LOGGER.info("[Feesh] Copied pack icon to resource pack directory")
+            }
                    
             if (resourcePackDir.exists()) {
                 FeeshMod.LOGGER.info("[Feesh] Resource pack directory ready: ${resourcePackDir.absolutePath}")
@@ -196,7 +196,7 @@ object CustomSoundsManager {
         }
     }
     
-    fun generateSoundsJsonFromFiles() {
+    private fun generateSoundsJsonFromFiles() {
         try {
             if (!resourcePackSoundsDir.exists()) {
                 ChatUtils.sendLocalChat("Resource pack sounds directory does not exist. Please create it and add your .ogg files to it.", true)
