@@ -63,6 +63,11 @@ class FeeshGui {
         fun getAllRegisteredGuis(): List<FeeshGui> {
             return registeredGuis.toList()
         }
+
+        /** Applies saved scale/position/alignment to all registered GUIs, after they are loaded from file. */
+        fun applyOverlayCoordsToAllGuis() {
+            registeredGuis.forEach { it.applyCoordsFromStorage() }
+        }
     }
 
     private var coordsDataKey: String = ""
@@ -103,6 +108,13 @@ class FeeshGui {
 
     fun setCoordsDataKey(coordsDataKey: String): FeeshGui {
         this.coordsDataKey = coordsDataKey
+        applyCoordsFromStorage()
+        return this
+    }
+
+    /** Applies x, y, scale, alignment from overlayCoordsData. No-op if coordsDataKey is empty. */
+    fun applyCoordsFromStorage(): FeeshGui {
+        if (coordsDataKey.isEmpty()) return this
         val savedData = PersistentDataManager.getOverlayCoordsData(coordsDataKey)
         this.x = savedData.x
         this.y = savedData.y

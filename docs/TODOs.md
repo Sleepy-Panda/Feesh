@@ -29,5 +29,4 @@ Make sure old file from CT module can be moved to the mod with minor data loss.
 
 ## Overlays
 
-- Fishing profit tracker is rendered in wrong position after game load.
 - Check if "0" key works for numpad in /feeshMoveAllGuis
