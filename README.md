@@ -25,7 +25,9 @@ If you want access to pre-releases, Github automatically builds every version pu
 
 ## Dependencies
 
-This mod requires [Fabric API](https://modrinth.com/mod/fabric-api) and [Fabric Language Kotlin](https://modrinth.com/mod/fabric-language-kotlin) mods for 1.21.10 Minecraft version.
+Required Minecraft version is **1.21.10** (Fabric loader 0.18.1+).
+
+This mod requires [Fabric API](https://modrinth.com/mod/fabric-api) and [Fabric Language Kotlin](https://modrinth.com/mod/fabric-language-kotlin) mods for 1.21.10.
 
 ## Features
 

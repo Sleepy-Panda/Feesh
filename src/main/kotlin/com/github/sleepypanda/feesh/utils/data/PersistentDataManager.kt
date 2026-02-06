@@ -2,6 +2,7 @@ package com.github.sleepypanda.feesh.utils.data
 
 import com.github.sleepypanda.feesh.FeeshMod
 import com.github.sleepypanda.feesh.utils.FileUtils
+import com.github.sleepypanda.feesh.utils.gui.FeeshGui
 import com.github.sleepypanda.feesh.utils.enums.Alignment
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
@@ -52,6 +53,8 @@ object PersistentDataManager {
         val type = object : TypeToken<Map<String, OverlayCoordsData>>() {}.type
         val loaded: Map<String, OverlayCoordsData>? = FileUtils.loadJsonFromFile(overlayCoordsFile, type, gson, "Overlay coords")
         overlayCoordsData = loaded?.toMutableMap() ?: mutableMapOf()
+        FeeshGui.applyOverlayCoordsToAllGuis()
+
         if (loaded != null) {
             FeeshMod.LOGGER.info("[Feesh] Loaded ${overlayCoordsData.size} overlay coordinate entries")
         }
