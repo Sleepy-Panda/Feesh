@@ -19,7 +19,7 @@ This mod is an evolution of [FeeshNotifier ChatTriggers module](https://chattrig
 
 ### Pre-releases
 
-If you want access to pre-releases, Github automatically builds every version pushed to `develop` branch. They can be found in Actions - (select latest action) - Artifacts - find attached `.zip` which contains `.jar` file(s).
+If you want early access to the pre-releases, Github automatically builds every version pushed to `develop` branch. They can be found in Actions - (select latest action) - Artifacts - find attached `.zip` which contains `.jar` file(s). **THOSE MAY BE UNSTABLE** as they are features in active development, probably not tested enough.
 
 ## Dependencies
 
