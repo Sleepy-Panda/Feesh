@@ -8,6 +8,14 @@ import com.github.sleepypanda.feesh.utils.enums.DeployableTypes
 import com.github.sleepypanda.feesh.utils.enums.PricingModeWithNpc
 import com.teamresourceful.resourcefulconfigkt.api.CategoryKt
 
+enum class RareDropPriceScope(val displayName: String) {
+    OWN("Own"),
+    OWN_AND_PARTY("Own and party"),
+    OFF("Off");
+
+    override fun toString(): String = displayName
+}
+
 object Alerts : CategoryKt("Alerts") {
     init {
         separator {
@@ -49,9 +57,9 @@ object Alerts : CategoryKt("Alerts") {
         this.name = Translated("Select rare drops to alert on")
     }
 
-    val includePriceIntoRareDropAlert by boolean(true) {
-        this.name = Translated("Show dropped item price")
-        this.description = Translated("Show the price of the dropped item in the alert.")
+    var rareDropAlertShowPriceFor by enum(RareDropPriceScope.OWN_AND_PARTY) {
+        this.name = Translated("Show dropped item price in the title")
+        this.description = Translated("Show the price of the dropped item in the alert. \"Own\" = only for your drops; \"Own and party\" = for your drops and party members' drops; \"Off\" = don't show price.")
     }
 
     var alertOnRareDropsPriceMode by enum(PricingModeWithNpc.SELL_OFFER) {

@@ -18,6 +18,7 @@ import com.github.sleepypanda.feesh.utils.data.CustomSoundsManager
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
 import com.github.sleepypanda.feesh.utils.enums.PricingModeWithNpc
+import com.github.sleepypanda.feesh.settings.categories.RareDropPriceScope
 import com.github.sleepypanda.feesh.utils.ChatUtils.removeFormatting
 
 object RareDropAlert {
@@ -36,7 +37,7 @@ object RareDropAlert {
         val itemName = event.itemName
         val playerName = PlayerUtils.getFormattedNameWithoutPrefix() ?: return
 
-        showAlert(itemName, playerName)
+        showAlert(itemName, playerName, isOwnDrop = true)
     }
 
     private fun onPartyChatDrop(event: PartyChatEvent) {
@@ -53,17 +54,22 @@ object RareDropAlert {
         val playerName = PlayerUtils.getFormattedPlayerNameFromPartyChat(event.rankAndPlayer) ?: return
         if (!playerName.isNullOrEmpty() && !me.isNullOrEmpty() && playerName.removeFormatting().contains(me)) return
 
-        showAlert(itemName, playerName)
+        showAlert(itemName, playerName, isOwnDrop = false)
     }
 
-    private fun showAlert(itemName: String, playerName: String) {
+    private fun showAlert(itemName: String, playerName: String, isOwnDrop: Boolean) {
         val dropInfo = RareDrops.rareDrops.find { it.itemName == itemName } ?: return
         val type = RareDropTypes.values().find { it.displayName == itemName } ?: return
 
         if (!Alerts.alertOnRareDropTypes.contains(type)) return
 
-        val title = dropInfo.getTitle() 
-        val price = if (Alerts.includePriceIntoRareDropAlert) getPrice(dropInfo.id, dropInfo.npcPrice) else 0.0
+        val showPrice = when (Alerts.rareDropAlertShowPriceFor) {
+            RareDropPriceScope.OWN -> isOwnDrop
+            RareDropPriceScope.OWN_AND_PARTY -> true
+            RareDropPriceScope.OFF -> false
+        }
+        val title = dropInfo.getTitle()
+        val price = if (showPrice) getPrice(dropInfo.id, dropInfo.npcPrice) else 0.0
         val priceStr = if (price > 0.0) " ${GRAY}(${GREEN}+${GOLD}${CommonUtils.toShortNumber(price)}${GRAY})" else ""
 
         CommonUtils.showTitle(title + priceStr, playerName)
