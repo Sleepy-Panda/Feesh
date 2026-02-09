@@ -18,9 +18,12 @@ import com.github.sleepypanda.feesh.utils.data.PersonalBestData
 import com.github.sleepypanda.feesh.utils.data.PersistentDataManager
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
+import com.github.sleepypanda.feesh.utils.PlayerUtils
 import com.github.sleepypanda.feesh.utils.gui.FeeshGui
 import com.github.sleepypanda.feesh.utils.gui.GuiButton
 import net.minecraft.sound.SoundEvents
+
+// TODO: Hide based on fishing rod appearance?
 
 object FishingFestivalTracker {
     private const val FESTIVAL_DURATION_MS = 61 * 60 * 1000L // 1 hour 1 minute - autoreset when festival likely ended
@@ -54,7 +57,6 @@ object FishingFestivalTracker {
         .setCoordsDataKey("fishingFestivalTracker")
         .setClickable(true)
         .setSampleLines(listOf(
-            "${GRAY}[${RED}Reset${GRAY}]",
             "${WHITE}Sharks: ${LEGENDARY}1${WHITE} ${EPIC}2${WHITE} ${RARE}3${WHITE} ${UNCOMMON}4${WHITE} ${GRAY}(${WHITE}10${GRAY})",
         ))
         .setSettingsKey { Overlays.fishingFestivalTrackerOverlay }
@@ -123,7 +125,8 @@ object FishingFestivalTracker {
         return Overlays.fishingFestivalTrackerOverlay && 
             WorldUtils.isInSkyblock() &&
             WorldUtils.isInFishingWorld() && 
-            hasSharkData()
+            hasSharkData() &&
+            PlayerUtils.isFishingHookSeenMinutesAgo(5)
     }
 
     private fun hasSharkData(): Boolean {
@@ -173,9 +176,9 @@ object FishingFestivalTracker {
 
         val countsText = sharkInfos.zip(sharkCounts).joinToString(" ") { (info, count) ->
             "${info.rarityColorCode}$count"
-        }
+        }.trimIndent()
 
-        val sharksLine = "${WHITE}Sharks: $countsText ${GRAY}(${WHITE}$total${GRAY})"
+        val sharksLine = "${AQUA}${BOLD}Sharks: ${WHITE}$total ${GRAY}($countsText${GRAY})"
         gui.setLines(listOf(sharksLine))
         gui.setButtons(listOf(GuiButton(0, "${GRAY}[${RED}Click to reset${GRAY}]", { resetFishingFestivalTracker(false) })))
     }
