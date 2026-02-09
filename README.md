@@ -51,6 +51,7 @@ This mod requires [Fabric API](https://modrinth.com/mod/fabric-api) and [Fabric 
 - **Thunder/Storm/Hurricane Bottle charged** — Alerts when bottle is fully charged.
 - **Salt expired** — Alerts when a Salt has expired.
 - **Worm the Fish** — Alerts when Worm the Fish is detected (Dirt Rod fishing).
+- **Fishing Festival** — Alerts when the Fishing Festival ends, and posts amounts of sharks caught in chat. Also has option to track personal best per festival.
 
 ### Overlays
 
@@ -63,7 +64,8 @@ This mod requires [Fabric API](https://modrinth.com/mod/fabric-api) and [Fabric 
 - **Sea creatures HP** — Shows HP of nearby rare sea creatures in lootshare range with immunity indicator.
 - **Sea creatures tracker** — Overview of caught sea creatures with Session/Total modes, percentages, and double hook stats.
 - **Fishing hook timer** — Displays hook timer and fish arrival indicator. Requires Skyblock Fishing Timer enabled.
-- **Sea creatures per hour** — Shows sea creatures per hour and total caught per session.
+- **Sea creatures per hour tracker** — Shows sea creatures per hour and total caught per session.
+- **Fishing Festival tracker** — Shows Great White, Tiger, Blue and Nurse shark counts caught during the Fishing Festival.
 - **Jerry's Workshop tracker** — Yeti/Reindrake catch statistics in Jerry Workshop.
 - **Water hotspots & Bayou tracker** — Titanoboa, Wiki Tiki, and Titanoboa Shed, Tiki Mask drop statistics for Backwater Bayou and Water Hotspots.
 - **Crimson Isle tracker** — Fiery Scuttler, Ragnarok, Plhlegblast, Thunder, Lord Jawbus catch and Radioactive Vial drop stats.
@@ -85,6 +87,7 @@ This mod requires [Fabric API](https://modrinth.com/mod/fabric-api) and [Fabric 
 - **/feesh** — Opens mod settings.
 - **/feeshMoveAllGuis** — Move and resize all enabled overlay GUIs.
 - **/feeshPauseAllTrackers** — Pause all active trackers which have a timer (also available as Keybind).
+- **/feeshPersonalBest** — Displays all your personal best records tracked by the mod.
 - **/feeshPetLevelUpPrices** — Calculates profits for leveling fishing pets from 1 to 100.
 - **/feeshGearCraftPrices** — Calculates profits for crafting gear from fishing drops.
 - **/feeshSpiderDenRainSchedule** — Displays nearest Spider's Den Rain/Thunderstorm events.
