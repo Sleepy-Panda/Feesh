@@ -9,6 +9,7 @@ This mod is an evolution of [FeeshNotifier ChatTriggers module](https://chattrig
 - [Releases](#releases)
 - [Dependencies](#dependencies)
 - [Features](#features)
+- [Troubleshooting](#troubleshooting)
 - [Contacts](#contacts)
 - [Developer's stuff](#developers-stuff)
 
@@ -90,6 +91,20 @@ This mod requires [Fabric API](https://modrinth.com/mod/fabric-api) and [Fabric 
 - **/feeshSetTrackerDrops** — Initialize drop history (Titanoboa Shed, Tiki Mask, Radioactive Vial, Treasure Dye).
 
 Also, each overlay has individual commands to reset or pause.
+
+## Troubleshooting
+
+### Items from sacks do not go into profit tracker
+
+Make sure that Personal -> Chat Feedback -> Sack Notifications SB setting is enabled.
+
+If you do not see [Sacks] +N items chat message, it means one of other mods hides it, making Feesh unable to access picked up items. You need to find and disable this setting. If you want messages to be hidden, you might try to use SkyHanni's "Sack change hider" instead.
+
+### Sea creatures caught do not appear in the trackers
+
+Please check if one of other mods modifies sea creature catch message in the chat. For example, SkyHanni's "Shorten catch messages" or "Compact double hook" changes message format making Feesh unable to know which sea creature was caught.
+
+Instead, you can enable "Compact sea creature catch messages" in Feesh, which will be compatible with other functionality.
 
 ## Contacts
 
