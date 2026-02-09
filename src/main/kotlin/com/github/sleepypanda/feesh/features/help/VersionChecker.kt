@@ -57,6 +57,7 @@ object VersionChecker {
 
                 val responseCode = connection.responseCode
                 if (responseCode != HttpURLConnection.HTTP_OK) {
+                    connection.disconnect()
                     FeeshMod.LOGGER.error("[Feesh] Version check on Modrinth failed: HTTP response code is $responseCode, message: ${connection.responseMessage}")
                     return@execute
                 }
@@ -126,8 +127,9 @@ object VersionChecker {
         val chatBreak = "${GRAY}${ChatUtils.getChatBreak("-")}"
         ChatUtils.sendLocalChat(chatBreak)
 
-        val message = "${YELLOW}New version available: ${WHITE}${BOLD}$latest${RESET}${YELLOW}. ${YELLOW}You have ${WHITE}${BOLD}$current${RESET}${YELLOW}."
+        val message = "${YELLOW}New version available: ${WHITE}${BOLD}$latest\n${YELLOW}Your current version is ${WHITE}${BOLD}$current"
         val linkText = "${GREEN}${UNDERLINE}Open on Modrinth"
         ChatUtils.sendLocalChatWithUrl(message, linkText, MODRINTH_VERSIONS_PAGE, true)
+        ChatUtils.sendLocalChat(chatBreak)
     }
 }
