@@ -56,7 +56,7 @@ object FishingFestivalTracker {
         .setCoordsDataKey("fishingFestivalTracker")
         .setClickable(true)
         .setSampleLines(listOf(
-            "${WHITE}Sharks: ${LEGENDARY}1${WHITE} ${EPIC}2${WHITE} ${RARE}3${WHITE} ${UNCOMMON}4${WHITE} ${GRAY}(${WHITE}10${GRAY})",
+            "${AQUA}${BOLD}Sharks: ${WHITE}500 ${GRAY}(${LEGENDARY}50 ${EPIC}100 ${RARE}150 ${UNCOMMON}200${GRAY})",
         ))
         .setSettingsKey { Overlays.fishingFestivalTrackerOverlay }
         .setCondition {
@@ -190,7 +190,7 @@ object FishingFestivalTracker {
         val total = getTotalSharks()
         if (total == 0) return
 
-        CommonUtils.showTitle("${YELLOW}Fishing Festival ended", "", 1, 30, 1)
+        CommonUtils.showTitle("${YELLOW}Fishing Festival ended")
 
         if (General.soundMode != SoundMode.OFF) {
             SoundUtils.playSound(SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP)

@@ -245,7 +245,7 @@ ${GRAY}To pause: ${WHITE}/${SeaCreaturesPerHourTracker.PAUSE_COMMAND}
     var fishingFestivalTrackerOverlay by boolean(false) {
         this.name = Translated("Fishing Festival tracker")
         this.description = Translated("""
-${GRAY}Shows an overlay with sharks caught during the Fishing Festival.
+${GRAY}Shows an overlay with sharks caught during the Fishing Festival. Not persistent - resets on MC restart.
 ${GRAY}To reset: ${WHITE}/${FishingFestivalTracker.RESET_COMMAND}
 """.trimIndent())
     }
