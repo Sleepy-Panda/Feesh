@@ -24,6 +24,7 @@ import com.github.sleepypanda.feesh.features.chat.HotspotFoundMessage
 import com.github.sleepypanda.feesh.features.chat.LootshareMessage
 import com.github.sleepypanda.feesh.features.help.VersionChecker
 import com.github.sleepypanda.feesh.features.help.Welcome
+import com.github.sleepypanda.feesh.features.commands.PersonalBestCommand
 import com.github.sleepypanda.feesh.features.commands.SpiderDenRainScheduleCommand
 import com.github.sleepypanda.feesh.features.commands.PetLevelUpPricesCommand
 import com.github.sleepypanda.feesh.features.commands.GearCraftPricesCommand
@@ -42,6 +43,7 @@ import com.github.sleepypanda.feesh.features.overlays.DeployablesTimer
 import com.github.sleepypanda.feesh.features.overlays.WaterHotspotsAndBayouTracker
 import com.github.sleepypanda.feesh.features.overlays.CrimsonIsleTracker
 import com.github.sleepypanda.feesh.features.overlays.ArchfiendDiceProfitTracker
+import com.github.sleepypanda.feesh.features.overlays.FishingFestivalTracker
 import com.github.sleepypanda.feesh.features.overlays.FishingProfitTracker
 import com.github.sleepypanda.feesh.features.overlays.SeaCreaturesPerHourTracker
 import com.github.sleepypanda.feesh.features.inventory.ThunderBottleProgress
@@ -155,6 +157,7 @@ class FeeshMod : ModInitializer {
         WaterHotspotsAndBayouTracker.init()
         CrimsonIsleTracker.init()
         ArchfiendDiceProfitTracker.init()
+        FishingFestivalTracker.init()
         FishingProfitTracker.init()
         SeaCreaturesPerHourTracker.init()
 
@@ -164,6 +167,7 @@ class FeeshMod : ModInitializer {
         //ThunderBottleProgress.init()
             
         // Commands
+        PersonalBestCommand.init()
         SpiderDenRainScheduleCommand.init()
         PetLevelUpPricesCommand.init()
         GearCraftPricesCommand.init()

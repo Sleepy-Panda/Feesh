@@ -170,6 +170,22 @@ object Alerts : CategoryKt("Alerts") {
 
     init {
         separator {
+            this.title = "${AQUA}${BOLD}Fishing Festival"
+        }
+    }
+
+    var alertOnFishingFestivalEnded by boolean(true) {
+        this.name = Translated("Alert on Fishing Festival ended")
+        this.description = Translated("Shows a title and sends shark counts to chat when the Fishing Festival ends. Requires the overlay or tracking to be active during the festival.")
+    }
+
+    var trackPersonalBestFishingFestival by boolean(true) {
+        this.name = Translated("Track personal best")
+        this.description = Translated("Track your personal best for total sharks caught, and Great White Sharks caught during the Fishing Festival.")
+    }
+
+    init {
+        separator {
             this.title = "${AQUA}${BOLD}Other"
         }
     }

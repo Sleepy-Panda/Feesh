@@ -14,6 +14,7 @@ import com.github.sleepypanda.feesh.features.overlays.ArchfiendDiceProfitTracker
 import com.github.sleepypanda.feesh.features.overlays.BarnFishingTimer
 import com.github.sleepypanda.feesh.features.overlays.FishingProfitTracker
 import com.github.sleepypanda.feesh.features.overlays.CrimsonIsleTracker
+import com.github.sleepypanda.feesh.features.overlays.FishingFestivalTracker
 import com.github.sleepypanda.feesh.features.overlays.JerryWorkshopTracker
 import com.github.sleepypanda.feesh.features.overlays.SeaCreaturesPerHourTracker
 import com.github.sleepypanda.feesh.features.overlays.SeaCreaturesTracker
@@ -232,6 +233,20 @@ ${GRAY}To reset [Total]: ${WHITE}/${SeaCreaturesTracker.RESET_TOTAL}
 ${GRAY}Shows an overlay with the sea creatures per hour, and total sea creatures caught per session. Not persistent - resets on MC restart.
 ${GRAY}To reset: ${WHITE}/${SeaCreaturesPerHourTracker.RESET_COMMAND}
 ${GRAY}To pause: ${WHITE}/${SeaCreaturesPerHourTracker.PAUSE_COMMAND}
+""".trimIndent())
+    }
+
+    init {
+        separator {
+            this.title = "${AQUA}${BOLD}Fishing Festival"
+        }
+    }
+
+    var fishingFestivalTrackerOverlay by boolean(false) {
+        this.name = Translated("Fishing Festival tracker")
+        this.description = Translated("""
+${GRAY}Shows an overlay with sharks caught during the Fishing Festival. Not persistent - resets on MC restart.
+${GRAY}To reset: ${WHITE}/${FishingFestivalTracker.RESET_COMMAND}
 """.trimIndent())
     }
 
