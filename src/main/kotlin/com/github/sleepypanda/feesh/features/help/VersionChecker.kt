@@ -16,8 +16,10 @@ import java.nio.charset.StandardCharsets
 import java.util.concurrent.Executors
 
 private const val MODRINTH_MOD_ID = "feesh"
-private const val MODRINTH_VERSIONS_URL = "https://api.modrinth.com/v2/project/$MODRINTH_MOD_ID/version"
 private const val MODRINTH_VERSIONS_PAGE = "https://modrinth.com/mod/$MODRINTH_MOD_ID/versions"
+
+// https://docs.modrinth.com/api/operations/getprojectversions/
+private const val MODRINTH_VERSIONS_URL = "https://api.modrinth.com/v2/project/$MODRINTH_MOD_ID/version"
 private const val GAME_VERSION = "1.21.10" // TODO: Make it detected based on the current Minecraft version
 private const val LOADERS = """["fabric"]"""
 private const val GAME_VERSIONS = """["$GAME_VERSION"]"""
@@ -71,9 +73,9 @@ object VersionChecker {
                 val currentVersion = FeeshMod.version
 
                 if (isNewerVersion(latestVersionNumber, currentVersion)) {
-                    //FeeshMod.mc.execute {
+                    FeeshMod.mc.execute {
                         showNewVersionMessage(currentVersion, latestVersionNumber)
-                    //}
+                    }
                 }
             } catch (e: Exception) {
                 FeeshMod.LOGGER.error("[Feesh] Version check on Modrinth failed: ${e.message}")
@@ -121,8 +123,11 @@ object VersionChecker {
     private data class VersionParts(val major: Int, val minor: Int, val patch: Int, val preRelease: String)
 
     private fun showNewVersionMessage(current: String, latest: String) {
+        val chatBreak = "${GRAY}${ChatUtils.getChatBreak("-")}"
+        ChatUtils.sendLocalChat(chatBreak)
+
         val message = "${YELLOW}New version available: ${WHITE}${BOLD}$latest${RESET}${YELLOW}. ${YELLOW}You have ${WHITE}${BOLD}$current${RESET}${YELLOW}."
-        val linkText = "${GREEN}${UNDERLINE}Open Modrinth"
+        val linkText = "${GREEN}${UNDERLINE}Open on Modrinth"
         ChatUtils.sendLocalChatWithUrl(message, linkText, MODRINTH_VERSIONS_PAGE, true)
     }
 }
