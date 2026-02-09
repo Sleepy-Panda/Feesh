@@ -23,6 +23,7 @@ import com.github.sleepypanda.feesh.utils.PlayerUtils
 import com.github.sleepypanda.feesh.utils.gui.FeeshGui
 import com.github.sleepypanda.feesh.utils.gui.GuiButton
 import net.minecraft.sound.SoundEvents
+import java.util.Date
 
 object FishingFestivalTracker {
     private const val FESTIVAL_DURATION_MS = 61 * 60 * 1000L // 1 hour 1 minute - how long festival usually lasts, + some extra time to be safe
@@ -218,8 +219,9 @@ object FishingFestivalTracker {
         var isNewTotalPb = false
         var isNewGwPb = false
 
-        if (total > personalBest.sharksCaught) {
-            personalBest.sharksCaught = total
+        if (total > personalBest.sharksCaught.amount) {
+            personalBest.sharksCaught.amount = total
+            personalBest.sharksCaught.at = Date()
             isNewTotalPb = true
             ChatUtils.sendLocalChat(
                 "${LIGHT_PURPLE}${BOLD}PERSONAL BEST!${RESET} You caught ${GREEN}${BOLD}$total${RESET} sharks during the Fishing Festival!",
@@ -227,8 +229,9 @@ object FishingFestivalTracker {
             )
         }
 
-        if (greatWhiteCount > personalBest.greatWhiteSharksCaught) {
-            personalBest.greatWhiteSharksCaught = greatWhiteCount
+        if (greatWhiteCount > personalBest.greatWhiteSharksCaught.amount) {
+            personalBest.greatWhiteSharksCaught.amount = greatWhiteCount
+            personalBest.greatWhiteSharksCaught.at = Date()
             isNewGwPb = true
             ChatUtils.sendLocalChat(
                 "${LIGHT_PURPLE}${BOLD}PERSONAL BEST!${RESET} You caught ${GREEN}${BOLD}$greatWhiteCount${RESET} Great White Sharks during the Fishing Festival!",

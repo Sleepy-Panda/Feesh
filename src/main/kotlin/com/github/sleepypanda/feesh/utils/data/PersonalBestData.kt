@@ -1,7 +1,14 @@
 package com.github.sleepypanda.feesh.utils.data
 
+import java.util.Date
+
+data class PersonalBestEntry(
+    var amount: Int = 0,
+    var at: Date? = null
+)
+
 data class PersonalBestData(
-    var sharksCaught: Int = 0,
-    var greatWhiteSharksCaught: Int = 0
+    val sharksCaught: PersonalBestEntry = PersonalBestEntry(),
+    val greatWhiteSharksCaught: PersonalBestEntry = PersonalBestEntry()
 )
 
