@@ -109,7 +109,7 @@ object GuiUtils {
 
     fun isInChest(): Boolean {
         val screen = FeeshMod.mc.currentScreen ?: return false
-        return (screen is HandledScreen<*>)
+        return (screen is HandledScreen<*> && screen !is InventoryScreen)
     }
 
     fun getCurrentChestName(): String? {
