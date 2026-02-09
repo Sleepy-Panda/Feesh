@@ -11,6 +11,7 @@ import net.minecraft.text.TextColor
 import net.minecraft.text.Text
 import net.minecraft.text.ClickEvent
 import net.minecraft.text.HoverEvent
+import net.minecraft.text.ClickEvent.OpenUrl
 import net.minecraft.text.ClickEvent.RunCommand
 import net.minecraft.text.HoverEvent.ShowText
 import net.minecraft.util.Formatting
@@ -121,6 +122,27 @@ object ChatUtils {
             Text.literal("${MOD_PREFIX} ${RESET}").append(text)
         } else text
         
+        FeeshMod.mc.inGameHud.chatHud.addMessage(finalText)
+    }
+
+    /**
+     * Sends a message to local chat with a clickable URL.
+     * @param message The main message text (can include formatting codes).
+     * @param linkText The clickable link text (can include formatting codes).
+     * @param url The URL to open when the link is clicked.
+     */
+    fun sendLocalChatWithUrl(message: String, linkText: String, url: String, addModPrefix: Boolean = false) {
+        if (message.isNullOrEmpty() || url.isNullOrEmpty() || linkText.isNullOrEmpty()) return
+
+        val linkStyle = Style.EMPTY
+            .withClickEvent(OpenUrl(java.net.URI.create(url)))
+            .withHoverEvent(ShowText(Text.literal("Click to open $url")))
+
+        val fullText = Text.literal(message).append(Text.literal("\n")).append(Text.literal(linkText).setStyle(linkStyle))
+        val finalText = if (addModPrefix) {
+            Text.literal("${MOD_PREFIX} ${RESET}").append(fullText)
+        } else fullText
+
         FeeshMod.mc.inGameHud.chatHud.addMessage(finalText)
     }
 

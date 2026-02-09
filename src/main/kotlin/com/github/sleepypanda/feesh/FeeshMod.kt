@@ -22,6 +22,7 @@ import com.github.sleepypanda.feesh.features.chat.CompactCatchMessages
 import com.github.sleepypanda.feesh.features.chat.PlayerDeathMessage
 import com.github.sleepypanda.feesh.features.chat.HotspotFoundMessage
 import com.github.sleepypanda.feesh.features.chat.LootshareMessage
+import com.github.sleepypanda.feesh.features.help.VersionChecker
 import com.github.sleepypanda.feesh.features.help.Welcome
 import com.github.sleepypanda.feesh.features.commands.SpiderDenRainScheduleCommand
 import com.github.sleepypanda.feesh.features.commands.PetLevelUpPricesCommand
@@ -100,6 +101,7 @@ class FeeshMod : ModInitializer {
         EventBus.init()
         FeeshSettingsCommand.init()
         Welcome.init()
+        VersionChecker.init()
         
         // Utils
         WorldUtils.init()
