@@ -30,7 +30,7 @@ This mod requires [Fabric API](https://modrinth.com/mod/fabric-api) and [Fabric 
 
 ### General
 
-- **Sound modes** — Meme, Normal (default MC sounds), or Off.
+- **Sound modes** — Meme (**customizable**), Normal (default MC sounds), or Off.
 
 ### Alerts
 
@@ -95,9 +95,9 @@ Also, each overlay has individual commands to reset or pause.
 
 In case of questions, bug reports, feature requests, bored, feeling alone - please feel free to contact me:
 
-- IGN: MoonTheSadFisher
 - Discord: m00nlight_sky
 - Discussions or Issues in the repository [Feesh](https://github.com/Sleepy-Panda/Feesh/discussions)
+- IGN: MoonTheSadFisher
 
 ## Developer's stuff
 

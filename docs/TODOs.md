@@ -1,3 +1,8 @@
+## Players feedback
+
+- Legion & Bobbing Time - want to choose in settings which one to show, or labels customization to make shorter display
+- 1.21.11 support
+
 ## Tech Debt
 
 - Go through TODOs in the code
