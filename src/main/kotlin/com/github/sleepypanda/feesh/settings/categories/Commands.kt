@@ -1,6 +1,7 @@
 package com.github.sleepypanda.feesh.settings.categories
 
 import com.github.sleepypanda.feesh.features.commands.GearCraftPricesCommand
+import com.github.sleepypanda.feesh.features.commands.PersonalBestCommand
 import com.github.sleepypanda.feesh.features.commands.PetLevelUpPricesCommand
 import com.github.sleepypanda.feesh.features.commands.SpiderDenRainScheduleCommand
 import com.github.sleepypanda.feesh.utils.ChatUtils
@@ -54,6 +55,19 @@ object Commands : CategoryKt("Commands") {
             text = "Click to execute"
             onClick {
                 ChatUtils.command(SpiderDenRainScheduleCommand.COMMAND_NAME)
+            }
+        }
+
+        separator {
+            this.title = "${AQUA}${BOLD}Personal Best"
+        }
+
+        button {
+            title = "Personal Best"
+            description = "Displays your personal best records in the chat. Executes ${WHITE}/${PersonalBestCommand.COMMAND_NAME}"
+            text = "Click to execute"
+            onClick {
+                ChatUtils.command(PersonalBestCommand.COMMAND_NAME)
             }
         }
     }

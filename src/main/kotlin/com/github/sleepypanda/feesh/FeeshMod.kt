@@ -24,6 +24,7 @@ import com.github.sleepypanda.feesh.features.chat.HotspotFoundMessage
 import com.github.sleepypanda.feesh.features.chat.LootshareMessage
 import com.github.sleepypanda.feesh.features.help.VersionChecker
 import com.github.sleepypanda.feesh.features.help.Welcome
+import com.github.sleepypanda.feesh.features.commands.PersonalBestCommand
 import com.github.sleepypanda.feesh.features.commands.SpiderDenRainScheduleCommand
 import com.github.sleepypanda.feesh.features.commands.PetLevelUpPricesCommand
 import com.github.sleepypanda.feesh.features.commands.GearCraftPricesCommand
@@ -166,6 +167,7 @@ class FeeshMod : ModInitializer {
         //ThunderBottleProgress.init()
             
         // Commands
+        PersonalBestCommand.init()
         SpiderDenRainScheduleCommand.init()
         PetLevelUpPricesCommand.init()
         GearCraftPricesCommand.init()
