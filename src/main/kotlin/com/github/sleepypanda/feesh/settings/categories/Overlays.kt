@@ -14,6 +14,7 @@ import com.github.sleepypanda.feesh.features.overlays.ArchfiendDiceProfitTracker
 import com.github.sleepypanda.feesh.features.overlays.BarnFishingTimer
 import com.github.sleepypanda.feesh.features.overlays.FishingProfitTracker
 import com.github.sleepypanda.feesh.features.overlays.CrimsonIsleTracker
+import com.github.sleepypanda.feesh.features.overlays.FishingFestivalTracker
 import com.github.sleepypanda.feesh.features.overlays.JerryWorkshopTracker
 import com.github.sleepypanda.feesh.features.overlays.SeaCreaturesPerHourTracker
 import com.github.sleepypanda.feesh.features.overlays.SeaCreaturesTracker
@@ -233,6 +234,25 @@ ${GRAY}Shows an overlay with the sea creatures per hour, and total sea creatures
 ${GRAY}To reset: ${WHITE}/${SeaCreaturesPerHourTracker.RESET_COMMAND}
 ${GRAY}To pause: ${WHITE}/${SeaCreaturesPerHourTracker.PAUSE_COMMAND}
 """.trimIndent())
+    }
+
+    init {
+        separator {
+            this.title = "${AQUA}${BOLD}Fishing Festival"
+        }
+    }
+
+    var fishingFestivalTrackerOverlay by boolean(false) {
+        this.name = Translated("Fishing Festival shark tracker")
+        this.description = Translated("""
+${GRAY}Shows an overlay with Great White, Tiger, Blue and Nurse shark counts during the Fishing Festival.
+${GRAY}To reset: ${WHITE}/${FishingFestivalTracker.RESET_COMMAND}
+""".trimIndent())
+    }
+
+    var alertOnFishingFestivalEnded by boolean(true) {
+        this.name = Translated("Alert on Fishing Festival ended")
+        this.description = Translated("Shows a title and sends shark counts to chat when the Fishing Festival ends. Requires the overlay or tracking to be active during the festival.")
     }
 
     init {
