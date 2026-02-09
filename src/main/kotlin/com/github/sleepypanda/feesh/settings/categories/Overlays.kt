@@ -243,16 +243,11 @@ ${GRAY}To pause: ${WHITE}/${SeaCreaturesPerHourTracker.PAUSE_COMMAND}
     }
 
     var fishingFestivalTrackerOverlay by boolean(false) {
-        this.name = Translated("Fishing Festival shark tracker")
+        this.name = Translated("Fishing Festival tracker")
         this.description = Translated("""
-${GRAY}Shows an overlay with Great White, Tiger, Blue and Nurse shark counts during the Fishing Festival.
+${GRAY}Shows an overlay with sharks caught during the Fishing Festival.
 ${GRAY}To reset: ${WHITE}/${FishingFestivalTracker.RESET_COMMAND}
 """.trimIndent())
-    }
-
-    var alertOnFishingFestivalEnded by boolean(true) {
-        this.name = Translated("Alert on Fishing Festival ended")
-        this.description = Translated("Shows a title and sends shark counts to chat when the Fishing Festival ends. Requires the overlay or tracking to be active during the festival.")
     }
 
     init {

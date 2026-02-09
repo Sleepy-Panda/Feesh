@@ -8,6 +8,7 @@ import com.github.sleepypanda.feesh.events.models.OwnSeaCreatureCaughtEvent
 import com.github.sleepypanda.feesh.events.models.WorldChangedEvent
 import com.github.sleepypanda.feesh.settings.categories.General
 import com.github.sleepypanda.feesh.settings.categories.Overlays
+import com.github.sleepypanda.feesh.settings.categories.Alerts
 import com.github.sleepypanda.feesh.settings.categories.SoundMode
 import com.github.sleepypanda.feesh.utils.ChatUtils
 import com.github.sleepypanda.feesh.utils.CommonUtils
@@ -23,10 +24,8 @@ import com.github.sleepypanda.feesh.utils.gui.FeeshGui
 import com.github.sleepypanda.feesh.utils.gui.GuiButton
 import net.minecraft.sound.SoundEvents
 
-// TODO: Hide based on fishing rod appearance?
-
 object FishingFestivalTracker {
-    private const val FESTIVAL_DURATION_MS = 61 * 60 * 1000L // 1 hour 1 minute - autoreset when festival likely ended
+    private const val FESTIVAL_DURATION_MS = 61 * 60 * 1000L // 1 hour 1 minute - how long festival usually lasts, + some extra time to be safe
     private const val TICKS_PER_UPDATE = 20
 
     const val RESET_COMMAND = "feeshResetFishingFestival"
@@ -115,7 +114,7 @@ object FishingFestivalTracker {
     }
 
     private fun shouldTrackCatch(seaCreatureName: String): Boolean {
-        return (Overlays.fishingFestivalTrackerOverlay || Overlays.alertOnFishingFestivalEnded) &&
+        return (Overlays.fishingFestivalTrackerOverlay || Alerts.alertOnFishingFestivalEnded || Alerts.trackPersonalBestFishingFestival) &&
             WorldUtils.isInSkyblock() &&
             WorldUtils.isInFishingWorld() &&
             seaCreatureName in SHARK_NAMES
@@ -184,7 +183,7 @@ object FishingFestivalTracker {
     }
 
     private fun alertOnFestivalResults() {
-        if (!Overlays.alertOnFishingFestivalEnded ||
+        if (!Alerts.alertOnFishingFestivalEnded ||
             !WorldUtils.isInSkyblock() ||
             !WorldUtils.isInFishingWorld()) return
 
@@ -206,6 +205,10 @@ object FishingFestivalTracker {
     }
 
     private fun announcePersonalBest() {
+        if (!Alerts.trackPersonalBestFishingFestival ||
+            !WorldUtils.isInSkyblock() ||
+            !WorldUtils.isInFishingWorld()) return
+
         val total = getTotalSharks()
         if (total == 0) return
 
