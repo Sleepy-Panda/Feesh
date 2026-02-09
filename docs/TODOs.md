@@ -1,5 +1,7 @@
 ## Players feedback
 
+- Profit Tracker not paused after 5 minutes?
+- Disable party titles/sounds for drops (only own), or at least remove price from party drops
 - Legion & Bobbing Time - want to choose in settings which one to show, or labels customization to make shorter display
 - 1.21.11 support
 
@@ -10,9 +12,8 @@
 
 ## Versions
 
-- Publish on Modrinth
 - Add support of 1.21.11
-- Make a version checker which announces new versions found on Modrinth
+  - Adjust version checker which announces new versions found on Modrinth
 - Will NEU prices API be available? Do I need to hop to another one?
 
 ## Settings
