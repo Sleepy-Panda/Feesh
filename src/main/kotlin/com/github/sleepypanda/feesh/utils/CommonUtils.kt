@@ -96,7 +96,7 @@ object CommonUtils {
     }
 
     /**
-     * Formats a number to a short representation (e.g., 1000 -> "1K", 1000000 -> "1M", 100500 -> "100.5k", 1500000 -> "1.5M")
+     * Formats a number to a short representation (e.g., 1000 -> "1k", 1000000 -> "1M", 100500 -> "100.5k", 1500000 -> "1.5M")
      * @param number The number to format.
      * @return The formatted string or null if the number is 0 or invalid.
      */
@@ -107,9 +107,21 @@ object CommonUtils {
         val absNumber = Math.abs(number)
  
         val formattedNumber = when {
-            absNumber >= 1_000_000_000 -> String.format("%.1fB", absNumber / 1_000_000_000.0).replace(".0B", "B")
-            absNumber >= 1_000_000 -> String.format("%.1fM", absNumber / 1_000_000.0).replace(".0M", "M")
-            absNumber >= 1_000 -> String.format("%.1fk", absNumber / 1_000.0).replace(".0k", "k")
+            absNumber >= 1_000_000_000 -> {
+                String.format("%.1fB", absNumber / 1_000_000_000.0)
+                    .replace(".0B", "B")
+                    .replace(",0B", "B")
+            }
+            absNumber >= 1_000_000 -> {
+                String.format("%.1fM", absNumber / 1_000_000.0)
+                    .replace(".0M", "M")
+                    .replace(",0M", "M")
+            }
+            absNumber >= 1_000 -> {
+                String.format("%.1fk", absNumber / 1_000.0)
+                    .replace(".0k", "k")
+                    .replace(",0k", "k")
+            }
             else -> absNumber.toLong().toString()
         }
 
