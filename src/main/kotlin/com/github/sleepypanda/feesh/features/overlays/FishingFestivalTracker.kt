@@ -201,7 +201,7 @@ object FishingFestivalTracker {
             "${RESET}${info.rarityColorCode}${CommonUtils.formatNumberWithSpaces(count)}"
         }
 
-        val message = "${WHITE}You caught ${BOLD}$total ${RESET}}($countsText${WHITE}) sharks during the Fishing Festival."
+        val message = "${WHITE}You caught ${BOLD}$total ${RESET}($countsText${WHITE}) sharks during the Fishing Festival."
         ChatUtils.sendLocalChat(message, true)
     }
 
