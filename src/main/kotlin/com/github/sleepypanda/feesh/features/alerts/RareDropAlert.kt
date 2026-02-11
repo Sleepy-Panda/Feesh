@@ -41,7 +41,7 @@ object RareDropAlert {
     }
 
     private fun onPartyChatDrop(event: PartyChatEvent) {
-        if (!WorldUtils.isInSkyblock() || !Alerts.alertOnRareDrops) return
+        if (!WorldUtils.isInSkyblock() || !Alerts.alertOnRareDrops || !Alerts.alertOnRareDropsFromParty) return
 
         val message = event.messagePayload.removeFormatting()
 

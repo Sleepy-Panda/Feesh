@@ -32,6 +32,11 @@ object Alerts : CategoryKt("Alerts") {
         this.name = Translated("Select sea creatures to alert on")
     }
 
+    var alertOnRareSeaCreaturesFromParty by boolean(true) {
+        this.name = Translated("Show alerts from party members")
+        this.description = Translated("If disabled, alerts are only shown for your own catches.")
+    }
+
     var alertOnAnyReindrake by boolean(false) {
         this.name = Translated("Alert on any Reindrake spawned in lobby")
         this.description = Translated("Shows a title and plays a sound when any Reindrake spawned in the lobby, even if it was caught not by you or your party members.")
@@ -55,6 +60,11 @@ object Alerts : CategoryKt("Alerts") {
 
     var alertOnRareDropTypes by select(RareDropTypes.LUCKY_CLOVER_CORE, *RareDropTypes.values()) {
         this.name = Translated("Select rare drops to alert on")
+    }
+
+    var alertOnRareDropsFromParty by boolean(true) {
+        this.name = Translated("Show alerts from party members")
+        this.description = Translated("If disabled, alerts are only shown for your own drops.")
     }
 
     var rareDropAlertShowPriceFor by enum(RareDropPriceScope.OWN_AND_PARTY) {
