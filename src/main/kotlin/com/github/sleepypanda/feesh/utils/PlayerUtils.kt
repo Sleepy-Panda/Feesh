@@ -27,9 +27,13 @@ object PlayerUtils {
         timer = Timer()
         
         val task = timerTask {
-            setLastFishingHookSeenAt()
-            setHasFishingRodInHotbar()
-            setHasDirtRodInHand()
+            try {
+                setLastFishingHookSeenAt()
+                setHasFishingRodInHotbar()
+                setHasDirtRodInHand()
+            } catch (e: Exception) {
+                FeeshMod.LOGGER.error("[Feesh] Failed to update player utils cache.", e)
+            }
         }
         timer?.scheduleAtFixedRate(task, 0, 500)
     }

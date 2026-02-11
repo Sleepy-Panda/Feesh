@@ -79,9 +79,13 @@ object WorldUtils {
     private fun startTimer() {
         timer?.cancel()
         timer = Timer()
-        
+
         val task = timerTask {
-            updateCache()
+            try {
+                updateCache()
+            } catch (e: Exception) {
+                FeeshMod.LOGGER.error("[Feesh] Failed to update world utils cache.", e)
+            }
         }
         timer?.scheduleAtFixedRate(task, 0, 1000) // Every second
     }

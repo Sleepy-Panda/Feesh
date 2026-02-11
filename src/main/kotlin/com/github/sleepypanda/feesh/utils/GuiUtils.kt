@@ -82,7 +82,11 @@ object GuiUtils {
         timer = Timer()
 
         val task = timerTask {
-            updateCache()
+            try {
+                updateCache()
+            } catch (e: Exception) {
+                FeeshMod.LOGGER.error("[Feesh] Failed to update gui utils cache.", e)
+            }
         }
         timer?.scheduleAtFixedRate(task, 0, 200)
     }
