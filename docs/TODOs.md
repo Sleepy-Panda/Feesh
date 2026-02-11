@@ -1,6 +1,10 @@
 ## Players feedback
 
-- Profit Tracker not paused after 5 minutes?
+- Items counted after /gfs or extracting pet items
+- Cant add or remove level 100 pets using buttons
+- Hotspot is gone when too sinked in lava
+- while i was fishing in the crystal hollows i noticed that the mob cap alert wasnt working for it
+- Profit Tracker not paused after 5 minutes? 
 - Disable party titles/sounds for drops (only own), or at least remove price from party drops
 - Legion & Bobbing Time - want to choose in settings which one to show, or labels customization to make shorter display
 - 1.21.11 support
