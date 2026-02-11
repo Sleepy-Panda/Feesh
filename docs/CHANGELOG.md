@@ -16,6 +16,22 @@ Released on: ???
 - Get rid of .0 when formatting prices
 - Most important bugfix ever (thanks to gegerik for reporting)
 
+## Special thanks
+
+Big thanks to the people who helped with testing and feedback for 1.0.0-beta! Everyone who DM'd me or created issues, I really appreciate your help.
+
+Take the fish:
+
+    o   o
+                  /^^^^^7
+    '  '     ,oO))))))))Oo,
+           ,'))))))))))))))), /{
+      '  ,'o  ))))))))))))))))={
+         >    ))))))))))))))))={
+         `,   ))))))\ \)))))))={
+           ',))))))))\/)))))' \{
+             '*O))))))))O*'
+
 # 1.0.0-beta
 
 Released on: 2026-02-10
