@@ -4,10 +4,12 @@
 - Cant add or remove level 100 pets using buttons
 - Hotspot is gone when too sinked in lava
 - while i was fishing in the crystal hollows i noticed that the mob cap alert wasnt working for it
-- Profit Tracker not paused after 5 minutes? 
-- Disable party titles/sounds for drops (only own), or at least remove price from party drops
+  - [I checked and for me it was working]
+- Profit Tracker not paused after 5 minutes?
+  - [I checked and for me it was paused]
 - Legion & Bobbing Time - want to choose in settings which one to show, or labels customization to make shorter display
 - 1.21.11 support
+- Settings are not saved after exiting the game, probably because user closes window using X button to exit
 
 ## Tech Debt
 
@@ -27,6 +29,7 @@ Make sure newly added values in the dropdowns are selected if needed. E.g. if I 
 ## Data
 
 Make sure old file from CT module can be moved to the mod with minor data loss.
+Data backups.
 
 ## Alerts
 
