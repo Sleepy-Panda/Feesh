@@ -47,6 +47,14 @@ enum class FishingHookTimerMode(val displayName: String) {
     override fun toString(): String = displayName
 }
 
+enum class LegionBobbingTimeTrackerMode(val displayName: String) {
+    BOTH("Both"),
+    LEGION_ONLY("Legion only"),
+    BOBBING_TIME_ONLY("Bobbin' Time only");
+
+    override fun toString(): String = displayName
+}
+
 object Overlays : CategoryKt("Overlays") {
     init {
         separator {
@@ -84,6 +92,11 @@ object Overlays : CategoryKt("Overlays") {
     var legionBobbingTimeTrackerOverlay by boolean(false) {
         this.name = Translated("Legion & Bobbin' Time tracker")
         this.description = Translated("Shows an overlay with the amount of players within 30 blocks (excluding you), and amount of fishing hooks within 30 blocks (including your own hook). Hidden if you have no fishing rod in your hotbar!")
+    }
+
+    var legionBobbingTimeTrackerMode by enum(LegionBobbingTimeTrackerMode.BOTH) {
+        this.name = Translated("Legion & Bobbin' Time display mode")
+        this.description = Translated("Choose which lines to show: both, Legion only, or Bobbin' Time only.")
     }
 
     init {
