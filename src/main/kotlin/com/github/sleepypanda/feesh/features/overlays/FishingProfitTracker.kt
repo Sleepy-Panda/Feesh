@@ -658,8 +658,8 @@ object FishingProfitTracker {
 
         val currentInventory = getFishingProfitItemsInCurrentInventory()
 
-        // Allow being in Wardrobe or Armor GUI, because we often are in them when killing mobs and getting drops
-        if (GuiUtils.isInChest() && !GuiUtils.isInWardrobeOrEquipmentGui()) {
+        // Allow being in some GUIs, because we often are in them when killing mobs and getting drops
+        if (GuiUtils.isInChest() && !GuiUtils.isInNonStorageGui()) {
             previousInventory = currentInventory.toMutableMap()
             return
         }
@@ -775,10 +775,13 @@ object FishingProfitTracker {
         if (itemId.startsWith("MAGMA_FISH") && lastGuisClosed.lastOdgerGuiClosedAt != null &&
             now.time - lastGuisClosed.lastOdgerGuiClosedAt!!.time < 1000) return true // User probably just filleted trophy fish
 
+        if (dropInfo.categories.contains(FishingProfitDrops.PET_ITEM_CATEGORY) && lastGuisClosed.lastPetItemSwapGuiClosedAt != null && 
+            now.time - lastGuisClosed.lastPetItemSwapGuiClosedAt!!.time < 1000) return true
+
         if (lastGuisClosed.lastAuctionGuiClosedAt != null && now.time - lastGuisClosed.lastAuctionGuiClosedAt!!.time < 3_000) return true
 
         val lastKatUpgrade = GuiUtils.lastKatUpgrade
-        if (lastKatUpgrade.lastPetClaimedAt != null && now.time - lastKatUpgrade.lastPetClaimedAt!!.time < 7 * 1000) { // It takes some time for pet to appear in the inventory after claiming from Kat
+        if (lastKatUpgrade.lastPetClaimedAt != null && now.time - lastKatUpgrade.lastPetClaimedAt!!.time < 7_000) { // It takes some time for pet to appear in the inventory after claiming from Kat
             val katPetName = lastKatUpgrade.petName?.removeFormatting() ?: return false
             if (dropInfo.itemName.contains(katPetName)) return true
         }

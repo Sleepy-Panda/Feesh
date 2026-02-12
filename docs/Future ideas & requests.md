@@ -54,6 +54,7 @@ Support for 1.21.11.
 ## Alerts & chat
 
 - Reminder if user is fishing with wrong hook/sinker during events or in hotspots.
+- Alert if player attempts to be scammed by Kat by giving her Epic Megalodon.
 - Rare SC cocooned alert
 - Spooky festival event ending alert (to kill mobs before despawn)
 - Phoenix proc'ed alert / Phoenix back alert (same as Spirit Mask)

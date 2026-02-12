@@ -13,7 +13,8 @@ Released on: ???
 
 ## Bugfixes
 
-- Track drops in Fishing profit tracker while being in Inventory GUI
+- Track drops in Fishing profit tracker while being in Inventory and some other "safe" GUIs
+- Do not track items taken from pet item swapping GUI in Fishing profit tracker
 - Allow increase/decrease/delete max level pets in Fishing profit tracker
 - Get rid of ,0 when formatting prices
 - Most important bugfix ever (thanks to gegerik for reporting)

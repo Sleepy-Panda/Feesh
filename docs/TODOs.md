@@ -1,6 +1,6 @@
 ## Players feedback
 
-- Items counted after /gfs or extracting pet items
+- Items counted after /gfs
 - Hotspot is gone when too sinked in lava
 - while i was fishing in the crystal hollows i noticed that the mob cap alert wasnt working for it
   - [I checked and for me it was working]
