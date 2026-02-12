@@ -47,6 +47,7 @@ object VersionChecker {
     private fun checkForNewVersion() {
         executor.execute {
             try {
+                // https://api.modrinth.com/v2/project/feesh/version?game_versions=%5B%221.21.10%22%5D&loaders=%5B%22fabric%22%5D&include_changelog=false
                 val query = "game_versions=${URLEncoder.encode(GAME_VERSIONS, StandardCharsets.UTF_8)}&loaders=${URLEncoder.encode(LOADERS, StandardCharsets.UTF_8)}&include_changelog=false"
                 val url = URI("$MODRINTH_VERSIONS_URL?$query").toURL()
                 val connection = url.openConnection() as HttpURLConnection

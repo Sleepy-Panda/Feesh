@@ -8,6 +8,13 @@ import com.github.sleepypanda.feesh.utils.enums.DeployableTypes
 import com.github.sleepypanda.feesh.utils.enums.PricingModeWithNpc
 import com.teamresourceful.resourcefulconfigkt.api.CategoryKt
 
+enum class AlertSource(val displayName: String) {
+    OWN_AND_PARTY("Own and party"),
+    OWN("Own");
+
+    override fun toString(): String = displayName
+}
+
 enum class RareDropPriceScope(val displayName: String) {
     OWN("Own"),
     OWN_AND_PARTY("Own and party"),
@@ -32,9 +39,9 @@ object Alerts : CategoryKt("Alerts") {
         this.name = Translated("Select sea creatures to alert on")
     }
 
-    var alertOnRareSeaCreaturesFromParty by boolean(true) {
-        this.name = Translated("Show alerts from party members")
-        this.description = Translated("If disabled, alerts are only shown for your own catches.")
+    var alertOnRareSeaCreaturesSource by enum(AlertSource.OWN_AND_PARTY) {
+        this.name = Translated("Alert source")
+        this.description = Translated("\"Own and party\" = your catches and party members' catches; \"Own\" = only your catches.")
     }
 
     var alertOnAnyReindrake by boolean(false) {
@@ -62,9 +69,9 @@ object Alerts : CategoryKt("Alerts") {
         this.name = Translated("Select rare drops to alert on")
     }
 
-    var alertOnRareDropsFromParty by boolean(true) {
-        this.name = Translated("Show alerts from party members")
-        this.description = Translated("If disabled, alerts are only shown for your own drops.")
+    var alertOnRareDropsSource by enum(AlertSource.OWN_AND_PARTY) {
+        this.name = Translated("Alert source")
+        this.description = Translated("\"Own and party\" = your drops and party members' drops; \"Own\" = only your drops.")
     }
 
     var rareDropAlertShowPriceFor by enum(RareDropPriceScope.OWN_AND_PARTY) {

@@ -13,7 +13,8 @@ Released on: ???
 ## Bugfixes
 
 - Track drops in Fishing profit tracker while being in Inventory GUI
-- Get rid of .0 when formatting prices
+- Allow increase/decrease/delete max level pets in Fishing profit tracker
+- Get rid of ,0 when formatting prices
 - Most important bugfix ever (thanks to gegerik for reporting)
 
 ## Special thanks

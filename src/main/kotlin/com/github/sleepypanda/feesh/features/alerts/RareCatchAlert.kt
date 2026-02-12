@@ -7,6 +7,7 @@ import com.github.sleepypanda.feesh.events.models.OwnSeaCreatureCaughtEvent
 import com.github.sleepypanda.feesh.events.models.PartyChatEvent
 import com.github.sleepypanda.feesh.utils.ChatUtils.removeFormatting
 import com.github.sleepypanda.feesh.FeeshMod
+import com.github.sleepypanda.feesh.settings.categories.AlertSource
 import com.github.sleepypanda.feesh.settings.categories.Alerts
 import com.github.sleepypanda.feesh.utils.CommonUtils
 import com.github.sleepypanda.feesh.utils.SoundUtils
@@ -45,7 +46,7 @@ object RareCatchAlert {
     }
 
     private fun onPartyChatSeaCreature(event: PartyChatEvent) {
-        if (!WorldUtils.isInSkyblock() || !Alerts.alertOnRareSeaCreatures || !Alerts.alertOnRareSeaCreaturesFromParty) return
+        if (!WorldUtils.isInSkyblock() || !Alerts.alertOnRareSeaCreatures || Alerts.alertOnRareSeaCreaturesSource != AlertSource.OWN_AND_PARTY) return
 
         val me = PlayerUtils.getName() ?: return
         val playerName = PlayerUtils.getFormattedPlayerNameFromPartyChat(event.rankAndPlayer) ?: return
