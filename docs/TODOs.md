@@ -6,7 +6,6 @@
   - [I checked and for me it was working]
 - Profit Tracker not paused after 5 minutes?
   - [I checked and for me it was paused]
-- Legion & Bobbing Time - want to choose in settings which one to show, or labels customization to make shorter display
 - 1.21.11 support
 - Rendering section from CT
 - Settings are not saved after exiting the game, probably because user closes window using X button to exit

@@ -4,6 +4,7 @@ import com.github.sleepypanda.feesh.FeeshMod
 import com.github.sleepypanda.feesh.events.EventBus
 import com.github.sleepypanda.feesh.events.models.ClientTickEvent
 import com.github.sleepypanda.feesh.events.models.WorldChangedEvent
+import com.github.sleepypanda.feesh.settings.categories.LegionBobbingTimeTrackerMode
 import com.github.sleepypanda.feesh.settings.categories.Overlays
 import com.github.sleepypanda.feesh.utils.WorldUtils
 import com.github.sleepypanda.feesh.utils.PlayerUtils
@@ -118,12 +119,21 @@ object LegionBobbingTimeTracker {
     }
 
     private fun updateGuiLines() {
-        val playersColor = if (playersCount >= MAX_LEGION_COUNT) GREEN else WHITE
-        val playersText = "${LIGHT_PURPLE}${BOLD}Legion${GRAY}: ${playersColor}${playersCount} ${GRAY}${if (playersCount == 1) "player" else "players"}"
+        val mode = Overlays.legionBobbingTimeTrackerMode
+        val lines = mutableListOf<String>()
 
-        val hooksColor = if (fishingHooksCount >= MAX_BOBBING_TIME_COUNT) GREEN else WHITE
-        val hooksText = "${LIGHT_PURPLE}${BOLD}Bobbin' Time${GRAY}: ${hooksColor}${fishingHooksCount} ${GRAY}${if (fishingHooksCount == 1) "hook" else "hooks"}"
+        if (mode == LegionBobbingTimeTrackerMode.BOTH || mode == LegionBobbingTimeTrackerMode.LEGION_ONLY) {
+            val playersColor = if (playersCount >= MAX_LEGION_COUNT) GREEN else WHITE
+            val playersText = "${LIGHT_PURPLE}${BOLD}Legion${GRAY}: ${playersColor}${playersCount} ${GRAY}${if (playersCount == 1) "player" else "players"}"
+            lines.add(playersText)
+        }
 
-        gui.setLines(listOf(playersText, hooksText))
+        if (mode == LegionBobbingTimeTrackerMode.BOTH || mode == LegionBobbingTimeTrackerMode.BOBBING_TIME_ONLY) {
+            val hooksColor = if (fishingHooksCount >= MAX_BOBBING_TIME_COUNT) GREEN else WHITE
+            val hooksText = "${LIGHT_PURPLE}${BOLD}Bobbin' Time${GRAY}: ${hooksColor}${fishingHooksCount} ${GRAY}${if (fishingHooksCount == 1) "hook" else "hooks"}"
+            lines.add(hooksText)
+        }
+
+        gui.setLines(lines)
     }
 }
