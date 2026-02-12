@@ -17,14 +17,12 @@ import com.github.sleepypanda.feesh.events.EventBus
 import com.github.sleepypanda.feesh.events.models.ClientTickEvent
 import com.github.sleepypanda.feesh.events.models.WorldChangedEvent
 import java.util.UUID
-import kotlin.random.Random
 import net.minecraft.text.Text
 import net.minecraft.text.Style
 import net.minecraft.text.ClickEvent
 import net.minecraft.text.HoverEvent
 import net.minecraft.text.ClickEvent.RunCommand
 import net.minecraft.text.HoverEvent.ShowText
-import net.minecraft.client.option.KeyBinding
 import org.lwjgl.glfw.GLFW
 
 object HotspotFoundMessage {
@@ -32,6 +30,7 @@ object HotspotFoundMessage {
     private var lastFoundHotspotIds = mutableListOf<UUID>()
     private var tickCounter = 0
     private const val TICKS_PER_CHECK = 10
+    private const val NEAREST_HOTSPOT_RANGE_FROM_PLAYER = 10.0
 
     fun init() {
         registerKeybinds()
@@ -71,12 +70,12 @@ object HotspotFoundMessage {
             if (!WorldUtils.isInSkyblock() || !WorldUtils.isInHotspotFishingWorld()) return
 
             val player = FeeshMod.mc.player ?: return
-            val closestHotspot = HotspotUtils.findClosestHotspotInRange(player)
+            val closestHotspot = HotspotUtils.findClosestHotspotInRange(player, NEAREST_HOTSPOT_RANGE_FROM_PLAYER)
             
             if (closestHotspot != null) {
                 announceNearestHotspot(closestHotspot.x, closestHotspot.y, closestHotspot.z, closestHotspot.perk, isParty)
             } else {
-                ChatUtils.sendLocalChat("${WHITE}No Hotspot found nearby, move closer to be in ${HotspotUtils.HOTSPOT_RANGE.toInt()} blocks range!", true)
+                ChatUtils.sendLocalChat("${WHITE}No Hotspot found nearby, move closer to be in ${NEAREST_HOTSPOT_RANGE_FROM_PLAYER.toInt()} blocks range!", true)
             }
         } catch (e: Exception) {
             FeeshMod.LOGGER.error("[Feesh] Failed to share nearby Hotspot.", e)
@@ -88,7 +87,7 @@ object HotspotFoundMessage {
             if ((!Chat.messageOnHotspotFound && !Chat.autoMessageOnHotspotFound) || !WorldUtils.isInSkyblock() || !WorldUtils.isInHotspotFishingWorld() || !PlayerUtils.hasFishingRodInHotbar()) return
 
             val player = FeeshMod.mc.player ?: return
-            val closestHotspot = HotspotUtils.findClosestHotspotInRange(player)
+            val closestHotspot = HotspotUtils.findClosestHotspotInRange(player, NEAREST_HOTSPOT_RANGE_FROM_PLAYER)
             val closestHotspotId = closestHotspot?.entity?.uuid
 
             if (closestHotspot != null && 

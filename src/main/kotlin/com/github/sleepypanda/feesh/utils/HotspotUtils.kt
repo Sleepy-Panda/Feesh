@@ -16,8 +16,6 @@ object HotspotUtils {
         val perk: String?
     )
 
-    const val HOTSPOT_RANGE = 7.0
-
     /**
      * Check if an armor stand is a perk for a hotspot armor stand.
      * A perk armor stand must be at the same X and Z, Y is below the HOTSPOT, within 1 block, and have the same pitch.
@@ -39,7 +37,7 @@ object HotspotUtils {
      * @param distance The maximum distance to search.
      * @returns HotspotData in the format { entity, position, perk } or null if not found.
      */
-    fun findClosestHotspotInRange(entity: Entity, distance: Double = HOTSPOT_RANGE): HotspotData? {
+    fun findClosestHotspotInRange(entity: Entity, distance: Double): HotspotData? {
         val armorStands = EntityUtils.getArmorStandsInRange(entity, distance)
         if (armorStands.isEmpty()) return null
 
