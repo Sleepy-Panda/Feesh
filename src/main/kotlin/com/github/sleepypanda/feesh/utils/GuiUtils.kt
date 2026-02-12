@@ -25,6 +25,7 @@ data class LastGuisClosed(
     var lastCraftGuiClosedAt: Date? = null,
     var lastStorageGuiClosedAt: Date? = null,
     var lastBazaarGuiClosedAt: Date? = null,
+    var lastPetItemSwapGuiClosedAt: Date? = null,
     var lastHotmGuiClosedAt: Date? = null
 )
 
@@ -73,6 +74,8 @@ object GuiUtils {
                 lastGuisClosed.lastStorageGuiClosedAt = now
             chestName.contains("Bazaar Orders") || chestName.contains("Order options") || chestName.contains("Instant Buy") ->
                 lastGuisClosed.lastBazaarGuiClosedAt = now
+            chestName == "Swap Pet Item" || chestName == "Remove Pet Item" -> 
+                lastGuisClosed.lastPetItemSwapGuiClosedAt = now
             chestName.contains("Heart of the Mountain") -> lastGuisClosed.lastHotmGuiClosedAt = now
         }
     }
@@ -122,9 +125,21 @@ object GuiUtils {
         return screen.getTitle().getString().removeFormatting()
     }
 
-    fun isInWardrobeOrEquipmentGui(): Boolean {
+    /*
+     * Check if the player is a GUI which is non-storage (you can't take items from it).
+     * This is used to check if to ignore inventory changes when in some GUI.
+     * @returns {Boolean}
+     */
+    fun isInNonStorageGui(): Boolean {
         val guiName = getCurrentChestName() ?: return false
-        return guiName.startsWith("Wardrobe") || guiName.startsWith("Your Equipment")
+        return guiName.startsWith("Wardrobe") || 
+            guiName.startsWith("Your Equipment") || 
+            guiName.startsWith("Abiphone") || 
+            guiName == "Slayer" || 
+            guiName == "Accessory Bag Thaumaturgy" ||
+            guiName == "Stats Tuning" ||
+            guiName == "Skyblock Menu" ||
+            guiName == "Calendar and Events"
     }
 
     fun isInSacksGui(): Boolean {

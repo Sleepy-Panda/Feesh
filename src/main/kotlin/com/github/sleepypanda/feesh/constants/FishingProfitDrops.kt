@@ -16,11 +16,14 @@ data class FishingProfitDropInfo(
     val npcPrice: Double?,
     val shouldAnnounceRareDrop: Boolean = false, // If the item should be announced as a rare drop in player's chat (for valuable drops which have no standart RARE DROP! message from Hypixel)
     val amountOfMagmaFish: Int? = null, // Amount of Magma Fish to exchange a Trophy Fish at Odger
-    val salvage: SalvageableItemInfo? = null // Item to salvage into essence items
+    val salvage: SalvageableItemInfo? = null, // Item to salvage into essence items
+    val categories: List<String> = listOf(), // Categories the item belongs to
 )
 
-class FishingProfitDrops {
+class FishingProfitDrops {  
     companion object {
+        const val PET_ITEM_CATEGORY = "Pet Item"
+
         val items = listOf(
             // Dyes
             
@@ -1068,18 +1071,21 @@ class FishingProfitDrops {
                 itemName = "Fishing Exp Boost (UNCOMMON)",
                 itemDisplayName = "${UNCOMMON}Fishing Exp Boost +30%",
                 npcPrice = null,
+                categories = listOf(PET_ITEM_CATEGORY),
             ),
             FishingProfitDropInfo(
                 itemId = "PET_ITEM_FISHING_SKILL_BOOST_RARE",
                 itemName = "Fishing Exp Boost (RARE)",
                 itemDisplayName = "${RARE}Fishing Exp Boost +40%",
                 npcPrice = null,
+                categories = listOf(PET_ITEM_CATEGORY),
             ),
             FishingProfitDropInfo(
                 itemId = "PET_ITEM_FISHING_SKILL_BOOST_EPIC",
                 itemName = "Fishing Exp Boost (EPIC)",
                 itemDisplayName = "${EPIC}Fishing Exp Boost +50%",
                 npcPrice = null,
+                categories = listOf(PET_ITEM_CATEGORY),
             ),
             FishingProfitDropInfo(
                 itemId = "WATER_HYDRA_HEAD",
@@ -1148,6 +1154,7 @@ class FishingProfitDrops {
                 itemName = "Edible Seaweed",
                 itemDisplayName = "${RARE}Edible Seaweed",
                 npcPrice = 50_000.0,
+                categories = listOf(PET_ITEM_CATEGORY),
             ),
             FishingProfitDropInfo(
                 itemId = "BLUE_RING",
@@ -1351,6 +1358,7 @@ class FishingProfitDrops {
                 itemDisplayName = "${EPIC}Foraging Exp Boost +50%",
                 npcPrice = null,
                 shouldAnnounceRareDrop = true,
+                categories = listOf(PET_ITEM_CATEGORY),
             ),
 
             // Crimson Isle
@@ -1416,6 +1424,7 @@ class FishingProfitDrops {
                 itemName = "Burnt Texts",
                 itemDisplayName = "${LEGENDARY}Burnt Texts",
                 npcPrice = 1_000_000.0,
+                categories = listOf(PET_ITEM_CATEGORY),
             ),
             FishingProfitDropInfo(
                 itemId = "CHAIN_END_TIMES",
