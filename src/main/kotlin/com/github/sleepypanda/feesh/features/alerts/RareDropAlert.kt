@@ -4,6 +4,7 @@ import com.github.sleepypanda.feesh.events.EventBus
 import com.github.sleepypanda.feesh.events.models.RareDropEvent
 import com.github.sleepypanda.feesh.constants.RareDropTypes
 import com.github.sleepypanda.feesh.constants.RareDrops
+import com.github.sleepypanda.feesh.settings.categories.AlertSource
 import com.github.sleepypanda.feesh.settings.categories.Alerts
 import com.github.sleepypanda.feesh.settings.categories.General
 import com.github.sleepypanda.feesh.settings.categories.SoundMode
@@ -41,7 +42,7 @@ object RareDropAlert {
     }
 
     private fun onPartyChatDrop(event: PartyChatEvent) {
-        if (!WorldUtils.isInSkyblock() || !Alerts.alertOnRareDrops || !Alerts.alertOnRareDropsFromParty) return
+        if (!WorldUtils.isInSkyblock() || !Alerts.alertOnRareDrops || Alerts.alertOnRareDropsSource != AlertSource.OWN_AND_PARTY) return
 
         val message = event.messagePayload.removeFormatting()
 
