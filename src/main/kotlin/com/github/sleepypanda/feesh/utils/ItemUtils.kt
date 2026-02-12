@@ -1,6 +1,7 @@
 package com.github.sleepypanda.feesh.utils
 
 import com.github.sleepypanda.feesh.utils.ChatUtils.removeFormatting
+import com.github.sleepypanda.feesh.utils.enums.ColorCodes.GRAY
 import com.google.gson.JsonObject
 import com.mojang.serialization.JsonOps
 import net.minecraft.component.DataComponentTypes
@@ -43,6 +44,7 @@ object ItemUtils {
         }
         return jsonEl?.takeIf { it.isJsonObject }?.asJsonObject
     }
+
     /*
      * Checks if the item is a Dirt Rod.
      * @param item The item to check.
@@ -91,5 +93,53 @@ object ItemUtils {
         val itemIdMaxLevel = "${baseItemId}+${level}"
         return itemIdMaxLevel
     }
-}
 
+    /*
+     * Checks if the item ID is a maxed pet ID.
+     * @param itemId The item ID to check.
+     * @returns {Boolean} True if the item is a maxed pet, false otherwise.
+     */
+    fun isMaxedPet(itemId: String): Boolean =
+        itemId.endsWith("+100") || itemId.endsWith("+200")
+
+    /*
+     * Gets the pet name by pet ID.
+     * @param itemId The item ID to get the name for.
+     * @returns {String} The name for the pet, e.g. Flying Fish
+     */
+    fun getPetNameByPetId(itemId: String): String {
+        if (!isMaxedPet(itemId)) return ""
+        val namePrefix = itemId.split(";")[0]
+        val itemName = CommonUtils.fromUppercaseToCapitalizedFirstLetters(namePrefix, "_")
+        return itemName
+    }
+
+    /*
+     * Gets the item display name by pet ID.
+     * @param itemId The item ID to get the display name for.
+     * @returns {String} The item display name for the pet with formatting, e.g. "[Lvl 100] Flying Fish"
+     */
+    fun getItemDisplayNameByPetId(itemId: String): String {
+        if (!isMaxedPet(itemId)) return ""
+        val level = itemId.split("+")[1]
+        val rarityNumericCode = itemId.split(";")[1].substringBefore("+").toInt()
+        val rarityCode = CommonUtils.getRarityColorCode(rarityNumericCode)
+        val namePrefix = itemId.split(";")[0]
+        val itemName = CommonUtils.fromUppercaseToCapitalizedFirstLetters(namePrefix, "_")
+        return "${GRAY}[Lvl ${level}] ${rarityCode}${itemName}"
+    }
+
+    /*
+     * Gets the item display name by pet ID.
+     * @param itemId The item ID to get the display name for.
+     * @param petName The item name to get the display name for, e.g. "Flying Fish"
+     * @returns {String} The item display name for the pet with formatting, e.g. "[Lvl 100] Flying Fish"
+     */
+    fun getItemDisplayNameByPetId(itemId: String, petName: String): String {
+        if (!isMaxedPet(itemId)) return ""
+        val level = itemId.split("+")[1]
+        val rarityNumericCode = itemId.split(";")[1].substringBefore("+").toInt()
+        val rarityCode = CommonUtils.getRarityColorCode(rarityNumericCode)
+        return "${GRAY}[Lvl ${level}] ${rarityCode}${petName}"
+    }
+}

@@ -1,7 +1,6 @@
 ## Players feedback
 
 - Items counted after /gfs or extracting pet items
-- Cant add or remove level 100 pets using buttons
 - Hotspot is gone when too sinked in lava
 - while i was fishing in the crystal hollows i noticed that the mob cap alert wasnt working for it
   - [I checked and for me it was working]
@@ -9,6 +8,7 @@
   - [I checked and for me it was paused]
 - Legion & Bobbing Time - want to choose in settings which one to show, or labels customization to make shorter display
 - 1.21.11 support
+- Rendering section from CT
 - Settings are not saved after exiting the game, probably because user closes window using X button to exit
 
 ## Tech Debt

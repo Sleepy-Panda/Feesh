@@ -25,8 +25,14 @@ object CommonUtils {
         return if (isNegative) "-$formatted" else formatted
     }
 
-    fun fromUppercaseToCapitalizedFirstLetters(text: String): String {
-        return text.split(" ").joinToString(" ") { word ->
+    /**
+     * Converts a text from uppercase to capitalized first letters (e.g., "FLYING_FISH" -> "Flying Fish").
+     * @param text The text to convert.
+     * @param separator The separator to split the original text.
+     * @return The converted text.
+     */
+    fun fromUppercaseToCapitalizedFirstLetters(text: String, separator: String = " "): String {
+        return text.split(separator).joinToString(" ") { word ->
             word.lowercase().replaceFirstChar { it.uppercase() }
         }
     }
