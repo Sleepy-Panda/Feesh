@@ -1,6 +1,5 @@
 ## Players feedback
 
-- Option to not count double hook in sc/hour
 - Items counted after /gfs
 - Hotspot is gone message when swapping server
 - while i was fishing in the crystal hollows i noticed that the mob cap alert wasnt working for it
