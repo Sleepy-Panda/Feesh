@@ -9,6 +9,7 @@ import com.github.sleepypanda.feesh.utils.PlayerUtils
 import com.github.sleepypanda.feesh.utils.HotspotUtils
 import com.github.sleepypanda.feesh.utils.ChatUtils
 import com.github.sleepypanda.feesh.utils.ChatUtils.removeFormatting
+import com.github.sleepypanda.feesh.utils.EntityUtils
 import com.github.sleepypanda.feesh.utils.SoundUtils
 import com.github.sleepypanda.feesh.utils.KeybindUtils
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
@@ -16,6 +17,7 @@ import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
 import com.github.sleepypanda.feesh.events.EventBus
 import com.github.sleepypanda.feesh.events.models.ClientTickEvent
 import com.github.sleepypanda.feesh.events.models.WorldChangedEvent
+import com.github.sleepypanda.feesh.events.models.ArmorStandDespawnedEvent
 import java.util.UUID
 import net.minecraft.text.Text
 import net.minecraft.text.Style
@@ -27,7 +29,7 @@ import org.lwjgl.glfw.GLFW
 
 object HotspotFoundMessage {
     private var lastClosestHotspot: HotspotUtils.HotspotData? = null
-    private var lastFoundHotspotIds = mutableListOf<UUID>()
+    private var lastFoundHotspotIds = mutableListOf<UUID>() // Last 2 found hotspots' uuid, to not alert again and again when moving between 2 close hotspots
     private var tickCounter = 0
     private const val TICKS_PER_CHECK = 10
     private const val NEAREST_HOTSPOT_RANGE_FROM_PLAYER = 10.0
@@ -37,6 +39,7 @@ object HotspotFoundMessage {
 
         EventBus.subscribe(ClientTickEvent::class, ::onClientTick)
         EventBus.subscribe(WorldChangedEvent::class, ::onWorldChanged)
+        EventBus.subscribe(ArmorStandDespawnedEvent::class, ::onHotspotDespawned)
     }
 
     private fun registerKeybinds() {
@@ -65,6 +68,23 @@ object HotspotFoundMessage {
         sendMessageOnHotspotFound()
     }
 
+    private fun onHotspotDespawned(@Suppress("UNUSED_PARAMETER") event: ArmorStandDespawnedEvent) {
+        if (!Chat.messageOnHotspotFound && !Chat.autoMessageOnHotspotFound) return
+        if (!WorldUtils.isInSkyblock() || !WorldUtils.isInHotspotFishingWorld() || !PlayerUtils.hasFishingRodInHotbar()) return
+
+        val hotspotId = event.armorStand.uuid
+        if (!lastFoundHotspotIds.contains(hotspotId) && lastClosestHotspot?.entity?.uuid != hotspotId) return
+
+        val player = FeeshMod.mc.player ?: return
+        val distance = EntityUtils.getDistance(player, event.armorStand)
+        if (distance > 30.0) return // Probably user just moved away so the nametag is not rendered anymore
+
+        lastFoundHotspotIds.remove(hotspotId)
+        if (lastClosestHotspot != null && lastClosestHotspot!!.entity.uuid == hotspotId) {
+            lastClosestHotspot = null
+        }
+    }
+
     private fun sendMessageWithNearestHotspot(isParty: Boolean) {
         try {
             if (!WorldUtils.isInSkyblock() || !WorldUtils.isInHotspotFishingWorld()) return
@@ -84,23 +104,16 @@ object HotspotFoundMessage {
 
     private fun sendMessageOnHotspotFound() {
         try {
-            if ((!Chat.messageOnHotspotFound && !Chat.autoMessageOnHotspotFound) || !WorldUtils.isInSkyblock() || !WorldUtils.isInHotspotFishingWorld() || !PlayerUtils.hasFishingRodInHotbar()) return
+            if (!Chat.messageOnHotspotFound && !Chat.autoMessageOnHotspotFound) return
+            if (!WorldUtils.isInSkyblock() || !WorldUtils.isInHotspotFishingWorld() || !PlayerUtils.hasFishingRodInHotbar()) return
 
             val player = FeeshMod.mc.player ?: return
-            val closestHotspot = HotspotUtils.findClosestHotspotInRange(player, NEAREST_HOTSPOT_RANGE_FROM_PLAYER)
-            val closestHotspotId = closestHotspot?.entity?.uuid
+            val closestHotspot = HotspotUtils.findClosestHotspotInRange(player, NEAREST_HOTSPOT_RANGE_FROM_PLAYER) ?: return
+            val closestHotspotId = closestHotspot.entity.uuid
 
-            if (closestHotspot != null && 
-                closestHotspotId != null &&
-                !lastFoundHotspotIds.contains(closestHotspotId) && (
-                    lastClosestHotspot == null ||
-                    (lastClosestHotspot != null && !(
-                        closestHotspot.x == lastClosestHotspot!!.x &&
-                        closestHotspot.y == lastClosestHotspot!!.y &&
-                        closestHotspot.z == lastClosestHotspot!!.z
-                    ))
-                )
-            ) {
+            if (lastFoundHotspotIds.contains(closestHotspotId)) return
+
+            if (lastClosestHotspot == null || (closestHotspot.entity.uuid != lastClosestHotspot!!.entity.uuid)) {
                 announceFoundHotspot(closestHotspot.x, closestHotspot.y, closestHotspot.z, closestHotspot.perk)
 
                 lastFoundHotspotIds.add(0, closestHotspotId)
@@ -109,9 +122,7 @@ object HotspotFoundMessage {
                 }
             }
 
-            if (closestHotspot != null) {
-                lastClosestHotspot = closestHotspot
-            }
+            lastClosestHotspot = closestHotspot
         } catch (e: Exception) {
             FeeshMod.LOGGER.error("[Feesh] Failed to send message on Hotspot found.", e)
         }

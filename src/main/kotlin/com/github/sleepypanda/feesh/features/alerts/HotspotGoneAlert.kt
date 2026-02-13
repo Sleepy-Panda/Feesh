@@ -47,14 +47,14 @@ object HotspotGoneAlert {
         if (!Alerts.alertOnHotspotGone || !WorldUtils.isInSkyblock() || !WorldUtils.isInHotspotFishingWorld() || !PlayerUtils.hasFishingRodInHotbar()) return
         if (lastClosestHotspot == null) return
         if (lastClosestHotspot!!.entity.uuid != event.armorStand.uuid) return
-        if (lastClosestHotspot!!.entity.customName?.string != "HOTSPOT") return
+        if (event.armorStand.customName?.string != "HOTSPOT") return
 
         val player = FeeshMod.mc.player ?: return
         val distance = EntityUtils.getDistance(player, lastClosestHotspot!!.entity)
         if (distance > HOTSPOT_CHECK_RANGE) return
 
-        lastClosestHotspot = null
         playAlert(lastClosestHotspot!!.perk)
+        lastClosestHotspot = null
     }
 
     private fun trackLatestHotspot() {
