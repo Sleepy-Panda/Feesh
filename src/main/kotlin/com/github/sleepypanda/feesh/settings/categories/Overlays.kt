@@ -243,10 +243,15 @@ ${GRAY}To reset [Total]: ${WHITE}/${SeaCreaturesTracker.RESET_TOTAL}
     var seaCreaturesPerHourTrackerOverlay by boolean(false) {
         this.name = Translated("Sea creatures per hour tracker")
         this.description = Translated("""
-${GRAY}Shows an overlay with the sea creatures per hour, and total sea creatures caught per session. Not persistent - resets on MC restart.
+${GRAY}Shows an overlay with the sea creatures caught per hour, and total sea creatures caught per session. Not persistent - resets on MC restart.
 ${GRAY}To reset: ${WHITE}/${SeaCreaturesPerHourTracker.RESET_COMMAND}
 ${GRAY}To pause: ${WHITE}/${SeaCreaturesPerHourTracker.PAUSE_COMMAND}
 """.trimIndent())
+    }
+
+    var seaCreaturesPerHourCountDoubleHookAsTwo by boolean(true) {
+        this.name = Translated("Count double hook as 2")
+        this.description = Translated("When enabled, a double hook catch counts as 2 sea creatures. When disabled, it counts as 1.")
     }
 
     init {

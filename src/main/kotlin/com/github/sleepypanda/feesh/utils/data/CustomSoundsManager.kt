@@ -6,7 +6,6 @@ import com.github.sleepypanda.feesh.constants.SeaCreatures
 import com.github.sleepypanda.feesh.constants.Sounds
 import com.github.sleepypanda.feesh.utils.RegisterUtils
 import com.github.sleepypanda.feesh.utils.FileUtils
-import com.github.sleepypanda.feesh.utils.ChatUtils
 import com.github.sleepypanda.feesh.utils.PlayerUtils
 import com.github.sleepypanda.feesh.utils.SoundUtils
 import com.google.gson.Gson
@@ -199,7 +198,7 @@ object CustomSoundsManager {
     private fun generateSoundsJsonFromFiles() {
         try {
             if (!resourcePackSoundsDir.exists()) {
-                ChatUtils.sendLocalChat("Resource pack sounds directory does not exist. Please create it and add your .ogg files to it.", true)
+                FeeshMod.LOGGER.info("[Feesh] Resource pack sounds directory does not exist. Please create it and add your .ogg files to it.", true)
                 return
             }
             
@@ -232,7 +231,7 @@ object CustomSoundsManager {
             resourcePackSoundsJsonFile.parentFile?.mkdirs()
             resourcePackSoundsJsonFile.writeText(json)
             
-            ChatUtils.sendLocalChat("Generated sounds.json with ${oggFiles.size} sound entries", true)
+            FeeshMod.LOGGER.info("[Feesh] Generated sounds.json with ${oggFiles.size} sound entries")
         } catch (e: Exception) {
             FeeshMod.LOGGER.error("[Feesh] Failed to generate sounds.json for custom user resource pack", e)
         }
