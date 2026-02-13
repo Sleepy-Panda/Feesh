@@ -10,6 +10,8 @@ Released on: ???
 - Added price displaying settings for Rare Drop alert (Own / Own and party / Off)
 - Added settings for Rare Catch / Rare Drop alerts to toggle alerts from different sources (Own / Own and party)
 - Added setting for Legion & Bobbin' Time overlay to toggle which lines to show
+- More precise % in Sea creatures tracker
+- Added setting to count SC catches without double hook in Sea creatures per hour tracker
 
 ## Bugfixes
 
@@ -17,6 +19,7 @@ Released on: ???
 - Do not track items taken from pet item swapping GUI in Fishing profit tracker
 - Allow increase/decrease/delete max level pets in Fishing profit tracker
 - Get rid of ,0 when formatting prices
+- Fixed error in logs after generating sounds.json for custom sounds resource pack
 - Most important bugfix ever (thanks to gegerik for reporting)
 
 ## Special thanks

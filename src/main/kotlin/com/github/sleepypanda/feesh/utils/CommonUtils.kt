@@ -13,8 +13,7 @@ object CommonUtils {
         mc.inGameHud.apply {
             setTitleTicks(fadeIn, stay, fadeOut)
             setTitle(net.minecraft.text.Text.literal(title))
-            if (subtitle != null)
-                setSubtitle(net.minecraft.text.Text.literal(subtitle))
+            setSubtitle(net.minecraft.text.Text.literal(subtitle ?: " "))
         }
     }
 
