@@ -37,7 +37,7 @@ object SeaCreaturesPerHourTracker {
         .setClickable(true)
         .setSampleLines(listOf(
             baseTitle,
-            "${WHITE}1 234 ${GRAY}per hour (${WHITE}2 000 ${GRAY}total)",
+            "${WHITE}1 234 ${GRAY}sc/hour (${WHITE}2 000 ${GRAY}total)",
             "",
             "${AQUA}Elapsed time: ${WHITE}1h 23m 45s",
         ))
