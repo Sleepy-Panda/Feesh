@@ -1,7 +1,8 @@
 ## Players feedback
 
+- Option to not count double hook in sc/hour
 - Items counted after /gfs
-- Hotspot is gone when too sinked in lava
+- Hotspot is gone message when swapping server
 - while i was fishing in the crystal hollows i noticed that the mob cap alert wasnt working for it
   - [I checked and for me it was working]
 - Profit Tracker not paused after 5 minutes?
