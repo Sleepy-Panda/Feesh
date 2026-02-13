@@ -37,7 +37,7 @@ object SeaCreaturesPerHourTracker {
         .setClickable(true)
         .setSampleLines(listOf(
             baseTitle,
-            "${WHITE}1 234 ${GRAY}per hour (${WHITE}2 000 ${GRAY}total)",
+            "${WHITE}1 234 ${GRAY}sc/hour (${WHITE}2 000 ${GRAY}total)",
             "",
             "${AQUA}Elapsed time: ${WHITE}1h 23m 45s",
         ))
@@ -118,7 +118,7 @@ object SeaCreaturesPerHourTracker {
             val isDoubleHooked = event.isDoubleHook
             isSessionActive = true
 
-            val diff = if (isDoubleHooked) 2 else 1
+            val diff = if (isDoubleHooked && Overlays.seaCreaturesPerHourCountDoubleHookAsTwo) 2 else 1
             totalSeaCreaturesCaughtCount += diff
             lastSeaCreatureCaughtAt = Date()
 
@@ -146,7 +146,9 @@ object SeaCreaturesPerHourTracker {
         val pausedText = if (isSessionActive) "" else " ${GRAY}[Paused]"
         val lines = mutableListOf<String>()
         lines.add(baseTitle)
-        lines.add("${WHITE}${CommonUtils.formatNumberWithSpaces(seaCreaturesPerHour)} ${GRAY}per hour (${WHITE}${CommonUtils.formatNumberWithSpaces(totalSeaCreaturesCaughtCount)} ${GRAY}total)")
+        val count = CommonUtils.formatNumberWithSpaces(seaCreaturesPerHour)
+        val text = if (Overlays.seaCreaturesPerHourCountDoubleHookAsTwo) "${GRAY}sc/hour" else "${GRAY}catches/hour"
+        lines.add("${WHITE}${count} ${text} (${WHITE}${CommonUtils.formatNumberWithSpaces(totalSeaCreaturesCaughtCount)} ${GRAY}total)")
         lines.add("")
         lines.add("${AQUA}Elapsed time: ${WHITE}${CommonUtils.formatTimeElapsed(elapsedSeconds)}${pausedText}")
 
