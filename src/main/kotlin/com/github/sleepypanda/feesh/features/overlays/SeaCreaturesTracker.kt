@@ -50,7 +50,7 @@ object SeaCreaturesTracker {
     private const val TICKS_PER_UPDATE = 20
 
     private var data = PersistentDataManager.feeshData.seaCreatures
-    private val decimalFormat = DecimalFormat("#.#")
+    private val decimalFormat = DecimalFormat("#.##")
     private var tickCounter = 0
     private val baseTitle = "${AQUA}${BOLD}Sea creatures tracker"
 
