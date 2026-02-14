@@ -1148,6 +1148,7 @@ class FishingProfitDrops {
                 itemName = "Broken Radar",
                 itemDisplayName = "${RARE}Broken Radar",
                 npcPrice = 25_000.0,
+                shouldAnnounceRareDrop = true,
             ),
             FishingProfitDropInfo(
                 itemId = "EDIBLE_SEAWEED",
@@ -1161,6 +1162,7 @@ class FishingProfitDrops {
                 itemName = "Blue Ring",
                 itemDisplayName = "${RARE}Blue Ring",
                 npcPrice = 25_000.0,
+                shouldAnnounceRareDrop = true,
             ),
             FishingProfitDropInfo(
                 itemId = "OCTOPUS_TENDRIL",
@@ -1209,6 +1211,7 @@ class FishingProfitDrops {
                 itemName = "Torn Cloth",
                 itemDisplayName = "${UNCOMMON}Torn Cloth",
                 npcPrice = 5_000.0,
+                shouldAnnounceRareDrop = true,
             ),
             FishingProfitDropInfo(
                 itemId = "CALCIFIED_HEART",
@@ -1252,6 +1255,7 @@ class FishingProfitDrops {
                 itemName = "Alligator Skin",
                 itemDisplayName = "${EPIC}Alligator Skin",
                 npcPrice = 5_000.0,
+                shouldAnnounceRareDrop = true,
             ),
             FishingProfitDropInfo(
                 itemId = "TITANOBOA_SHED",

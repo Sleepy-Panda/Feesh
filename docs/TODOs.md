@@ -1,6 +1,7 @@
 ## Players feedback
 
 - Items counted after /gfs
+- Troubled bubble?
 - Hotspot is gone message when swapping server
 - while i was fishing in the crystal hollows i noticed that the mob cap alert wasnt working for it
   - [I checked and for me it was working]

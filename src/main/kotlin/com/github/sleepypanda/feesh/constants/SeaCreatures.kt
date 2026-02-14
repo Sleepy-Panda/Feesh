@@ -25,6 +25,7 @@ enum class RareSeaCreatureTypes(val displayName: String) {
     ABYSSAL_MINER("Abyssal Miner"),
     ALLIGATOR("Alligator"),
     BLUE_RINGED_OCTOPUS("Blue Ringed Octopus"),
+    BANSHEE("Banshee"),
     WIKI_TIKI("Wiki Tiki"),
     TITANOBOA("Titanoboa"),
     THE_LOCH_EMPEROR("The Loch Emperor");
@@ -211,7 +212,7 @@ class SeaCreatures {
             SeaCreatureInfo("Frog Man", COMMON.code, Regex(FROG_MAN_MESSAGE), false),
             SeaCreatureInfo("Trash Gobbler", COMMON.code, Regex(TRASH_GOBBLER_MESSAGE), false),
             SeaCreatureInfo("Dumpster Diver", UNCOMMON.code, Regex(DUMPSTER_DIVER_MESSAGE), false),
-            SeaCreatureInfo("Banshee", RARE.code, Regex(BANSHEE_MESSAGE), false),
+            SeaCreatureInfo(RareSeaCreatureTypes.BANSHEE.displayName, RARE.code, Regex(BANSHEE_MESSAGE), true),
             SeaCreatureInfo("Snapping Turtle", RARE.code, Regex(SNAPPING_TURTLE_MESSAGE), false),
             SeaCreatureInfo("Bayou Sludge", RARE.code, Regex(BAYOU_SLUDGE_MESSAGE), false),
             SeaCreatureInfo(RareSeaCreatureTypes.ALLIGATOR.displayName, LEGENDARY.code, Regex(ALLIGATOR_MESSAGE), true),
