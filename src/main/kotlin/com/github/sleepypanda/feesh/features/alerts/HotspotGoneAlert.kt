@@ -14,7 +14,10 @@ import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
 import com.github.sleepypanda.feesh.events.EventBus
 import com.github.sleepypanda.feesh.events.models.ArmorStandDespawnedEvent
 import com.github.sleepypanda.feesh.events.models.ClientTickEvent
-import com.github.sleepypanda.feesh.events.models.WorldChangedEvent
+import com.github.sleepypanda.feesh.events.models.WorldUnloadEvent
+import java.util.Timer
+import java.util.UUID
+import kotlin.concurrent.timerTask
 
 object HotspotGoneAlert {
     private var lastClosestHotspot: HotspotUtils.HotspotData? = null
@@ -25,11 +28,11 @@ object HotspotGoneAlert {
 
     fun init() {
         EventBus.subscribe(ClientTickEvent::class, ::onClientTick)
-        EventBus.subscribe(WorldChangedEvent::class, ::onWorldChanged)
+        EventBus.subscribe(WorldUnloadEvent::class, ::onWorldChanged)
         EventBus.subscribe(ArmorStandDespawnedEvent::class, ::onHotspotDespawned)
     }
 
-    private fun onWorldChanged(@Suppress("UNUSED_PARAMETER") event: WorldChangedEvent) {
+    private fun onWorldChanged(@Suppress("UNUSED_PARAMETER") event: WorldUnloadEvent) {
         lastClosestHotspot = null
     }
 
@@ -45,16 +48,25 @@ object HotspotGoneAlert {
 
     private fun onHotspotDespawned(@Suppress("UNUSED_PARAMETER") event: ArmorStandDespawnedEvent) {
         if (!Alerts.alertOnHotspotGone || !WorldUtils.isInSkyblock() || !WorldUtils.isInHotspotFishingWorld() || !PlayerUtils.hasFishingRodInHotbar()) return
-        if (lastClosestHotspot == null) return
-        if (lastClosestHotspot!!.entity.uuid != event.armorStand.uuid) return
+        val hotspot = lastClosestHotspot ?: return
+        if (hotspot.entity.uuid != event.armorStand.uuid) return
         if (event.armorStand.customName?.string != "HOTSPOT") return
 
         val player = FeeshMod.mc.player ?: return
-        val distance = EntityUtils.getDistance(player, lastClosestHotspot!!.entity)
+        val distance = EntityUtils.getDistance(player, hotspot.entity)
         if (distance > HOTSPOT_CHECK_RANGE) return
 
-        playAlert(lastClosestHotspot!!.perk)
-        lastClosestHotspot = null
+        val perk = hotspot.perk
+        val hotspotUuid: UUID = event.armorStand.uuid
+
+        Timer().schedule(timerTask {
+            FeeshMod.mc.execute {
+                if (lastClosestHotspot == null) return@execute
+                if (lastClosestHotspot!!.entity.uuid != hotspotUuid) return@execute
+                playAlert(perk)
+                lastClosestHotspot = null
+            }
+        }, 100) // If player changes server, it causes armor stand to despawn before, but we don't need alert. Let onWorldChanged trigger first.
     }
 
     private fun trackLatestHotspot() {
