@@ -26,6 +26,12 @@ private const val GAME_VERSIONS = """["$GAME_VERSION"]"""
 private const val REQUEST_TIMEOUT_MS = 10000
 
 object VersionChecker {
+    var cachedLatestVersion: String? = null
+        private set
+
+    var isLatestVersion: Boolean = true
+        private set
+
     private val executor = Executors.newSingleThreadExecutor { r ->
         Thread(r, "Feesh-Version-Check").apply { isDaemon = true }
     }
@@ -71,11 +77,18 @@ object VersionChecker {
                 val versions = JsonParser.parseString(response).asJsonArray
                 if (versions.size() == 0) return@execute
 
-                val latestVersionNumber = versions[0].asJsonObject.get("version_number")?.asString ?: return@execute
+                val latestVersion = versions[0]?.asJsonObject ?: return@execute
+                val latestVersionNumber = latestVersion.get("version_number")?.asString ?: return@execute
+
+                FeeshMod.mc.execute {
+                    cachedLatestVersion = latestVersionNumber
+                }
+                
                 val currentVersion = FeeshMod.version
 
                 if (isNewerVersion(latestVersionNumber, currentVersion)) {
                     FeeshMod.mc.execute {
+                        isLatestVersion = false
                         showNewVersionMessage(currentVersion, latestVersionNumber)
                     }
                 }
