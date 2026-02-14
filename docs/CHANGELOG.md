@@ -6,7 +6,8 @@ Released on: ???
 
 - Added Fishing festival tracker and related alerts
 - Added Personal Best tracking for fishing festivals (total sharks, Great White Sharks caught)
-- Added version checker which announces latest available version from Modrinth
+- Show latest available version from Modrinth in the settings
+- Added version checker which announces latest available version from Modrinth after joining the game
 - Added price displaying settings for Rare Drop alert (Own / Own and party / Off)
 - Added settings for Rare Catch / Rare Drop alerts to toggle alerts from different sources (Own / Own and party)
 - Added setting for Legion & Bobbin' Time overlay to toggle which lines to show

@@ -7,6 +7,7 @@ import com.github.sleepypanda.feesh.settings.categories.Chat
 import com.github.sleepypanda.feesh.settings.categories.Overlays
 import com.github.sleepypanda.feesh.settings.categories.Commands
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
+import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
 import com.github.sleepypanda.feesh.features.help.VersionChecker
 import com.teamresourceful.resourcefulconfig.api.types.options.TranslatableValue
 import com.teamresourceful.resourcefulconfigkt.api.ConfigKt
@@ -18,7 +19,7 @@ object Settings : ConfigKt("${FeeshMod.MOD_ID}/config") {
         
     override val description: TranslatableValue
         get() = Literal(
-            "QOL mod for Hypixel Skyblock fishing. Latest on Modrinth: ${YELLOW}${VersionChecker.cachedLatestVersion ?: "Unknown"}"
+            "QOL mod for Hypixel Skyblock fishing. ${if (VersionChecker.cachedLatestVersion.isNullOrEmpty()) "" else "Latest on Modrinth: ${if (VersionChecker.isLatestVersion) GREEN else RED}${BOLD}${VersionChecker.cachedLatestVersion}"}"
         )
     
     init {
@@ -32,7 +33,7 @@ object Settings : ConfigKt("${FeeshMod.MOD_ID}/config") {
             description = "Find official releases here. Open to check latest version."
             text = "Open"
             onClick {
-                openLink("https://modrinth.com/project/feesh")
+                openLink("https://modrinth.com/project/feesh/versions")
             }
         }
 

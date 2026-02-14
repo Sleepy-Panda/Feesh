@@ -29,6 +29,9 @@ object VersionChecker {
     var cachedLatestVersion: String? = null
         private set
 
+    var isLatestVersion: Boolean = true
+        private set
+
     private val executor = Executors.newSingleThreadExecutor { r ->
         Thread(r, "Feesh-Version-Check").apply { isDaemon = true }
     }
@@ -85,6 +88,7 @@ object VersionChecker {
 
                 if (isNewerVersion(latestVersionNumber, currentVersion)) {
                     FeeshMod.mc.execute {
+                        isLatestVersion = false
                         showNewVersionMessage(currentVersion, latestVersionNumber)
                     }
                 }
