@@ -40,7 +40,7 @@ The modern Minecraft requires you to package custom sounds as a resource pack, t
 
 1. Exit the game.
 
-1. Copy your `.ogg` files into the `feesh-custom-sounds/assets/feesh/sounds/` folder. **IMPORTANT: Do not use spaces in file names** (use `-` or `_` instead, e.g. `my-custom-sound.ogg` instead of `my custom sound.ogg`). 
+1. Copy your `.ogg` files into the `feesh-custom-sounds/assets/feesh/sounds/` folder. **IMPORTANT: Use only lowercase letters (a-z), numbers (0-9), `-` and `_` in file names** (`my-custom-sound_123.ogg` instead of `My custom sound.ogg`).
 
 1. Run the game. As the result, the `sounds.json` file describing the Resource Pack sounds will be automatically generated.
 
