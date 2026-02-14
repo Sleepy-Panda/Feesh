@@ -218,6 +218,11 @@ object CustomSoundsManager {
             
             oggFiles.forEach { file ->
                 val soundName = file.name.removeSuffix(".ogg")
+                if (!soundName.matches(Regex("[a-z0-9_-]+"))) {
+                    FeeshMod.LOGGER.warn("[Feesh] Invalid filename: $soundName. Only lowercase letters (a-z), numbers (0-9), `-` and `_` are allowed.")
+                    return@forEach
+                }
+
                 // File structure: https://minecraft.wiki/w/Sounds.json
                 soundsMap[soundName] = mapOf(
                     "sounds" to listOf(mapOf(
@@ -226,12 +231,12 @@ object CustomSoundsManager {
                     ))
                 )
             }
-            
+     
             val json = gson.toJson(soundsMap)
             resourcePackSoundsJsonFile.parentFile?.mkdirs()
             resourcePackSoundsJsonFile.writeText(json)
             
-            FeeshMod.LOGGER.info("[Feesh] Generated sounds.json with ${oggFiles.size} sound entries")
+            FeeshMod.LOGGER.info("[Feesh] Generated sounds.json with ${soundsMap.size} sound entries")
         } catch (e: Exception) {
             FeeshMod.LOGGER.error("[Feesh] Failed to generate sounds.json for custom user resource pack", e)
         }

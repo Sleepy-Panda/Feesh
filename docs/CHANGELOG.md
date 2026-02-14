@@ -6,7 +6,8 @@ Released on: ???
 
 - Added Fishing festival tracker and related alerts
 - Added Personal Best tracking for fishing festivals (total sharks, Great White Sharks caught)
-- Added version checker which announces latest available version from Modrinth
+- Show latest available version from Modrinth in the settings
+- Added version checker which announces latest available version from Modrinth after joining the game
 - Added price displaying settings for Rare Drop alert (Own / Own and party / Off)
 - Added settings for Rare Catch / Rare Drop alerts to toggle alerts from different sources (Own / Own and party)
 - Added setting for Legion & Bobbin' Time overlay to toggle which lines to show
@@ -17,6 +18,7 @@ Released on: ???
 
 ## Bugfixes
 
+- Added guidance and log warning for custom sounds filename - MC rejects to play sounds when file name is not [a-z0-9-_]
 - Track drops in Fishing profit tracker while being in Inventory and some other "safe" GUIs
 - Do not track items taken from pet item swapping GUI in Fishing profit tracker
 - Allow increase/decrease/delete max level pets in Fishing profit tracker
