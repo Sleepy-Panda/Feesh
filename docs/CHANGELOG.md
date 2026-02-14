@@ -17,6 +17,7 @@ Released on: ???
 
 ## Bugfixes
 
+- Added guidance and log warning for custom sounds filename - MC rejects to play sounds when file name is not [a-z0-9-_]
 - Track drops in Fishing profit tracker while being in Inventory and some other "safe" GUIs
 - Do not track items taken from pet item swapping GUI in Fishing profit tracker
 - Allow increase/decrease/delete max level pets in Fishing profit tracker
