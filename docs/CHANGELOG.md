@@ -12,6 +12,8 @@ Released on: ???
 - Added setting for Legion & Bobbin' Time overlay to toggle which lines to show
 - More precise % in Sea creatures tracker
 - Added setting to count SC catches without double hook in Sea creatures per hour tracker
+- Added setting for Banshee alert / party chat message (disabled by default) - requested for Ironman grind
+- Added chat announcement for some Bayou drops when picked up by profit tracker
 
 ## Bugfixes
 
