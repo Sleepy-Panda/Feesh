@@ -8,6 +8,7 @@
 - Profit Tracker not paused after 5 minutes?
   - [I checked and for me it was paused]
 - 1.21.11 support
+- Keybinds periodically reset
 - Rendering section from CT
 - Settings are not saved after exiting the game, probably because user closes window using X button to exit
 
@@ -25,11 +26,6 @@
 ## Settings
 
 Make sure newly added values in the dropdowns are selected if needed. E.g. if I add new rare drop type to Alerts, alert for this drop should be enabled.
-
-## Data
-
-Make sure old file from CT module can be moved to the mod with minor data loss.
-Data backups.
 
 ## Alerts
 

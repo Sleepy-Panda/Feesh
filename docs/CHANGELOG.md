@@ -15,6 +15,7 @@ Released on: ???
 - Added setting to count SC catches without double hook in Sea creatures per hour tracker
 - Added setting for Banshee alert / party chat message (disabled by default) - requested for Ironman grind
 - Added chat announcement for some Bayou drops when picked up by profit tracker
+- Added data backups on game close - saved into MC folder/config/feesh/backup
 
 ## Bugfixes
 

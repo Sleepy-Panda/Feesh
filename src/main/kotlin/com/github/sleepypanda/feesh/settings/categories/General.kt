@@ -2,6 +2,7 @@ package com.github.sleepypanda.feesh.settings.categories
 
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
+import com.github.sleepypanda.feesh.utils.data.PersistentDataManager
 import com.teamresourceful.resourcefulconfig.api.annotations.Category
 import com.teamresourceful.resourcefulconfig.api.annotations.Comment
 import com.teamresourceful.resourcefulconfig.api.annotations.ConfigEntry
@@ -20,7 +21,7 @@ enum class SoundMode(val displayName: String) {
 object General : CategoryKt("General") {
     init {
         separator {
-            this.title = "${AQUA}${BOLD}General"
+            this.title = "${AQUA}${BOLD}Sounds"
         }
     }
 
@@ -36,6 +37,23 @@ object General : CategoryKt("General") {
             text = "Open"
             onClick {
                 Util.getOperatingSystem().open("https://github.com/Sleepy-Panda/Feesh/blob/develop/docs/Custom%20sounds%20guide.md")
+            }
+        }
+    }
+
+    init {
+        separator {
+            this.title = "${AQUA}${BOLD}Other"
+        }
+
+        button {
+            title = "Open backups folder"
+            description = "Opens the folder where data backups are stored on game close."
+            text = "Open"
+            onClick {
+                val dir = PersistentDataManager.backupDir
+                if (!dir.exists()) dir.mkdirs()
+                Util.getOperatingSystem().open(dir.toURI().toString())
             }
         }
     }
