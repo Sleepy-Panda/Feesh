@@ -44,6 +44,38 @@ object FileUtils {
     }
     
     /**
+     * Saves data to a JSON file synchronously.
+     * @param file The file to write to
+     * @param data The data to serialize
+     * @param gson The Gson instance to use
+     * @param saveLock Lock object for synchronization
+     * @param logPrefix Prefix for log messages (e.g., "Catch sounds", "Drop sounds")
+     */
+    fun <T> saveJsonToFileSync(
+        file: File,
+        data: T,
+        gson: Gson,
+        saveLock: Any,
+        logPrefix: String
+    ) {
+        try {
+            synchronized(saveLock) {
+                file.parentFile?.mkdirs()
+                val json = gson.toJson(data)
+                Files.write(
+                    file.toPath(),
+                    json.toByteArray(),
+                    StandardOpenOption.CREATE,
+                    StandardOpenOption.TRUNCATE_EXISTING,
+                    StandardOpenOption.WRITE
+                )
+            }
+        } catch (e: Exception) {
+            FeeshMod.LOGGER.error("[Feesh] Failed to save $logPrefix data", e)
+        }
+    }
+
+    /**
      * Saves data to a JSON file asynchronously.
      * @param file The file to write to
      * @param data The data to serialize
@@ -61,22 +93,7 @@ object FileUtils {
         logPrefix: String
     ) {
         CompletableFuture.runAsync({
-            try {
-                synchronized(saveLock) {
-                    file.parentFile?.mkdirs()
-                                        
-                    val json = gson.toJson(data)
-                    Files.write(
-                        file.toPath(),
-                        json.toByteArray(),
-                        StandardOpenOption.CREATE,
-                        StandardOpenOption.TRUNCATE_EXISTING,
-                        StandardOpenOption.WRITE
-                    )
-                }
-            } catch (e: Exception) {
-                FeeshMod.LOGGER.error("[Feesh] Failed to save $logPrefix data", e)
-            }
+            saveJsonToFileSync(file, data, gson, saveLock, logPrefix)
         }, executor)
     }
 }
