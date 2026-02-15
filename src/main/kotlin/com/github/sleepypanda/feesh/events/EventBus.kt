@@ -7,6 +7,7 @@ import com.github.sleepypanda.feesh.events.models.ClientTickEvent
 import com.github.sleepypanda.feesh.events.models.GameClosedEvent
 import com.github.sleepypanda.feesh.events.models.GameStartedEvent
 import com.github.sleepypanda.feesh.events.models.GuiClosedEvent
+import com.github.sleepypanda.feesh.events.models.ArmorStandDespawnedEvent
 import com.github.sleepypanda.feesh.events.models.ItemEntitySpawnedEvent
 import com.github.sleepypanda.feesh.events.models.WorldChangedEvent
 import kotlin.reflect.KClass
@@ -24,6 +25,7 @@ import net.minecraft.text.Text
 import net.minecraft.client.MinecraftClient
 import net.minecraft.world.World
 import net.minecraft.entity.ItemEntity
+import net.minecraft.entity.decoration.ArmorStandEntity
 
 object EventBus {
     private val subscribers = mutableMapOf<KClass<*>, MutableList<(Any) -> Unit>>()
@@ -84,6 +86,12 @@ object EventBus {
         ClientEntityEvents.ENTITY_LOAD.register { entity, _ ->
             if (entity is ItemEntity) {
                 publish(ItemEntitySpawnedEvent(entity))
+            }
+        }
+
+        ClientEntityEvents.ENTITY_UNLOAD.register { entity, _ ->
+            if (entity is ArmorStandEntity) {
+                publish(ArmorStandDespawnedEvent(entity))
             }
         }
     }

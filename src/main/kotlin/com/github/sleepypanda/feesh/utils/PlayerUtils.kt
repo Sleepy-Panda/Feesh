@@ -151,7 +151,7 @@ object PlayerUtils {
             cachedLastFishingHookSeenAt = Date()
 
             val playerHook = EntityUtils.getPlayersFishingHook() ?: return
-	        HotspotUtils.findClosestHotspotInRange(playerHook) ?: return
+	        HotspotUtils.findClosestHotspotInRange(playerHook, 5.0) ?: return
 	        cachedLastFishingHookInHotspotSeenAt = Date()
         }
     }
