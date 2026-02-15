@@ -1,14 +1,11 @@
 ## Players feedback
 
 - Items counted after /gfs
-- Troubled bubble?
-- Hotspot is gone message when swapping server
 - while i was fishing in the crystal hollows i noticed that the mob cap alert wasnt working for it
   - [I checked and for me it was working]
 - Profit Tracker not paused after 5 minutes?
   - [I checked and for me it was paused]
 - 1.21.11 support
-- Keybinds periodically reset
 - Rendering section from CT
 - Settings are not saved after exiting the game, probably because user closes window using X button to exit
 
@@ -16,6 +13,7 @@
 
 - Go through TODOs in the code
 - Rework ticks counters across all overlays
+- Keybinds periodically reset, probably after MC crashes or turning off PC
 
 ## Versions
 

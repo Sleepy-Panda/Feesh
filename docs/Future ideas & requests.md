@@ -6,15 +6,10 @@ Support for 1.21.11.
 
 ## Fishing profit tracker
 
-- Option to hide timer and coins/h for Total.
 - Propose compacting or selling items like raw fish going to the inventory (full sack).
-- Add confirmation for deleting items from the tracker.
-- Rare drop sound on expensive items added to sacks (e.g. Emperor's Skull).
 - Track Agatha tickets / Forest Essence on Galatea based on contest results.
 - Use drop # in the chat message based on current profit tracker.
-- Option to right align the tracker (and others too)
 - Option to render icons instead of item names
-- Option to decrease elapsed time in Fishing Profit Tracker (when user forgot to stop tracker being afk)
 - Track scavenged coins in Fishing Profit Tracker
 - Track Ice Essence drop from mobs in Fishing Profit Tracker
 - Track pet level progress in coins while it's not maxed
@@ -53,6 +48,7 @@ Support for 1.21.11.
 
 ## Alerts & chat
 
+- Troubled Bubble drop
 - Reminder if user is fishing with wrong hook/sinker during events or in hotspots.
 - Alert if player attempts to be scammed by Kat by giving her Epic Megalodon.
 - Rare SC cocooned alert
