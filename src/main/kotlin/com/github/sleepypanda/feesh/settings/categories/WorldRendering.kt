@@ -20,4 +20,15 @@ object WorldRendering : CategoryKt("World Rendering") {
         this.name = Translated("Hide other players' fishing hooks")
         this.description = Translated("Hides fishing hooks that belong to other players.")
     }
+
+    init {
+        separator {
+            this.title = "${AQUA}${BOLD}Lava rendering"
+        }
+    }
+
+    var replaceLavaWithWater by boolean(false) {
+        this.name = Translated("Replace lava with water")
+        this.description = Translated("Replaces lava with water in the Crimson Isle.")
+    }
 }
