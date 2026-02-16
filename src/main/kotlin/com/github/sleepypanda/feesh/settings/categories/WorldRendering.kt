@@ -9,7 +9,7 @@ import com.teamresourceful.resourcefulconfig.api.annotations.ConfigEntry
 import com.teamresourceful.resourcefulconfig.api.types.options.EntryType
 import com.teamresourceful.resourcefulconfigkt.api.CategoryKt
 
-object Rendering : CategoryKt("World Rendering") {
+object WorldRendering : CategoryKt("World Rendering") {
     init {
         separator {
             this.title = "${AQUA}${BOLD}Fishing hooks"

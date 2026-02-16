@@ -82,6 +82,10 @@ This mod requires [Fabric API](https://modrinth.com/mod/fabric-api) and [Fabric 
 - **Hotspot sharing** — Clickable message to share found hotspot location to PARTY or ALL chat. Optional autoshare.
 - **Lootshare message** — Sends to PARTY chat when it's time to lootshare. Available via Keybind.
 
+### World Rendering
+
+- **Hide other players' hooks** — Hides other players' bobbers and fishing lines, so you can see only your own hook.
+
 ### Commands
 
 - **/feesh** — Opens mod settings.
