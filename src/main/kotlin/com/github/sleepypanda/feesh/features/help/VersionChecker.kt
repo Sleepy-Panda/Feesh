@@ -87,11 +87,37 @@ object VersionChecker {
                 val currentVersion = FeeshMod.version
 
                 if (isNewerVersion(latestVersionNumber, currentVersion)) {
+                    FeeshMod.LOGGER.info("[Feesh] New version available: $latestVersionNumber")
                     FeeshMod.mc.execute {
+                        FeeshMod.LOGGER.info("[Feesh] New version available: $latestVersionNumber")
+                        FeeshMod.LOGGER.info("[Feesh] Your current version is $currentVersion")
                         isLatestVersion = false
                         showNewVersionMessage(currentVersion, latestVersionNumber)
                     }
+                } else {
+                    FeeshMod.LOGGER.info("[Feesh] No new version available")
                 }
+
+                /**
+                 * 
+[01:15:39] [Feesh-Version-Check/INFO]: [Feesh] No new version available
+[01:15:39] [Feesh-Version-Check/INFO]: [Feesh] 1.1.0-beta > 1.1.0-alpha: false
+[01:15:39] [Feesh-Version-Check/INFO]: [Feesh] 1.2.0 > 1.1.0-alpha: true
+[01:15:39] [Feesh-Version-Check/INFO]: [Feesh] 1.2.0 > 1.1.0-beta: true
+[01:15:39] [Feesh-Version-Check/INFO]: [Feesh] 1.2.0 > 1.2.0-alpha: false
+[01:15:39] [Feesh-Version-Check/INFO]: [Feesh] 1.3.0 > 1.2.0-alpha: true
+[01:15:39] [Feesh-Version-Check/INFO]: [Feesh] 1.3.0 > 1.2.0: true
+[01:15:39] [Feesh-Version-Check/INFO]: [Feesh] 1.2.0 > 1.3.0: false
+[01:15:39] [Feesh-Version-Check/INFO]: [Feesh] 1.2.0-alpha > 1.3.0: false
+                 */
+                FeeshMod.LOGGER.info("[Feesh] 1.1.0-beta > 1.1.0-alpha: ${isNewerVersion("1.1.0-beta", "1.1.0-alpha")}") 
+                FeeshMod.LOGGER.info("[Feesh] 1.2.0 > 1.1.0-alpha: ${isNewerVersion("1.2.0", "1.1.0-alpha")}") 
+                FeeshMod.LOGGER.info("[Feesh] 1.2.0 > 1.1.0-beta: ${isNewerVersion("1.2.0", "1.1.0-beta")}") 
+                FeeshMod.LOGGER.info("[Feesh] 1.2.0 > 1.2.0-alpha: ${isNewerVersion("1.2.0", "1.2.0-alpha")}")
+                FeeshMod.LOGGER.info("[Feesh] 1.3.0 > 1.2.0-alpha: ${isNewerVersion("1.3.0", "1.2.0-alpha")}")
+                FeeshMod.LOGGER.info("[Feesh] 1.3.0 > 1.2.0: ${isNewerVersion("1.3.0", "1.2.0")}")
+                FeeshMod.LOGGER.info("[Feesh] 1.2.0 > 1.3.0: ${isNewerVersion("1.2.0", "1.3.0")}")
+                FeeshMod.LOGGER.info("[Feesh] 1.2.0-alpha > 1.3.0: ${isNewerVersion("1.2.0-alpha", "1.3.0")}")
             } catch (e: Exception) {
                 FeeshMod.LOGGER.error("[Feesh] Version check on Modrinth failed: ${e.message}")
             }
@@ -103,11 +129,15 @@ object VersionChecker {
      * Handles semver with pre-release suffixes (e.g. 1.0.0-beta, 1.1.0-alpha).
      */
     private fun isNewerVersion(remote: String, current: String): Boolean {
+        FeeshMod.LOGGER.info("[Feesh] remote: $remote, current: $current")
+
         val remoteParts = parseVersion(remote) ?: return false
         val currentParts = parseVersion(current) ?: return false
 
         val (rMajor, rMinor, rPatch, rPre) = remoteParts
         val (cMajor, cMinor, cPatch, cPre) = currentParts
+
+        FeeshMod.LOGGER.info("[Feesh] rMajor: $rMajor, cMajor: $cMajor, rMinor: $rMinor, cMinor: $cMinor, rPatch: $rPatch, cPatch: $cPatch, rPre: $rPre, cPre: $cPre")
 
         return when {
             rMajor != cMajor -> rMajor > cMajor
@@ -115,7 +145,7 @@ object VersionChecker {
             rPatch != cPatch -> rPatch > cPatch
             cPre.isNotEmpty() && rPre.isEmpty() -> true  // 1.1.0 > 1.1.0-alpha
             cPre.isEmpty() && rPre.isNotEmpty() -> false // 1.1.0-alpha < 1.1.0
-            else -> rPre.isNotEmpty() && cPre.isNotEmpty() && preReleaseOrder(rPre) > preReleaseOrder(cPre)
+            else -> rPre.isNotEmpty() && cPre.isNotEmpty() && preReleaseOrder(rPre) > preReleaseOrder(cPre)  // e.g. 1.1.0-beta > 1.1.0-alpha
         }
     }
 
