@@ -7,8 +7,7 @@
 		"InGameHudMixin",
 		"ClientPlayerInteractionManagerMixin",
 		"MinecraftClientMixin",
-		"EntityRendererMixin",
-		"FishingHookRendererMixin"
+		"EntityRendererMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1
