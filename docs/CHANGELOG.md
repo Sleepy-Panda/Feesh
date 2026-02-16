@@ -4,6 +4,8 @@ Released on: ???
 
 ## Features
 
+- Added setting to hide other players' fishing hooks.
+
 ## Bugfixes
 
 # 1.1.0

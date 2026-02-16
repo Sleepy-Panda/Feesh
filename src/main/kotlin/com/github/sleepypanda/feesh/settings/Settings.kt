@@ -6,6 +6,7 @@ import com.github.sleepypanda.feesh.settings.categories.Alerts
 import com.github.sleepypanda.feesh.settings.categories.Chat
 import com.github.sleepypanda.feesh.settings.categories.Overlays
 import com.github.sleepypanda.feesh.settings.categories.Commands
+import com.github.sleepypanda.feesh.settings.categories.WorldRendering
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
 import com.github.sleepypanda.feesh.features.help.VersionChecker
@@ -58,6 +59,7 @@ object Settings : ConfigKt("${FeeshMod.MOD_ID}/config") {
         category(Alerts)        
         category(Chat)
         category(Overlays)
+        category(WorldRendering)
         category(Commands)
     }
     
