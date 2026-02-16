@@ -1,6 +1,14 @@
-# 1.1.0
+# 1.2.0
 
 Released on: ???
+
+## Features
+
+## Bugfixes
+
+# 1.1.0
+
+Released on: 2026-02-16
 
 ## Features
 

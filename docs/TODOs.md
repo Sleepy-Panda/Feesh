@@ -14,6 +14,7 @@
 - Go through TODOs in the code
 - Rework ticks counters across all overlays
 - Keybinds periodically reset, probably after MC crashes or turning off PC
+- Version check to correctly detect newer version on Modrinth (e.g. 1.1.0 and 1.1.0-beta)
 
 ## Versions
 
