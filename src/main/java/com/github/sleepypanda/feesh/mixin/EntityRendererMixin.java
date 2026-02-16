@@ -17,14 +17,22 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public abstract class EntityRendererMixin<T extends Entity> {
     @Inject(method = "shouldRender", at = @At("HEAD"), cancellable = true)
     private void feesh$onShouldRender(T entity, Frustum frustum, double camX, double camY, double camZ, CallbackInfoReturnable<Boolean> cir) {
-        if (entity instanceof ArmorStandEntity armorStand && FishingHookTimer.shouldCancelArmorStandRendering(armorStand.getUuid())) {
-            cir.setReturnValue(false);
-        }
-        if (entity instanceof FishingBobberEntity fishingBobber && HideOtherPlayersHooks.shouldHideOtherPlayersHooks()) {
-            var player = MinecraftClient.getInstance().player;
-            if (player != null && fishingBobber.getOwner() != player) {
-                cir.setReturnValue(false);
-            }
+        switch (entity) {
+            case ArmorStandEntity armorStand:
+                if (FishingHookTimer.shouldCancelArmorStandRendering(armorStand.getUuid())) {
+                    cir.setReturnValue(false);
+                }
+                break;
+            case FishingBobberEntity fishingBobber:
+                if (HideOtherPlayersHooks.shouldHideOtherPlayersHooks()) {
+                    var player = MinecraftClient.getInstance().player;
+                    if (player != null && fishingBobber.getOwner() != player) {
+                        cir.setReturnValue(false);
+                    }
+                }
+                break;
+            default:
+                break;
         }
     }
 }
