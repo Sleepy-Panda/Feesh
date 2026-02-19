@@ -53,10 +53,27 @@ object DeployablesTimer {
         var itemDisplayName: String? = null
     }
 
+    private class DwarvenLanternData : BaseDeployableData() {
+        var id: UUID? = null
+        var itemDisplayName: String? = null
+    }
+
+    private val DWARVEN_LANTERN_NAME_PREFIXES = listOf(
+        "Dwarven Lantern",
+        "Mithril Lantern",
+        "Titanium Lantern",
+        "Glacite Lantern",
+        "Will-o'-wisp",
+    )
+
+    private fun isHeldItemDwarvenLantern(heldItemName: String): Boolean =
+        DWARVEN_LANTERN_NAME_PREFIXES.any { prefix -> heldItemName == prefix }
+
     private var totemData = TotemData()
     private var blackHoleData = BlackHoleData()
     private var umberellaData = UmberellaData()
     private var flareData = FlareData()
+    private var dwarvenLanternData = DwarvenLanternData()
 
     private var tickCounter = 0
 
@@ -67,7 +84,8 @@ object DeployablesTimer {
             "${DARK_PURPLE}Totem of Corruption: ${WHITE}01m 02s",
             "${DARK_PURPLE}Black Hole: ${WHITE}50s",
             "${BLUE}Umberella: ${WHITE}30s",
-            "${DARK_PURPLE}SOS Flare: ${WHITE}180s"
+            "${DARK_PURPLE}SOS Flare: ${WHITE}02m 58s",
+            "${GOLD}Will-o'-wisp: ${WHITE}04m 30s",
         ))
         .setSettingsKey { Overlays.deployablesTimerOverlay }
 
@@ -81,10 +99,11 @@ object DeployablesTimer {
                 resetFlare()
             }
         }
-        RegisterUtils.chat(Regex("^Your previous (.*) was removed\\!$")) { _, _ ->
-            if (WorldUtils.isInSkyblock()) {
-                resetFlare()
-            }
+
+        RegisterUtils.chat(Regex("^Your previous (.*) was removed\\!$")) { _, matchResult ->
+            if (!WorldUtils.isInSkyblock()) return@chat
+            val captured: String = matchResult.groupValues.getOrNull(1) ?: ""
+            if (captured.contains("flare", ignoreCase = true)) resetFlare()
         }
     }
 
@@ -93,6 +112,7 @@ object DeployablesTimer {
         resetBlackHole()
         resetUmberella()
         resetFlare()
+        resetDwarvenLantern()
     }
 
     private fun onPlayerInteract(event: PlayerInteractEvent) {
@@ -103,9 +123,10 @@ object DeployablesTimer {
             val heldItem = FeeshMod.mc.player?.mainHandStack
             if (heldItem == null || heldItem.isEmpty) return
 
-            val heldItemName = heldItem.name.getFormattedString()
-
-            if (isUmberellaTrackingEnabled() && heldItemName.contains("Umberella")) {
+            val heldItemName = heldItem.name.string
+            val heldItemDisplayName = heldItem.name.getFormattedString()
+            
+            if (isUmberellaTrackingEnabled() && heldItemName == "Umberella") {
                 // Give time for an Umberella to appear after click
                 Timer().schedule(object : TimerTask() {
                     override fun run() {
@@ -114,16 +135,24 @@ object DeployablesTimer {
                 }, 250)
             }
 
-            if (isFlareTrackingEnabled() && heldItemName.contains("Flare")) {
+            if (isFlareTrackingEnabled() && heldItemName.endsWith("Flare")) {
                 // Prevent multiple clicks
                 if (flareData.lastPlacedAt != null && Date().time - flareData.lastPlacedAt!!.time < 500) return
 
                 // Give time for a firework rocket to appear after click
                 Timer().schedule(object : TimerTask() {
                     override fun run() {
-                        trackFlareRocketNearby(heldItemName)
+                        trackFlareRocketNearby(heldItemDisplayName)
                     }
                 }, 500)
+            }
+
+            if (isDwarvenLanternTrackingEnabled() && isHeldItemDwarvenLantern(heldItemName)) {
+                Timer().schedule(object : TimerTask() {
+                    override fun run() {
+                        trackDwarvenLanternNearby()
+                    }
+                }, 250)
             }
         } catch (e: Exception) {
             FeeshMod.LOGGER.error("[Feesh] Failed to handle deployable interaction", e)
@@ -146,6 +175,28 @@ object DeployablesTimer {
             }
         } catch (e: Exception) {
             FeeshMod.LOGGER.error("[Feesh] Failed to track Umberella nearby", e)
+        }
+    }
+
+    private fun trackDwarvenLanternNearby() {
+        try {
+            val player = FeeshMod.mc.player ?: return
+            val world = FeeshMod.mc.world ?: return
+            val entities = world.entities.filterIsInstance<ArmorStandEntity>()
+
+            val lanternArmorStand = entities.find { entity ->
+                val distance = EntityUtils.getDistance(player, entity)
+                val name = entity.customName?.string ?: return@find false
+                distance <= 5.0 && isDwarvenLanternArmorStandName(name) && name.endsWith("300s") // Will-o'-wisp 300s
+            }
+
+            if (lanternArmorStand != null) {
+                dwarvenLanternData.id = lanternArmorStand.uuid
+                val formattedName = lanternArmorStand.customName?.getFormattedString()
+                dwarvenLanternData.itemDisplayName = formattedName?.replace(Regex(" §.+\\d+s"), "")?.replace(BOLD.code, "")?.trim() ?: "Dwarven Lantern"
+            }
+        } catch (e: Exception) {
+            FeeshMod.LOGGER.error("[Feesh] Failed to track Dwarven Lantern nearby", e)
         }
     }
 
@@ -217,6 +268,11 @@ object DeployablesTimer {
                (Overlays.deployablesTimerOverlay && Overlays.deployablesOverlayTypes.contains(DeployableTypes.FLARE))
     }
 
+    private fun isDwarvenLanternTrackingEnabled(): Boolean {
+        return (Alerts.alertOnDeployableExpiresSoon && Alerts.alertOnDeployableTypes.contains(DeployableTypes.DWARVEN_LANTERN)) ||
+               (Overlays.deployablesTimerOverlay && Overlays.deployablesOverlayTypes.contains(DeployableTypes.DWARVEN_LANTERN))
+    }
+
     private fun resetTotem() {
         totemData = TotemData()
     }
@@ -231,6 +287,10 @@ object DeployablesTimer {
 
     private fun resetFlare() {
         flareData = FlareData()
+    }
+
+    private fun resetDwarvenLantern() {
+        dwarvenLanternData = DwarvenLanternData()
     }
 
     private fun trackDeployablesStatus() {
@@ -250,6 +310,9 @@ object DeployablesTimer {
         }
         if (isFlareTrackingEnabled()) {
             trackFlareStatus()
+        }
+        if (isDwarvenLanternTrackingEnabled()) {
+            trackDwarvenLanternStatus(entities)
         }
     }
 
@@ -388,6 +451,42 @@ object DeployablesTimer {
         }
     }
 
+    private fun isDwarvenLanternArmorStandName(name: String): Boolean =
+        DWARVEN_LANTERN_NAME_PREFIXES.any { name.startsWith(it) }
+
+    private fun trackDwarvenLanternStatus(entities: List<ArmorStandEntity>) {
+        try {
+            if (!WorldUtils.isInSkyblock() || entities.isEmpty() || !isDwarvenLanternTrackingEnabled()) {
+                resetDwarvenLantern()
+                return
+            }
+
+            val lanternArmorStand = entities.find { entity ->
+                entity.customName?.string?.let { isDwarvenLanternArmorStandName(it) } == true &&
+                entity.uuid == dwarvenLanternData.id
+            }
+
+            if (lanternArmorStand == null) {
+                resetDwarvenLantern()
+                return
+            }
+
+            val name = lanternArmorStand.customName?.string ?: ""
+            val seconds = name.split(" ").lastOrNull()?.replace("s", "")?.toIntOrNull() ?: return
+            dwarvenLanternData.remainingTime = fromSecondsToTimeString(seconds)
+
+            if (Alerts.alertOnDeployableExpiresSoon &&
+                Alerts.alertOnDeployableTypes.contains(DeployableTypes.DWARVEN_LANTERN) &&
+                dwarvenLanternData.remainingTime == "${SECONDS_BEFORE_EXPIRATION}s" &&
+                (dwarvenLanternData.lastAlertAt == null || Date().time - dwarvenLanternData.lastAlertAt!!.time >= 1000)
+            ) {
+                playAlert(dwarvenLanternData.itemDisplayName!!, dwarvenLanternData)
+            }
+        } catch (e: Exception) {
+            FeeshMod.LOGGER.error("[Feesh] Failed to track Dwarven Lantern status", e)
+        }
+    }
+
     private fun trackFlareStatus() {
         try {
             if (!WorldUtils.isInSkyblock() || !isFlareTrackingEnabled()) {
@@ -454,6 +553,12 @@ object DeployablesTimer {
             val timerColor = remainingSeconds > 0 && remainingSeconds <= SECONDS_BEFORE_EXPIRATION && !totemData.remainingTime!!.contains("m")
             val colorCode = if (timerColor) RED.code else WHITE.code
             lines.add("${DARK_PURPLE.code}Totem of Corruption: $colorCode${totemData.remainingTime}")
+        }
+
+        if (Overlays.deployablesOverlayTypes.contains(DeployableTypes.DWARVEN_LANTERN) && !dwarvenLanternData.remainingTime.isNullOrEmpty() && dwarvenLanternData.remainingTime != "00s") {
+            val timerColor = fromTimeStringToSeconds(dwarvenLanternData.remainingTime!!) <= SECONDS_BEFORE_EXPIRATION
+            val colorCode = if (timerColor) RED.code else WHITE.code
+            lines.add("${dwarvenLanternData.itemDisplayName!!}: $colorCode${dwarvenLanternData.remainingTime}")
         }
 
         if (lines.isNotEmpty()) {
