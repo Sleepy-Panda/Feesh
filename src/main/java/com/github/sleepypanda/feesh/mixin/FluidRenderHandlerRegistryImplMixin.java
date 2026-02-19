@@ -1,6 +1,7 @@
 package com.github.sleepypanda.feesh.mixin;
 
-import com.github.sleepypanda.feesh.features.rendering.ReplaceLavaWithWater;
+import com.github.sleepypanda.feesh.client.render.fluid.TintedLavaRenderHandler;
+import com.github.sleepypanda.feesh.features.rendering.LavaRendering;
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandler;
 import net.fabricmc.fabric.impl.client.rendering.fluid.FluidRenderHandlerRegistryImpl;
 import net.minecraft.fluid.Fluid;
@@ -22,9 +23,23 @@ public class FluidRenderHandlerRegistryImplMixin {
 
     @Inject(method = "get", at = @At("HEAD"), cancellable = true)
     private void feesh$replaceLavaWithWater(Fluid fluid, CallbackInfoReturnable<FluidRenderHandler> cir) {
-        if (!ReplaceLavaWithWater.shouldReplaceLavaWithWater()) return;
+        if (fluid != Fluids.LAVA && fluid != Fluids.FLOWING_LAVA) return;
 
-        if (fluid == Fluids.LAVA) cir.setReturnValue(handlers.get(Fluids.WATER));
-        else if (fluid == Fluids.FLOWING_LAVA) cir.setReturnValue(handlers.get(Fluids.FLOWING_WATER));
+        if (LavaRendering.shouldReplaceLavaWithWater()) {
+            if (fluid == Fluids.LAVA) cir.setReturnValue(handlers.get(Fluids.WATER));
+            else if (fluid == Fluids.FLOWING_LAVA) cir.setReturnValue(handlers.get(Fluids.FLOWING_WATER));
+            return;
+        }
+
+        if (LavaRendering.shouldTintLava()) {
+            int lavaTint = LavaRendering.getLavaTintColor();
+            if (lavaTint != 0) {
+                FluidRenderHandler waterHandler = fluid == Fluids.LAVA ? handlers.get(Fluids.WATER) : handlers.get(Fluids.FLOWING_WATER);
+                if (waterHandler != null) {
+                    cir.setReturnValue(new TintedLavaRenderHandler(waterHandler, lavaTint));
+                }
+            }
+            return;
+        }
     }
 }
