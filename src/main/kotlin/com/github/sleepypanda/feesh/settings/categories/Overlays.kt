@@ -256,6 +256,17 @@ ${GRAY}To pause: ${WHITE}/${SeaCreaturesPerHourTracker.PAUSE_COMMAND}
 
     init {
         separator {
+            this.title = "${AQUA}${BOLD}Rain & Thunder"
+        }
+    }
+
+    var rainTimerOverlay by boolean(false) {
+        this.name = Translated("Rain/thunder timer")
+        this.description = Translated("${GRAY}Shows an overlay with the active rain timer timer in The Park, and active/upcoming rain/thunder timer in Spider's Den. Please enable ${YELLOW}TabList settings -> General Info widget -> Show Rain")
+    }
+
+    init {
+        separator {
             this.title = "${AQUA}${BOLD}Fishing Festival"
         }
     }

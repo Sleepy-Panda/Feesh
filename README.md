@@ -48,7 +48,7 @@ This mod requires [Fabric API](https://modrinth.com/mod/fabric-api) and [Fabric 
 - **Any Reindrake** — Alerts when any Reindrake spawns in the lobby, even if caught by others. Offers option to warp to island spawn on click.
 - **Spirit Mask** — Alerts when Spirit Mask's Second Wind is activated and when it's back.
 - **Barn fishing timer** — Alerts when sea creatures are alive for 5+ minutes or when their count hits threshold (configurable per location).
-- **Deployables** — Alerts when a deployable item expires in 10 seconds.
+- **Deployables** — Alerts when your deployable item expires in 10 seconds.
 - **Pet level up** — Alerts when a pet reaches max level. Can show estimated leveling price in chat.
 - **Hotspot found or gone** — Alerts when a hotspot is found or is gone.
 - **Fishing Bag disabled** — Alerts when you start fishing with Fishing Bag disabled.
@@ -60,6 +60,7 @@ This mod requires [Fabric API](https://modrinth.com/mod/fabric-api) and [Fabric 
 - **Salt expired** — Alerts when a Salt has expired.
 - **Worm the Fish** — Alerts when Worm the Fish is detected (Dirt Rod fishing).
 - **Fishing Festival** — Alerts when the Fishing Festival ends, and posts amounts of sharks caught in chat. Also has option to track personal best per festival.
+- **Rain/Thunder ends soon** — Alerts when Rain/Thunder ends soon while in Birch Park / Spider's Den.
 
 ### Overlays
 
@@ -68,7 +69,7 @@ This mod requires [Fabric API](https://modrinth.com/mod/fabric-api) and [Fabric 
 - **Fishing profit tracker** - Shows how many coins you earned in total and per hour, with Session/Total modes.
 - **Legion & Bobbin' Time tracker** — Shows players and fishing hooks count within 30 blocks.
 - **Barn fishing timer** — Shows count of sea creatures nearby and how long they've been alive.
-- **Deployables timer** — Shows remaining time of deployable items placed nearby.
+- **Deployables timer** — Shows remaining time of your deployable items placed nearby.
 - **Sea creatures HP** — Shows HP of nearby rare sea creatures in lootshare range with immunity indicator.
 - **Sea creatures tracker** — Overview of caught sea creatures with Session/Total modes, percentages, and double hook stats.
 - **Fishing hook timer** — Displays hook timer and fish arrival indicator. Requires Skyblock Fishing Timer enabled.
@@ -79,6 +80,7 @@ This mod requires [Fabric API](https://modrinth.com/mod/fabric-api) and [Fabric 
 - **Crimson Isle tracker** — Fiery Scuttler, Ragnarok, Plhlegblast, Thunder, Lord Jawbus catch and Radioactive Vial drop stats.
 - **Treasure fishing tracker** — Good/Great/Outstanding treasure catches and Treasure Dye drop statistics.
 - **Archfiend Dice profit tracker** — Archfiend Dice / High Class Archfiend Dice profit overlay with Session/Total modes.
+- **Rain/Thunder ends soon** — Shows Rain/Thunder timer while in Birch Park / Spider's Den.
 
 ### Chat
 

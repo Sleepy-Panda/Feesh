@@ -197,6 +197,17 @@ object Alerts : CategoryKt("Alerts") {
 
     init {
         separator {
+            this.title = "${AQUA}${BOLD}Rain & Thunder"
+        }
+    }
+
+    var alertOnRainEndingSoon by boolean(false) {
+        this.name = Translated("Alert when rain/thunder ends soon")
+        this.description = Translated("${GRAY}Shows a title and plays a sound when active rain/thunder ends soon in The Park or Spider's Den. Please enable ${YELLOW}TabList settings -> General Info widget -> Show Rain")
+    }
+
+    init {
+        separator {
             this.title = "${AQUA}${BOLD}Fishing Festival"
         }
     }

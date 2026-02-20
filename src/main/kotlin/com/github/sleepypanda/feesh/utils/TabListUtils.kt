@@ -1,6 +1,7 @@
 package com.github.sleepypanda.feesh.utils
 
 import com.github.sleepypanda.feesh.FeeshMod
+import com.github.sleepypanda.feesh.utils.ChatUtils.removeFormatting
 
 object TabListUtils {
     /*
@@ -18,10 +19,10 @@ object TabListUtils {
             val text = displayName.string
             
             if (text.contains(startsWith)) {
-                val areaIndex = text.indexOf(startsWith)
-                if (areaIndex != -1) {
-                    val worldName = text.substring(areaIndex + startsWith.length).trim()
-                    return worldName.ifEmpty { "" }
+                val entryIndex = text.indexOf(startsWith)
+                if (entryIndex != -1) {
+                    val value = text.substring(entryIndex + startsWith.length).removeFormatting().trim()
+                    return value.ifEmpty { "" }
                 }
             }
         }

@@ -7,6 +7,7 @@ Released on: ???
 - Added support for 1.21.11.
 - Added setting to hide other players' fishing hooks (disabled by default).
 - Added Dwarven Lanterns to the deployables tracker and alerts (disabled by default).
+- Added Rain/Thunderstorm timer overlay for Birch Park/Spider Den, and alert when Rain/Thunderstorm ends soon (disabled by default).
 
 ## Bugfixes
 
