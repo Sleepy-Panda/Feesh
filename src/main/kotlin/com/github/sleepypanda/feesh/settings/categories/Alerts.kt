@@ -170,6 +170,17 @@ object Alerts : CategoryKt("Alerts") {
 
     init {
         separator {
+            this.title = "${AQUA}${BOLD}Rain & Thunderstorm"
+        }
+    }
+
+    var alertOnRainEndingSoon by boolean(true) {
+        this.name = Translated("Alert when Rain ends soon")
+        this.description = Translated("Shows a title and plays a sound when rain in The Park or Spider's Den ends soon.")
+    }
+
+    init {
+        separator {
             this.title = "${AQUA}${BOLD}Pets"
         }
     }

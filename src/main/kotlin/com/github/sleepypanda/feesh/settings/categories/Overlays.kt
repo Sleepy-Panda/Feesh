@@ -141,6 +141,17 @@ object Overlays : CategoryKt("Overlays") {
 
     init {
         separator {
+            this.title = "${AQUA}${BOLD}Rain & Thunderstorm"
+        }
+    }
+
+    var rainTimerOverlay by boolean(false) {
+        this.name = Translated("Rain timer")
+        this.description = Translated("Shows an overlay with the current rain time in The Park or Spider's Den. Not persistent.")
+    }
+
+    init {
+        separator {
             this.title = "${AQUA}${BOLD}Sea creatures HP"
         }
     }
