@@ -1,10 +1,6 @@
 ## Players feedback
 
 - Items counted after /gfs
-- while i was fishing in the crystal hollows i noticed that the mob cap alert wasnt working for it
-  - [I checked and for me it was working]
-- Profit Tracker not paused after 5 minutes?
-  - [I checked and for me it was paused]
 - 1.21.11 support
 - Rendering section from CT
 - Settings are not saved after exiting the game, probably because user closes window using X button to exit
