@@ -34,7 +34,7 @@ object RainTimer {
 
     private val gui = FeeshGui()
         .setCoordsDataKey("rainTimer")
-        .setSampleLines(listOf("${AQUA}${BOLD}Rain: ${WHITE}02m 30s"))
+        .setSampleLines(listOf("${BLUE}Rain ${GRAY}ends in ${WHITE}02m 30s"))
         .setCondition { PlayerUtils.hasFishingRodInHotbar() && isRainArea() }
         .setSettingsKey { Overlays.rainTimerOverlay }
 
@@ -130,8 +130,8 @@ object RainTimer {
 
         val label = eventName ?: "Rain"
         val color = if (isActiveEvent && rainSecondsLeft!! in 0..SECONDS_ALERT_THRESHOLD) RED else WHITE
-        val timePart = if (WorldUtils.getWorldName() == WorldUtils.SPIDERS_DEN && !isActiveEvent) "in $rainTimer" else rainTimer
-        gui.setLines(listOf("${AQUA}${BOLD}$label: ${color}$timePart"))
+        val timePart = if (WorldUtils.getWorldName() == WorldUtils.SPIDERS_DEN && !isActiveEvent) "${GRAY}starts in ${WHITE}${rainTimer}" else "${GRAY}ends in ${color}${rainTimer}"
+        gui.setLines(listOf("${BLUE}${label} $timePart"))
     }
 
     private fun playRainEndingSoonAlert() {
