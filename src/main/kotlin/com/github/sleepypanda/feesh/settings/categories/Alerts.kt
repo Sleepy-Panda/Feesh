@@ -170,17 +170,6 @@ object Alerts : CategoryKt("Alerts") {
 
     init {
         separator {
-            this.title = "${AQUA}${BOLD}Rain & Thunderstorm"
-        }
-    }
-
-    var alertOnRainEndingSoon by boolean(true) {
-        this.name = Translated("Alert when Rain ends soon")
-        this.description = Translated("Shows a title and plays a sound when rain in The Park or Spider's Den ends soon.")
-    }
-
-    init {
-        separator {
             this.title = "${AQUA}${BOLD}Pets"
         }
     }
@@ -204,6 +193,17 @@ object Alerts : CategoryKt("Alerts") {
     var alertOnHotspotGone by boolean(true) {
         this.name = Translated("Alert when the hotspot is gone")
         this.description = Translated("Shows a title and plays a sound when the hotspot you recently fished in, is gone.")
+    }
+
+    init {
+        separator {
+            this.title = "${AQUA}${BOLD}Rain & Thunder"
+        }
+    }
+
+    var alertOnRainEndingSoon by boolean(false) {
+        this.name = Translated("Alert when rain/thunder ends soon")
+        this.description = Translated("${GRAY}Shows a title and plays a sound when active rain/thunder ends soon in The Park or Spider's Den. Please enable ${YELLOW}TabList settings -> General Info widget -> Show Rain")
     }
 
     init {
