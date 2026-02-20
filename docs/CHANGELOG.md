@@ -9,6 +9,8 @@ Released on: ???
 
 ## Bugfixes
 
+- Made Banshee alert / chat message not enabled by default for new mod users.
+
 # 1.1.0
 
 Released on: 2026-02-16
