@@ -69,7 +69,7 @@ object RainTimer {
         }
 
         if (Alerts.alertOnRainEndingSoon && rainSecondsLeft != null) {
-            if (rainSecondsLeft > 0 && rainSecondsLeft <= SECONDS_ALERT_THRESHOLD &&
+            if (rainSecondsLeft!! > 0 && rainSecondsLeft!! <= SECONDS_ALERT_THRESHOLD &&
                 (lastRainAlertAt == null || Date().time - lastRainAlertAt!!.time >= 1000)
             ) {
                 playRainEndingSoonAlert()
@@ -80,10 +80,10 @@ object RainTimer {
     private fun updateGuiLines() {
         gui.clearLines()
 
-        if (!Overlays.rainTimerOverlay || rainTimeLeft.isNullOrEmpty()) return
+        if (!Overlays.rainTimerOverlay || rainTimeLeft.isNullOrEmpty() || rainSecondsLeft == null) return
         if (!WorldUtils.isInSkyblock() || !PlayerUtils.hasFishingRodInHotbar() || !isRainWorld()) return
 
-        val color = if (rainSecondsLeft >= 0 && rainSecondsLeft <= SECONDS_ALERT_THRESHOLD) RED else WHITE
+        val color = if (rainSecondsLeft!! >= 0 && rainSecondsLeft!! <= SECONDS_ALERT_THRESHOLD) RED else WHITE
         gui.setLines(listOf("${AQUA}${BOLD}Rain: ${color}${rainTimeLeft}"))
     }
 
