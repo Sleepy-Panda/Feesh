@@ -6,6 +6,7 @@ import com.github.sleepypanda.feesh.FeeshMod
 import com.github.sleepypanda.feesh.events.EventBus
 import com.github.sleepypanda.feesh.events.models.ClientTickEvent
 import com.github.sleepypanda.feesh.events.models.WorldChangedEvent
+import net.minecraft.client.gui.hud.ChatHud
 import net.minecraft.text.Style
 import net.minecraft.text.TextColor
 import net.minecraft.text.Text
@@ -208,7 +209,12 @@ object ChatUtils {
         val mc = FeeshMod.mc
         val textRenderer = mc.textRenderer ?: return ""
 
+        //#if MC >= 1.21.11
+        //$$ val chatWidth = mc.inGameHud?.chatHud?.let { ChatHud.getWidth(mc.options.getChatWidth().getValue()) } ?: return ""
+        //#else
         val chatWidth = mc.inGameHud?.chatHud?.width ?: return ""
+        //#endif
+
         val characterWidth = textRenderer.getWidth(Text.literal(character))
         val characterCount = if (characterWidth > 0) (chatWidth / characterWidth).coerceAtLeast(1).coerceAtMost(200) else 50
 

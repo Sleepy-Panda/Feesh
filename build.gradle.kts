@@ -5,6 +5,7 @@ plugins {
     kotlin("jvm")
     kotlin("plugin.serialization") version "2.2.21"
 
+    // https://github.com/Deftu/Gradle-Toolkit
     id("dev.deftu.gradle.multiversion") // Applies preprocessing for multiple versions of Minecraft and/or multiple mod loaders.
     id("dev.deftu.gradle.tools") // Applies several configurations to things such as the Java version, project name/version, etc.
     id("dev.deftu.gradle.tools.resources") // Applies resource processing so that we can replace tokens, such as our mod name/version, in our resources.
@@ -31,6 +32,10 @@ dependencies {
         MinecraftVersions.VERSION_1_21_10 -> {
             modImplementation("net.fabricmc.fabric-api:fabric-api:0.138.3+1.21.10")
             modImplementation(include("com.teamresourceful.resourcefulconfig:resourcefulconfig-fabric-1.21.9:${property("rconfig.version.1.21.10")}")!!)
+        }
+        MinecraftVersions.VERSION_1_21_11 -> {
+            modImplementation("net.fabricmc.fabric-api:fabric-api:0.141.3+1.21.11")
+            modImplementation(include("com.teamresourceful.resourcefulconfig:resourcefulconfig-fabric-1.21.11:${property("rconfig.version.1.21.11")}")!!)
         }
         else -> {}
     }
