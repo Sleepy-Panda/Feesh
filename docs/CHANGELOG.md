@@ -4,7 +4,8 @@ Released on: ???
 
 ## Features
 
-- Added setting to hide other players' fishing hooks.
+- Added support for 1.21.11.
+- Added setting to hide other players' fishing hooks (disabled by default).
 - Added Dwarven Lanterns to the deployables tracker and alerts (disabled by default).
 
 ## Bugfixes
