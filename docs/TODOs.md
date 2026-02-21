@@ -1,7 +1,7 @@
 ## Players feedback
 
+- Number of backups?
 - Items counted after /gfs
-- 1.21.11 support
 - Rendering section from CT
 - Settings are not saved after exiting the game, probably because user closes window using X button to exit
 
@@ -11,11 +11,6 @@
 - Rework ticks counters across all overlays
 - Keybinds periodically reset, probably after MC crashes or turning off PC
 - Version check to correctly detect newer version on Modrinth (e.g. 1.1.0 and 1.1.0-beta)
-
-## Versions
-
-- Add support of 1.21.11
-  - Adjust version checker which announces new versions found on Modrinth
 - Will NEU prices API be available? Do I need to hop to another one?
 
 ## Settings

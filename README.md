@@ -135,6 +135,8 @@ In case of questions, bug reports, feature requests, bored, feeling alone - plea
 
 ### Build
 
+Requires JDK 21.
+
 For manual building the project in IDE:
 
 ```
