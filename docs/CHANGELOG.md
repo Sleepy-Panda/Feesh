@@ -8,6 +8,7 @@ Released on: ???
 - Added setting to hide other players' fishing hooks (disabled by default).
 - Added Dwarven Lanterns to the deployables tracker and alerts (disabled by default).
 - Added Rain/Thunderstorm timer overlay for Birch Park/Spider Den, and alert when Rain/Thunderstorm ends soon (disabled by default).
+- Added settings to customize compact catch messages written to your chat when you catch any sea creature. You can type your own text for double hook and catch message.
 
 ## Bugfixes
 
