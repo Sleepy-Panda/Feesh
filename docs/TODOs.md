@@ -4,6 +4,7 @@
 - Items counted after /gfs
 - Rendering section from CT
 - Settings are not saved after exiting the game, probably because user closes window using X button to exit
+- On 1.21.11, original fishing timer armorstand appears for a second when the fish starts swimming towards bobber
 
 ## Tech Debt
 
