@@ -140,16 +140,14 @@ Requires JDK 21.
 For manual building the project in IDE:
 
 ```
-./gradlew --refresh-dependencies --stacktrace
-```
-
-```
 ./gradlew build
 ```
 
-As a result, `Feesh-<version>-fabric.jar` file appears in `/build/versions` folder.
+As a result, `Feesh-<version>-fabric.jar` file appears in `/build/versions` folder. It contains both 1.21.10 and 1.21.11 mod versions.
 
 ### Debug
+
+TODO: Fix this section, it does not work for me yet.
 
 https://docs.fabricmc.net/develop/getting-started/vscode/launching-the-game#generating-launch-targets
 

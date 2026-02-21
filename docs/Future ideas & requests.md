@@ -1,9 +1,5 @@
 # Future ideas and players' requests
 
-## MC versions
-
-Support for 1.21.11.
-
 ## Fishing profit tracker
 
 - Propose compacting or selling items like raw fish going to the inventory (full sack).
@@ -90,6 +86,7 @@ Support for 1.21.11.
 
 ## Other
 
+- Hide players near fishing bobber when it's casted.
 - Way to disable all module features with one toggle.
 - Other player's hooks and lines hider.
 - Glowing outline / highlight rare sea creatures (make this not visible through walls) - I want to get rid of SH for that, and replicate this feature in module.
