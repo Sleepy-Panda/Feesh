@@ -65,6 +65,7 @@ import com.github.sleepypanda.feesh.utils.data.PersistentDataManager
 import com.github.sleepypanda.feesh.utils.data.CustomSoundsManager
 import com.github.sleepypanda.feesh.utils.gui.MoveGuis
 import com.teamresourceful.resourcefulconfig.api.loader.Configurator
+import net.minecraft.SharedConstants
 import net.fabricmc.api.ModInitializer
 import net.fabricmc.loader.api.FabricLoader
 import net.minecraft.client.MinecraftClient
@@ -81,6 +82,8 @@ class FeeshMod : ModInitializer {
 
         @JvmField
         val mc: MinecraftClient = MinecraftClient.getInstance()
+        @JvmField
+        val mcVersion: String = SharedConstants.getGameVersion().id()
 
         @JvmStatic
         lateinit var INSTANCE: FeeshMod
@@ -88,7 +91,7 @@ class FeeshMod : ModInitializer {
     }
 
     val configurator = Configurator("feesh")
-    public val settings = Settings.register(configurator)
+    val settings = Settings.register(configurator)
     
     init {
         INSTANCE = this
@@ -96,7 +99,7 @@ class FeeshMod : ModInitializer {
 
     override fun onInitialize() {   
         version = getModVersion()
-        LOGGER.info("Loading $MOD_NAME v$version...")
+        LOGGER.info("Loading $MOD_NAME v$version for ${mcVersion}...")
 
         PersistentDataManager.init()
         CustomSoundsManager.init()
