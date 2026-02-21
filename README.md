@@ -95,6 +95,7 @@ This mod requires [Fabric API](https://modrinth.com/mod/fabric-api) and [Fabric 
 ### World Rendering
 
 - **Hide other players' hooks** — Hides other players' bobbers and fishing lines, so you can see only your own hook.
+- **Hide other players near bobber** — Hides other players near your bobber when a fishing rod is casted.
 
 ### Commands
 
