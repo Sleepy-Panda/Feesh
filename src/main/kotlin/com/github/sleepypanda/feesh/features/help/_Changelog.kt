@@ -1,1 +1,1 @@
-package com.github.sleepypanda.feesh.features.help// TODO: Add latest downloaded release notes
+// TODO: Add latest downloaded release notes
