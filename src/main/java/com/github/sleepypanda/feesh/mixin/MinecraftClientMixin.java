@@ -3,17 +3,17 @@ package com.github.sleepypanda.feesh.mixin;
 import com.github.sleepypanda.feesh.events.EventBus;
 import com.github.sleepypanda.feesh.events.models.GuiOpenedEvent;
 import com.github.sleepypanda.feesh.events.models.WorldUnloadEvent;
-import com.github.sleepypanda.feesh.features.rendering.RareMobHighlight; // Import your feature
+import com.github.sleepypanda.feesh.features.rendering.RareMobHighlight;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.world.ClientWorld;
-import net.minecraft.entity.Entity; // Import Entity
+import net.minecraft.entity.Entity;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable; // For boolean return
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(MinecraftClient.class)
 public abstract class MinecraftClientMixin {
