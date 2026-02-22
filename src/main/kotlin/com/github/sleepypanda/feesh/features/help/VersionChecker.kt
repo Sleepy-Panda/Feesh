@@ -7,6 +7,7 @@ import com.github.sleepypanda.feesh.utils.ChatUtils
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
 import com.google.gson.JsonParser
+import net.minecraft.SharedConstants
 import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.net.HttpURLConnection
@@ -20,9 +21,9 @@ private const val MODRINTH_VERSIONS_PAGE = "https://modrinth.com/mod/$MODRINTH_M
 
 // https://docs.modrinth.com/api/operations/getprojectversions/
 private const val MODRINTH_VERSIONS_URL = "https://api.modrinth.com/v2/project/$MODRINTH_MOD_ID/version"
-private const val GAME_VERSION = "1.21.10" // TODO: Make it detected based on the current Minecraft version
+private val GAME_VERSION: String = FeeshMod.mcVersion
+private val GAME_VERSIONS = """["$GAME_VERSION"]"""
 private const val LOADERS = """["fabric"]"""
-private const val GAME_VERSIONS = """["$GAME_VERSION"]"""
 private const val REQUEST_TIMEOUT_MS = 10000
 
 object VersionChecker {
@@ -75,7 +76,10 @@ object VersionChecker {
                 connection.disconnect()
 
                 val versions = JsonParser.parseString(response).asJsonArray
-                if (versions.size() == 0) return@execute
+                if (versions.size() == 0) {
+                    FeeshMod.LOGGER.error("[Feesh] Version check on Modrinth failed: No versions found")
+                    return@execute
+                }
 
                 val latestVersion = versions[0]?.asJsonObject ?: return@execute
                 val latestVersionNumber = latestVersion.get("version_number")?.asString ?: return@execute
