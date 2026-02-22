@@ -6,14 +6,12 @@ import com.github.sleepypanda.feesh.constants.RareSeaCreatureTypesAllChat
 import com.github.sleepypanda.feesh.constants.RareDropTypes
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
-import com.github.sleepypanda.feesh.features.chat.CompactCatchMessages
 import com.teamresourceful.resourcefulconfigkt.api.CategoryKt
 import com.teamresourceful.resourcefulconfig.api.annotations.Category
 import com.teamresourceful.resourcefulconfig.api.annotations.Comment
 import com.teamresourceful.resourcefulconfig.api.annotations.ConfigEntry
 import com.teamresourceful.resourcefulconfig.api.types.options.EntryType
 import net.minecraft.client.gui.screen.option.KeybindsScreen
-import net.minecraft.util.Util
 
 enum class HotspotChatSource(val displayName: String) {
     PARTY_CHAT("Party Chat"),
@@ -25,40 +23,13 @@ enum class HotspotChatSource(val displayName: String) {
 object Chat : CategoryKt("Chat") {
     init {
         separator {
-            this.title = "${AQUA}${BOLD}Compact catch messages"
+            this.title = "${AQUA}${BOLD}Rare sea creatures"
         }
     }
 
     var compactSeaCreaturesMessages by boolean(false) {
         this.name = Translated("Compact sea creature catch messages")
-        this.description = Translated("Shortens double hook message and catch message that says what sea creature you caught. So, instead of 'It's a Double Hook! Woot Woot! What is this creature!?' you will see 'DOUBLE HOOK! A Yeti has spawned!' in your chat.")
-    }
-
-    var compactDoubleHookMessageTemplate by strings(CompactCatchMessages.DEFAULT_DOUBLE_HOOK_TEMPLATE) {
-        this.name = Translated("Double hook message template")
-        this.description = Translated("${GRAY}Custom text shown when you get a double hook. Leave empty to use default.")
-    }
-
-    var compactCatchMessageTemplate by strings(CompactCatchMessages.DEFAULT_CATCH_TEMPLATE) {
-        this.name = Translated("Sea creature catch message template")
-        this.description = Translated("${GRAY}Custom text for the sea creature catch message. Leave empty to use default. Placeholders: ${WHITE}{article}${GRAY} — a/an (lowercase); ${WHITE}{Article}${GRAY} — A/An (capitalized); ${WHITE}{sc}${GRAY} — sea creature name (colored by default).")
-    }
-
-    init {
-        button {
-            title = "Colors & formatting guide"
-            description = "For using custom text templates above, please explore the guide explaining color codes and formatting codes."
-            text = "Click to open"
-            onClick {
-                Util.getOperatingSystem().open("https://github.com/Sleepy-Panda/Feesh/blob/develop/docs/Colors%20and%20formatting%20guide.md")
-            }
-        }
-    }
-
-    init {
-        separator {
-            this.title = "${AQUA}${BOLD}Rare sea creatures"
-        }
+        this.description = Translated("Shortens double hook message and catch message that says what sea creature you caught.")
     }
 
     var shareRareSeaCreatures by boolean(true) {
