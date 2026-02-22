@@ -23,7 +23,6 @@ public abstract class MinecraftClientMixin {
     @Inject(method = "hasOutline", at = @At("HEAD"), cancellable = true)
     private void feesh$forceOutline(Entity entity, CallbackInfoReturnable<Boolean> cir) {
         if (RareMobHighlight.highlightedEntities.containsKey(entity.getId())) {
-            System.out.println("DEBUG: Forcing entity outline for ID: " + entity.getId());
             cir.setReturnValue(true);
         }
     }
