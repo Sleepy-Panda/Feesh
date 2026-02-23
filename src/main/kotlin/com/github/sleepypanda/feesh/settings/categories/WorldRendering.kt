@@ -20,4 +20,14 @@ object WorldRendering : CategoryKt("World Rendering") {
         this.name = Translated("Hide other players' fishing hooks")
         this.description = Translated("Hides fishing hooks that belong to other players.")
     }
+
+    init {
+        separator {
+            this.title = "${AQUA}${BOLD}Highlight"
+        }
+    }
+
+    var highlightSeaCreatures by boolean(false) {
+        this.name = Translated("Highlights Rare Sea Creatures")
+    }
 }
