@@ -119,11 +119,13 @@ class FeeshMod : ModInitializer {
 
         // Event publishers
         SeaCreaturesPublisher.init()
-        RareMobHighlight.init()
         RareDropsPublisher.init()
         PartyChatPublisher.init()
         PetLevelUpPublisher.init()
         SacksItemPickupPublisher.init()
+
+        // Rendering
+        RareMobHighlight.init()
 
         // Alerts
         RareCatchAlert.init()
