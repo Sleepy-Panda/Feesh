@@ -3,12 +3,14 @@ package com.github.sleepypanda.feesh.mixin;
 import com.github.sleepypanda.feesh.features.overlays.FishingHookTimer;
 import com.github.sleepypanda.feesh.features.rendering.HideOtherPlayersHooks;
 import com.github.sleepypanda.feesh.features.rendering.RareMobHighlight;
+import com.github.sleepypanda.feesh.features.rendering.HidePlayersNearBobber;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.Frustum;
 import net.minecraft.client.render.entity.EntityRenderer;
 import net.minecraft.client.render.entity.state.EntityRenderState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.decoration.ArmorStandEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.FishingBobberEntity;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -33,6 +35,11 @@ public abstract class EntityRendererMixin<T extends Entity, S extends EntityRend
                     if (player != null && fishingBobber.getOwner() != player) {
                         cir.setReturnValue(false);
                     }
+                }
+            }
+            case PlayerEntity playerEntity -> {
+                if (HidePlayersNearBobber.shouldHidePlayer(playerEntity)) {
+                    cir.setReturnValue(false);
                 }
             }
             default -> {

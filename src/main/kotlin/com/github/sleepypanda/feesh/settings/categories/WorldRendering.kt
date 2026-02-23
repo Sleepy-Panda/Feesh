@@ -31,4 +31,22 @@ object WorldRendering : CategoryKt("World Rendering") {
         this.name = Translated("Highlights rare sea creatures")
         this.description = Translated("Applies glowing border to the rare sea creatures. Not visible through walls.")
     }
+
+    init {
+        separator {
+            this.title = "${AQUA}${BOLD}Players"
+        }
+    }
+
+    var hidePlayersNearBobber by boolean(false) {
+        this.name = Translated("Hide players near bobber")
+        this.description = Translated("Hides other players when your fishing rod is cast, if they are within the configured distance from your fishing hook.")
+    }
+
+    var hidePlayersNearBobberDistance by int(5) {
+        this.name = Translated("Distance from bobber")
+        this.description = Translated("Maximum distance (blocks) from your fishing hook within which other players are hidden. Only applies when fishing rod is casted.")
+        this.range = 1..10
+        this.slider = true
+    }
 }
