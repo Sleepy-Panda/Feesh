@@ -54,6 +54,7 @@ import com.github.sleepypanda.feesh.events.publishers.RareDropsPublisher
 import com.github.sleepypanda.feesh.events.publishers.PartyChatPublisher
 import com.github.sleepypanda.feesh.events.publishers.PetLevelUpPublisher
 import com.github.sleepypanda.feesh.events.publishers.SacksItemPickupPublisher
+import com.github.sleepypanda.feesh.features.rendering.RareMobHighlight
 import com.github.sleepypanda.feesh.settings.Settings
 import com.github.sleepypanda.feesh.utils.ChatUtils
 import com.github.sleepypanda.feesh.utils.KeybindUtils
@@ -75,9 +76,9 @@ class FeeshMod : ModInitializer {
     companion object {
         internal const val MOD_ID = "feesh"
         internal const val MOD_NAME = "Feesh"
-        
+
         internal val LOGGER = LoggerFactory.getLogger(MOD_ID)
-        
+
         lateinit var version: String
 
         @JvmField
@@ -92,12 +93,12 @@ class FeeshMod : ModInitializer {
 
     val configurator = Configurator("feesh")
     val settings = Settings.register(configurator)
-    
+
     init {
         INSTANCE = this
     }
 
-    override fun onInitialize() {   
+    override fun onInitialize() {
         version = getModVersion()
         LOGGER.info("Loading $MOD_NAME v$version for ${mcVersion}...")
 
@@ -107,7 +108,7 @@ class FeeshMod : ModInitializer {
         FeeshSettingsCommand.init()
         Welcome.init()
         VersionChecker.init()
-        
+
         // Utils
         WorldUtils.init()
         PlayerUtils.init()
@@ -118,11 +119,12 @@ class FeeshMod : ModInitializer {
 
         // Event publishers
         SeaCreaturesPublisher.init()
+        RareMobHighlight.init()
         RareDropsPublisher.init()
         PartyChatPublisher.init()
         PetLevelUpPublisher.init()
         SacksItemPickupPublisher.init()
-        
+
         // Alerts
         RareCatchAlert.init()
         RareDropAlert.init()
@@ -170,7 +172,7 @@ class FeeshMod : ModInitializer {
 
         // Inventory
         //ThunderBottleProgress.init()
-            
+
         // Commands
         PersonalBestCommand.init()
         SpiderDenRainScheduleCommand.init()

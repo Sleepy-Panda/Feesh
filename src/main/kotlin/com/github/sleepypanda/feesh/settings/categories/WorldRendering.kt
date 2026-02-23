@@ -23,6 +23,17 @@ object WorldRendering : CategoryKt("World Rendering") {
 
     init {
         separator {
+            this.title = "${AQUA}${BOLD}Highlight"
+        }
+    }
+
+    var highlightSeaCreatures by boolean(false) {
+        this.name = Translated("Highlights rare sea creatures")
+        this.description = Translated("Applies glowing border to the rare sea creatures. Not visible through walls.")
+    }
+
+    init {
+        separator {
             this.title = "${AQUA}${BOLD}Players"
         }
     }
