@@ -3,22 +3,19 @@ package com.github.sleepypanda.feesh.features.rendering
 import com.github.sleepypanda.feesh.constants.SeaCreatures
 import com.github.sleepypanda.feesh.events.EventBus
 import com.github.sleepypanda.feesh.events.models.ClientTickEvent
+import com.github.sleepypanda.feesh.events.models.ArmorStandLoadedEvent
 import com.github.sleepypanda.feesh.events.models.WorldChangedEvent
 import com.github.sleepypanda.feesh.settings.categories.WorldRendering
 import com.github.sleepypanda.feesh.utils.ChatUtils.removeFormatting
 import com.github.sleepypanda.feesh.utils.WorldUtils
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.jvm.JvmField
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientEntityEvents
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
 import net.minecraft.entity.LivingEntity
 import net.minecraft.entity.decoration.ArmorStandEntity
-import net.minecraft.world.World
-import net.minecraft.world.tick.Tick
+import net.minecraft.client.MinecraftClient
 
 object RareMobHighlight {
     @JvmField
@@ -28,32 +25,35 @@ object RareMobHighlight {
     fun init() {
         EventBus.subscribe(WorldChangedEvent::class, ::worldChange)
         EventBus.subscribe(ClientTickEvent::class, ::onClientTick)
+        EventBus.subscribe(ArmorStandLoadedEvent::class, ::onArmorStandLoaded)
+    }
 
-        ClientEntityEvents.ENTITY_LOAD.register { entity, _ ->
-            if (!WorldRendering.highlightSeaCreatures || !WorldUtils.isInFishingWorld()) return@register
-            modScope.launch {
-                delay(500)
-                net.minecraft.client.MinecraftClient.getInstance().execute {
-                    if (entity !is LivingEntity || !entity.isAlive) return@execute
-                    val plainName = entity.customName?.string?.removeFormatting()
-                    if (plainName?.contains("[Lv") == true && plainName.contains("❤")) {
-                        val info = SeaCreatures.allSeaCreatures.find { creatureInfo ->
-                            val cleanDbName = creatureInfo.name.removeFormatting()
-                            plainName.contains(cleanDbName, true)
-                        }
+    private fun onArmorStandLoaded(event: ArmorStandLoadedEvent) {
+        if (!WorldRendering.highlightSeaCreatures || !WorldUtils.isInFishingWorld()) return
+        val entity = event.entity
 
-                        if (info != null && info.isRare) {
-                            val mobEntity = entity.entityWorld.getEntityById(entity.id - 1) as? LivingEntity
-                                ?: entity.entityWorld.getOtherEntities(
-                                    entity,
-                                    entity.boundingBox.expand(1.0, 2.0, 1.0)
-                                ) {
-                                    it is LivingEntity && it !is ArmorStandEntity
-                                }.firstOrNull() as? LivingEntity
+        modScope.launch {
+            delay(500)
+            MinecraftClient.getInstance().execute {
+                val plainName = entity.customName?.string?.removeFormatting()
 
-                            if (mobEntity != null) {
-                                applyGlow(mobEntity, info.name)
-                            }
+                if (plainName?.contains("[Lv") == true && plainName.contains("❤")) {
+                    val info = SeaCreatures.allSeaCreatures.find { creatureInfo ->
+                        val cleanDbName = creatureInfo.name.removeFormatting()
+                        plainName.contains(cleanDbName, true)
+                    }
+
+                    if (info != null && info.isRare) {
+                        val mobEntity = entity.entityWorld.getEntityById(entity.id - 1) as? LivingEntity
+                            ?: entity.entityWorld.getOtherEntities(
+                                entity,
+                                entity.boundingBox.expand(1.0, 2.0, 1.0)
+                            ) {
+                                it is LivingEntity && it !is ArmorStandEntity
+                            }.firstOrNull() as? LivingEntity
+
+                        if (mobEntity != null) {
+                            applyGlow(mobEntity, info.name)
                         }
                     }
                 }
