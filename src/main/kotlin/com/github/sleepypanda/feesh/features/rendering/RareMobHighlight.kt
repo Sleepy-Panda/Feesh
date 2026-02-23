@@ -41,17 +41,16 @@ object RareMobHighlight {
                         val cleanDbName = creatureInfo.name.removeFormatting()
                         plainName.contains(cleanDbName, true)
                     }
-
+                    // using plainName since tiki laser is not an entity (???) still not sure about that part.
                     if ((info != null && info.isRare) || plainName.contains("Jawbus Follower") || plainName.contains("Wiki Tiki Laser Totem")) {
                         //finds the head of all entities.
                         var root: net.minecraft.entity.Entity = entity
-                        if (plainName.contains("Titanoboa")) root = root.vehicle!!
+                        if (plainName.contains("Titanoboa")) root = root.vehicle!! //titan test
                         else {
                             while (root.vehicle != null) {
                                 root = root.vehicle!!
                             }
                         }
-
                         // Identify if the stack actually contains a mob (besides the armorStand)
                         val hasMobInStack = hasLivingPassenger(root)
 
@@ -65,7 +64,7 @@ object RareMobHighlight {
                                         it is LivingEntity && it !is ArmorStandEntity
                                     }.firstOrNull() as? LivingEntity
 
-                                if (nearbyMob != null && info != null) {
+                                if (nearbyMob != null && info != null && !nearbyMob.isPlayer) {
                                     applyGlow(nearbyMob, info.name)
                                 }
                             }
