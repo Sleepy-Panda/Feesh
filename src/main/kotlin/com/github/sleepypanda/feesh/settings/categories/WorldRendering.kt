@@ -28,6 +28,7 @@ object WorldRendering : CategoryKt("World Rendering") {
     }
 
     var highlightSeaCreatures by boolean(false) {
-        this.name = Translated("Highlights Rare Sea Creatures")
+        this.name = Translated("Highlights rare sea creatures")
+        this.description = Translated("Applies glowing border to the rare sea creatures. Not visible through walls.")
     }
 }

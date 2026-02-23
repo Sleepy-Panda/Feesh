@@ -1,5 +1,6 @@
 ## Players feedback
 
+- Banshee rework to not considered as truly rare (e.g. highlight feature)
 - Number of backups?
 - Items counted after /gfs
 - Rendering section from CT

@@ -95,6 +95,7 @@ This mod requires [Fabric API](https://modrinth.com/mod/fabric-api) and [Fabric 
 ### World Rendering
 
 - **Hide other players' hooks** — Hides other players' bobbers and fishing lines, so you can see only your own hook.
+- **Highlight rare sea creatures** — Applies glowing border to the rare sea creatures. Not visible through walls.
 
 ### Commands
 
