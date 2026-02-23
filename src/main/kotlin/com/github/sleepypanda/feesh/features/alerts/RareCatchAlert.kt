@@ -73,8 +73,7 @@ object RareCatchAlert {
     }
 
     private fun showAlert(seaCreatureName: String, isDoubleHook: Boolean, playerName: String) {
-        var seaCreatureInfo = SeaCreatures.allSeaCreatures.find { it.name.uppercase() == seaCreatureName.uppercase() } ?: return
-        if (!seaCreatureInfo.isRare) return
+        var seaCreatureInfo = SeaCreatures.seaCreaturesWithAlert.find { it.name.equals(seaCreatureName, ignoreCase = true) } ?: return
 
         val type = try {
             RareSeaCreatureTypes.valueOf(seaCreatureName.uppercase().replace(" ", "_"))
