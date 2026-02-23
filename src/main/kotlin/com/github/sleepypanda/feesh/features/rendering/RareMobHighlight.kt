@@ -41,7 +41,7 @@ object RareMobHighlight {
                         plainName.contains(cleanDbName, true)
                     }
 
-                    if (info != null && (info.name.contains("Jawbus") || info.name.contains("Wiki Tiki"))) {
+                    if (info != null && (info.name.contains("Jawbus") || info.name.contains("Wiki Tiki") || info.isRare)) {
                         //finds the head of all entities.
                         var root: net.minecraft.entity.Entity = entity
                         while (root.vehicle != null) {
