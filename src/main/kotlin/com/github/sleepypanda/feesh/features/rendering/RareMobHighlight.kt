@@ -42,10 +42,10 @@ object RareMobHighlight {
                         plainName.contains(cleanDbName, true)
                     }
 
-                    if (info != null && (info.name.contains("Jawbus") || info.name.contains("Wiki Tiki") || info.isRare)) {
+                    if ((info != null && info.isRare) || plainName.contains("Jawbus Follower") || plainName.contains("Wiki Tiki Laser Totem")) {
                         //finds the head of all entities.
                         var root: net.minecraft.entity.Entity = entity
-                        if (info.name.contains("Titanoboa")) root = root.vehicle!!
+                        if (plainName.contains("Titanoboa")) root = root.vehicle!!
                         else {
                             while (root.vehicle != null) {
                                 root = root.vehicle!!
@@ -57,7 +57,7 @@ object RareMobHighlight {
 
                         if (hasMobInStack) {
                             if (root is LivingEntity && root !is ArmorStandEntity && root !is PlayerEntity) {
-                                applyGlow(root, info.name)
+                                applyGlow(root, info!!.name)
                             } else {
                                 // mob searcher since it didn't find a mob attached to the armorStand
                                 val nearbyMob =
@@ -65,7 +65,7 @@ object RareMobHighlight {
                                         it is LivingEntity && it !is ArmorStandEntity
                                     }.firstOrNull() as? LivingEntity
 
-                                if (nearbyMob != null) {
+                                if (nearbyMob != null && info != null) {
                                     applyGlow(nearbyMob, info.name)
                                 }
                             }
