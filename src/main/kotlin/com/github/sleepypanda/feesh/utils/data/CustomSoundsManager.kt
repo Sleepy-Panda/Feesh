@@ -68,7 +68,7 @@ object CustomSoundsManager {
     private fun addDefaultCatchSoundForMissingSeaCreatures(): Boolean {
         var updated = false
         
-        SeaCreatures.rareSeaCreatures.forEach { seaCreature ->
+        SeaCreatures.seaCreaturesWithAlert.forEach { seaCreature ->
             val key = seaCreature.name.uppercase()
             if (!catchSoundsData.containsKey(key)) {
                 catchSoundsData[key] = UserCatchSoundData(Sounds.FEESH_NOTIFICATION)
