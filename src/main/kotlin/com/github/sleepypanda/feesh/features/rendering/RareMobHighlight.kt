@@ -2,10 +2,9 @@ package com.github.sleepypanda.feesh.features.rendering
 
 import com.github.sleepypanda.feesh.constants.SeaCreatures
 import com.github.sleepypanda.feesh.events.EventBus
+import com.github.sleepypanda.feesh.events.models.ClientTickEvent
 import com.github.sleepypanda.feesh.events.models.WorldChangedEvent
-import kotlin.jvm.JvmField
 import com.github.sleepypanda.feesh.settings.categories.WorldRendering
-import com.github.sleepypanda.feesh.utils.ChatUtils
 import com.github.sleepypanda.feesh.utils.ChatUtils.removeFormatting
 import com.github.sleepypanda.feesh.utils.WorldUtils
 import kotlinx.coroutines.CoroutineScope
@@ -13,24 +12,22 @@ import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlin.jvm.JvmField
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientEntityEvents
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
-import net.minecraft.block.entity.VaultBlockEntity
 import net.minecraft.entity.LivingEntity
 import net.minecraft.entity.decoration.ArmorStandEntity
 import net.minecraft.world.World
 import net.minecraft.world.tick.Tick
-import net.minecraft.world.tick.TickScheduler
-import java.awt.EventQueue
-import java.util.concurrent.Executors
-import java.util.concurrent.TimeUnit
 
 object RareMobHighlight {
     @JvmField
     val highlightedEntities = mutableMapOf<Int, Int>()
     private val modScope = CoroutineScope(Dispatchers.Default)
+
     fun init() {
         EventBus.subscribe(WorldChangedEvent::class, ::worldChange)
+        EventBus.subscribe(ClientTickEvent::class, ::onClientTick)
 
         ClientEntityEvents.ENTITY_LOAD.register { entity, _ ->
             if (!WorldRendering.highlightSeaCreatures || !WorldUtils.isInFishingWorld()) return@register
@@ -62,24 +59,26 @@ object RareMobHighlight {
                 }
             }
         }
+    }
 
-        ClientTickEvents.END_CLIENT_TICK.register { client ->
-            if (!WorldUtils.isInFishingWorld()) return@register
-            val world = client.world ?: return@register
-            if (!WorldRendering.highlightSeaCreatures) {
-                if (highlightedEntities.isNotEmpty()) {
-                    highlightedEntities.forEach { (id, _) ->
-                        world.getEntityById(id)?.isGlowing = false
-                    }
-                    highlightedEntities.clear()
-                }
-                return@register
-            }
+    private fun onClientTick(event: ClientTickEvent) {
+        if (!WorldUtils.isInFishingWorld()) return
+        val world = event.mc.world ?: return
+
+        if (!WorldRendering.highlightSeaCreatures) {
             if (highlightedEntities.isNotEmpty()) {
-                highlightedEntities.keys.removeIf { id ->
-                    val entity = world.getEntityById(id)
-                    entity == null || !entity.isAlive
+                highlightedEntities.forEach { (id, _) ->
+                    world.getEntityById(id)?.isGlowing = false
                 }
+                highlightedEntities.clear()
+            }
+            return
+        }
+
+        if (highlightedEntities.isNotEmpty()) {
+            highlightedEntities.keys.removeIf { id ->
+                val entity = world.getEntityById(id)
+                entity == null || !entity.isAlive
             }
         }
     }
