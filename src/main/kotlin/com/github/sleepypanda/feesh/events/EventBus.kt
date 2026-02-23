@@ -8,6 +8,7 @@ import com.github.sleepypanda.feesh.events.models.GameClosedEvent
 import com.github.sleepypanda.feesh.events.models.GameStartedEvent
 import com.github.sleepypanda.feesh.events.models.GuiClosedEvent
 import com.github.sleepypanda.feesh.events.models.ArmorStandDespawnedEvent
+import com.github.sleepypanda.feesh.events.models.ArmorStandLoadedEvent
 import com.github.sleepypanda.feesh.events.models.ItemEntitySpawnedEvent
 import com.github.sleepypanda.feesh.events.models.WorldChangedEvent
 import kotlin.reflect.KClass
@@ -84,8 +85,10 @@ object EventBus {
         }
 
         ClientEntityEvents.ENTITY_LOAD.register { entity, _ ->
-            if (entity is ItemEntity) {
-                publish(ItemEntitySpawnedEvent(entity))
+            when (entity) {
+                is ItemEntity -> publish(ItemEntitySpawnedEvent(entity))
+                is ArmorStandEntity -> if (entity.isAlive) publish(ArmorStandLoadedEvent(entity))
+                else -> { }
             }
         }
 
