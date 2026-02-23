@@ -8,7 +8,6 @@ import com.github.sleepypanda.feesh.events.models.GameClosedEvent
 import com.github.sleepypanda.feesh.events.models.GameStartedEvent
 import com.github.sleepypanda.feesh.events.models.GuiClosedEvent
 import com.github.sleepypanda.feesh.events.models.ArmorStandDespawnedEvent
-import com.github.sleepypanda.feesh.events.models.ArmorStandLoadedEvent
 import com.github.sleepypanda.feesh.events.models.ItemEntitySpawnedEvent
 import com.github.sleepypanda.feesh.events.models.ArmorStandLoadedEvent
 import com.github.sleepypanda.feesh.events.models.WorldChangedEvent
