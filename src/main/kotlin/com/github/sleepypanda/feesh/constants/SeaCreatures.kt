@@ -212,7 +212,7 @@ class SeaCreatures {
             SeaCreatureInfo("Frog Man", COMMON.code, Regex(FROG_MAN_MESSAGE), false),
             SeaCreatureInfo("Trash Gobbler", COMMON.code, Regex(TRASH_GOBBLER_MESSAGE), false),
             SeaCreatureInfo("Dumpster Diver", UNCOMMON.code, Regex(DUMPSTER_DIVER_MESSAGE), false),
-            SeaCreatureInfo(RareSeaCreatureTypes.BANSHEE.displayName, RARE.code, Regex(BANSHEE_MESSAGE), true),
+            SeaCreatureInfo(RareSeaCreatureTypes.BANSHEE.displayName, RARE.code, Regex(BANSHEE_MESSAGE), false),
             SeaCreatureInfo("Snapping Turtle", RARE.code, Regex(SNAPPING_TURTLE_MESSAGE), false),
             SeaCreatureInfo("Bayou Sludge", RARE.code, Regex(BAYOU_SLUDGE_MESSAGE), false),
             SeaCreatureInfo(RareSeaCreatureTypes.ALLIGATOR.displayName, LEGENDARY.code, Regex(ALLIGATOR_MESSAGE), true),
@@ -229,6 +229,9 @@ class SeaCreatures {
         )
 
         val rareSeaCreatures = allSeaCreatures.filter { it.isRare }
+
+        // Some sea creatures are not rare, but we want to alert on them for some specific reasons, e.g. bestiary or ironman grind.
+        val seaCreaturesWithAlert = allSeaCreatures.filter { it.isRare || it.name == RareSeaCreatureTypes.BANSHEE.displayName }
 
         @JvmStatic
         fun getTitle(seaCreatureName: String, isDoubleHook: Boolean): String {

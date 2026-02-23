@@ -22,8 +22,7 @@ object RareCatchMessage {
         if (!WorldUtils.isInSkyblock() || !Chat.shareRareSeaCreatures) return
 
         val seaCreatureName = event.seaCreatureName
-        var seaCreatureInfo = SeaCreatures.allSeaCreatures.find { it.name == event.seaCreatureName } ?: return
-        if (!seaCreatureInfo.isRare) return
+        var seaCreatureInfo = SeaCreatures.seaCreaturesWithAlert.find { it.name == event.seaCreatureName } ?: return
 
         val type = try {
             RareSeaCreatureTypes.valueOf(seaCreatureName.uppercase().replace(" ", "_"))
