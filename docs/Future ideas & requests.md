@@ -89,8 +89,6 @@
 - Hide players near fishing bobber when it's casted.
 - Way to disable all module features with one toggle.
 - Other player's hooks and lines hider.
-- Glowing outline / highlight rare sea creatures (make this not visible through walls) - I want to get rid of SH for that, and replicate this feature in module.
-- PogData resets data file on PC crash - consider doing regular backups / research tska library as replacement for PogData
 - Remove double hook reindrake logic because DH is not possible now
 - Rain/Thunder widget
 - Golden fish timer
