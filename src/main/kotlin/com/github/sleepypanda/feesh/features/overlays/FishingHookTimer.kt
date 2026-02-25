@@ -17,6 +17,7 @@ import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
 import com.github.sleepypanda.feesh.utils.enums.Alignment
 import com.github.sleepypanda.feesh.events.models.ParticleSpawnedEvent
 import net.minecraft.entity.decoration.ArmorStandEntity
+import net.minecraft.entity.Entity
 import net.minecraft.entity.projectile.FishingBobberEntity
 import net.minecraft.particle.ParticleTypes
 import net.minecraft.util.math.Vec3d
@@ -36,7 +37,9 @@ data class FishingHookTimerData(
     var hasParticle: Boolean = false
 )
 
+// TODO: Case when hook goes out of hotspot, particle disappears
 object FishingHookTimer {
+    private var fishingHook: FishingBobberEntity? = null
     private var fishingHookTimer: FishingHookTimerData? = null
     private var lastParticlePosition: Vec3d? = null
     private const val FISH_ARRIVED = "§c§l!!!";
@@ -65,6 +68,7 @@ object FishingHookTimer {
     }
 
     private fun onWorldChanged(@Suppress("UNUSED_PARAMETER") event: WorldChangedEvent) {
+        fishingHook = null
         fishingHookTimer = null
         lastParticlePosition = null
         gui.clearLines()
@@ -76,17 +80,20 @@ object FishingHookTimer {
             !WorldUtils.isInFishingWorld() ||
             !PlayerUtils.hasFishingRodInHotbar()
         ) {
+            fishingHook = null
             fishingHookTimer = null
             gui.clearLines()
             return
         }
 
         val fishingHook = getPlayerFishingHook() ?: run {
+            fishingHook = null
             fishingHookTimer = null
             gui.clearLines()
             return
         }
 
+        this.fishingHook = fishingHook
         fishingHookTimer = FishingHookTimerData(
             ticksExisted = fishingHook.age,
             fishState = FishState.NONE
@@ -117,18 +124,18 @@ object FishingHookTimer {
         val text = when {
             fishingHookTimer!!.fishState == FishState.ARRIVED -> {
                 val template = Overlays.fishingHookFishArrivedTemplate
-                if (template.isNotEmpty()) template else DEFAULT_FISH_ARRIVED_TEMPLATE
+                template.ifEmpty { DEFAULT_FISH_ARRIVED_TEMPLATE }
             }
             fishingHookTimer!!.fishState == FishState.ARRIVING && Overlays.fishingHookTimerMode == FishingHookTimerMode.UNTIL_REEL_IN -> {
                 val template = Overlays.fishingHookFishTimerTemplate
                 val timerText = fishingHookTimer!!.hypixelTimerText
-                val timer = (if (template.isNotEmpty()) template else DEFAULT_TIMER_TEMPLATE).replace("{timer}", timerText)
+                val timer = (template.ifEmpty { DEFAULT_TIMER_TEMPLATE }).replace("{timer}", timerText)
                 if (fishingHookTimer!!.hasParticle) "$timer${GREEN}*" else timer
             }
             Overlays.fishingHookTimerMode == FishingHookTimerMode.SINCE_CASTED -> {
                 val template = Overlays.fishingHookFishTimerTemplate
                 val seconds = String.format("%.1f", fishingHookTimer!!.ticksExisted / 20.0)
-                (if (template.isNotEmpty()) template else DEFAULT_TIMER_TEMPLATE).replace("{timer}", seconds)
+                (template.ifEmpty { DEFAULT_TIMER_TEMPLATE }).replace("{timer}", seconds)
                 // TODO same
             }
             else -> null
@@ -154,10 +161,10 @@ object FishingHookTimer {
         if (!(event.particle == ParticleTypes.HAPPY_VILLAGER && event.count == 1 && event.speed == 0.0)) return
         lastParticlePosition = null
 
-        if (fishingHookTimer == null || (fishingHookTimer!!.fishState != FishState.ARRIVING && fishingHookTimer!!.fishState != FishState.NONE)) return
+        if (fishingHookTimer == null || fishingHookTimer!!.fishState != FishState.ARRIVING) return
 
-        val fishingHook = getPlayerFishingHook() ?: return
-        if (EntityUtils.getDistance(fishingHook, event.x, event.y, event.z) > 5) return
+        //val fishingHook = getPlayerFishingHook() ?: return
+        if (EntityUtils.getDistance(fishingHook as Entity, event.x, event.y, event.z) > 5) return
 
         lastParticlePosition = Vec3d(event.x, event.y, event.z)
        // FeeshMod.LOGGER.info("Particle spawned: ${event.particle.javaClass.name } ${event.particle.javaClass.canonicalName } ${event.count} ${event.speed}")
