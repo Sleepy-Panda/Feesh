@@ -152,7 +152,7 @@ object DeployablesTimer {
                     override fun run() {
                         trackDwarvenLanternNearby()
                     }
-                }, 250)
+                }, 500)
             }
         } catch (e: Exception) {
             FeeshMod.LOGGER.error("[Feesh] Failed to handle deployable interaction", e)
