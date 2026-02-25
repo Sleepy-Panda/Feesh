@@ -54,7 +54,6 @@ import com.github.sleepypanda.feesh.events.publishers.RareDropsPublisher
 import com.github.sleepypanda.feesh.events.publishers.PartyChatPublisher
 import com.github.sleepypanda.feesh.events.publishers.PetLevelUpPublisher
 import com.github.sleepypanda.feesh.events.publishers.SacksItemPickupPublisher
-import com.github.sleepypanda.feesh.features.rendering.RareMobHighlight
 import com.github.sleepypanda.feesh.settings.Settings
 import com.github.sleepypanda.feesh.utils.ChatUtils
 import com.github.sleepypanda.feesh.utils.KeybindUtils
@@ -125,7 +124,6 @@ class FeeshMod : ModInitializer {
         SacksItemPickupPublisher.init()
 
         // Rendering
-        RareMobHighlight.init()
 
         // Alerts
         RareCatchAlert.init()

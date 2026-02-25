@@ -2,7 +2,6 @@ package com.github.sleepypanda.feesh.mixin;
 
 import com.github.sleepypanda.feesh.features.overlays.FishingHookTimer;
 import com.github.sleepypanda.feesh.features.rendering.HideOtherPlayersHooks;
-import com.github.sleepypanda.feesh.features.rendering.RareMobHighlight;
 import com.github.sleepypanda.feesh.features.rendering.HidePlayersNearBobber;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.Frustum;
@@ -43,19 +42,6 @@ public abstract class EntityRendererMixin<T extends Entity, S extends EntityRend
                 }
             }
             default -> {
-            }
-        }
-    }
-
-    @Inject(method = "updateRenderState", at = @At("TAIL"))
-    private void feesh$onUpdateRenderState(T entity, S state, float tickProgress, CallbackInfo ci) {
-        if (RareMobHighlight.highlightedEntities.containsKey(entity.getId())) {
-            var player = MinecraftClient.getInstance().player;
-            if (player != null && player.canSee(entity)) {
-                state.outlineColor = 0x00FFFF;
-//                state.invisible = false;
-            } else {
-                state.outlineColor = 0;
             }
         }
     }

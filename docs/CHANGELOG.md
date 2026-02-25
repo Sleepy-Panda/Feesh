@@ -5,8 +5,6 @@ Released on: ???
 ## Features
 
 - Added support for 1.21.11.
-- Added rare sea creatures highlighter (disabled by default). It applies glowing border to the sea creatures, not visible through walls.
-  - Shoutout to **alpha-r** for developing this feature!
 - Added setting to hide other players' fishing hooks (disabled by default).
 - Added Dwarven Lanterns to the deployables tracker and alerts (disabled by default).
 - Added Rain/Thunderstorm timer overlay for Birch Park/Spider Den, and alert when Rain/Thunderstorm ends soon (disabled by default).
@@ -16,10 +14,6 @@ Released on: ???
 ## Bugfixes
 
 - Made Banshee alert / chat message not enabled by default for new mod users.
-
-## Special thanks
-
-- alpha-r, for being the first contributor to this project :)
 
 # 1.1.0
 
