@@ -21,6 +21,21 @@ object EntityUtils {
         return sqrt(dx * dx + dy * dy + dz * dz)
     }
 
+    /**
+     * Get the distance between an entity and a point in the world.
+     * @param entityA The entity.
+     * @param x The x coordinate of the point.
+     * @param y The y coordinate of the point.
+     * @param z The z coordinate of the point.
+     * @returns {Double} The distance between the entity and the point.
+     */
+    fun getDistance(entityA: Entity, x: Double, y: Double, z: Double): Double {
+        val dx = x - entityA.x
+        val dy = y - entityA.y
+        val dz = z - entityA.z
+        return sqrt(dx * dx + dy * dy + dz * dz)
+    }
+
     fun isFishingHookActive(player: PlayerEntity): Boolean {
         if (!WorldUtils.isInSkyblock()) return false
 

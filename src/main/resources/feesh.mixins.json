@@ -8,7 +8,8 @@
 		"ClientPlayerInteractionManagerMixin",
 		"MinecraftClientMixin",
 		"EntityRendererMixin",
-		"WorldRenderStateMixin"
+		"WorldRenderStateMixin",
+		"ClientPlayNetworkHandlerMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

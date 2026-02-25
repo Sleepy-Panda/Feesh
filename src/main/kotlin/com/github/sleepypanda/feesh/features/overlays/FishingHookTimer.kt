@@ -15,8 +15,11 @@ import com.github.sleepypanda.feesh.utils.gui.FeeshGui
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
 import com.github.sleepypanda.feesh.utils.enums.Alignment
+import com.github.sleepypanda.feesh.events.models.ParticleSpawnedEvent
 import net.minecraft.entity.decoration.ArmorStandEntity
 import net.minecraft.entity.projectile.FishingBobberEntity
+import net.minecraft.particle.ParticleTypes
+import net.minecraft.util.math.Vec3d
 import java.util.UUID
 
 enum class FishState {
@@ -29,11 +32,13 @@ data class FishingHookTimerData(
     var ticksExisted: Int = 0,
     var fishState: FishState = FishState.NONE,
     var hypixelTimerUuid: UUID? = null,
-    var hypixelTimerText: String = ""
+    var hypixelTimerText: String = "",
+    var hasParticle: Boolean = false
 )
 
 object FishingHookTimer {
     private var fishingHookTimer: FishingHookTimerData? = null
+    private var lastParticlePosition: Vec3d? = null
     private const val FISH_ARRIVED = "§c§l!!!";
     private val FISHING_HOOK_TIMER_UNTIL_REEL_IN_REGEX = Regex("§e§l(\\d+(\\.\\d+)?)");
     private val DEFAULT_FISH_ARRIVED_TEMPLATE = "${RED}${BOLD}!!!"
@@ -56,10 +61,12 @@ object FishingHookTimer {
         EventBus.subscribe(ClientTickEvent::class, ::onClientTick)
         EventBus.subscribe(WorldChangedEvent::class, ::onWorldChanged)
         EventBus.subscribe(GameRenderEvent::class, ::onRender)
+        EventBus.subscribe(ParticleSpawnedEvent::class, ::onParticleSpawned)
     }
 
     private fun onWorldChanged(@Suppress("UNUSED_PARAMETER") event: WorldChangedEvent) {
         fishingHookTimer = null
+        lastParticlePosition = null
         gui.clearLines()
     }
 
@@ -90,7 +97,8 @@ object FishingHookTimer {
             fishingHookTimer = fishingHookTimer!!.copy(
                 hypixelTimerUuid = hypixelHookTimer.uuid,
                 fishState = hypixelHookTimer.fishState,
-                hypixelTimerText = hypixelHookTimer.name
+                hypixelTimerText = hypixelHookTimer.name,
+                hasParticle = lastParticlePosition != null
             )
         }
     }
@@ -114,12 +122,14 @@ object FishingHookTimer {
             fishingHookTimer!!.fishState == FishState.ARRIVING && Overlays.fishingHookTimerMode == FishingHookTimerMode.UNTIL_REEL_IN -> {
                 val template = Overlays.fishingHookFishTimerTemplate
                 val timerText = fishingHookTimer!!.hypixelTimerText
-                (if (template.isNotEmpty()) template else DEFAULT_TIMER_TEMPLATE).replace("{timer}", timerText)
+                val timer = (if (template.isNotEmpty()) template else DEFAULT_TIMER_TEMPLATE).replace("{timer}", timerText)
+                if (fishingHookTimer!!.hasParticle) "$timer${GREEN}*" else timer
             }
             Overlays.fishingHookTimerMode == FishingHookTimerMode.SINCE_CASTED -> {
                 val template = Overlays.fishingHookFishTimerTemplate
                 val seconds = String.format("%.1f", fishingHookTimer!!.ticksExisted / 20.0)
                 (if (template.isNotEmpty()) template else DEFAULT_TIMER_TEMPLATE).replace("{timer}", seconds)
+                // TODO same
             }
             else -> null
         }
@@ -129,6 +139,32 @@ object FishingHookTimer {
         } else {
             gui.clearLines()
         }
+    }
+
+    private fun onParticleSpawned(event: ParticleSpawnedEvent) {
+        if (!Overlays.fishingHookTimerOverlay ||
+            !WorldUtils.isInSkyblock() ||
+            !WorldUtils.isInHotspotFishingWorld() ||
+            !PlayerUtils.hasFishingRodInHotbar()
+        ) {
+            lastParticlePosition = null
+            return
+        }
+
+        if (!(event.particle == ParticleTypes.HAPPY_VILLAGER && event.count == 1 && event.speed == 0.0)) return
+        lastParticlePosition = null
+
+        if (fishingHookTimer == null || (fishingHookTimer!!.fishState != FishState.ARRIVING && fishingHookTimer!!.fishState != FishState.NONE)) return
+
+        val fishingHook = getPlayerFishingHook() ?: return
+        if (EntityUtils.getDistance(fishingHook, event.x, event.y, event.z) > 5) return
+
+        lastParticlePosition = Vec3d(event.x, event.y, event.z)
+       // FeeshMod.LOGGER.info("Particle spawned: ${event.particle.javaClass.name } ${event.particle.javaClass.canonicalName } ${event.count} ${event.speed}")
+        //FeeshMod.LOGGER.info("Particle spawned: ${event.particle == ParticleTypes.COMPOSTER} ${event.particle == ParticleTypes.HAPPY_VILLAGER} ${event.particle == ParticleTypes.EGG_CRACK}")
+        //fishingHookTimer = fishingHookTimer!!.copy(
+        //    hasParticle = true
+        //)
     }
 
     @JvmStatic
