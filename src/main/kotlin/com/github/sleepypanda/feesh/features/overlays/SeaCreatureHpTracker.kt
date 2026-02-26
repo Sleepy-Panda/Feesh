@@ -15,18 +15,11 @@ import com.github.sleepypanda.feesh.utils.SoundUtils
 import com.github.sleepypanda.feesh.utils.gui.FeeshGui
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
+import com.github.sleepypanda.feesh.utils.EntityUtils.SeaCreatureParsedNametagInfo
 import net.minecraft.entity.Entity
 import net.minecraft.entity.decoration.ArmorStandEntity
 import net.minecraft.sound.SoundEvents
 import java.util.Date
-
-data class SeaCreatureInfo(
-    val mcEntityId: Int,
-    val baseMobName: String,
-    val shortNametag: String,
-    val currentHpNumber: Double,
-    val renderPos: Triple<Double, Double, Double>
-)
 
 data class TrackedMobInfo(
     val baseMobName: String,
@@ -206,7 +199,7 @@ object SeaCreatureHpTracker {
     }
 
     // Track seen mobs, to not announce them again and to not show them as immune
-    private fun trackSeenEntityIds(seaCreatures: List<SeaCreatureInfo>) {
+    private fun trackSeenEntityIds(seaCreatures: List<SeaCreatureParsedNametagInfo>) {
         if (seaCreatures.isEmpty()) return
 
         val now = Date().time
@@ -241,7 +234,7 @@ object SeaCreatureHpTracker {
         gui.setLines(lines)
     }
 
-    private fun getSeaCreaturesInRange(includedSeaCreatureNames: List<String>, distance: Double): List<SeaCreatureInfo> {
+    private fun getSeaCreaturesInRange(includedSeaCreatureNames: List<String>, distance: Double): List<SeaCreatureParsedNametagInfo> {
         val player = FeeshMod.mc.player ?: return emptyList()
         val world = FeeshMod.mc.world ?: return emptyList()
 
@@ -252,65 +245,10 @@ object SeaCreatureHpTracker {
                 EntityUtils.getDistance(player, entity) <= distance
             }
             .mapNotNull { entity ->
-                parseSeaCreatureNametag(entity, includedSeaCreatureNames)
+                EntityUtils.parseSeaCreatureNametag(entity, includedSeaCreatureNames)
             }
             .filter { seaCreatureInfo ->
                 includedSeaCreatureNames.contains(seaCreatureInfo.baseMobName)
             }
-    }
-
-    // Original nametag samples:
-
-    // §r§8[§r§7Lv1§r§8] §r§9⚓§r§a☮ §r§cSquid§r §r§a100§r§f/§r§a100§r§c❤
-	// §r§8[§r§7Lv1§r§8] §r§9⚓§r§a☮ §r§k§5a§r§5Corrupted Squid§r§k§5a§r §r§a300§r§f/§r§a300§r§c❤
-    // §e﴾ §8[§7Lv600§8] §c♆§7⚙§d♣ §c§lLord Jawbus§r§r §a69M§f/§a100M§c❤ §e﴿
-    // §e﴾ §8[§7Lv600§8] §c♆§7⚙§d♣ §c§lLord Jawbus§r§r §e6.3M§f/§a100M§c❤ §e﴿ §b✯
-    // §8[§7Lv250§8] §c♆§e✰§a☮ §cJawbus Follower§r §a3M§f/§a3M§c❤
-	// MC 1.21.5: §r§8[§r§7Lv150§r§8] §r§9⚓§r§f🦴§r§5♃ §r§5§ka§r§5Corrupted The Loch Emperor§r§5§ka§r §r§e521.8k§r§f/§r§a2.4M§r§c❤ §r§b✯
-	// MC 1.21.5: §r§8[§r§7Lv14§r§8] §r§2⸙§r§9⚓ §r§5§ka§r§5Corrupted Ent§r§5§ka§r §r§e1§r§f/§r§a75,000§r§c❤
-    private fun parseSeaCreatureNametag(entity: ArmorStandEntity, includedSeaCreatureNames: List<String>): SeaCreatureInfo? {
-        val customName = entity.customName ?: return null
-        val plainName = customName.string.removeFormatting()
-
-        if (plainName.isEmpty() ||
-            !plainName.contains("[Lv") ||
-            !plainName.contains("]") ||
-            !plainName.contains("❤") ||
-            !includedSeaCreatureNames.any { plainName.contains(it) }
-        ) return null
-
-        val formattedText = customName.getFormattedString()
-        var name = formattedText
-            .replace("§e﴾ ", "")
-            .replace(" §e﴿", "")
-            .replace("§5§ka", "")
-            .trim()
-
-        val shortName = name.split("] ").getOrNull(1)?.replace("Corrupted ", "") ?: return null
-        
-        val nameParts = shortName.split(" ")
-        val namePartIndex = nameParts.indexOfFirst { it.contains("/") }
-        val baseMobNameParts = if (namePartIndex >= 0) {
-            nameParts.take(namePartIndex)
-        } else {
-            nameParts
-        }
-        
-        val baseMobName = baseMobNameParts.joinToString(" ")
-            .removeFormatting()
-            .replace(Regex("[^a-zA-Z\\s'-]"), "")
-            .trim()
-
-        val hpPart = shortName.split("§f/").getOrNull(0) ?: return null
-        val currentHp = hpPart.split(" ").lastOrNull() ?: return null
-        val currentHpNumber = CommonUtils.parseShortNumber(currentHp.removeFormatting())
-
-        return SeaCreatureInfo(
-            mcEntityId = entity.id,
-            baseMobName = baseMobName, // "Lord Jawbus" or "Squid"
-            shortNametag = shortName, // §c♆§7⚙§d♣ §c§lLord Jawbus§r§r §a69M§f/§a100M§c❤ §b✯
-            currentHpNumber = currentHpNumber,
-            renderPos = Triple(entity.x, entity.y, entity.z)
-        )
     }
 }

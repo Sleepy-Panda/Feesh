@@ -1,5 +1,6 @@
 package com.github.sleepypanda.feesh.features.rendering
 
+import com.github.sleepypanda.feesh.FeeshMod
 import com.github.sleepypanda.feesh.constants.SeaCreatures
 import com.github.sleepypanda.feesh.events.EventBus
 import com.github.sleepypanda.feesh.events.models.ClientTickEvent
@@ -8,15 +9,20 @@ import com.github.sleepypanda.feesh.events.models.WorldChangedEvent
 import com.github.sleepypanda.feesh.settings.categories.WorldRendering
 import com.github.sleepypanda.feesh.utils.ChatUtils.removeFormatting
 import com.github.sleepypanda.feesh.utils.WorldUtils
+import com.github.sleepypanda.feesh.utils.EntityUtils
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.jvm.JvmField
-import net.minecraft.entity.LivingEntity
+import net.minecraft.entity.mob.MobEntity
 import net.minecraft.entity.decoration.ArmorStandEntity
 import net.minecraft.client.MinecraftClient
+import net.minecraft.entity.LivingEntity
+import net.minecraft.entity.player.PlayerEntity
+import net.minecraft.entity.mob.SlimeEntity
 
+// TODO Fire Eel
 object RareMobHighlight {
     @JvmField
     val highlightedEntities = mutableMapOf<Int, Int>()
@@ -29,45 +35,75 @@ object RareMobHighlight {
     }
 
     private fun onArmorStandLoaded(event: ArmorStandLoadedEvent) {
-        if (!WorldRendering.highlightSeaCreatures || !WorldUtils.isInFishingWorld()) return
+        if (!WorldRendering.highlightSeaCreatures || !WorldUtils.isInSkyblock() || !WorldUtils.isInFishingWorld()) return
         val entity = event.entity
 
         modScope.launch {
-            delay(500)
+            delay(250)
             MinecraftClient.getInstance().execute {
-                val plainName = entity.customName?.string?.removeFormatting()
+                // TODO: Pass parameter for allowed sc names to not parse all nametags?
+                val cleanName = EntityUtils.parseSeaCreatureNametag(entity)?.baseMobName ?: return@execute
+                val info = SeaCreatures.rareSeaCreatures.find { it.name == cleanName }
 
-                if (plainName?.contains("[Lv") == true && plainName.contains("❤")) {
-                    val info = SeaCreatures.allSeaCreatures.find { creatureInfo ->
-                        val cleanDbName = creatureInfo.name.removeFormatting()
-                        plainName.contains(cleanDbName, true)
+                // Titanoboa
+                //[21:04:00] [Render thread/INFO]: Mob entity by ID: 102114 translation{key='entity.minecraft.slime', args=[]}
+                //[21:04:00] [Render thread/INFO]: Vehicle: null null
+                //[21:04:00] [Render thread/INFO]: Passengers: null null null
+
+                // Alligator: Mob entity by ID: 164758 translation{key='entity.minecraft.player', args=[]}
+
+                // Eel: tail highlighted
+                //[23:11:04] [Render thread/INFO]: Mob entity by ID: 281131 translation{key='entity.minecraft.slime', args=[]}
+                //[23:11:04] [Render thread/INFO]: Vehicle: null null
+                //[23:11:04] [Render thread/INFO]: Passengers: null null null
+                if (info != null || cleanName.contains("Wiki Tiki Laser Totem") || cleanName.contains("Jawbus Follower") || cleanName.contains("Fire Eel")) {
+                    FeeshMod.LOGGER.info(cleanName + " found")
+                    val mobEntity = entity.entityWorld.getEntityById(entity.id - 1) as? LivingEntity
+                    FeeshMod.LOGGER.info("Mob entity by ID: ${mobEntity?.id} ${mobEntity?.type?.name}")
+                    val vehicle = mobEntity?.vehicle
+                    FeeshMod.LOGGER.info("Vehicle: ${vehicle?.id} ${vehicle?.type?.name}")
+                    val passengers = mobEntity?.firstPassenger
+                    FeeshMod.LOGGER.info("Passengers: ${passengers?.id} ${passengers?.type?.name} ${passengers?.customName?.string}")
+                    var other = entity.entityWorld.getOtherEntities(
+                            entity,
+                            entity.boundingBox.expand(1.0, 2.0, 1.0)
+                        ) {
+                            it is LivingEntity
+                        }.firstOrNull() as? LivingEntity
+                    FeeshMod.LOGGER.info("Other: ${other?.id} ${other?.type?.name} ${other?.customName?.string}")
+                }
+
+                if (info != null || cleanName.contains("Wiki Tiki Laser Totem") || cleanName.contains("Jawbus Follower") || cleanName.contains("Fire Eel")) {
+                    val shift = when {
+                        cleanName.contains("Fire Eel") -> 12 // It has 6 segments but 12 entities (don't ask me)
+                        cleanName.contains("Titanoboa") -> 42 // TODO find proper count, 40 did not work
+                        else -> 1
+                    }
+                    var mobEntity = entity.entityWorld.getEntityById(entity.id - shift) as? LivingEntity ?: return@execute
+                    if (!mobEntity.isAlive) return@execute
+
+                    if (cleanName.contains("Jawbus Follower") && mobEntity is SlimeEntity) {
+                        // Find head for Fire Eel - TODO check if SlimeEntity fits to detect Fire Eel follower
+                        mobEntity = entity.entityWorld.getEntityById(entity.id - 12) as? LivingEntity ?: return@execute
                     }
 
-                    if (info != null && info.isRare) {
-                        val mobEntity = entity.entityWorld.getEntityById(entity.id - 1) as? LivingEntity
-                            ?: entity.entityWorld.getOtherEntities(
-                                entity,
-                                entity.boundingBox.expand(1.0, 2.0, 1.0)
-                            ) {
-                                it is LivingEntity && it !is ArmorStandEntity
-                            }.firstOrNull() as? LivingEntity
+                    // TODO: Add rider for ragnarok
+                    if (mobEntity is PlayerEntity) FeeshMod.LOGGER.info("Player ${mobEntity.uuid.version()} ${mobEntity.name.string}")
+                    if (mobEntity is PlayerEntity && (mobEntity.uuid.version() == 4 || mobEntity.uuid.version() == 1)) return@execute
 
-                        if (mobEntity != null) {
-                            applyGlow(mobEntity, info.name)
-                        }
-                    }
+                    applyGlow(mobEntity, info?.name ?: cleanName)
                 }
             }
         }
     }
 
     private fun onClientTick(event: ClientTickEvent) {
-        if (!WorldUtils.isInFishingWorld()) return
+        if (!WorldUtils.isInSkyblock() || !WorldUtils.isInFishingWorld()) return
         val world = event.mc.world ?: return
 
         if (!WorldRendering.highlightSeaCreatures) {
             if (highlightedEntities.isNotEmpty()) {
-                highlightedEntities.forEach { (id, _) ->
+                highlightedEntities.forEach { (id, _) -> // TODO enough to clear list?
                     world.getEntityById(id)?.isGlowing = false
                 }
                 highlightedEntities.clear()
@@ -83,10 +119,10 @@ object RareMobHighlight {
         }
     }
 
-    //can use cleanName for later ;)
+    // TODO Tiki totem rendered with tiki color
     private fun applyGlow(target: LivingEntity, cleanName: String) {
-        highlightedEntities[target.id] = 0x00FFFF
-        target.isGlowing = true
+        if (cleanName.contains("Jawbus Follower") || cleanName.contains("Wiki Tiki Laser Totem")) highlightedEntities[target.id] = 0xFF0000
+        else highlightedEntities[target.id] = 0x00FFFF
     }
 
     private fun worldChange(event: WorldChangedEvent) {
