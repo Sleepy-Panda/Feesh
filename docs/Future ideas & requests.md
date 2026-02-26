@@ -46,6 +46,11 @@
 
 - Troubled Bubble drop
 - Reminder if user is fishing with wrong hook/sinker during events or in hotspots.
+  - When first rod cast on Jerry: check for Icy Sinker
+  - When first Spooky mob caught: check for Phantom Hook
+  - When first hotspot rod cast: check for Hotspot Hook and Sinker (except for treasure fishing)
+  - Check for Junk Sinker for treasure fishing in Bayou?
+  - TODO: Other stuff?
 - Alert if player attempts to be scammed by Kat by giving her Epic Megalodon.
 - Rare SC cocooned alert
 - Spooky festival event ending alert (to kill mobs before despawn)
@@ -86,9 +91,7 @@
 
 ## Other
 
-- Hide players near fishing bobber when it's casted.
 - Way to disable all module features with one toggle.
-- Other player's hooks and lines hider.
 - Remove double hook reindrake logic because DH is not possible now
 - Rain/Thunder widget
 - Golden fish timer
