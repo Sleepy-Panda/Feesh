@@ -2,9 +2,8 @@ package com.github.sleepypanda.feesh.utils
 
 import com.github.sleepypanda.feesh.FeeshMod
 import net.minecraft.entity.Entity
-import net.minecraft.entity.player.PlayerEntity
-import net.minecraft.entity.projectile.FishingBobberEntity
 import net.minecraft.entity.decoration.ArmorStandEntity
+import net.minecraft.entity.projectile.FishingBobberEntity
 import kotlin.math.sqrt
 
 object EntityUtils {
@@ -15,26 +14,36 @@ object EntityUtils {
      * @returns {Double} The distance between the two entities.
      */
     fun getDistance(entityA: Entity, entityB: Entity): Double {
-        val dx = entityB.x - entityA.x
-        val dy = entityB.y - entityA.y
-        val dz = entityB.z - entityA.z
-        return sqrt(dx * dx + dy * dy + dz * dz)
+        return getDistance(entityA.x, entityA.y, entityA.z, entityB.x, entityB.y, entityB.z)
     }
 
-    fun isFishingHookActive(player: PlayerEntity): Boolean {
-        if (!WorldUtils.isInSkyblock()) return false
+    /**
+     * Get the distance between an entity and a point in the world.
+     * @param entityA The entity.
+     * @param x The x coordinate of the point.
+     * @param y The y coordinate of the point.
+     * @param z The z coordinate of the point.
+     * @returns {Double} The distance between the entity and the point.
+     */
+    fun getDistance(entityA: Entity, x: Double, y: Double, z: Double): Double {
+        return getDistance(entityA.x, entityA.y, entityA.z, x, y, z)
+    }
 
-        val heldItem = player.mainHandStack
-        if (!ItemUtils.isFishingRod(heldItem)) return false
-
-        val fishingHook = getPlayersFishingHook()
-        if (fishingHook == null) return false
-        if (fishingHook.isInLava() || fishingHook.isTouchingWater()) return true
-
-        val isDirtRod = heldItem.name.string.contains("Dirt Rod")
-        if (isDirtRod) return true // For dirt rod, the player's hook can be in dirt
-
-        return false
+    /**
+     * Get the distance between two points in the world.
+     * @param xa The x coordinate of the first point.
+     * @param ya The y coordinate of the first point.
+     * @param za The z coordinate of the first point.
+     * @param xb The x coordinate of the second point.
+     * @param yb The y coordinate of the second point.
+     * @param zb The z coordinate of the second point.
+     * @returns {Double} The distance between the two points.
+     */
+    fun getDistance(xa: Double, ya: Double, za: Double, xb: Double, yb: Double, zb: Double): Double {
+        val dx = xb - xa
+        val dy = yb - ya
+        val dz = zb - za
+        return sqrt(dx * dx + dy * dy + dz * dz)
     }
 
     /**
