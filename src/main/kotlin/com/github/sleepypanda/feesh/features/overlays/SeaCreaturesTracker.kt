@@ -17,7 +17,7 @@ import com.github.sleepypanda.feesh.utils.gui.FeeshGui
 import com.github.sleepypanda.feesh.utils.gui.GuiButton
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
-import com.github.sleepypanda.feesh.utils.PlayerUtils
+import com.github.sleepypanda.feesh.utils.FishingHookUtils
 import com.github.sleepypanda.feesh.utils.data.PersistentDataManager
 import java.text.DecimalFormat
 
@@ -66,7 +66,7 @@ object SeaCreaturesTracker {
         .setSettingsKey { Overlays.seaCreaturesTrackerOverlay }
         .setCondition {
             WorldUtils.isInFishingWorld() &&
-            PlayerUtils.isFishingHookSeenMinutesAgo(5)
+            FishingHookUtils.wasFishingHookActiveMinutesAgo(5)
         }
 
     fun init() {
@@ -97,7 +97,7 @@ object SeaCreaturesTracker {
         val valueToAdd = if (isDoubleHook) 2 else 1
 
         // Do not track Vanquishers if not fishing
-        if (seaCreatureName == "Vanquisher" && !PlayerUtils.isFishingHookSeenMinutesAgo(5)) return
+        if (seaCreatureName == "Vanquisher" && !FishingHookUtils.wasFishingHookActiveMinutesAgo(5)) return
 
         trackSeaCreatureCatch(data.session, seaCreatureName, valueToAdd, isDoubleHook)
         trackSeaCreatureCatch(data.total, seaCreatureName, valueToAdd, isDoubleHook)
@@ -213,7 +213,7 @@ object SeaCreaturesTracker {
     private fun updateGuiLines() {
         gui.clearLines()
 
-        if (!Overlays.seaCreaturesTrackerOverlay || !WorldUtils.isInSkyblock() || !WorldUtils.isInFishingWorld() || !PlayerUtils.isFishingHookSeenMinutesAgo(5)) return
+        if (!Overlays.seaCreaturesTrackerOverlay || !WorldUtils.isInSkyblock() || !WorldUtils.isInFishingWorld() || !FishingHookUtils.wasFishingHookActiveMinutesAgo(5)) return
 
         val viewMode = getCurrentViewMode()
         val sourceObj = getSourceObject(viewMode)

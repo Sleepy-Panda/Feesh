@@ -23,6 +23,7 @@ import com.github.sleepypanda.feesh.utils.RegisterUtils
 import com.github.sleepypanda.feesh.utils.WorldUtils
 import com.github.sleepypanda.feesh.utils.PlayerUtils
 import com.github.sleepypanda.feesh.utils.EntityUtils
+import com.github.sleepypanda.feesh.utils.FishingHookUtils
 import com.github.sleepypanda.feesh.utils.GuiUtils
 import com.github.sleepypanda.feesh.utils.gui.FeeshGui
 import com.github.sleepypanda.feesh.utils.gui.GuiButton
@@ -231,7 +232,7 @@ object FishingProfitTracker {
 
     private fun isTrackerVisible(): Boolean {
         if (!Overlays.fishingProfitTrackerOverlay || !WorldUtils.isInSkyblock() || !WorldUtils.isInFishingWorld(WorldUtils.getWorldName())) return false
-        if (!PlayerUtils.isFishingHookSeenMinutesAgo(HIDE_OVERLAY_AFTER_HOOK_MINUTES)) return false
+        if (!FishingHookUtils.wasFishingHookActiveMinutesAgo(HIDE_OVERLAY_AFTER_HOOK_MINUTES)) return false
 
         val viewMode = getCurrentViewMode()
         val session = data.session
@@ -415,8 +416,7 @@ object FishingProfitTracker {
         }
 
         val prevIsActive = isSessionActive
-        val player = FeeshMod.mc.player ?: return
-        val isHookActive = EntityUtils.isFishingHookActive(player)
+        val isHookActive = FishingHookUtils.isFishingHookActive()
 
         // Start fishing timer after pause or when tracker was empty
         if (isHookActive) {
@@ -432,7 +432,7 @@ object FishingProfitTracker {
         }
 
         if (!isSessionActive || !isTrackerVisible()) return
-        val lastHookSeenAt = PlayerUtils.lastFishingHookSeenAt() ?: return
+        val lastHookSeenAt = FishingHookUtils.lastActiveFishingHookSeenAt() ?: return
         val elapsedSinceHook = (Date().time - lastHookSeenAt.time) / 1000
         if (elapsedSinceHook < MAX_SECONDS_SINCE_HOOK) {
             data.session.elapsedSeconds += 1

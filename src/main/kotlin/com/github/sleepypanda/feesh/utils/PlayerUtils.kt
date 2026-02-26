@@ -11,8 +11,6 @@ import java.util.Timer
 import kotlin.concurrent.timerTask
 
 object PlayerUtils {
-    private var cachedLastFishingHookSeenAt: Date? = null
-    private var cachedLastFishingHookInHotspotSeenAt: Date? = null
     private var cachedHasFishingRodInHotbar: Boolean = false
     private var cachedHasDirtRodInHand: Boolean = false
     private var timer: Timer? = null
@@ -28,7 +26,6 @@ object PlayerUtils {
         
         val task = timerTask {
             try {
-                setLastFishingHookSeenAt()
                 setHasFishingRodInHotbar()
                 setHasDirtRodInHand()
             } catch (e: Exception) {
@@ -39,8 +36,6 @@ object PlayerUtils {
     }
 
     private fun onWorldChanged(@Suppress("UNUSED_PARAMETER") event: WorldChangedEvent) {
-        cachedLastFishingHookSeenAt = null
-        cachedLastFishingHookInHotspotSeenAt = null
         cachedHasFishingRodInHotbar = false
         cachedHasDirtRodInHand = false
     }
@@ -116,43 +111,5 @@ object PlayerUtils {
             return
         }
         cachedHasDirtRodInHand = ItemUtils.isDirtRod(heldItem)
-    }
-
-    fun lastFishingHookSeenAt(): Date? {
-        return cachedLastFishingHookSeenAt
-    }
-
-    fun lastFishingHookInHotspotSeenAt(): Date? {
-        return cachedLastFishingHookInHotspotSeenAt
-    }
-
-    fun isFishingHookSeenMinutesAgo(minutes: Int): Boolean {
-        val now = Date()
-        val lastFishingHookSeenAt = lastFishingHookSeenAt()
-        if (lastFishingHookSeenAt == null) return false
-
-        return now.time - lastFishingHookSeenAt.time <= minutes * 60 * 1000
-    }
-
-    fun isFishingHookInHotspotSeenMinutesAgo(minutes: Int): Boolean {
-        val now = Date()
-        val lastFishingHookSeenAt = lastFishingHookInHotspotSeenAt()
-        if (lastFishingHookSeenAt == null) return false
-
-        return now.time - lastFishingHookSeenAt.time <= minutes * 60 * 1000
-    }
-
-    private fun setLastFishingHookSeenAt() {
-        if (!WorldUtils.isInSkyblock()) return
-        val player = FeeshMod.mc.player ?: return
-    
-        val isHookActive = EntityUtils.isFishingHookActive(player)
-        if (isHookActive) {
-            cachedLastFishingHookSeenAt = Date()
-
-            val playerHook = EntityUtils.getPlayersFishingHook() ?: return
-	        HotspotUtils.findClosestHotspotInRange(playerHook, 5.0) ?: return
-	        cachedLastFishingHookInHotspotSeenAt = Date()
-        }
     }
 }

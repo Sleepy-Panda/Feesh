@@ -6,6 +6,7 @@ import net.minecraft.entity.Entity
 import net.minecraft.text.Text
 import com.github.sleepypanda.feesh.utils.ChatUtils.getFormattedString
 import com.github.sleepypanda.feesh.utils.ChatUtils.removeFormatting
+import net.minecraft.util.math.Vec3d
 
 object HotspotUtils {
     data class HotspotData(
@@ -32,18 +33,18 @@ object HotspotUtils {
     }
 
     /**
-     * Find the closest Hotspot in the specified range from the specified entity.
-     * @param entity The entity to search from.
+     * Find the closest Hotspot in the specified range from the specified entity position.
+     * @param entityPosition The position to search from.
      * @param distance The maximum distance to search.
      * @returns HotspotData in the format { entity, position, perk } or null if not found.
      */
-    fun findClosestHotspotInRange(entity: Entity, distance: Double): HotspotData? {
-        val armorStands = EntityUtils.getArmorStandsInRange(entity, distance)
+    fun findClosestHotspotInRange(entityPosition: Vec3d, distance: Double): HotspotData? {
+        val armorStands = EntityUtils.getArmorStandsInRange(entityPosition, distance)
         if (armorStands.isEmpty()) return null
 
         val closestHotspotArmorStand = armorStands
             .filter { it.customName?.string == "HOTSPOT" }
-            .minByOrNull { EntityUtils.getDistance(entity, it) }
+            .minByOrNull { EntityUtils.getDistance(it, entityPosition.x, entityPosition.y, entityPosition.z) }
 
         if (closestHotspotArmorStand == null) return null
 
@@ -70,7 +71,7 @@ object HotspotUtils {
      * @returns List of HotspotData
      */
     fun findHotspotsInRange(entity: Entity, distance: Double): List<HotspotData> {
-        val armorStands = EntityUtils.getArmorStandsInRange(entity, distance)
+        val armorStands = EntityUtils.getArmorStandsInRange(Vec3d(entity.x, entity.y, entity.z), distance)
         val closeHotspotArmorStands = armorStands
             .filter { it.customName?.string == "HOTSPOT" }
             .sortedBy { EntityUtils.getDistance(entity, it) }

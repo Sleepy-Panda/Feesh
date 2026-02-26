@@ -19,7 +19,7 @@ import com.github.sleepypanda.feesh.utils.data.PersonalBestData
 import com.github.sleepypanda.feesh.utils.data.PersistentDataManager
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
-import com.github.sleepypanda.feesh.utils.PlayerUtils
+import com.github.sleepypanda.feesh.utils.FishingHookUtils
 import com.github.sleepypanda.feesh.utils.gui.FeeshGui
 import com.github.sleepypanda.feesh.utils.gui.GuiButton
 import net.minecraft.sound.SoundEvents
@@ -126,7 +126,7 @@ object FishingFestivalTracker {
             WorldUtils.isInSkyblock() &&
             WorldUtils.isInFishingWorld() && 
             hasSharkData() &&
-            PlayerUtils.isFishingHookSeenMinutesAgo(5)
+            FishingHookUtils.wasFishingHookActiveMinutesAgo(5)
     }
 
     private fun hasSharkData(): Boolean {
