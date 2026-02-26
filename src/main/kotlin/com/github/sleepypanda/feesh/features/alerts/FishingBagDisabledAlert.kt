@@ -6,7 +6,7 @@ import com.github.sleepypanda.feesh.utils.CommonUtils
 import com.github.sleepypanda.feesh.utils.SoundUtils
 import com.github.sleepypanda.feesh.utils.PlayerUtils
 import com.github.sleepypanda.feesh.utils.WorldUtils
-import com.github.sleepypanda.feesh.utils.EntityUtils
+import com.github.sleepypanda.feesh.utils.FishingHookUtils
 import com.github.sleepypanda.feesh.utils.ChatUtils
 import com.github.sleepypanda.feesh.utils.ChatUtils.removeFormatting
 import com.github.sleepypanda.feesh.utils.RegisterUtils
@@ -87,8 +87,7 @@ object FishingBagDisabledAlert {
                 if (title.contains(FISHING_BAG_TITLE_CONTAINS)) return
             }
 
-            val player = FeeshMod.mc.player ?: return
-            val isHookActive = EntityUtils.isFishingHookActive(player)
+            val isHookActive = FishingHookUtils.isFishingHookActive()
             if (!isHookActive) return
 
             CommonUtils.showTitle("${RED}Enable fishing bag!")

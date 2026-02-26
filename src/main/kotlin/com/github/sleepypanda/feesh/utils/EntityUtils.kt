@@ -4,6 +4,7 @@ import com.github.sleepypanda.feesh.FeeshMod
 import net.minecraft.entity.Entity
 import net.minecraft.entity.decoration.ArmorStandEntity
 import net.minecraft.entity.projectile.FishingBobberEntity
+import net.minecraft.util.math.Vec3d
 import kotlin.math.sqrt
 
 object EntityUtils {
@@ -50,38 +51,38 @@ object EntityUtils {
      * Get the player's fishing hook if it is active.
      * @returns The player's fishing hook.
      */
-    fun getPlayersFishingHook(): FishingBobberEntity? {
+    fun getPlayersFishingHookEntity(): FishingBobberEntity? {
         val player = FeeshMod.mc.player ?: return null
         val world = FeeshMod.mc.world ?: return null
         return world.entities.filterIsInstance<FishingBobberEntity>().firstOrNull { it.owner == player }
     }
 
     /**
-     * Get all ArmorStandEntities within the specified range from the specified entity.
-     * @param entity The entity to search from.
+     * Get all ArmorStandEntities within the specified range from the specified entity position.
+     * @param entityPosition The position to search from.
      * @param distance The maximum distance to search.
      * @returns List of ArmorStandEntity
      */
-    fun getArmorStandsInRange(entity: Entity, distance: Double): List<ArmorStandEntity> {
+    fun getArmorStandsInRange(entityPosition: Vec3d, distance: Double): List<ArmorStandEntity> {
         val world = FeeshMod.mc.world ?: return emptyList()
         val armorStands = world.entities
             .filterIsInstance<ArmorStandEntity>()
             .filter { asEntity ->
-                EntityUtils.getDistance(entity, asEntity) <= distance
+                EntityUtils.getDistance(asEntity, entityPosition.x, entityPosition.y, entityPosition.z) <= distance
             }
 
         return armorStands
     }
 
     /**
-     * Get all ArmorStandEntities with the specified unformattedname within the specified range from the specified entity.
-     * @param entity The entity to search from.
+     * Get all ArmorStandEntities with the specified unformattedname within the specified range from the specified position.
+     * @param entityPosition The position to search from.
      * @param distance The maximum distance to search.
      * @param name The unformatted name of the ArmorStandEntity.
      * @returns List of ArmorStandEntity
      */
-    fun getArmorStandsInRange(entity: Entity, distance: Double, name: String): List<ArmorStandEntity> {
-        val armorStands = getArmorStandsInRange(entity, distance)
+    fun getArmorStandsInRange(entityPosition: Vec3d, distance: Double, name: String): List<ArmorStandEntity> {
+        val armorStands = getArmorStandsInRange(entityPosition, distance)
             .filter { asEntity ->
                 asEntity.customName?.string == name
             }

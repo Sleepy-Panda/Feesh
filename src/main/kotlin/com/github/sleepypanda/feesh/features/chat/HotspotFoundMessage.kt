@@ -26,6 +26,7 @@ import net.minecraft.text.HoverEvent
 import net.minecraft.text.ClickEvent.RunCommand
 import net.minecraft.text.HoverEvent.ShowText
 import org.lwjgl.glfw.GLFW
+import net.minecraft.util.math.Vec3d
 
 object HotspotFoundMessage {
     private var lastClosestHotspot: HotspotUtils.HotspotData? = null
@@ -90,7 +91,7 @@ object HotspotFoundMessage {
             if (!WorldUtils.isInSkyblock() || !WorldUtils.isInHotspotFishingWorld()) return
 
             val player = FeeshMod.mc.player ?: return
-            val closestHotspot = HotspotUtils.findClosestHotspotInRange(player, NEAREST_HOTSPOT_RANGE_FROM_PLAYER)
+            val closestHotspot = HotspotUtils.findClosestHotspotInRange(Vec3d(player.x, player.y, player.z), NEAREST_HOTSPOT_RANGE_FROM_PLAYER)
             
             if (closestHotspot != null) {
                 announceNearestHotspot(closestHotspot.x, closestHotspot.y, closestHotspot.z, closestHotspot.perk, isParty)
@@ -108,7 +109,7 @@ object HotspotFoundMessage {
             if (!WorldUtils.isInSkyblock() || !WorldUtils.isInHotspotFishingWorld() || !PlayerUtils.hasFishingRodInHotbar()) return
 
             val player = FeeshMod.mc.player ?: return
-            val closestHotspot = HotspotUtils.findClosestHotspotInRange(player, NEAREST_HOTSPOT_RANGE_FROM_PLAYER) ?: return
+            val closestHotspot = HotspotUtils.findClosestHotspotInRange(Vec3d(player.x, player.y, player.z), NEAREST_HOTSPOT_RANGE_FROM_PLAYER) ?: return
             val closestHotspotId = closestHotspot.entity.uuid
 
             if (lastFoundHotspotIds.contains(closestHotspotId)) return

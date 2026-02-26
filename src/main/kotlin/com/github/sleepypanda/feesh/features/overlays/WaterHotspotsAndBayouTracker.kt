@@ -8,7 +8,7 @@ import com.github.sleepypanda.feesh.utils.WorldUtils
 import com.github.sleepypanda.feesh.utils.ChatUtils
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
-import com.github.sleepypanda.feesh.utils.PlayerUtils
+import com.github.sleepypanda.feesh.utils.FishingHookUtils
 import com.github.sleepypanda.feesh.utils.HotspotUtils
 import com.github.sleepypanda.feesh.utils.EntityUtils
 import com.github.sleepypanda.feesh.events.EventBus
@@ -62,7 +62,7 @@ object WaterHotspotsAndBayouTracker {
         .setSettingsKey { Overlays.waterHotspotsAndBayouTrackerOverlay }
         .setCondition {
             val isInBayou = WorldUtils.getWorldName() == WorldUtils.BACKWATER_BAYOU
-            (WorldUtils.isInWaterHotspotFishingWorld() || isInBayou) && PlayerUtils.isFishingHookSeenMinutesAgo(5)
+            (WorldUtils.isInWaterHotspotFishingWorld() || isInBayou) && FishingHookUtils.wasFishingHookActiveMinutesAgo(5)
         }
 
     fun init() {
@@ -165,7 +165,7 @@ object WaterHotspotsAndBayouTracker {
         gui.clearLines()
         
         if (!hasData()) return
-        if (!Overlays.waterHotspotsAndBayouTrackerOverlay || !WorldUtils.isInSkyblock() || !PlayerUtils.isFishingHookSeenMinutesAgo(5)) return
+        if (!Overlays.waterHotspotsAndBayouTrackerOverlay || !WorldUtils.isInSkyblock() || !FishingHookUtils.wasFishingHookActiveMinutesAgo(5)) return
 
         val worldName = WorldUtils.getWorldName()
         val isInHotspotWorld = WorldUtils.isInWaterHotspotFishingWorld()
@@ -242,7 +242,7 @@ object WaterHotspotsAndBayouTracker {
 
     private fun isFishingInHotspot(): Boolean {
         if (!WorldUtils.isInWaterHotspotFishingWorld()) return false
-        return PlayerUtils.isFishingHookInHotspotSeenMinutesAgo(1)
+        return FishingHookUtils.wasFishingHookActiveInHotspotMinutesAgo(1)
     }
     
     fun setTitanoboaSheds(count: Int, lastOn: Date?) {

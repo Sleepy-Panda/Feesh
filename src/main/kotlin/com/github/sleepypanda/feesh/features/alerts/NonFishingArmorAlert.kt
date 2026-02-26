@@ -7,7 +7,7 @@ import com.github.sleepypanda.feesh.utils.SoundUtils
 import com.github.sleepypanda.feesh.utils.PlayerUtils
 import com.github.sleepypanda.feesh.utils.WorldUtils
 import com.github.sleepypanda.feesh.utils.ItemUtils
-import com.github.sleepypanda.feesh.utils.EntityUtils
+import com.github.sleepypanda.feesh.utils.FishingHookUtils
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.events.EventBus
 import com.github.sleepypanda.feesh.events.models.ClientTickEvent
@@ -52,8 +52,7 @@ object NonFishingArmorAlert {
                 if (diffMillis < 10_000) return
             }
 
-            val player = FeeshMod.mc.player ?: return
-            val isHookActive = EntityUtils.isFishingHookActive(player)
+            val isHookActive = FishingHookUtils.isFishingHookActive()
             if (!isHookActive) return
 
             lastHookDetectedAt = Date()

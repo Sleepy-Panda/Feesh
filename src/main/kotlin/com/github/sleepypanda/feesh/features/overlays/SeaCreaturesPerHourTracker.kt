@@ -8,7 +8,7 @@ import com.github.sleepypanda.feesh.events.models.WorldChangedEvent
 import com.github.sleepypanda.feesh.settings.categories.Overlays
 import com.github.sleepypanda.feesh.utils.CommonUtils
 import com.github.sleepypanda.feesh.utils.WorldUtils
-import com.github.sleepypanda.feesh.utils.PlayerUtils
+import com.github.sleepypanda.feesh.utils.FishingHookUtils
 import com.github.sleepypanda.feesh.utils.ChatUtils
 import com.github.sleepypanda.feesh.utils.RegisterUtils
 import com.github.sleepypanda.feesh.utils.gui.FeeshGui
@@ -44,7 +44,7 @@ object SeaCreaturesPerHourTracker {
         .setSettingsKey { Overlays.seaCreaturesPerHourTrackerOverlay }
         .setCondition {
             WorldUtils.isInFishingWorld() &&
-            PlayerUtils.isFishingHookSeenMinutesAgo(5)
+            FishingHookUtils.wasFishingHookActiveMinutesAgo(5)
         }
 
     fun init() {
@@ -135,7 +135,7 @@ object SeaCreaturesPerHourTracker {
             !WorldUtils.isInSkyblock() ||
             !WorldUtils.isInFishingWorld() ||
             (totalSeaCreaturesCaughtCount == 0) ||
-            !PlayerUtils.isFishingHookSeenMinutesAgo(5)
+            !FishingHookUtils.wasFishingHookActiveMinutesAgo(5)
         ) return
 
         val elapsedHours = elapsedSeconds / 3600.0

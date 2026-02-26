@@ -60,6 +60,7 @@ import com.github.sleepypanda.feesh.utils.ChatUtils
 import com.github.sleepypanda.feesh.utils.KeybindUtils
 import com.github.sleepypanda.feesh.utils.WorldUtils
 import com.github.sleepypanda.feesh.utils.PlayerUtils
+import com.github.sleepypanda.feesh.utils.FishingHookUtils
 import com.github.sleepypanda.feesh.utils.GuiUtils
 import com.github.sleepypanda.feesh.utils.PriceUtils
 import com.github.sleepypanda.feesh.utils.data.PersistentDataManager
@@ -112,6 +113,7 @@ class FeeshMod : ModInitializer {
         // Utils
         WorldUtils.init()
         PlayerUtils.init()
+        FishingHookUtils.init()
         ChatUtils.init()
         GuiUtils.init()
         PriceUtils.init()

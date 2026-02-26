@@ -4,6 +4,7 @@ import com.github.sleepypanda.feesh.FeeshMod
 import com.github.sleepypanda.feesh.settings.categories.WorldRendering
 import com.github.sleepypanda.feesh.utils.WorldUtils
 import com.github.sleepypanda.feesh.utils.EntityUtils
+import com.github.sleepypanda.feesh.utils.FishingHookUtils
 import net.minecraft.entity.player.PlayerEntity
 
 object HidePlayersNearBobber {
@@ -22,8 +23,8 @@ object HidePlayersNearBobber {
 
         if (!(entity.uuid.version() == 4 || entity.uuid.version() == 1)) return false // Exclude NPCs
 
-        val hook = EntityUtils.getPlayersFishingHook() ?: return false
-        val distanceBlocks = EntityUtils.getDistance(hook, entity)
+        val hook = FishingHookUtils.getFishingHook() ?: return false
+        val distanceBlocks = EntityUtils.getDistance(hook.x, hook.y, hook.z, entity.x, entity.y, entity.z)
         return distanceBlocks <= WorldRendering.hidePlayersNearBobberDistance
     }
 }

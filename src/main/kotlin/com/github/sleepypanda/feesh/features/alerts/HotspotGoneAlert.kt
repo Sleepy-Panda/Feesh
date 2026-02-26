@@ -7,6 +7,7 @@ import com.github.sleepypanda.feesh.utils.SoundUtils
 import com.github.sleepypanda.feesh.utils.PlayerUtils
 import com.github.sleepypanda.feesh.utils.WorldUtils
 import com.github.sleepypanda.feesh.utils.HotspotUtils
+import com.github.sleepypanda.feesh.utils.FishingHookUtils
 import com.github.sleepypanda.feesh.utils.EntityUtils
 import com.github.sleepypanda.feesh.utils.ChatUtils
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
@@ -18,6 +19,7 @@ import com.github.sleepypanda.feesh.events.models.WorldUnloadEvent
 import java.util.Timer
 import java.util.UUID
 import kotlin.concurrent.timerTask
+import net.minecraft.util.math.Vec3d
 
 object HotspotGoneAlert {
     private var lastClosestHotspot: HotspotUtils.HotspotData? = null
@@ -73,17 +75,13 @@ object HotspotGoneAlert {
         try {
             if (!Alerts.alertOnHotspotGone || !WorldUtils.isInSkyblock() || !WorldUtils.isInHotspotFishingWorld() || !PlayerUtils.hasFishingRodInHotbar()) return
 
-            val player = FeeshMod.mc.player ?: return
-            val isHookActive = EntityUtils.isFishingHookActive(player)
+            val isHookActive = FishingHookUtils.isFishingHookActive()
             if (!isHookActive) return
 
-            val playerHook = EntityUtils.getPlayersFishingHook()
-            if (playerHook == null) return
+            val playerHook = FishingHookUtils.getActiveFishingHook() ?: return
+            val closestHotspot = HotspotUtils.findClosestHotspotInRange(Vec3d(playerHook.x, playerHook.y, playerHook.z), NEAREST_HOTSPOT_RANGE_FROM_HOOK) ?: return
 
-            val closestHotspot = HotspotUtils.findClosestHotspotInRange(playerHook, NEAREST_HOTSPOT_RANGE_FROM_HOOK)
-            if (closestHotspot != null) {
-                lastClosestHotspot = closestHotspot
-            }
+            lastClosestHotspot = closestHotspot
         } catch (e: Exception) {
             FeeshMod.LOGGER.error("[Feesh] Failed to track latest Hotspot", e)
         }

@@ -9,6 +9,7 @@ import com.github.sleepypanda.feesh.utils.WorldUtils
 import com.github.sleepypanda.feesh.utils.ChatUtils
 import com.github.sleepypanda.feesh.utils.CommonUtils
 import com.github.sleepypanda.feesh.utils.SoundUtils
+import com.github.sleepypanda.feesh.utils.FishingHookUtils
 import com.github.sleepypanda.feesh.settings.categories.General
 import com.github.sleepypanda.feesh.settings.categories.SoundMode
 import com.github.sleepypanda.feesh.constants.Sounds
@@ -73,7 +74,7 @@ object CrimsonIsleTracker {
         ))
         .setSettingsKey { Overlays.crimsonIsleTrackerOverlay }
         .setCondition {
-            WorldUtils.getWorldName() == WorldUtils.CRIMSON_ISLE && PlayerUtils.isFishingHookSeenMinutesAgo(5)
+            WorldUtils.getWorldName() == WorldUtils.CRIMSON_ISLE && FishingHookUtils.wasFishingHookActiveMinutesAgo(5)
         }
 
     fun init() {
@@ -231,7 +232,7 @@ object CrimsonIsleTracker {
     private fun updateGuiLines() {
         gui.clearLines()
 
-        if (!Overlays.crimsonIsleTrackerOverlay || !WorldUtils.isInSkyblock() || !PlayerUtils.isFishingHookSeenMinutesAgo(5) || WorldUtils.getWorldName() != WorldUtils.CRIMSON_ISLE) return
+        if (!Overlays.crimsonIsleTrackerOverlay || !WorldUtils.isInSkyblock() || !FishingHookUtils.wasFishingHookActiveMinutesAgo(5) || WorldUtils.getWorldName() != WorldUtils.CRIMSON_ISLE) return
         if (!hasData()) return
 
         val isInHotspot = isFishingInHotspot()
@@ -317,7 +318,7 @@ object CrimsonIsleTracker {
 
     private fun isFishingInHotspot(): Boolean {
         if (WorldUtils.getWorldName() != WorldUtils.CRIMSON_ISLE) return false
-        return PlayerUtils.isFishingHookInHotspotSeenMinutesAgo(1)
+        return FishingHookUtils.wasFishingHookActiveInHotspotMinutesAgo(1)
     }
 
     private fun isInPlhlegblastPool(): Boolean {
