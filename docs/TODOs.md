@@ -2,6 +2,7 @@
 
 - Number of backups?
 - RARE DROP! Troubled Bubble (+406 ✯ Magic Find)
+- RARE DROP! Octopus Tendril (+190 ✯ Magic Find)
 - Items counted after /gfs
 - Rendering section from CT
 - Settings are not saved after exiting the game, probably because user closes window using X button to exit
