@@ -23,6 +23,7 @@ import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.entity.mob.SlimeEntity
 
 // TODO Fire Eel
+// TODO Do not parse all nametags after world swap
 object RareMobHighlight {
     @JvmField
     val highlightedEntities = mutableMapOf<Int, Int>()
@@ -71,12 +72,27 @@ object RareMobHighlight {
                             it is LivingEntity
                         }.firstOrNull() as? LivingEntity
                     FeeshMod.LOGGER.info("Other: ${other?.id} ${other?.type?.name} ${other?.customName?.string}")
+                    if (cleanName.contains("Titanoboa")) {
+                        for (i in 1..50) {
+                            val testEntity = entity.entityWorld.getEntityById(entity.id - i)
+                            FeeshMod.LOGGER.info("Titanoboa tail checked at ${i} times, entity at ${entity.id - i} is ${testEntity?.type?.name}")
+
+                        }
+                    }
+                    if (cleanName.contains("Ragnarok")) {
+                        val testEntity = entity.entityWorld.getEntityById(entity.id - 2)
+                        FeeshMod.LOGGER.info("Ragnarok entity - 2 is ${entity.id - 2}, ${testEntity?.type?.name}")
+                    }
+                    if (cleanName.contains("Magma Slug") || cleanName.contains("Moogma" ) || cleanName.contains("Taurus" ) || cleanName.contains("Lava Leech") || cleanName.contains("Pyroclastic Worm") || cleanName.contains("Lava Flame") || cleanName.contains("Fire Eel")) {
+                        val testEntity = entity.entityWorld.getEntityById(entity.id - 1)
+                        FeeshMod.LOGGER.info("Followers entity is ${entity.id - 1}, ${testEntity?.type?.name}")
+                    }
                 }
 
                 if (info != null || cleanName.contains("Wiki Tiki Laser Totem") || cleanName.contains("Jawbus Follower") || cleanName.contains("Fire Eel")) {
                     val shift = when {
-                        cleanName.contains("Fire Eel") -> 12 // It has 6 segments but 12 entities (don't ask me)
-                        cleanName.contains("Titanoboa") -> 42 // TODO find proper count, 40 did not work
+                        cleanName.contains("Fire Eel") -> 12 // It has 6 visible segments but 12 entities (don't ask me)
+                        cleanName.contains("Titanoboa") -> 43 // It consists of chain of mixed slimes and armor stands (don't ask me again)
                         else -> 1
                     }
                     var mobEntity = entity.entityWorld.getEntityById(entity.id - shift) as? LivingEntity ?: return@execute
@@ -101,7 +117,7 @@ object RareMobHighlight {
         if (!WorldUtils.isInSkyblock() || !WorldUtils.isInFishingWorld()) return
         val world = event.mc.world ?: return
 
-        if (!WorldRendering.highlightSeaCreatures) {
+        if (!WorldRendering.highlightSeaCreatures) { // TODO Observable setting
             if (highlightedEntities.isNotEmpty()) {
                 highlightedEntities.forEach { (id, _) -> // TODO enough to clear list?
                     world.getEntityById(id)?.isGlowing = false
@@ -119,7 +135,6 @@ object RareMobHighlight {
         }
     }
 
-    // TODO Tiki totem rendered with tiki color
     private fun applyGlow(target: LivingEntity, cleanName: String) {
         if (cleanName.contains("Jawbus Follower") || cleanName.contains("Wiki Tiki Laser Totem")) highlightedEntities[target.id] = 0xFF0000
         else highlightedEntities[target.id] = 0x00FFFF
