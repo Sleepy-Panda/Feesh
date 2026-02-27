@@ -1,7 +1,6 @@
 ## Players feedback
 
 - Number of backups?
-- Add seal pet to fishing pets
 - RARE DROP! Troubled Bubble (+406 ✯ Magic Find)
 - RARE DROP! Octopus Tendril (+190 ✯ Magic Find)
 - Items counted after /gfs
