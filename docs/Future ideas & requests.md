@@ -75,6 +75,7 @@
 
 ## Inventory features
 
+- Full amount of expertise kills on your rod: rn i use skyhanni for that but it only says "Expertise Kills: 1M (Maxed)" while badlion used to display the whole number
 - Offer supercrafting or BZ sell when items like raw fish goes to inventory (sacks are full).
 - Refactor all existing features so they consume less FPS
 
@@ -91,9 +92,9 @@
 
 ## Other
 
+- Command to check profits for buying items from Fear Mongerer shop rather than selling candies as is
 - Way to disable all module features with one toggle.
 - Remove double hook reindrake logic because DH is not possible now
-- Rain/Thunder widget
 - Golden fish timer
 "can you add a golden fish timer tracker into this? i only have golden fish diamond left and i like playing other games while just having my bobber in lava, and setting a 15min timer every time is p annoying lmao"
 - Thunder spark profit - Amount gained in bottle divided by lbin for the current item
