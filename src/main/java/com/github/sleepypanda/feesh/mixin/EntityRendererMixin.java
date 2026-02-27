@@ -60,7 +60,7 @@ public abstract class EntityRendererMixin<T extends Entity, S extends EntityRend
         if (player != null && player.canSee(entity)) {
             state.outlineColor = RareMobHighlight.highlightedEntities.get(id);
         } else {
-            state.outlineColor = 0;
+            state.outlineColor = 0; // Cleanup outline when entity became not visible
         }
     }
 }
