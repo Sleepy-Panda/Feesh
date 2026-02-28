@@ -3,10 +3,12 @@ package com.github.sleepypanda.feesh.settings.categories
 import com.github.sleepypanda.feesh.FeeshMod
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
+import com.github.sleepypanda.feesh.features.rendering.RareMobHighlight
 import com.teamresourceful.resourcefulconfig.api.annotations.Category
 import com.teamresourceful.resourcefulconfig.api.annotations.Comment
 import com.teamresourceful.resourcefulconfig.api.annotations.ConfigEntry
 import com.teamresourceful.resourcefulconfig.api.types.options.EntryType
+import com.teamresourceful.resourcefulconfigkt.api.ObservableEntry
 import com.teamresourceful.resourcefulconfigkt.api.CategoryKt
 
 object WorldRendering : CategoryKt("World Rendering") {
@@ -27,9 +29,14 @@ object WorldRendering : CategoryKt("World Rendering") {
         }
     }
 
-    var highlightSeaCreatures by boolean(false) {
-        this.name = Translated("Highlights rare sea creatures")
-        this.description = Translated("Applies glowing border to the rare sea creatures. Not visible through walls.")
+    var highlightSeaCreatures by ObservableEntry(boolean(false) {
+        this.name = Translated("Highlight rare sea creatures")
+        this.description = Translated("Applies glowing outline to the rare sea creatures, Jawbus Followers and Wiki Tiki Laser Totems. Outline is colored depending on sea creature rarity. Not visible through walls!")
+    }
+    ) { prev, new ->
+        if (prev != new) {
+            RareMobHighlight.clearHighlightedEntities()
+        }
     }
 
     init {

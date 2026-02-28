@@ -5,7 +5,7 @@ Released on: ???
 ## Features
 
 - Added rare sea creatures highlighter (disabled by default). It applies glowing border to the sea creatures, not visible through walls.
-  - Shoutout to **alpha-r** for developing this feature!
+  - Shoutout to **alpha-r** for contribiting into this feature!
 - Added legendary Seal pet to `/feeshPetLevelUpPrices`.
 
 ## Bugfixes
