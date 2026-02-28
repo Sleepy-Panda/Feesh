@@ -12,6 +12,8 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.decoration.ArmorStandEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.FishingBobberEntity;
+import net.minecraft.entity.mob.MobEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -49,14 +51,16 @@ public abstract class EntityRendererMixin<T extends Entity, S extends EntityRend
 
     @Inject(method = "updateRenderState", at = @At("TAIL"))
     private void feesh$onUpdateRenderState(T entity, S state, float tickProgress, CallbackInfo ci) {
-        if (RareMobHighlight.highlightedEntities.containsKey(entity.getId())) {
-            var player = MinecraftClient.getInstance().player;
-            if (player != null && player.canSee(entity)) {
-                state.outlineColor = 0x00FFFF;
-//                state.invisible = false;
-            } else {
-                state.outlineColor = 0;
-            }
+        if (!(entity instanceof MobEntity) && !(entity instanceof PlayerEntity)) return; // Some rare creatures have player entity type
+
+        var id = entity.getId();
+        if (!RareMobHighlight.highlightedEntities.containsKey(id)) return;
+
+        var player = MinecraftClient.getInstance().player;
+        if (player != null && player.canSee(entity)) {
+            state.outlineColor = RareMobHighlight.highlightedEntities.get(id);
+        } else {
+            state.outlineColor = 0; // Cleanup outline when entity became not visible
         }
     }
 }

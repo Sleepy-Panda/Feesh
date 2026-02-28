@@ -7,8 +7,7 @@
 		"InGameHudMixin",
 		"ClientPlayerInteractionManagerMixin",
 		"MinecraftClientMixin",
-		"EntityRendererMixin",
-		"WorldRenderStateMixin"
+		"EntityRendererMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

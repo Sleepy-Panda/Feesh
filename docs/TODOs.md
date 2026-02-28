@@ -1,6 +1,5 @@
 ## Players feedback
 
-- Number of backups?
 - RARE DROP! Troubled Bubble (+406 ✯ Magic Find)
 - RARE DROP! Octopus Tendril (+190 ✯ Magic Find)
 - Items counted after /gfs
@@ -8,10 +7,8 @@
 - Settings are not saved after exiting the game, probably because user closes window using X button to exit
 - On 1.21.11, original fishing timer armorstand appears for a second when the fish starts swimming towards bobber
 - Rare sc highlighter:
-  - Players highlighted
-  - Fix for Titanoboa head not highlighted
-  - Lord Jawbus Followers & Wiki Tiki Laser Totems
-  - Colors customization
+  - Check if fixed - Slugs and Pyro not highlighted when they are followers, highlighted when normal mobs
+  - Highlight full wiki tiki
 
 ## Tech Debt
 
