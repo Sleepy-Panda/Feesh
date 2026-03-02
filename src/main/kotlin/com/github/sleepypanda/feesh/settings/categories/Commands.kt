@@ -1,5 +1,6 @@
 package com.github.sleepypanda.feesh.settings.categories
 
+import com.github.sleepypanda.feesh.features.commands.FearMongererShopPrices
 import com.github.sleepypanda.feesh.features.commands.GearCraftPricesCommand
 import com.github.sleepypanda.feesh.features.commands.PersonalBestCommand
 import com.github.sleepypanda.feesh.features.commands.PetLevelUpPricesCommand
@@ -42,6 +43,26 @@ object Commands : CategoryKt("Commands") {
     var gearCraftPricesPriceMode by enum(PricingMode.SELL_OFFER) {
         this.name = Translated("Gear craft prices mode")
         this.description = Translated("Defines how to calculate price for base fishing drops which can be sold to Bazaar or used to craft gear.")
+    }
+
+    init {
+        separator {
+            this.title = "${AQUA}${BOLD}Fear Mongerer shop prices"
+        }
+
+        button {
+            title = "Fear Mongerer shop prices"
+            description = "Calculates the profits for selling items from Fear Mongerer shop compared to selling Green/Purple candies, and displays the results in the chat. Executes ${WHITE}/${FearMongererShopPrices.COMMAND_NAME}"
+            text = "Click to execute"
+            onClick {
+                ChatUtils.command(FearMongererShopPrices.COMMAND_NAME)
+            }
+        }
+    }
+
+    var fearMongererShopPricesPriceMode by enum(PricingMode.SELL_OFFER) {
+        this.name = Translated("Fear Mongerer shop prices mode")
+        this.description = Translated("Defines how to calculate price for candies and shop items which can be sold to Bazaar.")
     }
 
     init {
