@@ -1,14 +1,14 @@
 ## Players feedback
 
+- Sc/h tracker gets active - maybe vanquisher spawn triggers it?
+- Rare/Uncommon squid alert
+- Carmine dye into tracker
 - RARE DROP! Troubled Bubble (+406 ✯ Magic Find)
 - RARE DROP! Octopus Tendril (+190 ✯ Magic Find)
 - Items counted after /gfs
 - Rendering section from CT
 - Settings are not saved after exiting the game, probably because user closes window using X button to exit
 - On 1.21.11, original fishing timer armorstand appears for a second when the fish starts swimming towards bobber
-- Rare sc highlighter:
-  - Check if fixed - Slugs and Pyro not highlighted when they are followers, highlighted when normal mobs
-  - Highlight full wiki tiki
 
 ## Tech Debt
 

@@ -2,6 +2,7 @@
 
 ## Fishing profit tracker
 
+- When there is no fishing rod in hand, the fish profit tracker and seacreature tracker can be hidden.
 - Propose compacting or selling items like raw fish going to the inventory (full sack).
 - Track Agatha tickets / Forest Essence on Galatea based on contest results.
 - Use drop # in the chat message based on current profit tracker.
