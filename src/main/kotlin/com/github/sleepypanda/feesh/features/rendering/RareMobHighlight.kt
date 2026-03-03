@@ -29,7 +29,9 @@ object RareMobHighlight {
     val highlightedEntities = mutableMapOf<Int, Int>()
     private val modScope = CoroutineScope(Dispatchers.Default)
 
-    private val extraEntities = listOf("Wiki Tiki Laser Totem", "Jawbus Follower");
+    private val JAWBUS_FOLLOWER_NAME = "Jawbus Follower"
+    private val WIKI_TIKI_LASER_TOTEM_NAME = "Wiki Tiki Laser Totem"
+    private val extraEntities = listOf(JAWBUS_FOLLOWER_NAME, WIKI_TIKI_LASER_TOTEM_NAME);
     private var lastWorldChange: Date? = null
 
     fun init() {
@@ -64,20 +66,24 @@ object RareMobHighlight {
 
                 if (rareScInfo == null && cleanName !in extraEntities) return@execute
 
-                val shift = when {
+                val mobEntityShift = when {
                     cleanName.contains("Reindrake") -> 8 // Ender Dragon entity shifted from its armor stand
                     cleanName.contains("Titanoboa") -> 43 // It consists of chain of mixed slimes and armor stands, and zombie on 45th position
                     else -> 1
                 }
 
-                var mobEntity = entity.entityWorld.getEntityById(entity.id - shift) as? LivingEntity ?: return@execute
-                if (cleanName.contains("Jawbus Follower") && mobEntity is SlimeEntity && mobEntity !is MagmaCubeEntity) { // Fire Eel
+                val entities: MutableList<LivingEntity> = mutableListOf()
+
+                var mobEntity = entity.entityWorld.getEntityById(entity.id - mobEntityShift) as? LivingEntity ?: return@execute
+                if (cleanName == JAWBUS_FOLLOWER_NAME && mobEntity is SlimeEntity && mobEntity !is MagmaCubeEntity) { // Fire Eel
                     mobEntity = entity.entityWorld.getEntityById(entity.id - 11) as? LivingEntity ?: return@execute // -1 is for tail, we want to find Fire Eel's head
                 }
 
                 if (!mobEntity.isAlive) return@execute
                 if (mobEntity is PlayerEntity && (mobEntity.uuid.version() == 4 || mobEntity.uuid.version() == 1)) return@execute // Some creatures are player entities, e.g. Alligator or Abyssal Miner
        
+                entities.add(mobEntity)
+
                 val color = when {
                     rareScInfo?.rarityColorCode == ColorCodes.COMMON.code -> 0xFFFFFF
                     rareScInfo?.rarityColorCode == ColorCodes.UNCOMMON.code -> 0x55FF55
@@ -91,14 +97,27 @@ object RareMobHighlight {
                     else -> 0x00FFFF
                 }
 
-                applyGlow(mobEntity, color)
-
-                if (mobEntity.vehicle != null && mobEntity.vehicle is LivingEntity) { // The Loch Emperor's guardian, etc
-                    applyGlow(mobEntity.vehicle as LivingEntity, color)
+                // The Loch Emperor's guardian, etc
+                if (mobEntity.vehicle != null && mobEntity.vehicle is LivingEntity) {
+                    entities.add(mobEntity.vehicle as LivingEntity)
                 }
 
-                if (mobEntity.firstPassenger != null && mobEntity.firstPassenger is LivingEntity) { // Ragnarok's rider
-                    applyGlow(mobEntity.firstPassenger as LivingEntity, color)
+                // Ragnarok's rider
+                if (mobEntity.firstPassenger != null && mobEntity.firstPassenger is LivingEntity) {
+                    entities.add(mobEntity.firstPassenger as LivingEntity)
+                }
+
+                // Wiki Tiki is a special case, it consists of 4 entities and I want them all highlighted
+                if (cleanName == "Wiki Tiki") {
+                    val wikiTikiEntitiesShifts = listOf(3, 5, 7)
+                    wikiTikiEntitiesShifts.forEach { shift ->
+                        val prevEntity = entity.entityWorld.getEntityById(entity.id - shift) as? LivingEntity ?: return@forEach
+                        entities.add(prevEntity)
+                    }
+                }
+
+                entities.forEach { entity ->
+                    applyGlow(entity, color)
                 }
             }
         }
