@@ -42,7 +42,9 @@ object BarnFishingTimer {
 
     private var tickCounter = 0
 
-    private val allSeaCreaturesNames = SeaCreatures.allSeaCreatures.map { it.name }
+    private val allSeaCreaturesNames = SeaCreatures.allSeaCreatures
+        .map { it.name }
+        .filter { it != "Vanquisher" }
         .plus("Mithril Grubber") // A sea creature is called Small Mithril Grubber, but corrupted one is Corrupted Mithril Grubber (without "Small")
         .plus("Jawbus Follower")
 

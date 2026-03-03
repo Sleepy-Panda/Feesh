@@ -111,9 +111,8 @@ object SeaCreaturesPerHourTracker {
 
     private fun onSeaCreatureCaught(event: OwnSeaCreatureCaughtEvent) {
         try {
-            if (!Overlays.seaCreaturesPerHourTrackerOverlay || 
-                !WorldUtils.isInSkyblock() || 
-                !WorldUtils.isInFishingWorld()) return
+            if (!Overlays.seaCreaturesPerHourTrackerOverlay || !WorldUtils.isInSkyblock() || !WorldUtils.isInFishingWorld()) return
+            if (event.seaCreatureName == "Vanquisher") return
 
             val isDoubleHooked = event.isDoubleHook
             isSessionActive = true

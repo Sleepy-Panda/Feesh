@@ -1,5 +1,6 @@
 ## Players feedback
 
+- Deployable sometimes not tracked in Mineshaft after placing (probably because of snow carpets when placing takes more time)
 - Sc/h tracker gets active - maybe vanquisher spawn triggers it?
 - Rare/Uncommon squid alert
 - Carmine dye into tracker
