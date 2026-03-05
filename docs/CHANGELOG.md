@@ -7,6 +7,7 @@ Released on: ???
 - Added rare sea creatures highlighter (disabled by default). It applies glowing border to the rare sea creatures, Jawbus Followers and Wiki Tiki Laster Totems. Outline color depends on mob rarity. Not visible through walls!
   - Shoutout to **alpha-r** for contribiting into this feature!
 - Added legendary Seal pet to `/feeshPetLevelUpPrices`.
+- Added immunity timer to the Sea creatures HP overlay.
 
 ## Bugfixes
 
