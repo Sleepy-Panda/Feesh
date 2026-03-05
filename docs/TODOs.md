@@ -3,8 +3,6 @@
 - Deployable sometimes not tracked in Mineshaft after placing (probably because of snow carpets when placing takes more time)
 - Rare/Uncommon squid alert
 - Carmine dye into tracker
-- RARE DROP! Troubled Bubble (+406 ✯ Magic Find)
-- RARE DROP! Octopus Tendril (+190 ✯ Magic Find)
 - Items counted after /gfs
 - Rendering section from CT
 - Settings are not saved after exiting the game, probably because user closes window using X button to exit

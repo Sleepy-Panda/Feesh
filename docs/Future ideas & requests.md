@@ -45,7 +45,9 @@
 
 ## Alerts & chat
 
-- Troubled Bubble drop
+- RARE DROP! Troubled Bubble (+406 ✯ Magic Find) - with no mf also possible
+- RARE DROP! Octopus Tendril (+190 ✯ Magic Find)
+- Alert on Hotspot fishing without Tiki Mask
 - Reminder if user is fishing with wrong hook/sinker during events or in hotspots.
   - When first rod cast on Jerry: check for Icy Sinker
   - When first Spooky mob caught: check for Phantom Hook
