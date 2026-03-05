@@ -15,6 +15,12 @@ plugins {
     id("dev.deftu.gradle.tools.minecraft.releases") // Applies the Minecraft auto-releasing plugin, which allows you to automatically release your mod to CurseForge and Modrinth.
 }
 
+configurations.all {
+    resolutionStrategy {
+        force("org.jetbrains.kotlin:kotlin-stdlib:2.2.21")
+    }
+}
+
 repositories {
     maven("https://repo.essential.gg/repository/maven-public")
     maven("https://maven.teamresourceful.com/repository/maven-public/")
