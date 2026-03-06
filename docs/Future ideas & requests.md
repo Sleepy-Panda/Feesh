@@ -2,6 +2,7 @@
 
 ## Fishing profit tracker
 
+- When there is no fishing rod in hand, the fish profit tracker and seacreature tracker can be hidden.
 - Propose compacting or selling items like raw fish going to the inventory (full sack).
 - Track Agatha tickets / Forest Essence on Galatea based on contest results.
 - Use drop # in the chat message based on current profit tracker.
@@ -44,7 +45,9 @@
 
 ## Alerts & chat
 
-- Troubled Bubble drop
+- RARE DROP! Troubled Bubble (+406 ✯ Magic Find) - with no mf also possible
+- RARE DROP! Octopus Tendril (+190 ✯ Magic Find)
+- Alert on Hotspot fishing without Tiki Mask
 - Reminder if user is fishing with wrong hook/sinker during events or in hotspots.
   - When first rod cast on Jerry: check for Icy Sinker
   - When first Spooky mob caught: check for Phantom Hook

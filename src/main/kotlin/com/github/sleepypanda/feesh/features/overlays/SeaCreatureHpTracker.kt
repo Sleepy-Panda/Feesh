@@ -7,19 +7,15 @@ import com.github.sleepypanda.feesh.events.models.WorldChangedEvent
 import com.github.sleepypanda.feesh.settings.categories.Overlays
 import com.github.sleepypanda.feesh.utils.WorldUtils
 import com.github.sleepypanda.feesh.utils.EntityUtils
-import com.github.sleepypanda.feesh.utils.CommonUtils
-import com.github.sleepypanda.feesh.utils.ChatUtils
-import com.github.sleepypanda.feesh.utils.ChatUtils.getFormattedString
-import com.github.sleepypanda.feesh.utils.ChatUtils.removeFormatting
 import com.github.sleepypanda.feesh.utils.SoundUtils
 import com.github.sleepypanda.feesh.utils.gui.FeeshGui
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
 import com.github.sleepypanda.feesh.utils.EntityUtils.SeaCreatureParsedNametagInfo
-import net.minecraft.entity.Entity
 import net.minecraft.entity.decoration.ArmorStandEntity
 import net.minecraft.sound.SoundEvents
 import java.util.Date
+import kotlin.math.ceil
 
 data class TrackedMobInfo(
     val baseMobName: String,
@@ -30,7 +26,8 @@ data class TrackedMobInfo(
 data class MobDisplayInfo(
     val nametag: String,
     val baseMobName: String,
-    val isImmune: Boolean
+    val isImmune: Boolean,
+    val immunitySecondsLeft: Int
 )
 
 object SeaCreatureHpTracker {
@@ -167,6 +164,7 @@ object SeaCreatureHpTracker {
                     val trackedMob = TRACKED_MOBS.find { it.baseMobName == sc.baseMobName }
                     val hasImmunity = trackedMob?.hasImmunity ?: false
                     var isImmune = false
+                    var immunitySecondsLeft: Int = 0
 
                     if (hasImmunity) {
                         val mobEntity = EntityUtils.getMcEntityById(sc.mcEntityId - 1)
@@ -174,12 +172,14 @@ object SeaCreatureHpTracker {
                         val seenTimestamp = seenMobEntityIds[sc.mcEntityId - 1] ?: 0L
                         val now = Date().time
                         isImmune = ticksExisted <= IMMUNITY_TICKS && (now - seenTimestamp) <= IMMUNITY_MS
+                        immunitySecondsLeft = if (isImmune && ticksExisted <= IMMUNITY_TICKS) ceil((IMMUNITY_TICKS - ticksExisted) / 20.0).toInt() else 0
                     }
 
                     MobDisplayInfo(
                         nametag = sc.shortNametag,
                         baseMobName = sc.baseMobName,
-                        isImmune = isImmune
+                        isImmune = isImmune,
+                        immunitySecondsLeft = immunitySecondsLeft
                     )
                 }
 
@@ -227,7 +227,8 @@ object SeaCreatureHpTracker {
 
         val lines = mutableListOf<String>()
         mobs.forEach { mob ->
-            val immunityText = if (mob.isImmune) " ${RED}${BOLD}[Immune]" else ""
+            val immunityTimerText = if (mob.immunitySecondsLeft > 0) " ${WHITE}${mob.immunitySecondsLeft}s" else ""
+            val immunityText = if (mob.isImmune) " ${RED}${BOLD}[Immune${immunityTimerText}${RED}${BOLD}]" else ""
             lines.add("${mob.nametag}$immunityText")
         }
 
