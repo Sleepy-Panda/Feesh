@@ -88,6 +88,27 @@ object Alerts : CategoryKt("Alerts") {
 
     init {
         separator {
+            this.title = "${AQUA}${BOLD}Fishing rod parts"
+        }
+    }
+
+    var checkForPhantomHookWhenSpookyIsActive by boolean(true) {
+        this.name = Translated("Check for Phantom Hook when Spooky fishing is active")
+        this.description = Translated("Alerts you if Phantom Hook is not equipped when Spooky fishing is started.")
+    }
+
+    var checkForIcySinkerWhenFishingOnJerrysWorkshop by boolean(true) {
+        this.name = Translated("Check for Icy Sinker when fishing on Jerry's Workshop")
+        this.description = Translated("Alerts you if Icy Sinker is not equipped while fishing on Jerry's Workshop.")
+    }
+
+    var checkForHotspotHookAndSinkerWhenFishingInHotspot by boolean(true) {
+        this.name = Translated("Check for Hotspot Hook and Sinker when fishing in hotspot")
+        this.description = Translated("Alerts you if Hotspot Hook and/or Sinker are not equipped when started fishing in a hotspot.")
+    }
+
+    init {
+        separator {
             this.title = "${AQUA}${BOLD}Spirit Mask"
         }
     }

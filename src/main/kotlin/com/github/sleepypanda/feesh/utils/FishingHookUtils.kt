@@ -79,6 +79,13 @@ object FishingHookUtils {
         return now.time - lastFishingHookSeenAt.time <= minutes * 60 * 1000
     }
 
+    fun wasFishingHookActiveInHotspotSecondsAgo(seconds: Int): Boolean {
+        val lastFishingHookSeenAt = lastActiveFishingHookInHotspotSeenAt() ?: return false
+        val now = Date()
+
+        return now.time - lastFishingHookSeenAt.time <= seconds * 1000
+    }
+
     fun wasFishingHookActiveInHotspotMinutesAgo(minutes: Int): Boolean {
         val lastFishingHookSeenAt = lastActiveFishingHookInHotspotSeenAt() ?: return false
         val now = Date()
@@ -142,7 +149,7 @@ object FishingHookUtils {
         if (!ItemUtils.isFishingRod(heldItem)) return false
 
         val fishingHook = EntityUtils.getPlayersFishingHookEntity() ?: return false
-        if (fishingHook.isInLava() || fishingHook.isTouchingWater()) return true
+        if (fishingHook.isInLava() || fishingHook.isTouchingWater() || fishingHook.isSubmergedInWater()) return true
 
         val isDirtRod = heldItem.name.string.contains("Dirt Rod")
         if (isDirtRod) return true // For dirt rod, the player's hook can be in dirt

@@ -4,6 +4,7 @@ import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
 
 const val TYPE_CRIMSON_ISLE_LAVA = "CRIMSON_ISLE_LAVA"
+const val TYPE_SPOOKY = "SPOOKY"
 
 // This should be aligned with Rare Sea Creatures names using the following logic:
 // Carrot King -> CARROT_KING
@@ -172,11 +173,11 @@ class SeaCreatures {
             SeaCreatureInfo("Frosty", COMMON.code, Regex(FROSTY_MESSAGE), false),
             SeaCreatureInfo("Grinch", UNCOMMON.code, Regex(GRINCH_MESSAGE), false),
 
-            SeaCreatureInfo(RareSeaCreatureTypes.PHANTOM_FISHER.displayName, LEGENDARY.code, Regex(PHANTOM_FISHER_MESSAGE), true),
-            SeaCreatureInfo(RareSeaCreatureTypes.GRIM_REAPER.displayName, LEGENDARY.code, Regex(GRIM_REAPER_MESSAGE), true),
-            SeaCreatureInfo("Scarecrow", COMMON.code, Regex(SCARECROW_MESSAGE), false),
-            SeaCreatureInfo("Nightmare", RARE.code, Regex(NIGHTMARE_MESSAGE), false),
-            SeaCreatureInfo("Werewolf", EPIC.code, Regex(WEREWOLF_MESSAGE), false),
+            SeaCreatureInfo(RareSeaCreatureTypes.PHANTOM_FISHER.displayName, LEGENDARY.code, Regex(PHANTOM_FISHER_MESSAGE), true, listOf(TYPE_SPOOKY)),
+            SeaCreatureInfo(RareSeaCreatureTypes.GRIM_REAPER.displayName, LEGENDARY.code, Regex(GRIM_REAPER_MESSAGE), true, listOf(TYPE_SPOOKY)),
+            SeaCreatureInfo("Scarecrow", COMMON.code, Regex(SCARECROW_MESSAGE), false, listOf(TYPE_SPOOKY)),
+            SeaCreatureInfo("Nightmare", RARE.code, Regex(NIGHTMARE_MESSAGE), false, listOf(TYPE_SPOOKY)),
+            SeaCreatureInfo("Werewolf", EPIC.code, Regex(WEREWOLF_MESSAGE), false, listOf(TYPE_SPOOKY)),
 
             SeaCreatureInfo("Fried Chicken", COMMON.code, Regex(FRIED_CHICKEN_MESSAGE), false, listOf(TYPE_CRIMSON_ISLE_LAVA)),
             SeaCreatureInfo("Fireproof Witch", RARE.code, Regex(FIREPROOF_WITCH_MESSAGE), false, listOf(TYPE_CRIMSON_ISLE_LAVA)),
