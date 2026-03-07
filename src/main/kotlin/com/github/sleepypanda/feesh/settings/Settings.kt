@@ -20,7 +20,7 @@ object Settings : ConfigKt("${FeeshMod.MOD_ID}/config") {
         
     override val description: TranslatableValue
         get() = Literal(
-            "QOL mod for Hypixel Skyblock fishing. ${if (VersionChecker.cachedLatestVersion.isNullOrEmpty()) "" else "Latest on Modrinth: ${if (VersionChecker.isLatestVersion) GREEN else RED}${BOLD}${VersionChecker.cachedLatestVersion}"}"
+            "QOL mod for Hypixel Skyblock fishing. ${if (VersionChecker.cachedLatestVersion.isNullOrEmpty()) "" else "Latest on Modrinth: ${if (VersionChecker.isLatestVersion) "${GREEN}${BOLD}${VersionChecker.cachedLatestVersion} - Up to date" else "${RED}${BOLD}${VersionChecker.cachedLatestVersion} - Update available"}"}"
         )
     
     init {

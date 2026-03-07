@@ -9,7 +9,6 @@ import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.utils.ChatUtils.getFormattedString
 import com.github.sleepypanda.feesh.utils.ChatUtils.removeFormatting
 import com.github.sleepypanda.feesh.utils.CommonUtils
-import com.github.sleepypanda.feesh.FeeshMod
 
 object RareDropsPublisher {
     // §6§lRARE DROP! §dRadioactive Vial §b(+§b236 §b✯ Magic Find§b)
@@ -31,7 +30,10 @@ object RareDropsPublisher {
 
     // §6⛃ §6§lGREAT CATCH! §fYou caught a §7[Lvl 1] §9Squid§f!
     // §d⛃ §d§lOUTSTANDING CATCH! §fYou caught a §7[Lvl 1] §6Squid§f!
-    val PET_CATCH_PATTERN = Regex("^(§6⛃ §6§lGREAT CATCH!|§d⛃ §d§lOUTSTANDING CATCH!) §fYou caught a §7\\[Lvl 1\\] (?<pet>.+?)§f\\!$")
+    // SH format with pet rarity:
+    // §6⛃ §r§6§lGREAT CATCH! §r§fYou caught a §r§7[Lvl 1] §f§lCOMMON §fSquid§r§f!
+    // §6⛃ §r§6§lGREAT CATCH! §r§fYou caught a §r§7[Lvl 1] §a§lUNCOMMON §aSquid§r§f!
+    val PET_CATCH_PATTERN = Regex("^(§6⛃ (§r)?§6§lGREAT CATCH!|§d⛃ §d§lOUTSTANDING CATCH!) (§r)?§fYou caught a (§r)?(§r)?§7\\[Lvl 1\\] (?<shRarity>(§6§lLEGENDARY |§5§lEPIC |§9§lRARE |§a§lUNCOMMON |§f§lCOMMON ))?+(?<pet>.+?)§f!$")
 
     fun init() {
         EventBus.subscribe(ChatEvent::class, ::onChat)
