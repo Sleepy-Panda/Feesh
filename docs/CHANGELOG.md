@@ -12,6 +12,7 @@ Released on: ???
 ## Bugfixes
 
 - Excluded Vanquisher from being tracked in Sc/h tracker and Barn fishing timer.
+- Fixed Squid alert not working when Skyhanni's pet rarity chat setting enabled.
 
 ## Special thanks
 
