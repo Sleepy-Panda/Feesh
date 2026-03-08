@@ -27,7 +27,9 @@ import com.github.sleepypanda.feesh.features.help.Welcome
 import com.github.sleepypanda.feesh.features.commands.PersonalBestCommand
 import com.github.sleepypanda.feesh.features.commands.SpiderDenRainScheduleCommand
 import com.github.sleepypanda.feesh.features.commands.PetLevelUpPricesCommand
+import com.github.sleepypanda.feesh.features.commands.FearMongererShopPricesCommand
 import com.github.sleepypanda.feesh.features.commands.GearCraftPricesCommand
+import com.github.sleepypanda.feesh.features.commands.JunkerJoelShopPricesCommand
 import com.github.sleepypanda.feesh.features.commands.FeeshSettingsCommand
 import com.github.sleepypanda.feesh.features.commands.PlayTestSoundCommand
 import com.github.sleepypanda.feesh.features.commands.SetTrackerDropsCommand
@@ -182,6 +184,8 @@ class FeeshMod : ModInitializer {
         SpiderDenRainScheduleCommand.init()
         PetLevelUpPricesCommand.init()
         GearCraftPricesCommand.init()
+        FearMongererShopPricesCommand.init()
+        JunkerJoelShopPricesCommand.init()
         PlayTestSoundCommand.init()
         SetTrackerDropsCommand.init()
         PauseAllTrackersCommand.init()

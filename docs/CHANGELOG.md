@@ -8,6 +8,8 @@ Released on: ???
   - Shoutout to **alpha-r** for contribiting into this feature!
 - Added legendary Seal pet to `/feeshPetLevelUpPrices`.
 - Added immunity timer to the Sea creatures HP overlay.
+- Added `/feeshFearMongererShopPrices` command to see profitable items from Fear Mongerer NPC shop.
+- Added `/feeshJunkerJoelShopPrices` command to see profitable items from Junker Joel NPC shop.
 
 ## Bugfixes
 

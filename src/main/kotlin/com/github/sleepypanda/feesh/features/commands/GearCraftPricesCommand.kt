@@ -95,10 +95,11 @@ object GearCraftPricesCommand {
                 return
             }
                  
+            val modeText = Commands.gearCraftPricesPriceMode.displayName
             val chatBreak = "${GRAY}${ChatUtils.getChatBreak("-")}"
             ChatUtils.sendLocalChat(chatBreak)
             ChatUtils.sendLocalChat("${GREEN}${BOLD}Gear craft prices", true)
-            ChatUtils.sendLocalChat("${DARK_GRAY}Prices for crafted gear compared with price for selling base items via sell offer. Click a line to open Supercraft menu.")
+            ChatUtils.sendLocalChat("${DARK_GRAY}Prices for crafted gear compared with price for selling base items ($modeText). Click a line to open Supercraft menu.")
             
             CRAFTABLES.forEach { category ->
                 val baseItemPrice = getPrice(category.baseItemId)
