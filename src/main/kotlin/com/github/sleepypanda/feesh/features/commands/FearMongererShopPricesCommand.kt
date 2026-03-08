@@ -128,6 +128,11 @@ object FearMongererShopPricesCommand {
                         coinCost = 10_000L
                     )
                 ),
+                ShopItem(
+                    "ENCHANTMENT_LIFE_STEAL_4",
+                    "${RARE}Life Steal IV",
+                    ShopItemCost(baseItemCosts = listOf(BaseItemCost(PURPLE_CANDY, 32)), coinCost = 1_500_000L)
+                ),
             )
         )
     )
@@ -150,7 +155,7 @@ object FearMongererShopPricesCommand {
             val chatBreak = "${GRAY}${ChatUtils.getChatBreak("-")}"
             ChatUtils.sendLocalChat(chatBreak)
             ChatUtils.sendLocalChat("${GREEN}${BOLD}Fear Mongerer shop prices", true)
-            ChatUtils.sendLocalChat("${DARK_GRAY}Profits for selling shop items compared with selling Green/Purple Candies as is. Prices mode: ${WHITE}$modeText.")
+            ChatUtils.sendLocalChat("${DARK_GRAY}Profits for selling shop items compared with selling Green/Purple Candies as is. Hover a line to see the full breakdown. Price mode: ${WHITE}$modeText.")
 
             SHOP_CATEGORIES.forEach { category ->
                 val baseItemPrice = getPrice(category.baseItemId, priceMode)
@@ -160,7 +165,7 @@ object FearMongererShopPricesCommand {
                     .sortedByDescending { it.profit }
 
                 val baseItemPriceStr = CommonUtils.toShortNumber(baseItemPrice) ?: "N/A"
-                ChatUtils.sendLocalChat("\n${GRAY}Items from ${category.baseItemDisplayName}${GRAY} (${GOLD}$baseItemPriceStr ${GRAY}per candy):")
+                ChatUtils.sendLocalChat("\n${WHITE}Items from ${category.baseItemDisplayName}${WHITE} (${GOLD}$baseItemPriceStr ${WHITE}per candy):")
 
                 val getMaterialName: (String?) -> String = { id ->
                     when (id) {

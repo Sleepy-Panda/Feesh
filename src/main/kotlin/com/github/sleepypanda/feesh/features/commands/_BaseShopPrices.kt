@@ -85,8 +85,9 @@ object BaseShopPrices {
 
     private fun getProfitChatLine(shopProfit: ShopItemProfit): String {
         val itemPriceStr = CommonUtils.toShortNumber(shopProfit.itemPrice) ?: "N/A"
+        val profitColor = if (shopProfit.profit >= 0) GOLD else RED
         val profitStr = CommonUtils.toShortNumber(shopProfit.profit) ?: "N/A"
-        return " - ${shopProfit.itemName}${RESET}: ${GOLD}$itemPriceStr ${GRAY}(${GOLD}$profitStr ${GRAY}profit)"
+        return " - ${shopProfit.itemName}${RESET}: ${GOLD}$itemPriceStr ${WHITE}(${profitColor}$profitStr ${WHITE}profit)"
     }
 
     private fun getLineHover(
@@ -96,6 +97,7 @@ object BaseShopPrices {
     ): String {
         val itemPriceStr = CommonUtils.toShortNumber(shopProfit.itemPrice) ?: "N/A"
         val profitStr = CommonUtils.toShortNumber(shopProfit.profit) ?: "N/A"
+        val profitColor = if (shopProfit.profit >= 0) GOLD else RED
         val sb = StringBuilder()
         sb.append("${WHITE}Price mode: $priceModeStr").append("\n")
         sb.append("${shopProfit.itemName}${WHITE}: ${GOLD}$itemPriceStr").append("\n\n")
@@ -105,7 +107,7 @@ object BaseShopPrices {
             val valueStr = CommonUtils.toShortNumber(e.value) ?: "0"
             sb.append("- ${displayName} ${WHITE}${e.amount}x: ${GOLD}${valueStr}${RESET}").append("\n")
         }
-        sb.append("\n${WHITE}Profit: ${GOLD}$profitStr")
+        sb.append("\n${WHITE}Profit: ${profitColor}$profitStr")
         return sb.toString()
     }
 
