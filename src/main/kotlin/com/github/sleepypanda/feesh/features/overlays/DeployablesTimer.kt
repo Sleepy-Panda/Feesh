@@ -2,6 +2,7 @@ package com.github.sleepypanda.feesh.features.overlays
 
 import com.github.sleepypanda.feesh.FeeshMod
 import com.github.sleepypanda.feesh.events.EventBus
+import com.github.sleepypanda.feesh.events.models.ArmorStandLoadedEvent
 import com.github.sleepypanda.feesh.events.models.ClientTickEvent
 import com.github.sleepypanda.feesh.events.models.PlayerInteractEvent
 import com.github.sleepypanda.feesh.events.models.WorldChangedEvent
@@ -13,7 +14,6 @@ import com.github.sleepypanda.feesh.utils.PlayerUtils
 import com.github.sleepypanda.feesh.utils.EntityUtils
 import com.github.sleepypanda.feesh.utils.ChatUtils
 import com.github.sleepypanda.feesh.utils.ChatUtils.getFormattedString
-import com.github.sleepypanda.feesh.utils.ChatUtils.removeFormatting
 import com.github.sleepypanda.feesh.utils.gui.FeeshGui
 import com.github.sleepypanda.feesh.utils.CommonUtils
 import com.github.sleepypanda.feesh.utils.SoundUtils
@@ -77,6 +77,10 @@ object DeployablesTimer {
 
     private var tickCounter = 0
 
+    // We can't know owner for those items, so we track when there was an interaction, to try ignoring spawns from other players.
+    private var lastDwarvenLanternInteractTimeMs: Long = 0L
+    private var lastUmberellaInteractTimeMs: Long = 0L
+
     private val gui = FeeshGui()
         .setCoordsDataKey("deployablesTimer")
         .setClickable(false)
@@ -93,6 +97,7 @@ object DeployablesTimer {
         EventBus.subscribe(ClientTickEvent::class, ::onClientTick)
         EventBus.subscribe(WorldChangedEvent::class, ::onWorldChanged)
         EventBus.subscribe(PlayerInteractEvent::class, ::onPlayerInteract)
+        EventBus.subscribe(ArmorStandLoadedEvent::class, ::onArmorStandLoaded)
 
         RegisterUtils.chat(Regex("^Your flare disappeared because you were too far away\\!$")) { _, _ ->
             if (WorldUtils.isInSkyblock()) {
@@ -113,6 +118,8 @@ object DeployablesTimer {
         resetUmberella()
         resetFlare()
         resetDwarvenLantern()
+        lastUmberellaInteractTimeMs = 0L
+        lastDwarvenLanternInteractTimeMs = 0L
     }
 
     private fun onPlayerInteract(event: PlayerInteractEvent) {
@@ -127,12 +134,7 @@ object DeployablesTimer {
             val heldItemDisplayName = heldItem.name.getFormattedString()
             
             if (isUmberellaTrackingEnabled() && heldItemName == "Umberella") {
-                // Give time for an Umberella to appear after click
-                Timer().schedule(object : TimerTask() {
-                    override fun run() {
-                        trackUmberellaNearby()
-                    }
-                }, 250)
+                lastUmberellaInteractTimeMs = System.currentTimeMillis()
             }
 
             if (isFlareTrackingEnabled() && heldItemName.endsWith("Flare")) {
@@ -148,55 +150,48 @@ object DeployablesTimer {
             }
 
             if (isDwarvenLanternTrackingEnabled() && isHeldItemDwarvenLantern(heldItemName)) {
-                Timer().schedule(object : TimerTask() {
-                    override fun run() {
-                        trackDwarvenLanternNearby()
-                    }
-                }, 500)
+                lastDwarvenLanternInteractTimeMs = System.currentTimeMillis()
             }
         } catch (e: Exception) {
             FeeshMod.LOGGER.error("[Feesh] Failed to handle deployable interaction", e)
         }
     }
 
-    private fun trackUmberellaNearby() {
+    private fun onArmorStandLoaded(event: ArmorStandLoadedEvent) {
         try {
+            if (!WorldUtils.isInSkyblock()) return
+            if (!isDwarvenLanternTrackingEnabled() && !isUmberellaTrackingEnabled()) return
+            
+            val armorStand = event.entity
             val player = FeeshMod.mc.player ?: return
-            val world = FeeshMod.mc.world ?: return
-            val entities = world.entities.filterIsInstance<ArmorStandEntity>()
+            if (EntityUtils.getDistance(player, armorStand) > 5.0) return
 
-            val umberellaArmorStand = entities.find { entity ->
-                val distance = EntityUtils.getDistance(player, entity)
-                distance <= 5.0 && entity.customName?.string == "Umberella 300s"
-            }
+            val nowMs = System.currentTimeMillis()
+            if (nowMs - lastDwarvenLanternInteractTimeMs > 1000L && nowMs - lastUmberellaInteractTimeMs > 1000L) return
 
-            if (umberellaArmorStand != null) {
-                umberellaData.id = umberellaArmorStand.uuid
-            }
+            Timer().schedule(object : TimerTask() {
+                override fun run() {
+                    val name = armorStand.customName?.string ?: return
+
+                    if (isDwarvenLanternTrackingEnabled() &&
+                        isDwarvenLanternArmorStandName(name) &&
+                        name.endsWith("300s") &&
+                        nowMs - lastDwarvenLanternInteractTimeMs <= 1000L
+                    ) {
+                        dwarvenLanternData.id = armorStand.uuid
+                        val formattedName = armorStand.customName?.getFormattedString()
+                        dwarvenLanternData.itemDisplayName = formattedName?.replace(Regex(" §.+\\d+s"), "")?.replace(BOLD.code, "")?.trim() ?: "Dwarven Lantern"
+                    } else if (isUmberellaTrackingEnabled() &&
+                        name == "Umberella 300s" &&
+                        nowMs - lastUmberellaInteractTimeMs <= 1000L
+                    ) {
+                        umberellaData.id = armorStand.uuid
+                    }
+                }
+            }, 150) // Custom name is available after some time when armor stand spawned
+
         } catch (e: Exception) {
-            FeeshMod.LOGGER.error("[Feesh] Failed to track Umberella nearby", e)
-        }
-    }
-
-    private fun trackDwarvenLanternNearby() {
-        try {
-            val player = FeeshMod.mc.player ?: return
-            val world = FeeshMod.mc.world ?: return
-            val entities = world.entities.filterIsInstance<ArmorStandEntity>()
-
-            val lanternArmorStand = entities.find { entity ->
-                val distance = EntityUtils.getDistance(player, entity)
-                val name = entity.customName?.string ?: return@find false
-                distance <= 5.0 && isDwarvenLanternArmorStandName(name) && name.endsWith("300s") // Will-o'-wisp 300s
-            }
-
-            if (lanternArmorStand != null) {
-                dwarvenLanternData.id = lanternArmorStand.uuid
-                val formattedName = lanternArmorStand.customName?.getFormattedString()
-                dwarvenLanternData.itemDisplayName = formattedName?.replace(Regex(" §.+\\d+s"), "")?.replace(BOLD.code, "")?.trim() ?: "Dwarven Lantern"
-            }
-        } catch (e: Exception) {
-            FeeshMod.LOGGER.error("[Feesh] Failed to track Dwarven Lantern nearby", e)
+            FeeshMod.LOGGER.error("[Feesh] Failed to handle deployable armor stand spawn", e)
         }
     }
 

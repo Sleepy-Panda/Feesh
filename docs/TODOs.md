@@ -1,7 +1,5 @@
 ## Players feedback
 
-- Deployable sometimes not tracked in Mineshaft after placing (probably because of snow carpets when placing takes more time)
-- Rare/Uncommon squid alert
 - Carmine dye into tracker
 - Items counted after /gfs
 - Rendering section from CT
