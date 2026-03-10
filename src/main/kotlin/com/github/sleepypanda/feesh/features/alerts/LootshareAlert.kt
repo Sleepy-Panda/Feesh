@@ -23,7 +23,7 @@ object LootshareAlert {
 
     private fun onPartyChatLootshare(event: PartyChatEvent) {
         if (!Alerts.alertOnLootshareMessage || !WorldUtils.isInSkyblock()) return
-        if (event.messagePayload != LootshareMessage.LOOTSHARE_MESSAGE) return
+        if (!event.messagePayload.equals(LootshareMessage.LOOTSHARE_MESSAGE, ignoreCase = true)) return
 
         val playerName = PlayerUtils.getName()
         if (!playerName.isNullOrEmpty() && event.rankAndPlayer.removeFormatting().contains(playerName)) return
