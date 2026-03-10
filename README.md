@@ -41,12 +41,13 @@ This mod requires [Fabric API](https://modrinth.com/mod/fabric-api) and [Fabric 
 ### General
 
 - **Sound modes** — Meme (**customizable**), Normal (default MC sounds), or Off.
+  - [Sounds customization guide](https://github.com/Sleepy-Panda/Feesh/blob/develop/docs/Custom%20sounds%20guide.md)
 
 ### Alerts
 
 - **Rare sea creatures** — Shows a title and plays a sound when a rare sea creature is caught by you or your party members.
 - **Rare drops** — Shows a title and plays a sound when a rare item drops. Supports price display and customizable drop types.
-- **Any Reindrake** — Alerts when any Reindrake spawns in the lobby, even if caught by others. Offers option to warp to island spawn on click.
+- **Any Reindrake** — Alerts when any Reindrake spawns in the lobby, even if caught not by your party. Offers option to warp to island spawn on click.
 - **Spirit Mask** — Alerts when Spirit Mask's Second Wind is activated and when it's back.
 - **Barn fishing timer** — Alerts when sea creatures are alive for 5+ minutes or when their count hits threshold (configurable per location).
 - **Deployables** — Alerts when your deployable item expires in 10 seconds.
@@ -71,7 +72,7 @@ This mod requires [Fabric API](https://modrinth.com/mod/fabric-api) and [Fabric 
 - **Legion & Bobbin' Time tracker** — Shows players and fishing hooks count within 30 blocks.
 - **Barn fishing timer** — Shows count of sea creatures nearby and how long they've been alive.
 - **Deployables timer** — Shows remaining time of your deployable items placed nearby.
-- **Sea creatures HP** — Shows HP of nearby rare sea creatures in lootshare range with immunity indicator.
+- **Sea creatures HP** — Shows HP of nearby rare sea creatures in lootshare range with their immunity timer.
 - **Sea creatures tracker** — Overview of caught sea creatures with Session/Total modes, percentages, and double hook stats.
 - **Fishing hook timer** — Displays hook timer and fish arrival indicator. Requires Skyblock Fishing Timer enabled.
 - **Sea creatures per hour tracker** — Shows sea creatures per hour and total caught per session.
@@ -107,6 +108,8 @@ This mod requires [Fabric API](https://modrinth.com/mod/fabric-api) and [Fabric 
 - **/feeshPersonalBest** — Displays all your personal best records tracked by the mod.
 - **/feeshPetLevelUpPrices** — Calculates profits for leveling fishing pets from 1 to 100.
 - **/feeshGearCraftPrices** — Calculates profits for crafting gear from fishing drops.
+- **/feeshFearMongererShopPrices** — Calculates profits for selling items from Fear Mongerer NPC shop.
+- **/feeshJunkerJoelShopPrices** — Calculates profits for selling items from Junker Joel NPC shop.
 - **/feeshSpiderDenRainSchedule** — Displays nearest Spider's Den Rain/Thunderstorm events.
 - **/feeshSetTrackerDrops** — Initialize drop history (Titanoboa Shed, Tiki Mask, Radioactive Vial, Treasure Dye).
 
@@ -153,13 +156,3 @@ For manual building the project in IDE:
 ```
 
 As a result, `Feesh-<version>-fabric.jar` file appears in `/build/versions` folder. It contains both 1.21.10 and 1.21.11 mod versions.
-
-### Debug
-
-TODO: Fix this section, it does not work for me yet.
-
-https://docs.fabricmc.net/develop/getting-started/vscode/launching-the-game#generating-launch-targets
-
-Gradlew tasks - IDE - Vscode - Run
-
-Run & Tests - Minecraft Client
