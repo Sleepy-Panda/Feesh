@@ -7,6 +7,8 @@ import net.minecraft.client.option.KeyBinding
 import org.lwjgl.glfw.GLFW
 
 object LootshareMessage {
+    const val LOOTSHARE_MESSAGE = "Lootshare!"
+
     fun init() {       
         KeybindUtils.registerKeybind("key.feesh.lootshareToPartyChat", GLFW.GLFW_KEY_UNKNOWN) {
             sendLootshareMessage()
@@ -15,6 +17,6 @@ object LootshareMessage {
 
     private fun sendLootshareMessage() {
         if (!WorldUtils.isInSkyblock() || !WorldUtils.isInFishingWorld()) return
-        ChatUtils.sendPartyChat("Lootshare!")
+        ChatUtils.sendPartyChat(LOOTSHARE_MESSAGE)
     }
 }

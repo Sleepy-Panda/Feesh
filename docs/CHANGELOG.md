@@ -16,6 +16,7 @@ Released on: ???
 - Excluded Vanquisher from being tracked in Sc/h tracker and Barn fishing timer.
 - Fixed Squid alert not working when Skyhanni's pet rarity chat setting enabled.
 - Fixed (I hope) the issue when own Dwarven Lantern / Umberella was not shown in the overlay sometimes after placing.
+- Fixed alert on `Lootshare!` pchat message not working.
 
 ## Special thanks
 
