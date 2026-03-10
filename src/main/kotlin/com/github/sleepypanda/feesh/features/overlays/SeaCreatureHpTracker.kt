@@ -172,7 +172,9 @@ object SeaCreatureHpTracker {
                         val seenTimestamp = seenMobEntityIds[sc.mcEntityId - 1] ?: 0L
                         val now = Date().time
                         isImmune = ticksExisted <= IMMUNITY_TICKS && (now - seenTimestamp) <= IMMUNITY_MS
-                        immunitySecondsLeft = if (isImmune && ticksExisted <= IMMUNITY_TICKS) ceil((IMMUNITY_TICKS - ticksExisted) / 20.0).toInt() else 0
+                        immunitySecondsLeft = if (isImmune) {
+                            ceil((IMMUNITY_TICKS - ticksExisted) / 20.0).toInt().coerceAtLeast(1)
+                        } else 0
                     }
 
                     MobDisplayInfo(
