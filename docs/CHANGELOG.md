@@ -1,6 +1,18 @@
-# 1.3.0
+# 1.4.0
 
 Released on: ???
+
+## Features
+
+-
+
+## Bugfixes
+
+-
+
+# 1.3.0
+
+Released on: 2026-03-10
 
 ## Features
 
