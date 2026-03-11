@@ -2,6 +2,8 @@
 
 ## Fishing profit tracker
 
+- View price as 7 days avg to avoid price manipulations.
+- Add levelled Magma Necklaces as some people level them for profits. Vanquished Magma Necklace upgraded to +10☠!
 - When there is no fishing rod in hand, the fish profit tracker and seacreature tracker can be hidden.
 - Propose compacting or selling items like raw fish going to the inventory (full sack).
 - Track Agatha tickets / Forest Essence on Galatea based on contest results.
@@ -27,21 +29,37 @@
 
 ## Party commands
 
+- Chat settings - Party commands. Add individual settings to let people explore Fishing profit tracker, Sc/h, Sea creatures, etc.
 - Commands should have a cooldown so people do not spam.
 - Triggers from pchat only so Vadim does not mute people for spamming in gchat :skull:
-- Ability to disable commands in settings.
-- Does not trigger if the overlay is disabled in settings.
+- Does not trigger if the overlay is disabled in settings or nor visible.
 
-- !feesh profit - shows Total profit, elapsed time & profit/h
-- !feesh profit <item name> - shows amount of the item in profit tracker (may use partial item name, case-insensitive)
-- !feesh sc <mob name> - shows amount of the SC in Sea creatures tracker, percent and double hook statistics
-- !feesh since <mob name> - shows since from the active tracker, e.g. Wiki Tiki, Reindrake, Lord Jawbus, etc
-- !feesh sc/h - shows sea creatures per hour
-- !feeshsincevial
-- !feesh vials
+!feesh sc/h
+1000 sc/h for 2h or 1000 catches/h for 2h
 
-- !kdr - kills/deaths rate for thunder/jawbus [requires API key and custom backend]
-- /feeshkdr <player> - to check myself or someone privately without sending to the party chat [requires API key and custom backend]
+!feesh sc|sctotal
+Session: 200 rare sc out of 2000 sc total
+
+!feesh sc|sctotal name:Abyssal
+Session: 50x Abyssal Miner
+
+!feesh profit
+Session: 100M for 2h (50M/h)
+
+!feesh totalprofit
+Total: 100M for 2h (50M/h)
+If timer not enabled, just show total
+
+!feesh profit|totalprofit top
+Session: 10x Deep Sea Orb, 1x bla bla, 100x bla bla
+
+!feesh profit|totalprofit item:Deep Sea Orb
+Session: 10x Deep Sea Orb
+
+item name validation: at least N characters, return top 10 results
+
+!feesh profit|totalprofit item:Baby Yeti
+Session: 10x Baby Yeti (Epic), 5x Baby Yeti (Legendary), 1x Level 100
 
 ## Alerts & chat
 
@@ -75,6 +93,11 @@
 
 - Fishing XP tracker
 - Skill level tracking above fishing 60
+
+## Bestiary tracker
+
+- Bestiary tracker with session/total, cuz i like to get screenshots whenever i hit clean bestiary numbers (30k abyssal, 300k agarimoo, ...)
+It might be not 100% correct due to how Hypixel API works, the person who requested usually opens /be every few catches, he needs to see when he's close.
 
 ## Inventory features
 
