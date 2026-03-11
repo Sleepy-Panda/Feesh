@@ -12,15 +12,11 @@ import com.github.sleepypanda.feesh.utils.ChatUtils.removeFormatting
 import com.github.sleepypanda.feesh.utils.RegisterUtils
 import com.github.sleepypanda.feesh.utils.data.PersistentDataManager
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
-import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
 import com.github.sleepypanda.feesh.events.EventBus
 import com.github.sleepypanda.feesh.events.models.ClientTickEvent
 import com.github.sleepypanda.feesh.events.models.GuiOpenedEvent
 import com.github.sleepypanda.feesh.events.models.WorldChangedEvent
 import net.minecraft.client.gui.screen.ingame.HandledScreen
-import net.minecraft.text.Text
-import net.minecraft.text.ClickEvent
-import net.minecraft.text.ClickEvent.RunCommand
 import net.minecraft.component.DataComponentTypes
 import java.util.Timer
 import kotlin.concurrent.timerTask
@@ -70,7 +66,7 @@ object FishingBagDisabledAlert {
     }
 
     private fun alertOnFishingBagDisabled() {
-        try {
+        CommonUtils.runWithCatching("Failed to check fishing bag state") {
             if (isAlerted ||
                 !Alerts.alertOnFishingBagDisabled ||
                 PersistentDataManager.feeshData.isFishingBagEnabled != false || // false means disabled, null means unknown
@@ -95,8 +91,6 @@ object FishingBagDisabledAlert {
             isAlerted = true
 
             ChatUtils.sendLocalChatWithCommand("${WHITE}Using baits from Fishing Bag is disabled. Click to open Fishing Bag!", "fb", true)
-        } catch (e: Exception) {
-            FeeshMod.LOGGER.error("[Feesh] Failed to check fishing bag state", e)
         }
     }
 
@@ -110,7 +104,7 @@ object FishingBagDisabledAlert {
     private fun onFishingBagOpened(@Suppress("UNUSED_PARAMETER") event: GuiOpenedEvent) {
         // Schedule task to check after GUI is fully loaded (~2 ticks delay)
         Timer().schedule(timerTask {
-            try {
+            CommonUtils.runWithCatching("Failed to check fishing bag state on GUI opened") {
                 val currentScreen = event.screen
                 if (currentScreen !is HandledScreen<*>) return@timerTask
 
@@ -126,8 +120,6 @@ object FishingBagDisabledAlert {
                 val lore = item.get(DataComponentTypes.LORE)?.lines?.map { it.string } ?: return@timerTask
                 val isEnabled = lore.any { line -> line.contains(CLICK_TO_DISABLE_TEXT) }
                 setFishingBagState(isEnabled)
-            } catch (e: Exception) {
-                FeeshMod.LOGGER.error("[Feesh] Failed to check fishing bag state on GUI opened", e)
             }
         }, 100)        
     }

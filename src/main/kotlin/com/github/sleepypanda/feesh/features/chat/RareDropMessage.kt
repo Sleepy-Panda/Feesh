@@ -10,7 +10,6 @@ import com.github.sleepypanda.feesh.utils.CommonUtils
 import com.github.sleepypanda.feesh.utils.ChatUtils
 import com.github.sleepypanda.feesh.utils.data.PersistentDataManager
 import com.github.sleepypanda.feesh.utils.WorldUtils
-import com.github.sleepypanda.feesh.FeeshMod
 
 // TODO It would be great to get drop number from fishing profit tracker instead of tracking it here,
 // But it requires a little exploration how to do it in a clean way.
@@ -34,7 +33,7 @@ object RareDropMessage {
     }
 
     private fun onDrop(event: RareDropEvent) {
-        try {
+        CommonUtils.runWithCatching("Failed to send rare drop message") {
             if (!WorldUtils.isInSkyblock() || !Chat.messageOnRareDrops) return
 
             val itemName = event.itemName
@@ -53,9 +52,6 @@ object RareDropMessage {
     
             val message = getDropMessage(itemName, metadata)
             ChatUtils.sendPartyChat(message) 
-        }
-        catch (e: Exception) {
-            FeeshMod.LOGGER.error("[Feesh] Failed to send rare drop message.", e)
         }
     }
 

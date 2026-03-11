@@ -6,7 +6,6 @@ import com.github.sleepypanda.feesh.utils.CommonUtils
 import com.github.sleepypanda.feesh.utils.SoundUtils
 import com.github.sleepypanda.feesh.utils.PlayerUtils
 import com.github.sleepypanda.feesh.utils.WorldUtils
-import com.github.sleepypanda.feesh.utils.ItemUtils
 import com.github.sleepypanda.feesh.utils.FishingHookUtils
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.events.EventBus
@@ -42,7 +41,7 @@ object NonFishingArmorAlert {
     }
 
     private fun checkAndAlertOnNonFishingArmor() {
-        try {
+        CommonUtils.runWithCatching("Failed to check and alert on non-fishing armor") {
             if (!Alerts.alertOnNonFishingArmor || !WorldUtils.isInSkyblock() || !WorldUtils.isInFishingWorld() || !PlayerUtils.hasFishingRodInHotbar()) return
             if (isPlayerWearingFishingArmor()) return
 
@@ -59,8 +58,6 @@ object NonFishingArmorAlert {
 
             CommonUtils.showTitle("${RED}Equip fishing armor!")
             SoundUtils.playSound()
-        } catch (e: Exception) {
-            FeeshMod.LOGGER.error("Failed to check fishing armor on fishing hook appeared", e)
         }
     }
 

@@ -1,6 +1,5 @@
 package com.github.sleepypanda.feesh.features.overlays
 
-import com.github.sleepypanda.feesh.FeeshMod
 import com.github.sleepypanda.feesh.constants.SeaCreatures
 import com.github.sleepypanda.feesh.events.EventBus
 import com.github.sleepypanda.feesh.events.models.ClientTickEvent
@@ -144,7 +143,7 @@ object FishingFestivalTracker {
     }
 
     private fun resetFishingFestivalTracker(isConfirmed: Boolean) {
-        try {
+        CommonUtils.runWithCatching("Failed to reset Fishing Festival tracker") {
             if (!isConfirmed) {
                 ChatUtils.sendLocalChatWithCommand(
                     "${WHITE}Do you want to reset Fishing Festival tracker? ${RED}${BOLD}[Click to confirm]",
@@ -157,8 +156,6 @@ object FishingFestivalTracker {
             resetTracker()
             updateGuiLines()
             ChatUtils.sendLocalChat("${WHITE}Fishing Festival tracker was reset.", true)
-        } catch (e: Exception) {
-            FeeshMod.LOGGER.error("[Feesh] Failed to reset Fishing Festival tracker.", e)
         }
     }
 

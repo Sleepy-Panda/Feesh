@@ -195,7 +195,7 @@ object ArchfiendDiceProfitTracker {
     }
 
     private fun resetArchfiendDiceProfitTracker(isConfirmed: Boolean, resetViewMode: ViewMode) {
-        try {
+        CommonUtils.runWithCatching("Failed to reset Archfiend Dice profit tracker") {
             val viewModeText = getViewModeDisplayText(resetViewMode)
 
             if (!isConfirmed) {
@@ -218,8 +218,6 @@ object ArchfiendDiceProfitTracker {
 
             updateGuiLines()
             ChatUtils.sendLocalChat("${WHITE}Archfiend Dice profit tracker ${viewModeText} ${WHITE}was reset.", true)
-        } catch (e: Exception) {
-            FeeshMod.LOGGER.error("[Feesh] Failed to reset Archfiend Dice profit tracker.", e)
         }
     }
 
@@ -229,7 +227,7 @@ object ArchfiendDiceProfitTracker {
         number: Int,
         announceCost: Boolean
     ) {
-        try {
+        CommonUtils.runWithCatching("Failed to track Archfiend Dice roll for Archfiend Dice profit tracker") {
             if (!Overlays.archfiendDiceProfitTrackerOverlay || !WorldUtils.isInSkyblock() || number < 1 || number > 7) return
 
             lastDiceRolledAt = Date()
@@ -307,13 +305,11 @@ object ArchfiendDiceProfitTracker {
 
             saveData()
             updateGuiLines()
-        } catch (e: Exception) {
-            FeeshMod.LOGGER.error("[Feesh] Failed to track Archfiend Dice roll for Archfiend Dice profit tracker.", e)
         }
     }
 
     private fun updateGuiLines() {
-        try {
+        CommonUtils.runWithCatching("Failed to refresh tracker data for Archfiend Dice profit tracker") {
             gui.clearLines()
 
             val viewMode = getCurrentViewMode()
@@ -357,8 +353,6 @@ object ArchfiendDiceProfitTracker {
                 GuiButton(0, "${GRAY}[Click to show $nextModeText${GRAY}]", { toggleViewMode() }),
                 GuiButton(1, "${GRAY}[${RED}Click to reset${GRAY}]", { resetArchfiendDiceProfitTracker(false, getCurrentViewMode()) })
             ))
-        } catch (e: Exception) {
-            FeeshMod.LOGGER.error("[Feesh] Failed to refresh tracker data for Archfiend Dice profit tracker.", e)
         }
     }
 

@@ -5,6 +5,7 @@ import com.github.sleepypanda.feesh.constants.SeaCreatures
 import com.github.sleepypanda.feesh.utils.RegisterUtils
 import com.github.sleepypanda.feesh.utils.WorldUtils
 import com.github.sleepypanda.feesh.utils.ChatUtils
+import com.github.sleepypanda.feesh.utils.CommonUtils
 import com.github.sleepypanda.feesh.utils.FishingHookUtils
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
@@ -155,7 +156,7 @@ object JerryWorkshopTracker {
     }
 
     private fun resetJerryWorkshopTracker(isConfirmed: Boolean) {
-        try {
+        CommonUtils.runWithCatching("Failed to reset Jerry Workshop tracker") {
             if (!isConfirmed) {
                 ChatUtils.sendLocalChatWithCommand(
                     "${WHITE}Do you want to reset Jerry Workshop tracker? ${RED}${BOLD}[Click to confirm]",
@@ -168,8 +169,6 @@ object JerryWorkshopTracker {
             reset()
             updateGuiLines()
             ChatUtils.sendLocalChat("${WHITE}Jerry Workshop tracker was reset.", true)
-        } catch (e: Exception) {
-            FeeshMod.LOGGER.error("[Feesh] Failed to reset Jerry Workshop tracker.", e)
         }
     }
 

@@ -5,6 +5,7 @@ import com.github.sleepypanda.feesh.events.EventBus
 import com.github.sleepypanda.feesh.events.models.ClientTickEvent
 import com.github.sleepypanda.feesh.events.models.WorldChangedEvent
 import com.github.sleepypanda.feesh.settings.categories.Overlays
+import com.github.sleepypanda.feesh.utils.CommonUtils
 import com.github.sleepypanda.feesh.utils.WorldUtils
 import com.github.sleepypanda.feesh.utils.EntityUtils
 import com.github.sleepypanda.feesh.utils.SoundUtils
@@ -148,7 +149,7 @@ object SeaCreatureHpTracker {
     }
 
     private fun trackSeaCreaturesHp() {
-        try {
+        CommonUtils.runWithCatching("Failed to track nearby sea creatures HP") {
             if (!Overlays.seaCreaturesHpOverlay ||
                 !WorldUtils.isInSkyblock() ||
                 !TRACKED_WORLD_NAMES.contains(WorldUtils.getWorldName())
@@ -195,8 +196,6 @@ object SeaCreatureHpTracker {
             }
 
             mobs = currentMobs.toMutableList()
-        } catch (e: Exception) {
-            FeeshMod.LOGGER.error("[Feesh] Failed to track nearby sea creatures HP", e)
         }
     }
 

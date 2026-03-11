@@ -21,8 +21,6 @@ import com.github.sleepypanda.feesh.events.models.ArmorStandDespawnedEvent
 import java.util.UUID
 import net.minecraft.text.Text
 import net.minecraft.text.Style
-import net.minecraft.text.ClickEvent
-import net.minecraft.text.HoverEvent
 import net.minecraft.text.ClickEvent.RunCommand
 import net.minecraft.text.HoverEvent.ShowText
 import org.lwjgl.glfw.GLFW
@@ -87,7 +85,7 @@ object HotspotFoundMessage {
     }
 
     private fun sendMessageWithNearestHotspot(isParty: Boolean) {
-        try {
+        CommonUtils.runWithCatching("Failed to share nearby Hotspot") {
             if (!WorldUtils.isInSkyblock() || !WorldUtils.isInHotspotFishingWorld()) return
 
             val player = FeeshMod.mc.player ?: return
@@ -98,13 +96,11 @@ object HotspotFoundMessage {
             } else {
                 ChatUtils.sendLocalChat("${WHITE}No Hotspot found nearby, move closer to be in ${NEAREST_HOTSPOT_RANGE_FROM_PLAYER.toInt()} blocks range!", true)
             }
-        } catch (e: Exception) {
-            FeeshMod.LOGGER.error("[Feesh] Failed to share nearby Hotspot.", e)
         }
     }
 
     private fun sendMessageOnHotspotFound() {
-        try {
+        CommonUtils.runWithCatching("Failed to send message on Hotspot found") {
             if (!Chat.messageOnHotspotFound && !Chat.autoMessageOnHotspotFound) return
             if (!WorldUtils.isInSkyblock() || !WorldUtils.isInHotspotFishingWorld() || !PlayerUtils.hasFishingRodInHotbar()) return
 
@@ -124,8 +120,6 @@ object HotspotFoundMessage {
             }
 
             lastClosestHotspot = closestHotspot
-        } catch (e: Exception) {
-            FeeshMod.LOGGER.error("[Feesh] Failed to send message on Hotspot found.", e)
         }
     }
 

@@ -4,9 +4,8 @@ import com.github.sleepypanda.feesh.FeeshMod
 import com.github.sleepypanda.feesh.constants.RareDrops
 import com.github.sleepypanda.feesh.constants.SeaCreatures
 import com.github.sleepypanda.feesh.constants.Sounds
-import com.github.sleepypanda.feesh.utils.RegisterUtils
+import com.github.sleepypanda.feesh.utils.CommonUtils
 import com.github.sleepypanda.feesh.utils.FileUtils
-import com.github.sleepypanda.feesh.utils.PlayerUtils
 import com.github.sleepypanda.feesh.utils.SoundUtils
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
@@ -153,7 +152,7 @@ object CustomSoundsManager {
     }
     
     private fun initResourcePackStructure() {
-        try {
+        CommonUtils.runWithCatching("Failed to initialize resource pack structure") {
             if (resourcePackDir.exists()) {
                 FeeshMod.LOGGER.error("[Feesh] Resource pack sounds directory already exists. Skipping initialization.")
                 return
@@ -190,15 +189,13 @@ object CustomSoundsManager {
             if (resourcePackDir.exists()) {
                 FeeshMod.LOGGER.info("[Feesh] Resource pack directory ready: ${resourcePackDir.absolutePath}")
             }
-        } catch (e: Exception) {
-            FeeshMod.LOGGER.error("[Feesh] Failed to initialize resource pack structure", e)
         }
     }
     
     private fun generateSoundsJsonFromFiles() {
-        try {
+        CommonUtils.runWithCatching("Failed to generate sounds.json for custom user resource pack") {
             if (!resourcePackSoundsDir.exists()) {
-                FeeshMod.LOGGER.info("[Feesh] Resource pack sounds directory does not exist. Please create it and add your .ogg files to it.", true)
+                FeeshMod.LOGGER.info("[Feesh] Resource pack sounds directory does not exist. Please create it and add your .ogg files to it.")
                 return
             }
             
@@ -237,8 +234,6 @@ object CustomSoundsManager {
             resourcePackSoundsJsonFile.writeText(json)
             
             FeeshMod.LOGGER.info("[Feesh] Generated sounds.json with ${soundsMap.size} sound entries")
-        } catch (e: Exception) {
-            FeeshMod.LOGGER.error("[Feesh] Failed to generate sounds.json for custom user resource pack", e)
         }
     }
 }

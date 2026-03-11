@@ -1,6 +1,7 @@
 package com.github.sleepypanda.feesh.utils
 
 import com.github.sleepypanda.feesh.FeeshMod
+import com.github.sleepypanda.feesh.utils.CommonUtils
 import com.google.gson.Gson
 import java.io.File
 import java.lang.reflect.Type
@@ -58,7 +59,7 @@ object FileUtils {
         saveLock: Any,
         logPrefix: String
     ) {
-        try {
+        CommonUtils.runWithCatching("Failed to save $logPrefix data") {
             synchronized(saveLock) {
                 file.parentFile?.mkdirs()
                 val json = gson.toJson(data)
@@ -70,8 +71,6 @@ object FileUtils {
                     StandardOpenOption.WRITE
                 )
             }
-        } catch (e: Exception) {
-            FeeshMod.LOGGER.error("[Feesh] Failed to save $logPrefix data", e)
         }
     }
 

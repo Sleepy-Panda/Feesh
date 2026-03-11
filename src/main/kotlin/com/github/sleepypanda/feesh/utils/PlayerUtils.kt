@@ -1,12 +1,11 @@
 package com.github.sleepypanda.feesh.utils
 
 import com.github.sleepypanda.feesh.FeeshMod
+import com.github.sleepypanda.feesh.utils.CommonUtils
 import com.github.sleepypanda.feesh.utils.ChatUtils.getFormattedString
 import com.github.sleepypanda.feesh.utils.ChatUtils.removeFormatting
 import com.github.sleepypanda.feesh.events.EventBus
 import com.github.sleepypanda.feesh.events.models.WorldChangedEvent
-import net.minecraft.text.Text
-import java.util.Date
 import java.util.Timer
 import kotlin.concurrent.timerTask
 
@@ -25,11 +24,9 @@ object PlayerUtils {
         timer = Timer()
         
         val task = timerTask {
-            try {
+            CommonUtils.runWithCatching("Failed to update player utils cache") {
                 setHasFishingRodInHotbar()
                 setHasDirtRodInHand()
-            } catch (e: Exception) {
-                FeeshMod.LOGGER.error("[Feesh] Failed to update player utils cache.", e)
             }
         }
         timer?.scheduleAtFixedRate(task, 0, 500)

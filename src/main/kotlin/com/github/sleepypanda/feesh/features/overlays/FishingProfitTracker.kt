@@ -21,8 +21,6 @@ import com.github.sleepypanda.feesh.utils.CommonUtils
 import com.github.sleepypanda.feesh.utils.PriceUtils
 import com.github.sleepypanda.feesh.utils.RegisterUtils
 import com.github.sleepypanda.feesh.utils.WorldUtils
-import com.github.sleepypanda.feesh.utils.PlayerUtils
-import com.github.sleepypanda.feesh.utils.EntityUtils
 import com.github.sleepypanda.feesh.utils.FishingHookUtils
 import com.github.sleepypanda.feesh.utils.GuiUtils
 import com.github.sleepypanda.feesh.utils.gui.FeeshGui
@@ -36,16 +34,9 @@ import com.github.sleepypanda.feesh.utils.SoundUtils
 import com.github.sleepypanda.feesh.utils.ChatUtils.removeFormatting
 import com.github.sleepypanda.feesh.utils.ChatUtils.getFormattedString
 import com.github.sleepypanda.feesh.utils.ItemUtils
-import net.minecraft.client.gui.screen.ingame.InventoryScreen
-import net.minecraft.client.gui.screen.ChatScreen
-import net.minecraft.client.gui.screen.ingame.HandledScreen
 import com.google.gson.JsonParser
 import net.minecraft.component.DataComponentTypes
-import net.minecraft.item.ItemStack
-import net.minecraft.text.Text
 import java.util.Date
-import java.util.Timer
-import kotlin.concurrent.timerTask
 
 // TODO Drops counter for Rare Drop chat message
 // TODO Rely on chat message for some Rare Drops instead of pickup event?
@@ -250,7 +241,7 @@ object FishingProfitTracker {
     }
 
     fun resetFishingProfitTracker(isConfirmed: Boolean, resetViewMode: ViewMode) {
-        try {
+        CommonUtils.runWithCatching("Failed to reset Fishing profit tracker") {
             val viewModeText = getViewModeDisplayText(resetViewMode)
             if (!isConfirmed) {
                 val resetAction = when (resetViewMode) {
@@ -272,13 +263,11 @@ object FishingProfitTracker {
             }
             updateGuiLines()
             ChatUtils.sendLocalChat("${WHITE}Fishing profit tracker $viewModeText ${WHITE}was reset.", true)
-        } catch (e: Exception) {
-            FeeshMod.LOGGER.error("[Feesh] Failed to reset Fishing profit tracker.", e)
         }
     }
 
     private fun onSetItemCountCommand(args: Array<String>, viewMode: ViewMode) {
-        try {
+        CommonUtils.runWithCatching("Failed to change item count in Fishing profit tracker") {
             if (args.size < 2) {
                 ChatUtils.sendLocalChat("${RED}Usage: /$SET_ITEM_COUNT_COMMAND <itemID> <count>", true)
                 return
@@ -328,13 +317,11 @@ object FishingProfitTracker {
 
             val viewModeText = getViewModeDisplayText(viewMode)
             ChatUtils.sendLocalChat("${WHITE}Changed count of ${displayName} ${WHITE}to ${count} in Fishing profit tracker $viewModeText${WHITE}.", true)
-        } catch (e: Exception) {
-            FeeshMod.LOGGER.error("[Feesh] Failed to change item count in Fishing profit tracker.", e)
         }
     }
 
     private fun onDeleteItemCommand(args: Array<String>, viewMode: ViewMode) {
-        try {
+        CommonUtils.runWithCatching("Failed to delete item from Fishing profit tracker") {
             if (args.isEmpty()) {
                 ChatUtils.sendLocalChat("${RED}Usage: /$DELETE_ITEM_COMMAND <itemID>", true)
                 return
@@ -386,19 +373,15 @@ object FishingProfitTracker {
             refreshTotalItemsProfitsInMode(viewMode)
             updateGuiLines()
             ChatUtils.sendLocalChat("${WHITE}Deleted ${WHITE}${entry.amount}x ${displayName}${WHITE} from the Fishing profit tracker ${viewModeText}${WHITE}.", true)
-        } catch (e: Exception) {
-            FeeshMod.LOGGER.error("[Feesh] Failed to delete item from Fishing profit tracker.", e)
         }
     }
 
     fun pauseFishingProfitTracker() {
-        try {
+        CommonUtils.runWithCatching("Failed to pause Fishing profit tracker") {
             if (!isSessionActive || !isTrackerVisible()) return
             pause()
             updateGuiLines()
             ChatUtils.sendLocalChat("${WHITE}Fishing profit tracker is paused. Continue fishing to resume it.", true)
-        } catch (e: Exception) {
-            FeeshMod.LOGGER.error("[Feesh] Failed to pause Fishing profit tracker.", e)
         }
     }
 
@@ -825,7 +808,7 @@ object FishingProfitTracker {
     }
 
     private fun onLineItemIncrease(itemId: String) {
-        try {
+        CommonUtils.runWithCatching("Failed to change item amount in Fishing profit tracker") {
             if (!isTrackerVisible()) return
 
             val viewMode = getCurrentViewMode()
@@ -842,13 +825,11 @@ object FishingProfitTracker {
 
             val newAmount = entry.amount + 1
             ChatUtils.sendLocalChat("${WHITE}Changed count of ${displayName} ${WHITE}to ${GRAY}${newAmount}x ${WHITE}in the Fishing profit tracker ${viewModeText}${WHITE}.", true)
-        } catch (e: Exception) {
-            FeeshMod.LOGGER.error("[Feesh] Failed to change item amount in Fishing profit tracker.", e)
         }
     }
 
     private fun onLineItemDecrease(itemId: String) {
-        try {
+        CommonUtils.runWithCatching("Failed to change item amount in Fishing profit tracker") {
             if (!isTrackerVisible()) return
 
             val viewMode = getCurrentViewMode()
@@ -870,19 +851,15 @@ object FishingProfitTracker {
             updateGuiLines()
 
             ChatUtils.sendLocalChat("${WHITE}Changed count of ${displayName} ${WHITE}to ${GRAY}${newAmount}x ${WHITE}in the Fishing profit tracker ${viewModeText}${WHITE}.", true)
-        } catch (e: Exception) {
-            FeeshMod.LOGGER.error("[Feesh] Failed to change item amount in Fishing profit tracker.", e)
         }
     }
 
     private fun onLineItemDelete(itemId: String) {
-        try {
+        CommonUtils.runWithCatching("Failed to delete item from Fishing profit tracker") {
             if (!isTrackerVisible()) return
 
             val viewMode = getCurrentViewMode()
             onDeleteItemCommand(arrayOf(itemId), viewMode)
-        } catch (e: Exception) {
-            FeeshMod.LOGGER.error("[Feesh] Failed to delete item from Fishing profit tracker.", e)
         }
     }
 
@@ -899,7 +876,7 @@ object FishingProfitTracker {
     }
 
     private fun updateGuiLines() {
-        try {
+        CommonUtils.runWithCatching("Failed to update Fishing profit tracker GUI lines") {
             gui.clearLines()
 
             if (!isTrackerVisible()) {
@@ -972,8 +949,6 @@ object FishingProfitTracker {
                 GuiButton(1, "${GRAY}[${YELLOW}Click to pause${GRAY}]", { pauseFishingProfitTracker() }),
                 GuiButton(2, "${GRAY}[${RED}Click to reset${GRAY}]", { resetFishingProfitTracker(false, getCurrentViewMode()) })
             ))
-        } catch (e: Exception) {
-            FeeshMod.LOGGER.error("[Feesh] Failed to refresh tracker data for Fishing profit tracker.", e)
         }
     }
 

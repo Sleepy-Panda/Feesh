@@ -1,6 +1,7 @@
 package com.github.sleepypanda.feesh.utils
 
 import com.github.sleepypanda.feesh.FeeshMod
+import com.github.sleepypanda.feesh.utils.CommonUtils
 import com.github.sleepypanda.feesh.settings.categories.General
 import com.github.sleepypanda.feesh.settings.categories.SoundMode
 import net.minecraft.sound.SoundCategory
@@ -42,14 +43,12 @@ object SoundUtils {
 
         if (fileName == null || fileName.isBlank()) return
         
-        try {
+        CommonUtils.runWithCatching("Failed to play sound from file name: $fileName") {
             // Use file name as-is (remove .ogg extension)
             val nameWithoutExtension = fileName.removeSuffix(".ogg")
             val identifier = Identifier.of(SOUNDS_IDENTIFIER_PREFIX, nameWithoutExtension)
             val soundEvent = SoundEvent.of(identifier)
             playSound(soundEvent)
-        } catch (e: Exception) {
-            FeeshMod.LOGGER.error("[Feesh] Failed to play sound from file name: $fileName", e)
         }
     }
 }

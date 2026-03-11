@@ -1,6 +1,5 @@
 package com.github.sleepypanda.feesh.features.commands
 
-import com.github.sleepypanda.feesh.FeeshMod
 import com.github.sleepypanda.feesh.features.commands.BaseShopPrices.BaseItemCost
 import com.github.sleepypanda.feesh.features.commands.BaseShopPrices.ShopItem
 import com.github.sleepypanda.feesh.features.commands.BaseShopPrices.ShopItemCost
@@ -144,7 +143,7 @@ object FearMongererShopPricesCommand {
     }
 
     private fun calculateFearMongererShopPrices() {
-        try {
+        CommonUtils.runWithCatching("Failed to calculate Fear Mongerer shop price statistics") {
             if (!WorldUtils.isInSkyblock()) {
                 ChatUtils.sendLocalChat("${RED}You must be on Hypixel Skyblock to use this command!", true)
                 return
@@ -180,8 +179,6 @@ object FearMongererShopPricesCommand {
                     ChatUtils.sendLocalChat(getProfitChatLineWithHover(shopProfit, modeText, getMaterialName))
                 }
             }
-        } catch (e: Exception) {
-            FeeshMod.LOGGER.error("[Feesh] Failed to calculate Fear Mongerer shop price statistics.", e)
         }
     }
 }

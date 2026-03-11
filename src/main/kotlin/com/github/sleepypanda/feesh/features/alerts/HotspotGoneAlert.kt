@@ -72,7 +72,7 @@ object HotspotGoneAlert {
     }
 
     private fun trackLatestHotspot() {
-        try {
+        CommonUtils.runWithCatching("Failed to track latest Hotspot") {
             if (!Alerts.alertOnHotspotGone || !WorldUtils.isInSkyblock() || !WorldUtils.isInHotspotFishingWorld() || !PlayerUtils.hasFishingRodInHotbar()) return
 
             val isHookActive = FishingHookUtils.isFishingHookActive()
@@ -82,8 +82,6 @@ object HotspotGoneAlert {
             val closestHotspot = HotspotUtils.findClosestHotspotInRange(Vec3d(playerHook.x, playerHook.y, playerHook.z), NEAREST_HOTSPOT_RANGE_FROM_HOOK) ?: return
 
             lastClosestHotspot = closestHotspot
-        } catch (e: Exception) {
-            FeeshMod.LOGGER.error("[Feesh] Failed to track latest Hotspot", e)
         }
     }
 

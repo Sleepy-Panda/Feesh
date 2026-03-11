@@ -136,15 +136,17 @@ object TreasureFishingTracker {
     }
 
     fun setTreasureDyes(count: Int, lastOn: Date?) {
-        try {
+        CommonUtils.runWithCatching(
+            message = "Failed to set Treasure Dyes.",
+            onError = {
+                ChatUtils.sendLocalChat("${RED}Failed to set Treasure Dyes.", true)
+            }
+        ) {
             if (!WorldUtils.isInSkyblock()) return
             
             data.total.treasureDyes.initDropCount(count, lastOn)         
             saveData()
             ChatUtils.sendLocalChat("${GRAY}Successfully changed Treasure Dyes count to ${count} for the Treasure fishing tracker.", true)
-        } catch (e: Exception) {
-            FeeshMod.LOGGER.error("[Feesh] Failed to set Treasure Dyes.", e)
-            ChatUtils.sendLocalChat("${RED}Failed to set Treasure Dyes.", true)
         }
     }
 
@@ -189,7 +191,7 @@ object TreasureFishingTracker {
     }
 
     private fun resetTreasureFishingTracker(isConfirmed: Boolean, resetViewMode: ViewMode) {
-        try {
+        CommonUtils.runWithCatching("Failed to reset Treasure fishing tracker") {
             val viewModeText = getViewModeDisplayText(resetViewMode)
 
             if (!isConfirmed) {
@@ -212,14 +214,11 @@ object TreasureFishingTracker {
 
             updateGuiLines()
             ChatUtils.sendLocalChat("${WHITE}Treasure fishing tracker ${viewModeText} ${WHITE}was reset.", true)
-        } catch (e: Exception) {
-            FeeshMod.LOGGER.error("[Feesh] Failed to reset Treasure fishing tracker", e)
-            ChatUtils.sendLocalChat("${RED}Failed to reset Treasure fishing tracker.", true)
         }
     }
 
     private fun trackTreasureCatch(treasureType: String) {
-        try {
+        CommonUtils.runWithCatching("Failed to track treasure catch") {
             if (!Overlays.treasureFishingTrackerOverlay || !WorldUtils.isInSkyblock() || !WorldUtils.isInFishingWorld()) return
 
             lastTreasureCaughtAt = Date()
@@ -240,20 +239,16 @@ object TreasureFishingTracker {
             data.total.treasureDyes.updateAfterCatch(false)
             updateGuiLines()
             saveData()
-        } catch (e: Exception) {
-            FeeshMod.LOGGER.error("[Feesh] Failed to track treasure catch", e)
         }
     }
 
     private fun trackTreasureDyeDrop() {
-        try {
+        CommonUtils.runWithCatching("Failed to track Treasure Dye drop") {
             if (!Overlays.treasureFishingTrackerOverlay || !WorldUtils.isInSkyblock() || !WorldUtils.isInFishingWorld()) return
 
             data.total.treasureDyes.updateAfterDrop(treasureDye.boldDisplayName, "treasure", null)
             updateGuiLines()
             saveData()
-        } catch (e: Exception) {
-            FeeshMod.LOGGER.error("[Feesh] Failed to track Treasure Dye drop", e)
         }
     }
 
