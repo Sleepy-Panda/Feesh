@@ -1,6 +1,5 @@
 package com.github.sleepypanda.feesh.features.commands
 
-import com.github.sleepypanda.feesh.FeeshMod
 import com.github.sleepypanda.feesh.features.commands.BaseShopPrices.BaseItemCost
 import com.github.sleepypanda.feesh.features.commands.BaseShopPrices.ShopItem
 import com.github.sleepypanda.feesh.features.commands.BaseShopPrices.ShopItemCost
@@ -9,6 +8,7 @@ import com.github.sleepypanda.feesh.features.commands.BaseShopPrices.getProfitCh
 import com.github.sleepypanda.feesh.utils.RegisterUtils
 import com.github.sleepypanda.feesh.utils.WorldUtils
 import com.github.sleepypanda.feesh.utils.ChatUtils
+import com.github.sleepypanda.feesh.utils.CommonUtils
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
 import com.github.sleepypanda.feesh.settings.categories.Commands
@@ -82,7 +82,7 @@ object JunkerJoelShopPricesCommand {
     }
 
     private fun calculateJunkerJoelShopPrices() {
-        try {
+        CommonUtils.runWithCatching("Failed to calculate Junker Joel shop price statistics") {
             if (!WorldUtils.isInSkyblock()) {
                 ChatUtils.sendLocalChat("${RED}You must be on Hypixel Skyblock to use this command!", true)
                 return
@@ -111,8 +111,6 @@ object JunkerJoelShopPricesCommand {
             shopProfits.forEach { shopProfit ->
                 ChatUtils.sendLocalChat(getProfitChatLineWithHover(shopProfit, modeText, getMaterialName))
             }
-        } catch (e: Exception) {
-            FeeshMod.LOGGER.error("[Feesh] Failed to calculate Junker Joel shop price statistics.", e)
         }
     }
 }

@@ -8,7 +8,6 @@ import com.github.sleepypanda.feesh.utils.CommonUtils
 import com.github.sleepypanda.feesh.utils.ItemUtils
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
-import com.github.sleepypanda.feesh.FeeshMod
 
 object PetLevelUpPricesCommand {
     const val COMMAND_NAME = "feeshPetLevelUpPrices"
@@ -51,7 +50,7 @@ object PetLevelUpPricesCommand {
     }
     
     private fun calculateFishingPetPrices() {
-        try {
+        CommonUtils.runWithCatching("Failed to calculate fishing pet price statistics") {
             if (!WorldUtils.isInSkyblock()) {
                 ChatUtils.sendLocalChat("${RED}You must be on Hypixel Skyblock to use this command!", true)
                 return
@@ -88,8 +87,6 @@ object PetLevelUpPricesCommand {
                 
                 ChatUtils.sendLocalChat(" - ${petInfo.petDisplayName}${RESET}: ${GREEN}+$diffStr${RESET} (${GOLD}$level1PriceStr${RESET} -> ${GOLD}$level100PriceStr${RESET}) | ${GOLD}$coinsPerXpStr ${RESET}coins/XP")
             }
-        } catch (e: Exception) {
-            FeeshMod.LOGGER.error("[Feesh] Failed to calculate pet price statistics.", e)
         }
     }
 }

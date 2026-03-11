@@ -123,7 +123,7 @@ object DeployablesTimer {
     }
 
     private fun onPlayerInteract(event: PlayerInteractEvent) {
-        try {
+        CommonUtils.runWithCatching("Failed to handle deployable interaction") {
             if (!WorldUtils.isInSkyblock()) return
             if (!event.isMainHand || (event.actionType != InteractActionType.USE_ITEM && event.actionType != InteractActionType.USE_BLOCK)) return
 
@@ -152,13 +152,11 @@ object DeployablesTimer {
             if (isDwarvenLanternTrackingEnabled() && isHeldItemDwarvenLantern(heldItemName)) {
                 lastDwarvenLanternInteractTimeMs = System.currentTimeMillis()
             }
-        } catch (e: Exception) {
-            FeeshMod.LOGGER.error("[Feesh] Failed to handle deployable interaction", e)
         }
     }
 
     private fun onArmorStandLoaded(event: ArmorStandLoadedEvent) {
-        try {
+        CommonUtils.runWithCatching("Failed to handle deployable armor stand spawn") {
             if (!WorldUtils.isInSkyblock()) return
             if (!isDwarvenLanternTrackingEnabled() && !isUmberellaTrackingEnabled()) return
             
@@ -189,14 +187,11 @@ object DeployablesTimer {
                     }
                 }
             }, 150) // Custom name is available after some time when armor stand spawned
-
-        } catch (e: Exception) {
-            FeeshMod.LOGGER.error("[Feesh] Failed to handle deployable armor stand spawn", e)
         }
     }
 
     private fun trackFlareRocketNearby(heldItemName: String) {
-        try {
+        CommonUtils.runWithCatching("Failed to track Flare rocket nearby") {
             val player = FeeshMod.mc.player ?: return
             val world = FeeshMod.mc.world ?: return
 
@@ -216,8 +211,6 @@ object DeployablesTimer {
 
             // Future notes: flare itself appears on slightly different coords than the initial rocket
             // e.g. rocket is at 62.01113596669814 -160.09375 and flare (armor stand) is at 62.125 -160.09375
-        } catch (e: Exception) {
-            FeeshMod.LOGGER.error("[Feesh] Failed to track Flare rocket nearby", e)
         }
     }
 
@@ -312,7 +305,7 @@ object DeployablesTimer {
     }
 
     private fun trackTotemStatus(entities: List<ArmorStandEntity>) {
-        try {
+        CommonUtils.runWithCatching("Failed to track Totem status") {
             if (!WorldUtils.isInSkyblock() || entities.isEmpty()) {
                 resetTotem()
                 return
@@ -359,13 +352,11 @@ object DeployablesTimer {
             ) {
                 playAlert("${DARK_PURPLE}Totem of Corruption", totemData)
             }
-        } catch (e: Exception) {
-            FeeshMod.LOGGER.error("[Feesh] Failed to track Totem status", e)
         }
     }
 
     private fun trackBlackHoleStatus(entities: List<ArmorStandEntity>) {
-        try {
+        CommonUtils.runWithCatching("Failed to track Black Hole status") {
             if (!WorldUtils.isInSkyblock() || entities.isEmpty()) {
                 resetBlackHole()
                 return
@@ -408,13 +399,11 @@ object DeployablesTimer {
             ) {
                 playAlert("${DARK_PURPLE}Black Hole", blackHoleData)
             }
-        } catch (e: Exception) {
-            FeeshMod.LOGGER.error("[Feesh] Failed to track Black Hole status", e)
         }
     }
 
     private fun trackUmberellaStatus(entities: List<ArmorStandEntity>) {
-        try {
+        CommonUtils.runWithCatching("Failed to track Umberella status") {
             if (!WorldUtils.isInSkyblock() || entities.isEmpty() || !isUmberellaTrackingEnabled()) {
                 resetUmberella()
                 return
@@ -441,8 +430,6 @@ object DeployablesTimer {
             ) {
                 playAlert("${BLUE}Umberella", umberellaData)
             }
-        } catch (e: Exception) {
-            FeeshMod.LOGGER.error("[Feesh] Failed to track Umberella status", e)
         }
     }
 
@@ -450,7 +437,7 @@ object DeployablesTimer {
         DWARVEN_LANTERN_NAME_PREFIXES.any { name.startsWith(it) }
 
     private fun trackDwarvenLanternStatus(entities: List<ArmorStandEntity>) {
-        try {
+        CommonUtils.runWithCatching("Failed to track Dwarven Lantern status") {
             if (!WorldUtils.isInSkyblock() || entities.isEmpty() || !isDwarvenLanternTrackingEnabled()) {
                 resetDwarvenLantern()
                 return
@@ -477,13 +464,11 @@ object DeployablesTimer {
             ) {
                 playAlert(dwarvenLanternData.itemDisplayName!!, dwarvenLanternData)
             }
-        } catch (e: Exception) {
-            FeeshMod.LOGGER.error("[Feesh] Failed to track Dwarven Lantern status", e)
         }
     }
 
     private fun trackFlareStatus() {
-        try {
+        CommonUtils.runWithCatching("Failed to track Flare status") {
             if (!WorldUtils.isInSkyblock() || !isFlareTrackingEnabled()) {
                 resetFlare()
                 return
@@ -505,8 +490,6 @@ object DeployablesTimer {
             ) {
                 playAlert(flareData.itemDisplayName ?: "Flare", flareData)
             }
-        } catch (e: Exception) {
-            FeeshMod.LOGGER.error("[Feesh] Failed to track Flare status", e)
         }
     }
 

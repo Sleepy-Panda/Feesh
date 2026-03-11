@@ -4,7 +4,7 @@ import com.github.sleepypanda.feesh.utils.ChatUtils.removeFormatting
 import com.github.sleepypanda.feesh.FeeshMod
 import com.github.sleepypanda.feesh.events.EventBus
 import com.github.sleepypanda.feesh.events.models.GuiClosedEvent
-import com.github.sleepypanda.feesh.utils.RegisterUtils
+import com.github.sleepypanda.feesh.utils.CommonUtils
 import net.minecraft.client.gui.screen.ChatScreen
 import net.minecraft.client.gui.screen.ingame.InventoryScreen
 import net.minecraft.client.gui.screen.ingame.HandledScreen
@@ -85,10 +85,8 @@ object GuiUtils {
         timer = Timer()
 
         val task = timerTask {
-            try {
+            CommonUtils.runWithCatching("Failed to update Gui utils cache") {
                 updateCache()
-            } catch (e: Exception) {
-                FeeshMod.LOGGER.error("[Feesh] Failed to update gui utils cache.", e)
             }
         }
         timer?.scheduleAtFixedRate(task, 0, 200)

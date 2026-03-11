@@ -3,6 +3,7 @@ package com.github.sleepypanda.feesh.features.commands
 import com.github.sleepypanda.feesh.utils.RegisterUtils
 import com.github.sleepypanda.feesh.utils.SoundUtils
 import com.github.sleepypanda.feesh.utils.ChatUtils
+import com.github.sleepypanda.feesh.utils.CommonUtils
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.FeeshMod
 import net.minecraft.sound.SoundEvent
@@ -35,21 +36,25 @@ object PlayTestSoundCommand {
         
         when {
             soundParam.endsWith(".ogg", ignoreCase = true) -> {
-                try {
+                CommonUtils.runWithCatching(
+                    message = "Failed to play custom sound: $soundParam",
+                    onError = {
+                        ChatUtils.sendLocalChat("${RED}Failed to play custom sound: ${YELLOW}$soundParam${RED}. Check logs for details.", true)
+                    }
+                ) {
                     SoundUtils.playCustomSound(soundParam, skipSoundModeCheck = true)
-                } catch (e: Exception) {
-                    FeeshMod.LOGGER.error("[Feesh] Failed to play custom sound: $soundParam", e)
-                    ChatUtils.sendLocalChat("${RED}Failed to play custom sound: ${YELLOW}$soundParam${RED}. Check logs for details.", true)
                 }
             }
             soundParam.startsWith("mc:") -> {
                 val soundName = soundParam.removePrefix("mc:")
-                try {
+                CommonUtils.runWithCatching(
+                    message = "Failed to play Minecraft sound: $soundParam",
+                    onError = {
+                        ChatUtils.sendLocalChat("${RED}Failed to play Minecraft sound: ${YELLOW}$soundName${RED}. Check logs for details.", true)
+                    }
+                ) {
                     val soundEvent = getSoundEvent(soundName)
                     SoundUtils.playSound(soundEvent)
-                } catch (e: Exception) {
-                    FeeshMod.LOGGER.error("[Feesh] Failed to play Minecraft sound: $soundName", e)
-                    ChatUtils.sendLocalChat("${RED}Failed to play sound: ${YELLOW}$soundName${RED}. Check logs for details.", true)
                 }
             }
             else -> {

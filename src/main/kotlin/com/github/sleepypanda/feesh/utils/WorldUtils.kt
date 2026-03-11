@@ -1,13 +1,10 @@
 package com.github.sleepypanda.feesh.utils
 
 import com.github.sleepypanda.feesh.FeeshMod
-import com.github.sleepypanda.feesh.utils.ChatUtils.getFormattedString
 import com.github.sleepypanda.feesh.utils.ChatUtils.removeFormatting
 import java.util.Timer
 import kotlin.concurrent.timerTask
 import net.minecraft.scoreboard.ScoreboardDisplaySlot
-import net.minecraft.scoreboard.Scoreboard
-import net.minecraft.scoreboard.ScoreboardObjective
 import net.minecraft.scoreboard.Team
 
 object WorldUtils {
@@ -81,10 +78,8 @@ object WorldUtils {
         timer = Timer()
 
         val task = timerTask {
-            try {
+            CommonUtils.runWithCatching("Failed to update world utils cache") {
                 updateCache()
-            } catch (e: Exception) {
-                FeeshMod.LOGGER.error("[Feesh] Failed to update world utils cache.", e)
             }
         }
         timer?.scheduleAtFixedRate(task, 0, 1000) // Every second

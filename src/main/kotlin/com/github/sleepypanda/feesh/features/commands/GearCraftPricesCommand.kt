@@ -8,7 +8,6 @@ import com.github.sleepypanda.feesh.utils.ChatUtils.removeFormatting
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
 import com.github.sleepypanda.feesh.utils.ChatUtils
-import com.github.sleepypanda.feesh.FeeshMod
 import com.github.sleepypanda.feesh.settings.categories.Commands
 import com.github.sleepypanda.feesh.utils.enums.PricingMode
 import net.minecraft.text.Text
@@ -89,7 +88,7 @@ object GearCraftPricesCommand {
     }
     
     private fun calculateGearCraftPrices() {
-        try {
+        CommonUtils.runWithCatching("Failed to calculate Gear craft price statistics") {
             if (!WorldUtils.isInSkyblock()) {
                 ChatUtils.sendLocalChat("${RED}You must be on Hypixel Skyblock to use this command!", true)
                 return
@@ -130,8 +129,6 @@ object GearCraftPricesCommand {
                     ChatUtils.sendLocalChat(clickableText)
                 }
             }
-        } catch (e: Exception) {
-            FeeshMod.LOGGER.error("[Feesh] Failed to calculate gear craft price statistics.", e)
         }
     }
     

@@ -166,7 +166,7 @@ object SeaCreaturesTracker {
     }
 
     private fun resetSeaCreaturesTracker(isConfirmed: Boolean, resetViewMode: ViewMode) {
-        try {
+        CommonUtils.runWithCatching("Failed to reset Sea creatures tracker") {
             val viewModeText = getViewModeDisplayText(resetViewMode)
 
             if (!isConfirmed) {
@@ -189,8 +189,6 @@ object SeaCreaturesTracker {
 
             updateGuiLines()
             ChatUtils.sendLocalChat("${WHITE}Sea creatures tracker ${viewModeText} ${WHITE}was reset.", true)
-        } catch (e: Exception) {
-            FeeshMod.LOGGER.error("[Feesh] Failed to reset Sea creatures tracker.", e)
         }
     }
 

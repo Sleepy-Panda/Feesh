@@ -4,10 +4,10 @@ import com.github.sleepypanda.feesh.FeeshMod
 import com.github.sleepypanda.feesh.events.EventBus
 import com.github.sleepypanda.feesh.events.models.WorldChangedEvent
 import com.github.sleepypanda.feesh.utils.ChatUtils
+import com.github.sleepypanda.feesh.utils.CommonUtils
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
 import com.google.gson.JsonParser
-import net.minecraft.SharedConstants
 import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.net.HttpURLConnection
@@ -53,7 +53,7 @@ object VersionChecker {
 
     private fun checkForNewVersion() {
         executor.execute {
-            try {
+            CommonUtils.runWithCatching("Failed to check new Modrinth version") {
                 // https://api.modrinth.com/v2/project/feesh/version?game_versions=%5B%221.21.10%22%5D&loaders=%5B%22fabric%22%5D&include_changelog=false
                 val query = "game_versions=${URLEncoder.encode(GAME_VERSIONS, StandardCharsets.UTF_8)}&loaders=${URLEncoder.encode(LOADERS, StandardCharsets.UTF_8)}&include_changelog=false"
                 val url = URI("$MODRINTH_VERSIONS_URL?$query").toURL()
@@ -96,8 +96,6 @@ object VersionChecker {
                         showNewVersionMessage(currentVersion, latestVersionNumber)
                     }
                 }
-            } catch (e: Exception) {
-                FeeshMod.LOGGER.error("[Feesh] Version check on Modrinth failed: ${e.message}")
             }
         }
     }

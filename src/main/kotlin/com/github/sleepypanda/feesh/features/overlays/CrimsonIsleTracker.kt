@@ -15,7 +15,6 @@ import com.github.sleepypanda.feesh.settings.categories.SoundMode
 import com.github.sleepypanda.feesh.constants.Sounds
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
-import com.github.sleepypanda.feesh.utils.PlayerUtils
 import com.github.sleepypanda.feesh.events.EventBus
 import com.github.sleepypanda.feesh.events.models.ClientTickEvent
 import com.github.sleepypanda.feesh.events.models.GameClosedEvent
@@ -281,7 +280,7 @@ object CrimsonIsleTracker {
     }
 
     private fun resetCrimsonIsleTracker(isConfirmed: Boolean) {
-        try {
+        CommonUtils.runWithCatching("Failed to reset Crimson Isle tracker") {
             if (!isConfirmed) {
                 ChatUtils.sendLocalChatWithCommand(
                     "${WHITE}Do you want to reset Crimson Isle tracker? ${RED}${BOLD}[Click to confirm]",
@@ -294,8 +293,6 @@ object CrimsonIsleTracker {
             reset()
             updateGuiLines()
             ChatUtils.sendLocalChat("${WHITE}Crimson Isle tracker was reset.", true)
-        } catch (e: Exception) {
-            FeeshMod.LOGGER.error("[Feesh] Failed to reset Crimson Isle tracker.", e)
         }
     }
 
@@ -304,15 +301,17 @@ object CrimsonIsleTracker {
     }
     
     fun setRadioactiveVials(count: Int, lastOn: Date?) {
-        try {
+        CommonUtils.runWithCatching(
+            message = "Failed to set Radioactive Vials.",
+            onError = {
+                ChatUtils.sendLocalChat("${RED}Failed to set Radioactive Vials.", true)
+            }
+        ) {
             if (!WorldUtils.isInSkyblock()) return
             
             data.radioactiveVials.initDropCount(count, lastOn)         
             saveData()
             ChatUtils.sendLocalChat("${GRAY}Successfully changed Radioactive Vials count to ${count} in the Crimson Isle tracker.", true)
-        } catch (e: Exception) {
-            FeeshMod.LOGGER.error("[Feesh] Failed to set Radioactive Vials.", e)
-            ChatUtils.sendLocalChat("${RED}Failed to set Radioactive Vials.", true)
         }
     }
 

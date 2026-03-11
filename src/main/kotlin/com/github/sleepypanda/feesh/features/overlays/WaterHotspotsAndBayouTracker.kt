@@ -6,11 +6,10 @@ import com.github.sleepypanda.feesh.constants.RareDrops
 import com.github.sleepypanda.feesh.utils.RegisterUtils
 import com.github.sleepypanda.feesh.utils.WorldUtils
 import com.github.sleepypanda.feesh.utils.ChatUtils
+import com.github.sleepypanda.feesh.utils.CommonUtils
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
 import com.github.sleepypanda.feesh.utils.FishingHookUtils
-import com.github.sleepypanda.feesh.utils.HotspotUtils
-import com.github.sleepypanda.feesh.utils.EntityUtils
 import com.github.sleepypanda.feesh.events.EventBus
 import com.github.sleepypanda.feesh.events.models.ClientTickEvent
 import com.github.sleepypanda.feesh.events.models.GameClosedEvent
@@ -218,7 +217,7 @@ object WaterHotspotsAndBayouTracker {
     }
 
     private fun resetWaterHotspotsAndBayouTracker(isConfirmed: Boolean) {
-        try {
+        CommonUtils.runWithCatching("Failed to reset Water hotspots & Bayou tracker.") {
             if (!isConfirmed) {
                 ChatUtils.sendLocalChatWithCommand(
                     "${WHITE}Do you want to reset Water hotspots & Bayou tracker? ${RED}${BOLD}[Click to confirm]",
@@ -231,8 +230,6 @@ object WaterHotspotsAndBayouTracker {
             reset()
             updateGuiLines()
             ChatUtils.sendLocalChat("${WHITE}Water hotspots & Bayou tracker was reset.", true)
-        } catch (e: Exception) {
-            FeeshMod.LOGGER.error("[Feesh] Failed to reset Water hotspots & Bayou tracker.", e)
         }
     }
 
@@ -246,28 +243,32 @@ object WaterHotspotsAndBayouTracker {
     }
     
     fun setTitanoboaSheds(count: Int, lastOn: Date?) {
-        try {
+        CommonUtils.runWithCatching(
+            message = "Failed to set Titanoboa Sheds.",
+            onError = {
+                ChatUtils.sendLocalChat("${RED}Failed to set Titanoboa Sheds.", true)
+            }
+        ) {
             if (!WorldUtils.isInSkyblock()) return
             
             data.titanoboaSheds.initDropCount(count, lastOn)         
             saveData()
             ChatUtils.sendLocalChat("${GRAY}Successfully changed Titanoboa Sheds count to ${count} for the Water Hotspots & Bayou tracker.", true)
-        } catch (e: Exception) {
-            FeeshMod.LOGGER.error("[Feesh] Failed to set Titanoboa Sheds.", e)
-            ChatUtils.sendLocalChat("${RED}Failed to set Titanoboa Sheds.", true)
         }
     }
     
     fun setTikiMasks(count: Int, lastOn: Date?) {
-        try {
+        CommonUtils.runWithCatching(
+            message = "Failed to set Tiki Masks.",
+            onError = {
+                ChatUtils.sendLocalChat("${RED}Failed to set Tiki Masks.", true)
+            }
+        ) {
             if (!WorldUtils.isInSkyblock()) return
 
             data.tikiMasks.initDropCount(count, lastOn)       
             saveData()
             ChatUtils.sendLocalChat("${GRAY}Successfully changed Tiki Masks count to ${count} for the Water Hotspots & Bayou tracker.", true)
-        } catch (e: Exception) {
-            FeeshMod.LOGGER.error("[Feesh] Failed to set Tiki Masks.", e)
-            ChatUtils.sendLocalChat("${RED}Failed to set Tiki Masks.", true)
         }
     }
 }

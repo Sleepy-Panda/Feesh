@@ -3,6 +3,7 @@ package com.github.sleepypanda.feesh.utils.data
 import com.github.sleepypanda.feesh.FeeshMod
 import com.github.sleepypanda.feesh.events.EventBus
 import com.github.sleepypanda.feesh.events.models.GameClosedEvent
+import com.github.sleepypanda.feesh.utils.CommonUtils
 import com.github.sleepypanda.feesh.utils.FileUtils
 import com.github.sleepypanda.feesh.utils.gui.FeeshGui
 import com.github.sleepypanda.feesh.utils.enums.Alignment
@@ -87,25 +88,21 @@ object PersistentDataManager {
         val dateFormat = SimpleDateFormat("yyyy-MM-dd-HHmmss")
         val zipName = "feesh-backup-${dateFormat.format(Date())}.zip"
         val zipFile = File(backupDir, zipName)
-        try {
+        CommonUtils.runWithCatching("Failed to backup config files") {
             backupDir.mkdirs()
             FileOutputStream(zipFile).use { fileOut ->
                 ZipOutputStream(fileOut).use { zipOut ->
                     for (file in filesToBackup) {
-                        try {
+                        CommonUtils.runWithCatching("Failed to backup config file ${file.name}") {
                             ZipEntry(file.name).let { zipOut.putNextEntry(it) }
                             FileInputStream(file).use { it.copyTo(zipOut) }
                             zipOut.closeEntry()
-                        } catch (e: Exception) {
-                            FeeshMod.LOGGER.error("[Feesh] Backup error adding file ${file.name}", e)
                         }
                     }
                 }
             }
             FeeshMod.LOGGER.info("[Feesh] Config backup succeeded: ${zipFile.absolutePath}")
             pruneOldBackups(backupDir)
-        } catch (e: Exception) {
-            FeeshMod.LOGGER.error("[Feesh] Config backup failed", e)
         }
     }
 
@@ -115,14 +112,12 @@ object PersistentDataManager {
         if (backups.size <= MAX_BACKUPS) return
         val sorted = backups.sortedByDescending { it.lastModified() }
         for (oldBackup in sorted.drop(MAX_BACKUPS)) {
-            try {
+            CommonUtils.runWithCatching("Failed to delete old backup ${oldBackup.name}") {
                 if (oldBackup.delete()) {
                     FeeshMod.LOGGER.info("[Feesh] Removed old backup: ${oldBackup.name}")
                 } else {
                     FeeshMod.LOGGER.warn("[Feesh] Could not delete old backup: ${oldBackup.absolutePath}")
                 }
-            } catch (e: Exception) {
-                FeeshMod.LOGGER.error("[Feesh] Error deleting old backup ${oldBackup.name}", e)
             }
         }
     }
