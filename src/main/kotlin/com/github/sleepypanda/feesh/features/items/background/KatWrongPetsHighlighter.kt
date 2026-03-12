@@ -10,7 +10,6 @@ import net.minecraft.component.DataComponentTypes
 import net.minecraft.item.ItemStack
 import net.minecraft.screen.slot.Slot
 
-
 object KatWrongPetsHighlighter : BaseBackgroundHighlighter() {
 
     private const val KAT_GUI_TITLE = "Pet Sitter"

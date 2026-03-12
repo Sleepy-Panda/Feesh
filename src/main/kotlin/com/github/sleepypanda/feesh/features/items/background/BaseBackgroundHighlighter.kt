@@ -2,9 +2,9 @@ package com.github.sleepypanda.feesh.features.items.background
 
 import com.github.sleepypanda.feesh.events.EventBus
 import com.github.sleepypanda.feesh.events.models.SlotRenderedEvent
+import com.github.sleepypanda.feesh.events.models.ScreenBeforeInitEvent
 import net.minecraft.client.gui.DrawContext
 import net.minecraft.client.gui.screen.ingame.HandledScreen
-import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents
 import net.minecraft.item.ItemStack
 import net.minecraft.screen.slot.Slot
 
@@ -62,9 +62,11 @@ abstract class BaseBackgroundHighlighter {
 
         init {
             EventBus.subscribe(SlotRenderedEvent::class, ::onSlotRendered)
-            ScreenEvents.BEFORE_INIT.register { _, _, _, _ ->
-                highlighters.forEach { it.clearCache() }
-            }
+            EventBus.subscribe(ScreenBeforeInitEvent::class, ::onScreenBeforeInit)
+        }
+
+        private fun onScreenBeforeInit(@Suppress("UNUSED_PARAMETER") event: ScreenBeforeInitEvent) {
+            highlighters.forEach { it.clearCache() }
         }
 
         private fun onSlotRendered(event: SlotRenderedEvent) {
