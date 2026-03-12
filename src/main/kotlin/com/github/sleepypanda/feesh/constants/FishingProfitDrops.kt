@@ -1867,6 +1867,12 @@ class FishingProfitDrops {
                 npcPrice = 25_000.0,
             ),
             FishingProfitDropInfo(
+                itemId = "HILT_OF_TRUE_ICE",
+                itemName = "Hilt of True Ice",
+                itemDisplayName = "${LEGENDARY}Hilt of True Ice",
+                npcPrice = 500_000.0,
+            ),
+            FishingProfitDropInfo(
                 itemId = "ENCHANTMENT_PROSPERITY_1",
                 itemName = "Enchanted Book (Prosperity I)",
                 itemAlternateNames = listOf("Enchanted Book (Prosperity 1)"),
