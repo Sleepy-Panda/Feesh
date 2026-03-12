@@ -50,6 +50,7 @@ import com.github.sleepypanda.feesh.features.overlays.FishingFestivalTracker
 import com.github.sleepypanda.feesh.features.overlays.FishingProfitTracker
 import com.github.sleepypanda.feesh.features.overlays.SeaCreaturesPerHourTracker
 import com.github.sleepypanda.feesh.features.inventory.ThunderBottleProgress
+import com.github.sleepypanda.feesh.features.items.KatMegalodonHighlighter
 import com.github.sleepypanda.feesh.events.EventBus
 import com.github.sleepypanda.feesh.events.publishers.SeaCreaturesPublisher
 import com.github.sleepypanda.feesh.events.publishers.RareDropsPublisher
@@ -178,6 +179,7 @@ class FeeshMod : ModInitializer {
 
         // Inventory
         //ThunderBottleProgress.init()
+        KatMegalodonHighlighter.init()
 
         // Commands
         PersonalBestCommand.init()
