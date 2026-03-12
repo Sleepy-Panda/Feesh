@@ -8,7 +8,7 @@ Released on: ???
 
 ## Bugfixes
 
--
+- Added Hilt of True Ice drop missing in the Fishing profit tracker.
 
 # 1.3.0
 

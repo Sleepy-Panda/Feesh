@@ -1,5 +1,6 @@
 ## Players feedback
 
+- Fished coins to add via the command.
 - Carmine dye into tracker
 - Items counted after /gfs
 - Rendering section from CT
