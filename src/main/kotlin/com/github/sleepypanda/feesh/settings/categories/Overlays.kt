@@ -47,10 +47,10 @@ enum class FishingHookTimerMode(val displayName: String) {
     override fun toString(): String = displayName
 }
 
-enum class LegionBobbingTimeTrackerMode(val displayName: String) {
-    BOTH("Both"),
-    LEGION_ONLY("Legion only"),
-    BOBBING_TIME_ONLY("Bobbin' Time only");
+enum class NearbyEntitiesCounterTypes(val displayName: String) {
+    LEGION("Legion"),
+    BOBBING_TIME("Bobbin' Time"),
+    CHUMCAP_BUCKETS("Chumcap buckets");
 
     override fun toString(): String = displayName
 }
@@ -85,18 +85,23 @@ object Overlays : CategoryKt("Overlays") {
 
     init {
         separator {
-            this.title = "${AQUA}${BOLD}Legion & Bobbin' Time"
+            this.title = "${AQUA}${BOLD}Nearby entities"
         }
     }
 
-    var legionBobbingTimeTrackerOverlay by boolean(false) {
-        this.name = Translated("Legion & Bobbin' Time tracker")
-        this.description = Translated("Shows an overlay with the amount of players within 30 blocks (excluding you), and amount of fishing hooks within 30 blocks (including your own hook). Hidden if you have no fishing rod in your hotbar!")
+    var nearbyEntitiesCounterOverlay by boolean(false) {
+        this.name = Translated("Nearby entities counter")
+        this.description = Translated("""
+Shows an overlay with various counters for nearby entities that give you fishing buffs:
+- Legion - amount of players within 30 blocks (excluding you).
+- Bobbin' Time - amount of fishing hooks within 30 blocks (including your own hook).
+- Chumcap buckets - amount of Chumcap buckets within 30 blocks.
+
+Hidden if you have no fishing rod in your hotbar!""".trimIndent())
     }
 
-    var legionBobbingTimeTrackerMode by enum(LegionBobbingTimeTrackerMode.BOTH) {
-        this.name = Translated("Legion & Bobbin' Time display mode")
-        this.description = Translated("Choose which lines to show: both, Legion only, or Bobbin' Time only.")
+    var nearbyEntitiesCounterTypes by select(NearbyEntitiesCounterTypes.LEGION, NearbyEntitiesCounterTypes.BOBBING_TIME) {
+        this.name = Translated("Nearby entities counter types to display")
     }
 
     init {

@@ -35,7 +35,7 @@ import com.github.sleepypanda.feesh.features.commands.PlayTestSoundCommand
 import com.github.sleepypanda.feesh.features.commands.SetTrackerDropsCommand
 import com.github.sleepypanda.feesh.features.commands.PauseAllTrackersCommand
 import com.github.sleepypanda.feesh.features.overlays.JerryWorkshopTracker
-import com.github.sleepypanda.feesh.features.overlays.LegionBobbingTimeTracker
+import com.github.sleepypanda.feesh.features.overlays.NearbyEntitiesCounter
 import com.github.sleepypanda.feesh.features.overlays.SeaCreaturesTracker
 import com.github.sleepypanda.feesh.features.overlays.SeaCreatureHpTracker
 import com.github.sleepypanda.feesh.features.overlays.FishingHookTimer
@@ -159,7 +159,7 @@ class FeeshMod : ModInitializer {
 
         // Overlays
         JerryWorkshopTracker.init()
-        LegionBobbingTimeTracker.init()
+        NearbyEntitiesCounter.init()
         SeaCreaturesTracker.init()
         SeaCreatureHpTracker.init()
         TreasureFishingTracker.init()

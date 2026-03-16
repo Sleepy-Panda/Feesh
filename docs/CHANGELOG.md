@@ -4,7 +4,8 @@ Released on: ???
 
 ## Features
 
--
+- Added Chumcap buckets counter [disabled by default].
+- Renamed Legion & Bobbin' Time tracker and its settings, to fit new purpose of showing various entity counters. **Please re-enable in settings if you used it!**
 
 ## Bugfixes
 
