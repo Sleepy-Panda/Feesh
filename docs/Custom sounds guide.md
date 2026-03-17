@@ -63,15 +63,15 @@ The sound configuration files are located at:
 <MC>/config/feesh/userCatchSounds.json
 ```
 
-and 
+and
 
 ```
 <MC>/config/feesh/userDropSounds.json
 ```
 
-Those files are automatically created on first mod launch and contain default embedded mod sounds.
+Those files are automatically created on first mod launch and contain default embedded mod sounds. **Exit the game before modifying them!**
 
-### userCatchSounds.json File Structure
+#### userCatchSounds.json File Structure
 
 The file has the following structure:
 
@@ -92,10 +92,11 @@ The file has the following structure:
 Each key is the name of a rare sea creature in uppercase (e.g., "YETI", "REINDRAKE", "THE LOCH EMPEROR").
 
 The `source` field contains the sound file name:
+
 - For custom sounds: use your file name from the Resource Pack (e.g., `"my-custom-emperor-sound.ogg"`)
 - For embedded mod sounds: keep original sound file name existing in the mod by default (e.g., `"feesh_notification.ogg"`)
 
-### userDropSounds.json File Structure
+#### userDropSounds.json File Structure
 
 The file has the following structure:
 
@@ -120,5 +121,6 @@ Each key is the ID of a rare drop in uppercase.
 For pet IDs, `;4` suffix means Legendary, `;3` - Epic, `;2` - Rare, `;2` - Uncommon, `;1` - Common. E.g. `BABY_YETI;4` is a Legendary Baby Yeti.
 
 The `source` field contains the sound file name:
+
 - For custom sounds: use your file name from the Resource Pack (e.g., `"my-custom-dye-sound.ogg"`)
 - For embedded mod sounds: keep original sound file name existing in the mod by default (e.g., `"feesh_notification.ogg"`)
