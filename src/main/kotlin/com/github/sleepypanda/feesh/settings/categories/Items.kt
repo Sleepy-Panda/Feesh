@@ -28,14 +28,14 @@ object Items : CategoryKt("Items") {
         )
     }
 
-    var trashBooksHighlighterSubtitles by ObservableEntry(
+    var trashBooksHighlighterNames by ObservableEntry(
         strings("Corruption I,Corruption 1") {
             this.name = Translated("Trash enchanted books to search for")
             this.description = Translated("Comma-separated book names to search for. Should be exact book name. Example: Corruption I,Frail VI,No Pain No Gain I.")
         }
     ) { prev, new ->
         if (prev != new) {
-            TrashBooksHighlighter.setSearchSubtitles()
+            TrashBooksHighlighter.setSearchBookNames()
         }
     }
 }
