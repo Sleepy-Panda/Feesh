@@ -24,7 +24,7 @@ object Items : CategoryKt("Items") {
     var trashBooksHighlighter by boolean(false) {
         this.name = Translated("Trash enchanted books")
         this.description = Translated(
-            "Highlights slots containing trash enchanted books flooding your inventory while fishing. You can use it to quickly find books to throw away."
+            "Highlights slots containing trash enchanted books flooding your inventory while fishing. You can use it to quickly find books to throw away or insta sell."
         )
     }
 
