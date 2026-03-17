@@ -51,6 +51,7 @@ import com.github.sleepypanda.feesh.features.overlays.FishingProfitTracker
 import com.github.sleepypanda.feesh.features.overlays.SeaCreaturesPerHourTracker
 import com.github.sleepypanda.feesh.features.inventory.ThunderBottleProgress
 import com.github.sleepypanda.feesh.features.items.background.KatWrongPetsHighlighter
+import com.github.sleepypanda.feesh.features.items.background.TrashBooksHighlighter
 import com.github.sleepypanda.feesh.features.items.background.BackgroundHighlighterManager
 import com.github.sleepypanda.feesh.events.EventBus
 import com.github.sleepypanda.feesh.events.publishers.SeaCreaturesPublisher
@@ -181,7 +182,8 @@ class FeeshMod : ModInitializer {
         // Items
         //ThunderBottleProgress.init()
 
-        KatWrongPetsHighlighter.init()   
+        KatWrongPetsHighlighter.init()
+        TrashBooksHighlighter.init()
         BackgroundHighlighterManager.init() // After all highlighters are initialized and registered
 
         // Commands

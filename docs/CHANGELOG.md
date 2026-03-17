@@ -7,6 +7,7 @@ Released on: ???
 - Added Chumcap buckets counter [disabled by default].
 - Renamed Legion & Bobbin' Time tracker and its settings, to fit new purpose of showing various entity counters. **Please re-enable in settings if you used it!**
 - Added "Items" settings section with the following:
+  - Highlight slots with trash enchanted books [disabled by default]. Book names are configurable. You can use it to quickly find books to throw away or insta sell.
   - Highlight Kat GUI slot with red color if you try to give her Epic Megalodon or Epic Baby Yeti [disabled by default]. _For those who sometimes puts pets into Kat instead of George by mistake c:_
 
 ## Bugfixes
