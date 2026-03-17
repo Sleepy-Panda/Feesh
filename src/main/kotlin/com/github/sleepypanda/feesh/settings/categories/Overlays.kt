@@ -50,7 +50,7 @@ enum class FishingHookTimerMode(val displayName: String) {
 enum class NearbyEntitiesCounterTypes(val displayName: String) {
     LEGION("Legion"),
     BOBBING_TIME("Bobbin' Time"),
-    CHUMCAP_BUCKETS("Chumcap buckets");
+    CHUMCAP_BUCKETS("Chumcap Buckets");
 
     override fun toString(): String = displayName
 }
@@ -95,7 +95,7 @@ object Overlays : CategoryKt("Overlays") {
 Shows an overlay with various counters for nearby entities that give you fishing buffs:
 - Legion - amount of players within 30 blocks (excluding you).
 - Bobbin' Time - amount of fishing hooks within 30 blocks (including your own hook).
-- Chumcap buckets - amount of Chumcap buckets within 30 blocks.
+- Chumcap Buckets - amount of Chumcap Buckets within 30 blocks (including your own bucket). Chum Buckets are not counted.
 
 Hidden if you have no fishing rod in your hotbar!""".trimIndent())
     }
@@ -164,7 +164,7 @@ Hidden if you have no fishing rod in your hotbar!""".trimIndent())
 
     init {
         separator {
-            this.title = "${AQUA}${BOLD}Sea creatures"
+            this.title = "${AQUA}${BOLD}Sea creatures caught"
         }
     }
 
