@@ -11,6 +11,7 @@ import com.github.sleepypanda.feesh.events.models.ArmorStandDespawnedEvent
 import com.github.sleepypanda.feesh.events.models.ItemEntitySpawnedEvent
 import com.github.sleepypanda.feesh.events.models.ArmorStandLoadedEvent
 import com.github.sleepypanda.feesh.events.models.WorldChangedEvent
+import com.github.sleepypanda.feesh.events.models.ScreenBeforeInitEvent
 import kotlin.reflect.KClass
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientWorldEvents
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents
@@ -54,6 +55,10 @@ object EventBus {
             var event = ChatCancellableEvent(message, false)
             publish(event)
             !event.isCancelled
+        }
+
+        ScreenEvents.BEFORE_INIT.register { _, screen, _, _ ->
+            publish(ScreenBeforeInitEvent(screen))
         }
 
         ScreenEvents.AFTER_INIT.register { _, screen, _, _ ->

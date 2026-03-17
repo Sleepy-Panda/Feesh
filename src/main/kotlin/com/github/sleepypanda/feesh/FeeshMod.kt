@@ -50,6 +50,8 @@ import com.github.sleepypanda.feesh.features.overlays.FishingFestivalTracker
 import com.github.sleepypanda.feesh.features.overlays.FishingProfitTracker
 import com.github.sleepypanda.feesh.features.overlays.SeaCreaturesPerHourTracker
 import com.github.sleepypanda.feesh.features.inventory.ThunderBottleProgress
+import com.github.sleepypanda.feesh.features.items.background.KatWrongPetsHighlighter
+import com.github.sleepypanda.feesh.features.items.background.BackgroundHighlighterManager
 import com.github.sleepypanda.feesh.events.EventBus
 import com.github.sleepypanda.feesh.events.publishers.SeaCreaturesPublisher
 import com.github.sleepypanda.feesh.events.publishers.RareDropsPublisher
@@ -176,8 +178,11 @@ class FeeshMod : ModInitializer {
 
         MoveGuis.init() // After all overlays are initialized and registered FeeshGui objects
 
-        // Inventory
+        // Items
         //ThunderBottleProgress.init()
+
+        KatWrongPetsHighlighter.init()   
+        BackgroundHighlighterManager.init() // After all highlighters are initialized and registered
 
         // Commands
         PersonalBestCommand.init()

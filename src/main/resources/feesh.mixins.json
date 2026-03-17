@@ -4,6 +4,7 @@
 	"compatibilityLevel": "JAVA_21",
 	"client": [
 		"ScreenMixin",
+		"HandledScreenMixin",
 		"InGameHudMixin",
 		"ClientPlayerInteractionManagerMixin",
 		"MinecraftClientMixin",
