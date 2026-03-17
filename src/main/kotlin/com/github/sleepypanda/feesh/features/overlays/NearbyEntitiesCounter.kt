@@ -4,7 +4,7 @@ import com.github.sleepypanda.feesh.FeeshMod
 import com.github.sleepypanda.feesh.events.EventBus
 import com.github.sleepypanda.feesh.events.models.ClientTickEvent
 import com.github.sleepypanda.feesh.events.models.WorldChangedEvent
-import com.github.sleepypanda.feesh.settings.categories.LegionBobbingTimeTrackerMode
+import com.github.sleepypanda.feesh.settings.categories.NearbyEntitiesCounterTypes
 import com.github.sleepypanda.feesh.settings.categories.Overlays
 import com.github.sleepypanda.feesh.utils.WorldUtils
 import com.github.sleepypanda.feesh.utils.PlayerUtils
@@ -12,30 +12,34 @@ import com.github.sleepypanda.feesh.utils.EntityUtils
 import com.github.sleepypanda.feesh.utils.gui.FeeshGui
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
-import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.entity.projectile.FishingBobberEntity
 import net.minecraft.client.MinecraftClient
+import net.minecraft.util.math.Vec3d
 import java.util.UUID
 
-object LegionBobbingTimeTracker {
+object NearbyEntitiesCounter {
     private var playersCount = 0
     private var fishingHooksCount = 0
+    private var chumcapBucketsCount = 0
     private var tickCounter = 0
 
     private const val LEGION_DISTANCE = 30.0
     private const val MAX_LEGION_COUNT = 20
     private const val BOBBING_TIME_DISTANCE = 30.0
     private const val MAX_BOBBING_TIME_COUNT = 5
+    private const val CHUMCAP_BUCKET_DISTANCE = 30.0
+    private const val MAX_CHUMCAP_BUCKETS_COUNT = 4
     private const val TICKS_PER_CHECK = 10
 
     private val gui = FeeshGui()
-        .setCoordsDataKey("legionBobbingTimeTracker")
+        .setCoordsDataKey("nearbyEntitiesCounter")
         .setClickable(false)
         .setSampleLines(listOf(
             "${LIGHT_PURPLE}${BOLD}Legion${GRAY}: ${WHITE}2 ${GRAY}players",
-            "${LIGHT_PURPLE}${BOLD}Bobbin' Time${GRAY}: ${WHITE}3 ${GRAY}hooks"
+            "${LIGHT_PURPLE}${BOLD}Bobbin' Time${GRAY}: ${WHITE}3 ${GRAY}hooks",
+            "${UNCOMMON}${BOLD}Chumcap${GRAY}: ${WHITE}2 ${GRAY}buckets"
         ))
-        .setSettingsKey { Overlays.legionBobbingTimeTrackerOverlay }
+        .setSettingsKey { Overlays.nearbyEntitiesCounterOverlay }
         .setCondition {
             PlayerUtils.hasFishingRodInHotbar() &&
             WorldUtils.isInFishingWorld()
@@ -49,6 +53,7 @@ object LegionBobbingTimeTracker {
     private fun onWorldChanged(@Suppress("UNUSED_PARAMETER") event: WorldChangedEvent) {
         playersCount = 0
         fishingHooksCount = 0
+        chumcapBucketsCount = 0
         gui.clearLines()
     }
 
@@ -57,7 +62,7 @@ object LegionBobbingTimeTracker {
         if (tickCounter < TICKS_PER_CHECK) return
         tickCounter = 0
 
-        if (!Overlays.legionBobbingTimeTrackerOverlay ||
+        if (!Overlays.nearbyEntitiesCounterOverlay ||
             !WorldUtils.isInSkyblock() ||
             !PlayerUtils.hasFishingRodInHotbar() ||
             !WorldUtils.isInFishingWorld()
@@ -73,9 +78,12 @@ object LegionBobbingTimeTracker {
     private fun trackPlayersAndFishingHooksNearby() {
         fishingHooksCount = getFishingHooksCount()
         playersCount = getPlayersCount()
+        chumcapBucketsCount = getChumcapBucketsCount()
     }
 
     private fun getPlayersCount(): Int {
+        if (!Overlays.nearbyEntitiesCounterTypes.contains(NearbyEntitiesCounterTypes.LEGION)) return 0
+
         val player = FeeshMod.mc.player ?: return 0
         val world = FeeshMod.mc.world ?: return 0
 
@@ -95,6 +103,8 @@ object LegionBobbingTimeTracker {
     }
 
     private fun getFishingHooksCount(): Int {
+        if (!Overlays.nearbyEntitiesCounterTypes.contains(NearbyEntitiesCounterTypes.BOBBING_TIME)) return 0
+
         val player = FeeshMod.mc.player ?: return 0
         val world = FeeshMod.mc.world ?: return 0
 
@@ -118,20 +128,34 @@ object LegionBobbingTimeTracker {
         return client.networkHandler?.getPlayerListEntry(uuid)?.latency ?: 0
     }
 
+    private fun getChumcapBucketsCount(): Int {
+        if (!Overlays.nearbyEntitiesCounterTypes.contains(NearbyEntitiesCounterTypes.CHUMCAP_BUCKETS)) return 0
+        
+        val player = FeeshMod.mc.player ?: return 0
+        val buckets = EntityUtils.getArmorStandsInRange(Vec3d(player.x, player.y, player.z), CHUMCAP_BUCKET_DISTANCE, "Chumcap Bucket", allowContains = true)
+        return buckets.size
+    }
+
     private fun updateGuiLines() {
-        val mode = Overlays.legionBobbingTimeTrackerMode
+        val types = Overlays.nearbyEntitiesCounterTypes
         val lines = mutableListOf<String>()
 
-        if (mode == LegionBobbingTimeTrackerMode.BOTH || mode == LegionBobbingTimeTrackerMode.LEGION_ONLY) {
+        if (types.contains(NearbyEntitiesCounterTypes.LEGION)) {
             val playersColor = if (playersCount >= MAX_LEGION_COUNT) GREEN else WHITE
             val playersText = "${LIGHT_PURPLE}${BOLD}Legion${GRAY}: ${playersColor}${playersCount} ${GRAY}${if (playersCount == 1) "player" else "players"}"
             lines.add(playersText)
         }
 
-        if (mode == LegionBobbingTimeTrackerMode.BOTH || mode == LegionBobbingTimeTrackerMode.BOBBING_TIME_ONLY) {
+        if (types.contains(NearbyEntitiesCounterTypes.BOBBING_TIME)) {
             val hooksColor = if (fishingHooksCount >= MAX_BOBBING_TIME_COUNT) GREEN else WHITE
             val hooksText = "${LIGHT_PURPLE}${BOLD}Bobbin' Time${GRAY}: ${hooksColor}${fishingHooksCount} ${GRAY}${if (fishingHooksCount == 1) "hook" else "hooks"}"
             lines.add(hooksText)
+        }
+
+        if (types.contains(NearbyEntitiesCounterTypes.CHUMCAP_BUCKETS)) {
+            val bucketsColor = if (chumcapBucketsCount >= MAX_CHUMCAP_BUCKETS_COUNT) GREEN else WHITE
+            val bucketsText = "${UNCOMMON}${BOLD}Chumcap${GRAY}: ${bucketsColor}${chumcapBucketsCount} ${GRAY}${if (chumcapBucketsCount == 1) "bucket" else "buckets"}"
+            lines.add(bucketsText)
         }
 
         gui.setLines(lines)
