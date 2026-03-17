@@ -82,6 +82,8 @@ object NearbyEntitiesCounter {
     }
 
     private fun getPlayersCount(): Int {
+        if (!Overlays.nearbyEntitiesCounterTypes.contains(NearbyEntitiesCounterTypes.LEGION)) return 0
+
         val player = FeeshMod.mc.player ?: return 0
         val world = FeeshMod.mc.world ?: return 0
 
@@ -101,6 +103,8 @@ object NearbyEntitiesCounter {
     }
 
     private fun getFishingHooksCount(): Int {
+        if (!Overlays.nearbyEntitiesCounterTypes.contains(NearbyEntitiesCounterTypes.BOBBING_TIME)) return 0
+
         val player = FeeshMod.mc.player ?: return 0
         val world = FeeshMod.mc.world ?: return 0
 
@@ -125,6 +129,8 @@ object NearbyEntitiesCounter {
     }
 
     private fun getChumcapBucketsCount(): Int {
+        if (!Overlays.nearbyEntitiesCounterTypes.contains(NearbyEntitiesCounterTypes.CHUMCAP_BUCKETS)) return 0
+        
         val player = FeeshMod.mc.player ?: return 0
         val buckets = EntityUtils.getArmorStandsInRange(Vec3d(player.x, player.y, player.z), CHUMCAP_BUCKET_DISTANCE, "Chumcap Bucket", allowContains = true)
         return buckets.size
