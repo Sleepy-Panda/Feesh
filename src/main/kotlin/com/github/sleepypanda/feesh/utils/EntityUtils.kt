@@ -81,12 +81,17 @@ object EntityUtils {
      * @param entityPosition The position to search from.
      * @param distance The maximum distance to search.
      * @param name The unformatted name of the ArmorStandEntity.
+     * @param allowContains If true, the entity's custom name can contain the specified name. If false, the entity's custom name must be exactly the specified name.
      * @returns List of ArmorStandEntity
      */
-    fun getArmorStandsInRange(entityPosition: Vec3d, distance: Double, name: String): List<ArmorStandEntity> {
+    fun getArmorStandsInRange(entityPosition: Vec3d, distance: Double, name: String, allowContains: Boolean = false): List<ArmorStandEntity> {
         val armorStands = getArmorStandsInRange(entityPosition, distance)
             .filter { asEntity ->
-                asEntity.customName?.string == name
+                if (allowContains) {
+                    asEntity.customName?.string?.contains(name) == true
+                } else {
+                    asEntity.customName?.string == name
+                }
             }
 
         return armorStands
