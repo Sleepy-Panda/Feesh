@@ -130,6 +130,7 @@ object NearbyEntitiesCounter {
 
     private fun getChumcapBucketsCount(): Int {
         if (!Overlays.nearbyEntitiesCounterTypes.contains(NearbyEntitiesCounterTypes.CHUMCAP_BUCKETS)) return 0
+        if (WorldUtils.getWorldName() == WorldUtils.CRIMSON_ISLE) return 0
         
         val player = FeeshMod.mc.player ?: return 0
         val buckets = EntityUtils.getArmorStandsInRange(Vec3d(player.x, player.y, player.z), CHUMCAP_BUCKET_DISTANCE, "Chumcap Bucket", allowContains = true)
@@ -152,7 +153,7 @@ object NearbyEntitiesCounter {
             lines.add(hooksText)
         }
 
-        if (types.contains(NearbyEntitiesCounterTypes.CHUMCAP_BUCKETS)) {
+        if (types.contains(NearbyEntitiesCounterTypes.CHUMCAP_BUCKETS) && WorldUtils.getWorldName() != WorldUtils.CRIMSON_ISLE) {
             val bucketsColor = if (chumcapBucketsCount >= MAX_CHUMCAP_BUCKETS_COUNT) GREEN else WHITE
             val bucketsText = "${UNCOMMON}${BOLD}Chumcap${GRAY}: ${bucketsColor}${chumcapBucketsCount} ${GRAY}${if (chumcapBucketsCount == 1) "bucket" else "buckets"}"
             lines.add(bucketsText)
