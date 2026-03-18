@@ -3,7 +3,7 @@
 ## Fishing profit tracker
 
 - View price as 7 days avg to avoid price manipulations.
-- Add levelled Magma Necklaces as some people level them for profits. Vanquished Magma Necklace upgraded to +10☠!
+- Add levelled Magma Necklaces as some people level them for profits. Vanquished Magma Necklace upgraded to +10☠! Vanquished Magma Necklace upgraded to +1☠!
 - When there is no fishing rod in hand, the fish profit tracker and seacreature tracker can be hidden.
 - Propose compacting or selling items like raw fish going to the inventory (full sack).
 - Track Agatha tickets / Forest Essence on Galatea based on contest results.
