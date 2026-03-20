@@ -1,7 +1,10 @@
 ## Players feedback
 
+- TODO: Test in 1.21
+- Someone has no Vial title/sound
 - Fished coins to add via the command.
 - Carmine dye into tracker
+- Autoupdates
 - Items counted after /gfs: Moved 39 Enchanted Sea Lumies from your Sacks to your inventory.
 - Rendering section from CT
 - Settings are not saved after exiting the game, probably because user closes window using X button to exit
