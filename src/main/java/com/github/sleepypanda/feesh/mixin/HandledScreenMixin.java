@@ -1,7 +1,8 @@
 package com.github.sleepypanda.feesh.mixin;
 
 import com.github.sleepypanda.feesh.events.EventBus;
-import com.github.sleepypanda.feesh.events.models.SlotRenderedEvent;
+import com.github.sleepypanda.feesh.events.models.AfterSlotRenderedEvent;
+import com.github.sleepypanda.feesh.events.models.BeforeSlotRenderedEvent;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.screen.slot.Slot;
@@ -19,6 +20,12 @@ public abstract class HandledScreenMixin {
     @Inject(method = "drawSlot", at = @At("HEAD"))
     private void feesh$onSlotBeforeItemDrawn(DrawContext context, Slot slot, CallbackInfo ci) {
         HandledScreen<?> screen = (HandledScreen<?>) (Object) this;
-        EventBus.INSTANCE.publish(new SlotRenderedEvent(context, slot, screen));
+        EventBus.INSTANCE.publish(new BeforeSlotRenderedEvent(context, slot, screen));
+    }
+
+    @Inject(method = "drawSlot", at = @At("RETURN"))
+    private void feesh$onSlotAfterItemDrawn(DrawContext context, Slot slot, CallbackInfo ci) {
+        HandledScreen<?> screen = (HandledScreen<?>) (Object) this;
+        EventBus.INSTANCE.publish(new AfterSlotRenderedEvent(context, slot, screen));
     }
 }

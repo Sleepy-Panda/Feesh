@@ -2,7 +2,7 @@ package com.github.sleepypanda.feesh.features.items.background
 
 import com.github.sleepypanda.feesh.events.EventBus
 import com.github.sleepypanda.feesh.events.models.ScreenBeforeInitEvent
-import com.github.sleepypanda.feesh.events.models.SlotRenderedEvent
+import com.github.sleepypanda.feesh.events.models.BeforeSlotRenderedEvent
 import net.minecraft.client.gui.DrawContext
 import net.minecraft.client.gui.screen.ingame.HandledScreen
 import net.minecraft.item.ItemStack
@@ -10,7 +10,7 @@ import net.minecraft.screen.slot.Slot
 
 /**
  * Coordinates all [BaseBackgroundHighlighter] instances:
- * - subscribes to SlotRenderedEvent and ScreenBeforeInitEvent;
+ * - subscribes to BeforeSlotRenderedEvent and ScreenBeforeInitEvent;
  * - keeps the list of active highlighters;
  * - clears per-screen caches and draws backgrounds under item icons.
  */
@@ -22,7 +22,7 @@ object BackgroundHighlighterManager {
     private val highlighters: MutableList<BaseBackgroundHighlighter> = mutableListOf()
 
     fun init() {
-        EventBus.subscribe(SlotRenderedEvent::class, ::onSlotRendered)
+        EventBus.subscribe(BeforeSlotRenderedEvent::class, ::onSlotRendered)
         EventBus.subscribe(ScreenBeforeInitEvent::class, ::onScreenBeforeInit)
     }
 
@@ -38,7 +38,7 @@ object BackgroundHighlighterManager {
         highlighters.forEach { it.clearCache() }
     }
 
-    private fun onSlotRendered(event: SlotRenderedEvent) {
+    private fun onSlotRendered(event: BeforeSlotRenderedEvent) {
         if (highlighters.isEmpty()) return
 
         val enabledHighlighters = highlighters.filter { it.isEnabled() }
