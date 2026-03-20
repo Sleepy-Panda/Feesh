@@ -49,10 +49,13 @@ import com.github.sleepypanda.feesh.features.overlays.ArchfiendDiceProfitTracker
 import com.github.sleepypanda.feesh.features.overlays.FishingFestivalTracker
 import com.github.sleepypanda.feesh.features.overlays.FishingProfitTracker
 import com.github.sleepypanda.feesh.features.overlays.SeaCreaturesPerHourTracker
-import com.github.sleepypanda.feesh.features.inventory.ThunderBottleProgress
 import com.github.sleepypanda.feesh.features.items.background.KatWrongPetsHighlighter
 import com.github.sleepypanda.feesh.features.items.background.TrashBooksHighlighter
 import com.github.sleepypanda.feesh.features.items.background.BackgroundHighlighterManager
+import com.github.sleepypanda.feesh.features.items.slottext.ThunderBottleProgress
+import com.github.sleepypanda.feesh.features.items.slottext.AutoRecombFlag
+import com.github.sleepypanda.feesh.features.items.slottext.MobyDuckProgress
+import com.github.sleepypanda.feesh.features.items.slottext.SlotTextRendererManager
 import com.github.sleepypanda.feesh.events.EventBus
 import com.github.sleepypanda.feesh.events.publishers.SeaCreaturesPublisher
 import com.github.sleepypanda.feesh.events.publishers.RareDropsPublisher
@@ -179,12 +182,14 @@ class FeeshMod : ModInitializer {
 
         MoveGuis.init() // After all overlays are initialized and registered FeeshGui objects
 
-        // Items
-        //ThunderBottleProgress.init()
-
         KatWrongPetsHighlighter.init()
         TrashBooksHighlighter.init()
         BackgroundHighlighterManager.init() // After all highlighters are initialized and registered
+
+        ThunderBottleProgress.init()
+        MobyDuckProgress.init()
+        AutoRecombFlag.init()
+        SlotTextRendererManager.init() // After all slot text renderers are initialized and registered
 
         // Commands
         PersonalBestCommand.init()

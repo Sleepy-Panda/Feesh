@@ -34,7 +34,12 @@ object ItemUtils {
         return obj.get("petInfo")?.takeIf { it.isJsonPrimitive }?.asString
     }
 
-    private fun customDataToJsonObject(customData: NbtComponent): JsonObject? {
+    /*
+     * Converts a custom data component to a JSON object.
+     * @param customData The custom data component to convert.
+     * @returns {JsonObject} The JSON object, or null if the conversion fails.
+     */
+    fun customDataToJsonObject(customData: NbtComponent): JsonObject? {
         val nbt = customData.copyNbt()
         if (nbt.isEmpty) return null
         val jsonEl = try {

@@ -9,7 +9,7 @@ import net.minecraft.screen.slot.Slot
  * Base class for all background highlighters that draw backgrounds under item icons in container GUIs.
  *
  * Responsibilities:
- * - Subscribe once to [SlotRenderedEvent] and fan out to all registered highlighters.
+ * - Subscribe once to [BeforeSlotRenderedEvent] and fan out to all registered highlighters.
  * - Maintain a per-highlighter cache of "item stack identifier" -> highlight color (nullable).
  * - Clear caches when the active GUI (screen) changes.
  */

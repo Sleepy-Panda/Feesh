@@ -38,4 +38,25 @@ object Items : CategoryKt("Items") {
             TrashBooksHighlighter.setSearchBookNames()
         }
     }
+
+    init {
+        separator {
+            this.title = "${AQUA}${BOLD}Slot text"
+        }
+    }
+
+    var showThunderBottleProgress by boolean(false) {
+        this.name = Translated("Thunder Bottle charge progress")
+        this.description = Translated("Renders Thunder / Storm / Hurricane Bottle charge progress (percentage) in the item slot.")
+    }
+
+    var showMobyDuckProgress by boolean(false) {
+        this.name = Translated("Moby-Duck progress")
+        this.description = Translated("Renders percentage of Moby-Duck evolving progress.Render percentage of Moby-Duck evolving progress.")
+    }
+
+    var showAutoRecombFlag by boolean(false) {
+        this.name = Translated("Moby-Duck progress")
+        this.description = Translated("Renders recomb upgrade flag (R) for auto-recombobulated fishing drops.")
+    }
 }
