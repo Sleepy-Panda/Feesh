@@ -29,8 +29,9 @@ object MobyDuckProgress : BaseSlotTextRenderer() {
         val nbt = ItemUtils.getCustomData(stack) ?: return null
         val obj = ItemUtils.customDataToJsonObject(nbt) ?: return null
         val secondsHeld = obj.get("seconds_held")?.asInt ?: 0
-        val percent = truncate(secondsHeld / MAX_PROGRESS_SECONDS * 100.0).toInt()
-        val slotText = "${percent}%"
+        val percent = truncate(secondsHeld.toDouble() / MAX_PROGRESS_SECONDS.toDouble() * 100.0).toInt()
+        val percentSafe = percent.coerceIn(0, 100)
+        val slotText = "${percentSafe}%"
         return slotText
     }
 

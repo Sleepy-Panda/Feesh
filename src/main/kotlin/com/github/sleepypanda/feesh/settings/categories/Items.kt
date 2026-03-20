@@ -14,13 +14,6 @@ object Items : CategoryKt("Items") {
         }
     }
 
-    var katWrongPetsHighlighter by boolean(false) {
-        this.name = Translated("Wrong pets offered to Kat")
-        this.description = Translated(
-            "${GRAY}Highlights Kat's GUI slot when you offer Kat some pets (Epic Megalodon, Epic Baby Yeti) potentially by mistake. ${DARK_GRAY}For those who regularly gets scammed by Kat, giving her Megalodons instead of George (that's me)."
-        )
-    }
-
     var trashBooksHighlighter by boolean(false) {
         this.name = Translated("Trash enchanted books")
         this.description = Translated(
@@ -38,6 +31,13 @@ object Items : CategoryKt("Items") {
             TrashBooksHighlighter.setSearchBookNames()
         }
     }
+   
+    var katWrongPetsHighlighter by boolean(false) {
+        this.name = Translated("Wrong pets offered to Kat")
+        this.description = Translated(
+            "${GRAY}Highlights Kat's GUI slot when you offer Kat some pets (Epic Megalodon, Epic Baby Yeti) potentially by mistake. ${DARK_GRAY}For those who regularly gets scammed by Kat, giving her Megalodons instead of George (that's me)."
+        )
+    }
 
     init {
         separator {
@@ -47,16 +47,16 @@ object Items : CategoryKt("Items") {
 
     var showThunderBottleProgress by boolean(false) {
         this.name = Translated("Thunder Bottle charge progress")
-        this.description = Translated("Renders Thunder / Storm / Hurricane Bottle charge progress (percentage) in the item slot.")
+        this.description = Translated("Renders percentage of Thunder / Storm / Hurricane Bottle charge progress in the item slot.")
     }
 
     var showMobyDuckProgress by boolean(false) {
         this.name = Translated("Moby-Duck progress")
-        this.description = Translated("Renders percentage of Moby-Duck evolving progress.Render percentage of Moby-Duck evolving progress.")
+        this.description = Translated("Renders percentage of Moby-Duck evolving progress in the item slot.")
     }
 
     var showAutoRecombFlag by boolean(false) {
-        this.name = Translated("Moby-Duck progress")
-        this.description = Translated("Renders recomb upgrade flag (R) for auto-recombobulated fishing drops.")
+        this.name = Translated("Auto-recomb flag")
+        this.description = Translated("Renders recomb upgrade flag (R) for auto-recombobulated fishing drops in the item slot.")
     }
 }

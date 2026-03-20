@@ -39,8 +39,9 @@ object ThunderBottleProgress : BaseSlotTextRenderer() {
         val nbt = ItemUtils.getCustomData(stack) ?: return null
         val obj = ItemUtils.customDataToJsonObject(nbt) ?: return null
         val currentCharge = obj.get("thunder_charge")?.asDouble ?: 0.0
-        val chargePercent = truncate(currentCharge / maxCharge * 100).toInt()
-        val slotText = "${chargePercent}%"
+        val percent = truncate(currentCharge / maxCharge * 100).toInt()
+        val percentSafe = percent.coerceIn(0, 100)
+        val slotText = "${percentSafe}%"
         return slotText
     }
 
