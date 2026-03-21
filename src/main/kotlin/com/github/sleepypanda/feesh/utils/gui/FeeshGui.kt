@@ -439,12 +439,12 @@ class FeeshGui {
         val right = scaledLeftEdge + maxWidth + 4
         val bottom = scaledY + height + 2
 
-        // Make sure to draw border 1px outside of the overlay, so it does not overlap the background.
-        // Also make lines not overlap in the corners.
-        drawContext.fill(left, top, right + 1, top + 1, borderColor) // top
-        drawContext.fill(left, bottom, right + 1, bottom + 1, borderColor) // bottom
-        drawContext.fill(left, top + 1, left + 1, bottom, borderColor) // left
-        drawContext.fill(right, top + 1, right + 1, bottom, borderColor) // right
+        // Draw border 1px outside the overlay, so it does not overlap the background.
+        // Also made lines not overlap in the corners.
+        drawContext.fill(left - 1, top - 1, right + 1, top, borderColor) // top
+        drawContext.fill(left - 1, bottom, right + 1, bottom + 1, borderColor) // bottom
+        drawContext.fill(left - 1, top, left, bottom, borderColor) // left
+        drawContext.fill(right, top, right + 1, bottom, borderColor) // right
     }
 
     private fun getHoveredLineIndex(textRenderer: TextRenderer, displayLines: List<String>, mouseX: Double, mouseY: Double): Int? {
