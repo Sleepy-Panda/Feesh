@@ -95,7 +95,7 @@ object Overlays : CategoryKt("Overlays") {
         this.description = Translated("Draw a background (gradient or single color) behind the overlays for better readability.")
     }
 
-    var overlaysBackgroundColor by color(Color(0, 0, 0, 70).rgb) {
+    var overlaysBackgroundColor1 by color(Color(0, 0, 0, 70).rgb) {
         this.name = Translated("Overlays background color #1")
         this.description = Translated("Select background color with opacity. It is used as top color for vertical gradient.")
         this.allowAlpha = true
@@ -114,7 +114,7 @@ object Overlays : CategoryKt("Overlays") {
 
     var overlaysBorderColor by color(Color(255, 255, 255, 255).rgb) {
         this.name = Translated("Overlays border color")
-        this.description = Translated("Selects border color (with opacity) for overlays.")
+        this.description = Translated("Select border color with opacity.")
         this.allowAlpha = true
     }
 

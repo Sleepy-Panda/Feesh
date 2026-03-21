@@ -413,17 +413,32 @@ class FeeshGui {
         drawContext.matrices.popMatrix()
     }
 
-    private fun drawOverlayBackground(drawContext: DrawContext, scaledLeftEdge: Int, scaledY: Int, maxWidth: Int, height: Int) {
-        if (!Overlays.overlaysBackground) return
+    private data class OverlayBackgroundCoords(val left: Int, val top: Int, val right: Int, val bottom: Int)
 
-        val backgroundTopColor = Color(Overlays.overlaysBackgroundColor, true).rgb
-        val backgroundBottomColor = Color(Overlays.overlaysBackgroundColor2, true).rgb
-
-        drawContext.fillGradient(
+    /**
+     * Gets the scaled coordinates of the rectangle around overlay text, with some padding.
+     */
+    private fun getOverlayBackgroundCoords(scaledLeftEdge: Int, scaledY: Int, maxWidth: Int, height: Int): OverlayBackgroundCoords {
+        return OverlayBackgroundCoords(
             scaledLeftEdge - 4,
             scaledY - 4,
             scaledLeftEdge + maxWidth + 4,
-            scaledY + height + 2, // on the bottom, it's already a bit more wide
+            scaledY + height + 2,
+        )
+    }
+
+    private fun drawOverlayBackground(drawContext: DrawContext, scaledLeftEdge: Int, scaledY: Int, maxWidth: Int, height: Int) {
+        if (!Overlays.overlaysBackground) return
+
+        val backgroundTopColor = Color(Overlays.overlaysBackgroundColor1, true).rgb
+        val backgroundBottomColor = Color(Overlays.overlaysBackgroundColor2, true).rgb
+
+        val backgroundCoords = getOverlayBackgroundCoords(scaledLeftEdge, scaledY, maxWidth, height)
+        drawContext.fillGradient(
+            backgroundCoords.left,
+            backgroundCoords.top,
+            backgroundCoords.right,
+            backgroundCoords.bottom,
             backgroundTopColor,
             backgroundBottomColor
         )
@@ -434,10 +449,11 @@ class FeeshGui {
 
         val borderColor = Color(Overlays.overlaysBorderColor, true).rgb
 
-        val left = scaledLeftEdge - 4
-        val top = scaledY - 4
-        val right = scaledLeftEdge + maxWidth + 4
-        val bottom = scaledY + height + 2
+        val backgroundCoords = getOverlayBackgroundCoords(scaledLeftEdge, scaledY, maxWidth, height)
+        val left = backgroundCoords.left
+        val top = backgroundCoords.top
+        val right = backgroundCoords.right
+        val bottom = backgroundCoords.bottom
 
         // Draw border 1px outside the overlay, so it does not overlap the background.
         // Also made lines not overlap in the corners.
