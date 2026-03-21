@@ -4,6 +4,7 @@ import com.github.sleepypanda.feesh.events.models.GameRenderEvent
 import com.github.sleepypanda.feesh.events.models.ScreenAfterBackgroundRenderEvent
 import com.github.sleepypanda.feesh.events.models.AfterMouseClickEvent
 import com.github.sleepypanda.feesh.events.EventBus
+import com.github.sleepypanda.feesh.settings.categories.Overlays
 import com.github.sleepypanda.feesh.utils.GuiUtils
 import com.github.sleepypanda.feesh.utils.WorldUtils
 import com.github.sleepypanda.feesh.utils.enums.Alignment
@@ -360,7 +361,11 @@ class FeeshGui {
         val maxWidth = getMaxWidth(textRenderer, linesForWidth)
         val leftEdge = getLeftEdge(textRenderer, linesForWidth)
         val scaledLeftEdge = (leftEdge / scale).toInt()
+        val height = (allLines.size * lineHeightPx)
         var currentY = scaledY
+
+        drawOverlayBackground(drawContext, scaledLeftEdge, scaledY, maxWidth, height)
+        drawOverlayBorder(drawContext, scaledLeftEdge, scaledY, maxWidth, height)
 
         for ((index, line) in allLines.withIndex()) {
             val actions = if (index == hoveredLineIndex) hoveredActions else null
@@ -406,6 +411,40 @@ class FeeshGui {
         }
 
         drawContext.matrices.popMatrix()
+    }
+
+    private fun drawOverlayBackground(drawContext: DrawContext, scaledLeftEdge: Int, scaledY: Int, maxWidth: Int, height: Int) {
+        if (!Overlays.overlaysBackground) return
+
+        val backgroundTopColor = Color(Overlays.overlaysBackgroundColor, true).rgb
+        val backgroundBottomColor = Color(Overlays.overlaysBackgroundColor2, true).rgb
+
+        drawContext.fillGradient(
+            scaledLeftEdge - 4,
+            scaledY - 4,
+            scaledLeftEdge + maxWidth + 4,
+            scaledY + height + 2, // on the bottom, it's already a bit more wide
+            backgroundTopColor,
+            backgroundBottomColor
+        )
+    }
+
+    private fun drawOverlayBorder(drawContext: DrawContext, scaledLeftEdge: Int, scaledY: Int, maxWidth: Int, height: Int) {
+        if (!Overlays.overlaysBorder) return
+
+        val borderColor = Color(Overlays.overlaysBorderColor, true).rgb
+
+        val left = scaledLeftEdge - 4
+        val top = scaledY - 4
+        val right = scaledLeftEdge + maxWidth + 4
+        val bottom = scaledY + height + 2
+
+        // Make sure to draw border 1px outside of the overlay, so it does not overlap the background.
+        // Also make lines not overlap in the corners.
+        drawContext.fill(left, top, right + 1, top + 1, borderColor) // top
+        drawContext.fill(left, bottom, right + 1, bottom + 1, borderColor) // bottom
+        drawContext.fill(left, top + 1, left + 1, bottom, borderColor) // left
+        drawContext.fill(right, top + 1, right + 1, bottom, borderColor) // right
     }
 
     private fun getHoveredLineIndex(textRenderer: TextRenderer, displayLines: List<String>, mouseX: Double, mouseY: Double): Int? {

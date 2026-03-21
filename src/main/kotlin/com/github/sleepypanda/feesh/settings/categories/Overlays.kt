@@ -23,6 +23,7 @@ import com.github.sleepypanda.feesh.features.overlays.WaterHotspotsAndBayouTrack
 import com.github.sleepypanda.feesh.utils.gui.MoveGuis
 import net.minecraft.util.Util
 import net.minecraft.client.gui.screen.option.KeybindsScreen
+import java.awt.Color
 
 enum class SeaCreaturesTrackerDisplayMode(val displayName: String) {
     ONLY_RARE("Only rare"),
@@ -81,6 +82,40 @@ object Overlays : CategoryKt("Overlays") {
                 }
             }
         }
+    }
+
+    init {
+        separator {
+            this.title = "${AQUA}${BOLD}Overlays style"
+        }
+    }
+
+    var overlaysBackground by boolean(false) {
+        this.name = Translated("Overlays background")
+        this.description = Translated("Draws a background behind the overlays for better readability.")
+    }
+
+    var overlaysBackgroundColor by color(Color(0, 0, 0, 70).rgb) {
+        this.name = Translated("Overlays background color")
+        this.description = Translated("Selects top background color (with opacity) for overlays.")
+        this.allowAlpha = true
+    }
+
+    var overlaysBackgroundColor2 by color(Color(0, 0, 0, 70).rgb) {
+        this.name = Translated("Overlays background color 2")
+        this.description = Translated("Selects bottom background color (with opacity) for overlays. Used for vertical gradient. Use same color as above to disable gradient.")
+        this.allowAlpha = true
+    }
+
+    var overlaysBorder by boolean(false) {
+        this.name = Translated("Overlays border")
+        this.description = Translated("Draws a border around the overlays.")
+    }
+
+    var overlaysBorderColor by color(Color(255, 255, 255, 255).rgb) {
+        this.name = Translated("Overlays border color")
+        this.description = Translated("Selects border color (with opacity) for overlays.")
+        this.allowAlpha = true
     }
 
     init {
