@@ -57,6 +57,10 @@ enum class NearbyEntitiesCounterTypes(val displayName: String) {
 }
 
 object Overlays : CategoryKt("Overlays") {
+    private val applyCustomStyleDescription = Translated(
+        "When enabled, custom styles from \"Custom overlays style\" category apply to this overlay. When disabled, the overlay is drawn without those decorations."
+    )
+
     init {
         separator {
             this.title = "${AQUA}${BOLD}Common"
@@ -86,7 +90,8 @@ object Overlays : CategoryKt("Overlays") {
 
     init {
         separator {
-            this.title = "${AQUA}${BOLD}Overlays style"
+            this.title = "${AQUA}${BOLD}Custom overlays style"
+            this.description = "Customize the style of the overlays. You can enable/disable applying this style for each overlay individually."
         }
     }
 
@@ -118,6 +123,13 @@ object Overlays : CategoryKt("Overlays") {
         this.allowAlpha = true
     }
 
+    var overlaysBorderWidth by int(1) {
+        this.name = Translated("Overlays border width")
+        this.description = Translated("Select border width in pixels.")
+        this.range = 1..5
+        this.slider = true
+    }
+
     init {
         separator {
             this.title = "${AQUA}${BOLD}Nearby entities"
@@ -137,6 +149,11 @@ Hidden if you have no fishing rod in your hotbar!""".trimIndent())
 
     var nearbyEntitiesCounterTypes by select(NearbyEntitiesCounterTypes.LEGION, NearbyEntitiesCounterTypes.BOBBING_TIME) {
         this.name = Translated("Nearby entities counter types to display")
+    }
+
+    var nearbyEntitiesCounterCustomStyle by boolean(true) {
+        this.name = Translated("Apply custom style")
+        this.description = applyCustomStyleDescription
     }
 
     init {
@@ -163,6 +180,11 @@ Hidden if you have no fishing rod in your hotbar!""".trimIndent())
             }
         }
     }
+
+    var barnFishingTimerCustomStyle by boolean(true) {
+        this.name = Translated("Apply custom style")
+        this.description = applyCustomStyleDescription
+    }
       
     init {
         separator {
@@ -177,6 +199,11 @@ Hidden if you have no fishing rod in your hotbar!""".trimIndent())
 
     var deployablesOverlayTypes by select(DeployableTypes.TOTEM_OF_CORRUPTION, *DeployableTypes.values()) {
         this.name = Translated("Select deployables to show in overlay")
+    }
+
+    var deployablesTimerCustomStyle by boolean(true) {
+        this.name = Translated("Apply custom style")
+        this.description = applyCustomStyleDescription
     }
 
     init {
@@ -195,6 +222,11 @@ Hidden if you have no fishing rod in your hotbar!""".trimIndent())
         this.description = Translated("Show maximum N sea creatures nearby (to limit overlay size). Sea creatures with lower HP come first.")
         this.range = 1..20
         this.slider = true
+    }
+
+    var seaCreaturesHpCustomStyle by boolean(true) {
+        this.name = Translated("Apply custom style")
+        this.description = applyCustomStyleDescription
     }
 
     init {
@@ -237,6 +269,11 @@ ${GRAY}To reset [Total]: ${WHITE}/${SeaCreaturesTracker.RESET_TOTAL}
         this.description = Translated("Automatically reset the Sea creatures tracker [Session] when you close Minecraft.")
     }
 
+    var seaCreaturesTrackerCustomStyle by boolean(true) {
+        this.name = Translated("Apply custom style")
+        this.description = applyCustomStyleDescription
+    }
+
     init {
         separator {
             this.title = "${AQUA}${BOLD}Fishing Hook"
@@ -273,6 +310,11 @@ ${GRAY}To reset [Total]: ${WHITE}/${SeaCreaturesTracker.RESET_TOTAL}
             }
         }
     }
+
+    var fishingHookTimerCustomStyle by boolean(true) {
+        this.name = Translated("Apply custom style")
+        this.description = applyCustomStyleDescription
+    }
     
     init {
         separator {
@@ -294,6 +336,11 @@ ${GRAY}To pause: ${WHITE}/${SeaCreaturesPerHourTracker.PAUSE_COMMAND}
         this.description = Translated("When enabled, a double hook catch counts as 2 sea creatures. When disabled, it counts as 1.")
     }
 
+    var seaCreaturesPerHourTrackerCustomStyle by boolean(true) {
+        this.name = Translated("Apply custom style")
+        this.description = applyCustomStyleDescription
+    }
+
     init {
         separator {
             this.title = "${AQUA}${BOLD}Rain & Thunder"
@@ -303,6 +350,11 @@ ${GRAY}To pause: ${WHITE}/${SeaCreaturesPerHourTracker.PAUSE_COMMAND}
     var rainTimerOverlay by boolean(false) {
         this.name = Translated("Rain/thunder timer")
         this.description = Translated("${GRAY}Shows an overlay with the active rain timer timer in The Park, and active/upcoming rain/thunder timer in Spider's Den. Please enable ${YELLOW}TabList settings -> General Info widget -> Show Rain")
+    }
+
+    var rainTimerCustomStyle by boolean(true) {
+        this.name = Translated("Apply custom style")
+        this.description = applyCustomStyleDescription
     }
 
     init {
@@ -317,6 +369,11 @@ ${GRAY}To pause: ${WHITE}/${SeaCreaturesPerHourTracker.PAUSE_COMMAND}
 ${GRAY}Shows an overlay with sharks caught during the Fishing Festival. Not persistent - resets on MC restart.
 ${GRAY}To reset: ${WHITE}/${FishingFestivalTracker.RESET_COMMAND}
 """.trimIndent())
+    }
+
+    var fishingFestivalTrackerCustomStyle by boolean(true) {
+        this.name = Translated("Apply custom style")
+        this.description = applyCustomStyleDescription
     }
 
     init {
@@ -336,6 +393,11 @@ ${GRAY}To reset: ${WHITE}/${JerryWorkshopTracker.RESET_COMMAND}
     var resetJerryWorkshopTrackerOnGameClosed by boolean(false) {
         this.name = Translated("Autoreset on closing game")
         this.description = Translated("Automatically reset the Jerry Workshop tracker when you close Minecraft.")
+    }
+
+    var jerryWorkshopTrackerCustomStyle by boolean(true) {
+        this.name = Translated("Apply custom style")
+        this.description = applyCustomStyleDescription
     }
 
     init {
@@ -375,6 +437,11 @@ ${GRAY}To reset: ${WHITE}/${WaterHotspotsAndBayouTracker.RESET_COMMAND}
         }
     }
 
+    var waterHotspotsAndBayouTrackerCustomStyle by boolean(true) {
+        this.name = Translated("Apply custom style")
+        this.description = applyCustomStyleDescription
+    }
+
     init {
         separator {
             this.title = "${AQUA}${BOLD}Crimson Isle tracker"
@@ -409,6 +476,11 @@ ${GRAY}To reset: ${WHITE}/${CrimsonIsleTracker.RESET_COMMAND}
                 ChatUtils.sendLocalChat("/${SetTrackerDropsCommand.COMMAND_NAME} RADIOACTIVE_VIAL 2 2025-05-30 23:59:00")
             }
         }
+    }
+
+    var crimsonIsleTrackerCustomStyle by boolean(true) {
+        this.name = Translated("Apply custom style")
+        this.description = applyCustomStyleDescription
     }
 
     init {
@@ -448,6 +520,11 @@ ${GRAY}Reset total: ${WHITE}/${TreasureFishingTracker.RESET_TOTAL_COMMAND}
         }
     }
 
+    var treasureFishingTrackerCustomStyle by boolean(true) {
+        this.name = Translated("Apply custom style")
+        this.description = applyCustomStyleDescription
+    }
+
     init {
         separator {
             this.title = "${AQUA}${BOLD}Archfiend Dice profit"
@@ -466,6 +543,11 @@ ${GRAY}To reset [Total]: ${WHITE}/${ArchfiendDiceProfitTracker.RESET_TOTAL_COMMA
     var resetArchfiendDiceProfitTrackerSessionOnGameClosed by boolean(true) {
         this.name = Translated("Autoreset [Session] on closing game")
         this.description = Translated("Automatically reset the Archfiend Dice profit tracker [Session] when you close Minecraft.")
+    }
+
+    var archfiendDiceProfitTrackerCustomStyle by boolean(true) {
+        this.name = Translated("Apply custom style")
+        this.description = applyCustomStyleDescription
     }
 
     init {
@@ -537,6 +619,11 @@ ${GRAY}To pause: ${WHITE}/${FishingProfitTracker.PAUSE_COMMAND}
     var resetFishingProfitTrackerOnGameClosed by boolean(true) {
         this.name = Translated("Autoreset [Session] on closing game")
         this.description = Translated("Automatically reset the fishing profit tracker [Session] when you close Minecraft.")
+    }
+
+    var fishingProfitTrackerCustomStyle by boolean(true) {
+        this.name = Translated("Apply custom style")
+        this.description = applyCustomStyleDescription
     }
 
     init {

@@ -59,6 +59,7 @@ object WaterHotspotsAndBayouTracker {
             "${GRAY}Last on: ${WHITE}567 ${GRAY}Wiki Tikis ago"
         ))
         .setSettingsKey { Overlays.waterHotspotsAndBayouTrackerOverlay }
+        .setApplyCustomStyleKey { Overlays.waterHotspotsAndBayouTrackerCustomStyle }
         .setCondition {
             val isInBayou = WorldUtils.getWorldName() == WorldUtils.BACKWATER_BAYOU
             (WorldUtils.isInWaterHotspotFishingWorld() || isInBayou) && FishingHookUtils.wasFishingHookActiveMinutesAgo(5)

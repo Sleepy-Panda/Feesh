@@ -3,8 +3,6 @@ package com.github.sleepypanda.feesh.constants
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
 
-const val TYPE_CRIMSON_ISLE_LAVA = "CRIMSON_ISLE_LAVA"
-
 // This should be aligned with Rare Sea Creatures names using the following logic:
 // Carrot King -> CARROT_KING
 enum class RareSeaCreatureTypes(val displayName: String) {
@@ -46,6 +44,8 @@ enum class RareSeaCreatureTypesAllChat(val displayName: String) {
 
 class SeaCreatures {
     companion object {
+        const val TYPE_CRIMSON_ISLE_LAVA = "CRIMSON_ISLE_LAVA"
+
         // WATER SEA CREATURES
         val WATER_HYDRA_MESSAGE = "^The Water Hydra has come to test your strength\\.$"
         val CARROT_KING_MESSAGE = "^Is this even a fish\\? It\\'s the Carrot King\\!$"

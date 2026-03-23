@@ -108,6 +108,7 @@ object FishingProfitTracker {
             "${AQUA}Elapsed time: ${WHITE}56h 23m 3s",
         ))
         .setSettingsKey { Overlays.fishingProfitTrackerOverlay }
+        .setApplyCustomStyleKey { Overlays.fishingProfitTrackerCustomStyle }
         .setCondition {            
             isTrackerVisible()
         }

@@ -48,6 +48,7 @@ object JerryWorkshopTracker {
             "${GRAY}Island closes in: 1h"
         ))
         .setSettingsKey { Overlays.jerryWorkshopTrackerOverlay }
+        .setApplyCustomStyleKey { Overlays.jerryWorkshopTrackerCustomStyle }
         .setCondition {
             WorldUtils.getWorldName() == WorldUtils.JERRY_WORKSHOP &&
             FishingHookUtils.wasFishingHookActiveMinutesAgo(5)

@@ -40,6 +40,7 @@ object NearbyEntitiesCounter {
             "${UNCOMMON}${BOLD}Chumcap${GRAY}: ${WHITE}2 ${GRAY}buckets"
         ))
         .setSettingsKey { Overlays.nearbyEntitiesCounterOverlay }
+        .setApplyCustomStyleKey { Overlays.nearbyEntitiesCounterCustomStyle }
         .setCondition {
             PlayerUtils.hasFishingRodInHotbar() &&
             WorldUtils.isInFishingWorld()

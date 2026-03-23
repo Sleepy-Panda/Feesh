@@ -59,6 +59,7 @@ object FishingFestivalTracker {
             "${AQUA}${BOLD}Sharks: ${WHITE}500 ${GRAY}(${LEGENDARY}50 ${EPIC}100 ${RARE}150 ${UNCOMMON}200${GRAY})",
         ))
         .setSettingsKey { Overlays.fishingFestivalTrackerOverlay }
+        .setApplyCustomStyleKey { Overlays.fishingFestivalTrackerCustomStyle }
         .setCondition {
             isTrackerVisible()
         }
