@@ -669,7 +669,7 @@ object FishingProfitTracker {
         for (i in 0..35) {
             val stack = player.inventory.getStack(i)
             if (stack.isEmpty) continue
-            var slotItemName = getCleanItemName(stack.name.getFormattedString())
+            var slotItemName = ItemUtils.getCleanItemName(stack.name.getFormattedString())
             if (slotItemName.isBlank()) continue
 
             if (slotItemName == "Enchanted Book") {
@@ -710,15 +710,6 @@ object FishingProfitTracker {
             }
         }
         return result
-    }
-
-    private fun getCleanItemName(itemName: String): String {
-        if (itemName.isBlank()) return ""
-        var s = itemName
-        if (Regex(".+ §8x\\d+$").matches(s)) { // Booster cookie menu or NPCs append the amount to the item name - e.g. §9Fish Affinity Talisman §8x1
-            s = s.split(" ").dropLast(1).joinToString(" ")
-        }
-        return s.removeFormatting()
     }
 
     private fun getFishingProfitItemByName(itemName: String): FishingProfitDropInfo? {

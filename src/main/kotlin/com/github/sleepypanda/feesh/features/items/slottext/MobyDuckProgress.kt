@@ -2,6 +2,7 @@ package com.github.sleepypanda.feesh.features.items.slottext
 
 import com.github.sleepypanda.feesh.settings.categories.Items
 import com.github.sleepypanda.feesh.utils.ChatUtils.removeFormatting
+import com.github.sleepypanda.feesh.utils.ChatUtils.getFormattedString
 import com.github.sleepypanda.feesh.utils.ItemUtils
 import com.github.sleepypanda.feesh.utils.WorldUtils
 import net.minecraft.client.gui.screen.ingame.HandledScreen
@@ -24,7 +25,8 @@ object MobyDuckProgress : BaseSlotTextRenderer() {
 
     override fun getItemStackSlotText(stack: ItemStack, screen: HandledScreen<*>, slot: Slot): String? {
         if (stack.isEmpty()) return null
-        if (stack.name.string.removeFormatting() != "Moby-Duck") return null
+        val name = ItemUtils.getCleanItemName(stack.name.getFormattedString())
+        if (name != "Moby-Duck") return null
 
         val nbt = ItemUtils.getCustomData(stack) ?: return null
         val obj = ItemUtils.customDataToJsonObject(nbt) ?: return null

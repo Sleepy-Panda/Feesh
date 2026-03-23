@@ -1,6 +1,7 @@
 package com.github.sleepypanda.feesh.features.items.slottext
 
 import com.github.sleepypanda.feesh.settings.categories.Items
+import com.github.sleepypanda.feesh.utils.ChatUtils.getFormattedString
 import com.github.sleepypanda.feesh.utils.ChatUtils.removeFormatting
 import com.github.sleepypanda.feesh.utils.ItemUtils
 import com.github.sleepypanda.feesh.utils.WorldUtils
@@ -23,7 +24,8 @@ object AutoRecombFlag : BaseSlotTextRenderer() {
 
     override fun getItemStackSlotText(stack: ItemStack, screen: HandledScreen<*>, slot: Slot): String? {
         if (stack.isEmpty()) return null
-        val name = stack.name.string.removeFormatting() ?: return null
+        val name = ItemUtils.getCleanItemName(stack.name.getFormattedString())
+        if (name.isNullOrEmpty()) return null
 
         val isFishingItem =
             name == "Slug Boots" ||
