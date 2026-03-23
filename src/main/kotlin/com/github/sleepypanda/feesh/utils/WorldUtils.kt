@@ -62,6 +62,7 @@ object WorldUtils {
         BACKWATER_BAYOU,
         SPIDERS_DEN,
         HUB,
+        JERRY_WORKSHOP,
     )
 
     private var cachedIsInSkyblock: Boolean = false

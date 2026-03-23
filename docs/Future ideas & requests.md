@@ -120,7 +120,6 @@ It might be not 100% correct due to how Hypixel API works, the person who reques
 
 - Command to check profits for buying items from Fear Mongerer shop rather than selling candies as is
 - Way to disable all module features with one toggle.
-- Remove double hook reindrake logic because DH is not possible now
 - Golden fish timer
 "can you add a golden fish timer tracker into this? i only have golden fish diamond left and i like playing other games while just having my bobber in lava, and setting a 15min timer every time is p annoying lmao"
 - Thunder spark profit - Amount gained in bottle divided by lbin for the current item

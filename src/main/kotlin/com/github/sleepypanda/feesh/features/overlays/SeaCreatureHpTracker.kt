@@ -57,6 +57,7 @@ object SeaCreatureHpTracker {
         TrackedMobInfo("Titanoboa", listOf(WorldUtils.BACKWATER_BAYOU), hasImmunity = true),
         TrackedMobInfo("Abyssal Miner", listOf(WorldUtils.CRYSTAL_HOLLOWS), hasImmunity = true),
         TrackedMobInfo("The Loch Emperor", listOf(WorldUtils.GALATEA), hasImmunity = true),
+        TrackedMobInfo("Nessie", listOf(WorldUtils.GALATEA), hasImmunity = true),
         TrackedMobInfo("Water Hydra", WorldUtils.WATER_FISHING_WORLDS, hasImmunity = true),
         TrackedMobInfo("Phantom Fisher", WorldUtils.WATER_FISHING_WORLDS, hasImmunity = true),
         TrackedMobInfo("Grim Reaper", WorldUtils.WATER_FISHING_WORLDS, hasImmunity = true),

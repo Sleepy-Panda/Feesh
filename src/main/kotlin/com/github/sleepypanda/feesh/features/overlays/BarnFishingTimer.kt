@@ -120,12 +120,11 @@ object BarnFishingTimer {
             val customName = entity.customName?.getFormattedString() ?: return@forEach
             val plainName = customName.removeFormatting()
 
-            // Mobs / corrupted mobs have prefix like [Lv100], only Grinch does not have it
+            // Mobs / corrupted mobs have prefix like [Lv100]
             // This check is needed to exclude Necromancy souls and pets
             val hasLevelPrefix = plainName.contains("[Lv") && plainName.contains("❤")
-            val isGrinch = plainName.contains("Grinch  ❤")
             
-            if ((hasLevelPrefix && allSeaCreaturesNames.any { sc -> plainName.contains(sc) }) || isGrinch) {
+            if ((hasLevelPrefix && allSeaCreaturesNames.any { sc -> plainName.contains(sc) })) {
                 if (plainName.contains("Rider of the Deep")) {
                     newMobsCount += 2
                 } else {

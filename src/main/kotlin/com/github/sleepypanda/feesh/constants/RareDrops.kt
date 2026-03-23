@@ -19,7 +19,6 @@ enum class RareDropTypes(val displayName: String) {
 
     MEGALODON_LEGENDARY("Megalodon (Legendary)"),
     MEGALODON_EPIC("Megalodon (Epic)"),
-    BABY_YETI_LEGENDARY("Baby Yeti (Legendary)"),
     FLYING_FISH_LEGENDARY("Flying Fish (Legendary)"),
     SQUID_LEGENDARY("Squid (Legendary)"),
     SQUID_EPIC("Squid (Epic)"),
@@ -46,7 +45,7 @@ class RareDrops {
             val boldDisplayName: String get() = rarityColorCode + BOLD + itemName
 
             fun getTitle(): String {
-                val baseTitle = this.boldDisplayName.substringBefore(" (") // Baby Yeti (Legendary) -> Baby Yeti
+                val baseTitle = this.boldDisplayName.substringBefore(" (") // Flying Fish (Legendary) -> Flying Fish
                 return if (this.isExtremelyRare) "${GOLD}${OBFUSCATED}x${RESET} ${baseTitle} ${GOLD}${OBFUSCATED}x${RESET}" 
                 else "${baseTitle}"
             }
@@ -116,14 +115,6 @@ class RareDrops {
                 npcPrice = 1_000_000,
                 isExtremelyRare = false,
                 defaultSoundFileName = Sounds.FEESH_OH_MY_GOD
-            ),
-            RareDropInfo(
-                id = "BABY_YETI;4",
-                itemName = RareDropTypes.BABY_YETI_LEGENDARY.displayName,
-                rarityColorCode = LEGENDARY.code,
-                npcPrice = 1_000_000,
-                isExtremelyRare = false,
-                defaultSoundFileName = Sounds.FEESH_SHEESH
             ),
             RareDropInfo(
                 id = "FLYING_FISH;4",

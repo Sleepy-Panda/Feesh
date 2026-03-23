@@ -11,7 +11,8 @@ import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
 import com.github.sleepypanda.feesh.utils.ChatUtils
 
 object AnyReindrakeAlert {
-    const val REINDRAKE_PATTERN = "^WOAH\\! A Reindrake was summoned from the depths\\!$"
+    // WOAH! [MVP+] MoonTheSadFisher summoned a Reindrake from the depths!
+    const val REINDRAKE_PATTERN = "^WOAH! (?<playerNameAndRank>.*) summoned a Reindrake from the depths!$"
     val reindrake = SeaCreatures.allSeaCreatures.find { it.name == "Reindrake" }!!
 
     fun init() {
