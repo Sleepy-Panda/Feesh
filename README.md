@@ -67,6 +67,7 @@ This mod requires [Fabric API](https://modrinth.com/mod/fabric-api) and [Fabric 
 ### Overlays
 
 > You can change position, scale and alignment (Left, Center, Right) for each overlay in **/feeshMoveAllGuis**
+> You can setup custom background & border style, and enable this style on each overlay level.
 
 - **Fishing profit tracker** - Shows how many coins you earned in total and per hour, with Session/Total modes.
 - **Nearby entities counter tracker** — Shows players, fishing hooks, and Chumcap buckets count within 30 blocks.

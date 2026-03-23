@@ -57,9 +57,9 @@ enum class NearbyEntitiesCounterTypes(val displayName: String) {
 }
 
 object Overlays : CategoryKt("Overlays") {
-    private val applyCustomStyleDescription = Translated(
-        "When enabled, custom styles from \"Custom overlays style\" category apply to this overlay. When disabled, the overlay is drawn without those decorations."
-    )
+    private fun getCustomStyleDescription(overlayName: String): String {
+        return "Whether to apply custom style from \"Custom overlays style\" category to $overlayName. When disabled, the overlay is drawn as a text without those decorations."
+    }
 
     init {
         separator {
@@ -153,7 +153,7 @@ Hidden if you have no fishing rod in your hotbar!""".trimIndent())
 
     var nearbyEntitiesCounterCustomStyle by boolean(true) {
         this.name = Translated("Apply custom style")
-        this.description = applyCustomStyleDescription
+        this.description = Translated(getCustomStyleDescription("Nearby entities counter"))
     }
 
     init {
@@ -163,7 +163,7 @@ Hidden if you have no fishing rod in your hotbar!""".trimIndent())
     }
 
     var barnFishingTimerOverlay by boolean(false) {
-        this.name = Translated("Barn fishing timer overlay")
+        this.name = Translated("Barn fishing timer")
         this.description = Translated("Shows an overlay with the count of sea creatures nearby and how long they have been alive. Mostly useful for barn fishing. Hidden if you have no fishing rod in your hotbar or if you are wearing Hunter armor!\nTo reset: ${WHITE}/${BarnFishingTimer.RESET_COMMAND}")
     }
 
@@ -183,7 +183,7 @@ Hidden if you have no fishing rod in your hotbar!""".trimIndent())
 
     var barnFishingTimerCustomStyle by boolean(true) {
         this.name = Translated("Apply custom style")
-        this.description = applyCustomStyleDescription
+        this.description = Translated(getCustomStyleDescription("Barn fishing timer"))
     }
       
     init {
@@ -203,7 +203,7 @@ Hidden if you have no fishing rod in your hotbar!""".trimIndent())
 
     var deployablesTimerCustomStyle by boolean(true) {
         this.name = Translated("Apply custom style")
-        this.description = applyCustomStyleDescription
+        this.description = Translated(getCustomStyleDescription("Deployables timer"))
     }
 
     init {
@@ -226,7 +226,7 @@ Hidden if you have no fishing rod in your hotbar!""".trimIndent())
 
     var seaCreaturesHpCustomStyle by boolean(true) {
         this.name = Translated("Apply custom style")
-        this.description = applyCustomStyleDescription
+        this.description = Translated(getCustomStyleDescription("Sea creatures HP"))
     }
 
     init {
@@ -271,7 +271,7 @@ ${GRAY}To reset [Total]: ${WHITE}/${SeaCreaturesTracker.RESET_TOTAL}
 
     var seaCreaturesTrackerCustomStyle by boolean(true) {
         this.name = Translated("Apply custom style")
-        this.description = applyCustomStyleDescription
+        this.description = Translated(getCustomStyleDescription("Sea creatures tracker"))
     }
 
     init {
@@ -313,7 +313,7 @@ ${GRAY}To reset [Total]: ${WHITE}/${SeaCreaturesTracker.RESET_TOTAL}
 
     var fishingHookTimerCustomStyle by boolean(true) {
         this.name = Translated("Apply custom style")
-        this.description = applyCustomStyleDescription
+        this.description = Translated(getCustomStyleDescription("Fishing hook timer"))
     }
     
     init {
@@ -338,7 +338,7 @@ ${GRAY}To pause: ${WHITE}/${SeaCreaturesPerHourTracker.PAUSE_COMMAND}
 
     var seaCreaturesPerHourTrackerCustomStyle by boolean(true) {
         this.name = Translated("Apply custom style")
-        this.description = applyCustomStyleDescription
+        this.description = Translated(getCustomStyleDescription("Sea creatures per hour tracker"))
     }
 
     init {
@@ -348,13 +348,13 @@ ${GRAY}To pause: ${WHITE}/${SeaCreaturesPerHourTracker.PAUSE_COMMAND}
     }
 
     var rainTimerOverlay by boolean(false) {
-        this.name = Translated("Rain/thunder timer")
+        this.name = Translated("Rain/Thunder timer")
         this.description = Translated("${GRAY}Shows an overlay with the active rain timer timer in The Park, and active/upcoming rain/thunder timer in Spider's Den. Please enable ${YELLOW}TabList settings -> General Info widget -> Show Rain")
     }
 
     var rainTimerCustomStyle by boolean(true) {
         this.name = Translated("Apply custom style")
-        this.description = applyCustomStyleDescription
+        this.description = Translated(getCustomStyleDescription("Rain/Thunder timer"))
     }
 
     init {
@@ -373,7 +373,7 @@ ${GRAY}To reset: ${WHITE}/${FishingFestivalTracker.RESET_COMMAND}
 
     var fishingFestivalTrackerCustomStyle by boolean(true) {
         this.name = Translated("Apply custom style")
-        this.description = applyCustomStyleDescription
+        this.description = Translated(getCustomStyleDescription("Fishing Festival tracker"))
     }
 
     init {
@@ -397,7 +397,7 @@ ${GRAY}To reset: ${WHITE}/${JerryWorkshopTracker.RESET_COMMAND}
 
     var jerryWorkshopTrackerCustomStyle by boolean(true) {
         this.name = Translated("Apply custom style")
-        this.description = applyCustomStyleDescription
+        this.description = Translated(getCustomStyleDescription("Jerry's Workshop tracker"))
     }
 
     init {
@@ -439,7 +439,7 @@ ${GRAY}To reset: ${WHITE}/${WaterHotspotsAndBayouTracker.RESET_COMMAND}
 
     var waterHotspotsAndBayouTrackerCustomStyle by boolean(true) {
         this.name = Translated("Apply custom style")
-        this.description = applyCustomStyleDescription
+        this.description = Translated(getCustomStyleDescription("Water hotspots & Bayou tracker"))
     }
 
     init {
@@ -480,7 +480,7 @@ ${GRAY}To reset: ${WHITE}/${CrimsonIsleTracker.RESET_COMMAND}
 
     var crimsonIsleTrackerCustomStyle by boolean(true) {
         this.name = Translated("Apply custom style")
-        this.description = applyCustomStyleDescription
+        this.description = Translated(getCustomStyleDescription("Crimson Isle tracker"))
     }
 
     init {
@@ -522,7 +522,7 @@ ${GRAY}Reset total: ${WHITE}/${TreasureFishingTracker.RESET_TOTAL_COMMAND}
 
     var treasureFishingTrackerCustomStyle by boolean(true) {
         this.name = Translated("Apply custom style")
-        this.description = applyCustomStyleDescription
+        this.description = Translated(getCustomStyleDescription("Treasure fishing tracker"))
     }
 
     init {
@@ -547,7 +547,7 @@ ${GRAY}To reset [Total]: ${WHITE}/${ArchfiendDiceProfitTracker.RESET_TOTAL_COMMA
 
     var archfiendDiceProfitTrackerCustomStyle by boolean(true) {
         this.name = Translated("Apply custom style")
-        this.description = applyCustomStyleDescription
+        this.description = Translated(getCustomStyleDescription("Archfiend Dice profit tracker"))
     }
 
     init {
@@ -623,7 +623,7 @@ ${GRAY}To pause: ${WHITE}/${FishingProfitTracker.PAUSE_COMMAND}
 
     var fishingProfitTrackerCustomStyle by boolean(true) {
         this.name = Translated("Apply custom style")
-        this.description = applyCustomStyleDescription
+        this.description = Translated(getCustomStyleDescription("Fishing profit tracker"))
     }
 
     init {
