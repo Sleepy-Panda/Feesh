@@ -4,6 +4,7 @@ Released on: ???
 
 ## Features
 
+- Added "Custom overlays style" settings section which lets you toggle gradient/single color background and border for the overlays. This style is toggleable for each overlay.
 - Added Chumcap buckets counter [disabled by default].
 - Renamed Legion & Bobbin' Time tracker and its settings, to fit new purpose of showing various entity counters. **Please re-enable in settings if you used it!**
 - Added "Items" settings section with the following functionalities [all disabled by default]:

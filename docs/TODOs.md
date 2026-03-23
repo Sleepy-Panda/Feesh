@@ -1,6 +1,7 @@
 ## Players feedback
 
 - TODO: Test in 1.21
+- Ragnarok timer for immunity - when it goes below 50% hp (e.g. 62.4). Max HP is 125 mil. Around 12seconds immunity?
 - Someone has no Vial title/sound
 - Fished coins to add via the command.
 - Carmine dye into tracker
