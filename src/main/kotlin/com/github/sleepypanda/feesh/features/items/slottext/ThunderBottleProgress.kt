@@ -2,6 +2,7 @@ package com.github.sleepypanda.feesh.features.items.slottext
 
 import com.github.sleepypanda.feesh.settings.categories.Items
 import com.github.sleepypanda.feesh.utils.ChatUtils.removeFormatting
+import com.github.sleepypanda.feesh.utils.ChatUtils.getFormattedString
 import com.github.sleepypanda.feesh.utils.ItemUtils
 import com.github.sleepypanda.feesh.utils.WorldUtils
 import net.minecraft.client.gui.screen.ingame.HandledScreen
@@ -31,7 +32,7 @@ object ThunderBottleProgress : BaseSlotTextRenderer() {
 
     override fun getItemStackSlotText(stack: ItemStack, screen: HandledScreen<*>, slot: Slot): String? {
         if (stack.isEmpty()) return null
-        val name = stack.name.string.removeFormatting() ?: return null
+        val name = ItemUtils.getCleanItemName(stack.name.getFormattedString())
 
         if (!BOTTLES.map { it.name }.contains(name)) return null
 

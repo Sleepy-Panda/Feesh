@@ -51,6 +51,20 @@ object ItemUtils {
     }
 
     /*
+     * Gets the clean item name without formatting. It also removes the amount suffix from NPC menu if present (e.g. §9Fish Affinity Talisman §8x1 -> Fish Affinity Talisman).
+     * @param itemName The formatted item name to clean.
+     * @returns {String} The clean item name.
+     */
+    fun getCleanItemName(itemName: String): String {
+        if (itemName.isBlank()) return ""
+        var s = itemName
+        if (Regex(".+ §8x\\d+$").matches(s)) { // Booster cookie menu or NPCs append the amount to the item name - e.g. §9Fish Affinity Talisman §8x1
+            s = s.split(" ").dropLast(1).joinToString(" ")
+        }
+        return s.removeFormatting()
+    }
+
+    /*
      * Checks if the item is a Dirt Rod.
      * @param item The item to check.
      * @returns {Boolean} True if the item is a Dirt Rod, false otherwise.
