@@ -35,7 +35,7 @@ object Items : CategoryKt("Items") {
     var katWrongPetsHighlighter by boolean(false) {
         this.name = Translated("Wrong pets offered to Kat")
         this.description = Translated(
-            "${GRAY}Highlights Kat's GUI slot when you offer Kat some pets (Epic Megalodon, Epic Baby Yeti) potentially by mistake. ${DARK_GRAY}For those who regularly gets scammed by Kat, giving her Megalodons instead of George (that's me)."
+            "${GRAY}Highlights Kat's GUI slot when you offer Kat some pets (Epic Megalodon) potentially by mistake. ${DARK_GRAY}For those who regularly gets scammed by Kat, giving her Megalodons instead of George (that's me)."
         )
     }
 
