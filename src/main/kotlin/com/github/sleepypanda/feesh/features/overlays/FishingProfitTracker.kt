@@ -565,7 +565,7 @@ object FishingProfitTracker {
 
     private fun onShardsCharmed(mobName: String, shardsCount: Int) {
         if (!isSessionActive || !isTrackerVisible() || shardsCount <= 0) return
-        val shardName = mobName + " Shard"
+        val shardName = if (mobName == "Nessie") "Sniffer Shard" else mobName + " Shard"
         findAndAddProfitTrackerItem({ it.itemName.equals(shardName, ignoreCase = true) }, shardsCount)
     }
 

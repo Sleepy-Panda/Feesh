@@ -34,14 +34,16 @@ https://hypixel.net/threads/march-23rd-jerry-island-qol-new-abiphone-contacts-re
 - New consumable for Jerry, Blizzard in a Bottle. Add alert when Blizzard expires. Overlay with Rain/Thunder/Blizzard.
 - Enchanted Book - old format, or Combinable in Anvil, empty line, name
   - In trash highlighter and in profit tracker
+- /warp murk for nessie?
 
+- Killed by Nessie.  ☠ You were killed by Nessie.
 - Split water hotspots as separate widget, not joined with Bayou.
 - Can we catch hotspot SCS on Jerry? - Yes. Can we catch Spooky? Carrot King, Agarimoo? - no
 - Mound of Seagrass (epic) and Vibrant Coral (legendary) drop - need alerts, chat etc?
 - Blizzard for tunnels?
 - Loch hook (Shiffer Shard) attribute shard? Add into fishing drops
   - [537] ৫ [MVP+] haidm: You caught x2 Sniffer Shards! - going into huntingbox
-- /warp murk for nessie?
+
 - Nessie immunity?
 - NPC price for Mound of Seagrassand Vibrant Coral drop
 - - 2% mound, 0.5% coral

@@ -763,6 +763,12 @@ class FishingProfitDrops {
                 itemDisplayName = "${LEGENDARY}Titanoboa ${WHITE}Shard",
                 npcPrice = null,
             ),
+            FishingProfitDropInfo(
+                itemId = "SHARD_SNIFFER",
+                itemName = "Sniffer Shard",
+                itemDisplayName = "${LEGENDARY}Sniffer ${WHITE}Shard",
+                npcPrice = null,
+            ),
 
             // Water
 
