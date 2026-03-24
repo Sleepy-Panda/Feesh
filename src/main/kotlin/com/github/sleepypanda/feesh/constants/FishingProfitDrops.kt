@@ -1285,6 +1285,12 @@ class FishingProfitDrops {
                 npcPrice = null,
             ),
             FishingProfitDropInfo(
+                itemId = "MOB_THE_FISH",
+                itemName = "Mob the Fish",
+                itemDisplayName = "${SPECIAL}Mob the Fish",
+                npcPrice = null,
+            ),
+            FishingProfitDropInfo(
                 itemId = "FIG_LOG",
                 itemName = "Fig Log",
                 itemDisplayName = "${COMMON}Fig Log",

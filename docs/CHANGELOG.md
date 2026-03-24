@@ -16,7 +16,7 @@ Released on: ???
 
 ## Bugfixes
 
-- Added Hilt of True Ice drop missing in the Fishing profit tracker.
+- Added Hilt of True Ice and Mob the Fish drops missing in the Fishing profit tracker.
 
 # 1.3.0
 
