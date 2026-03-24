@@ -17,14 +17,26 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(HandledScreen.class)
 public abstract class HandledScreenMixin {
 
-    @Inject(method = "drawSlot", at = @At("HEAD"))
-    private void feesh$onSlotBeforeItemDrawn(DrawContext context, Slot slot, CallbackInfo ci) {
+    @Inject(method = "drawSlot(Lnet/minecraft/client/gui/DrawContext;Lnet/minecraft/screen/slot/Slot;)V", at = @At("HEAD"), require = 0)
+    private void feesh$onSlotBeforeItemDrawn_1_21_10(DrawContext context, Slot slot, CallbackInfo ci) {
         HandledScreen<?> screen = (HandledScreen<?>) (Object) this;
         EventBus.INSTANCE.publish(new BeforeSlotRenderedEvent(context, slot, screen));
     }
 
-    @Inject(method = "drawSlot", at = @At("RETURN"))
-    private void feesh$onSlotAfterItemDrawn(DrawContext context, Slot slot, CallbackInfo ci) {
+    @Inject(method = "drawSlot(Lnet/minecraft/client/gui/DrawContext;Lnet/minecraft/screen/slot/Slot;II)V", at = @At("HEAD"), require = 0)
+    private void feesh$onSlotBeforeItemDrawn_1_21_11(DrawContext context, Slot slot, int x, int y, CallbackInfo ci) {
+        HandledScreen<?> screen = (HandledScreen<?>) (Object) this;
+        EventBus.INSTANCE.publish(new BeforeSlotRenderedEvent(context, slot, screen));
+    }
+
+    @Inject(method = "drawSlot(Lnet/minecraft/client/gui/DrawContext;Lnet/minecraft/screen/slot/Slot;)V", at = @At("RETURN"), require = 0)
+    private void feesh$onSlotAfterItemDrawn_1_21_10(DrawContext context, Slot slot, CallbackInfo ci) {
+        HandledScreen<?> screen = (HandledScreen<?>) (Object) this;
+        EventBus.INSTANCE.publish(new AfterSlotRenderedEvent(context, slot, screen));
+    }
+
+    @Inject(method = "drawSlot(Lnet/minecraft/client/gui/DrawContext;Lnet/minecraft/screen/slot/Slot;II)V", at = @At("RETURN"), require = 0)
+    private void feesh$onSlotAfterItemDrawn_1_21_11(DrawContext context, Slot slot, int x, int y, CallbackInfo ci) {
         HandledScreen<?> screen = (HandledScreen<?>) (Object) this;
         EventBus.INSTANCE.publish(new AfterSlotRenderedEvent(context, slot, screen));
     }
