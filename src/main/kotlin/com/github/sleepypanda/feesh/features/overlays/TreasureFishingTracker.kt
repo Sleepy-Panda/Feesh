@@ -76,6 +76,7 @@ object TreasureFishingTracker {
             "${GRAY}Last on: ${WHITE}5 000 ${GRAY}Treasures ago"
         ))
         .setSettingsKey { Overlays.treasureFishingTrackerOverlay }
+        .setApplyCustomStyleKey { Overlays.treasureFishingTrackerCustomStyle }
         .setCondition {
             WorldUtils.isInFishingWorld()
         }

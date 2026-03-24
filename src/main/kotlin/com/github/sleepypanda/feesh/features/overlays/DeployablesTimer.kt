@@ -92,6 +92,7 @@ object DeployablesTimer {
             "${GOLD}Will-o'-wisp: ${WHITE}04m 30s",
         ))
         .setSettingsKey { Overlays.deployablesTimerOverlay }
+        .setApplyCustomStyleKey { Overlays.deployablesTimerCustomStyle }
 
     fun init() {
         EventBus.subscribe(ClientTickEvent::class, ::onClientTick)

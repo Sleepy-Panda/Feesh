@@ -64,6 +64,7 @@ object SeaCreaturesTracker {
             "${GRAY}Total: ${WHITE}11 ${GRAY}rare out of ${WHITE}1000",
         ))
         .setSettingsKey { Overlays.seaCreaturesTrackerOverlay }
+        .setApplyCustomStyleKey { Overlays.seaCreaturesTrackerCustomStyle }
         .setCondition {
             WorldUtils.isInFishingWorld() &&
             FishingHookUtils.wasFishingHookActiveMinutesAgo(5)

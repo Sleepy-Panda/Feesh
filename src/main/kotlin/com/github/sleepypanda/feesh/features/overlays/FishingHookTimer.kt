@@ -47,6 +47,7 @@ object FishingHookTimer {
             "${YELLOW}${BOLD}2.0s"
         ))
         .setSettingsKey { Overlays.fishingHookTimerOverlay }
+        .setApplyCustomStyleKey { Overlays.fishingHookTimerCustomStyle }
         .setCondition {
             WorldUtils.isInFishingWorld() &&
             PlayerUtils.hasFishingRodInHotbar()

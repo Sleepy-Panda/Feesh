@@ -3,7 +3,6 @@ package com.github.sleepypanda.feesh.features.overlays
 import com.github.sleepypanda.feesh.FeeshMod
 import com.github.sleepypanda.feesh.constants.SeaCreatures
 import com.github.sleepypanda.feesh.constants.RareDrops
-import com.github.sleepypanda.feesh.constants.TYPE_CRIMSON_ISLE_LAVA
 import com.github.sleepypanda.feesh.utils.RegisterUtils
 import com.github.sleepypanda.feesh.utils.WorldUtils
 import com.github.sleepypanda.feesh.utils.ChatUtils
@@ -72,6 +71,7 @@ object CrimsonIsleTracker {
             "${GRAY}Last on: ${WHITE}5 ${GRAY}Lord Jawbuses ago"
         ))
         .setSettingsKey { Overlays.crimsonIsleTrackerOverlay }
+        .setApplyCustomStyleKey { Overlays.crimsonIsleTrackerCustomStyle }
         .setCondition {
             WorldUtils.getWorldName() == WorldUtils.CRIMSON_ISLE && FishingHookUtils.wasFishingHookActiveMinutesAgo(5)
         }
@@ -96,7 +96,7 @@ object CrimsonIsleTracker {
 
         val seaCreatureName = event.seaCreatureName
         val seaCreatureInfo = SeaCreatures.allSeaCreatures.find { it.name == seaCreatureName } ?: return
-        if (!seaCreatureInfo.types.contains(TYPE_CRIMSON_ISLE_LAVA)) return
+        if (!seaCreatureInfo.types.contains(SeaCreatures.TYPE_CRIMSON_ISLE_LAVA)) return
 
         val isInHotspot = isFishingInHotspot()
         val isInPlhlegblastPool = isInPlhlegblastPool()

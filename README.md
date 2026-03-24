@@ -67,9 +67,10 @@ This mod requires [Fabric API](https://modrinth.com/mod/fabric-api) and [Fabric 
 ### Overlays
 
 > You can change position, scale and alignment (Left, Center, Right) for each overlay in **/feeshMoveAllGuis**
+> You can setup custom background & border style, and enable this style on each overlay level.
 
 - **Fishing profit tracker** - Shows how many coins you earned in total and per hour, with Session/Total modes.
-- **Legion & Bobbin' Time tracker** — Shows players and fishing hooks count within 30 blocks.
+- **Nearby entities counter tracker** — Shows players, fishing hooks, and Chumcap buckets count within 30 blocks.
 - **Barn fishing timer** — Shows count of sea creatures nearby and how long they've been alive.
 - **Deployables timer** — Shows remaining time of your deployable items placed nearby.
 - **Sea creatures HP** — Shows HP of nearby rare sea creatures in lootshare range with their immunity timer.

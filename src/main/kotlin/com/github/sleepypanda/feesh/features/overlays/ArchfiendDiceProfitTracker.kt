@@ -90,6 +90,7 @@ object ArchfiendDiceProfitTracker {
             "${AQUA}${BOLD}Total profit: ${GREEN}1M"
         ))
         .setSettingsKey { Overlays.archfiendDiceProfitTrackerOverlay }
+        .setApplyCustomStyleKey { Overlays.archfiendDiceProfitTrackerCustomStyle }
         .setCondition {
             isRolledRecently()
         }

@@ -40,6 +40,7 @@ object SeaCreaturesPerHourTracker {
             "${AQUA}Elapsed time: ${WHITE}1h 23m 45s",
         ))
         .setSettingsKey { Overlays.seaCreaturesPerHourTrackerOverlay }
+        .setApplyCustomStyleKey { Overlays.seaCreaturesPerHourTrackerCustomStyle }
         .setCondition {
             WorldUtils.isInFishingWorld() &&
             FishingHookUtils.wasFishingHookActiveMinutesAgo(5)
