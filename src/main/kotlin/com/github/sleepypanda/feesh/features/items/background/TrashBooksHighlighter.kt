@@ -1,6 +1,7 @@
 package com.github.sleepypanda.feesh.features.items.background
 
 import com.github.sleepypanda.feesh.utils.ChatUtils.removeFormatting
+import com.github.sleepypanda.feesh.utils.ItemUtils
 import com.github.sleepypanda.feesh.utils.WorldUtils
 import com.github.sleepypanda.feesh.settings.categories.Items
 import net.minecraft.client.gui.screen.ingame.HandledScreen
@@ -29,8 +30,7 @@ object TrashBooksHighlighter : BaseBackgroundHighlighter() {
         val itemName = stack.name.string.removeFormatting()
         if (itemName != "Enchanted Book") return null
 
-        val lore = stack.get(DataComponentTypes.LORE)?.lines?.map { it.string } ?: emptyList()
-        val bookName = lore.firstOrNull()?.removeFormatting()?.trim() ?: return null
+        val bookName = ItemUtils.getEnchantedBookName(stack) ?: return null
         if (bookName.isEmpty()) return null
 
         if (trashBookNames.any { bookName.equals(it, ignoreCase = true) }) return highlightColor

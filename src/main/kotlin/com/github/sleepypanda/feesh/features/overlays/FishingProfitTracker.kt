@@ -673,10 +673,9 @@ object FishingProfitTracker {
             if (slotItemName.isBlank()) continue
 
             if (slotItemName == "Enchanted Book") {
-                val loreLines = stack.get(DataComponentTypes.LORE)?.lines?.map { it.string } ?: emptyList()
-                if (loreLines.size > 0) {
-                    val description = loreLines[0]
-                    slotItemName += " ($description)"
+                val bookName = ItemUtils.getEnchantedBookName(stack) ?: ""
+                if (bookName.isNotBlank()) {
+                    slotItemName += " ($bookName)"
                 }
             }
 

@@ -18,31 +18,28 @@ https://hypixel.net/threads/march-23rd-jerry-island-qol-new-abiphone-contacts-re
 - Users to enable new alerts
 
 - Double Hook possible for Reindrakes.
-- Mythic Baby Yeti pet - add to calculation. Check that API will have it.
+- Mythic Baby Yeti pet - add to calculation.
 - New Lobby Wide catch message for Reindrake: WOAH! [MVP+] MoonTheSadFisher summoned a Reindrake from the depths!
-- Personal Reindrake alert works fine.
 - Baby Yeti now drops as COMMON - adjust alerts, chat message, custom sounds, and fishing profit items. Add RARE DROP! It has no drop msg
-- Renamed Hilt of true Ice to True Ice. Check for ID in API.
+- Removed alerts & chat message & custom sound on Legenadary Baby Yeti as it does not drop anymore.
+- Renamed Hilt of true Ice to True Ice.
 - Added 50,000 Coin NPC Sell Prices to several Special Fish (Mob, Swamp, Fish)
-- Mob rarities changed.
-- Check pet highlighter at Kat. Baby Yeti is invalid now.
+- Winter mob rarities changed.
 - New loot table for winter SCS (actually nothing new)
 - Enable hotspots logic for Jerry Workshop.
-- New grinch nametag - count grinch in barn fishing timer
-- Water Hotspot ovverlay should work.
+- Water Hotspot overlay should work.
 - Hotspot found / Share / Gone should work.
 - Nessie sea creature. Alert, chat, custom sound, highlight, HP tracker.
 - See Reindrake nametag even if more than 30 blocks away.
+- New consumable for Jerry, Blizzard in a Bottle. Add alert when Blizzard expires. Overlay with Rain/Thunder/Blizzard.
+- Enchanted Book - old format, or Combinable in Anvil, empty line, name
+  - In trash highlighter and in profit tracker
 
-- Can we catch hotspot SCS on Jerry? Yes. Can we catch Spooky? Carrot King, Agarimoo?
-- New consumable for Jerry & Tunnels, Blizzard in a Bottle. Add alert when it expires. Overlay with Rain/Thunder/Blizzard
-  - This item can’t be used while a Blizzard is already active!
-  - The Blizzard petered out... - global lobby buff
-  - You left the Blizzard...
-  - The Blizzard in this area is boosting your Fishing stats!
-  - Blizzard: 7m, 2m 45s, 1s
+- Split water hotspots as separate widget, not joined with Bayou.
+- Can we catch hotspot SCS on Jerry? - Yes. Can we catch Spooky? Carrot King, Agarimoo? - no
 - Mound of Seagrass (epic) and Vibrant Coral (legendary) drop - need alerts, chat etc?
-- Loch hook (Shiffer Shard) attribute shard?
+- Blizzard for tunnels?
+- Loch hook (Shiffer Shard) attribute shard? Add into fishing drops
   - [537] ৫ [MVP+] haidm: You caught x2 Sniffer Shards! - going into huntingbox
 - /warp murk for nessie?
 - Nessie immunity?
@@ -50,6 +47,7 @@ https://hypixel.net/threads/march-23rd-jerry-island-qol-new-abiphone-contacts-re
 - - 2% mound, 0.5% coral
 - Be able to delete old baby yetis from tracker and /feeshDelete... - [Feesh] Item not found by ID: BABY_YETI;4
 
+- IDs to check post-update: Hilt of Truce Ice, Mythic Baby Yeti, Sniffer Shard
 
 ## Tech Debt
 

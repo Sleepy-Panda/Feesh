@@ -161,4 +161,17 @@ object ItemUtils {
         val rarityCode = CommonUtils.getRarityColorCode(rarityNumericCode)
         return "${GRAY}[Lvl ${level}] ${rarityCode}${petName}"
     }
+
+    /*
+     * Gets the name of the enchanted book from the stack.
+     * @param stack The item stack to get the name from.
+     * @returns {String} The name of the enchanted book, or null if the stack is not an enchanted book.
+     */
+    fun getEnchantedBookName(stack: ItemStack): String? {
+        val lore = stack.get(DataComponentTypes.LORE)?.lines?.map { it.string.removeFormatting() } ?: emptyList()
+        val filteredLore = lore.filter { !it.isNullOrBlank() && !it.contains("Combinable in Anvil") }
+        val bookName = filteredLore.firstOrNull()?.trim() ?: return null
+        if (bookName.isEmpty()) return null
+        return bookName
+    }
 }
