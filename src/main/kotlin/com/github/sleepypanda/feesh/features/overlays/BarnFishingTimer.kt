@@ -55,6 +55,7 @@ object BarnFishingTimer {
             "${WHITE}25 ${GRAY}sea creatures ${DARK_GRAY}(${WHITE}2m 30s${DARK_GRAY})",
         ))
         .setSettingsKey { Overlays.barnFishingTimerOverlay }
+        .setApplyCustomStyleKey { Overlays.barnFishingTimerCustomStyle }
         .setCondition {
             WorldUtils.isInFishingWorld() &&
             PlayerUtils.hasFishingRodInHotbar() &&

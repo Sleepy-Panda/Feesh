@@ -4,6 +4,7 @@ import com.github.sleepypanda.feesh.events.models.GameRenderEvent
 import com.github.sleepypanda.feesh.events.models.ScreenAfterBackgroundRenderEvent
 import com.github.sleepypanda.feesh.events.models.AfterMouseClickEvent
 import com.github.sleepypanda.feesh.events.EventBus
+import com.github.sleepypanda.feesh.settings.categories.Overlays
 import com.github.sleepypanda.feesh.utils.GuiUtils
 import com.github.sleepypanda.feesh.utils.WorldUtils
 import com.github.sleepypanda.feesh.utils.enums.Alignment
@@ -17,6 +18,7 @@ import net.minecraft.client.MinecraftClient
 import net.minecraft.client.font.TextRenderer
 import net.minecraft.client.gui.Click
 import java.awt.Color
+import kotlin.math.roundToInt
 
 /**
  * A button within an overlay line. Contains the display text and click callback.
@@ -43,16 +45,17 @@ data class LineAction(
 
 /**
  * A class that represents a GUI for the Feesh mod. GUI is shown when in Skyblock and the condition is met.
- * @property key The unique key for this GUI, used for saving/loading configuration.
+ * @property coordsDataKey The unique key for this GUI, used for saving/loading coords/scale configuration.
  * @property x The x position of the GUI.
  * @property y The y position of the GUI.
  * @property scale The scale of the GUI.
  * @property alignment The alignment of the GUI.
  * @property condition The condition that must be met for the GUI to be displayed.
  * @property settingsKey The settings key that must be enabled for the GUI to be displayed.
+ * @property applyCustomStyleKey The settings key that must be enabled for the GUI to have custom style applied. When false, custom Overlays style (background, border, colors) is not applied to this GUI.
  * @property isClickable Whether the GUI is clickable, and will be rendered in front of background when Inventory GUI is opened.
  * @property lines The lines of the GUI.
- * @property sampleLines The sample lines of the GUI.
+ * @property sampleLines The sample lines of the GUI for MoveGuis screen.
  */
 class FeeshGui {
     companion object {
@@ -75,6 +78,7 @@ class FeeshGui {
     private var alignment: Alignment = Alignment.LEFT
     private var condition: () -> Boolean = { true }
     private var settingsKey: (() -> Boolean)? = null
+    private var applyCustomStyleKey: () -> Boolean = { true }
     private var isClickable: Boolean = false
     private var lines: List<String> = emptyList()
     private var sampleLines: List<String> = emptyList()
@@ -149,6 +153,11 @@ class FeeshGui {
 
     fun setSettingsKey(settingsKey: () -> Boolean): FeeshGui {
         this.settingsKey = settingsKey
+        return this
+    }
+
+    fun setApplyCustomStyleKey(applyCustomStyleKey: () -> Boolean): FeeshGui {
+        this.applyCustomStyleKey = applyCustomStyleKey
         return this
     }
 
@@ -335,9 +344,6 @@ class FeeshGui {
         if (!condition()) return
         if (mcClient.currentScreen is MoveGuisScreen) return
 
-        drawContext.matrices.pushMatrix()
-        drawContext.matrices.scale(scale, scale)
-
         val allLines = getDisplayLinesForRender()
         val scaledY = (y / scale).toInt()
         val fontHeight = textRenderer.fontHeight
@@ -360,11 +366,23 @@ class FeeshGui {
         val maxWidth = getMaxWidth(textRenderer, linesForWidth)
         val leftEdge = getLeftEdge(textRenderer, linesForWidth)
         val scaledLeftEdge = (leftEdge / scale).toInt()
+        val height = (allLines.size * lineHeightPx)
         var currentY = scaledY
+
+        val useCustomStyle = applyCustomStyleKey()
+        val overlayBackgroundCoords = getOverlayBackgroundCoords(scaledLeftEdge, scaledY, maxWidth, height)
+        if (useCustomStyle) {
+            val overlayScreenCoords = toScreenCoords(overlayBackgroundCoords)
+            drawOverlayBackgroundScreenSpace(drawContext, overlayScreenCoords)
+            drawOverlayBorderScreenSpace(drawContext, overlayScreenCoords) // I had to draw it before scaling, so the border is not scaled, and aligned with background.
+        }
+
+        drawContext.matrices.pushMatrix()
+        drawContext.matrices.scale(scale, scale)
 
         for ((index, line) in allLines.withIndex()) {
             val actions = if (index == hoveredLineIndex) hoveredActions else null
-            if (actions != null && actions.isNotEmpty()) {
+            if (!actions.isNullOrEmpty()) {
                 val buttonsStr = actions.joinToString("") { it.text }
                 val lineWidth = textRenderer.getWidth(Text.literal(line))
                 val buttonsWidth = textRenderer.getWidth(Text.literal(buttonsStr))
@@ -408,6 +426,65 @@ class FeeshGui {
         drawContext.matrices.popMatrix()
     }
 
+    private data class OverlayBackgroundCoords(val left: Int, val top: Int, val right: Int, val bottom: Int)
+
+    /**
+     * Gets the scaled coordinates of the rectangle around overlay text, with some padding.
+     */
+    private fun getOverlayBackgroundCoords(scaledLeftEdge: Int, scaledY: Int, maxWidth: Int, height: Int): OverlayBackgroundCoords {
+        return OverlayBackgroundCoords(
+            scaledLeftEdge - 4,
+            scaledY - 4,
+            scaledLeftEdge + maxWidth + 4,
+            scaledY + height + 2,
+        )
+    }
+
+    private data class OverlayScreenCoords(val left: Int, val top: Int, val right: Int, val bottom: Int)
+
+    private fun toScreenCoords(backgroundCoords: OverlayBackgroundCoords): OverlayScreenCoords {
+        return OverlayScreenCoords(
+            (backgroundCoords.left * scale).roundToInt(),
+            (backgroundCoords.top * scale).roundToInt(),
+            (backgroundCoords.right * scale).roundToInt(),
+            (backgroundCoords.bottom * scale).roundToInt(),
+        )
+    }
+
+    private fun drawOverlayBackgroundScreenSpace(drawContext: DrawContext, screenCoords: OverlayScreenCoords) {
+        if (!Overlays.overlaysBackground) return
+
+        val backgroundTopColor = Color(Overlays.overlaysBackgroundColor1, true).rgb
+        val backgroundBottomColor = Color(Overlays.overlaysBackgroundColor2, true).rgb
+
+        drawContext.fillGradient(
+            screenCoords.left,
+            screenCoords.top,
+            screenCoords.right,
+            screenCoords.bottom,
+            backgroundTopColor,
+            backgroundBottomColor
+        )
+    }
+
+    private fun drawOverlayBorderScreenSpace(drawContext: DrawContext, screenCoords: OverlayScreenCoords) {
+        if (!Overlays.overlaysBorder) return
+
+        val borderColor = Color(Overlays.overlaysBorderColor, true).rgb
+        val borderWidth = Overlays.overlaysBorderWidth.coerceIn(1..5)
+        val left = screenCoords.left
+        val top = screenCoords.top
+        val right = screenCoords.right
+        val bottom = screenCoords.bottom
+
+        // Draw border borderWidth pixels outside the overlay, so it does not overlap the background.
+        // Also made lines not overlap in the corners.
+        drawContext.fill(left - borderWidth, top - borderWidth, right + borderWidth, top, borderColor) // top
+        drawContext.fill(left - borderWidth, bottom, right + borderWidth, bottom + borderWidth, borderColor) // bottom
+        drawContext.fill(left - borderWidth, top, left, bottom, borderColor) // left
+        drawContext.fill(right, top, right + borderWidth, bottom, borderColor) // right
+    }
+
     private fun getHoveredLineIndex(textRenderer: TextRenderer, displayLines: List<String>, mouseX: Double, mouseY: Double): Int? {
         val maxWidth = getMaxWidth(textRenderer, displayLines) * scale
         val leftEdge = getLeftEdge(textRenderer, displayLines).toFloat()
@@ -440,10 +517,15 @@ class FeeshGui {
         // Convert x (which represents different points based on alignment) to left edge
         val leftEdge = getLeftSampleEdge(textRenderer)
         val scaledLeftEdge = (leftEdge / scale).toInt()
-        
-        // Background is always drawn from left edge
-        val backgroundX = scaledLeftEdge
-        drawContext.fill(backgroundX - 2, scaledY - 2, backgroundX + maxWidth.toInt() + 2, scaledY + height.toInt() + 2, Color(0, 0, 0, 80).rgb)
+
+        val backgroundCoords = getOverlayBackgroundCoords(scaledLeftEdge, scaledY, maxWidth, height)
+        drawContext.fill(
+            backgroundCoords.left,
+            backgroundCoords.top,
+            backgroundCoords.right,
+            backgroundCoords.bottom,
+            Color(0, 0, 0, 80).rgb
+        )
 
         var currentY = scaledY
         for (line in sampleLines) {
@@ -486,9 +568,9 @@ class FeeshGui {
         // Convert x to left edge for hitbox calculation
         val leftEdge = getLeftSampleEdge(textRenderer).toFloat()
             
-        if (mouseX >= leftEdge - 2 &&
-            mouseX <= leftEdge + maxWidth + 2 &&
-            mouseY >= y - 2 &&
+        if (mouseX >= leftEdge - 4 &&
+            mouseX <= leftEdge + maxWidth + 4 &&
+            mouseY >= y - 4 &&
             mouseY <= y + height + 2) {        
             return true
         }
@@ -505,7 +587,7 @@ class FeeshGui {
         val allLines = getDisplayLinesForRender()
         val linesWithAllButtons = allLines.mapIndexed { index, line ->
             val actions = lineIndexToActions[index]
-            if (actions != null && actions.isNotEmpty()) line + " " + actions.joinToString("") { it.text } else line
+            if (!actions.isNullOrEmpty()) line + " " + actions.joinToString("") { it.text } else line
         }
         val hoveredLineIndex = getHoveredLineIndex(textRenderer, linesWithAllButtons, mouseX, mouseY) ?: return null
         val actions = lineIndexToActions[hoveredLineIndex] ?: return null

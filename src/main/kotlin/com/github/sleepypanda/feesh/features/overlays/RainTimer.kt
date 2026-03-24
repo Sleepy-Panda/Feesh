@@ -37,6 +37,7 @@ object RainTimer {
         .setSampleLines(listOf("${BLUE}Rain ${GRAY}ends in ${WHITE}02m 30s"))
         .setCondition { PlayerUtils.hasFishingRodInHotbar() && isRainArea() }
         .setSettingsKey { Overlays.rainTimerOverlay }
+        .setApplyCustomStyleKey { Overlays.rainTimerCustomStyle }
 
     fun init() {
         EventBus.subscribe(ClientTickEvent::class, ::onClientTick)

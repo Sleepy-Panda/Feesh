@@ -81,6 +81,7 @@ object SeaCreatureHpTracker {
             "${RED}♆${GRAY}⚙${LIGHT_PURPLE}♣ ${RED}${BOLD}Lord Jawbus ${GREEN}1M${WHITE}/${GREEN}2M${RED}❤",
         ))
         .setSettingsKey { Overlays.seaCreaturesHpOverlay }
+        .setApplyCustomStyleKey { Overlays.seaCreaturesHpCustomStyle }
         .setCondition {
             TRACKED_WORLD_NAMES.contains(WorldUtils.getWorldName())
         }
