@@ -1902,7 +1902,7 @@ class FishingProfitDrops {
                 itemId = "BABY_YETI;0",
                 itemName = "[Lvl 1] Baby Yeti (COMMON)",
                 itemDisplayName = "${GRAY}[Lvl 1] ${COMMON}Baby Yeti",
-                npcPrice = 10_000.0, // ??
+                npcPrice = 1_000_000.0,
                 shouldAnnounceRareDrop = true,
             ),
 

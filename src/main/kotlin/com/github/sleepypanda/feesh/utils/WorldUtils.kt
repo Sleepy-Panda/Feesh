@@ -55,6 +55,7 @@ object WorldUtils {
         BACKWATER_BAYOU,
         SPIDERS_DEN,
         HUB,
+        JERRY_WORKSHOP,
         CRIMSON_ISLE
     )
 
