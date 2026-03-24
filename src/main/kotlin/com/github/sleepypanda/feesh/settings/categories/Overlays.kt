@@ -125,7 +125,7 @@ object Overlays : CategoryKt("Overlays") {
 
     var overlaysBorderWidth by int(1) {
         this.name = Translated("Overlays border width")
-        this.description = Translated("Select border width. Border is scaled with the overlay scale.")
+        this.description = Translated("Select border width.")
         this.range = 1..5
         this.slider = true
     }

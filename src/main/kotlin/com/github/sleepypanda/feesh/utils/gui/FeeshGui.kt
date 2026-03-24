@@ -18,6 +18,7 @@ import net.minecraft.client.MinecraftClient
 import net.minecraft.client.font.TextRenderer
 import net.minecraft.client.gui.Click
 import java.awt.Color
+import kotlin.math.roundToInt
 
 /**
  * A button within an overlay line. Contains the display text and click callback.
@@ -343,9 +344,6 @@ class FeeshGui {
         if (!condition()) return
         if (mcClient.currentScreen is MoveGuisScreen) return
 
-        drawContext.matrices.pushMatrix()
-        drawContext.matrices.scale(scale, scale)
-
         val allLines = getDisplayLinesForRender()
         val scaledY = (y / scale).toInt()
         val fontHeight = textRenderer.fontHeight
@@ -372,10 +370,15 @@ class FeeshGui {
         var currentY = scaledY
 
         val useCustomStyle = applyCustomStyleKey()
+        val overlayBackgroundCoords = getOverlayBackgroundCoords(scaledLeftEdge, scaledY, maxWidth, height)
         if (useCustomStyle) {
-            drawOverlayBackground(drawContext, scaledLeftEdge, scaledY, maxWidth, height)
-            drawOverlayBorder(drawContext, scaledLeftEdge, scaledY, maxWidth, height)
+            val overlayScreenCoords = toScreenCoords(overlayBackgroundCoords)
+            drawOverlayBackgroundScreenSpace(drawContext, overlayScreenCoords)
+            drawOverlayBorderScreenSpace(drawContext, overlayScreenCoords) // I had to draw it before scaling, so the border is not scaled, and aligned with background.
         }
+
+        drawContext.matrices.pushMatrix()
+        drawContext.matrices.scale(scale, scale)
 
         for ((index, line) in allLines.withIndex()) {
             val actions = if (index == hoveredLineIndex) hoveredActions else null
@@ -437,46 +440,42 @@ class FeeshGui {
         )
     }
 
-    private fun drawOverlayBackground(
-        drawContext: DrawContext,
-        scaledLeftEdge: Int,
-        scaledY: Int,
-        maxWidth: Int,
-        height: Int,
-    ) {
+    private data class OverlayScreenCoords(val left: Int, val top: Int, val right: Int, val bottom: Int)
+
+    private fun toScreenCoords(backgroundCoords: OverlayBackgroundCoords): OverlayScreenCoords {
+        return OverlayScreenCoords(
+            (backgroundCoords.left * scale).roundToInt(),
+            (backgroundCoords.top * scale).roundToInt(),
+            (backgroundCoords.right * scale).roundToInt(),
+            (backgroundCoords.bottom * scale).roundToInt(),
+        )
+    }
+
+    private fun drawOverlayBackgroundScreenSpace(drawContext: DrawContext, screenCoords: OverlayScreenCoords) {
         if (!Overlays.overlaysBackground) return
 
         val backgroundTopColor = Color(Overlays.overlaysBackgroundColor1, true).rgb
         val backgroundBottomColor = Color(Overlays.overlaysBackgroundColor2, true).rgb
 
-        val backgroundCoords = getOverlayBackgroundCoords(scaledLeftEdge, scaledY, maxWidth, height)
         drawContext.fillGradient(
-            backgroundCoords.left,
-            backgroundCoords.top,
-            backgroundCoords.right,
-            backgroundCoords.bottom,
+            screenCoords.left,
+            screenCoords.top,
+            screenCoords.right,
+            screenCoords.bottom,
             backgroundTopColor,
             backgroundBottomColor
         )
     }
 
-    private fun drawOverlayBorder(
-        drawContext: DrawContext,
-        scaledLeftEdge: Int,
-        scaledY: Int,
-        maxWidth: Int,
-        height: Int,
-    ) {
+    private fun drawOverlayBorderScreenSpace(drawContext: DrawContext, screenCoords: OverlayScreenCoords) {
         if (!Overlays.overlaysBorder) return
 
         val borderColor = Color(Overlays.overlaysBorderColor, true).rgb
         val borderWidth = Overlays.overlaysBorderWidth.coerceIn(1..5)
-
-        val backgroundCoords = getOverlayBackgroundCoords(scaledLeftEdge, scaledY, maxWidth, height)
-        val left = backgroundCoords.left
-        val top = backgroundCoords.top
-        val right = backgroundCoords.right
-        val bottom = backgroundCoords.bottom
+        val left = screenCoords.left
+        val top = screenCoords.top
+        val right = screenCoords.right
+        val bottom = screenCoords.bottom
 
         // Draw border borderWidth pixels outside the overlay, so it does not overlap the background.
         // Also made lines not overlap in the corners.
