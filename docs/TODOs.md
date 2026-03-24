@@ -32,9 +32,10 @@ https://hypixel.net/threads/march-23rd-jerry-island-qol-new-abiphone-contacts-re
 - Water Hotspot ovverlay should work.
 - Hotspot found / Share / Gone should work.
 - Nessie sea creature. Alert, chat, custom sound, highlight, HP tracker.
+- See Reindrake nametag even if more than 30 blocks away.
 
-- Can we catch hotspot SCS on Jerry? Can we catch Spooky? Carrot King, Agarimoo?
-- New consumable for Jerry & Tunnels, Blizzard in a Bottle. Add alert when it expires. Overlay with Rain/Thunder?
+- Can we catch hotspot SCS on Jerry? Yes. Can we catch Spooky? Carrot King, Agarimoo?
+- New consumable for Jerry & Tunnels, Blizzard in a Bottle. Add alert when it expires. Overlay with Rain/Thunder/Blizzard
   - This item can’t be used while a Blizzard is already active!
   - The Blizzard petered out... - global lobby buff
   - You left the Blizzard...
@@ -44,7 +45,6 @@ https://hypixel.net/threads/march-23rd-jerry-island-qol-new-abiphone-contacts-re
 - Loch hook (Shiffer Shard) attribute shard?
   - [537] ৫ [MVP+] haidm: You caught x2 Sniffer Shards! - going into huntingbox
 - /warp murk for nessie?
-- NPC price for baby yeti - 1mil
 - Nessie immunity?
 - NPC price for Mound of Seagrassand Vibrant Coral drop
 - - 2% mound, 0.5% coral

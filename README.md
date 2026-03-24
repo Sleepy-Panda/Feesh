@@ -62,7 +62,7 @@ This mod requires [Fabric API](https://modrinth.com/mod/fabric-api) and [Fabric 
 - **Salt expired** — Alerts when a Salt has expired.
 - **Worm the Fish** — Alerts when Worm the Fish is detected (Dirt Rod fishing).
 - **Fishing Festival** — Alerts when the Fishing Festival ends, and posts amounts of sharks caught in chat. Also has option to track personal best per festival.
-- **Rain/Thunder ends soon** — Alerts when Rain/Thunder ends soon while in Birch Park / Spider's Den.
+- **Rain/Thunder/Blizzard ends soon** — Alerts when Rain/Thunder/Blizzard ends soon while in Birch Park / Spider's Den / Jerry's Workshop.
 
 ### Overlays
 

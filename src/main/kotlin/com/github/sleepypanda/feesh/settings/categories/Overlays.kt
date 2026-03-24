@@ -343,18 +343,18 @@ ${GRAY}To pause: ${WHITE}/${SeaCreaturesPerHourTracker.PAUSE_COMMAND}
 
     init {
         separator {
-            this.title = "${AQUA}${BOLD}Rain & Thunder"
+            this.title = "${AQUA}${BOLD}Rain, Thunder, Blizzard"
         }
     }
 
     var rainTimerOverlay by boolean(false) {
-        this.name = Translated("Rain/Thunder timer")
-        this.description = Translated("${GRAY}Shows an overlay with the active rain timer timer in The Park, and active/upcoming rain/thunder timer in Spider's Den. Please enable ${YELLOW}TabList settings -> General Info widget -> Show Rain")
+        this.name = Translated("Rain/Thunder/Blizzard timer")
+        this.description = Translated("${GRAY}Shows an overlay with the active rain timer in The Park, active/upcoming rain/thunder timer in Spider's Den, and active blizzard timer in Jerry's Workshop. Please enable ${YELLOW}TabList settings -> General Info widget -> Show Rain / Show Blizzard")
     }
 
     var rainTimerCustomStyle by boolean(true) {
         this.name = Translated("Apply custom style")
-        this.description = Translated(getCustomStyleDescription("Rain/Thunder timer"))
+        this.description = Translated(getCustomStyleDescription("Rain/Thunder/Blizzard timer"))
     }
 
     init {

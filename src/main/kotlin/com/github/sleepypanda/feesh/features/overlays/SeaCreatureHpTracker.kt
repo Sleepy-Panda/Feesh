@@ -246,7 +246,7 @@ object SeaCreatureHpTracker {
 
         return entities
             .filter { entity ->
-                EntityUtils.getDistance(player, entity) <= distance
+                EntityUtils.getDistance(player, entity) <= distance || entity.customName?.string?.contains("Reindrake") == true
             }
             .mapNotNull { entity ->
                 EntityUtils.parseSeaCreatureNametag(entity, includedSeaCreatureNames)
