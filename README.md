@@ -98,7 +98,7 @@ This mod requires [Fabric API](https://modrinth.com/mod/fabric-api) and [Fabric 
 ## Items
 
 - **Trash enchanted books** — Highlights slots containing trash enchanted books flooding your inventory while fishing. Helps quickly find books to throw away or insta-sell.
-- **Wrong pets offered to Kat** — Highlights Kat's GUI slot when potentially wrong pets (e.g. Epic Megalodon, Epic Baby Yeti) are offered by mistake.
+- **Wrong pets offered to Kat** — Highlights Kat's GUI slot when potentially wrong pets (e.g. Epic Megalodon) are offered by mistake.
 - **Thunder Bottle charge progress** — Renders Thunder / Storm / Hurricane Bottle charge percentage in the item slot.
 - **Moby-Duck progress** — Renders Moby-Duck evolving percentage in the item slot.
 - **Auto-recomb flag** — Renders recomb upgrade flag (`R`) for auto-recombobulated fishing drops in the item slot.

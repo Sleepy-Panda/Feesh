@@ -1,7 +1,7 @@
 ## Players feedback
 
 - TODO: Test in 1.21
-- Ragnarok timer for immunity - when it goes below 50% hp (e.g. 62.4). Max HP is 125 mil. Around 12seconds immunity?
+- Ragnarok timer for immunity - when it goes below 50% hp (e.g. 62.4). Max HP is 125 mil, or 250 on Derpy. Around 12 seconds immunity?
 - Someone has no Vial title/sound
 - Fished coins to add via the command.
 - Carmine dye into tracker
@@ -18,6 +18,7 @@
 - Keybinds periodically reset, probably after MC crashes or turning off PC
 - Version check to correctly detect newer version on Modrinth (e.g. 1.1.0 and 1.1.0-beta)
 - Will NEU prices API be available? Do I need to hop to another one?
+- Enabled highlighters / slot renderers to update dynamically instead of check every render event.
 
 ## Settings
 

@@ -17,7 +17,6 @@ object KatWrongPetsHighlighter : BaseBackgroundHighlighter() {
     private const val CONFIRM_SLOT_INDEX = 22
     private const val KAT_HIGHLIGHT_COLOR = 0x80FF0000.toInt()
     private val MEGALODON_ITEM_NAME = "${EPIC}Megalodon"
-    private val BABY_YETI_ITEM_NAME = "${EPIC}Baby Yeti"
 
     override val highlightColor: Int = KAT_HIGHLIGHT_COLOR
 
@@ -37,15 +36,14 @@ object KatWrongPetsHighlighter : BaseBackgroundHighlighter() {
 
         if (slot.index == PET_SLOT_INDEX) {
             val itemName = stack.name.getFormattedString()
-            if (itemName.contains(MEGALODON_ITEM_NAME) || itemName.contains(BABY_YETI_ITEM_NAME)) return highlightColor
+            if (itemName.contains(MEGALODON_ITEM_NAME)) return highlightColor
             return null
         } else if (slot.index == CONFIRM_SLOT_INDEX) {
             if (itemColorCache.isEmpty()) return null
             val itemLore = stack.get(DataComponentTypes.LORE)?.lines?.map { it.getFormattedString() } ?: emptyList()
-            if (itemLore.any { it.contains(BABY_YETI_ITEM_NAME) || it.contains(MEGALODON_ITEM_NAME) }) return highlightColor
+            if (itemLore.any { it.contains(MEGALODON_ITEM_NAME) }) return highlightColor
             return null
         }
-        // TODO enabled highlighters to update dynamically instead of check every render event
 
         return null
     }
