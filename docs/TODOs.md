@@ -35,8 +35,8 @@ https://hypixel.net/threads/march-23rd-jerry-island-qol-new-abiphone-contacts-re
 - Enchanted Book - old format, or Combinable in Anvil, empty line, name
   - In trash highlighter and in profit tracker
 - /warp murk for nessie?
-
 - Killed by Nessie.  ☠ You were killed by Nessie.
+
 - Split water hotspots as separate widget, not joined with Bayou.
 - Can we catch hotspot SCS on Jerry? - Yes. Can we catch Spooky? Carrot King, Agarimoo? - no
 - Mound of Seagrass (epic) and Vibrant Coral (legendary) drop - need alerts, chat etc?

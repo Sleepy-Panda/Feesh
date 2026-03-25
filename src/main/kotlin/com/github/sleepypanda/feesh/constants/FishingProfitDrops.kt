@@ -1392,7 +1392,7 @@ class FishingProfitDrops {
                 itemId = "VIBRANT_CORAL",
                 itemName = "Vibrant Coral",
                 itemDisplayName = "${LEGENDARY}Vibrant Coral",
-                npcPrice = null,
+                npcPrice = 1_000_000.0,
             ),
 
             // Crimson Isle
