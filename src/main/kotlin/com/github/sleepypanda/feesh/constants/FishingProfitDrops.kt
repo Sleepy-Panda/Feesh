@@ -764,9 +764,9 @@ class FishingProfitDrops {
                 npcPrice = null,
             ),
             FishingProfitDropInfo(
-                itemId = "SHARD_SNIFFER",
-                itemName = "Sniffer Shard",
-                itemDisplayName = "${LEGENDARY}Sniffer ${WHITE}Shard",
+                itemId = "SHARD_NESSIE",
+                itemName = "Nessie Shard",
+                itemDisplayName = "${LEGENDARY}Nessie ${WHITE}Shard",
                 npcPrice = null,
             ),
 
@@ -1387,6 +1387,7 @@ class FishingProfitDrops {
                 itemName = "Mound of Seagrass",
                 itemDisplayName = "${EPIC}Mound of Seagrass",
                 npcPrice = null,
+                shouldAnnounceRareDrop = true,
             ),
             FishingProfitDropInfo(
                 itemId = "VIBRANT_CORAL",

@@ -11,13 +11,11 @@ import com.github.sleepypanda.feesh.settings.categories.SoundMode
 import com.github.sleepypanda.feesh.events.models.PartyChatEvent
 import com.github.sleepypanda.feesh.utils.CommonUtils
 import com.github.sleepypanda.feesh.utils.SoundUtils
-import com.github.sleepypanda.feesh.utils.RegisterUtils
 import com.github.sleepypanda.feesh.utils.PlayerUtils
 import com.github.sleepypanda.feesh.utils.WorldUtils
 import com.github.sleepypanda.feesh.utils.PriceUtils
 import com.github.sleepypanda.feesh.utils.data.CustomSoundsManager
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
-import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
 import com.github.sleepypanda.feesh.utils.enums.PricingModeWithNpc
 import com.github.sleepypanda.feesh.settings.categories.RareDropPriceScope
 import com.github.sleepypanda.feesh.utils.ChatUtils.removeFormatting
@@ -79,7 +77,7 @@ object RareDropAlert {
         val soundFileName = soundData?.source
 
         if (General.soundMode == SoundMode.MEME) SoundUtils.playCustomSound(soundFileName)
-        // Do not play MC sound if other cases because SB already plays rare drop sound for those items
+        // Do not play MC sound in other cases because SB already plays rare drop sound for those items
     }
 
     // TODO: Move this into PriceUtils and reuse

@@ -16,6 +16,7 @@ enum class RareDropTypes(val displayName: String) {
     TITANOBOA_SHED("Titanoboa Shed"),
     SCUTTLER_SHELL("Scuttler Shell"),
     BURNT_TEXTS("Burnt Texts"),
+    VIBRANT_CORAL("Vibrant Coral"),
 
     MEGALODON_LEGENDARY("Megalodon (Legendary)"),
     MEGALODON_EPIC("Megalodon (Epic)"),
@@ -111,6 +112,14 @@ class RareDrops {
             RareDropInfo(
                 id = "BURNT_TEXTS",
                 itemName = RareDropTypes.BURNT_TEXTS.displayName,
+                rarityColorCode = LEGENDARY.code,
+                npcPrice = 1_000_000,
+                isExtremelyRare = false,
+                defaultSoundFileName = Sounds.FEESH_OH_MY_GOD
+            ),
+            RareDropInfo(
+                id = "VIBRANT_CORAL",
+                itemName = RareDropTypes.VIBRANT_CORAL.displayName,
                 rarityColorCode = LEGENDARY.code,
                 npcPrice = 1_000_000,
                 isExtremelyRare = false,

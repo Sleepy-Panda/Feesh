@@ -343,15 +343,11 @@ object FishingProfitTracker {
             val entry = sourceObj.profitTrackerItems[itemId] ?: return
             val viewModeText = getViewModeDisplayText(viewMode)
             val dropInfo = FishingProfitDrops.items.find { it.itemId == itemId }
-            if (dropInfo == null && !ItemUtils.isMaxedPet(itemId) && itemId != FISHED_COINS_ITEM_ID) {
-                ChatUtils.sendLocalChat("${RED}Item not found by ID: $itemId", true)
-                return
-            }
-
             val itemName = when {
                 ItemUtils.isMaxedPet(itemId) -> ItemUtils.getPetNameByPetId(itemId)
                 itemId == FISHED_COINS_ITEM_ID -> "Fished Coins"
-                else -> dropInfo!!.itemName
+                dropInfo == null -> entry.itemName
+                else -> dropInfo.itemName
             }
             val displayName = getDisplayNameForGui(itemId, itemName)
             val isConfirmed = args.size == 2 && args.last() == "noconfirm"
@@ -565,7 +561,7 @@ object FishingProfitTracker {
 
     private fun onShardsCharmed(mobName: String, shardsCount: Int) {
         if (!isSessionActive || !isTrackerVisible() || shardsCount <= 0) return
-        val shardName = if (mobName == "Nessie") "Sniffer Shard" else mobName + " Shard"
+        val shardName = mobName + " Shard"
         findAndAddProfitTrackerItem({ it.itemName.equals(shardName, ignoreCase = true) }, shardsCount)
     }
 

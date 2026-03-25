@@ -42,14 +42,13 @@ https://hypixel.net/threads/march-23rd-jerry-island-qol-new-abiphone-contacts-re
 - Mound of Seagrass (epic) and Vibrant Coral (legendary) drop - need alerts, chat etc?
 - Blizzard for tunnels?
 - Loch hook (Shiffer Shard) attribute shard? Add into fishing drops
-  - [537] ৫ [MVP+] haidm: You caught x2 Sniffer Shards! - going into huntingbox
-
+- Sniffer shard renamed to Nessie
 - Nessie immunity?
 - NPC price for Mound of Seagrassand Vibrant Coral drop
 - - 2% mound, 0.5% coral
 - Be able to delete old baby yetis from tracker and /feeshDelete... - [Feesh] Item not found by ID: BABY_YETI;4
 
-- IDs to check post-update: Hilt of Truce Ice, Mythic Baby Yeti, Sniffer Shard
+- IDs to check post-update: Hilt of Truce Ice, Mythic Baby Yeti, Nessie/Sniffer Shard
 
 ## Tech Debt
 
