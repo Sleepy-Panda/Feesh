@@ -112,6 +112,7 @@ object EntityUtils {
         val baseMobName: String,
         val shortNametag: String,
         val currentHpNumber: Double,
+        val maxHpNumber: Double,
         val renderPos: Triple<Double, Double, Double>
     )
 
@@ -162,15 +163,17 @@ object EntityUtils {
             .replace(Regex("[^a-zA-Z\\s'-]"), "")
             .trim()
 
-        val hpPart = shortName.split("§f/").getOrNull(0) ?: return null
-        val currentHp = hpPart.split(" ").lastOrNull() ?: return null
-        val currentHpNumber = CommonUtils.parseShortNumber(currentHp.removeFormatting())
+        val unformattedShortName = shortName.removeFormatting()
+        val hpMatch = Regex("([0-9.,]+[kKmMbB]?)\\/([0-9.,]+[kKmMbB]?)\\s*❤").find(unformattedShortName) ?: return null
+        val currentHpNumber = CommonUtils.parseShortNumber(hpMatch.groupValues[1])
+        val maxHpNumber = CommonUtils.parseShortNumber(hpMatch.groupValues[2])
 
         return SeaCreatureParsedNametagInfo(
             mcEntityId = entity.id,
             baseMobName = baseMobName, // "Lord Jawbus" or "Squid"
             shortNametag = shortName, // §c♆§7⚙§d♣ §c§lLord Jawbus§r§r §a69M§f/§a100M§c❤ §b✯
             currentHpNumber = currentHpNumber,
+            maxHpNumber = maxHpNumber,
             renderPos = Triple(entity.x, entity.y, entity.z)
         )
     }
