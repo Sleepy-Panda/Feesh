@@ -36,12 +36,13 @@ https://hypixel.net/threads/march-23rd-jerry-island-qol-new-abiphone-contacts-re
   - In trash highlighter and in profit tracker
 - /warp murk for nessie?
 - Killed by Nessie.  ☠ You were killed by Nessie.
+- Vibrant Coral (legendary) drop - need alerts, chat etc?
 
+- Nessie custom immunity timer
 - Split water hotspots as separate widget, not joined with Bayou.
-- Can we catch hotspot SCS on Jerry? - Yes. Can we catch Spooky? Carrot King, Agarimoo? - no
-- Mound of Seagrass (epic) and Vibrant Coral (legendary) drop - need alerts, chat etc?
+- Can we catch hotspot SCS on Jerry? - Yes. Can we catch Spooky? - Yes. Carrot King, Agarimoo? - no
+- Mound of Seagrass (epic) - need alerts, chat etc?
 - Blizzard for tunnels?
-- Loch hook (Shiffer Shard) attribute shard? Add into fishing drops
 - Sniffer shard renamed to Nessie
 - Nessie immunity?
 - NPC price for Mound of Seagrassand Vibrant Coral drop
