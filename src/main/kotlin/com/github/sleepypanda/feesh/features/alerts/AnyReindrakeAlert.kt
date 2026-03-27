@@ -12,7 +12,8 @@ import com.github.sleepypanda.feesh.utils.ChatUtils
 
 object AnyReindrakeAlert {
     // WOAH! [MVP+] MoonTheSadFisher summoned a Reindrake from the depths!
-    const val REINDRAKE_PATTERN = "^WOAH! (?<playerNameAndRank>.*) summoned a Reindrake from the depths!$"
+    // WOAH! [MVP+] MoonTheSadFisher summoned TWO Reindrakes from the depths!
+    const val REINDRAKE_PATTERN = "^WOAH! (?<playerNameAndRank>.*) summoned (a|TWO|two) Reindrake(s)? from the depths!$"
     val reindrake = SeaCreatures.allSeaCreatures.find { it.name == "Reindrake" }!!
 
     fun init() {
@@ -23,7 +24,8 @@ object AnyReindrakeAlert {
         if (boldDisplayName.isNullOrEmpty() || rarityColorCode.isNullOrEmpty()) return
         if (!WorldUtils.isInSkyblock() || !Alerts.alertOnAnyReindrake || WorldUtils.getWorldName() != WorldUtils.JERRY_WORKSHOP) return
 
-        CommonUtils.showTitle(SeaCreatures.getTitle(reindrake.name, false))
+        val isDoubleHook = match.groupValues[2].equals("TWO", ignoreCase = true)
+        CommonUtils.showTitle(SeaCreatures.getTitle(reindrake.name, isDoubleHook))
         ChatUtils.sendLocalChatWithCommand("Click to warp to Jerry's Workshop spawn point!", "warp jerry", true)
         SoundUtils.playSound()
     }
