@@ -3,7 +3,8 @@ package com.github.sleepypanda.feesh.features.commands
 import com.github.sleepypanda.feesh.utils.RegisterUtils
 import com.github.sleepypanda.feesh.utils.ChatUtils
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
-import com.github.sleepypanda.feesh.features.overlays.WaterHotspotsAndBayouTracker
+import com.github.sleepypanda.feesh.features.overlays.BayouTracker
+import com.github.sleepypanda.feesh.features.overlays.WaterHotspotsTracker
 import com.github.sleepypanda.feesh.features.overlays.CrimsonIsleTracker
 import com.github.sleepypanda.feesh.features.overlays.TreasureFishingTracker
 import java.util.Date
@@ -44,8 +45,8 @@ object SetTrackerDropsCommand {
             }
             
             when (dropId) {
-                "TITANOBOA_SHED" -> WaterHotspotsAndBayouTracker.setTitanoboaSheds(count, lastOn)
-                "TIKI_MASK" -> WaterHotspotsAndBayouTracker.setTikiMasks(count, lastOn)
+                "TITANOBOA_SHED" -> BayouTracker.setTitanoboaSheds(count, lastOn)
+                "TIKI_MASK" -> WaterHotspotsTracker.setTikiMasks(count, lastOn)
                 "RADIOACTIVE_VIAL" -> CrimsonIsleTracker.setRadioactiveVials(count, lastOn)
                 "DYE_TREASURE" -> TreasureFishingTracker.setTreasureDyes(count, lastOn)
                 else -> ChatUtils.sendLocalChat("${RED}Unknown drop ID: $dropId.", true)

@@ -19,7 +19,8 @@ import com.github.sleepypanda.feesh.features.overlays.JerryWorkshopTracker
 import com.github.sleepypanda.feesh.features.overlays.SeaCreaturesPerHourTracker
 import com.github.sleepypanda.feesh.features.overlays.SeaCreaturesTracker
 import com.github.sleepypanda.feesh.features.overlays.TreasureFishingTracker
-import com.github.sleepypanda.feesh.features.overlays.WaterHotspotsAndBayouTracker
+import com.github.sleepypanda.feesh.features.overlays.BayouTracker
+import com.github.sleepypanda.feesh.features.overlays.WaterHotspotsTracker
 import com.github.sleepypanda.feesh.utils.gui.MoveGuis
 import net.minecraft.util.Util
 import net.minecraft.client.gui.screen.option.KeybindsScreen
@@ -402,44 +403,84 @@ ${GRAY}To reset: ${WHITE}/${JerryWorkshopTracker.RESET_COMMAND}
 
     init {
         separator {
-            this.title = "${AQUA}${BOLD}Water hotspots & Bayou tracker"
+            this.title = "${AQUA}${BOLD}Bayou tracker"
         }
     }
 
-    var waterHotspotsAndBayouTrackerOverlay by boolean(false) {
-        this.name = Translated("Water hotspots & Bayou tracker")
+    var bayouTrackerOverlay by boolean(false) {
+        this.name = Translated("Bayou tracker")
         this.description = Translated("""
-${GRAY}Shows an overlay with Titanoboa (when fishing in Backwater Bayou) and Wiki Tiki (when in Water Hotspots) catch statistics. Also has Titanoboa Shed and Tiki Mask drop statistics.
-${GRAY}To reset: ${WHITE}/${WaterHotspotsAndBayouTracker.RESET_COMMAND}
+${GRAY}Shows Titanoboa catch statistics and Titanoboa Shed drop statistics while fishing in Backwater Bayou.
+${GRAY}To reset: ${WHITE}/${BayouTracker.RESET_COMMAND}
         """.trimIndent())
     }
 
-    var resetWaterHotspotsAndBayouTrackerOnGameClosed by boolean(false) {
+    var resetBayouTrackerOnGameClosed by boolean(false) {
         this.name = Translated("Autoreset on closing game")
-        this.description = Translated("Automatically reset the Water hotspots & Bayou tracker when you close Minecraft.")
+        this.description = Translated("Automatically reset the Bayou tracker when you close Minecraft.")
     }
 
     init {
         button {
-            title = "Set Titanoboa Sheds / Tiki Masks count"
-            description = "Explains in your chat how to init Titanoboa Sheds / Tiki Masks count and last drop date."
+            title = "Set Titanoboa Sheds count"
+            description = "Explains in your chat how to init Titanoboa Sheds count and last drop date for the Bayou tracker."
             text = "Click for help"
             onClick {
-                ChatUtils.sendLocalChat("${WHITE}${BOLD}Titanoboa Sheds / Tiki Masks setup${RESET}", true)
+                ChatUtils.sendLocalChat("${AQUA}${BOLD}Titanoboa Sheds setup${RESET}", true)
                 ChatUtils.sendLocalChat("\nDo ${WHITE}/${SetTrackerDropsCommand.COMMAND_NAME} <ITEM_ID> <COUNT> [LAST_ON_DATE]${RESET} to initialize your drops history:")
-                ChatUtils.sendLocalChat("  - <ITEM_ID> is a mandatory item ID - TITANOBOA_SHED or TIKI_MASK.")
+                ChatUtils.sendLocalChat("  - <ITEM_ID> is a mandatory item ID - TITANOBOA_SHED.")
                 ChatUtils.sendLocalChat("  - <COUNT> is a mandatory number of times you've dropped it.")
                 ChatUtils.sendLocalChat("  - [LAST_ON_DATE] is optional and, if provided, should be in YYYY-MM-DD hh:mm:ss format. Can not be in future!")
-                ChatUtils.sendLocalChat("\nExamples:")
+                ChatUtils.sendLocalChat("\nExample:")
                 ChatUtils.sendLocalChat("/${SetTrackerDropsCommand.COMMAND_NAME} TITANOBOA_SHED 5 2025-05-30 23:59:00${RESET}")
+            }
+        }
+    }
+
+    var bayouTrackerCustomStyle by boolean(true) {
+        this.name = Translated("Apply custom style")
+        this.description = Translated(getCustomStyleDescription("Bayou tracker"))
+    }
+
+    init {
+        separator {
+            this.title = "${AQUA}${BOLD}Water Hotspots tracker"
+        }
+    }
+
+    var waterHotspotsTrackerOverlay by boolean(false) {
+        this.name = Translated("Water Hotspots tracker")
+        this.description = Translated("""
+${GRAY}Shows Wiki Tiki catch statistics and Tiki Mask drop statistics while fishing in a Water Hotspot.
+${GRAY}To reset: ${WHITE}/${WaterHotspotsTracker.RESET_COMMAND}
+        """.trimIndent())
+    }
+
+    var resetWaterHotspotsTrackerOnGameClosed by boolean(false) {
+        this.name = Translated("Autoreset on closing game")
+        this.description = Translated("Automatically reset the Water Hotspots tracker when you close Minecraft.")
+    }
+
+    init {
+        button {
+            title = "Set Tiki Masks count"
+            description = "Explains in your chat how to init Tiki Masks count and last drop date for the Water Hotspots tracker."
+            text = "Click for help"
+            onClick {
+                ChatUtils.sendLocalChat("${AQUA}${BOLD}Tiki Masks setup${RESET}", true)
+                ChatUtils.sendLocalChat("\nDo ${WHITE}/${SetTrackerDropsCommand.COMMAND_NAME} <ITEM_ID> <COUNT> [LAST_ON_DATE]${RESET} to initialize your drops history:")
+                ChatUtils.sendLocalChat("  - <ITEM_ID> is a mandatory item ID - TIKI_MASK.")
+                ChatUtils.sendLocalChat("  - <COUNT> is a mandatory number of times you've dropped it.")
+                ChatUtils.sendLocalChat("  - [LAST_ON_DATE] is optional and, if provided, should be in YYYY-MM-DD hh:mm:ss format. Can not be in future!")
+                ChatUtils.sendLocalChat("\nExample:")
                 ChatUtils.sendLocalChat("/${SetTrackerDropsCommand.COMMAND_NAME} TIKI_MASK 5 2025-05-30 23:59:00${RESET}")
             }
         }
     }
 
-    var waterHotspotsAndBayouTrackerCustomStyle by boolean(true) {
+    var waterHotspotsTrackerCustomStyle by boolean(true) {
         this.name = Translated("Apply custom style")
-        this.description = Translated(getCustomStyleDescription("Water hotspots & Bayou tracker"))
+        this.description = Translated(getCustomStyleDescription("Water Hotspots tracker"))
     }
 
     init {
@@ -467,7 +508,7 @@ ${GRAY}To reset: ${WHITE}/${CrimsonIsleTracker.RESET_COMMAND}
             description = "Explains in your chat how to init Radioactive Vials count and last drop date."
             text = "Click for help"
             onClick {
-                ChatUtils.sendLocalChat("${WHITE}${BOLD}Radioactive Vials setup${RESET}", true)
+                ChatUtils.sendLocalChat("${AQUA}${BOLD}Radioactive Vials setup${RESET}", true)
                 ChatUtils.sendLocalChat("\nDo ${WHITE}/${SetTrackerDropsCommand.COMMAND_NAME} <ITEM_ID> <COUNT> [LAST_ON_DATE]${RESET} to initialize your drops history:")
                 ChatUtils.sendLocalChat("  - <ITEM_ID> is a mandatory item ID - RADIOACTIVE_VIAL.")
                 ChatUtils.sendLocalChat("  - <COUNT> is a mandatory number of times you've dropped it.")
@@ -509,7 +550,7 @@ ${GRAY}Reset total: ${WHITE}/${TreasureFishingTracker.RESET_TOTAL_COMMAND}
             description = "Explains in your chat how to setup Treasure Dyes count and last drop date."
             text = "Click for help"
             onClick {
-                ChatUtils.sendLocalChat("${WHITE}${BOLD}Treasure Dyes setup${RESET}", true)
+                ChatUtils.sendLocalChat("${AQUA}${BOLD}Treasure Dyes setup${RESET}", true)
                 ChatUtils.sendLocalChat("\nDo ${WHITE}/${SetTrackerDropsCommand.COMMAND_NAME} <ITEM_ID> <COUNT> [LAST_ON_DATE]${RESET} to initialize your drops history:")
                 ChatUtils.sendLocalChat("  - <ITEM_ID> is a mandatory item ID - DYE_TREASURE.")
                 ChatUtils.sendLocalChat("  - <COUNT> is a mandatory number of times you've dropped it.")
@@ -632,7 +673,7 @@ ${GRAY}To pause: ${WHITE}/${FishingProfitTracker.PAUSE_COMMAND}
             description = "Explains in your chat how to use manual commands to adjust items count in the Fishing profit tracker [Session] and [Total]."
             text = "Click for help"
             onClick {
-                ChatUtils.sendLocalChat("${WHITE}${BOLD}Fishing profit tracker commands${RESET}", true)
+                ChatUtils.sendLocalChat("${AQUA}${BOLD}Fishing profit tracker commands${RESET}", true)
                 ChatUtils.sendLocalChat("\nUse these commands if you want to manually fix or import drops into the tracker:")
                 ChatUtils.sendLocalChat("  - ${WHITE}/${FishingProfitTracker.SET_ITEM_COUNT_COMMAND} <ITEM_ID> <COUNT>${RESET} - sets item count in [Session].")
                 ChatUtils.sendLocalChat("  - ${WHITE}/${FishingProfitTracker.SET_ITEM_COUNT_TOTAL_COMMAND} <ITEM_ID> <COUNT>${RESET} - sets item count in [Total].")

@@ -79,11 +79,18 @@ object FishingHookUtils {
         return now.time - lastFishingHookSeenAt.time <= minutes * 60 * 1000
     }
 
-    fun wasFishingHookActiveInHotspotMinutesAgo(minutes: Int): Boolean {
+    fun wasFishingHookActiveSecondsAgo(seconds: Int): Boolean {
+        val lastFishingHookSeenAt = lastActiveFishingHookSeenAt() ?: return false
+        val now = Date()
+
+        return now.time - lastFishingHookSeenAt.time <= seconds * 1000
+    }
+
+    fun wasFishingHookActiveInHotspotSecondsAgo(seconds: Int): Boolean {
         val lastFishingHookSeenAt = lastActiveFishingHookInHotspotSeenAt() ?: return false
         val now = Date()
 
-        return now.time - lastFishingHookSeenAt.time <= minutes * 60 * 1000
+        return now.time - lastFishingHookSeenAt.time <= seconds * 1000
     }
 
     private fun onClientTick(@Suppress("UNUSED_PARAMETER") event: ClientTickEvent) {
