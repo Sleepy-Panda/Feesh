@@ -426,7 +426,7 @@ ${GRAY}To reset: ${WHITE}/${BayouTracker.RESET_COMMAND}
             description = "Explains in your chat how to init Titanoboa Sheds count and last drop date for the Bayou tracker."
             text = "Click for help"
             onClick {
-                ChatUtils.sendLocalChat("${WHITE}${BOLD}Titanoboa Sheds setup (Bayou tracker)${RESET}", true)
+                ChatUtils.sendLocalChat("${AQUA}${BOLD}Titanoboa Sheds setup${RESET}", true)
                 ChatUtils.sendLocalChat("\nDo ${WHITE}/${SetTrackerDropsCommand.COMMAND_NAME} <ITEM_ID> <COUNT> [LAST_ON_DATE]${RESET} to initialize your drops history:")
                 ChatUtils.sendLocalChat("  - <ITEM_ID> is a mandatory item ID - TITANOBOA_SHED.")
                 ChatUtils.sendLocalChat("  - <COUNT> is a mandatory number of times you've dropped it.")
@@ -467,7 +467,7 @@ ${GRAY}To reset: ${WHITE}/${WaterHotspotsTracker.RESET_COMMAND}
             description = "Explains in your chat how to init Tiki Masks count and last drop date for the Water Hotspots tracker."
             text = "Click for help"
             onClick {
-                ChatUtils.sendLocalChat("${WHITE}${BOLD}Tiki Masks setup (Water Hotspots tracker)${RESET}", true)
+                ChatUtils.sendLocalChat("${AQUA}${BOLD}Tiki Masks setup${RESET}", true)
                 ChatUtils.sendLocalChat("\nDo ${WHITE}/${SetTrackerDropsCommand.COMMAND_NAME} <ITEM_ID> <COUNT> [LAST_ON_DATE]${RESET} to initialize your drops history:")
                 ChatUtils.sendLocalChat("  - <ITEM_ID> is a mandatory item ID - TIKI_MASK.")
                 ChatUtils.sendLocalChat("  - <COUNT> is a mandatory number of times you've dropped it.")
@@ -508,7 +508,7 @@ ${GRAY}To reset: ${WHITE}/${CrimsonIsleTracker.RESET_COMMAND}
             description = "Explains in your chat how to init Radioactive Vials count and last drop date."
             text = "Click for help"
             onClick {
-                ChatUtils.sendLocalChat("${WHITE}${BOLD}Radioactive Vials setup${RESET}", true)
+                ChatUtils.sendLocalChat("${AQUA}${BOLD}Radioactive Vials setup${RESET}", true)
                 ChatUtils.sendLocalChat("\nDo ${WHITE}/${SetTrackerDropsCommand.COMMAND_NAME} <ITEM_ID> <COUNT> [LAST_ON_DATE]${RESET} to initialize your drops history:")
                 ChatUtils.sendLocalChat("  - <ITEM_ID> is a mandatory item ID - RADIOACTIVE_VIAL.")
                 ChatUtils.sendLocalChat("  - <COUNT> is a mandatory number of times you've dropped it.")
@@ -550,7 +550,7 @@ ${GRAY}Reset total: ${WHITE}/${TreasureFishingTracker.RESET_TOTAL_COMMAND}
             description = "Explains in your chat how to setup Treasure Dyes count and last drop date."
             text = "Click for help"
             onClick {
-                ChatUtils.sendLocalChat("${WHITE}${BOLD}Treasure Dyes setup${RESET}", true)
+                ChatUtils.sendLocalChat("${AQUA}${BOLD}Treasure Dyes setup${RESET}", true)
                 ChatUtils.sendLocalChat("\nDo ${WHITE}/${SetTrackerDropsCommand.COMMAND_NAME} <ITEM_ID> <COUNT> [LAST_ON_DATE]${RESET} to initialize your drops history:")
                 ChatUtils.sendLocalChat("  - <ITEM_ID> is a mandatory item ID - DYE_TREASURE.")
                 ChatUtils.sendLocalChat("  - <COUNT> is a mandatory number of times you've dropped it.")
@@ -673,7 +673,7 @@ ${GRAY}To pause: ${WHITE}/${FishingProfitTracker.PAUSE_COMMAND}
             description = "Explains in your chat how to use manual commands to adjust items count in the Fishing profit tracker [Session] and [Total]."
             text = "Click for help"
             onClick {
-                ChatUtils.sendLocalChat("${WHITE}${BOLD}Fishing profit tracker commands${RESET}", true)
+                ChatUtils.sendLocalChat("${AQUA}${BOLD}Fishing profit tracker commands${RESET}", true)
                 ChatUtils.sendLocalChat("\nUse these commands if you want to manually fix or import drops into the tracker:")
                 ChatUtils.sendLocalChat("  - ${WHITE}/${FishingProfitTracker.SET_ITEM_COUNT_COMMAND} <ITEM_ID> <COUNT>${RESET} - sets item count in [Session].")
                 ChatUtils.sendLocalChat("  - ${WHITE}/${FishingProfitTracker.SET_ITEM_COUNT_TOTAL_COMMAND} <ITEM_ID> <COUNT>${RESET} - sets item count in [Total].")

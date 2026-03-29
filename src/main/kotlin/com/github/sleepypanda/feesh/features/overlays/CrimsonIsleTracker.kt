@@ -317,7 +317,7 @@ object CrimsonIsleTracker {
 
     private fun isFishingInHotspot(): Boolean {
         if (WorldUtils.getWorldName() != WorldUtils.CRIMSON_ISLE) return false
-        return FishingHookUtils.wasFishingHookActiveInHotspotMinutesAgo(1)
+        return FishingHookUtils.wasFishingHookActiveInHotspotSecondsAgo(15)
     }
 
     private fun isInPlhlegblastPool(): Boolean {

@@ -53,7 +53,7 @@ object WaterHotspotsTracker {
         .setApplyCustomStyleKey { Overlays.waterHotspotsTrackerCustomStyle }
         .setCondition {
             WorldUtils.isInWaterHotspotFishingWorld() &&
-                FishingHookUtils.wasFishingHookActiveMinutesAgo(5)
+                FishingHookUtils.wasFishingHookActiveInHotspotSecondsAgo(300)
         }
 
     fun init() {
@@ -117,13 +117,9 @@ object WaterHotspotsTracker {
         gui.clearLines()
 
         if (!hasData()) return
-        if (!Overlays.waterHotspotsTrackerOverlay || !WorldUtils.isInSkyblock() ||
-            !FishingHookUtils.wasFishingHookActiveMinutesAgo(5)
+        if (!Overlays.waterHotspotsTrackerOverlay || !WorldUtils.isInSkyblock() || !WorldUtils.isInWaterHotspotFishingWorld() ||
+            !FishingHookUtils.wasFishingHookActiveInHotspotSecondsAgo(300)
         ) return
-
-        val isInHotspotWorld = WorldUtils.isInWaterHotspotFishingWorld()
-        val isInHotspot = isInHotspotWorld && isFishingInHotspot()
-        if (!isInHotspot) return
 
         val lines = mutableListOf<String>()
         lines.add(baseTitle)
@@ -176,7 +172,7 @@ object WaterHotspotsTracker {
 
     private fun isFishingInHotspot(): Boolean {
         if (!WorldUtils.isInWaterHotspotFishingWorld()) return false
-        return FishingHookUtils.wasFishingHookActiveInHotspotMinutesAgo(1)
+        return FishingHookUtils.wasFishingHookActiveInHotspotSecondsAgo(15)
     }
 
     fun setTikiMasks(count: Int, lastOn: Date?) {
