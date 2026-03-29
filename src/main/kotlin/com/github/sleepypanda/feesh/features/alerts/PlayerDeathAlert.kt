@@ -19,16 +19,20 @@ object PlayerDeathAlert {
     const val PARTY_MEMBER_DIED_PATTERN = "^--> I was killed, please wait for me until I come back <--$"
 
     fun init() {
-        RegisterUtils.chat(Regex(YOU_DIED_PATTERN)) { _, _ -> onOwnDeath() }
+        RegisterUtils.chat(Regex(YOU_DIED_PATTERN)) { _, matchResult -> onOwnDeath(matchResult) }
         EventBus.subscribe(PartyChatEvent::class, ::onPartyChatDeath)
     }
 
     // TODO Sound is not played on death :c
-    private fun onOwnDeath() {
+    private fun onOwnDeath(matchResult: MatchResult) {
         if (!Alerts.alertOnPlayerDeath || !WorldUtils.isInSkyblock()) return
 
         CommonUtils.showTitle("${RED}You were killed ☠")
         SoundUtils.playSound(SoundEvents.ENTITY_VILLAGER_DEATH)
+
+        if (matchResult.groups[1]?.value == "Nessie") {
+            ChatUtils.sendLocalChatWithCommand("Click to warp to Murkwater Loch!", "warp murk", true)
+        }
     }
 
     private fun onPartyChatDeath(event: PartyChatEvent) {
