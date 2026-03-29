@@ -14,6 +14,7 @@ data class FishingProfitDropInfo(
     val itemAlternateNames: List<String> = listOf(), // Alternate names for the item, to support some popular renamings by mods
     val itemDisplayName: String, // Formatted item name
     val npcPrice: Double?,
+    val ignoreFromInventory: Boolean = false, // If the item should be ignored from inventory tracking
     val shouldAnnounceRareDrop: Boolean = false, // If the item should be announced as a rare drop in player's chat (for valuable drops which have no standart RARE DROP! message from Hypixel)
     val amountOfMagmaFish: Int? = null, // Amount of Magma Fish to exchange a Trophy Fish at Odger
     val salvage: SalvageableItemInfo? = null, // Item to salvage into essence items
@@ -1278,6 +1279,20 @@ class FishingProfitDrops {
 
             // Galatea
 
+            FishingProfitDropInfo(
+                itemId = "AGATHA_COUPON",
+                itemName = "Agatha's Coupon",
+                itemDisplayName = "${UNCOMMON}Agatha's Coupon",
+                npcPrice = 10_000.0,
+                ignoreFromInventory = true,
+            ),
+            FishingProfitDropInfo(
+                itemId = "ESSENCE_FOREST",
+                itemName = "Forest Essence",
+                itemDisplayName = "${COMMON}Forest Essence",
+                npcPrice = null,
+                ignoreFromInventory = true,
+            ),
             FishingProfitDropInfo(
                 itemId = "SWAMP_THE_FISH",
                 itemName = "Swamp the Fish",
