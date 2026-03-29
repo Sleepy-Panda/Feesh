@@ -43,7 +43,8 @@ import com.github.sleepypanda.feesh.features.overlays.TreasureFishingTracker
 import com.github.sleepypanda.feesh.features.overlays.BarnFishingTimer
 import com.github.sleepypanda.feesh.features.overlays.DeployablesTimer
 import com.github.sleepypanda.feesh.features.overlays.RainTimer
-import com.github.sleepypanda.feesh.features.overlays.WaterHotspotsAndBayouTracker
+import com.github.sleepypanda.feesh.features.overlays.BayouTracker
+import com.github.sleepypanda.feesh.features.overlays.WaterHotspotsTracker
 import com.github.sleepypanda.feesh.features.overlays.CrimsonIsleTracker
 import com.github.sleepypanda.feesh.features.overlays.ArchfiendDiceProfitTracker
 import com.github.sleepypanda.feesh.features.overlays.FishingFestivalTracker
@@ -172,7 +173,8 @@ class FeeshMod : ModInitializer {
         FishingHookTimer.init()
         BarnFishingTimer.init()
         DeployablesTimer.init()
-        WaterHotspotsAndBayouTracker.init()
+        BayouTracker.init()
+        WaterHotspotsTracker.init()
         CrimsonIsleTracker.init()
         ArchfiendDiceProfitTracker.init()
         FishingFestivalTracker.init()
