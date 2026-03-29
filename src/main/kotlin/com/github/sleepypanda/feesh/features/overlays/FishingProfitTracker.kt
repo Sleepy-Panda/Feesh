@@ -195,6 +195,10 @@ object FishingProfitTracker {
         RegisterUtils.chat(Regex("^LOOT SHARE You received (.+) Shard.*")) { _, matchResult ->
             onShardLootshared(matchResult.groupValues[1].orEmpty())
         }
+        // [NPC] Agatha: You reached the SPECIAL Bracket in my contest!
+        RegisterUtils.chat(Regex("^\\[NPC] Agatha: You reached the (COMMON|UNCOMMON|RARE|EPIC|LEGENDARY|MYTHIC|DIVINE|SPECIAL) Bracket in my contest!$")) { _, matchResult ->
+            onAgathaContestBracketReached(matchResult.groupValues[1].orEmpty())
+        }
     }
 
     private fun onWorldChanged(@Suppress("UNUSED_PARAMETER") event: WorldChangedEvent) {
@@ -516,6 +520,7 @@ object FishingProfitTracker {
             if (item.amount <= 0 || item.itemName.isBlank()) continue
             val itemName = item.itemName.removeFormatting()
             val dropInfo = getFishingProfitItemByName(itemName) ?: continue
+            if (dropInfo.ignoreFromInventory) continue
 
             if (dropInfo.itemId.startsWith("MAGMA_FISH") && 
                 lastGuisClosed.lastOdgerGuiClosedAt != null && Date().time - lastGuisClosed.lastOdgerGuiClosedAt!!.time < cooldownMilliseconds) {
@@ -579,6 +584,26 @@ object FishingProfitTracker {
         }
         val shardName = parts.drop(1).joinToString(" ") + " Shard"
         findAndAddProfitTrackerItem({ it.itemName.equals(shardName, ignoreCase = true) }, count)
+    }
+
+    private fun onAgathaContestBracketReached(bracket: String) {
+        if (!isSessionActive || !isTrackerVisible()) return
+        if (WorldUtils.getWorldName() != WorldUtils.GALATEA) return
+
+        val (agathaCouponCount, forestEssenceCount) = when (bracket.uppercase()) {
+            "COMMON" -> 10 to 10
+            "UNCOMMON" -> 15 to 20
+            "RARE" -> 20 to 30
+            "EPIC" -> 25 to 40
+            "LEGENDARY" -> 30 to 50
+            "MYTHIC" -> 35 to 60
+            "DIVINE" -> 40 to 70
+            "SPECIAL" -> 45 to 80
+            else -> return
+        }
+
+        findAndAddProfitTrackerItem({ it.itemId == "AGATHA_COUPON" }, agathaCouponCount)
+        findAndAddProfitTrackerItem({ it.itemId == "ESSENCE_FOREST" }, forestEssenceCount)
     }
 
     private fun onPetReachedMaxLevel(event: PetLevelUpEvent) {
@@ -722,6 +747,8 @@ object FishingProfitTracker {
 
     private fun onItemAddedToInventory(itemId: String, previousCount: Int, newCount: Int) {
         val dropInfo = FishingProfitDrops.items.find { it.itemId == itemId } ?: return
+        if (dropInfo.ignoreFromInventory) return
+        
         val difference = newCount - previousCount
         if (difference <= 0) return
 
