@@ -1,5 +1,11 @@
 # Future ideas and players' requests
 
+## Sea creature HP tracker
+
+- Add custom Ragnarok immunity timer - when it goes below 50% hp (e.g. 62.4). Max HP is 125 mil, or 250 on Derpy. Around 12 seconds immunity?
+- Add custom immunity for Nessie running around until it reaches out the cave.
+- Add owner's name for sea creatures (might be more tricky for cocooned).
+
 ## Fishing profit tracker
 
 - View price as 7 days avg to avoid price manipulations.

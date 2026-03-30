@@ -5,8 +5,8 @@ Released on: ???
 ## Features
 
 - Added features for Jerry Island QoL SB update:
-  - Added Nessie catch alert and chat message. **Please enable if you need it!**
-  - Added Vibrant Coral drop alert and chat message. **Please enable if you need it!**
+  - Added Nessie catch alert and chat message. **Make sure to enable if you need it!**
+  - Added Vibrant Coral drop alert and chat message. **Make sure to enable if you need it!**
   - Added Nessie to various existing functionalities for rare sea creatures.
   - Enabled hotspots functionalities on Jerry's Workshop.
   - Added Blizzard timer and alert for Jerry's Workshop (added to existing Rain/Thunder functionality).
