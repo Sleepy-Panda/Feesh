@@ -764,6 +764,12 @@ class FishingProfitDrops {
                 itemDisplayName = "${LEGENDARY}Titanoboa ${WHITE}Shard",
                 npcPrice = null,
             ),
+            FishingProfitDropInfo(
+                itemId = "SHARD_NESSIE",
+                itemName = "Nessie Shard",
+                itemDisplayName = "${LEGENDARY}Nessie ${WHITE}Shard",
+                npcPrice = null,
+            ),
 
             // Water
 
@@ -1291,13 +1297,19 @@ class FishingProfitDrops {
                 itemId = "SWAMP_THE_FISH",
                 itemName = "Swamp the Fish",
                 itemDisplayName = "${SPECIAL}Swamp the Fish",
-                npcPrice = null,
+                npcPrice = 50_000.0,
             ),
             FishingProfitDropInfo(
                 itemId = "FISH_THE_FISH",
                 itemName = "Fish the Fish",
                 itemDisplayName = "${SPECIAL}Fish the Fish",
-                npcPrice = null,
+                npcPrice = 50_000.0,
+            ),
+            FishingProfitDropInfo(
+                itemId = "MOB_THE_FISH",
+                itemName = "Mob the Fish",
+                itemDisplayName = "${SPECIAL}Mob the Fish",
+                npcPrice = 50_000.0,
             ),
             FishingProfitDropInfo(
                 itemId = "MOB_THE_FISH",
@@ -1384,6 +1396,19 @@ class FishingProfitDrops {
                 npcPrice = null,
                 shouldAnnounceRareDrop = true,
                 categories = listOf(PET_ITEM_CATEGORY),
+            ),
+            FishingProfitDropInfo(
+                itemId = "MOUND_OF_SEAGRASS",
+                itemName = "Mound of Seagrass",
+                itemDisplayName = "${EPIC}Mound of Seagrass",
+                npcPrice = null,
+                shouldAnnounceRareDrop = true,
+            ),
+            FishingProfitDropInfo(
+                itemId = "VIBRANT_CORAL",
+                itemName = "Vibrant Coral",
+                itemDisplayName = "${LEGENDARY}Vibrant Coral",
+                npcPrice = 1_000_000.0,
             ),
 
             // Crimson Isle
@@ -1889,8 +1914,8 @@ class FishingProfitDrops {
             ),
             FishingProfitDropInfo(
                 itemId = "HILT_OF_TRUE_ICE",
-                itemName = "Hilt of True Ice",
-                itemDisplayName = "${LEGENDARY}Hilt of True Ice",
+                itemName = "True Ice",
+                itemDisplayName = "${LEGENDARY}True Ice",
                 npcPrice = 500_000.0,
             ),
             FishingProfitDropInfo(
@@ -1902,17 +1927,11 @@ class FishingProfitDrops {
                 shouldAnnounceRareDrop = true,
             ),
             FishingProfitDropInfo(
-                itemId = "BABY_YETI;3",
-                itemName = "[Lvl 1] Baby Yeti (EPIC)",
-                itemDisplayName = "${GRAY}[Lvl 1] ${EPIC}Baby Yeti",
-                npcPrice = 10_000.0,
-                shouldAnnounceRareDrop = true,
-            ),
-            FishingProfitDropInfo(
-                itemId = "BABY_YETI;4",
-                itemName = "[Lvl 1] Baby Yeti (LEGENDARY)",
-                itemDisplayName = "${GRAY}[Lvl 1] ${LEGENDARY}Baby Yeti",
+                itemId = "BABY_YETI;0",
+                itemName = "[Lvl 1] Baby Yeti (COMMON)",
+                itemDisplayName = "${GRAY}[Lvl 1] ${COMMON}Baby Yeti",
                 npcPrice = 1_000_000.0,
+                shouldAnnounceRareDrop = true,
             ),
 
             // Fishing Festival

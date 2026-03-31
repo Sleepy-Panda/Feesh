@@ -1,13 +1,12 @@
 ## Players feedback
 
 - TODO: Test in 1.21
-- Ragnarok timer for immunity - when it goes below 50% hp (e.g. 62.4). Max HP is 125 mil, or 250 on Derpy. Around 12 seconds immunity?
-- Someone has no Vial title/sound
+- Magma Core fishing widget
+- Someone has no Vial title/sound (I checked and did not reproduce, I had my title/sound as usual)
 - Fished coins to add via the command.
 - Carmine dye into tracker
 - Autoupdates
 - Items counted after /gfs: Moved 39 Enchanted Sea Lumies from your Sacks to your inventory.
-- Rendering section from CT
 - Settings are not saved after exiting the game, probably because user closes window using X button to exit
 - On 1.21.11, original fishing timer armorstand appears for a second when the fish starts swimming towards bobber
 

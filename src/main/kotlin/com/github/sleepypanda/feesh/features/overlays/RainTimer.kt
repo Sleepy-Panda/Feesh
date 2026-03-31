@@ -27,7 +27,7 @@ object RainTimer {
 
     private var rainSecondsLeft: Int? = null
     private var rainTimer: String? = null // Time to display, e.g. "02m 30s"
-    private var eventName: String? = null // Rain or Thunder
+    private var eventName: String? = null // Rain, Thunder, Blizzard
     private var isActiveEvent: Boolean = true // true = active (time left), false = upcoming event (starts in)
     private var tickCounter = 0
     private var lastAlertAt: Date? = null
@@ -53,7 +53,7 @@ object RainTimer {
     private fun isRainArea(): Boolean {
         val worldName = WorldUtils.getWorldName() ?: return false
         val areaName = WorldUtils.getZoneName() ?: return false
-        return (worldName == WorldUtils.PARK && areaName == "Birch Park") || (worldName == WorldUtils.SPIDERS_DEN && areaName == "Spider's Den")
+        return (worldName == WorldUtils.PARK && areaName == "Birch Park") || (worldName == WorldUtils.SPIDERS_DEN && areaName == "Spider's Den") || (worldName == WorldUtils.JERRY_WORKSHOP)
     }
 
     private fun onWorldChanged(@Suppress("UNUSED_PARAMETER") event: WorldChangedEvent) {
@@ -118,6 +118,17 @@ object RainTimer {
                 eventName = null
                 isActiveEvent = false
             }
+        } else if (worldName == WorldUtils.JERRY_WORKSHOP) {
+            val newValue = TabListUtils.getLineAfter("Blizzard:").trim()
+            if (newValue.isNullOrEmpty()) {
+                rainTimer = null
+                eventName = null
+                isActiveEvent = false
+            } else {
+                rainTimer = newValue
+                eventName = "Blizzard"
+                isActiveEvent = true
+            }
         }
 
         rainSecondsLeft = if (rainTimer.isNullOrEmpty()) null else parseRainTimeToSeconds(rainTimer!!)
@@ -138,8 +149,8 @@ object RainTimer {
     private fun playRainEndingSoonAlert() {
         lastAlertAt = Date()
         val label = eventName ?: "Rain"
-        CommonUtils.showTitle("${RED}$label ending soon")
-        ChatUtils.sendLocalChat("${WHITE}$label ending soon.", true)
+        CommonUtils.showTitle("${RED}$label ends soon")
+        ChatUtils.sendLocalChat("${WHITE}$label ends soon.", true)
         if (General.soundMode == SoundMode.MEME) SoundUtils.playCustomSound(Sounds.FEESH_NOTIFICATION_BELL)
         else SoundUtils.playSound()
     }

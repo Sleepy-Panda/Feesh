@@ -108,9 +108,6 @@ The file has the following structure:
     "RADIOACTIVE_VIAL": {
         "source": "feesh_minecraft-challenge-completed.ogg"
     },
-    "BABY_YETI;4": {
-        "source": "feesh_sheesh.ogg"
-    },
     "DYE_MIDNIGHT": {
         "source": "feesh_giga-chad.ogg"
     },
@@ -118,7 +115,7 @@ The file has the following structure:
 ```
 
 Each key is the ID of a rare drop in uppercase.
-For pet IDs, `;4` suffix means Legendary, `;3` - Epic, `;2` - Rare, `;2` - Uncommon, `;1` - Common. E.g. `BABY_YETI;4` is a Legendary Baby Yeti.
+For pet IDs, `;4` suffix means Legendary, `;3` - Epic, `;2` - Rare, `;2` - Uncommon, `;1` - Common. E.g. `FLYING_FISH;4` is a Legendary Flying Fish.
 
 The `source` field contains the sound file name:
 

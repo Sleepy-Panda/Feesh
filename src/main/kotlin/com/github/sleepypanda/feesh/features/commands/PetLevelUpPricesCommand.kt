@@ -31,6 +31,7 @@ object PetLevelUpPricesCommand {
         PetInfo("${LEGENDARY}Flying Fish", 1),
         PetInfo("${MYTHIC}Flying Fish", 1),
         PetInfo("${LEGENDARY}Baby Yeti", 1),
+        PetInfo("${MYTHIC}Baby Yeti", 1),
         PetInfo("${LEGENDARY}Penguin", 1),
         PetInfo("${LEGENDARY}Spinosaurus", 1),
         PetInfo("${LEGENDARY}Megalodon", 1),

@@ -344,18 +344,18 @@ ${GRAY}To pause: ${WHITE}/${SeaCreaturesPerHourTracker.PAUSE_COMMAND}
 
     init {
         separator {
-            this.title = "${AQUA}${BOLD}Rain & Thunder"
+            this.title = "${AQUA}${BOLD}Rain, Thunder, Blizzard"
         }
     }
 
     var rainTimerOverlay by boolean(false) {
-        this.name = Translated("Rain/Thunder timer")
-        this.description = Translated("${GRAY}Shows an overlay with the active rain timer timer in The Park, and active/upcoming rain/thunder timer in Spider's Den. Please enable ${YELLOW}TabList settings -> General Info widget -> Show Rain")
+        this.name = Translated("Rain/Thunder/Blizzard timer")
+        this.description = Translated("${GRAY}Shows an overlay with the active rain timer in The Park, active/upcoming rain/thunder timer in Spider's Den, and active blizzard timer in Jerry's Workshop. Please enable ${YELLOW}TabList settings -> General Info widget -> Show Rain / Show Blizzard")
     }
 
     var rainTimerCustomStyle by boolean(true) {
         this.name = Translated("Apply custom style")
-        this.description = Translated(getCustomStyleDescription("Rain/Thunder timer"))
+        this.description = Translated(getCustomStyleDescription("Rain/Thunder/Blizzard timer"))
     }
 
     init {
@@ -679,7 +679,7 @@ ${GRAY}To pause: ${WHITE}/${FishingProfitTracker.PAUSE_COMMAND}
                 ChatUtils.sendLocalChat("  - ${WHITE}/${FishingProfitTracker.SET_ITEM_COUNT_TOTAL_COMMAND} <ITEM_ID> <COUNT>${RESET} - sets item count in [Total].")
                 ChatUtils.sendLocalChat("  - ${WHITE}/${FishingProfitTracker.DELETE_ITEM_COMMAND} <ITEM_ID>${RESET} - deletes item from [Session].")
                 ChatUtils.sendLocalChat("  - ${WHITE}/${FishingProfitTracker.DELETE_ITEM_TOTAL_COMMAND} <ITEM_ID>${RESET} - deletes item from [Total].")
-                ChatUtils.sendLocalChat("\n${GRAY}<ITEM_ID>${RESET} - ID of the fishing drop (for example MAGMA_FISH, SILVER_MAGMAFISH, BABY_YETI;4, etc.).")
+                ChatUtils.sendLocalChat("\n${GRAY}<ITEM_ID>${RESET} - ID of the fishing drop (for example MAGMA_FISH, SILVER_MAGMAFISH, FLYING_FISH;4, etc.).")
                 ChatUtils.sendLocalChat("${GRAY}<COUNT>${RESET} - positive integer with desired total amount of this item in the tracker.")
             }
         }

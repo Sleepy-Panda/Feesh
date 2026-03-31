@@ -53,7 +53,7 @@ object Alerts : CategoryKt("Alerts") {
 
     var alertOnPlayerDeath by boolean(true) {
         this.name = Translated("Alert when you or your party members are killed by a Mythic sea creature")
-        this.description = Translated("Shows a title and plays a sound when you or your party members are killed by Thunder / Lord Jawbus / Ragnarok / Wiki Tiki / Titanoboa.")
+        this.description = Translated("Shows a title and plays a sound when you or your party members are killed by Thunder / Lord Jawbus / Ragnarok / Wiki Tiki / Titanoboa / Nessie.")
     }
 
     init {
@@ -197,13 +197,13 @@ object Alerts : CategoryKt("Alerts") {
 
     init {
         separator {
-            this.title = "${AQUA}${BOLD}Rain & Thunder"
+            this.title = "${AQUA}${BOLD}Rain, Thunder, Blizzard"
         }
     }
 
     var alertOnRainEndingSoon by boolean(false) {
-        this.name = Translated("Alert when rain/thunder ends soon")
-        this.description = Translated("${GRAY}Shows a title and plays a sound when active rain/thunder ends soon in The Park or Spider's Den. Please enable ${YELLOW}TabList settings -> General Info widget -> Show Rain")
+        this.name = Translated("Alert when Rain/Thunder/Blizzard ends soon")
+        this.description = Translated("${GRAY}Shows a title and plays a sound when active Rain/Thunder/Blizzard ends soon. It's applicable to The Park, Spider's Den, and Jerry's Workshop. Please enable ${YELLOW}TabList settings -> General Info widget -> Show Rain / Show Blizzard")
     }
 
     init {

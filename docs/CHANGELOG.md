@@ -4,13 +4,22 @@ Released on: ???
 
 ## Features
 
+- Added features for Jerry Island QoL SB update:
+  - Added Nessie catch alert and chat message. **Make sure to enable if you need it!**
+  - Added Vibrant Coral drop alert and chat message. **Make sure to enable if you need it!**
+  - Added Nessie to various existing functionalities for rare sea creatures.
+  - Enabled hotspots functionalities on Jerry's Workshop.
+  - Added Blizzard timer and alert for Jerry's Workshop (added to existing Rain/Thunder functionality).
+  - Actualized loot table and sea creatures rarities.
+  - Removed functionalities related to Epic/Legendary Baby Yeti because there is no such drop anymore.
+  - Some bugfixes caused by this patch.
 - Added "Custom overlays style" settings section which lets you toggle gradient/single color background and border for the overlays. This style is toggleable for each overlay.
-- Moved Water Hotspots & Bayou overlay into 2 separate overlays, because Water Hotspots might be popular outside of Bayou. **Please re-enable in settings and adjust position if you used it!**
+- Moved Water Hotspots & Bayou overlay into 2 separate overlays, because Water Hotspots might become more popular outside of Bayou. **Please re-enable in settings and adjust position if you used it!**
 - Renamed Legion & Bobbin' Time tracker and its settings to Nearby entities counter, to fit new purpose of showing various entity counters. **Please re-enable in settings and adjust position if you used it!**
 - Added Chumcap buckets to Nearby entities counter [disabled by default].
 - Track Agatha's Contest rewards in the Fishing profit tracker. This includes Forest Essence and Agatha's coupons based on rank earned during contest.
 - Added "Items" settings section with the following functionalities [all disabled by default]:
-  - Highlight slots with trash enchanted books. Book names are configurable. You can use it to quickly find books to throw away or insta sell.
+  - Highlight slots with trash enchanted books. Book names are configurable in settings. You can use it to quickly find books to throw away or insta sell.
   - Highlight Kat GUI slot with red color if you try to give her Epic Megalodon. _For those who sometimes puts pets into Kat instead of George by mistake c:_
   - Render percentage of Thunder / Storm / Hurricane Bottle charge progress in the item slot.
   - Render percentage of Moby-Duck evolving progress in the item slot.

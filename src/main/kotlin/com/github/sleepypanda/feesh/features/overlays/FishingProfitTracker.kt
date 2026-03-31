@@ -347,15 +347,11 @@ object FishingProfitTracker {
             val entry = sourceObj.profitTrackerItems[itemId] ?: return
             val viewModeText = getViewModeDisplayText(viewMode)
             val dropInfo = FishingProfitDrops.items.find { it.itemId == itemId }
-            if (dropInfo == null && !ItemUtils.isMaxedPet(itemId) && itemId != FISHED_COINS_ITEM_ID) {
-                ChatUtils.sendLocalChat("${RED}Item not found by ID: $itemId", true)
-                return
-            }
-
             val itemName = when {
                 ItemUtils.isMaxedPet(itemId) -> ItemUtils.getPetNameByPetId(itemId)
                 itemId == FISHED_COINS_ITEM_ID -> "Fished Coins"
-                else -> dropInfo!!.itemName
+                dropInfo == null -> entry.itemName
+                else -> dropInfo.itemName
             }
             val displayName = getDisplayNameForGui(itemId, itemName)
             val isConfirmed = args.size == 2 && args.last() == "noconfirm"
@@ -698,10 +694,9 @@ object FishingProfitTracker {
             if (slotItemName.isBlank()) continue
 
             if (slotItemName == "Enchanted Book") {
-                val loreLines = stack.get(DataComponentTypes.LORE)?.lines?.map { it.string } ?: emptyList()
-                if (loreLines.size > 0) {
-                    val description = loreLines[0]
-                    slotItemName += " ($description)"
+                val bookName = ItemUtils.getEnchantedBookName(stack) ?: ""
+                if (bookName.isNotBlank()) {
+                    slotItemName += " ($bookName)"
                 }
             }
 
