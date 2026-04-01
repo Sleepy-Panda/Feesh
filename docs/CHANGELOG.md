@@ -4,7 +4,7 @@ Released on: ???
 
 ## Features
 
--
+- Show player name who summoned a Reindrake, in the "Alert of ANY Reindrake" functionality.
 
 # 1.4.0
 
