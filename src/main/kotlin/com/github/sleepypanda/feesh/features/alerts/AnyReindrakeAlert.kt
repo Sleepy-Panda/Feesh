@@ -8,7 +8,6 @@ import com.github.sleepypanda.feesh.utils.RegisterUtils
 import com.github.sleepypanda.feesh.utils.WorldUtils
 import com.github.sleepypanda.feesh.utils.ChatUtils
 import com.github.sleepypanda.feesh.utils.PlayerUtils
-import net.minecraft.text.Text
 
 object AnyReindrakeAlert {
     // WOAH! [MVP+] MoonTheSadFisher summoned a Reindrake from the depths!
