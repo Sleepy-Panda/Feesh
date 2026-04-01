@@ -6,6 +6,10 @@ Released on: ???
 
 - Show player name who summoned a Reindrake, in the "Alert on ANY Reindrake" functionality.
 
+## Bugfixes
+
+- Track Agatha Contest results even if Fishing profit tracker is paused, while it's visible.
+
 # 1.4.0
 
 Released on: 2026-03-31

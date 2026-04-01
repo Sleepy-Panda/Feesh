@@ -583,7 +583,7 @@ object FishingProfitTracker {
     }
 
     private fun onAgathaContestBracketReached(bracket: String) {
-        if (!isSessionActive || !isTrackerVisible()) return
+        if (!isTrackerVisible()) return
         if (WorldUtils.getWorldName() != WorldUtils.GALATEA) return
 
         val (agathaCouponCount, forestEssenceCount) = when (bracket.uppercase()) {
