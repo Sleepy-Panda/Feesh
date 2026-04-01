@@ -6,6 +6,11 @@
 - Add custom immunity for Nessie running around until it reaches out the cave.
 - Add owner's name for sea creatures (might be more tricky for cocooned).
 
+## SC tracker
+
+- Being able to remove particular sea creatures from the session/total tracker (why: i've tested certain methods of fishing for 5-10min and never did them again afterwards, yet the few sea creatures (winter, CI lava, MF lava) i got in the test remain in the tracker, making it huge on my screen, and the only way around it is to make my font size smaller which then makes the letters ugly)
+- I also thought about adding +/- buttons to track cocooned stuff.
+
 ## Fishing profit tracker
 
 - View price as 7 days avg to avoid price manipulations.
