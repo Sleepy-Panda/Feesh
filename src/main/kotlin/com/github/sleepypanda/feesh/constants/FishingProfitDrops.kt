@@ -1875,6 +1875,7 @@ class FishingProfitDrops {
                 itemName = "Walnut",
                 itemDisplayName = "${UNCOMMON}Walnut",
                 npcPrice = 200.0,
+                shouldAnnounceRareDrop = true,
             ),
             FishingProfitDropInfo(
                 itemId = "WHITE_GIFT",
