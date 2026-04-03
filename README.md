@@ -82,6 +82,7 @@ This mod requires [Fabric API](https://modrinth.com/mod/fabric-api) and [Fabric 
 - **Bayou tracker tracker** — Titanoboa catch and Titanoboa Shed drop statistics for Backwater Bayou.
 - **Water hotspots tracker** — Wiki Tiki catch and Tiki Mask drop statistics for Water Hotspots.
 - **Crimson Isle tracker** — Fiery Scuttler, Ragnarok, Plhlegblast, Thunder, Lord Jawbus catch and Radioactive Vial drop statistics.
+- **Galatea water tracker** — The Loch Emperor/Nessie catch statistics in Galatea.
 - **Treasure fishing tracker** — Good/Great/Outstanding treasure catches and Treasure Dye drop statistics.
 - **Archfiend Dice profit tracker** — Archfiend Dice / High Class Archfiend Dice profit overlay with Session/Total modes.
 - **Rain/Thunder ends soon** — Shows Rain/Thunder timer while in Birch Park / Spider's Den.

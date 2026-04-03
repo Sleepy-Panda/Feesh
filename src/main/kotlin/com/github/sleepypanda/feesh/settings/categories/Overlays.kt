@@ -21,6 +21,7 @@ import com.github.sleepypanda.feesh.features.overlays.SeaCreaturesTracker
 import com.github.sleepypanda.feesh.features.overlays.TreasureFishingTracker
 import com.github.sleepypanda.feesh.features.overlays.BayouTracker
 import com.github.sleepypanda.feesh.features.overlays.WaterHotspotsTracker
+import com.github.sleepypanda.feesh.features.overlays.GalateaWaterTracker
 import com.github.sleepypanda.feesh.utils.gui.MoveGuis
 import net.minecraft.util.Util
 import net.minecraft.client.gui.screen.option.KeybindsScreen
@@ -522,6 +523,30 @@ ${GRAY}To reset: ${WHITE}/${CrimsonIsleTracker.RESET_COMMAND}
     var crimsonIsleTrackerCustomStyle by boolean(true) {
         this.name = Translated("Apply custom style")
         this.description = Translated(getCustomStyleDescription("Crimson Isle tracker"))
+    }
+
+    init {
+        separator {
+            this.title = "${AQUA}${BOLD}Galatea water tracker"
+        }
+    }
+
+    var galateaWaterTrackerOverlay by boolean(false) {
+        this.name = Translated("Galatea water tracker")
+        this.description = Translated("""
+${GRAY}Shows an overlay with The Loch Emperor and Nessie catch statistics while fishing in Galatea's water.
+${GRAY}To reset: ${WHITE}/${GalateaWaterTracker.RESET_COMMAND}
+        """.trimIndent())
+    }
+
+    var resetGalateaWaterTrackerOnGameClosed by boolean(false) {
+        this.name = Translated("Autoreset on closing game")
+        this.description = Translated("Automatically reset the Galatea water tracker when you close Minecraft.")
+    }
+
+    var galateaWaterTrackerCustomStyle by boolean(true) {
+        this.name = Translated("Apply custom style")
+        this.description = Translated(getCustomStyleDescription("Galatea water tracker"))
     }
 
     init {
