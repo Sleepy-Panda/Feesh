@@ -15,6 +15,7 @@ import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
 import com.github.sleepypanda.feesh.utils.EntityUtils.SeaCreatureParsedNametagInfo
 import net.minecraft.entity.decoration.ArmorStandEntity
 import net.minecraft.sound.SoundEvents
+import net.minecraft.entity.passive.SnifferEntity
 import java.util.Date
 import kotlin.math.ceil
 
@@ -180,6 +181,14 @@ object SeaCreatureHpTracker {
                         } else 0
                     }
 
+                    if (sc.baseMobName == "Nessie") {
+                        val isNessieRunningAway = isNessieRunningAway(sc)
+                        if (isNessieRunningAway) {
+                            isImmune = true
+                            immunitySecondsLeft = 0
+                        }
+                    }
+
                     MobDisplayInfo(
                         nametag = sc.shortNametag,
                         baseMobName = sc.baseMobName,
@@ -254,5 +263,18 @@ object SeaCreatureHpTracker {
             .filter { seaCreatureInfo ->
                 includedSeaCreatureNames.contains(seaCreatureInfo.baseMobName)
             }
+    }
+
+    private fun isNessieRunningAway(sc: SeaCreatureParsedNametagInfo): Boolean {
+        val nessieEntityId = sc.mcEntityId - 1
+        val mobEntity = EntityUtils.getMcEntityById(nessieEntityId) ?: return false
+
+        val scale = (mobEntity as SnifferEntity).scale
+
+        if (scale != 2.0f && sc.currentHpNumber == sc.maxHpNumber * 0.5) {
+            return true
+        }
+
+        return false
     }
 }
