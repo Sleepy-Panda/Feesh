@@ -5,6 +5,7 @@ import com.github.sleepypanda.feesh.events.EventBus
 import com.github.sleepypanda.feesh.events.models.ClientTickEvent
 import com.github.sleepypanda.feesh.events.models.WorldChangedEvent
 import com.github.sleepypanda.feesh.settings.categories.Overlays
+import com.github.sleepypanda.feesh.utils.ChatUtils
 import com.github.sleepypanda.feesh.utils.CommonUtils
 import com.github.sleepypanda.feesh.utils.WorldUtils
 import com.github.sleepypanda.feesh.utils.EntityUtils
@@ -14,6 +15,7 @@ import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
 import com.github.sleepypanda.feesh.utils.EntityUtils.SeaCreatureParsedNametagInfo
 import net.minecraft.entity.decoration.ArmorStandEntity
+import net.minecraft.entity.passive.SnifferEntity
 import net.minecraft.sound.SoundEvents
 import java.util.Date
 import kotlin.math.ceil
@@ -70,6 +72,7 @@ object SeaCreatureHpTracker {
 
     private var mobs = mutableListOf<MobDisplayInfo>()
     private val seenMobEntityIds = mutableMapOf<Int, Long>()
+    private val lastNessieMessageTimes = mutableMapOf<Int, Long>()
 
     private var tickCounter = 0
     private var cleanupTickCounter = 0
@@ -95,6 +98,7 @@ object SeaCreatureHpTracker {
     private fun onWorldChanged(@Suppress("UNUSED_PARAMETER") event: WorldChangedEvent) {
         mobs.clear()
         seenMobEntityIds.clear()
+        lastNessieMessageTimes.clear()
     }
 
     private fun onClientTick(@Suppress("UNUSED_PARAMETER") event: ClientTickEvent) {
@@ -130,19 +134,24 @@ object SeaCreatureHpTracker {
         ) return
 
         cleanupOutdatedSeenEntityIds()
+        cleanupOutdatedNessieMessageTimes()
     }
 
     private fun cleanupOutdatedSeenEntityIds() {
         if (seenMobEntityIds.isEmpty()) return
 
         val now = Date().time
-        val expiredIds = seenMobEntityIds.filter { (_, timestamp) ->
-            now - timestamp > EXPIRATION_TIME_MS
-        }.keys
+        val expiredIds = seenMobEntityIds.filter { (_, timestamp) -> now - timestamp > EXPIRATION_TIME_MS }.keys
+        expiredIds.forEach { id -> seenMobEntityIds.remove(id) }
+    }
 
-        expiredIds.forEach { id ->
-            seenMobEntityIds.remove(id)
-        }
+    private fun cleanupOutdatedNessieMessageTimes() {
+        if (lastNessieMessageTimes.isEmpty()) return
+
+        val now = Date().time
+        val expiredIds = lastNessieMessageTimes.filter { (_, timestamp) -> now - timestamp > 1000L * 4 }.keys
+
+        expiredIds.forEach { id -> lastNessieMessageTimes.remove(id) }
     }
 
     private fun isExpired(timestamp: Long): Boolean {
@@ -178,6 +187,14 @@ object SeaCreatureHpTracker {
                         immunitySecondsLeft = if (isImmune) {
                             ceil((IMMUNITY_TICKS - ticksExisted) / 20.0).toInt().coerceAtLeast(1)
                         } else 0
+                    }
+
+                    if (sc.baseMobName == "Nessie") {
+                        val isNessieRunningAway = isNessieRunningAway(sc)
+                        if (isNessieRunningAway) {
+                            isImmune = true
+                            immunitySecondsLeft = 0
+                        }
                     }
 
                     MobDisplayInfo(
@@ -254,5 +271,37 @@ object SeaCreatureHpTracker {
             .filter { seaCreatureInfo ->
                 includedSeaCreatureNames.contains(seaCreatureInfo.baseMobName)
             }
+    }
+
+    private fun isNessieRunningAway(sc: SeaCreatureParsedNametagInfo): Boolean {
+        val nessieEntityId = sc.mcEntityId - 1
+        val mobEntity = EntityUtils.getMcEntityById(nessieEntityId) ?: return false
+        FeeshMod.LOGGER.info("Nessie HP: ${sc.currentHpNumber} pos: ${CommonUtils.getFormattedLocation(mobEntity.getX(), mobEntity.getY(), mobEntity.getZ())}")
+
+        val scale = (mobEntity as SnifferEntity).scale
+        FeeshMod.LOGGER.info("Scale: $scale")
+     
+        if ((EntityUtils.getDistance(mobEntity, -663.0, 71.0, 12.0) <= 3.0) || (EntityUtils.getDistance(mobEntity, -665.0, 71.0, 20.0) <= 3.0)) {
+            sendNessieDestinationToChat(nessieEntityId, "Driptoad Delve") // x: -667, y: 66, z: 18 | 
+        } else if (EntityUtils.getDistance(mobEntity, -660.0, 71.0, 0.0) <= 3.0) {
+            sendNessieDestinationToChat(nessieEntityId, "Jade Dragon") // -664, y: 70, z: 14?
+        }
+
+        if (scale != 2.0f && sc.currentHpNumber == sc.maxHpNumber * 0.5) {
+            return true
+        }
+
+        return false
+    }
+
+    private fun sendNessieDestinationToChat(nessieEntityId: Int, destination: String) {
+        val lastMessageTime = lastNessieMessageTimes[nessieEntityId] ?: 0L
+        val now = Date().time
+        var isMessageSent = (now - lastMessageTime < 1000L * 5)
+        if (!isMessageSent) {
+            CommonUtils.showTitle("${LIGHT_PURPLE}Nessie ${WHITE} goes to ${GREEN}${BOLD}${destination}${WHITE} cave!")
+            ChatUtils.sendLocalChat("${LIGHT_PURPLE}${BOLD}Nessie ${WHITE}is travelling to the ${GREEN}${BOLD}${destination}${WHITE} cave. Meet it there!", true)
+            lastNessieMessageTimes[nessieEntityId] = now
+        }
     }
 }
