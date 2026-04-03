@@ -189,6 +189,7 @@ object SeaCreatureHpTracker {
                         } else 0
                     }
 
+
                     if (sc.baseMobName == "Nessie") {
                         val isNessieRunningAway = isNessieRunningAway(sc)
                         if (isNessieRunningAway) {

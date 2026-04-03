@@ -4,6 +4,7 @@ Released on: ???
 
 ## Features
 
+- Show Nessie's immunity flag in Sea creature HP overlay, while Nessie is running away.
 - Show player name who summoned a Reindrake, in the "Alert on ANY Reindrake" functionality.
 
 ## Bugfixes
