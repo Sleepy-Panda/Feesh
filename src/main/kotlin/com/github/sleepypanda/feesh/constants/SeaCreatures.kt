@@ -46,6 +46,7 @@ enum class RareSeaCreatureTypesAllChat(val displayName: String) {
 class SeaCreatures {
     companion object {
         const val TYPE_CRIMSON_ISLE_LAVA = "CRIMSON_ISLE_LAVA"
+        const val TYPE_GALATEA_LAVA = "GALATEA_LAVA"
 
         // WATER SEA CREATURES
         val WATER_HYDRA_MESSAGE = "^The Water Hydra has come to test your strength\\.$"
@@ -228,7 +229,7 @@ class SeaCreatures {
             SeaCreatureInfo("Tadgang", UNCOMMON.code, Regex(TADGANG_MESSAGE), false),
             SeaCreatureInfo("Ent", UNCOMMON.code, Regex(ENT_MESSAGE), false),
             SeaCreatureInfo("Wetwing", RARE.code, Regex(WETWING_MESSAGE), false),
-            SeaCreatureInfo("Stridersurfer", RARE.code, Regex(STRIDERSURFER_MESSAGE), false),
+            SeaCreatureInfo("Stridersurfer", RARE.code, Regex(STRIDERSURFER_MESSAGE), false, listOf(TYPE_GALATEA_LAVA)),
         )
 
         val rareSeaCreatures = allSeaCreatures.filter { it.isRare }
