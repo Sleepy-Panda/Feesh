@@ -40,10 +40,10 @@ object GalateaWaterTracker {
         .setClickable(true)
         .setSampleLines(listOf(
             baseTitle,
-            "${lochEmperor.displayName}${GRAY}: ${WHITE}200 ${GRAY}catches ago ${DARK_GRAY}(${GRAY}avg: ${WHITE}450${DARK_GRAY})",
-            "${GRAY}Last on: ${WHITE}2h ago ${GRAY}(${WHITE}2025-01-15 13:30:00${GRAY})",
-            "${nessie.displayName}${GRAY}: ${WHITE}50 ${GRAY}catches ago ${DARK_GRAY}(${GRAY}avg: ${WHITE}250${DARK_GRAY})",
-            "${GRAY}Last on: ${WHITE}30m ago ${GRAY}(${WHITE}2025-01-15 15:00:00${GRAY})"
+            "${lochEmperor.displayName}${GRAY}: ${WHITE}200 ${GRAY}catches ago ${DARK_GRAY}(${GRAY}avg: ${WHITE}150${DARK_GRAY})",
+            "${GRAY}Last on: ${WHITE}1h ago ${GRAY}(${WHITE}2025-01-15 13:30:00${GRAY})",
+            "${nessie.displayName}${GRAY}: ${WHITE}350 ${GRAY}catches ago ${DARK_GRAY}(${GRAY}avg: ${WHITE}450${DARK_GRAY})",
+            "${GRAY}Last on: ${WHITE}1h 30m ago ${GRAY}(${WHITE}2025-01-15 15:00:00${GRAY})"
         ))
         .setSettingsKey { Overlays.galateaWaterTrackerOverlay }
         .setApplyCustomStyleKey { Overlays.galateaWaterTrackerCustomStyle }
@@ -70,7 +70,7 @@ object GalateaWaterTracker {
         if (!Overlays.galateaWaterTrackerOverlay || !WorldUtils.isInSkyblock() || WorldUtils.getWorldName() != WorldUtils.GALATEA) return
 
         val seaCreatureInfo = SeaCreatures.allSeaCreatures.find { it.name == event.seaCreatureName } ?: return
-        if (!seaCreatureInfo.types.contains(SeaCreatures.TYPE_GALATEA_LAVA)) return
+        if (seaCreatureInfo.types.contains(SeaCreatures.TYPE_GALATEA_LAVA)) return
 
         val seaCreatureName = event.seaCreatureName
         if (seaCreatureName == lochEmperor.name) {
