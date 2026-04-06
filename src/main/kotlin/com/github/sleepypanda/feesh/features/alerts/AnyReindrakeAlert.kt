@@ -14,7 +14,8 @@ object AnyReindrakeAlert {
     // WOAH! [MVP+] MoonTheSadFisher summoned TWO Reindrakes from the depths!
     // §c§lWOAH! §6[MVP§0++§6] Dulkir§f §csummoned a §4Reindrake §cfrom the depths!
     // §c§lWOAH! §b[MVP§d+§b] MoonTheSadFisher§f §csummoned a §4Reindrake §cfrom the depths!
-    const val REINDRAKE_PATTERN = "^§c§lWOAH! (?<playerNameAndRank>.*) §csummoned (a|TWO|two) §4Reindrake(s)? §cfrom the depths!$"
+    // §c§lWOAH! §b[MVP§d+§b] MoonTheSadFisher§f §csummoned §4TWO Reindrakes §cfrom the depths!
+    const val REINDRAKE_PATTERN = "^§c§lWOAH! (?<playerNameAndRank>.*) §csummoned (§4)?(a|TWO|two) (§4)?Reindrake(s)? §cfrom the depths!$"
     val reindrake = SeaCreatures.allSeaCreatures.find { it.name == "Reindrake" }!!
 
     fun init() {
@@ -25,7 +26,7 @@ object AnyReindrakeAlert {
         if (boldDisplayName.isNullOrEmpty() || rarityColorCode.isNullOrEmpty()) return
         if (!WorldUtils.isInSkyblock() || !Alerts.alertOnAnyReindrake || WorldUtils.getWorldName() != WorldUtils.JERRY_WORKSHOP) return
 
-        val isDoubleHook = matchResult.groupValues[2].equals("two", ignoreCase = true)
+        val isDoubleHook = matchResult.groupValues[3].equals("two", ignoreCase = true)
         val playerNameAndRank = matchResult.groups.get("playerNameAndRank")?.value ?: ""
         val name = PlayerUtils.getFormattedPlayerNameFromPartyChat(playerNameAndRank) ?: ""
 
