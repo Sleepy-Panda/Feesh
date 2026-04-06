@@ -1,5 +1,7 @@
 ## Players feedback
 
+FeeshMod.LOGGER.info("Nessie destination alert: ${mobEntity.x}, ${mobEntity.y}, ${mobEntity.z}") // TODO Remove
+
 - TODO: Test in 1.21
 - Add Flash announce
 - Sometimes current world&zone is detected wrongly
@@ -13,6 +15,33 @@
 - Items counted after /gfs: Moved 39 Enchanted Sea Lumies from your Sacks to your inventory.
 - Settings are not saved after exiting the game, probably because user closes window using X button to exit
 - On 1.21.11, original fishing timer armorstand appears for a second when the fish starts swimming towards bobber
+
+[Feesh] Error occurred in LinkedHashMap.java:1023 in method nextNode - Failed to save Feesh data data
+java.util.ConcurrentModificationException: null
+	at java.base/java.util.LinkedHashMap$LinkedHashIterator.nextNode(LinkedHashMap.java:1023) ~[?:?]
+	at java.base/java.util.LinkedHashMap$LinkedEntryIterator.next(LinkedHashMap.java:1058) ~[?:?]
+	at java.base/java.util.LinkedHashMap$LinkedEntryIterator.next(LinkedHashMap.java:1055) ~[?:?]
+	at knot/com.google.gson.internal.bind.MapTypeAdapterFactory$Adapter.write(MapTypeAdapterFactory.java:220) ~[gson-2.11.0.jar:?]
+	at knot/com.google.gson.internal.bind.MapTypeAdapterFactory$Adapter.write(MapTypeAdapterFactory.java:154) ~[gson-2.11.0.jar:?]
+	at knot/com.google.gson.internal.bind.TypeAdapterRuntimeTypeWrapper.write(TypeAdapterRuntimeTypeWrapper.java:73) ~[gson-2.11.0.jar:?]
+	at knot/com.google.gson.internal.bind.ReflectiveTypeAdapterFactory$2.write(ReflectiveTypeAdapterFactory.java:247) ~[gson-2.11.0.jar:?]
+	at knot/com.google.gson.internal.bind.ReflectiveTypeAdapterFactory$Adapter.write(ReflectiveTypeAdapterFactory.java:490) ~[gson-2.11.0.jar:?]
+	at knot/com.google.gson.internal.bind.TypeAdapterRuntimeTypeWrapper.write(TypeAdapterRuntimeTypeWrapper.java:73) ~[gson-2.11.0.jar:?]
+	at knot/com.google.gson.internal.bind.ReflectiveTypeAdapterFactory$2.write(ReflectiveTypeAdapterFactory.java:247) ~[gson-2.11.0.jar:?]
+	at knot/com.google.gson.internal.bind.ReflectiveTypeAdapterFactory$Adapter.write(ReflectiveTypeAdapterFactory.java:490) ~[gson-2.11.0.jar:?]
+	at knot/com.google.gson.internal.bind.TypeAdapterRuntimeTypeWrapper.write(TypeAdapterRuntimeTypeWrapper.java:73) ~[gson-2.11.0.jar:?]
+	at knot/com.google.gson.internal.bind.ReflectiveTypeAdapterFactory$2.write(ReflectiveTypeAdapterFactory.java:247) ~[gson-2.11.0.jar:?]
+	at knot/com.google.gson.internal.bind.ReflectiveTypeAdapterFactory$Adapter.write(ReflectiveTypeAdapterFactory.java:490) ~[gson-2.11.0.jar:?]
+	at knot/com.google.gson.Gson.toJson(Gson.java:944) ~[gson-2.11.0.jar:?]
+	at knot/com.google.gson.Gson.toJson(Gson.java:899) ~[gson-2.11.0.jar:?]
+	at knot/com.google.gson.Gson.toJson(Gson.java:848) ~[gson-2.11.0.jar:?]
+	at knot/com.google.gson.Gson.toJson(Gson.java:825) ~[gson-2.11.0.jar:?]
+	at knot/com.github.sleepypanda.feesh.utils.FileUtils.saveJsonToFileSync(FileUtils.kt:65) ~[Feesh-1.5.0-alpha+1.21.10-fabric.jar:?]
+	at knot/com.github.sleepypanda.feesh.utils.FileUtils.saveJsonToFileAsync$lambda$0(FileUtils.kt:95) ~[Feesh-1.5.0-alpha+1.21.10-fabric.jar:?]
+	at java.base/java.util.concurrent.CompletableFuture$AsyncRun.run(CompletableFuture.java:1804) ~[?:?]
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1144) ~[?:?]
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:642) ~[?:?]
+	at java.base/java.lang.Thread.run(Thread.java:1583) [?:?]
 
 ## Tech Debt
 
