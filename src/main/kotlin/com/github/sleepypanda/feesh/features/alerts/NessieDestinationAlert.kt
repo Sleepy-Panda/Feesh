@@ -18,6 +18,11 @@ import net.minecraft.entity.passive.SnifferEntity
 import java.util.Date
 
 object NessieDestinationAlert {
+    private data class TrackedNessieInfo(
+        val detectedTime: Long,
+        val isDestinationSent: Boolean = false
+    )
+
     private const val NESSIE_NAME = "Nessie"
     private const val SCAN_DISTANCE = 30.0
     private const val TICKS_PER_MOBS_SCAN = 10
@@ -36,8 +41,7 @@ object NessieDestinationAlert {
         Triple(-660.0, 71.0, 0.0)
     )
 
-    private val trackedNessieMobIds = mutableMapOf<Int, Long>()
-    private val lastNessieMessageTimes = mutableMapOf<Int, Long>()
+    private val trackedNessieMobIds = mutableMapOf<Int, TrackedNessieInfo>()
 
     private var tickCounter = 0
     private var cleanupTickCounter = 0
@@ -49,7 +53,6 @@ object NessieDestinationAlert {
 
     private fun onWorldChanged(@Suppress("UNUSED_PARAMETER") event: WorldChangedEvent) {
         trackedNessieMobIds.clear()
-        lastNessieMessageTimes.clear()
     }
 
     private fun onClientTick(@Suppress("UNUSED_PARAMETER") event: ClientTickEvent) {
@@ -64,7 +67,7 @@ object NessieDestinationAlert {
 
         if (!Alerts.alertOnNessieDestination || !WorldUtils.isInSkyblock() || WorldUtils.getWorldName() != WorldUtils.GALATEA) return
 
-        CommonUtils.runWithCatching("Failed to scan for Nessie armor stands") {
+        CommonUtils.runWithCatching("Failed to scan for Nessies nearby") {
             trackNessiesNearby()
             checkNessiesChosenDestinations()
         }
@@ -75,10 +78,9 @@ object NessieDestinationAlert {
         if (cleanupTickCounter < CLEANUP_DELAY_TICKS) return
         cleanupTickCounter = 0
 
-        if (!Alerts.alertOnNessieDestination || !WorldUtils.isInSkyblock() || WorldUtils.getWorldName() != WorldUtils.GALATEA) return
+        if (!WorldUtils.isInSkyblock() || WorldUtils.getWorldName() != WorldUtils.GALATEA) return
 
         cleanupOutdatedTrackedIds()
-        cleanupOutdatedNessieMessageTimes()
     }
 
     private fun trackNessiesNearby() {
@@ -91,11 +93,12 @@ object NessieDestinationAlert {
             .forEach { stand ->
                 val name = stand.customName?.string?.removeFormatting() ?: return@forEach
                 if (!name.contains(NESSIE_NAME)) return@forEach
-                val scInfo = EntityUtils.parseSeaCreatureNametag(stand, listOf(NESSIE_NAME)) ?: return@forEach
+                EntityUtils.parseSeaCreatureNametag(stand, listOf(NESSIE_NAME)) ?: return@forEach
+
                 val mobId = stand.id - 1
                 val existing = trackedNessieMobIds[mobId]
                 if (existing == null) {
-                    trackedNessieMobIds[mobId] = now
+                    trackedNessieMobIds[mobId] = TrackedNessieInfo(detectedTime = now)
                 }
             }
     }
@@ -110,22 +113,14 @@ object NessieDestinationAlert {
     private fun cleanupOutdatedTrackedIds() {
         if (trackedNessieMobIds.isEmpty()) return
         val now = Date().time
-        val expiredIds = trackedNessieMobIds.filter { (_, timestamp) -> now - timestamp > EXPIRATION_TIME_MS }.keys
+        val expiredIds = trackedNessieMobIds.filter { (_, info) -> now - info.detectedTime > EXPIRATION_TIME_MS }.keys
         expiredIds.forEach { id -> trackedNessieMobIds.remove(id) }
-    }
-
-    private fun cleanupOutdatedNessieMessageTimes() {
-        if (lastNessieMessageTimes.isEmpty()) return
-        val now = Date().time
-        val expiredIds = lastNessieMessageTimes.filter { (_, timestamp) -> now - timestamp > 1000L * 30 }.keys // To not announce Nessie moving through some point a few times
-        expiredIds.forEach { id -> lastNessieMessageTimes.remove(id) }
     }
 
     private fun checkNessieChosenDestination(nessieEntityId: Int) {
         val mobEntity = EntityUtils.getMcEntityById(nessieEntityId) ?: return
         if (mobEntity !is SnifferEntity) return
 
-        FeeshMod.LOGGER.info("Nessie destination alert: ${mobEntity.x}, ${mobEntity.y}, ${mobEntity.z}")
         if (driptoadDelveEntranceCoords.any { (x, y, z) -> EntityUtils.getDistance(mobEntity, x, y, z) <= DESTINATION_ENTRANCE_RADIUS }) {
             alertOnNessieDestinationChosen(nessieEntityId, "Driptoad Delve")
         } else if (jadeDragonEntranceCoords.any { (x, y, z) -> EntityUtils.getDistance(mobEntity, x, y, z) <= DESTINATION_ENTRANCE_RADIUS }) {
@@ -134,12 +129,12 @@ object NessieDestinationAlert {
     }
 
     private fun alertOnNessieDestinationChosen(nessieEntityId: Int, destination: String) {
-        val lastMessageTime = lastNessieMessageTimes[nessieEntityId]
-        if (lastMessageTime == null) {
-            lastNessieMessageTimes[nessieEntityId] = Date().time
-            CommonUtils.showTitle("", "${LIGHT_PURPLE}Nessie ${WHITE}goes to ${GREEN}${BOLD}${destination}${WHITE} cave!")
-            SoundUtils.playSound()
-            ChatUtils.sendLocalChat("${LIGHT_PURPLE}${BOLD}Nessie ${WHITE}is swimming to the ${GREEN}${BOLD}${destination}${WHITE} cave. Meet it there!", true)
-        }
+        val trackedInfo = trackedNessieMobIds[nessieEntityId] ?: return
+        if (trackedInfo.isDestinationSent) return
+
+        trackedNessieMobIds[nessieEntityId] = trackedInfo.copy(isDestinationSent = true)
+        CommonUtils.showTitle("", "${LIGHT_PURPLE}Nessie ${WHITE}goes to ${GREEN}${BOLD}${destination}${WHITE} cave!")
+        SoundUtils.playSound()
+        ChatUtils.sendLocalChat("${LIGHT_PURPLE}${BOLD}Nessie ${WHITE}is swimming to the ${GREEN}${BOLD}${destination}${WHITE} cave. Meet it there!", true)
     }
 }
