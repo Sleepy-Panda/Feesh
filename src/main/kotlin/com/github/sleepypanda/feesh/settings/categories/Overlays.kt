@@ -266,6 +266,13 @@ ${GRAY}To reset [Total]: ${WHITE}/${SeaCreaturesTracker.RESET_TOTAL}
         this.description = Translated("Setups sorting order for the sea creatures.")
     }
 
+    var seaCreaturesTrackerShowTop by int(50) {
+        this.name = Translated("Maximum lines count")
+        this.description = Translated("Show top N lines for sea creatures in Session/Total views. Remaining entries will be grouped under 'Other sea creatures'.")
+        this.range = 1..100
+        this.slider = true
+    }
+
     var resetSeaCreaturesTrackerSessionOnGameClosed by boolean(true) {
         this.name = Translated("Autoreset [Session] on closing game")
         this.description = Translated("Automatically reset the Sea creatures tracker [Session] when you close Minecraft.")

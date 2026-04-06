@@ -61,7 +61,8 @@ object SeaCreaturesTracker {
             baseTitle,
             "${GRAY}- ${GOLD}Yeti: ${WHITE}10 ${GRAY}1% | DH: ${WHITE}1 ${GRAY}20%",
             "${GRAY}- ${LIGHT_PURPLE}Reindrake: ${WHITE}1 ${GRAY}0.1%",
-            "${GRAY}Total: ${WHITE}11 ${GRAY}rare out of ${WHITE}1000",
+            "",
+            "${AQUA}Total: ${WHITE}11 ${GRAY}rare out of ${WHITE}1000",
         ))
         .setSettingsKey { Overlays.seaCreaturesTrackerOverlay }
         .setApplyCustomStyleKey { Overlays.seaCreaturesTrackerCustomStyle }
@@ -267,6 +268,10 @@ object SeaCreaturesTracker {
             )
         }
 
+        val maxLines = Overlays.seaCreaturesTrackerShowTop.coerceIn(1, 100)
+        val entriesToShow = sortedEntries.take(maxLines)
+        val hiddenEntries = sortedEntries.drop(maxLines)
+
         val lines = mutableListOf<String>()
         val nextMode = if (viewMode == ViewMode.SESSION) ViewMode.TOTAL else ViewMode.SESSION
         val nextModeText = getViewModeDisplayText(nextMode)
@@ -274,7 +279,7 @@ object SeaCreaturesTracker {
         val viewModeText = getViewModeDisplayText(viewMode)
         lines.add("${baseTitle} ${viewModeText}")
 
-        sortedEntries.forEach { entry ->
+        entriesToShow.forEach { entry ->
             val seaCreatureText = if (entry.seaCreatureInfo.isRare) "${entry.seaCreatureInfo.boldDisplayName}" else "${entry.seaCreatureInfo.displayName}"
             val countText = "${WHITE}${CommonUtils.formatNumberWithSpaces(entry.amount)}"
             val percentText = if (showPercentage) " ${GRAY}${decimalFormat.format(entry.percent)}%" else ""
@@ -288,6 +293,12 @@ object SeaCreaturesTracker {
             lines.add("${GRAY}- $seaCreatureText${GRAY}: $countText$percentText$doubleHookText")
         }
 
+        if (hiddenEntries.isNotEmpty()) {
+            val otherSeaCreaturesCount = CommonUtils.formatNumberWithSpaces(hiddenEntries.sumOf { it.amount })
+            val otherSeaCreaturesTypes = CommonUtils.formatNumberWithSpaces(hiddenEntries.size)
+            lines.add("${GRAY}- Other sea creatures of ${WHITE}$otherSeaCreaturesTypes ${GRAY}types: ${WHITE}$otherSeaCreaturesCount")
+        }
+
         val totalCount = if (displayMode == SeaCreaturesTrackerDisplayMode.ALL) {
             sourceObj.totalCount
         } else {
@@ -295,11 +306,12 @@ object SeaCreaturesTracker {
         }
 
         val totalText = if (displayMode == SeaCreaturesTrackerDisplayMode.ALL) {
-            "${GRAY}Total: ${WHITE}${CommonUtils.formatNumberWithSpaces(totalCount)}"
+            "${AQUA}Total: ${WHITE}${CommonUtils.formatNumberWithSpaces(totalCount)}"
         } else {
             val rareTotal = sortedEntries.sumOf { it.amount }
-            "${GRAY}Total: ${WHITE}${CommonUtils.formatNumberWithSpaces(rareTotal)} ${GRAY}rare out of ${WHITE}${CommonUtils.formatNumberWithSpaces(sourceObj.totalCount)}"
+            "${AQUA}Total: ${WHITE}${CommonUtils.formatNumberWithSpaces(rareTotal)} ${GRAY}rare out of ${WHITE}${CommonUtils.formatNumberWithSpaces(sourceObj.totalCount)}"
         }
+        lines.add("")
         lines.add(totalText)
 
         gui.setLines(lines)
