@@ -7,6 +7,7 @@ Released on: ???
 - Added Galatea water tracker which shows The Loch Emperor/Nessie catch statistics in Galatea [disabled by default].
 - Show Nessie's immunity flag in Sea creature HP overlay, while Nessie is running away.
 - Show player name who summoned a Reindrake, in the "Alert on ANY Reindrake" functionality.
+- Added setting to limit the amount of lines shown in Sea creatures tracker, to avoid tracker being too long.
 
 ## Bugfixes
 

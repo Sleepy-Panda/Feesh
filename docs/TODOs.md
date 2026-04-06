@@ -6,7 +6,7 @@ FeeshMod.LOGGER.info("Nessie destination alert: ${mobEntity.x}, ${mobEntity.y}, 
 - Add Flash announce
 - Sometimes current world&zone is detected wrongly
 - +/-/x for sea creatures
-- Limit SCs count in the view
+- Ragnarok immunity timer
 - Magma Core fishing widget
 - Someone has no Vial title/sound (I checked and did not reproduce, I had my title/sound as usual)
 - Fished coins to add via the command.
