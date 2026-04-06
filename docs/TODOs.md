@@ -1,6 +1,8 @@
 ## Players feedback
 
 - TODO: Test in 1.21
+- Add Flash announce
+- Sometimes current world&zone is detected wrongly
 - +/-/x for sea creatures
 - Limit SCs count in the view
 - Magma Core fishing widget

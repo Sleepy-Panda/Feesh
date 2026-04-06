@@ -56,6 +56,11 @@ object Alerts : CategoryKt("Alerts") {
         this.description = Translated("Shows a title and plays a sound when you or your party members are killed by Thunder / Lord Jawbus / Ragnarok / Wiki Tiki / Titanoboa / Nessie.")
     }
 
+    var alertOnNessieDestination by boolean(true) {
+        this.name = Translated("Alert when Nessie has chosen its destination")
+        this.description = Translated("Shows a title and sends a chat message when Nessie is swimming to the Driptoad Delve or Jade Dragon cave.")
+    }
+
     init {
         separator {
             this.title = "${AQUA}${BOLD}Rare drops"
