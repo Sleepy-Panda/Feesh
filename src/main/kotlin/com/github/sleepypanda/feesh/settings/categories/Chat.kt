@@ -12,6 +12,7 @@ import com.teamresourceful.resourcefulconfig.api.annotations.Category
 import com.teamresourceful.resourcefulconfig.api.annotations.Comment
 import com.teamresourceful.resourcefulconfig.api.annotations.ConfigEntry
 import com.teamresourceful.resourcefulconfig.api.types.options.EntryType
+import com.teamresourceful.resourcefulconfig.api.types.options.TranslatableValue
 import net.minecraft.client.gui.screen.option.KeybindsScreen
 import net.minecraft.util.Util
 
@@ -23,6 +24,11 @@ enum class HotspotChatSource(val displayName: String) {
 }
 
 object Chat : CategoryKt("Chat") {
+    override val description: TranslatableValue
+        get() = Literal(
+            "Features that share information via party/all chat, or modify the local player's chat."
+        )
+
     init {
         separator {
             this.title = "${AQUA}${BOLD}Compact catch messages"

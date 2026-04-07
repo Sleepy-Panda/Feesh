@@ -7,6 +7,7 @@ import com.github.sleepypanda.feesh.constants.RareDropTypes
 import com.github.sleepypanda.feesh.utils.enums.DeployableTypes
 import com.github.sleepypanda.feesh.utils.enums.PricingModeWithNpc
 import com.teamresourceful.resourcefulconfigkt.api.CategoryKt
+import com.teamresourceful.resourcefulconfig.api.types.options.TranslatableValue
 
 enum class AlertSource(val displayName: String) {
     OWN_AND_PARTY("Own and party"),
@@ -24,6 +25,11 @@ enum class RareDropPriceScope(val displayName: String) {
 }
 
 object Alerts : CategoryKt("Alerts") {
+    override val description: TranslatableValue
+        get() = Literal(
+            "Personal alerts that appear on your screen, in local chat, or play a sound."
+        )
+
     init {
         separator {
             this.title = "${AQUA}${BOLD}Rare sea creatures"

@@ -1,17 +1,18 @@
 package com.github.sleepypanda.feesh.settings.categories
 
-import com.github.sleepypanda.feesh.FeeshMod
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
 import com.github.sleepypanda.feesh.features.rendering.RareMobHighlight
-import com.teamresourceful.resourcefulconfig.api.annotations.Category
-import com.teamresourceful.resourcefulconfig.api.annotations.Comment
-import com.teamresourceful.resourcefulconfig.api.annotations.ConfigEntry
-import com.teamresourceful.resourcefulconfig.api.types.options.EntryType
+import com.teamresourceful.resourcefulconfig.api.types.options.TranslatableValue
 import com.teamresourceful.resourcefulconfigkt.api.ObservableEntry
 import com.teamresourceful.resourcefulconfigkt.api.CategoryKt
 
 object WorldRendering : CategoryKt("World Rendering") {
+    override val description: TranslatableValue
+        get() = Literal(
+            "Features that modify the world and entities."
+        )
+
     init {
         separator {
             this.title = "${AQUA}${BOLD}Fishing hooks"
@@ -55,5 +56,16 @@ object WorldRendering : CategoryKt("World Rendering") {
         this.description = Translated("Maximum distance (blocks) from your fishing hook within which other players are hidden. Only applies when fishing rod is casted.")
         this.range = 1..10
         this.slider = true
+    }
+
+    init {
+        separator {
+            this.title = "${AQUA}${BOLD}World sounds"
+        }
+    }
+
+    var muteJadeDragon by boolean(false) {
+        this.name = Translated("Mute Jade Dragon")
+        this.description = Translated("Mutes Jade dragon sounds while you are in dragon's cave.")
     }
 }

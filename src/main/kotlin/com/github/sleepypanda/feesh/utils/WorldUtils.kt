@@ -28,6 +28,8 @@ object WorldUtils {
     val RIFT = "Rift Dimension"
     val GALATEA = "Galatea"
     val PLHLEGBLAST_POOL = "Plhlegblast Pool"
+    val MURKWATER_DEPTHS = "Murkwater Depths"
+    val DRAGON_LAIR = "Dragon's Lair"
 
     val NO_FISHING_WORLDS = listOf(
         RIFT,
