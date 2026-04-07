@@ -133,15 +133,15 @@ object GalateaWaterTracker {
         if (Overlays.resetGalateaWaterTrackerOnGameClosed &&
             hasData()
         ) {
-            reset()
+            reset(force = true)
             FeeshMod.LOGGER.info("[Feesh] Automatically reset Galatea water tracker on game closed.")
         }
     }
 
-    private fun reset() {
+    private fun reset(force: Boolean = false) {
         data.lochEmperor.reset()
         data.nessie.reset()
-        saveData()
+        saveData(force)
     }
 
     private fun resetGalateaWaterTracker(isConfirmed: Boolean) {
@@ -161,7 +161,11 @@ object GalateaWaterTracker {
         }
     }
 
-    private fun saveData() {
-        PersistentDataManager.saveFeeshDataToFileAsync()
+    private fun saveData(force: Boolean = false) {
+        if (force) {
+            PersistentDataManager.forceSaveFeeshDataToFileSync()
+        } else {
+            PersistentDataManager.saveFeeshDataToFileAsync()
+        }
     }
 }

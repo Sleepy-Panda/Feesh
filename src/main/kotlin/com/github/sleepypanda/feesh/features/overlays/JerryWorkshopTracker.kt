@@ -145,15 +145,15 @@ object JerryWorkshopTracker {
         if (Overlays.resetJerryWorkshopTrackerOnGameClosed &&
             Overlays.jerryWorkshopTrackerOverlay &&
             hasData()) {
-            reset()
+            reset(force = true)
             FeeshMod.LOGGER.info("[Feesh] Automatically reset Jerry Workshop tracker on game closed.")
         }
     }
 
-    private fun reset() {
+    private fun reset(force: Boolean = false) {
         data.yeti.reset()
         data.reindrake.reset()
-        saveData()
+        saveData(force)
     }
 
     private fun resetJerryWorkshopTracker(isConfirmed: Boolean) {
@@ -173,7 +173,11 @@ object JerryWorkshopTracker {
         }
     }
 
-    private fun saveData() {
-        PersistentDataManager.saveFeeshDataToFileAsync()
+    private fun saveData(force: Boolean = false) {
+        if (force) {
+            PersistentDataManager.forceSaveFeeshDataToFileSync()
+        } else {
+            PersistentDataManager.saveFeeshDataToFileAsync()
+        }
     }
 }

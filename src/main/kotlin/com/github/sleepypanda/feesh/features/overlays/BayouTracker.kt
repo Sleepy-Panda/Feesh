@@ -139,15 +139,15 @@ object BayouTracker {
             Overlays.bayouTrackerOverlay &&
             hasData()
         ) {
-            reset()
+            reset(force = true)
             FeeshMod.LOGGER.info("[Feesh] Automatically reset Bayou tracker on game closed.")
         }
     }
 
-    private fun reset() {
+    private fun reset(force: Boolean = false) {
         data.titanoboa.reset()
         data.titanoboaSheds.reset()
-        saveData()
+        saveData(force)
     }
 
     private fun resetBayouTracker(isConfirmed: Boolean) {
@@ -167,8 +167,12 @@ object BayouTracker {
         }
     }
 
-    private fun saveData() {
-        PersistentDataManager.saveFeeshDataToFileAsync()
+    private fun saveData(force: Boolean = false) {
+        if (force) {
+            PersistentDataManager.forceSaveFeeshDataToFileSync()
+        } else {
+            PersistentDataManager.saveFeeshDataToFileAsync()
+        }
     }
 
     fun setTitanoboaSheds(count: Int, lastOn: Date?) {

@@ -138,15 +138,15 @@ object WaterHotspotsTracker {
             Overlays.waterHotspotsTrackerOverlay &&
             hasData()
         ) {
-            reset()
+            reset(force = true)
             FeeshMod.LOGGER.info("[Feesh] Automatically reset Water Hotspots tracker on game closed.")
         }
     }
 
-    private fun reset() {
+    private fun reset(force: Boolean = false) {
         data.wikiTiki.reset()
         data.tikiMasks.reset()
-        saveData()
+        saveData(force)
     }
 
     private fun resetWaterHotspotsTracker(isConfirmed: Boolean) {
@@ -166,8 +166,12 @@ object WaterHotspotsTracker {
         }
     }
 
-    private fun saveData() {
-        PersistentDataManager.saveFeeshDataToFileAsync()
+    private fun saveData(force: Boolean = false) {
+        if (force) {
+            PersistentDataManager.forceSaveFeeshDataToFileSync()
+        } else {
+            PersistentDataManager.saveFeeshDataToFileAsync()
+        }
     }
 
     private fun isFishingInHotspot(): Boolean {
