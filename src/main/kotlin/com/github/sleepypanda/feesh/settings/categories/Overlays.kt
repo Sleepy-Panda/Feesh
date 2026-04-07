@@ -151,6 +151,7 @@ Hidden if you have no fishing rod in your hotbar!""".trimIndent())
 
     var nearbyEntitiesCounterTypes by select(NearbyEntitiesCounterTypes.LEGION, NearbyEntitiesCounterTypes.BOBBING_TIME) {
         this.name = Translated("Nearby entities counter types to display")
+        this.searchTerms = NearbyEntitiesCounterTypes.values().map { it.displayName }.toList()
     }
 
     var nearbyEntitiesCounterCustomStyle by boolean(true) {
@@ -201,6 +202,7 @@ Hidden if you have no fishing rod in your hotbar!""".trimIndent())
 
     var deployablesOverlayTypes by select(DeployableTypes.TOTEM_OF_CORRUPTION, *DeployableTypes.values()) {
         this.name = Translated("Select deployables to show in overlay")
+        this.searchTerms = DeployableTypes.values().map { it.displayName }.toList()
     }
 
     var deployablesTimerCustomStyle by boolean(true) {
