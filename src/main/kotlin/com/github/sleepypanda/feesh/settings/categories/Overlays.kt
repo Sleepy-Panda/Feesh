@@ -280,6 +280,24 @@ ${GRAY}To reset [Total]: ${WHITE}/${SeaCreaturesTracker.RESET_TOTAL}
         this.description = Translated("Automatically reset the Sea creatures tracker [Session] when you close Minecraft.")
     }
 
+    init {
+        button {
+            title = "Sea creatures tracker commands"
+            description = "Explains in your chat how to use manual commands to adjust sea creatures count in [Session] and [Total]."
+            text = "Click for help"
+            onClick {
+                ChatUtils.sendLocalChat("${AQUA}${BOLD}Sea creatures tracker commands${RESET}", true)
+                ChatUtils.sendLocalChat("\nUse these commands if you want to manually fix or import sea creatures into the tracker:")
+                ChatUtils.sendLocalChat("  - ${WHITE}/${SeaCreaturesTracker.SET_SEA_CREATURE_COUNT_COMMAND} <SEA_CREATURE_NAME> <COUNT>${RESET} - sets sea creature count in [Session].")
+                ChatUtils.sendLocalChat("  - ${WHITE}/${SeaCreaturesTracker.SET_SEA_CREATURE_COUNT_TOTAL_COMMAND} <SEA_CREATURE_NAME> <COUNT>${RESET} - sets sea creature count in [Total].")
+                ChatUtils.sendLocalChat("  - ${WHITE}/${SeaCreaturesTracker.DELETE_SEA_CREATURE_COMMAND} <SEA_CREATURE_NAME>${RESET} - deletes sea creature from [Session].")
+                ChatUtils.sendLocalChat("  - ${WHITE}/${SeaCreaturesTracker.DELETE_SEA_CREATURE_TOTAL_COMMAND} <SEA_CREATURE_NAME>${RESET} - deletes sea creature from [Total].")
+                ChatUtils.sendLocalChat("\n${GRAY}<SEA_CREATURE_NAME>${RESET} - exact sea creature name (for example Yeti, Reindrake, Lord Jawbus, The Loch Emperor).")
+                ChatUtils.sendLocalChat("${GRAY}<COUNT>${RESET} - positive integer with desired total amount of this sea creature in the tracker.")
+            }
+        }
+    }
+
     var seaCreaturesTrackerCustomStyle by boolean(true) {
         this.name = Translated("Apply custom style")
         this.description = Translated(getCustomStyleDescription("Sea creatures tracker"))
@@ -696,11 +714,7 @@ ${GRAY}To pause: ${WHITE}/${FishingProfitTracker.PAUSE_COMMAND}
         this.description = Translated("Automatically reset the fishing profit tracker [Session] when you close Minecraft.")
     }
 
-    var fishingProfitTrackerCustomStyle by boolean(true) {
-        this.name = Translated("Apply custom style")
-        this.description = Translated(getCustomStyleDescription("Fishing profit tracker"))
-    }
-
+    
     init {
         button {
             title = "Fishing profit tracker commands"
@@ -717,5 +731,10 @@ ${GRAY}To pause: ${WHITE}/${FishingProfitTracker.PAUSE_COMMAND}
                 ChatUtils.sendLocalChat("${GRAY}<COUNT>${RESET} - positive integer with desired total amount of this item in the tracker.")
             }
         }
+    }
+
+    var fishingProfitTrackerCustomStyle by boolean(true) {
+        this.name = Translated("Apply custom style")
+        this.description = Translated(getCustomStyleDescription("Fishing profit tracker"))
     }
 }
