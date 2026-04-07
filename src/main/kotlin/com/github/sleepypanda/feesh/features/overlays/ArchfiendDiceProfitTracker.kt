@@ -150,7 +150,7 @@ object ArchfiendDiceProfitTracker {
         if (Overlays.resetArchfiendDiceProfitTrackerSessionOnGameClosed &&
             Overlays.archfiendDiceProfitTrackerOverlay &&
             (data.session.archfiend.rollsCount > 0 || data.session.highClass.rollsCount > 0)) {
-            resetSession()
+            resetSession(force = true)
             FeeshMod.LOGGER.info("[Feesh] Automatically reset Archfiend Dice profit tracker [Session] on game closed.")
         }
     }
@@ -185,9 +185,9 @@ object ArchfiendDiceProfitTracker {
         }
     }
 
-    private fun resetSession() {
+    private fun resetSession(force: Boolean = false) {
         data.session = ArchfiendDiceData()
-        saveData()
+        saveData(force)
     }
 
     private fun resetTotal() {
@@ -361,7 +361,11 @@ object ArchfiendDiceProfitTracker {
         return lastDiceRolledAt != null && Date().time - lastDiceRolledAt!!.time < 60_000
     }
 
-    private fun saveData() {
-        PersistentDataManager.saveFeeshDataToFileAsync()
+    private fun saveData(force: Boolean = false) {
+        if (force) {
+            PersistentDataManager.forceSaveFeeshDataToFileSync()
+        } else {
+            PersistentDataManager.saveFeeshDataToFileAsync()
+        }
     }
 }

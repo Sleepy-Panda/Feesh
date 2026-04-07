@@ -124,7 +124,7 @@ object TreasureFishingTracker {
         if (Overlays.resetTreasureFishingTrackerSessionOnGameClosed &&
             Overlays.treasureFishingTrackerOverlay &&
             data.session.catches.totalCatches() > 0) {
-            resetSession()
+            resetSession(force = true)
             FeeshMod.LOGGER.info("[Feesh] Automatically reset Treasure fishing tracker [Session] on game closed.")
         }
     }
@@ -181,9 +181,9 @@ object TreasureFishingTracker {
         }
     }
 
-    private fun resetSession() {
+    private fun resetSession(force: Boolean = false) {
         data.session = TreasureFishingSessionData()
-        saveData()
+        saveData(force)
     }
 
     private fun resetTotal() {
@@ -294,7 +294,11 @@ object TreasureFishingTracker {
         ))
     }
 
-    private fun saveData() {
-        PersistentDataManager.saveFeeshDataToFileAsync()
+    private fun saveData(force: Boolean = false) {
+        if (force) {
+            PersistentDataManager.forceSaveFeeshDataToFileSync()
+        } else {
+            PersistentDataManager.saveFeeshDataToFileAsync()
+        }
     }
 }

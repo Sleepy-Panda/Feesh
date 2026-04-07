@@ -79,8 +79,12 @@ object SeaCreaturesTracker {
         EventBus.subscribe(GameClosedEvent::class, ::onGameClosed)
     }
 
-    private fun saveData() {
-        PersistentDataManager.saveFeeshDataToFileAsync()
+    private fun saveData(force: Boolean = false) {
+        if (force) {
+            PersistentDataManager.forceSaveFeeshDataToFileSync()
+        } else {
+            PersistentDataManager.saveFeeshDataToFileAsync()
+        }
     }
 
     private fun onClientTick(@Suppress("UNUSED_PARAMETER") event: ClientTickEvent) {
@@ -152,14 +156,14 @@ object SeaCreaturesTracker {
         if (Overlays.resetSeaCreaturesTrackerSessionOnGameClosed && 
             Overlays.seaCreaturesTrackerOverlay && 
             data.session.totalCount > 0) {
-            resetSession()
+            resetSession(force = true)
             FeeshMod.LOGGER.info("[Feesh] Automatically reset Sea creatures tracker [Session] on game closed.")
         }
     }
 
-    private fun resetSession() {
+    private fun resetSession(force: Boolean = false) {
         data.session = SeaCreaturesData()
-        saveData()
+        saveData(force)
     }
 
     private fun resetTotal() {

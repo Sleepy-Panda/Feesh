@@ -877,11 +877,11 @@ object FishingProfitTracker {
         }
     }
 
-    private fun resetSession() {
+    private fun resetSession(force: Boolean = false) {
         data.session = FishingProfitSourceData()        
-        saveData()
+        saveData(force)
 
-        RareDropMessage.reset() // TODO Make them not dependent
+        RareDropMessage.reset(force) // TODO Make them not dependent
     }
 
     private fun resetTotal() {
@@ -1017,12 +1017,16 @@ object FishingProfitTracker {
         if (!Overlays.fishingProfitTrackerOverlay || !Overlays.resetFishingProfitTrackerOnGameClosed) return
         val session = data.session
         if (session.profitTrackerItems.isNotEmpty() || session.elapsedSeconds > 0 || session.totalProfit != 0.0) {
-            resetSession()
+            resetSession(force = true)
             FeeshMod.LOGGER.info("[Feesh] Automatically reset Fishing profit tracker [Session] on game closed.")
         }
     }
 
-    private fun saveData() {
-        PersistentDataManager.saveFeeshDataToFileAsync()
+    private fun saveData(force: Boolean = false) {
+        if (force) {
+            PersistentDataManager.forceSaveFeeshDataToFileSync()
+        } else {
+            PersistentDataManager.saveFeeshDataToFileAsync()
+        }
     }
 }

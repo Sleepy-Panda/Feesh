@@ -14,6 +14,10 @@ Released on: ???
 
 - Track Agatha Contest results even if Fishing profit tracker is paused, while it's visible.
 
+## Other
+
+- Refactored data saving logic to debounce file writes. This accumulates data changes and saves them once over time, to avoid writing to the file too often.
+
 # 1.4.0
 
 Released on: 2026-03-31

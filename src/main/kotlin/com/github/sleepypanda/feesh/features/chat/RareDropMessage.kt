@@ -27,9 +27,9 @@ object RareDropMessage {
         EventBus.subscribe(RareDropEvent::class, ::onDrop)
     }
 
-    fun reset() {
+    fun reset(force: Boolean = false) {
         PersistentDataManager.feeshData.rareDropNotifications.items.clear()
-        saveData()
+        saveData(force)
     }
 
     private fun onDrop(event: RareDropEvent) {
@@ -75,7 +75,11 @@ object RareDropMessage {
         return "--> ${article} ${itemName} has dropped${metadataString} <--"
     }
 
-    private fun saveData() {
-        PersistentDataManager.saveFeeshDataToFileAsync()
+    private fun saveData(force: Boolean = false) {
+        if (force) {
+            PersistentDataManager.forceSaveFeeshDataToFileSync()
+        } else {
+            PersistentDataManager.saveFeeshDataToFileAsync()
+        }
     }
 }

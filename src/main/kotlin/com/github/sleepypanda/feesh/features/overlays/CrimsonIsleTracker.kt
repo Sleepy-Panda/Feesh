@@ -264,19 +264,19 @@ object CrimsonIsleTracker {
         if (Overlays.resetCrimsonIsleTrackerOnGameClosed &&
             Overlays.crimsonIsleTrackerOverlay &&
             hasData()) {
-            reset()
+            reset(force = true)
             FeeshMod.LOGGER.info("[Feesh] Automatically reset Crimson Isle tracker on game closed.")
         }
     }
 
-    private fun reset() {
+    private fun reset(force: Boolean = false) {
         data.thunder.reset()
         data.lordJawbus.reset()
         data.fieryScuttler.reset()
         data.ragnarok.reset()
         data.plhlegblast.reset()
         data.radioactiveVials.reset()
-        saveData()
+        saveData(force)
     }
 
     private fun resetCrimsonIsleTracker(isConfirmed: Boolean) {
@@ -296,8 +296,12 @@ object CrimsonIsleTracker {
         }
     }
 
-    private fun saveData() {
-        PersistentDataManager.saveFeeshDataToFileAsync()
+    private fun saveData(force: Boolean = false) {
+        if (force) {
+            PersistentDataManager.forceSaveFeeshDataToFileSync()
+        } else {
+            PersistentDataManager.saveFeeshDataToFileAsync()
+        }
     }
     
     fun setRadioactiveVials(count: Int, lastOn: Date?) {

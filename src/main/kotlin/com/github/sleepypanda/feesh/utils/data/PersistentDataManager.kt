@@ -20,7 +20,10 @@ import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.text.SimpleDateFormat
 import java.util.Date
+import java.util.ConcurrentModificationException
 import java.util.concurrent.Executors
+import java.util.concurrent.ScheduledExecutorService
+import java.util.concurrent.TimeUnit
 import java.util.zip.ZipEntry
 import java.util.zip.ZipOutputStream
 
@@ -49,11 +52,17 @@ object PersistentDataManager {
     private val overlayCoordsFile: File = File(feeshConfigDir, OVERLAY_COORDS_FILE_NAME)
 
     private val saveLock = Any()
+    private val saveStateLock = Any() // For debouncing intensive file saves
+    private val saveDebounceMs = 1000L
+    private var isFeeshDataSaveScheduled = false
+    private var lastFeeshDataSaveAtMs = 0L
+
     private val gson: Gson = GsonBuilder()
         .setPrettyPrinting()
         .registerTypeAdapter(Date::class.java, UtcDateTypeAdapter)
         .create()
-    private val executor = Executors.newSingleThreadExecutor { r ->
+        
+    private val executor: ScheduledExecutorService = Executors.newSingleThreadScheduledExecutor { r ->
         Thread(r, "Feesh-Data-Saver").apply {
             isDaemon = true
         }
@@ -72,9 +81,11 @@ object PersistentDataManager {
     private fun saveAndBackupData() {
         executor.execute {
             val startNanos = System.nanoTime()
+
             FileUtils.saveJsonToFileSync(overlayCoordsFile, overlayCoordsData, gson, saveLock, "Overlay coords")
-            FileUtils.saveJsonToFileSync(feeshDataFile, feeshData, gson, saveLock, "Feesh data")
+            forceSaveFeeshDataToFileSync()
             backupFiles()
+
             val elapsedMs = (System.nanoTime() - startNanos) / 1_000_000
             val elapsedSec = elapsedMs / 1000.0
             FeeshMod.LOGGER.info("[Feesh] Save and backup data finished in ${elapsedMs}ms (${elapsedSec}s).")
@@ -202,7 +213,58 @@ object PersistentDataManager {
         FileUtils.saveJsonToFileAsync(overlayCoordsFile, overlayCoordsData, gson, executor, saveLock, "Overlay coords")
     }
 
+    /*
+     * Schedules save of feeshData to JSON file asynchronously.
+     * Debounces saves to prevent too often file writes.
+     */
     fun saveFeeshDataToFileAsync() {
-        FileUtils.saveJsonToFileAsync(feeshDataFile, feeshData, gson, executor, saveLock, "Feesh data")
+        synchronized(saveStateLock) {
+            if (isFeeshDataSaveScheduled) return
+
+            val now = System.currentTimeMillis()
+            val delayMs = (saveDebounceMs - (now - lastFeeshDataSaveAtMs)).coerceAtLeast(0L)
+            isFeeshDataSaveScheduled = true
+            
+            executor.schedule({
+                val json = serializeFeeshDataToJson()
+                if (json != null) {
+                    FileUtils.saveJsonTextToFileAsync(feeshDataFile, json, executor, saveLock, "Feesh data")
+                    synchronized(saveStateLock) {
+                        isFeeshDataSaveScheduled = false
+                        lastFeeshDataSaveAtMs = System.currentTimeMillis()
+                    }
+                } else {
+                    FeeshMod.LOGGER.error("[Feesh] Failed to serialize Feesh data, skipped saving.")
+                    synchronized(saveStateLock) {
+                        isFeeshDataSaveScheduled = false
+                    }
+                }
+            }, delayMs, TimeUnit.MILLISECONDS)
+        }
+    }
+
+    /*
+     * Forces immediate save of feeshData to JSON file synchronously. Applicable for cases when we need to save data immediately, e.g. on game closed.
+     * No debouncing is applied.
+     */
+    fun forceSaveFeeshDataToFileSync() {
+        val json = serializeFeeshDataToJson()
+        if (json != null) {
+            FileUtils.saveJsonTextToFileSync(feeshDataFile, json, saveLock, "Feesh data")
+        } else {
+            FeeshMod.LOGGER.error("[Feesh] Failed to serialize Feesh data, skipped force saving.")
+        }
+    }
+
+    private fun serializeFeeshDataToJson(): String? {
+        return try {
+            gson.toJson(feeshData)
+        } catch (ex: ConcurrentModificationException) {
+            FeeshMod.LOGGER.error("[Feesh] ConcurrentModificationException occurred while serializing Feesh data.", ex)
+            null
+        } catch (ex: Exception) {
+            FeeshMod.LOGGER.error("[Feesh] Failed to serialize Feesh data.", ex)
+            null
+        }
     }
 }

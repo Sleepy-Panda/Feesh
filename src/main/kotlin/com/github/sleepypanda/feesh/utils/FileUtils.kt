@@ -1,7 +1,6 @@
 package com.github.sleepypanda.feesh.utils
 
 import com.github.sleepypanda.feesh.FeeshMod
-import com.github.sleepypanda.feesh.utils.CommonUtils
 import com.google.gson.Gson
 import java.io.File
 import java.lang.reflect.Type
@@ -75,6 +74,33 @@ object FileUtils {
     }
 
     /**
+     * Saves pre-serialized JSON text to a file synchronously.
+     * @param file The file to write to
+     * @param jsonText The JSON text to save
+     * @param saveLock Lock object for synchronization
+     * @param logPrefix Prefix for log messages (e.g., "Catch sounds", "Drop sounds")
+     */
+    fun saveJsonTextToFileSync(
+        file: File,
+        jsonText: String,
+        saveLock: Any,
+        logPrefix: String
+    ) {
+        CommonUtils.runWithCatching("Failed to save $logPrefix data") {
+            synchronized(saveLock) {
+                file.parentFile?.mkdirs()
+                Files.write(
+                    file.toPath(),
+                    jsonText.toByteArray(),
+                    StandardOpenOption.CREATE,
+                    StandardOpenOption.TRUNCATE_EXISTING,
+                    StandardOpenOption.WRITE
+                )
+            }
+        }
+    }
+
+    /**
      * Saves data to a JSON file asynchronously.
      * @param file The file to write to
      * @param data The data to serialize
@@ -93,6 +119,26 @@ object FileUtils {
     ) {
         CompletableFuture.runAsync({
             saveJsonToFileSync(file, data, gson, saveLock, logPrefix)
+        }, executor)
+    }
+
+    /**
+     * Saves pre-serialized JSON text to a file asynchronously.
+     * @param file The file to write to
+     * @param jsonText The JSON text to save
+     * @param executor The executor for async operation
+     * @param saveLock Lock object for synchronization
+     * @param logPrefix Prefix for log messages (e.g., "Catch sounds", "Drop sounds")
+     */
+    fun saveJsonTextToFileAsync(
+        file: File,
+        jsonText: String,
+        executor: Executor,
+        saveLock: Any,
+        logPrefix: String
+    ) {
+        CompletableFuture.runAsync({
+            saveJsonTextToFileSync(file, jsonText, saveLock, logPrefix)
         }, executor)
     }
 }
