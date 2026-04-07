@@ -76,6 +76,7 @@ object Chat : CategoryKt("Chat") {
         *RareSeaCreatureTypes.values().filter { it != RareSeaCreatureTypes.BANSHEE }.toTypedArray(), // Selected by default     
     ) {
         this.name = Translated("Select sea creatures to share to the PARTY chat")
+        this.searchTerms = RareSeaCreatureTypes.values().map { it.displayName }.toList()
     }
 
     var shareRareSeaCreaturesAllChat by boolean(false) {
@@ -85,6 +86,7 @@ object Chat : CategoryKt("Chat") {
 
     var shareRareSeaCreaturesTypesAllChat by select(RareSeaCreatureTypesAllChat.THUNDER, *RareSeaCreatureTypesAllChat.values()) {
         this.name = Translated("Select sea creatures to share location to the ALL chat")
+        this.searchTerms = RareSeaCreatureTypesAllChat.values().map { it.displayName }.toList()
     }
 
     var messageOnPlayerDeath by boolean(true) {
@@ -105,6 +107,7 @@ object Chat : CategoryKt("Chat") {
 
     var messageOnRareDropTypes by select(RareDropTypes.LUCKY_CLOVER_CORE, *RareDropTypes.values()) {
         this.name = Translated("Select rare drops to share to the PARTY chat")
+        this.searchTerms = RareDropTypes.values().map { it.displayName }.toList()
     }
 
     var includeDropNumberIntoDropMessage by boolean(true) {
