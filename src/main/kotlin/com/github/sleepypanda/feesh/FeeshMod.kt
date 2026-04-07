@@ -188,6 +188,7 @@ class FeeshMod : ModInitializer {
 
         MoveGuis.init() // After all overlays are initialized and registered FeeshGui objects
 
+        // Items
         KatWrongPetsHighlighter.init()
         TrashBooksHighlighter.init()
         BackgroundHighlighterManager.init() // After all highlighters are initialized and registered

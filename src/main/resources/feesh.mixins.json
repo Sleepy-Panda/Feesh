@@ -8,7 +8,8 @@
 		"InGameHudMixin",
 		"ClientPlayerInteractionManagerMixin",
 		"MinecraftClientMixin",
-		"EntityRendererMixin"
+		"EntityRendererMixin",
+		"SoundSystemMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1
