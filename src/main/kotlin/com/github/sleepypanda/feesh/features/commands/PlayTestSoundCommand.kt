@@ -54,7 +54,7 @@ object PlayTestSoundCommand {
                     }
                 ) {
                     val soundEvent = getSoundEvent(soundName)
-                    SoundUtils.playSound(soundEvent)
+                    SoundUtils.playSound(soundEvent, skipSoundModeCheck = true)
                 }
             }
             else -> {

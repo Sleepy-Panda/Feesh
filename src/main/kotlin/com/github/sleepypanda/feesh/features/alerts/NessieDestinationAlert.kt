@@ -136,6 +136,6 @@ object NessieDestinationAlert {
         trackedNessieMobIds[nessieEntityId] = trackedInfo.copy(isDestinationSent = true)
         CommonUtils.showTitle("", "${LIGHT_PURPLE}Nessie ${WHITE}goes to ${GREEN}${BOLD}${destination}${WHITE} cave!")
         SoundUtils.playSound()
-        ChatUtils.sendLocalChat("${LIGHT_PURPLE}${BOLD}Nessie ${WHITE}is swimming to the ${GREEN}${BOLD}${destination}${WHITE} cave. Meet it there!", true)
+        ChatUtils.sendLocalChat("${LIGHT_PURPLE}${BOLD}Nessie ${WHITE}is swimming to the ${GREEN}${BOLD}${destination}${WHITE} cave.", true)
     }
 }
