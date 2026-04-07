@@ -25,7 +25,7 @@ object General : CategoryKt("General") {
         }
     }
 
-    var soundMode by enum(SoundMode.MEME) {
+    var soundMode by enum(SoundMode.NORMAL) {
         this.name = Translated("Sound mode")
         this.description = Translated("Setups the sound mode for the mod. Meme mode plays meme sounds (customizable), Normal mode plays default MC sounds, Off mode disables all sounds.")
     }

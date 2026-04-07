@@ -30,10 +30,6 @@ FeeshMod.LOGGER.info("Nessie destination alert: ${mobEntity.x}, ${mobEntity.y}, 
 
 Make sure newly added values in the dropdowns are selected if needed. E.g. if I add new rare drop type to Alerts, alert for this drop should be enabled.
 
-## Alerts
-
-- Player Death sound is not played. :c Probably because player's world is not loaded while they go to spawn on death.
-
 ## Overlays
 
 - Check if "0" key works for numpad in /feeshMoveAllGuis
