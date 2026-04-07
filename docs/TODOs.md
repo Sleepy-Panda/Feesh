@@ -3,6 +3,7 @@
 FeeshMod.LOGGER.info("Nessie destination alert: ${mobEntity.x}, ${mobEntity.y}, ${mobEntity.z}") // TODO Remove
 
 - TODO: Test in 1.21
+- Too wide fishing profit background
 - Add Flash announce
 - Sometimes current world&zone is detected wrongly
 - +/-/x for sea creatures

@@ -33,6 +33,7 @@ object NessieDestinationAlert {
     private val driptoadDelveEntranceCoords = listOf(
         Triple(-663.0, 71.0, 12.0),
         Triple(-665.0, 71.0, 20.0),
+        // Some checkpoints when Nessie goes down through blocks instead of entering through a tunnel entrance
         Triple(-666.0, 69.0, 17.0),
         Triple(-675.0, 63.0, 40.0),
         Triple(-674.0, 81.0, 44.0),
