@@ -13,7 +13,7 @@ Released on: ???
 ## Bugfixes
 
 - Track Agatha Contest results even if Fishing profit tracker is paused, while it's visible.
-- Fixed /feeshPlayTestSound to not play sounds when sound mode is Off.
+- Fixed /feeshPlayTestSound not playing when sound mode is Off.
 - Fixed own death sound not played for alert on killed by a Mythic sea creature.
 
 ## Other
