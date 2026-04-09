@@ -349,22 +349,14 @@ class FeeshGui {
         val fontHeight = textRenderer.fontHeight
         val lineHeightPx = fontHeight + 2
 
-        // Build lines with buttons for all lines that have actions - used for hover bounds so hovering over buttons counts
-        val linesWithAllButtons = allLines.mapIndexed { index, line ->
-            val actions = lineIndexToActions[index]
-            if (actions != null && actions.isNotEmpty()) line + " " + actions.joinToString("") { it.text } else line
-        }
-
         val hoveredLineIndex = if (mouseX != null && mouseY != null && lineIndexToActions.isNotEmpty()) {
-            getHoveredLineIndex(textRenderer, linesWithAllButtons, mouseX.toDouble(), mouseY.toDouble())
+            getHoveredLineIndex(textRenderer, allLines, mouseX.toDouble(), mouseY.toDouble())
         } else null
 
         val hoveredActions = hoveredLineIndex?.let { lineIndexToActions[it] }?.takeIf { it.isNotEmpty() }
 
-        // Use linesWithAllButtons for width when we have actions, so overlay bounds include button area for hover detection
-        val linesForWidth = if (lineIndexToActions.isNotEmpty()) linesWithAllButtons else allLines
-        val maxWidth = getMaxWidth(textRenderer, linesForWidth)
-        val leftEdge = getLeftEdge(textRenderer, linesForWidth)
+        val maxWidth = getMaxWidth(textRenderer, allLines)
+        val leftEdge = getLeftEdge(textRenderer, allLines)
         val scaledLeftEdge = (leftEdge / scale).toInt()
         val height = (allLines.size * lineHeightPx)
         var currentY = scaledY
@@ -384,30 +376,33 @@ class FeeshGui {
             val actions = if (index == hoveredLineIndex) hoveredActions else null
             if (!actions.isNullOrEmpty()) {
                 val buttonsStr = actions.joinToString("") { it.text }
-                val lineWidth = textRenderer.getWidth(Text.literal(line))
                 val buttonsWidth = textRenderer.getWidth(Text.literal(buttonsStr))
                 val spaceWidth = textRenderer.getWidth(Text.literal(" "))
-                val fullWidth = buttonsWidth + spaceWidth + lineWidth
+                val reservedWidth = buttonsWidth + spaceWidth
+                val lineAvailableWidth = (maxWidth - reservedWidth).coerceAtLeast(0)
+                val clippedLine = trimTextToWidth(textRenderer, line, lineAvailableWidth)
+                val clippedLineWidth = textRenderer.getWidth(Text.literal(clippedLine))
 
                 when (alignment) {
                     Alignment.LEFT -> {
                         val buttonsX = scaledLeftEdge
                         val lineX = scaledLeftEdge + buttonsWidth + spaceWidth
                         drawContext.drawText(textRenderer, Text.literal(buttonsStr), buttonsX, currentY, color, true)
-                        drawContext.drawText(textRenderer, Text.literal(line), lineX, currentY, color, true)
+                        drawContext.drawText(textRenderer, Text.literal(clippedLine), lineX, currentY, color, true)
                     }
                     Alignment.RIGHT -> {
-                        val lineX = scaledLeftEdge + maxWidth - fullWidth
+                        val lineX = scaledLeftEdge + maxWidth - reservedWidth - clippedLineWidth
                         val buttonsX = scaledLeftEdge + maxWidth - buttonsWidth
-                        drawContext.drawText(textRenderer, Text.literal(line), lineX, currentY, color, true)
+                        drawContext.drawText(textRenderer, Text.literal(clippedLine), lineX, currentY, color, true)
                         drawContext.drawText(textRenderer, Text.literal(buttonsStr), buttonsX, currentY, color, true)
                     }
                     Alignment.CENTER -> {
-                        val contentLeft = scaledLeftEdge + (maxWidth - fullWidth) / 2
+                        val contentWidth = reservedWidth + clippedLineWidth
+                        val contentLeft = scaledLeftEdge + (maxWidth - contentWidth) / 2
                         val buttonsX = contentLeft
                         val lineX = contentLeft + buttonsWidth + spaceWidth
                         drawContext.drawText(textRenderer, Text.literal(buttonsStr), buttonsX, currentY, color, true)
-                        drawContext.drawText(textRenderer, Text.literal(line), lineX, currentY, color, true)
+                        drawContext.drawText(textRenderer, Text.literal(clippedLine), lineX, currentY, color, true)
                     }
                 }
             } else {
@@ -424,6 +419,30 @@ class FeeshGui {
         }
 
         drawContext.matrices.popMatrix()
+    }
+
+    private fun trimTextToWidth(textRenderer: TextRenderer, text: String, maxWidth: Int): String {
+        if (maxWidth <= 0 || text.isEmpty()) return ""
+        if (textRenderer.getWidth(Text.literal(text)) <= maxWidth) return text
+
+        val result = StringBuilder()
+        var i = 0
+        while (i < text.length) {
+            val ch = text[i]
+            if (ch == '§' && i + 1 < text.length) { // formatting code
+                result.append(ch)
+                result.append(text[i + 1])
+                i += 2
+                continue
+            }
+
+            val next = result.toString() + ch
+            if (textRenderer.getWidth(Text.literal(next)) > maxWidth) break
+            result.append(ch)
+            i++
+        }
+
+        return result.toString()
     }
 
     private data class OverlayBackgroundCoords(val left: Int, val top: Int, val right: Int, val bottom: Int)
@@ -585,24 +604,23 @@ class FeeshGui {
         if (lines.isEmpty() || lineIndexToActions.isEmpty()) return null
 
         val allLines = getDisplayLinesForRender()
-        val linesWithAllButtons = allLines.mapIndexed { index, line ->
-            val actions = lineIndexToActions[index]
-            if (!actions.isNullOrEmpty()) line + " " + actions.joinToString("") { it.text } else line
-        }
-        val hoveredLineIndex = getHoveredLineIndex(textRenderer, linesWithAllButtons, mouseX, mouseY) ?: return null
+        val hoveredLineIndex = getHoveredLineIndex(textRenderer, allLines, mouseX, mouseY) ?: return null
         val actions = lineIndexToActions[hoveredLineIndex] ?: return null
         if (actions.isEmpty()) return null
 
         val scaleDouble = scale.toDouble()
         val lineStr = allLines[hoveredLineIndex]
         val buttonsStr = actions.joinToString("") { it.text }
-        val lineWidth = textRenderer.getWidth(Text.literal(lineStr))
         val buttonsWidth = textRenderer.getWidth(Text.literal(buttonsStr))
         val spaceWidth = textRenderer.getWidth(Text.literal(" "))
-        val fullWidth = buttonsWidth + spaceWidth + lineWidth
+        val reservedWidth = buttonsWidth + spaceWidth
+        val maxWidth = getMaxWidth(textRenderer, allLines)
+        val lineAvailableWidth = (maxWidth - reservedWidth).coerceAtLeast(0)
+        val clippedLine = trimTextToWidth(textRenderer, lineStr, lineAvailableWidth)
+        val clippedLineWidth = textRenderer.getWidth(Text.literal(clippedLine))
 
-        val maxWidthScreen = getMaxWidth(textRenderer, linesWithAllButtons) * scaleDouble
-        val leftEdge = getLeftEdge(textRenderer, linesWithAllButtons).toDouble()
+        val maxWidthScreen = maxWidth * scaleDouble
+        val leftEdge = getLeftEdge(textRenderer, allLines).toDouble()
         val fontHeight = textRenderer.fontHeight
         val lineHeightPx = (fontHeight + 2) * scale
         val lineTop = y + hoveredLineIndex * lineHeightPx
@@ -615,8 +633,9 @@ class FeeshGui {
             Alignment.LEFT -> leftEdge
             Alignment.RIGHT -> leftEdge + maxWidthScreen - buttonsWidthScreen
             Alignment.CENTER -> {
-                val fullWidthScreen = fullWidth * scaleDouble
-                leftEdge + (maxWidthScreen - fullWidthScreen) / 2
+                val contentWidth = reservedWidth + clippedLineWidth
+                val contentWidthScreen = contentWidth * scaleDouble
+                leftEdge + (maxWidthScreen - contentWidthScreen) / 2
             }
         }
 
