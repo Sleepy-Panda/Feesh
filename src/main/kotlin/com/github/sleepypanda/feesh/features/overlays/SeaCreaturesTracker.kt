@@ -268,7 +268,7 @@ object SeaCreaturesTracker {
                 sourceObj.catches[key] = SeaCreatureCatchData(amount = count, doubleHookAmount = 0)
             } else {
                 existing.amount = count
-                existing.doubleHookAmount = existing.doubleHookAmount.coerceAtMost(existing.amount)
+                existing.doubleHookAmount = existing.doubleHookAmount.coerceAtMost(existing.amount / 2)
             }
 
             recalculateTotalCount(sourceObj)
@@ -362,7 +362,7 @@ object SeaCreaturesTracker {
             if (entry.amount <= 1) return
 
             entry.amount -= 1
-            entry.doubleHookAmount = entry.doubleHookAmount.coerceAtMost(entry.amount)
+            entry.doubleHookAmount = entry.doubleHookAmount.coerceAtMost(entry.amount / 2)
             recalculateTotalCount(sourceObj)
             saveData()
             updateGuiLines()
