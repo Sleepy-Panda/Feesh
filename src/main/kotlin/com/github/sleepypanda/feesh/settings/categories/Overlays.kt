@@ -287,13 +287,18 @@ ${GRAY}To reset [Total]: ${WHITE}/${SeaCreaturesTracker.RESET_TOTAL}
             text = "Click for help"
             onClick {
                 ChatUtils.sendLocalChat("${AQUA}${BOLD}Sea creatures tracker commands${RESET}", true)
-                ChatUtils.sendLocalChat("\nUse these commands if you want to manually fix or import sea creatures into the tracker:")
-                ChatUtils.sendLocalChat("  - ${WHITE}/${SeaCreaturesTracker.SET_SEA_CREATURE_COUNT_COMMAND} <SEA_CREATURE_NAME> <COUNT>${RESET} - sets sea creature count in [Session].")
-                ChatUtils.sendLocalChat("  - ${WHITE}/${SeaCreaturesTracker.SET_SEA_CREATURE_COUNT_TOTAL_COMMAND} <SEA_CREATURE_NAME> <COUNT>${RESET} - sets sea creature count in [Total].")
-                ChatUtils.sendLocalChat("  - ${WHITE}/${SeaCreaturesTracker.DELETE_SEA_CREATURE_COMMAND} <SEA_CREATURE_NAME>${RESET} - deletes sea creature from [Session].")
-                ChatUtils.sendLocalChat("  - ${WHITE}/${SeaCreaturesTracker.DELETE_SEA_CREATURE_TOTAL_COMMAND} <SEA_CREATURE_NAME>${RESET} - deletes sea creature from [Total].")
-                ChatUtils.sendLocalChat("\n${GRAY}<SEA_CREATURE_NAME>${RESET} - exact sea creature name (for example Yeti, Reindrake, Lord Jawbus, The Loch Emperor).")
-                ChatUtils.sendLocalChat("${GRAY}<COUNT>${RESET} - positive integer with desired total amount of this sea creature in the tracker.")
+                ChatUtils.sendLocalChat("${GRAY}Use these to manually fix/import sea creatures:")
+                ChatUtils.sendLocalChat("${YELLOW}Command: ${GRAY}set [Session] count ->")
+                ChatUtils.sendLocalChat("${WHITE}/${SeaCreaturesTracker.SET_SEA_CREATURE_COUNT_COMMAND}${GOLD} <SEA_CREATURE_NAME> <COUNT>")
+                ChatUtils.sendLocalChat("${YELLOW}Command: ${GRAY}set [Total] count ->")
+                ChatUtils.sendLocalChat("${WHITE}/${SeaCreaturesTracker.SET_SEA_CREATURE_COUNT_TOTAL_COMMAND}${GOLD} <SEA_CREATURE_NAME> <COUNT>")
+                ChatUtils.sendLocalChat("${YELLOW}Command: ${GRAY}delete from [Session] ->")
+                ChatUtils.sendLocalChat("${WHITE}/${SeaCreaturesTracker.DELETE_SEA_CREATURE_COMMAND}${GOLD} <SEA_CREATURE_NAME>")
+                ChatUtils.sendLocalChat("${YELLOW}Command: ${GRAY}delete from [Total] ->")
+                ChatUtils.sendLocalChat("${WHITE}/${SeaCreaturesTracker.DELETE_SEA_CREATURE_TOTAL_COMMAND}${GOLD} <SEA_CREATURE_NAME>")
+                ChatUtils.sendLocalChat("${DARK_AQUA}Arg <SEA_CREATURE_NAME>: ${GRAY}exact name (e.g. Yeti, Reindrake, Lord Jawbus), case insensitive")
+                ChatUtils.sendLocalChat("${DARK_AQUA}Arg <COUNT>: ${GRAY}count to show - positive integer")
+                ChatUtils.sendLocalChat("${GREEN}Example: ${WHITE}/${SeaCreaturesTracker.SET_SEA_CREATURE_COUNT_COMMAND} Lord Jawbus 100")
             }
         }
     }
@@ -455,12 +460,11 @@ ${GRAY}To reset: ${WHITE}/${BayouTracker.RESET_COMMAND}
             text = "Click for help"
             onClick {
                 ChatUtils.sendLocalChat("${AQUA}${BOLD}Titanoboa Sheds setup${RESET}", true)
-                ChatUtils.sendLocalChat("\nDo ${WHITE}/${SetTrackerDropsCommand.COMMAND_NAME} <ITEM_ID> <COUNT> [LAST_ON_DATE]${RESET} to initialize your drops history:")
-                ChatUtils.sendLocalChat("  - <ITEM_ID> is a mandatory item ID - TITANOBOA_SHED.")
-                ChatUtils.sendLocalChat("  - <COUNT> is a mandatory number of times you've dropped it.")
-                ChatUtils.sendLocalChat("  - [LAST_ON_DATE] is optional and, if provided, should be in YYYY-MM-DD hh:mm:ss format. Can not be in future!")
-                ChatUtils.sendLocalChat("\nExample:")
-                ChatUtils.sendLocalChat("/${SetTrackerDropsCommand.COMMAND_NAME} TITANOBOA_SHED 5 2025-05-30 23:59:00${RESET}")
+                ChatUtils.sendLocalChat("${YELLOW}Command: ${WHITE}/${SetTrackerDropsCommand.COMMAND_NAME}${GOLD} <ITEM_ID> <COUNT> [LAST_ON_DATE]")
+                ChatUtils.sendLocalChat("${DARK_AQUA}<ITEM_ID>: ${GRAY}must be TITANOBOA_SHED")
+                ChatUtils.sendLocalChat("${DARK_AQUA}<COUNT>: ${GRAY}how many drops you got")
+                ChatUtils.sendLocalChat("${DARK_AQUA}[LAST_ON_DATE]: ${GRAY}optional, YYYY-MM-DD hh:mm:ss, cannot be future")
+                ChatUtils.sendLocalChat("${GREEN}Example: ${WHITE}/${SetTrackerDropsCommand.COMMAND_NAME} TITANOBOA_SHED 5 2025-05-30 23:59:00")
             }
         }
     }
@@ -496,12 +500,11 @@ ${GRAY}To reset: ${WHITE}/${WaterHotspotsTracker.RESET_COMMAND}
             text = "Click for help"
             onClick {
                 ChatUtils.sendLocalChat("${AQUA}${BOLD}Tiki Masks setup${RESET}", true)
-                ChatUtils.sendLocalChat("\nDo ${WHITE}/${SetTrackerDropsCommand.COMMAND_NAME} <ITEM_ID> <COUNT> [LAST_ON_DATE]${RESET} to initialize your drops history:")
-                ChatUtils.sendLocalChat("  - <ITEM_ID> is a mandatory item ID - TIKI_MASK.")
-                ChatUtils.sendLocalChat("  - <COUNT> is a mandatory number of times you've dropped it.")
-                ChatUtils.sendLocalChat("  - [LAST_ON_DATE] is optional and, if provided, should be in YYYY-MM-DD hh:mm:ss format. Can not be in future!")
-                ChatUtils.sendLocalChat("\nExample:")
-                ChatUtils.sendLocalChat("/${SetTrackerDropsCommand.COMMAND_NAME} TIKI_MASK 5 2025-05-30 23:59:00${RESET}")
+                ChatUtils.sendLocalChat("${YELLOW}Command: ${WHITE}/${SetTrackerDropsCommand.COMMAND_NAME}${GOLD} <ITEM_ID> <COUNT> [LAST_ON_DATE]")
+                ChatUtils.sendLocalChat("${DARK_AQUA}<ITEM_ID>: ${GRAY}must be TIKI_MASK")
+                ChatUtils.sendLocalChat("${DARK_AQUA}<COUNT>: ${GRAY}how many drops you got")
+                ChatUtils.sendLocalChat("${DARK_AQUA}[LAST_ON_DATE]: ${GRAY}optional, YYYY-MM-DD hh:mm:ss, cannot be future")
+                ChatUtils.sendLocalChat("${GREEN}Example: ${WHITE}/${SetTrackerDropsCommand.COMMAND_NAME} TIKI_MASK 5 2025-05-30 23:59:00")
             }
         }
     }
@@ -537,12 +540,11 @@ ${GRAY}To reset: ${WHITE}/${CrimsonIsleTracker.RESET_COMMAND}
             text = "Click for help"
             onClick {
                 ChatUtils.sendLocalChat("${AQUA}${BOLD}Radioactive Vials setup${RESET}", true)
-                ChatUtils.sendLocalChat("\nDo ${WHITE}/${SetTrackerDropsCommand.COMMAND_NAME} <ITEM_ID> <COUNT> [LAST_ON_DATE]${RESET} to initialize your drops history:")
-                ChatUtils.sendLocalChat("  - <ITEM_ID> is a mandatory item ID - RADIOACTIVE_VIAL.")
-                ChatUtils.sendLocalChat("  - <COUNT> is a mandatory number of times you've dropped it.")
-                ChatUtils.sendLocalChat("  - [LAST_ON_DATE] is optional and, if provided, should be in YYYY-MM-DD hh:mm:ss format. Can not be in future!")
-                ChatUtils.sendLocalChat("\nExample:")
-                ChatUtils.sendLocalChat("/${SetTrackerDropsCommand.COMMAND_NAME} RADIOACTIVE_VIAL 2 2025-05-30 23:59:00")
+                ChatUtils.sendLocalChat("${YELLOW}Command: ${WHITE}/${SetTrackerDropsCommand.COMMAND_NAME}${GOLD} <ITEM_ID> <COUNT> [LAST_ON_DATE]")
+                ChatUtils.sendLocalChat("${DARK_AQUA}<ITEM_ID>: ${GRAY}must be RADIOACTIVE_VIAL")
+                ChatUtils.sendLocalChat("${DARK_AQUA}<COUNT>: ${GRAY}how many drops you got")
+                ChatUtils.sendLocalChat("${DARK_AQUA}[LAST_ON_DATE]: ${GRAY}optional, YYYY-MM-DD hh:mm:ss, cannot be future")
+                ChatUtils.sendLocalChat("${GREEN}Example: ${WHITE}/${SetTrackerDropsCommand.COMMAND_NAME} RADIOACTIVE_VIAL 2 2025-05-30 23:59:00")
             }
         }
     }
@@ -603,12 +605,11 @@ ${GRAY}Reset total: ${WHITE}/${TreasureFishingTracker.RESET_TOTAL_COMMAND}
             text = "Click for help"
             onClick {
                 ChatUtils.sendLocalChat("${AQUA}${BOLD}Treasure Dyes setup${RESET}", true)
-                ChatUtils.sendLocalChat("\nDo ${WHITE}/${SetTrackerDropsCommand.COMMAND_NAME} <ITEM_ID> <COUNT> [LAST_ON_DATE]${RESET} to initialize your drops history:")
-                ChatUtils.sendLocalChat("  - <ITEM_ID> is a mandatory item ID - DYE_TREASURE.")
-                ChatUtils.sendLocalChat("  - <COUNT> is a mandatory number of times you've dropped it.")
-                ChatUtils.sendLocalChat("  - [LAST_ON_DATE] is optional and, if provided, should be in YYYY-MM-DD hh:mm:ss format. Can not be in future!")
-                ChatUtils.sendLocalChat("\nExample:")
-                ChatUtils.sendLocalChat("/${SetTrackerDropsCommand.COMMAND_NAME} DYE_TREASURE 2 2025-05-30 23:59:00")
+                ChatUtils.sendLocalChat("${YELLOW}Command: ${WHITE}/${SetTrackerDropsCommand.COMMAND_NAME}${GOLD} <ITEM_ID> <COUNT> [LAST_ON_DATE]")
+                ChatUtils.sendLocalChat("${DARK_AQUA}<ITEM_ID>: ${GRAY}must be DYE_TREASURE")
+                ChatUtils.sendLocalChat("${DARK_AQUA}<COUNT>: ${GRAY}how many drops you got")
+                ChatUtils.sendLocalChat("${DARK_AQUA}[LAST_ON_DATE]: ${GRAY}optional, YYYY-MM-DD hh:mm:ss, cannot be future")
+                ChatUtils.sendLocalChat("${GREEN}Example: ${WHITE}/${SetTrackerDropsCommand.COMMAND_NAME} DYE_TREASURE 2 2025-05-30 23:59:00")
             }
         }
     }
@@ -722,13 +723,18 @@ ${GRAY}To pause: ${WHITE}/${FishingProfitTracker.PAUSE_COMMAND}
             text = "Click for help"
             onClick {
                 ChatUtils.sendLocalChat("${AQUA}${BOLD}Fishing profit tracker commands${RESET}", true)
-                ChatUtils.sendLocalChat("\nUse these commands if you want to manually fix or import drops into the tracker:")
-                ChatUtils.sendLocalChat("  - ${WHITE}/${FishingProfitTracker.SET_ITEM_COUNT_COMMAND} <ITEM_ID> <COUNT>${RESET} - sets item count in [Session].")
-                ChatUtils.sendLocalChat("  - ${WHITE}/${FishingProfitTracker.SET_ITEM_COUNT_TOTAL_COMMAND} <ITEM_ID> <COUNT>${RESET} - sets item count in [Total].")
-                ChatUtils.sendLocalChat("  - ${WHITE}/${FishingProfitTracker.DELETE_ITEM_COMMAND} <ITEM_ID>${RESET} - deletes item from [Session].")
-                ChatUtils.sendLocalChat("  - ${WHITE}/${FishingProfitTracker.DELETE_ITEM_TOTAL_COMMAND} <ITEM_ID>${RESET} - deletes item from [Total].")
-                ChatUtils.sendLocalChat("\n${GRAY}<ITEM_ID>${RESET} - ID of the fishing drop (for example MAGMA_FISH, SILVER_MAGMAFISH, FLYING_FISH;4, etc.).")
-                ChatUtils.sendLocalChat("${GRAY}<COUNT>${RESET} - positive integer with desired total amount of this item in the tracker.")
+                ChatUtils.sendLocalChat("${GRAY}Use these to manually fix/import drops:")
+                ChatUtils.sendLocalChat("${YELLOW}Command: ${GRAY}set [Session] count ->")
+                ChatUtils.sendLocalChat("${WHITE}/${FishingProfitTracker.SET_ITEM_COUNT_COMMAND}${GOLD} <ITEM_ID> <COUNT>")
+                ChatUtils.sendLocalChat("${YELLOW}Command: ${GRAY}set [Total] count ->")
+                ChatUtils.sendLocalChat("${WHITE}/${FishingProfitTracker.SET_ITEM_COUNT_TOTAL_COMMAND}${GOLD} <ITEM_ID> <COUNT>")
+                ChatUtils.sendLocalChat("${YELLOW}Command: ${GRAY}delete from [Session] ->")
+                ChatUtils.sendLocalChat("${WHITE}/${FishingProfitTracker.DELETE_ITEM_COMMAND}${GOLD} <ITEM_ID>")
+                ChatUtils.sendLocalChat("${YELLOW}Command: ${GRAY}delete from [Total] ->")
+                ChatUtils.sendLocalChat("${WHITE}/${FishingProfitTracker.DELETE_ITEM_TOTAL_COMMAND}${GOLD} <ITEM_ID>")
+                ChatUtils.sendLocalChat("${DARK_AQUA}Arg <ITEM_ID>: ${GRAY}drop ID (e.g. MAGMA_FISH, SILVER_MAGMAFISH, FLYING_FISH;4; SQUID;4+100)")
+                ChatUtils.sendLocalChat("${DARK_AQUA}Arg <COUNT>: ${GRAY}count to show - positive integer")
+                ChatUtils.sendLocalChat("${GREEN}Example: ${WHITE}/${FishingProfitTracker.SET_ITEM_COUNT_COMMAND} MAGMA_FISH 64")
             }
         }
     }
