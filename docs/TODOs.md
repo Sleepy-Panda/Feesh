@@ -3,7 +3,8 @@
 FeeshMod.LOGGER.info("Nessie destination alert: ${mobEntity.x}, ${mobEntity.y}, ${mobEntity.z}") // TODO Remove
 
 - TODO: Test in 1.21
-- Add Flash announce
+- Double totem expires alert
+- Check dragon profit calculation (egg)
 - Sometimes current world&zone is detected wrongly
 - Ragnarok immunity timer
 - Magma Core fishing widget
