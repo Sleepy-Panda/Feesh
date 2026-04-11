@@ -4,9 +4,7 @@ import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
 
 // Enum used to list selectable items in Alerts/Chat settings
-// This should be aligned with Rare Drops names using the following logic:
-// Squid (Legendary) -> SQUID_LEGENDARY
-// Deep Sea Orb -> DEEP_SEA_ORB
+// This should be aligned with rareDrops.itemName and with itemName published from RareDropsPublisher
 enum class RareDropTypes(val displayName: String) {
     LUCKY_CLOVER_CORE("Lucky Clover Core"),
     DEEP_SEA_ORB("Deep Sea Orb"),
@@ -16,6 +14,7 @@ enum class RareDropTypes(val displayName: String) {
     TITANOBOA_SHED("Titanoboa Shed"),
     SCUTTLER_SHELL("Scuttler Shell"),
     BURNT_TEXTS("Burnt Texts"),
+    FLASH_1("Flash 1"),
     VIBRANT_CORAL("Vibrant Coral"),
 
     MEGALODON_LEGENDARY("Megalodon (Legendary)"),
@@ -114,6 +113,14 @@ class RareDrops {
                 itemName = RareDropTypes.BURNT_TEXTS.displayName,
                 rarityColorCode = LEGENDARY.code,
                 npcPrice = 1_000_000,
+                isExtremelyRare = false,
+                defaultSoundFileName = Sounds.FEESH_OH_MY_GOD
+            ),
+            RareDropInfo(
+                id = "ENCHANTMENT_ULTIMATE_FLASH_1",
+                itemName = RareDropTypes.FLASH_1.displayName,
+                rarityColorCode = MYTHIC.code,
+                npcPrice = 0,
                 isExtremelyRare = false,
                 defaultSoundFileName = Sounds.FEESH_OH_MY_GOD
             ),

@@ -8,6 +8,7 @@ Released on: ???
 - Show Nessie's immunity flag in Sea creature HP overlay, while Nessie is running away.
 - Added Nessie destination alert which announces when a Nessie decides into which cave to swim.
 - Added setting to mute Jade Dragon [disabled by default].
+- Added Flash I drop alert and party chat message. **Make sure to enable if you need it!**
 - Show player name who summoned a Reindrake, in the "Alert on ANY Reindrake" functionality.
 - Added setting to limit the amount of lines shown in Sea creatures tracker, to avoid tracker being too long.
 - Added +/-/x buttons when hovering a line in Sea creatures tracker (while in inventory), to add/substract/delete sea creatures from the view.
