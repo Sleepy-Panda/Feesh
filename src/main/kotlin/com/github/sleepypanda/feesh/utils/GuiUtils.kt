@@ -133,10 +133,14 @@ object GuiUtils {
         return guiName.startsWith("Wardrobe") || 
             guiName.startsWith("Your Equipment") || 
             guiName.startsWith("Abiphone") || 
+            guiName.startsWith("Chocolate") ||
+            guiName.startsWith("Hoppity") || 
             guiName == "Slayer" || 
             guiName == "Accessory Bag Thaumaturgy" ||
             guiName == "Stats Tuning" ||
-            guiName == "Skyblock Menu" ||
+            guiName == "SkyBlock Menu" ||
+            guiName == "Your Stats Breakdown" ||
+            guiName == "Your Skills" ||
             guiName == "Calendar and Events"
     }
 
