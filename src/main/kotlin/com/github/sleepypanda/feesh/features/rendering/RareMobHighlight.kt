@@ -24,7 +24,6 @@ object RareMobHighlight {
     private val JAWBUS_FOLLOWER_NAME = "Jawbus Follower"
     private val WIKI_TIKI_LASER_TOTEM_NAME = "Wiki Tiki Laser Totem"
     private val extraEntities = listOf(JAWBUS_FOLLOWER_NAME, WIKI_TIKI_LASER_TOTEM_NAME);
-    private var lastWorldChange: Date? = null
 
     fun init() {
         EventBus.subscribe(WorldChangedEvent::class, ::onWorldChange)
@@ -45,7 +44,6 @@ object RareMobHighlight {
 
     private fun onArmorStandDetailsLoaded(event: ArmorStandDetailsLoadedEvent) {
         if (!WorldRendering.highlightSeaCreatures || !WorldUtils.isInSkyblock() || !WorldUtils.isInFishingWorld()) return
-       // if (lastWorldChange != null && Date().time - lastWorldChange!!.time < 2000) return // Skip processing entities right after world loaded
 
         val entity = event.entity
         val mobNames = SeaCreatures.rareSeaCreatures.map { it.name } + extraEntities
@@ -128,8 +126,7 @@ object RareMobHighlight {
         highlightedEntities[target.id] = color
     }
 
-    private fun onWorldChange(event: WorldChangedEvent) {
-        lastWorldChange = Date()
+    private fun onWorldChange(@Suppress("UNUSED_PARAMETER") event: WorldChangedEvent) {
         if (highlightedEntities.isNotEmpty()) highlightedEntities.clear()
     }
 }

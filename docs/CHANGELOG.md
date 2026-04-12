@@ -22,10 +22,25 @@ Released on: ???
 
 ## Other
 
-- Refactored data saving logic to debounce file writes. This accumulates data changes and saves them once over time, to avoid writing to the file too often.
 - Made Normal sound mode default for new mod users.
 - Made sea creature names and drop names searchable in settings, to easier identify selectlists where they can be toggled.
 - Refactored way of detecting new entities spawned in the world.
+- Refactored data saving logic to debounce file writes. This accumulates data changes and saves them once over time, to avoid writing to the file too often.
+
+Take the fish:
+
+```
+ _________         .    .
+(..       \_    ,  |\  /|
+ \       O  \  /|  \ \/ /
+  \______    \/ |   \  / 
+     vvvv\    \ |   /  |
+     \^^^^  ==   \_/   |
+      `\_   ===    \.  |
+      / /\_   \ /      |
+      |/   \_  \|      /
+            \________/
+```
 
 # 1.4.0
 

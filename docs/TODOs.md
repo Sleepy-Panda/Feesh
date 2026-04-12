@@ -18,6 +18,7 @@ FeeshMod.LOGGER.info("Nessie destination alert: ${mobEntity.x}, ${mobEntity.y}, 
 
 ## Tech Debt
 
+- 26.1 support -> https://fabricmc.net/2026/03/14/261.html
 - Go through TODOs in the code
 - Rework ticks counters across all overlays
 - Keybinds periodically reset, probably after MC crashes or turning off PC
