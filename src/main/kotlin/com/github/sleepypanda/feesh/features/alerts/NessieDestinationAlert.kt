@@ -39,7 +39,8 @@ object NessieDestinationAlert {
         Triple(-674.0, 81.0, 44.0),
     )
     private val jadeDragonEntranceCoords = listOf(
-        Triple(-660.0, 71.0, 0.0)
+        Triple(-660.0, 71.0, 0.0),
+        Triple(-637.0, 60.0, -7.0),
     )
 
     private val trackedNessieMobIds = mutableMapOf<Int, TrackedNessieInfo>()
