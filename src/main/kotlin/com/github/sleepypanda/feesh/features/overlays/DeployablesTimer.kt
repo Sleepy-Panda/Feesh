@@ -2,7 +2,7 @@ package com.github.sleepypanda.feesh.features.overlays
 
 import com.github.sleepypanda.feesh.FeeshMod
 import com.github.sleepypanda.feesh.events.EventBus
-import com.github.sleepypanda.feesh.events.models.ArmorStandLoadedEvent
+import com.github.sleepypanda.feesh.events.models.ArmorStandDetailsLoadedEvent
 import com.github.sleepypanda.feesh.events.models.ClientTickEvent
 import com.github.sleepypanda.feesh.events.models.PlayerInteractEvent
 import com.github.sleepypanda.feesh.events.models.WorldChangedEvent
@@ -98,7 +98,7 @@ object DeployablesTimer {
         EventBus.subscribe(ClientTickEvent::class, ::onClientTick)
         EventBus.subscribe(WorldChangedEvent::class, ::onWorldChanged)
         EventBus.subscribe(PlayerInteractEvent::class, ::onPlayerInteract)
-        EventBus.subscribe(ArmorStandLoadedEvent::class, ::onArmorStandLoaded)
+        EventBus.subscribe(ArmorStandDetailsLoadedEvent::class, ::onArmorStandDetailsLoaded)
 
         RegisterUtils.chat(Regex("^Your flare disappeared because you were too far away\\!$")) { _, _ ->
             if (WorldUtils.isInSkyblock()) {
@@ -156,11 +156,11 @@ object DeployablesTimer {
         }
     }
 
-    private fun onArmorStandLoaded(event: ArmorStandLoadedEvent) {
+    private fun onArmorStandDetailsLoaded(event: ArmorStandDetailsLoadedEvent) {
         CommonUtils.runWithCatching("Failed to handle deployable armor stand spawn") {
             if (!WorldUtils.isInSkyblock()) return
             if (!isDwarvenLanternTrackingEnabled() && !isUmberellaTrackingEnabled()) return
-            
+
             val armorStand = event.entity
             val player = FeeshMod.mc.player ?: return
             if (EntityUtils.getDistance(player, armorStand) > 5.0) return
@@ -168,26 +168,22 @@ object DeployablesTimer {
             val nowMs = System.currentTimeMillis()
             if (nowMs - lastDwarvenLanternInteractTimeMs > 1000L && nowMs - lastUmberellaInteractTimeMs > 1000L) return
 
-            Timer().schedule(object : TimerTask() {
-                override fun run() {
-                    val name = armorStand.customName?.string ?: return
+            val name = event.customNameUnformatted
 
-                    if (isDwarvenLanternTrackingEnabled() &&
-                        isDwarvenLanternArmorStandName(name) &&
-                        name.endsWith("300s") &&
-                        nowMs - lastDwarvenLanternInteractTimeMs <= 1000L
-                    ) {
-                        dwarvenLanternData.id = armorStand.uuid
-                        val formattedName = armorStand.customName?.getFormattedString()
-                        dwarvenLanternData.itemDisplayName = formattedName?.replace(Regex(" §.+\\d+s"), "")?.replace(BOLD.code, "")?.trim() ?: "Dwarven Lantern"
-                    } else if (isUmberellaTrackingEnabled() &&
-                        name == "Umberella 300s" &&
-                        nowMs - lastUmberellaInteractTimeMs <= 1000L
-                    ) {
-                        umberellaData.id = armorStand.uuid
-                    }
-                }
-            }, 150) // Custom name is available after some time when armor stand spawned
+            if (isDwarvenLanternTrackingEnabled() &&
+                isDwarvenLanternArmorStandName(name) &&
+                name.endsWith("300s") &&
+                nowMs - lastDwarvenLanternInteractTimeMs <= 1000L
+            ) {
+                dwarvenLanternData.id = armorStand.uuid
+                val formattedName = event.customNameFormatted
+                dwarvenLanternData.itemDisplayName = formattedName.replace(Regex(" §.+\\d+s"), "").replace(BOLD.code, "").trim().ifBlank { "Dwarven Lantern" }
+            } else if (isUmberellaTrackingEnabled() &&
+                name == "Umberella 300s" &&
+                nowMs - lastUmberellaInteractTimeMs <= 1000L
+            ) {
+                umberellaData.id = armorStand.uuid
+            }
         }
     }
 
