@@ -345,7 +345,7 @@ object DeployablesTimer {
             if (Alerts.alertOnDeployableExpiresSoon &&
                 Alerts.alertOnDeployableTypes.contains(DeployableTypes.TOTEM_OF_CORRUPTION) &&
                 totemData.remainingTime == "${SECONDS_BEFORE_EXPIRATION}s" &&
-                (totemData.lastAlertAt == null || Date().time - totemData.lastAlertAt!!.time >= 1000)
+                (totemData.lastAlertAt == null || Date().time - totemData.lastAlertAt!!.time >= 5000)
             ) {
                 playAlert("${DARK_PURPLE}Totem of Corruption", totemData)
             }
@@ -392,7 +392,7 @@ object DeployablesTimer {
             if (Alerts.alertOnDeployableExpiresSoon &&
                 Alerts.alertOnDeployableTypes.contains(DeployableTypes.BLACK_HOLE) &&
                 blackHoleData.remainingTime == "${SECONDS_BEFORE_EXPIRATION}s" &&
-                (blackHoleData.lastAlertAt == null || Date().time - blackHoleData.lastAlertAt!!.time >= 1000)
+                (blackHoleData.lastAlertAt == null || Date().time - blackHoleData.lastAlertAt!!.time >= 5000)
             ) {
                 playAlert("${DARK_PURPLE}Black Hole", blackHoleData)
             }
@@ -423,7 +423,7 @@ object DeployablesTimer {
             if (Alerts.alertOnDeployableExpiresSoon &&
                 Alerts.alertOnDeployableTypes.contains(DeployableTypes.UMBERELLA) &&
                 umberellaData.remainingTime == "${SECONDS_BEFORE_EXPIRATION}s" &&
-                (umberellaData.lastAlertAt == null || Date().time - umberellaData.lastAlertAt!!.time >= 1000)
+                (umberellaData.lastAlertAt == null || Date().time - umberellaData.lastAlertAt!!.time >= 5000)
             ) {
                 playAlert("${BLUE}Umberella", umberellaData)
             }
@@ -457,7 +457,7 @@ object DeployablesTimer {
             if (Alerts.alertOnDeployableExpiresSoon &&
                 Alerts.alertOnDeployableTypes.contains(DeployableTypes.DWARVEN_LANTERN) &&
                 dwarvenLanternData.remainingTime == "${SECONDS_BEFORE_EXPIRATION}s" &&
-                (dwarvenLanternData.lastAlertAt == null || Date().time - dwarvenLanternData.lastAlertAt!!.time >= 1000)
+                (dwarvenLanternData.lastAlertAt == null || Date().time - dwarvenLanternData.lastAlertAt!!.time >= 5000)
             ) {
                 playAlert(dwarvenLanternData.itemDisplayName!!, dwarvenLanternData)
             }
@@ -483,7 +483,7 @@ object DeployablesTimer {
             if (Alerts.alertOnDeployableExpiresSoon &&
                 Alerts.alertOnDeployableTypes.contains(DeployableTypes.FLARE) &&
                 remainingSeconds == SECONDS_BEFORE_EXPIRATION &&
-                (flareData.lastAlertAt == null || Date().time - flareData.lastAlertAt!!.time >= 1000)
+                (flareData.lastAlertAt == null || Date().time - flareData.lastAlertAt!!.time >= 5000)
             ) {
                 playAlert(flareData.itemDisplayName ?: "Flare", flareData)
             }
