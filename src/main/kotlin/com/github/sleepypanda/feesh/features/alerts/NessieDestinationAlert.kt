@@ -3,6 +3,7 @@ package com.github.sleepypanda.feesh.features.alerts
 import com.github.sleepypanda.feesh.FeeshMod
 import com.github.sleepypanda.feesh.events.EventBus
 import com.github.sleepypanda.feesh.events.models.ClientTickEvent
+import com.github.sleepypanda.feesh.events.models.ArmorStandDetailsLoadedEvent
 import com.github.sleepypanda.feesh.events.models.WorldChangedEvent
 import com.github.sleepypanda.feesh.settings.categories.Alerts
 import com.github.sleepypanda.feesh.utils.ChatUtils
@@ -24,7 +25,6 @@ object NessieDestinationAlert {
     )
 
     private const val NESSIE_NAME = "Nessie"
-    private const val SCAN_DISTANCE = 30.0
     private const val TICKS_PER_MOBS_SCAN = 10
     private const val CLEANUP_DELAY_TICKS = 30 * 20
     private const val EXPIRATION_TIME_MS = 6 * 60 * 1000L
@@ -48,6 +48,7 @@ object NessieDestinationAlert {
     private var cleanupTickCounter = 0
 
     fun init() {
+        EventBus.subscribe(ArmorStandDetailsLoadedEvent::class, ::onArmorStandLoaded)
         EventBus.subscribe(ClientTickEvent::class, ::onClientTick)
         EventBus.subscribe(WorldChangedEvent::class, ::onWorldChanged)
     }
@@ -61,6 +62,19 @@ object NessieDestinationAlert {
         onTickCleanup()
     }
 
+    private fun onArmorStandLoaded(event: ArmorStandDetailsLoadedEvent) {
+        if (!Alerts.alertOnNessieDestination || !WorldUtils.isInSkyblock() || WorldUtils.getWorldName() != WorldUtils.GALATEA) return
+        if (!event.customNameUnformatted.contains(NESSIE_NAME)) return
+
+        EntityUtils.parseSeaCreatureNametag(event.entity, listOf(NESSIE_NAME)) ?: return
+
+        val mobId = event.entityId - 1
+        val existing = trackedNessieMobIds[mobId]
+        if (existing == null) {
+            trackedNessieMobIds[mobId] = TrackedNessieInfo(detectedTime = Date().time)
+        }
+    }
+
     private fun onTickMobsScan() {
         tickCounter++
         if (tickCounter < TICKS_PER_MOBS_SCAN) return
@@ -68,8 +82,7 @@ object NessieDestinationAlert {
 
         if (!Alerts.alertOnNessieDestination || !WorldUtils.isInSkyblock() || WorldUtils.getWorldName() != WorldUtils.GALATEA) return
 
-        CommonUtils.runWithCatching("Failed to scan for Nessies nearby") {
-            trackNessiesNearby()
+        CommonUtils.runWithCatching("Failed to check Nessies nearby") {
             checkNessiesChosenDestinations()
         }
     }
@@ -81,27 +94,10 @@ object NessieDestinationAlert {
 
         if (!WorldUtils.isInSkyblock() || WorldUtils.getWorldName() != WorldUtils.GALATEA) return
 
-        cleanupOutdatedTrackedIds()
-    }
-
-    private fun trackNessiesNearby() {
-        val player = FeeshMod.mc.player ?: return
-        val world = FeeshMod.mc.world ?: return
+        if (trackedNessieMobIds.isEmpty()) return
         val now = Date().time
-
-        world.entities.filterIsInstance<ArmorStandEntity>()
-            .filter { EntityUtils.getDistance(player, it) <= SCAN_DISTANCE }
-            .forEach { stand ->
-                val name = stand.customName?.string?.removeFormatting() ?: return@forEach
-                if (!name.contains(NESSIE_NAME)) return@forEach
-                EntityUtils.parseSeaCreatureNametag(stand, listOf(NESSIE_NAME)) ?: return@forEach
-
-                val mobId = stand.id - 1
-                val existing = trackedNessieMobIds[mobId]
-                if (existing == null) {
-                    trackedNessieMobIds[mobId] = TrackedNessieInfo(detectedTime = now)
-                }
-            }
+        val expiredIds = trackedNessieMobIds.filter { (_, info) -> now - info.detectedTime > EXPIRATION_TIME_MS }.keys
+        expiredIds.forEach { id -> trackedNessieMobIds.remove(id) }
     }
 
     private fun checkNessiesChosenDestinations() {
@@ -109,13 +105,6 @@ object NessieDestinationAlert {
 
         val ids = trackedNessieMobIds.keys.toList()
         ids.forEach { mobId -> checkNessieChosenDestination(mobId) }
-    }
-
-    private fun cleanupOutdatedTrackedIds() {
-        if (trackedNessieMobIds.isEmpty()) return
-        val now = Date().time
-        val expiredIds = trackedNessieMobIds.filter { (_, info) -> now - info.detectedTime > EXPIRATION_TIME_MS }.keys
-        expiredIds.forEach { id -> trackedNessieMobIds.remove(id) }
     }
 
     private fun checkNessieChosenDestination(nessieEntityId: Int) {
