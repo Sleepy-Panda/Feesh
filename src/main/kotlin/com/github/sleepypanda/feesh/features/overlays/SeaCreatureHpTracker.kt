@@ -16,8 +16,10 @@ import com.github.sleepypanda.feesh.utils.EntityUtils.SeaCreatureParsedNametagIn
 import net.minecraft.entity.decoration.ArmorStandEntity
 import net.minecraft.sound.SoundEvents
 import net.minecraft.entity.passive.SnifferEntity
+import net.minecraft.entity.mob.SkeletonHorseEntity
 import java.util.Date
 import kotlin.math.ceil
+import kotlin.math.floor
 
 data class TrackedMobInfo(
     val baseMobName: String,
@@ -71,6 +73,7 @@ object SeaCreatureHpTracker {
 
     private var mobs = mutableListOf<MobDisplayInfo>()
     private val seenMobEntityIds = mutableMapOf<Int, Long>()
+    private val customEntityImmunityStarts = mutableMapOf<Int, Long>()
 
     private var tickCounter = 0
     private var cleanupTickCounter = 0
@@ -96,6 +99,7 @@ object SeaCreatureHpTracker {
     private fun onWorldChanged(@Suppress("UNUSED_PARAMETER") event: WorldChangedEvent) {
         mobs.clear()
         seenMobEntityIds.clear()
+        customEntityImmunityStarts.clear()
     }
 
     private fun onClientTick(@Suppress("UNUSED_PARAMETER") event: ClientTickEvent) {
@@ -131,6 +135,7 @@ object SeaCreatureHpTracker {
         ) return
 
         cleanupOutdatedSeenEntityIds()
+        cleanupOutdatedCustomTimerIds();
     }
 
     private fun cleanupOutdatedSeenEntityIds() {
@@ -143,6 +148,19 @@ object SeaCreatureHpTracker {
 
         expiredIds.forEach { id ->
             seenMobEntityIds.remove(id)
+        }
+    }
+
+    private fun cleanupOutdatedCustomTimerIds() {
+        if (customEntityImmunityStarts.isEmpty()) return
+
+        val now = Date().time
+        val expiredIds = customEntityImmunityStarts.filter { (_, timestamp) ->
+            now - timestamp > EXPIRATION_TIME_MS
+        }.keys
+
+        expiredIds.forEach { id ->
+            customEntityImmunityStarts.remove(id)
         }
     }
 
@@ -169,6 +187,8 @@ object SeaCreatureHpTracker {
                     val hasImmunity = trackedMob?.hasImmunity ?: false
                     var isImmune = false
                     var immunitySecondsLeft: Int = 0
+                    val entityId = sc.mcEntityId - 1
+                    val now = Date().time
 
                     if (hasImmunity) {
                         val mobEntity = EntityUtils.getMcEntityById(sc.mcEntityId - 1)
@@ -186,6 +206,32 @@ object SeaCreatureHpTracker {
                         if (isNessieRunningAway) {
                             isImmune = true
                             immunitySecondsLeft = 0
+                        }
+                    }
+
+                    if (sc.baseMobName == "Ragnarok") {
+                        val mobEntity = EntityUtils.getMcEntityById(entityId)
+                        val isOnGround = (mobEntity as SkeletonHorseEntity)?.isOnGround ?: false
+                        val isAngry = (mobEntity as SkeletonHorseEntity)?.isAngry ?: false
+                        val pitch = (mobEntity as SkeletonHorseEntity)?.pitch ?: 0
+
+                        FeeshMod.LOGGER.info("Ragnarok ${sc.currentHpNumber.toString()}/${sc.maxHpNumber} pitch=$pitch, isImmobile=${(mobEntity as SkeletonHorseEntity)?.isImmobile}, isOnGround=$isOnGround, isAngry=$isAngry")
+                        if (sc.currentHpNumber <= (sc.maxHpNumber * 0.5) && customEntityImmunityStarts[entityId] == null) {
+                            customEntityImmunityStarts[entityId] = now
+                        }
+
+                        // I found no SkeletonHorseEntity attributes we can rely on, to detect immunity period.
+                        // Attributes like isImmobile, isAngry or isOnGround might be used, but they do not work when Ragnarok is jumping during the immunity phase.
+                        // Sometimes Ragnarok has isImmobile = true and others outside of immunity period, e.g. while jumping.
+                        // So in the first version we just rely on hardcoded 12 seconds timer.
+
+                        // TODO: If I came up late I can see it as immune even though its already not
+                        // TODO Reset immunity if HP decreased
+                        if (customEntityImmunityStarts[entityId] != null) {
+                            val immunityDurationSeconds = 12
+                            val elapsedSeconds = floor((now - customEntityImmunityStarts[entityId]!!) / 1000.0).toInt()
+                            isImmune = elapsedSeconds <= immunityDurationSeconds
+                            immunitySecondsLeft = if (isImmune) (immunityDurationSeconds - elapsedSeconds).coerceAtLeast(1) else 0
                         }
                     }
 
