@@ -636,6 +636,17 @@ ${GRAY}To pause: ${WHITE}/${MagmaCoreFishingTracker.PAUSE_COMMAND}
         """.trimIndent())
     }
 
+    var magmaCoreFishingTrackerPriceMode by ObservableEntry(
+        enum(PricingModeWithNpc.SELL_OFFER) {
+            this.name = Translated("Price mode")
+            this.description = Translated("How to calculate prices for Magma Core in the tracker.")
+        }
+    ) { prev, new ->
+        if (prev != new) {
+            MagmaCoreFishingTracker.refreshGui()
+        }
+    }
+
     var resetMagmaCoreFishingTrackerSessionOnGameClosed by boolean(true) {
         this.name = Translated("Autoreset [Session] on closing game")
         this.description = Translated("Automatically reset the Magma Core fishing tracker [Session] when you close Minecraft.")
