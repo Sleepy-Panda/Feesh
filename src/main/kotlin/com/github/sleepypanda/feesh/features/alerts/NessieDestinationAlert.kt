@@ -1,6 +1,5 @@
 package com.github.sleepypanda.feesh.features.alerts
 
-import com.github.sleepypanda.feesh.FeeshMod
 import com.github.sleepypanda.feesh.events.EventBus
 import com.github.sleepypanda.feesh.events.models.ClientTickEvent
 import com.github.sleepypanda.feesh.events.models.ArmorStandDetailsLoadedEvent
@@ -37,10 +36,31 @@ object NessieDestinationAlert {
         Triple(-666.0, 69.0, 17.0),
         Triple(-675.0, 63.0, 40.0),
         Triple(-674.0, 81.0, 44.0),
+        Triple(-680.0, 70.0, 51.0),
+        Triple(-674.0, 59.0, 30.0),
+        Triple(-675.0, 62.0, 39.0),
+        Triple(-678.0, 65.0, 47.0),
+        Triple(-682.0, 68.0, 54.0),
+        Triple(-686.0, 74.0, 60.0),
     )
+
     private val jadeDragonEntranceCoords = listOf(
         Triple(-660.0, 71.0, 0.0),
+        // Some checkpoints when Nessie goes down through blocks instead of entering through a tunnel entrance
         Triple(-637.0, 60.0, -7.0),
+        Triple(-660.0, 68.0, -2.0),
+        Triple(-656.0, 55.0, -12.0),
+        Triple(-648.0, 54.0, -13.0),
+        Triple(-640.0, 53.0, -10.0),
+        Triple(-638.0, 51.0, -4.0),
+        Triple(-634.0, 50.0, -10.0),
+        Triple(-627.0, 50.0, -5.0),
+        Triple(-620.0, 48.0, 5.0),
+        Triple(-620.0, 47.0, 13.0),
+        Triple(-626.0, 47.0, 19.0),
+        Triple(-636.0, 47.0, 7.0),
+        Triple(-640.0, 45.0, 13.0),
+        Triple(-644.0, 44.0, 15.0),
     )
 
     private val trackedNessieMobIds = mutableMapOf<Int, TrackedNessieInfo>()
