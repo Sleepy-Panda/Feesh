@@ -24,7 +24,7 @@ data class FeeshData(
     val bayouTracker: BayouTracker.BayouTrackerData = BayouTracker.BayouTrackerData(),
     val waterHotspotsTracker: WaterHotspotsTracker.WaterHotspotsTrackerData = WaterHotspotsTracker.WaterHotspotsTrackerData(),
     val crimsonIsle: CrimsonIsleTracker.CrimsonIsleTrackerData = CrimsonIsleTracker.CrimsonIsleTrackerData(),
-    val galateaWaterTracker: GalateaWaterTracker.GalateaWaterTrackerData = GalateaWaterTracker.GalateaWaterTrackerData(),
+    val galateaWater: GalateaWaterTracker.GalateaWaterTrackerData = GalateaWaterTracker.GalateaWaterTrackerData(),
     val archfiendDiceProfit: ArchfiendDiceProfitTracker.ArchfiendDiceProfitData = ArchfiendDiceProfitTracker.ArchfiendDiceProfitData(),
     val fishingProfit: FishingProfitTracker.FishingProfitData = FishingProfitTracker.FishingProfitData(),
     val rareDropNotifications: RareDropMessage.RareDropNotificationsData = RareDropMessage.RareDropNotificationsData(),
