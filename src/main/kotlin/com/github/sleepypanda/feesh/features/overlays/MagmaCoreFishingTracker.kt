@@ -47,8 +47,7 @@ object MagmaCoreFishingTracker {
     private const val TRACKER_NAME = "Magma Core fishing tracker"
     private const val TOGGLE_VIEW_MODE_COMMAND = "feeshToggleMagmaCoreFishingViewMode"
 
-    private const val TICKS_TIMER_ELAPSED_TIME = 20
-    private const val TICKS_DATA_UPDATE = 100
+    private const val TICKS_PER_UPDATE = 20
     private const val MAX_SECONDS_SINCE_LAST_CATCH = 60
     private const val HIDE_OVERLAY_AFTER_HOOK_MINUTES = 5
     private const val DEDUPE_CORES_MILLISECONDS = 10_000L // To aggregate multiple drops in a short period of time (e.g. clearing cap)
@@ -111,18 +110,17 @@ object MagmaCoreFishingTracker {
     }
 
     private fun onClientTick(@Suppress("UNUSED_PARAMETER") event: ClientTickEvent) {
+        tickCounter++
+        if (tickCounter < TICKS_PER_UPDATE) return
+        tickCounter = 0
+
         if (!Overlays.magmaCoreFishingTrackerOverlay || !WorldUtils.isInSkyblock() || WorldUtils.getWorldName() != WorldUtils.CRYSTAL_HOLLOWS) {
             pause()
             return
         }
 
-        tickCounter++
-        if (tickCounter % TICKS_TIMER_ELAPSED_TIME == 0) {
-            refreshElapsedTime()
-        }
-        if (tickCounter % TICKS_DATA_UPDATE == 0) {
-            updateGuiLines()
-        }
+        refreshElapsedTime()
+        updateGuiLines()
     }
 
     private fun onWorldChanged(@Suppress("UNUSED_PARAMETER") event: WorldChangedEvent) {
