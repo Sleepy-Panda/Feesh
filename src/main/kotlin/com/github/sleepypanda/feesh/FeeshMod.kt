@@ -51,6 +51,7 @@ import com.github.sleepypanda.feesh.features.overlays.GalateaWaterTracker
 import com.github.sleepypanda.feesh.features.overlays.ArchfiendDiceProfitTracker
 import com.github.sleepypanda.feesh.features.overlays.FishingFestivalTracker
 import com.github.sleepypanda.feesh.features.overlays.FishingProfitTracker
+import com.github.sleepypanda.feesh.features.overlays.MagmaCoreFishingTracker
 import com.github.sleepypanda.feesh.features.overlays.SeaCreaturesPerHourTracker
 import com.github.sleepypanda.feesh.features.items.background.KatWrongPetsHighlighter
 import com.github.sleepypanda.feesh.features.items.background.TrashBooksHighlighter
@@ -187,6 +188,7 @@ class FeeshMod : ModInitializer {
         ArchfiendDiceProfitTracker.init()
         FishingFestivalTracker.init()
         FishingProfitTracker.init()
+        MagmaCoreFishingTracker.init()
         SeaCreaturesPerHourTracker.init()
         RainTimer.init()
 

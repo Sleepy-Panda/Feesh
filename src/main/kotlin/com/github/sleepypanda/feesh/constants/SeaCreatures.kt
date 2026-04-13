@@ -47,6 +47,7 @@ class SeaCreatures {
     companion object {
         const val TYPE_CRIMSON_ISLE_LAVA = "CRIMSON_ISLE_LAVA"
         const val TYPE_GALATEA_LAVA = "GALATEA_LAVA"
+        const val TYPE_MAGMA_FIELDS = "MAGMA_FIELDS"
 
         // WATER SEA CREATURES
         val WATER_HYDRA_MESSAGE = "^The Water Hydra has come to test your strength\\.$"
@@ -204,8 +205,8 @@ class SeaCreatures {
             SeaCreatureInfo("Water Worm", RARE.code, Regex(WATER_WORM_MESSAGE), false),
             SeaCreatureInfo("Poisoned Water Worm", RARE.code, Regex(POISONED_WATER_WORM_MESSAGE), false),
             SeaCreatureInfo("Flaming Worm", RARE.code, Regex(FLAMING_WORM_MESSAGE), false),
-            SeaCreatureInfo("Lava Blaze", EPIC.code, Regex(LAVA_BLAZE_MESSAGE), false),
-            SeaCreatureInfo("Lava Pigman", EPIC.code, Regex(LAVA_PIGMAN_MESSAGE), false),
+            SeaCreatureInfo("Lava Blaze", EPIC.code, Regex(LAVA_BLAZE_MESSAGE), false, listOf(TYPE_MAGMA_FIELDS)),
+            SeaCreatureInfo("Lava Pigman", EPIC.code, Regex(LAVA_PIGMAN_MESSAGE), false, listOf(TYPE_MAGMA_FIELDS)),
 
             SeaCreatureInfo("Small Mithril Grubber", UNCOMMON.code, Regex(SMALL_MITHRIL_GRUBBER_MESSAGE), false),
             SeaCreatureInfo("Medium Mithril Grubber", UNCOMMON.code, Regex(MEDIUM_MITHRIL_GRUBBER_MESSAGE), false),

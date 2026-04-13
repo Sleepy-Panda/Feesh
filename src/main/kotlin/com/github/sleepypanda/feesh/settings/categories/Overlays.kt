@@ -16,6 +16,7 @@ import com.github.sleepypanda.feesh.features.overlays.FishingProfitTracker
 import com.github.sleepypanda.feesh.features.overlays.CrimsonIsleTracker
 import com.github.sleepypanda.feesh.features.overlays.FishingFestivalTracker
 import com.github.sleepypanda.feesh.features.overlays.JerryWorkshopTracker
+import com.github.sleepypanda.feesh.features.overlays.MagmaCoreFishingTracker
 import com.github.sleepypanda.feesh.features.overlays.SeaCreaturesPerHourTracker
 import com.github.sleepypanda.feesh.features.overlays.SeaCreaturesTracker
 import com.github.sleepypanda.feesh.features.overlays.TreasureFishingTracker
@@ -621,6 +622,32 @@ ${GRAY}Reset total: ${WHITE}/${TreasureFishingTracker.RESET_TOTAL_COMMAND}
 
     init {
         separator {
+            this.title = "${AQUA}${BOLD}Magma Core fishing"
+        }
+    }
+
+    var magmaCoreFishingTrackerOverlay by boolean(false) {
+        this.name = Translated("Magma Core fishing tracker")
+        this.description = Translated("""
+${GRAY}Shows an overlay for Magma Core fishing in Crystal Hollows, with sea creatures stats and coins/hour. This overlay has [Session] and [Total] view mode.
+${GRAY}To reset [Session]: ${WHITE}/${MagmaCoreFishingTracker.RESET_COMMAND}
+${GRAY}To reset [Total]: ${WHITE}/${MagmaCoreFishingTracker.RESET_TOTAL_COMMAND}
+${GRAY}To pause: ${WHITE}/${MagmaCoreFishingTracker.PAUSE_COMMAND}
+        """.trimIndent())
+    }
+
+    var resetMagmaCoreFishingTrackerSessionOnGameClosed by boolean(true) {
+        this.name = Translated("Autoreset [Session] on closing game")
+        this.description = Translated("Automatically reset the Magma Core fishing tracker [Session] when you close Minecraft.")
+    }
+
+    var magmaCoreFishingTrackerCustomStyle by boolean(true) {
+        this.name = Translated("Apply custom style")
+        this.description = Translated(getCustomStyleDescription("Magma Core fishing tracker"))
+    }
+
+    init {
+        separator {
             this.title = "${AQUA}${BOLD}Archfiend Dice profit"
         }
     }
@@ -714,8 +741,7 @@ ${GRAY}To pause: ${WHITE}/${FishingProfitTracker.PAUSE_COMMAND}
         this.name = Translated("Autoreset [Session] on closing game")
         this.description = Translated("Automatically reset the fishing profit tracker [Session] when you close Minecraft.")
     }
-
-    
+ 
     init {
         button {
             title = "Fishing profit tracker commands"
