@@ -27,7 +27,7 @@ object WaterHotspotsTracker {
         val tikiMasks: DropCounterData = DropCounterData()
     )
 
-    const val RESET_COMMAND = "feeshResetWaterHotspotsTracker"
+    const val RESET_COMMAND = "feeshResetWaterHotspots"
 
     private const val TICKS_PER_UPDATE = 20
 
