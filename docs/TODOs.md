@@ -10,7 +10,6 @@ FeeshMod.LOGGER.info("Nessie destination alert: ${mobEntity.x}, ${mobEntity.y}, 
 - Fished coins to add via the command.
 - Carmine dye into tracker
 - Autoupdates
-- Items counted after /gfs: Moved 39 Enchanted Sea Lumies from your Sacks to your inventory.
 - Settings are not saved after exiting the game, probably because user closes window using X button to exit
 - On 1.21.11, original fishing timer armorstand appears for a second when the fish starts swimming towards bobber
 
