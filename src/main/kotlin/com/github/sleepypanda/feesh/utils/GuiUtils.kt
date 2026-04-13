@@ -17,6 +17,11 @@ data class LastKatUpgrade(
     var petName: String? = null
 )
 
+data class LastGfsCommand(
+    var executedAt: Date? = null,
+    var itemName: String? = null
+)
+
 data class LastGuisClosed(
     var lastSacksGuiClosedAt: Date? = null,
     var lastOdgerGuiClosedAt: Date? = null,
@@ -35,14 +40,15 @@ object GuiUtils {
 
     val lastGuisClosed = LastGuisClosed()
     val lastKatUpgrade = LastKatUpgrade()
+    val lastGfsCommand = LastGfsCommand()
 
     fun init() {
         startTimer()
-        registerKatChatHandlers()
+        registerChatHandlers()
         EventBus.subscribe(GuiClosedEvent::class, ::onGuiClosed)
     }
 
-    private fun registerKatChatHandlers() {
+    private fun registerChatHandlers() {
         // When talking to NPC.
         // [NPC] Kat: I was able to upgrade your pet Guardian to LEGENDARY.
         RegisterUtils.chat(Regex("^\\[NPC\\] Kat: I was able to upgrade your pet (.+) to .*")) { _, matchResult ->
@@ -54,6 +60,11 @@ object GuiUtils {
         RegisterUtils.chat(Regex("^\\[NPC\\] Kat: ✆ Hi! I've finished training your (.+)!.*")) { _, matchResult ->
             lastKatUpgrade.lastPetClaimedAt = Date()
             lastKatUpgrade.petName = matchResult.groupValues[1].orEmpty().removeFormatting()
+        }
+        // Moved 3,900 Enchanted Sea Lumies from your Sacks to your inventory.
+        RegisterUtils.chat(Regex("^Moved [\\d,]+ (.+) from your Sacks to your inventory\\.$")) { _, matchResult ->
+            lastGfsCommand.executedAt = Date()
+            lastGfsCommand.itemName = matchResult.groupValues[1].orEmpty().removeFormatting()
         }
     }
 

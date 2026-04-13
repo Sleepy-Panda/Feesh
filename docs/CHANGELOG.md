@@ -20,6 +20,7 @@ Released on: ???
 - Fixed own death sound not played for alert on killed by a Mythic sea creature.
 - Fixed too wide background for overlays with inline buttons.
 - Fixed deployable expiration alert playing twice sometimes.
+- Fixed items counting in Fishing profit tracker after /gfs.
 
 ## Other
 

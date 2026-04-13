@@ -783,6 +783,12 @@ object FishingProfitTracker {
             if (dropInfo.itemName.contains(katPetName)) return true
         }
 
+        val lastGfsCommand = GuiUtils.lastGfsCommand
+        if (lastGfsCommand.executedAt != null && now.time - lastGfsCommand.executedAt!!.time < 1_000) {
+            val gfsItemName = lastGfsCommand.itemName ?: return false
+            if (dropInfo.itemName.removeFormatting().equals(gfsItemName, ignoreCase = true)) return true
+        }
+
         return false
     }
 
