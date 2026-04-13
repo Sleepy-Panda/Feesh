@@ -27,7 +27,7 @@ object BayouTracker {
         val titanoboaSheds: DropCounterData = DropCounterData()
     )
 
-    const val RESET_COMMAND = "feeshResetBayouTracker"
+    const val RESET_COMMAND = "feeshResetBayou"
 
     private const val TICKS_PER_UPDATE = 20
 
