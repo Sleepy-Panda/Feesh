@@ -2,14 +2,12 @@
 
 ## Sea creature HP tracker
 
-- Add custom Ragnarok immunity timer - when it goes below 50% hp (e.g. 62.4). Max HP is 125 mil, or 250 on Derpy. Around 12 seconds immunity?
-- Add custom immunity for Nessie running around until it reaches out the cave.
+- Add custom Ragnarok immunity timer - when it goes below 50% hp (e.g. 62.4). Max HP is 125 mil, or 250 on Derpy. It takes around 12 seconds, but if server is laggy it takes unpredictable time.
 - Add owner's name for sea creatures (might be more tricky for cocooned).
 
 ## SC tracker
 
-- Being able to remove particular sea creatures from the session/total tracker (why: i've tested certain methods of fishing for 5-10min and never did them again afterwards, yet the few sea creatures (winter, CI lava, MF lava) i got in the test remain in the tracker, making it huge on my screen, and the only way around it is to make my font size smaller which then makes the letters ugly)
-- I also thought about adding +/- buttons to track cocooned stuff.
+- Track cocooned stuff. How to detect who is the owner for the mob cocooned?
 
 ## Fishing profit tracker
 
@@ -75,6 +73,8 @@ Session: 10x Baby Yeti (Epic), 5x Baby Yeti (Legendary), 1x Level 100
 
 - RARE DROP! Troubled Bubble (+406 ✯ Magic Find) - with no mf also possible
 - RARE DROP! Octopus Tendril (+190 ✯ Magic Find)
+- Rare SC cocooned alert
+- Alert which soul has dropped for Summoning Ring.
 - Alert on Hotspot fishing without Tiki Mask
 - Reminder if user is fishing with wrong hook/sinker during events or in hotspots.
   - When first rod cast on Jerry: check for Icy Sinker
@@ -82,11 +82,8 @@ Session: 10x Baby Yeti (Epic), 5x Baby Yeti (Legendary), 1x Level 100
   - When first hotspot rod cast: check for Hotspot Hook and Sinker (except for treasure fishing)
   - Check for Junk Sinker for treasure fishing in Bayou?
   - TODO: Other stuff?
-- Alert if player attempts to be scammed by Kat by giving her Epic Megalodon.
-- Rare SC cocooned alert
 - Spooky festival event ending alert (to kill mobs before despawn)
 - Phoenix proc'ed alert / Phoenix back alert (same as Spirit Mask)
-- Multiple drops that happen at the same time lead to "You're sending messages too fast" error.
 - Write smarter logic to detect personal cap alert (20 for CH, 5 for Crimson)
 - Do not include baby magma slugs when producing cap alert.
 - Attach Vials drop number to the pchat message
@@ -98,6 +95,8 @@ Session: 10x Baby Yeti (Epic), 5x Baby Yeti (Legendary), 1x Level 100
 ## Hotspots
 
 - Hotspot location guesser
+- Render hotspot area more visible
+- Show a flag when hook is in hotspot
 
 ## Fishing XP tracker
 
@@ -108,12 +107,12 @@ Session: 10x Baby Yeti (Epic), 5x Baby Yeti (Legendary), 1x Level 100
 
 - Bestiary tracker with session/total, cuz i like to get screenshots whenever i hit clean bestiary numbers (30k abyssal, 300k agarimoo, ...)
 It might be not 100% correct due to how Hypixel API works, the person who requested usually opens /be every few catches, he needs to see when he's close.
+- Leaderboards tracker, to see if someone passed your position.
 
 ## Inventory features
 
 - Full amount of expertise kills on your rod: rn i use skyhanni for that but it only says "Expertise Kills: 1M (Maxed)" while badlion used to display the whole number
 - Offer supercrafting or BZ sell when items like raw fish goes to inventory (sacks are full).
-- Refactor all existing features so they consume less FPS
 
 ## Baits
 
@@ -128,7 +127,6 @@ It might be not 100% correct due to how Hypixel API works, the person who reques
 
 ## Other
 
-- Command to check profits for buying items from Fear Mongerer shop rather than selling candies as is
 - Way to disable all module features with one toggle.
 - Golden fish timer
 "can you add a golden fish timer tracker into this? i only have golden fish diamond left and i like playing other games while just having my bobber in lava, and setting a 15min timer every time is p annoying lmao"
@@ -139,6 +137,7 @@ It might be not 100% correct due to how Hypixel API works, the person who reques
 
 ## Achievements
 
+- The main blocker here is how to draw custom GUI which displays readonly list of achievements with sorting/filtering/sections. Current library used for settings does not let to draw dynamic readonly content.
 - Do not count on Alpha
 - 1s timeout after the main event
 

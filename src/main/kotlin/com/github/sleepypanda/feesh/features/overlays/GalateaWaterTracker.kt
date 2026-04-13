@@ -28,7 +28,7 @@ object GalateaWaterTracker {
 
     private const val TICKS_PER_UPDATE = 20
 
-    private var data = PersistentDataManager.feeshData.galateaWaterTracker
+    private var data = PersistentDataManager.feeshData.galateaWater
     private var tickCounter = 0
 
     private val baseTitle = "${AQUA}${BOLD}Galatea water tracker"

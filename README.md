@@ -63,6 +63,7 @@ This mod requires [Fabric API](https://modrinth.com/mod/fabric-api) and [Fabric 
 - **Worm the Fish** — Alerts when Worm the Fish is detected (Dirt Rod fishing).
 - **Fishing Festival** — Alerts when the Fishing Festival ends, and posts amounts of sharks caught in chat. Also has option to track personal best per festival.
 - **Rain/Thunder/Blizzard ends soon** — Alerts when Rain/Thunder/Blizzard ends soon while in Birch Park / Spider's Den / Jerry's Workshop.
+- **Nessie destination alert** — Alerts destination when a Nessie decides into which cave to swim - to Jade Dragon or to Driptoad Delve.
 
 ### Overlays
 
@@ -110,6 +111,7 @@ This mod requires [Fabric API](https://modrinth.com/mod/fabric-api) and [Fabric 
 - **Hide other players' hooks** — Hides other players' bobbers and fishing lines, so you can see only your own hook.
 - **Highlight rare sea creatures** — Applies glowing border to the rare sea creatures. Not visible through walls.
 - **Hide other players near bobber** — Hides other players near your bobber when a fishing rod is casted.
+- **Mute Jade Dragon** — Mutes Jade dragon sounds while you are in dragon's cave.
 
 ### Commands
 
