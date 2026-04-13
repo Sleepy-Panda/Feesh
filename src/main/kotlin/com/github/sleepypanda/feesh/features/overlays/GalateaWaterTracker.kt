@@ -24,7 +24,7 @@ object GalateaWaterTracker {
         val nessie: CatchCounterData = CatchCounterData()
     )
 
-    const val RESET_COMMAND = "feeshResetGalateaWaterTracker"
+    const val RESET_COMMAND = "feeshResetGalateaWater"
 
     private const val TICKS_PER_UPDATE = 20
 
