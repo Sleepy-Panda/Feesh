@@ -25,6 +25,7 @@ Released on: ???
 ## Other
 
 - Made Normal sound mode default for new mod users.
+- Show selected price mode in the Fishing profit tracker towards total profit.
 - Made sea creature names and drop names searchable in settings, to easier identify selectlists where they can be toggled.
 - Refactored way of detecting new entities spawned in the world.
 - Refactored data saving logic to debounce file writes. This accumulates data changes and saves them once over time, to avoid writing to the file too often.

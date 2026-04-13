@@ -104,7 +104,7 @@ object FishingProfitTracker {
             "${GRAY}- ${WHITE}318${GRAY}x ${GOLD}Nether Star${GRAY}: ${GOLD}45M",
             "${GRAY}- ${WHITE}100500${GRAY}x Other cheap items: ${GOLD}1.8B",
             "",
-            "${AQUA}Total: ${GOLD}${BOLD}3B ${RESET}${GRAY}(${GOLD}53.9M${GRAY}/h)",
+            "${AQUA}Total: ${GOLD}${BOLD}3B ${RESET}${GRAY}(${GOLD}53.9M${GRAY}/h) ${DARK_GRAY}[sell offer]",
             "${AQUA}Elapsed time: ${WHITE}56h 23m 3s",
         ))
         .setSettingsKey { Overlays.fishingProfitTrackerOverlay }
@@ -928,13 +928,18 @@ object FishingProfitTracker {
             }
 
             val totalStr = CommonUtils.toShortNumber(displayData.totalProfit) ?: "0"
+            val priceModeStr = when (Overlays.fishingProfitTrackerPriceMode) {
+                PricingModeWithNpc.SELL_OFFER -> "${DARK_GRAY}[sell offer]"
+                PricingModeWithNpc.INSTA_SELL -> "${DARK_GRAY}[insta-sell]"
+                PricingModeWithNpc.NPC_SELL -> "${DARK_GRAY}[NPC sell]"
+            }
             lines.add("")
 
             if (Overlays.shouldHideTimerInTotal && viewMode == ViewMode.TOTAL) {
-                lines.add("${AQUA}Total: ${GOLD}${BOLD}$totalStr")
+                lines.add("${AQUA}Total: ${GOLD}${BOLD}$totalStr $priceModeStr")
             } else {
                 val perHourStr = CommonUtils.toShortNumber(displayData.profitPerHour) ?: "0"
-                lines.add("${AQUA}Total: ${GOLD}${BOLD}$totalStr ${RESET}${GRAY}(${GOLD}$perHourStr${GRAY}/h)")
+                lines.add("${AQUA}Total: ${GOLD}${BOLD}$totalStr ${RESET}${GRAY}(${GOLD}$perHourStr${GRAY}/h) $priceModeStr")
 
                 val elapsedStr = CommonUtils.formatTimeElapsed(displayData.elapsedTime)
                 val pausedSuffix = if (isSessionActive) "" else " ${GRAY}[Paused]"
