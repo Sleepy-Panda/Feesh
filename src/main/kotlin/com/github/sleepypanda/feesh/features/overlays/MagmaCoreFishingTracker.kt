@@ -25,7 +25,6 @@ import com.github.sleepypanda.feesh.utils.gui.FeeshGui
 import com.github.sleepypanda.feesh.utils.gui.GuiButton
 import java.util.Date
 
-// Remove tracker word from commands
 object MagmaCoreFishingTracker {
     enum class ViewMode {
         SESSION,
@@ -53,8 +52,8 @@ object MagmaCoreFishingTracker {
     private const val TOGGLE_VIEW_MODE_COMMAND = "feeshToggleMagmaCoreFishingViewMode"
 
     private const val TICKS_PER_UPDATE = 20
-    private const val MAX_SECONDS_SINCE_LAST_CATCH = 60
-    private const val HIDE_OVERLAY_AFTER_HOOK_MINUTES = 5
+    private const val PAUSE_TIMER_SECONDS = 60
+    private const val HIDE_OVERLAY_MINUTES = 5
     private const val DEDUPE_CORES_MILLISECONDS = 10_000L // To aggregate multiple drops in a short period of time (e.g. clearing cap)
 
     private val data: MagmaCoreFishingData
@@ -72,11 +71,11 @@ object MagmaCoreFishingTracker {
         .setClickable(true)
         .setSampleLines(listOf(
             "$baseTitle ${GRAY}[${GREEN}Session${GRAY}]",
-            "${DARK_PURPLE}Sea creatures: ${WHITE}13 245 ${GRAY}(${WHITE}221${GRAY}/h)",
-            "${BLUE}Magma Cores: ${WHITE}156 ${GRAY}(${WHITE}4${GRAY}/h) ${GRAY}[${WHITE}+2 ${GRAY}last added]",
+            "${BLUE}Sea creatures: ${WHITE}22 ${GRAY}(${WHITE}990${GRAY}/h)",
+            "${BLUE}Magma Cores: ${WHITE}3 ${GRAY}(${WHITE}135${GRAY}/h) ${GRAY}[${WHITE}+1 ${GRAY}last added]",
             "",
-            "${AQUA}Total: ${GOLD}${BOLD}43.6M ${GRAY}(${GOLD}1.2M${GRAY}/h) ${DARK_GRAY}[sell offer]",
-            "${AQUA}Elapsed time: ${WHITE}10h 34m 10s"
+            "${AQUA}Total: ${GOLD}${BOLD}2.2M ${GRAY}(${GOLD}101.2M${GRAY}/h) ${DARK_GRAY}[sell offer]",
+            "${AQUA}Elapsed time: ${WHITE}1m 10s"
         ))
         .setSettingsKey { Overlays.magmaCoreFishingTrackerOverlay }
         .setApplyCustomStyleKey { Overlays.magmaCoreFishingTrackerCustomStyle }
@@ -128,6 +127,8 @@ object MagmaCoreFishingTracker {
 
     private fun onWorldChanged(@Suppress("UNUSED_PARAMETER") event: WorldChangedEvent) {
         pause()
+        lastSeaCreatureCaughtAt = null
+        lastMagmaCoreDroppedAt = null
     }
 
     private fun onGameClosed(@Suppress("UNUSED_PARAMETER") event: GameClosedEvent) {
@@ -194,7 +195,7 @@ object MagmaCoreFishingTracker {
         }
 
         val elapsedSinceCatch = (Date().time - lastCatch.time) / 1000
-        if (elapsedSinceCatch < MAX_SECONDS_SINCE_LAST_CATCH) {
+        if (elapsedSinceCatch <= PAUSE_TIMER_SECONDS) {
             isSessionActive = true
             data.session.elapsedSeconds += 1
             data.total.elapsedSeconds += 1
@@ -206,7 +207,11 @@ object MagmaCoreFishingTracker {
 
     private fun isTrackerVisible(): Boolean {
         if (!Overlays.magmaCoreFishingTrackerOverlay || !WorldUtils.isInSkyblock() || WorldUtils.getWorldName() != WorldUtils.CRYSTAL_HOLLOWS) return false
-        if (!FishingHookUtils.wasFishingHookActiveMinutesAgo(HIDE_OVERLAY_AFTER_HOOK_MINUTES)) return false
+        if (!FishingHookUtils.wasFishingHookActiveMinutesAgo(HIDE_OVERLAY_MINUTES)) return false
+        if (lastSeaCreatureCaughtAt == null) return false
+
+        val elapsedSinceCatch = (Date().time - lastSeaCreatureCaughtAt!!.time) / 1000
+        if (elapsedSinceCatch > HIDE_OVERLAY_MINUTES * 60) return false
 
         val sourceObj = getSourceObject(getCurrentViewMode())
         return sourceObj.magmaCoresCount > 0 || sourceObj.seaCreaturesCaughtCount > 0
@@ -340,7 +345,7 @@ object MagmaCoreFishingTracker {
 
             val lines = mutableListOf<String>()
             lines.add("$baseTitle $viewModeText")
-            lines.add("${DARK_PURPLE}Sea creatures: ${WHITE}${CommonUtils.formatNumberWithSpaces(sourceObj.seaCreaturesCaughtCount)} ${GRAY}(${WHITE}${seaCreaturesPerHour}${GRAY}/h)")
+            lines.add("${BLUE}Sea creatures: ${WHITE}${CommonUtils.formatNumberWithSpaces(sourceObj.seaCreaturesCaughtCount)} ${GRAY}(${WHITE}${seaCreaturesPerHour}${GRAY}/h)")
             lines.add("${BLUE}Magma Cores: ${WHITE}${CommonUtils.formatNumberWithSpaces(sourceObj.magmaCoresCount)} ${GRAY}(${WHITE}${magmaCoresPerHour}${GRAY}/h)${lastAddedText}")
             lines.add("")
             lines.add("${AQUA}Total: ${GOLD}${BOLD}${CommonUtils.toShortNumber(totalCoins.toDouble()) ?: "0"} ${GRAY}(${GOLD}${CommonUtils.toShortNumber(coinsPerHour.toDouble()) ?: "0"}${GRAY}/h) ${priceModeStr}")

@@ -85,6 +85,7 @@ This mod requires [Fabric API](https://modrinth.com/mod/fabric-api) and [Fabric 
 - **Crimson Isle tracker** — Fiery Scuttler, Ragnarok, Plhlegblast, Thunder, Lord Jawbus catch and Radioactive Vial drop statistics.
 - **Galatea water tracker** — The Loch Emperor/Nessie catch statistics in Galatea.
 - **Treasure fishing tracker** — Good/Great/Outstanding treasure catches and Treasure Dye drop statistics.
+- **Magma Core fishing tracker** — Lava Pigman/Lava Blaze catch stats and Magma Core drop profits (total and per hour), while in Crystal Hollows.
 - **Archfiend Dice profit tracker** — Archfiend Dice / High Class Archfiend Dice profit overlay with Session/Total modes.
 - **Rain/Thunder ends soon** — Shows Rain/Thunder timer while in Birch Park / Spider's Den.
 

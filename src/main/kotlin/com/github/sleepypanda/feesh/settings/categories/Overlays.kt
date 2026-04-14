@@ -629,7 +629,7 @@ ${GRAY}Reset total: ${WHITE}/${TreasureFishingTracker.RESET_TOTAL_COMMAND}
     var magmaCoreFishingTrackerOverlay by boolean(false) {
         this.name = Translated("Magma Core fishing tracker")
         this.description = Translated("""
-${GRAY}Shows an overlay for Magma Core fishing in Crystal Hollows, with sea creatures stats and coins/hour. This overlay has [Session] and [Total] view mode.
+${GRAY}Shows an overlay for Magma Core fishing, with Lava Pigman/Lava Blaze catch stats and Magma Core drop profits (total and per hour), while in Crystal Hollows. This overlay has [Session] and [Total] view mode.
 ${GRAY}To reset [Session]: ${WHITE}/${MagmaCoreFishingTracker.RESET_COMMAND}
 ${GRAY}To reset [Total]: ${WHITE}/${MagmaCoreFishingTracker.RESET_TOTAL_COMMAND}
 ${GRAY}To pause: ${WHITE}/${MagmaCoreFishingTracker.PAUSE_COMMAND}
