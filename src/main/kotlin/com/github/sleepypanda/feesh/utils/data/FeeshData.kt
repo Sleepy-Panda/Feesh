@@ -9,6 +9,7 @@ import com.github.sleepypanda.feesh.features.overlays.CrimsonIsleTracker
 import com.github.sleepypanda.feesh.features.overlays.GalateaWaterTracker
 import com.github.sleepypanda.feesh.features.overlays.ArchfiendDiceProfitTracker
 import com.github.sleepypanda.feesh.features.overlays.FishingProfitTracker
+import com.github.sleepypanda.feesh.features.overlays.MagmaCoreFishingTracker
 import com.github.sleepypanda.feesh.features.chat.RareDropMessage
 import com.github.sleepypanda.feesh.utils.data.PersonalBestData
 import com.github.sleepypanda.feesh.features.overlays.CatchCounterData
@@ -27,6 +28,7 @@ data class FeeshData(
     val galateaWater: GalateaWaterTracker.GalateaWaterTrackerData = GalateaWaterTracker.GalateaWaterTrackerData(),
     val archfiendDiceProfit: ArchfiendDiceProfitTracker.ArchfiendDiceProfitData = ArchfiendDiceProfitTracker.ArchfiendDiceProfitData(),
     val fishingProfit: FishingProfitTracker.FishingProfitData = FishingProfitTracker.FishingProfitData(),
+    val magmaCoreFishing: MagmaCoreFishingTracker.MagmaCoreFishingData = MagmaCoreFishingTracker.MagmaCoreFishingData(),
     val rareDropNotifications: RareDropMessage.RareDropNotificationsData = RareDropMessage.RareDropNotificationsData(),
     val personalBest: PersonalBestData = PersonalBestData(),
 

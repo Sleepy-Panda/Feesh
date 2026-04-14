@@ -1,5 +1,12 @@
 # Future ideas and players' requests
 
+## Overlays general
+
+- Pause timers in 30 seconds or 1 minute of inactivity, but still track drops while tracker is visible.
+  - To cover the case when you don't fish and kill bosses, or someone kills your SC while you are AFK with paused tracker.
+- When there is no fishing rod in hand, some trackers can be hidden (optional setting).
+- Pause button pauses all widget's timers so you dont have to click each widget's button individually. Same thing that keybind does.
+
 ## Sea creature HP tracker
 
 - Add custom Ragnarok immunity timer - when it goes below 50% hp (e.g. 62.4). Max HP is 125 mil, or 250 on Derpy. It takes around 12 seconds, but if server is laggy it takes unpredictable time.
@@ -13,7 +20,6 @@
 
 - View price as 7 days avg to avoid price manipulations.
 - Add levelled Magma Necklaces as some people level them for profits. Vanquished Magma Necklace upgraded to +10☠! Vanquished Magma Necklace upgraded to +1☠!
-- When there is no fishing rod in hand, the fish profit tracker and seacreature tracker can be hidden.
 - Propose compacting or selling items like raw fish going to the inventory (full sack).
 - Use drop # in the chat message based on current profit tracker.
 - Option to render icons instead of item names

@@ -5,6 +5,7 @@ Released on: ???
 ## Features
 
 - Added Galatea water tracker which shows The Loch Emperor/Nessie catch statistics in Galatea [disabled by default].
+- Added Magma Core fishing tracker which shows Lava Pigman/Lava Blaze catch stats & Magma Core drop profits, while in Crystal Hollows [disabled by default].
 - Show Nessie's immunity flag in Sea creature HP overlay, while Nessie is running away.
 - Added Nessie destination alert which announces when a Nessie decides into which cave to swim.
 - Added setting to mute Jade Dragon [disabled by default].
