@@ -11,7 +11,7 @@ This mod is an evolution of [FeeshNotifier ChatTriggers module](https://chattrig
 - [Features](#features)
 - [Troubleshooting](#troubleshooting)
 - [Contacts](#contacts)
-- [Contributors](#contributors)
+- [Special thanks](#special-thanks)
 - [Developer's stuff](#developers-stuff)
 
 ## Releases
@@ -151,10 +151,11 @@ In case of questions, bug reports, feature requests, bored, feeling alone - plea
 - Discussions or Issues in the repository [Feesh](https://github.com/Sleepy-Panda/Feesh/discussions)
 - IGN: MoonTheSadFisher
 
-## Contributors
+## Special thanks
 
 Shoutout to the wonderful people who helped this mod to grow!
 
+- [Casters discord](https://discord.gg/79E7Rhv8), for supporting the mod
 - alpha-r (rare sea creatures highlight feature)
 
 ## Developer's stuff

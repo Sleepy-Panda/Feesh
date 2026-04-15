@@ -18,3 +18,7 @@
 
 - For each .jar, create separate release on GitHub releases page, linking proper branch as previous version.
   - This is used as a backup, also users who can't use Modrinth might want to download from here.
+
+## Discord
+
+- Announce in `feesh-mod` channel of `Casters` DC

@@ -32,7 +32,7 @@ object Settings : ConfigKt("${FeeshMod.MOD_ID}/config") {
         
         button {
             title = "Modrinth"
-            description = "Find official releases here. Open to check latest version."
+            description = "Find official releases and changelogs here. Open to check latest version."
             text = "Open"
             onClick {
                 openLink("https://modrinth.com/project/feesh/versions")
@@ -41,7 +41,7 @@ object Settings : ConfigKt("${FeeshMod.MOD_ID}/config") {
 
         button {
             title = "GitHub"
-            description = "Find source code, docs and report issues/suggestions/feedback here."
+            description = "Find source code and docs here."
             text = "Open"
             onClick {
                 openLink("https://github.com/Sleepy-Panda/Feesh")
@@ -49,8 +49,17 @@ object Settings : ConfigKt("${FeeshMod.MOD_ID}/config") {
         }
 
         button {
-            title = "Discord"
-            description = "m00nlight_sky - contact me if you have any questions, feedback, or suggestions."
+            title = "Casters Discord"
+            description = "Big fishing community with guides, discussions and more. Check out #feesh-mod / #mod-discussion channels for mod news & discussions!"
+            text = "Join Casters"
+            onClick {
+                openLink("https://discord.gg/VaB7X4wj")
+            }
+        }
+
+        button {
+            title = "My Discord"
+            description = "m00nlight_sky - feel free to contact me if you have any questions, feedback, or suggestions."
             text = "Button does nothing"
             onClick { }
         }

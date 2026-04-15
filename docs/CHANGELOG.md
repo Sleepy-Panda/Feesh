@@ -32,6 +32,10 @@ Released on: ???
 - Refactored data saving logic to debounce file writes. This accumulates data changes and saves them once over time, to avoid writing to the file too often.
 - Refactored way how keybinds are registered. Hopefully this will fix periodic keybind reset issues.
 
+## Special thanks
+
+To the [Casters discord](https://discord.gg/79E7Rhv8) and personally `jessbre` for supporting the mod!
+
 Take the fish:
 
 ```
