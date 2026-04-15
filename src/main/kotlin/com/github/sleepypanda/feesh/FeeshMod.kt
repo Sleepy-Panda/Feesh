@@ -82,12 +82,12 @@ import com.github.sleepypanda.feesh.utils.data.CustomSoundsManager
 import com.github.sleepypanda.feesh.utils.gui.MoveGuis
 import com.teamresourceful.resourcefulconfig.api.loader.Configurator
 import net.minecraft.SharedConstants
-import net.fabricmc.api.ModInitializer
+import net.fabricmc.api.ClientModInitializer
 import net.fabricmc.loader.api.FabricLoader
 import net.minecraft.client.MinecraftClient
 import org.slf4j.LoggerFactory
 
-class FeeshMod : ModInitializer {
+class FeeshMod : ClientModInitializer {
     companion object {
         internal const val MOD_ID = "feesh"
         internal const val MOD_NAME = "Feesh"
@@ -113,7 +113,7 @@ class FeeshMod : ModInitializer {
         INSTANCE = this
     }
 
-    override fun onInitialize() {
+    override fun onInitializeClient() {
         version = getModVersion()
         LOGGER.info("Loading $MOD_NAME v$version for ${mcVersion}...")
 

@@ -11,7 +11,6 @@ import com.github.sleepypanda.feesh.utils.ChatUtils
 import com.github.sleepypanda.feesh.utils.ChatUtils.removeFormatting
 import com.github.sleepypanda.feesh.utils.EntityUtils
 import com.github.sleepypanda.feesh.utils.SoundUtils
-import com.github.sleepypanda.feesh.utils.KeybindUtils
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
 import com.github.sleepypanda.feesh.events.EventBus
@@ -23,7 +22,6 @@ import net.minecraft.text.Text
 import net.minecraft.text.Style
 import net.minecraft.text.ClickEvent.RunCommand
 import net.minecraft.text.HoverEvent.ShowText
-import org.lwjgl.glfw.GLFW
 import net.minecraft.util.math.Vec3d
 
 object HotspotFoundMessage {
@@ -34,21 +32,17 @@ object HotspotFoundMessage {
     private const val NEAREST_HOTSPOT_RANGE_FROM_PLAYER = 10.0
 
     fun init() {
-        registerKeybinds()
-
         EventBus.subscribe(ClientTickEvent::class, ::onClientTick)
         EventBus.subscribe(WorldChangedEvent::class, ::onWorldChanged)
         EventBus.subscribe(ArmorStandDespawnedEvent::class, ::onHotspotDespawned)
     }
 
-    private fun registerKeybinds() {
-        KeybindUtils.registerKeybind("key.feesh.shareHotspotPartyChat", GLFW.GLFW_KEY_UNKNOWN) {
-            sendMessageWithNearestHotspot(true)
-        }
+    fun shareNearestHotspotToParty() {
+        sendMessageWithNearestHotspot(true)
+    }
 
-        KeybindUtils.registerKeybind("key.feesh.shareHotspotAllChat", GLFW.GLFW_KEY_UNKNOWN) {
-            sendMessageWithNearestHotspot(false)
-        }
+    fun shareNearestHotspotToAll() {
+        sendMessageWithNearestHotspot(false)
     }
 
     private fun onWorldChanged(@Suppress("UNUSED_PARAMETER") event: WorldChangedEvent) {

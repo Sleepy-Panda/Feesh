@@ -17,14 +17,12 @@ import com.github.sleepypanda.feesh.utils.gui.GuiButton
 import com.github.sleepypanda.feesh.utils.CommonUtils
 import com.github.sleepypanda.feesh.utils.SoundUtils
 import com.github.sleepypanda.feesh.utils.RegisterUtils
-import com.github.sleepypanda.feesh.utils.KeybindUtils
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
 import com.github.sleepypanda.feesh.constants.SeaCreatures
 import com.github.sleepypanda.feesh.constants.Sounds
 import com.github.sleepypanda.feesh.settings.categories.General
 import com.github.sleepypanda.feesh.settings.categories.SoundMode
-import org.lwjgl.glfw.GLFW
 import net.minecraft.entity.decoration.ArmorStandEntity
 import net.minecraft.entity.EquipmentSlot
 import net.minecraft.component.DataComponentTypes
@@ -66,7 +64,6 @@ object BarnFishingTimer {
         EventBus.subscribe(ClientTickEvent::class, ::onClientTick)
         EventBus.subscribe(WorldChangedEvent::class, ::onWorldChanged)
         registerCommands()
-        registerKeybinds()
     }
 
     private fun registerCommands() {
@@ -75,10 +72,8 @@ object BarnFishingTimer {
         }
     }
 
-    private fun registerKeybinds() {
-        KeybindUtils.registerKeybind("key.feesh.resetBarnFishingTimer", GLFW.GLFW_KEY_UNKNOWN) {
-            resetSeaCreaturesCountAndTimer()
-        }
+    fun triggerResetKeybind() {
+        resetSeaCreaturesCountAndTimer()
     }
 
     private fun onWorldChanged(@Suppress("UNUSED_PARAMETER") event: WorldChangedEvent) {

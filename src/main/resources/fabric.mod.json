@@ -13,7 +13,7 @@
 	"icon": "assets/feesh/icon.png",
 	"environment": "client",
 	"entrypoints": {
-	  "main": ["com.github.sleepypanda.feesh.FeeshMod"]
+	  "client": ["com.github.sleepypanda.feesh.FeeshMod"]
 	},
 	"mixins": ["feesh.mixins.json"],
 	"depends": {
