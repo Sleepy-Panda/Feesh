@@ -30,6 +30,7 @@ Released on: ???
 - Made sea creature names and drop names searchable in settings, to easier identify selectlists where they can be toggled.
 - Refactored way of detecting new entities spawned in the world.
 - Refactored data saving logic to debounce file writes. This accumulates data changes and saves them once over time, to avoid writing to the file too often.
+- Refactored way how keybinds are registered. Hopefully this will fix periodic keybind reset issues.
 
 Take the fish:
 
