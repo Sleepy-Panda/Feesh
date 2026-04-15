@@ -22,6 +22,7 @@ Released on: ???
 - Fixed too wide background for overlays with inline buttons.
 - Fixed deployable expiration alert playing twice sometimes.
 - Fixed items counting in Fishing profit tracker after /gfs.
+- Fixed deployables overlay not appearing when using Bubblegum on pet.
 
 ## Other
 

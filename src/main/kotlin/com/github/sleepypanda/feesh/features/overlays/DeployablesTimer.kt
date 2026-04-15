@@ -172,14 +172,14 @@ object DeployablesTimer {
 
             if (isDwarvenLanternTrackingEnabled() &&
                 isDwarvenLanternArmorStandName(name) &&
-                name.endsWith("300s") &&
+                (name.endsWith("300s") || name.endsWith("600s")) &&
                 nowMs - lastDwarvenLanternInteractTimeMs <= 1000L
             ) {
                 dwarvenLanternData.id = armorStand.uuid
                 val formattedName = event.customNameFormatted
                 dwarvenLanternData.itemDisplayName = formattedName.replace(Regex(" §.+\\d+s"), "").replace(BOLD.code, "").trim().ifBlank { "Dwarven Lantern" }
             } else if (isUmberellaTrackingEnabled() &&
-                name == "Umberella 300s" &&
+                (name == "Umberella 300s" || name == "Umberella 600s") &&
                 nowMs - lastUmberellaInteractTimeMs <= 1000L
             ) {
                 umberellaData.id = armorStand.uuid
