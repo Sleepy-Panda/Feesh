@@ -1,7 +1,5 @@
 ## Players feedback
 
-FeeshMod.LOGGER.info("Nessie destination alert: ${mobEntity.x}, ${mobEntity.y}, ${mobEntity.z}") // TODO Remove
-
 - TODO: Test in 1.21
 - Sometimes current world&zone is detected wrongly
 - Ragnarok immunity timer
@@ -10,7 +8,6 @@ FeeshMod.LOGGER.info("Nessie destination alert: ${mobEntity.x}, ${mobEntity.y}, 
 - Carmine dye into tracker
 - Autoupdates
 - Settings are not saved after exiting the game, probably because user closes window using X button to exit
-- On 1.21.11, original fishing timer armorstand appears for a second when the fish starts swimming towards bobber
 
 ## Tech Debt
 
