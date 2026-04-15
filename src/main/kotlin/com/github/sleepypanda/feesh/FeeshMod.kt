@@ -31,6 +31,7 @@ import com.github.sleepypanda.feesh.features.commands.PetLevelUpPricesCommand
 import com.github.sleepypanda.feesh.features.commands.FearMongererShopPricesCommand
 import com.github.sleepypanda.feesh.features.commands.GearCraftPricesCommand
 import com.github.sleepypanda.feesh.features.commands.JunkerJoelShopPricesCommand
+import com.github.sleepypanda.feesh.features.commands.TerryShopPricesCommand
 import com.github.sleepypanda.feesh.features.commands.FeeshSettingsCommand
 import com.github.sleepypanda.feesh.features.commands.PlayTestSoundCommand
 import com.github.sleepypanda.feesh.features.commands.SetTrackerDropsCommand
@@ -211,6 +212,7 @@ class FeeshMod : ClientModInitializer {
         GearCraftPricesCommand.init()
         FearMongererShopPricesCommand.init()
         JunkerJoelShopPricesCommand.init()
+        TerryShopPricesCommand.init()
         PlayTestSoundCommand.init()
         SetTrackerDropsCommand.init()
         PauseAllTrackersCommand.init()
