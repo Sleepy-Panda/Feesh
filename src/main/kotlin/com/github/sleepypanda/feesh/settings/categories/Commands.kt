@@ -6,6 +6,7 @@ import com.github.sleepypanda.feesh.features.commands.JunkerJoelShopPricesComman
 import com.github.sleepypanda.feesh.features.commands.PersonalBestCommand
 import com.github.sleepypanda.feesh.features.commands.PetLevelUpPricesCommand
 import com.github.sleepypanda.feesh.features.commands.SpiderDenRainScheduleCommand
+import com.github.sleepypanda.feesh.features.commands.TerryShopPricesCommand
 import com.github.sleepypanda.feesh.utils.ChatUtils
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
@@ -84,6 +85,26 @@ object Commands : CategoryKt("Commands") {
     var junkerJoelShopPricesPriceMode by enum(PricingMode.SELL_OFFER) {
         this.name = Translated("Junker Joel shop prices mode")
         this.description = Translated("Defines how to calculate price for base items and shop items (Bazaar sell offer vs insta-sell).")
+    }
+
+    init {
+        separator {
+            this.title = "${AQUA}${BOLD}Terry shop prices"
+        }
+
+        button {
+            title = "Terry shop prices"
+            description = "Calculates the profits for selling items from Terry shop compared to selling Hunk of Ice / Hunk of Blue Ice, and displays the results in the chat. Executes ${WHITE}/${TerryShopPricesCommand.COMMAND_NAME}"
+            text = "Click to execute"
+            onClick {
+                ChatUtils.command(TerryShopPricesCommand.COMMAND_NAME)
+            }
+        }
+    }
+
+    var terryShopPricesPriceMode by enum(PricingMode.SELL_OFFER) {
+        this.name = Translated("Terry shop prices mode")
+        this.description = Translated("Defines how to calculate price for Hunk of Ice, Hunk of Blue Ice and Terry shop items (Bazaar sell offer vs insta-sell).")
     }
 
     init {

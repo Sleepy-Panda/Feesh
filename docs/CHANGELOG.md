@@ -13,6 +13,7 @@ Released on: ???
 - Show player name who summoned a Reindrake, in the "Alert on ANY Reindrake" functionality.
 - Added setting to limit the amount of lines shown in Sea creatures tracker, to avoid tracker being too long.
 - Added +/-/x buttons when hovering a line in Sea creatures tracker (while in inventory), to add/substract/delete sea creatures from the view.
+- Added /feeshTerryShopPrices command which shows profits for selling Terry shop items compared with selling Hunk of Ice / Hunk of Blue Ice as is.
 
 ## Bugfixes
 

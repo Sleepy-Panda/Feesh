@@ -154,7 +154,7 @@ object FearMongererShopPricesCommand {
             val chatBreak = "${GRAY}${ChatUtils.getChatBreak("-")}"
             ChatUtils.sendLocalChat(chatBreak)
             ChatUtils.sendLocalChat("${GREEN}${BOLD}Fear Mongerer shop prices", true)
-            ChatUtils.sendLocalChat("${DARK_GRAY}Profits for selling shop items compared with selling Green/Purple Candies as is. Hover a line to see the full breakdown. Price mode: ${WHITE}$modeText.")
+            ChatUtils.sendLocalChat("${GRAY}Profits for selling shop items compared with selling Green/Purple Candies as is. Hover a line to see the full breakdown. Price mode: ${WHITE}$modeText.")
 
             SHOP_CATEGORIES.forEach { category ->
                 val baseItemPrice = getPrice(category.baseItemId, priceMode)
