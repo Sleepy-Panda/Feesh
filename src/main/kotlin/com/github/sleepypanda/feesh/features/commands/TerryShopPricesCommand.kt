@@ -70,7 +70,7 @@ object TerryShopPricesCommand {
             val chatBreak = "${GRAY}${ChatUtils.getChatBreak("-")}"
             ChatUtils.sendLocalChat(chatBreak)
             ChatUtils.sendLocalChat("${GREEN}${BOLD}Terry shop prices", true)
-            ChatUtils.sendLocalChat("${DARK_GRAY}Profits for selling shop items compared with selling Hunk of Ice and Hunk of Blue Ice as is. Hover a line to see the full breakdown. Price mode: ${WHITE}$modeText.\n")
+            ChatUtils.sendLocalChat("${GRAY}Profits for selling shop items compared with selling Hunk of Ice and Hunk of Blue Ice as is. Hover a line to see the full breakdown. Price mode: ${WHITE}$modeText.\n")
 
             val shopProfits = SHOP_ITEMS
                 .map { calculateShopItemProfit(it, priceMode) }

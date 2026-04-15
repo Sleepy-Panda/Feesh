@@ -78,7 +78,7 @@ object PetLevelUpPricesCommand {
             val chatBreak = "${GRAY}${ChatUtils.getChatBreak("-")}"
             ChatUtils.sendLocalChat(chatBreak)
             ChatUtils.sendLocalChat("${GREEN}${BOLD}Pets level up prices", true)
-            ChatUtils.sendLocalChat("${DARK_GRAY}Profits for leveling up the fishing pets from level 1 to level 100.")
+            ChatUtils.sendLocalChat("${GRAY}Profits for leveling up the fishing pets from level 1 to level 100.")
 
             for (petInfo in prices) {
                 val diffStr = CommonUtils.toShortNumber(petInfo.diff) ?: "N/A"

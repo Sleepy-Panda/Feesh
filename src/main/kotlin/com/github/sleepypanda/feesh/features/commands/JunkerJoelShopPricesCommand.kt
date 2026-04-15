@@ -93,7 +93,7 @@ object JunkerJoelShopPricesCommand {
             val chatBreak = "${GRAY}${ChatUtils.getChatBreak("-")}"
             ChatUtils.sendLocalChat(chatBreak)
             ChatUtils.sendLocalChat("${GREEN}${BOLD}Junker Joel shop prices", true)
-            ChatUtils.sendLocalChat("${DARK_GRAY}Profits for selling shop items compared with selling Rusty Coins, Busted Belt Buckles, Old Leather Boots as is. Hover a line to see the full breakdown. Price mode: ${WHITE}$modeText.\n")
+            ChatUtils.sendLocalChat("${GRAY}Profits for selling shop items compared with selling Rusty Coins, Busted Belt Buckles, Old Leather Boots as is. Hover a line to see the full breakdown. Price mode: ${WHITE}$modeText.\n")
 
             val shopProfits = SHOP_ITEMS
                 .map { calculateShopItemProfit(it, priceMode) }
