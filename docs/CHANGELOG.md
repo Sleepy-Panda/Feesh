@@ -1,6 +1,18 @@
-# 1.5.0
+# 1.6.0
 
 Released on: ???
+
+## Features
+
+-
+
+## Bugfixes
+
+-
+
+# 1.5.0
+
+Released on: 2026-04-16
 
 ## Features
 

@@ -149,6 +149,7 @@ In case of questions, bug reports, feature requests, bored, feeling alone - plea
 
 - Discord: m00nlight_sky
 - Discussions or Issues in the repository [Feesh](https://github.com/Sleepy-Panda/Feesh/discussions)
+- #feesh-mod / #mod-discussions channels in Casters Discord
 - IGN: MoonTheSadFisher
 
 ## Special thanks
