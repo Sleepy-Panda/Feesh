@@ -10,7 +10,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(SoundEngine.class)
-public class SoundSystemMixin {
+public class SoundEngineMixin {
     @Inject(method = "play(Lnet/minecraft/client/resources/sounds/SoundInstance;)V", at = @At("HEAD"), cancellable = true, require = 0)
     private void feesh$onPlay_1_21_10(SoundInstance sound, CallbackInfo ci) {
         if (shouldCancel(sound)) {

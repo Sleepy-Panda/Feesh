@@ -15,7 +15,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(MultiPlayerGameMode.class)
-public class ClientPlayerInteractionManagerMixin {
+public class MultiPlayerGameModeMixin {
     @Inject(method = "interactItem", at = @At("HEAD"))
     private void feesh$onInteractItem(Player player, InteractionHand hand, CallbackInfoReturnable<InteractionResult> cir) {
         if (hand != InteractionHand.MAIN_HAND) return;

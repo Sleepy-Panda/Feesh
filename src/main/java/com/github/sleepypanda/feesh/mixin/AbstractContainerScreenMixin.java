@@ -12,7 +12,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(AbstractContainerScreen.class)
-public abstract class HandledScreenMixin {
+public abstract class AbstractContainerScreenMixin {
 
     @Inject(method = "renderSlot(Lnet/minecraft/client/gui/GuiGraphics;Lnet/minecraft/world/inventory/Slot;)V", at = @At("HEAD"), require = 0)
     private void feesh$onSlotBeforeItemDrawn(GuiGraphics context, Slot slot, CallbackInfo ci) {
