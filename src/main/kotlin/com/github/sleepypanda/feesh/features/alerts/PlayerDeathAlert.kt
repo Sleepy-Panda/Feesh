@@ -23,7 +23,6 @@ object PlayerDeathAlert {
         EventBus.subscribe(PartyChatEvent::class, ::onPartyChatDeath)
     }
 
-    // TODO Sound is not played on death :c
     private fun onOwnDeath(matchResult: MatchResult) {
         if (!Alerts.alertOnPlayerDeath || !WorldUtils.isInSkyblock()) return
 
