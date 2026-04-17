@@ -8,7 +8,9 @@ object FeeshSettingsCommand {
     fun init() {
         RegisterUtils.command("feesh") {
             val mc = FeeshMod.mc
-            mc.setScreen(ResourcefulConfigScreen.getFactory("feesh").apply(null))
+            mc.execute {
+                mc.setScreen(ResourcefulConfigScreen.getFactory("feesh").apply(null))
+            }
         }
     }
 }
