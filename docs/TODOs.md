@@ -1,6 +1,7 @@
 ## Players feedback
 
 - TODO: Test in 1.21
+- the highlight rare sc does not work ~20% of the time on Tiki
 - "Hotspot is gone" when I leave lobby or game
 - Sometimes current world&zone is detected wrongly
 - Ragnarok immunity timer
@@ -13,6 +14,12 @@
 ## Tech Debt
 
 - 26.1 support -> https://fabricmc.net/2026/03/14/261.html
+  - Modloader 0.19.*
+  - Java version 25
+  - Check resourcepack generation
+  - Check new version announcements
+  - Check all mixins
+  - Update README for dependencies
 - Go through TODOs in the code
 - Rework ticks counters across all overlays
 - Keybinds periodically reset, probably after MC crashes or turning off PC
