@@ -16,7 +16,7 @@ object TabListUtils {
         val playerList = networkHandler.getListedOnlinePlayers()
         
         for (entry in playerList) {
-            val displayName = entry.tabListDisplayName ?: entry.profile?.name?.let { Component.literal(it) } ?: continue
+            val displayName = entry.tabListDisplayName ?: entry.profile.name.let { Component.literal(it) }
             val text = displayName.string
             
             if (text.contains(startsWith)) {

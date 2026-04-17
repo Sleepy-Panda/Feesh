@@ -16,13 +16,13 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(MultiPlayerGameMode.class)
 public class MultiPlayerGameModeMixin {
-    @Inject(method = "interactItem", at = @At("HEAD"))
+    @Inject(method = "useItem", at = @At("HEAD"))
     private void feesh$onInteractItem(Player player, InteractionHand hand, CallbackInfoReturnable<InteractionResult> cir) {
         if (hand != InteractionHand.MAIN_HAND) return;
         EventBus.INSTANCE.publish(new PlayerInteractEvent(InteractActionType.USE_ITEM, true));
     }
 
-    @Inject(method = "interactBlock", at = @At("HEAD"))
+    @Inject(method = "useItemOn", at = @At("HEAD"))
     private void feesh$onInteractBlock(LocalPlayer player, InteractionHand hand, BlockHitResult hitResult, CallbackInfoReturnable<InteractionResult> cir) {
         if (hand != InteractionHand.MAIN_HAND) return;
         EventBus.INSTANCE.publish(new PlayerInteractEvent(InteractActionType.USE_BLOCK, true));

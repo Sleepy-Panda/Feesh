@@ -113,7 +113,7 @@ object FishingBagDisabledAlert {
                 if (!title.contains(FISHING_BAG_TITLE_CONTAINS)) return@timerTask
 
                 val handler = currentScreen.menu
-                val item = handler.getSlot(TOGGLE_SLOT_NUMBER)?.item ?: return@timerTask
+                val item = handler.getSlot(TOGGLE_SLOT_NUMBER).item
                 
                 val itemName = item.hoverName.string.removeFormatting()
                 if (itemName != USE_BAITS_FROM_BAG_ITEM_NAME) return@timerTask

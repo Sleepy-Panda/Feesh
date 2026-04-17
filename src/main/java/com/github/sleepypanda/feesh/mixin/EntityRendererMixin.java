@@ -48,8 +48,8 @@ public abstract class EntityRendererMixin<T extends Entity, S extends EntityRend
         }
     }
 
-    @Inject(method = "updateRenderState", at = @At("TAIL"))
-    private void feesh$onUpdateRenderState(T entity, S state, float tickProgress, CallbackInfo ci) {
+    @Inject(method = "extractRenderState", at = @At("TAIL"))
+    private void feesh$onExtractRenderState(T entity, S state, float tickProgress, CallbackInfo ci) {
         if (!(entity instanceof Mob) && !(entity instanceof Player)) return; // Some rare creatures have player entity type
 
         var id = entity.getId();

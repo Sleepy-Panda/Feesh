@@ -118,7 +118,7 @@ object NearbyEntitiesCounter {
                 val owner = hook.owner
                 if (owner == null) return@filter true
 
-                val ownerName = owner.name?.string ?: return@filter true
+                val ownerName = owner.name.string ?: ""
                 return@filter !ownerName.contains("Phantom Fisher", ignoreCase = true)
             }
 

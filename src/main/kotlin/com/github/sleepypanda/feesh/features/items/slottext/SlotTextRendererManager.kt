@@ -42,10 +42,10 @@ object SlotTextRendererManager {
         val enabledRenderers = renderers.filter { it.isEnabled() }
         if (enabledRenderers.isEmpty()) return
 
-        val textRenderer = FeeshMod.mc.font ?: return
+        val textRenderer = FeeshMod.mc.font
         val screen = event.screen
         val slot = event.slot
-        val stack = slot.item ?: return
+        val stack = slot.item
         if (stack.isEmpty) return
 
         val identifier = getStackIdentifier(stack)

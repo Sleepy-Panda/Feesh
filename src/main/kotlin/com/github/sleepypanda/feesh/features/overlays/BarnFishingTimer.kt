@@ -242,8 +242,7 @@ object BarnFishingTimer {
         
         val armorPieces = listOf(helmet, chestplate, leggings, boots)
         return armorPieces.all { armorPiece ->
-            if (armorPiece == null || armorPiece.isEmpty) return false
-            
+            if (armorPiece.isEmpty) return false
             val itemName = armorPiece.hoverName.string
             return itemName.contains("Hunter", ignoreCase = true)
         }

@@ -20,14 +20,14 @@ public abstract class MinecraftMixin {
     @Shadow
     private ClientLevel level;
 
-    @Inject(method = "hasOutline", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "shouldEntityAppearGlowing", at = @At("HEAD"), cancellable = true)
     private void feesh$forceOutline(Entity entity, CallbackInfoReturnable<Boolean> cir) {
         if (RareMobHighlight.highlightedEntities.containsKey(entity.getId())) {
             cir.setReturnValue(true);
         }
     }
 
-    @Inject(method = "joinWorld", at = @At("HEAD"))
+    @Inject(method = "setLevel", at = @At("HEAD"))
     private void feesh$onWorldUnload(ClientLevel newWorld, CallbackInfo ci) {
         if (this.level != null) {
             EventBus.INSTANCE.publish(new WorldUnloadEvent());

@@ -29,7 +29,7 @@ object KatWrongPetsHighlighter : BaseBackgroundHighlighter() {
     }
 
     override fun getItemStackBackgroundColor(stack: ItemStack, screen: AbstractContainerScreen<*>, slot: Slot): Int? {
-        val title = screen.title?.string?.removeFormatting()?.trim() ?: ""
+        val title = screen.title.string.removeFormatting().trim()
         if (title != KAT_GUI_TITLE) return null
 
         if (slot.index != PET_SLOT_INDEX && slot.index != CONFIRM_SLOT_INDEX) return null

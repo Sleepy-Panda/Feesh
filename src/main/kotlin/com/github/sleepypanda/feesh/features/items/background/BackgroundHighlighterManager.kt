@@ -45,7 +45,7 @@ object BackgroundHighlighterManager {
 
         val screen = event.screen
         val slot = event.slot
-        val stack = slot.item ?: return
+        val stack = slot.item
         if (stack.isEmpty) return
 
         val identifier = getStackIdentifier(stack)

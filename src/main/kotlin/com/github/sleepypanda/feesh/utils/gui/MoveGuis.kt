@@ -66,18 +66,19 @@ class MoveGuisScreen : Screen(Component.literal("Feesh Move Guis")) {
     private val color = Color(255, 255, 255, 255).rgb
     
     override fun render(context: GuiGraphics, mouseX: Int, mouseY: Int, delta: Float) {       
-        val textRenderer = minecraft?.font ?: return
+        val mc = minecraft ?: return
+        val textRenderer = mc.font
         
         val hint1 = Component.literal("${RED}${BOLD}Enable GUIs in settings to see them here!")
-        val x1 = minecraft!!.window.guiScaledWidth / 2 - textRenderer.width(hint1) / 2
+        val x1 = mc.window.guiScaledWidth / 2 - textRenderer.width(hint1) / 2
         context.drawString(textRenderer, hint1, x1, 10, color, true)
         val hint2 = Component.literal("${YELLOW}Move them using your mouse. Press +/- or scroll to scale. Press 0 to change alignment. Press ESC to exit.")
-        val x2 = minecraft!!.window.guiScaledWidth / 2 - textRenderer.width(hint2) / 2
+        val x2 = mc.window.guiScaledWidth / 2 - textRenderer.width(hint2) / 2
         context.drawString(textRenderer, hint2, x2, 20, color, true)
         
         enabledGuis.forEach { mapping ->
             val gui = mapping.gui           
-            gui.drawSample(context, textRenderer, minecraft!!)
+            gui.drawSample(context, textRenderer, mc)
         }
         
         super.render(context, mouseX, mouseY, delta)
@@ -85,14 +86,15 @@ class MoveGuisScreen : Screen(Component.literal("Feesh Move Guis")) {
     
     override fun mouseClicked(mouseButtonEvent: MouseButtonEvent, doubled: Boolean): Boolean {
         if (mouseButtonEvent.button() != 0) return super.mouseClicked(mouseButtonEvent, doubled)
-        val textRenderer = minecraft!!.font
+        val mc = minecraft ?: return super.mouseClicked(mouseButtonEvent, doubled)
+        val textRenderer = mc.font
         val mouseX = mouseButtonEvent.x()
         val mouseY = mouseButtonEvent.y()
         
         enabledGuis.forEach { mapping ->
             val gui = mapping.gui
             
-            val isInSample = gui.isInSample(textRenderer, minecraft!!, mouseX, mouseY)
+            val isInSample = gui.isInSample(textRenderer, mc, mouseX, mouseY)
             if (isInSample) {
                 isDraggingGui = gui
                 lastDraggedGui = gui
@@ -118,7 +120,8 @@ class MoveGuisScreen : Screen(Component.literal("Feesh Move Guis")) {
     override fun mouseDragged(mouseButtonEvent: MouseButtonEvent, deltaX: Double, deltaY: Double): Boolean {
         if (mouseButtonEvent.button() == 0 && isDraggingGui != null) {
             val gui = isDraggingGui!!
-            val textRenderer = minecraft!!.font
+            val mc = minecraft ?: return super.mouseDragged(mouseButtonEvent, deltaX, deltaY)
+            val textRenderer = mc.font
             val mouseX = mouseButtonEvent.x()
             val mouseY = mouseButtonEvent.y()
             
@@ -162,9 +165,10 @@ class MoveGuisScreen : Screen(Component.literal("Feesh Move Guis")) {
     }
     
     override fun keyPressed(keyEvent: KeyEvent): Boolean {
+        val mc = minecraft ?: return super.keyPressed(keyEvent)
         val keyCode = keyEvent.key()
         if (keyCode == 256) { // ESC
-            minecraft!!.setScreen(null)
+            mc.setScreen(null)
             return true
         }
         
@@ -205,7 +209,8 @@ class MoveGuisScreen : Screen(Component.literal("Feesh Move Guis")) {
     }
     
     private fun changeAlignment(gui: FeeshGui) {
-        val textRenderer = minecraft!!.font
+        val mc = minecraft ?: return
+        val textRenderer = mc.font
         val currentAlignment = gui.getAlignment()
         val newAlignment = when (currentAlignment) {
             Alignment.LEFT -> Alignment.CENTER

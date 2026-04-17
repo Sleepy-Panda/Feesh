@@ -103,10 +103,7 @@ object PlayerUtils {
             cachedHasDirtRodInHand = false
             return
         }
-        val heldItem = player.mainHandItem ?: run {
-            cachedHasDirtRodInHand = false
-            return
-        }
+        val heldItem = player.mainHandItem
         cachedHasDirtRodInHand = ItemUtils.isDirtRod(heldItem)
     }
 }

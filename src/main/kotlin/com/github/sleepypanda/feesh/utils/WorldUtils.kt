@@ -155,7 +155,7 @@ object WorldUtils {
 
         val scoreboard = FeeshMod.mc.level?.scoreboard ?: return false
         val objective = scoreboard.getDisplayObjective(DisplaySlot.SIDEBAR) ?: return false
-        val title = objective.displayName?.string ?: return false
+        val title = objective.displayName.string
         return title.contains("skyblock", ignoreCase = true)
     }
 

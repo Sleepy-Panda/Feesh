@@ -207,7 +207,7 @@ object ChatUtils {
         if (character.isNullOrEmpty()) return ""
 
         val mc = FeeshMod.mc
-        val textRenderer = mc.font ?: return ""
+        val textRenderer = mc.font
 
         val chatWidth = ChatComponent.getWidth(mc.options.chatWidth().get())
 

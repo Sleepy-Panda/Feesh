@@ -11,12 +11,10 @@ import com.github.sleepypanda.feesh.utils.WorldUtils
 import com.github.sleepypanda.feesh.utils.EntityUtils
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes
 import kotlin.jvm.JvmField
-import net.minecraft.world.entity.Mob
-import net.minecraft.world.entity.decoration.ArmorStand
+import net.minecraft.world.entity.LivingEntity
 import net.minecraft.world.entity.monster.MagmaCube
 import net.minecraft.world.entity.player.Player
 import net.minecraft.world.entity.monster.Slime
-import java.util.Date
 
 object RareMobHighlight {
     @JvmField
@@ -61,11 +59,11 @@ object RareMobHighlight {
             else -> 1
         }
 
-        val entities: MutableList<Mob> = mutableListOf()
+        val entities: MutableList<LivingEntity> = mutableListOf()
 
-        var mobEntity = entity.level().getEntity(entity.id - mobEntityShift) as? Mob ?: return
+        var mobEntity = entity.level().getEntity(entity.id - mobEntityShift) as? LivingEntity ?: return
         if (cleanName == JAWBUS_FOLLOWER_NAME && mobEntity is Slime && mobEntity !is MagmaCube) { // Fire Eel
-            mobEntity = entity.level().getEntity(entity.id - 11) as? Mob ?: return // -1 is for tail, we want to find Fire Eel's head
+            mobEntity = entity.level().getEntity(entity.id - 11) as? LivingEntity ?: return // -1 is for tail, we want to find Fire Eel's head
         }
 
         if (!mobEntity.isAlive) return
@@ -87,20 +85,20 @@ object RareMobHighlight {
         }
 
         // The Loch Emperor's guardian, etc
-        if (mobEntity.vehicle is Mob) {
-            entities.add(mobEntity.vehicle as Mob)
+        if (mobEntity.vehicle is LivingEntity) {
+            entities.add(mobEntity.vehicle as LivingEntity)
         }
 
         // Ragnarok's rider
-        if (mobEntity.firstPassenger is Mob) {
-            entities.add(mobEntity.firstPassenger as Mob)
+        if (mobEntity.firstPassenger is LivingEntity) {
+            entities.add(mobEntity.firstPassenger as LivingEntity)
         }
 
         // Wiki Tiki is a special case, it consists of 4 entities and I want them all highlighted
         if (cleanName == "Wiki Tiki") {
             val wikiTikiEntitiesShifts = listOf(3, 5, 7)
             wikiTikiEntitiesShifts.forEach { shift ->
-                val prevEntity = entity.level().getEntity(entity.id - shift) as? Mob ?: return@forEach
+                val prevEntity = entity.level().getEntity(entity.id - shift) as? LivingEntity ?: return@forEach
                 entities.add(prevEntity)
             }
         }
@@ -121,7 +119,7 @@ object RareMobHighlight {
         }
     }
 
-    private fun applyGlow(target: Mob, color: Int) {
+    private fun applyGlow(target: LivingEntity, color: Int) {
         highlightedEntities[target.id] = color
     }
 
