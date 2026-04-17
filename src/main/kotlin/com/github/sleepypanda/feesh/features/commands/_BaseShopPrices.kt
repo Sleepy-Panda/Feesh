@@ -5,9 +5,9 @@ import com.github.sleepypanda.feesh.utils.PriceUtils
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
 import com.github.sleepypanda.feesh.utils.enums.PricingMode
-import net.minecraft.text.HoverEvent
-import net.minecraft.text.Style
-import net.minecraft.text.Text
+import net.minecraft.network.chat.HoverEvent
+import net.minecraft.network.chat.Style
+import net.minecraft.network.chat.Component
 
 /**
  * Shared data structures and logic for shop price commands (Fear Mongerer, Junker Joel, etc.).
@@ -118,9 +118,9 @@ object BaseShopPrices {
         shopProfit: ShopItemProfit,
         priceModeStr: String,
         getMaterialDisplayName: (String?) -> String
-    ): Text {
+    ): Component {
         val line = getProfitChatLine(shopProfit)
         val hoverText = getLineHover(shopProfit, priceModeStr, getMaterialDisplayName)
-        return Text.literal(line).setStyle(Style.EMPTY.withHoverEvent(HoverEvent.ShowText(Text.literal(hoverText))))
+        return Component.literal(line).setStyle(Style.EMPTY.withHoverEvent(HoverEvent.ShowText(Component.literal(hoverText))))
     }
 }

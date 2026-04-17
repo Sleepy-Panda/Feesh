@@ -11,7 +11,7 @@ import com.github.sleepypanda.feesh.utils.SoundUtils
 import com.github.sleepypanda.feesh.utils.WorldUtils
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
-import net.minecraft.sound.SoundEvents
+import net.minecraft.sounds.SoundEvents
 import java.util.Timer
 import java.util.TimerTask
 import java.util.concurrent.ConcurrentHashMap
@@ -51,7 +51,7 @@ object WormTheFishCaughtAlert {
 
         val player = FeeshMod.mc.player ?: return
         val itemEntity = event.entity
-        if (!itemEntity.isInRange(player, 10.0)) return
+        if (!itemEntity.closerThan(player, 10.0)) return
 
         val entityId = event.entityId
         if (processedEntityIds.containsKey(entityId)) return
@@ -62,7 +62,7 @@ object WormTheFishCaughtAlert {
         processedEntityIds[entityId] = System.currentTimeMillis()
 
         CommonUtils.showTitle("${WHITE}Pickup ${RED}Worm the Fish")
-        SoundUtils.playSound(SoundEvents.ENTITY_GENERIC_SPLASH)
+        SoundUtils.playSound(SoundEvents.GENERIC_SPLASH)
     }
 
     private fun cleanupOutdatedEntries() {

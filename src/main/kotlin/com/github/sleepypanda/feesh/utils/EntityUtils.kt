@@ -1,12 +1,12 @@
 package com.github.sleepypanda.feesh.utils
 
 import com.github.sleepypanda.feesh.FeeshMod
-import net.minecraft.entity.Entity
-import net.minecraft.entity.decoration.ArmorStandEntity
-import net.minecraft.entity.projectile.FishingBobberEntity
+import net.minecraft.world.entity.Entity
+import net.minecraft.world.entity.decoration.ArmorStand
+import net.minecraft.world.entity.projectile.FishingHook
 import com.github.sleepypanda.feesh.utils.ChatUtils.getFormattedString
 import com.github.sleepypanda.feesh.utils.ChatUtils.removeFormatting
-import net.minecraft.util.math.Vec3d
+import net.minecraft.world.phys.Vec3
 import kotlin.math.sqrt
 
 object EntityUtils {
@@ -53,22 +53,22 @@ object EntityUtils {
      * Get the player's fishing hook if it is active.
      * @returns The player's fishing hook.
      */
-    fun getPlayersFishingHookEntity(): FishingBobberEntity? {
+    fun getPlayersFishingHookEntity(): FishingHook? {
         val player = FeeshMod.mc.player ?: return null
-        val world = FeeshMod.mc.world ?: return null
-        return world.entities.filterIsInstance<FishingBobberEntity>().firstOrNull { it.owner == player }
+        val world = FeeshMod.mc.level ?: return null
+        return world.entitiesForRendering().filterIsInstance<FishingHook>().firstOrNull { it.owner == player }
     }
 
     /**
      * Get all ArmorStandEntities within the specified range from the specified entity position.
      * @param entityPosition The position to search from.
      * @param distance The maximum distance to search.
-     * @returns List of ArmorStandEntity
+     * @returns List of ArmorStand
      */
-    fun getArmorStandsInRange(entityPosition: Vec3d, distance: Double): List<ArmorStandEntity> {
-        val world = FeeshMod.mc.world ?: return emptyList()
-        val armorStands = world.entities
-            .filterIsInstance<ArmorStandEntity>()
+    fun getArmorStandsInRange(entityPosition: Vec3, distance: Double): List<ArmorStand> {
+        val world = FeeshMod.mc.level ?: return emptyList()
+        val armorStands = world.entitiesForRendering()
+            .filterIsInstance<ArmorStand>()
             .filter { asEntity ->
                 EntityUtils.getDistance(asEntity, entityPosition.x, entityPosition.y, entityPosition.z) <= distance
             }
@@ -80,11 +80,11 @@ object EntityUtils {
      * Get all ArmorStandEntities with the specified unformattedname within the specified range from the specified position.
      * @param entityPosition The position to search from.
      * @param distance The maximum distance to search.
-     * @param name The unformatted name of the ArmorStandEntity.
+     * @param name The unformatted name of the ArmorStand.
      * @param allowContains If true, the entity's custom name can contain the specified name. If false, the entity's custom name must be exactly the specified name.
-     * @returns List of ArmorStandEntity
+     * @returns List of ArmorStand
      */
-    fun getArmorStandsInRange(entityPosition: Vec3d, distance: Double, name: String, allowContains: Boolean = false): List<ArmorStandEntity> {
+    fun getArmorStandsInRange(entityPosition: Vec3, distance: Double, name: String, allowContains: Boolean = false): List<ArmorStand> {
         val armorStands = getArmorStandsInRange(entityPosition, distance)
             .filter { asEntity ->
                 if (allowContains) {
@@ -103,8 +103,8 @@ object EntityUtils {
      * @return The entity if found, null otherwise.
      */
     fun getMcEntityById(entityId: Int): Entity? {
-        val world = FeeshMod.mc.world ?: return null
-        return world.getEntityById(entityId)
+        val world = FeeshMod.mc.level ?: return null
+        return world.getEntity(entityId)
     }
 
     data class SeaCreatureParsedNametagInfo(
@@ -125,12 +125,12 @@ object EntityUtils {
 	// MC 1.21.5: §r§8[§r§7Lv150§r§8] §r§9⚓§r§f🦴§r§5♃ §r§5§ka§r§5Corrupted The Loch Emperor§r§5§ka§r §r§e521.8k§r§f/§r§a2.4M§r§c❤ §r§b✯
 	// MC 1.21.5: §r§8[§r§7Lv14§r§8] §r§2⸙§r§9⚓ §r§5§ka§r§5Corrupted Ent§r§5§ka§r §r§e1§r§f/§r§a75,000§r§c❤
     /**
-     * Parses an ArmorStandEntity nametag and returns a SeaCreatureParsedNametagInfo object.
-     * @param entity The ArmorStandEntity to parse.
+     * Parses an ArmorStand nametag and returns a SeaCreatureParsedNametagInfo object.
+     * @param entity The ArmorStand to parse.
      * @param includedSeaCreatureNames The list of sea creatures names to include into result. If null, no filtering is done and all nametags returned.
      * @returns The SeaCreatureParsedNametagInfo object if the nametag is a valid sea creature nametag, null otherwise.
      */
-    fun parseSeaCreatureNametag(entity: ArmorStandEntity, includedSeaCreatureNames: List<String>? = null): SeaCreatureParsedNametagInfo? {
+    fun parseSeaCreatureNametag(entity: ArmorStand, includedSeaCreatureNames: List<String>? = null): SeaCreatureParsedNametagInfo? {
         val customName = entity.customName ?: return null
         val plainName = customName.string.removeFormatting()
 

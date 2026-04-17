@@ -6,14 +6,14 @@ import com.github.sleepypanda.feesh.features.chat.HotspotFoundMessage
 import com.github.sleepypanda.feesh.features.chat.LootshareMessage
 import com.github.sleepypanda.feesh.features.commands.PauseAllTrackersCommand
 import com.github.sleepypanda.feesh.features.overlays.BarnFishingTimer
-import net.minecraft.client.option.KeyBinding
-import net.minecraft.client.util.InputUtil
-import net.minecraft.util.Identifier
+import net.minecraft.client.KeyMapping as KeyBinding
+import com.mojang.blaze3d.platform.InputConstants as InputUtil
+import net.minecraft.resources.ResourceLocation as Identifier
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper
 import org.lwjgl.glfw.GLFW
 
 object KeybindUtils {
-    val FEESH_CATEGORY = KeyBinding.Category(Identifier.of("feesh", "keybinds")) // Keys are localized in resources/assets/feesh/lang/en_us.json
+    val FEESH_CATEGORY = KeyBinding.Category.register(Identifier.fromNamespaceAndPath("feesh", "keybinds")) // Keys are localized in resources/assets/feesh/lang/en_us.json
     private val keybindCallbacks = mutableListOf<Pair<KeyBinding, () -> Unit>>()
     private var keybindsRegistered = false
 
@@ -58,7 +58,7 @@ object KeybindUtils {
 
     private fun onClientTick(@Suppress("UNUSED_PARAMETER") event: ClientTickEvent) {
         keybindCallbacks.forEach { (keyBinding, callback) ->
-            if (keyBinding.wasPressed()) {
+            if (keyBinding.consumeClick()) {
                 callback()
             }
         }

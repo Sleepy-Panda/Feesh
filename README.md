@@ -163,7 +163,7 @@ Shoutout to the wonderful people who helped this mod to grow!
 
 ### Build
 
-Requires JDK 21.
+Requires JDK 25.
 
 For manual building the project in IDE:
 
@@ -172,3 +172,8 @@ For manual building the project in IDE:
 ```
 
 As a result, `Feesh-<version>-fabric.jar` file appears in `/build/versions` folder. It contains both 1.21.10 and 1.21.11 mod versions.
+
+### Mappings
+
+- https://mappings.dev/1.21.10/
+- https://mappings.dev/1.21.11/

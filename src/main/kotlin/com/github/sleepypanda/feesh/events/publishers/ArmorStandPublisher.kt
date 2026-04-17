@@ -9,11 +9,11 @@ import com.github.sleepypanda.feesh.events.models.WorldChangedEvent
 import com.github.sleepypanda.feesh.utils.ChatUtils.getFormattedString
 import com.github.sleepypanda.feesh.utils.ChatUtils.removeFormatting
 import com.github.sleepypanda.feesh.utils.CommonUtils
-import net.minecraft.entity.decoration.ArmorStandEntity
+import net.minecraft.world.entity.decoration.ArmorStand
 
 object ArmorStandPublisher {
-    private val loadedThisTick = mutableListOf<ArmorStandEntity>()
-    private var checkOnNextClientTick = listOf<ArmorStandEntity>()
+    private val loadedThisTick = mutableListOf<ArmorStand>()
+    private var checkOnNextClientTick = listOf<ArmorStand>()
 
     fun init() {
         EventBus.subscribe(ArmorStandLoadedEvent::class, ::onArmorStandLoaded)

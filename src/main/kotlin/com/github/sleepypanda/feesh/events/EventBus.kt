@@ -13,22 +13,22 @@ import com.github.sleepypanda.feesh.events.models.ArmorStandLoadedEvent
 import com.github.sleepypanda.feesh.events.models.WorldChangedEvent
 import com.github.sleepypanda.feesh.events.models.ScreenBeforeInitEvent
 import kotlin.reflect.KClass
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientWorldEvents
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents
-import net.minecraft.client.gui.screen.ingame.HandledScreen
-import net.minecraft.client.gui.screen.ChatScreen
-import net.minecraft.client.gui.screen.ingame.InventoryScreen
+import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen
+import net.minecraft.client.gui.screens.ChatScreen
+import net.minecraft.client.gui.screens.inventory.InventoryScreen
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientEntityEvents
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientWorldEvents
 import net.fabricmc.fabric.api.client.screen.v1.ScreenMouseEvents
-import net.minecraft.text.Text
-import net.minecraft.client.MinecraftClient
-import net.minecraft.world.World
-import net.minecraft.entity.ItemEntity
-import net.minecraft.entity.LivingEntity
-import net.minecraft.entity.decoration.ArmorStandEntity
+import net.minecraft.network.chat.Component
+import net.minecraft.client.Minecraft
+import net.minecraft.world.level.Level
+import net.minecraft.world.entity.item.ItemEntity
+import net.minecraft.world.entity.LivingEntity
+import net.minecraft.world.entity.decoration.ArmorStand
 
 object EventBus {
     private val subscribers = mutableMapOf<KClass<*>, MutableList<(Any) -> Unit>>()
@@ -43,10 +43,6 @@ object EventBus {
     }
 
     fun init() {
-        ClientWorldEvents.AFTER_CLIENT_WORLD_CHANGE.register { mc, world ->
-            publish(WorldChangedEvent(mc, world))
-        }
-
         ClientReceiveMessageEvents.GAME.register { message, _ ->
             publish(ChatEvent(message))
         }
@@ -66,7 +62,7 @@ object EventBus {
                 val guiName = when (screen) {
                     is ChatScreen -> "Chat"
                     is InventoryScreen -> "Inventory"
-                    is HandledScreen<*> -> screen.getTitle().getString()
+                    is AbstractContainerScreen<*> -> screen.title.string
                     else -> screen.javaClass.getSimpleName()
                 }
                 publish(GuiClosedEvent(guiName))
@@ -90,16 +86,20 @@ object EventBus {
             publish(GameStartedEvent())
         }
 
+        ClientWorldEvents.AFTER_CLIENT_WORLD_CHANGE.register { mc, world ->
+            publish(WorldChangedEvent(mc, world))
+        }
+
         ClientEntityEvents.ENTITY_LOAD.register { entity, _ ->
             when (entity) {
                 is ItemEntity -> publish(ItemEntityLoadedEvent(entity))
-                is ArmorStandEntity -> if (entity.isAlive) publish(ArmorStandLoadedEvent(entity))
+                is ArmorStand -> if (entity.isAlive) publish(ArmorStandLoadedEvent(entity))
                 else -> { }
             }
         }
 
         ClientEntityEvents.ENTITY_UNLOAD.register { entity, _ ->
-            if (entity is ArmorStandEntity) {
+            if (entity is ArmorStand) {
                 publish(ArmorStandDespawnedEvent(entity))
             }
         }

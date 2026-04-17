@@ -13,9 +13,8 @@ import com.github.sleepypanda.feesh.utils.gui.FeeshGui
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
 import com.github.sleepypanda.feesh.utils.EntityUtils.SeaCreatureParsedNametagInfo
-import net.minecraft.entity.decoration.ArmorStandEntity
-import net.minecraft.sound.SoundEvents
-import net.minecraft.entity.passive.SnifferEntity
+import net.minecraft.world.entity.decoration.ArmorStand
+import net.minecraft.world.entity.animal.sniffer.Sniffer
 import java.util.Date
 import kotlin.math.ceil
 
@@ -172,7 +171,7 @@ object SeaCreatureHpTracker {
 
                     if (hasImmunity) {
                         val mobEntity = EntityUtils.getMcEntityById(sc.mcEntityId - 1)
-                        val ticksExisted = mobEntity?.age ?: 0
+                        val ticksExisted = mobEntity?.tickCount ?: 0
                         val seenTimestamp = seenMobEntityIds[sc.mcEntityId - 1] ?: 0L
                         val now = Date().time
                         isImmune = ticksExisted <= IMMUNITY_TICKS && (now - seenTimestamp) <= IMMUNITY_MS
@@ -203,7 +202,7 @@ object SeaCreatureHpTracker {
 
             if (currentMobs.size > mobs.size && !addedMobNames.all { it.baseMobName == "Reindrake" }) {
                 // Reindrake flies around and goes out of nametags render distance periodically
-                SoundUtils.playSound(SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP)
+                SoundUtils.playSound()
             }
 
             mobs = currentMobs.toMutableList()
@@ -249,9 +248,9 @@ object SeaCreatureHpTracker {
 
     private fun getSeaCreaturesInRange(includedSeaCreatureNames: List<String>, distance: Double): List<SeaCreatureParsedNametagInfo> {
         val player = FeeshMod.mc.player ?: return emptyList()
-        val world = FeeshMod.mc.world ?: return emptyList()
+        val world = FeeshMod.mc.level ?: return emptyList()
 
-        val entities = world.entities.filterIsInstance<ArmorStandEntity>()
+        val entities = world.entitiesForRendering().filterIsInstance<ArmorStand>()
 
         return entities
             .filter { entity ->
@@ -269,12 +268,8 @@ object SeaCreatureHpTracker {
         val nessieEntityId = sc.mcEntityId - 1
         val mobEntity = EntityUtils.getMcEntityById(nessieEntityId) ?: return false
 
-        val scale = (mobEntity as SnifferEntity).scale
+        val scale = (mobEntity as Sniffer).scale
 
-        if (scale != 2.0f && sc.currentHpNumber == sc.maxHpNumber * 0.5) {
-            return true
-        }
-
-        return false
+        return scale != 2.0f && sc.currentHpNumber == sc.maxHpNumber * 0.5
     }
 }

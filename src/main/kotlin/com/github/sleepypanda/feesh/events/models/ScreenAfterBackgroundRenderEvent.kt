@@ -1,18 +1,18 @@
 package com.github.sleepypanda.feesh.events.models
 
-import net.minecraft.client.gui.screen.Screen
-import net.minecraft.client.gui.DrawContext
-import net.minecraft.client.MinecraftClient
-import net.minecraft.client.font.TextRenderer
+import net.minecraft.client.gui.screens.Screen
+import net.minecraft.client.gui.GuiGraphics
+import net.minecraft.client.Minecraft
+import net.minecraft.client.gui.Font
 
 /*
  * This event is triggered after the background is rendered but before GUI elements.
  * It is used to render custom text in front of background but under Inventory GUI.
  */
 data class ScreenAfterBackgroundRenderEvent(
-    val drawContext: DrawContext,
-    val textRenderer: TextRenderer,
-    val mcClient: MinecraftClient,
+    val drawContext: GuiGraphics,
+    val textRenderer: Font,
+    val mcClient: Minecraft,
     val screen: Screen,
     val mouseX: Int,
     val mouseY: Int,

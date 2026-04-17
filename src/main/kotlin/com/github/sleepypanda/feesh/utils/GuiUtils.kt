@@ -5,9 +5,9 @@ import com.github.sleepypanda.feesh.FeeshMod
 import com.github.sleepypanda.feesh.events.EventBus
 import com.github.sleepypanda.feesh.events.models.GuiClosedEvent
 import com.github.sleepypanda.feesh.utils.CommonUtils
-import net.minecraft.client.gui.screen.ChatScreen
-import net.minecraft.client.gui.screen.ingame.InventoryScreen
-import net.minecraft.client.gui.screen.ingame.HandledScreen
+import net.minecraft.client.gui.screens.ChatScreen
+import net.minecraft.client.gui.screens.inventory.InventoryScreen
+import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen
 import java.util.Date
 import java.util.Timer
 import kotlin.concurrent.timerTask
@@ -110,7 +110,7 @@ object GuiUtils {
     private fun readIsInInventoryOrChat(): Boolean {
         if (!WorldUtils.isInSkyblock()) return false
 
-        val screen = FeeshMod.mc.currentScreen ?: return false
+        val screen = FeeshMod.mc.screen ?: return false
         return screen is InventoryScreen || screen is ChatScreen
     }
 
@@ -124,14 +124,14 @@ object GuiUtils {
     }
 
     fun isInChest(): Boolean {
-        val screen = FeeshMod.mc.currentScreen ?: return false
-        return (screen is HandledScreen<*> && screen !is InventoryScreen)
+        val screen = FeeshMod.mc.screen ?: return false
+        return (screen is AbstractContainerScreen<*> && screen !is InventoryScreen)
     }
 
     fun getCurrentChestName(): String? {
-        val screen = FeeshMod.mc.currentScreen ?: return null
-        if (screen !is HandledScreen<*>) return null
-        return screen.getTitle().getString().removeFormatting()
+        val screen = FeeshMod.mc.screen ?: return null
+        if (screen !is AbstractContainerScreen<*>) return null
+        return screen.title.string.removeFormatting()
     }
 
     /*

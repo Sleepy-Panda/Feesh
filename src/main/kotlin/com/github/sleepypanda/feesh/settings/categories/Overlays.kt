@@ -24,8 +24,8 @@ import com.github.sleepypanda.feesh.features.overlays.BayouTracker
 import com.github.sleepypanda.feesh.features.overlays.WaterHotspotsTracker
 import com.github.sleepypanda.feesh.features.overlays.GalateaWaterTracker
 import com.github.sleepypanda.feesh.utils.gui.MoveGuis
-import net.minecraft.util.Util
-import net.minecraft.client.gui.screen.option.KeybindsScreen
+import net.minecraft.client.gui.screens.options.controls.KeyBindsScreen
+import net.minecraft.Util
 import java.awt.Color
 
 enum class SeaCreaturesTrackerDisplayMode(val displayName: String) {
@@ -84,9 +84,8 @@ object Overlays : CategoryKt("Overlays") {
             text = "Click to open"
             onClick {
                 val mc = FeeshMod.mc
-                mc.send {
-                    mc.setScreen(KeybindsScreen(mc.currentScreen, mc.options))
-                }
+                val currentScreen = mc.screen ?: return@onClick
+                mc.setScreen(KeyBindsScreen(currentScreen, mc.options))
             }
         }
     }
@@ -178,9 +177,8 @@ Hidden if you have no fishing rod in your hotbar!""".trimIndent())
             text = "Click to open"
             onClick {
                 val mc = FeeshMod.mc
-                mc.send {
-                    mc.setScreen(KeybindsScreen(mc.currentScreen, mc.options))
-                }
+                val currentScreen = mc.screen ?: return@onClick
+                mc.setScreen(KeyBindsScreen(currentScreen, mc.options))
             }
         }
     }
@@ -341,7 +339,7 @@ ${GRAY}To reset [Total]: ${WHITE}/${SeaCreaturesTracker.RESET_TOTAL}
             description = "For settings above with custom text templates, please explore color codes and formatting codes."
             text = "Click to open"
             onClick {
-                Util.getOperatingSystem().open("https://github.com/Sleepy-Panda/Feesh/blob/develop/docs/Colors%20and%20formatting%20guide.md")
+                Util.getPlatform().openUri("https://github.com/Sleepy-Panda/Feesh/blob/develop/docs/Colors%20and%20formatting%20guide.md")
             }
         }
     }

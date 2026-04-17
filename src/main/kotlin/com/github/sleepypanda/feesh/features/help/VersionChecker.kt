@@ -44,7 +44,7 @@ object VersionChecker {
     }
 
     private fun onWorldChanged(@Suppress("UNUSED_PARAMETER") event: WorldChangedEvent) {
-        if (FeeshMod.mc.player == null || FeeshMod.mc.inGameHud == null) return
+        if (FeeshMod.mc.player == null || FeeshMod.mc.gui == null) return
         if (hasChecked) return
 
         hasChecked = true

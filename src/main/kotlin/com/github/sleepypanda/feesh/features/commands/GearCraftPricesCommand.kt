@@ -10,10 +10,10 @@ import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
 import com.github.sleepypanda.feesh.utils.ChatUtils
 import com.github.sleepypanda.feesh.settings.categories.Commands
 import com.github.sleepypanda.feesh.utils.enums.PricingMode
-import net.minecraft.text.Text
-import net.minecraft.text.Style
-import net.minecraft.text.ClickEvent.RunCommand
-import net.minecraft.text.HoverEvent.ShowText
+import net.minecraft.network.chat.Component
+import net.minecraft.network.chat.Style
+import net.minecraft.network.chat.ClickEvent.RunCommand
+import net.minecraft.network.chat.HoverEvent.ShowText
 
 object GearCraftPricesCommand {
     const val COMMAND_NAME = "feeshGearCraftPrices"
@@ -120,11 +120,11 @@ object GearCraftPricesCommand {
                     val profitPerBaseItemStr = CommonUtils.toShortNumber(craftProfit.profitPerBaseItem) ?: "N/A"
                     val itemNameWithoutFormatting = craftProfit.itemName.removeFormatting()
                     
-                    val clickableText = Text.literal(" - ${craftProfit.itemName}${RESET}: ${GOLD}$itemPriceStr${RESET} (${GOLD}$profitPerBaseItemStr${RESET} per item)")
+                    val clickableText = Component.literal(" - ${craftProfit.itemName}${RESET}: ${GOLD}$itemPriceStr${RESET} (${GOLD}$profitPerBaseItemStr${RESET} per item)")
                         .setStyle(
                             Style.EMPTY
                                 .withClickEvent(RunCommand("/recipe $itemNameWithoutFormatting"))
-                                .withHoverEvent(ShowText(Text.literal("Click to Supercraft $itemNameWithoutFormatting")))
+                                .withHoverEvent(ShowText(Component.literal("Click to Supercraft $itemNameWithoutFormatting")))
                         )
                     ChatUtils.sendLocalChat(clickableText)
                 }

@@ -4,16 +4,15 @@ import com.github.sleepypanda.feesh.features.overlays.FishingHookTimer;
 import com.github.sleepypanda.feesh.features.rendering.HideOtherPlayersHooks;
 import com.github.sleepypanda.feesh.features.rendering.RareMobHighlight;
 import com.github.sleepypanda.feesh.features.rendering.HidePlayersNearBobber;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.render.Frustum;
-import net.minecraft.client.render.entity.EntityRenderer;
-import net.minecraft.client.render.entity.state.EntityRenderState;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.decoration.ArmorStandEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.projectile.FishingBobberEntity;
-import net.minecraft.entity.mob.MobEntity;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.culling.Frustum;
+import net.minecraft.client.renderer.entity.EntityRenderer;
+import net.minecraft.client.renderer.entity.state.EntityRenderState;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.decoration.ArmorStand;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.projectile.FishingHook;
+import net.minecraft.world.entity.Mob;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -26,20 +25,20 @@ public abstract class EntityRendererMixin<T extends Entity, S extends EntityRend
     @Inject(method = "shouldRender", at = @At("HEAD"), cancellable = true)
     private void feesh$onShouldRender(T entity, Frustum frustum, double camX, double camY, double camZ, CallbackInfoReturnable<Boolean> cir) {
         switch (entity) {
-            case ArmorStandEntity armorStand -> {
-                if (FishingHookTimer.shouldCancelArmorStandRendering(armorStand.getUuid())) {
+            case ArmorStand armorStand -> {
+                if (FishingHookTimer.shouldCancelArmorStandRendering(armorStand.getId())) {
                     cir.setReturnValue(false);
                 }
             }
-            case FishingBobberEntity fishingBobber -> {
+            case FishingHook fishingBobber -> {
                 if (HideOtherPlayersHooks.shouldHideOtherPlayersHooks()) {
-                    var player = MinecraftClient.getInstance().player;
-                    if (player != null && fishingBobber.getOwner() != player) {
+                    var player = Minecraft.getInstance().player;
+                    if (player != null && fishingBobber.getPlayerOwner() != player) {
                         cir.setReturnValue(false);
                     }
                 }
             }
-            case PlayerEntity playerEntity -> {
+            case Player playerEntity -> {
                 if (HidePlayersNearBobber.shouldHidePlayer(playerEntity)) {
                     cir.setReturnValue(false);
                 }
@@ -51,13 +50,13 @@ public abstract class EntityRendererMixin<T extends Entity, S extends EntityRend
 
     @Inject(method = "updateRenderState", at = @At("TAIL"))
     private void feesh$onUpdateRenderState(T entity, S state, float tickProgress, CallbackInfo ci) {
-        if (!(entity instanceof MobEntity) && !(entity instanceof PlayerEntity)) return; // Some rare creatures have player entity type
+        if (!(entity instanceof Mob) && !(entity instanceof Player)) return; // Some rare creatures have player entity type
 
         var id = entity.getId();
         if (!RareMobHighlight.highlightedEntities.containsKey(id)) return;
 
-        var player = MinecraftClient.getInstance().player;
-        if (player != null && player.canSee(entity)) {
+        var player = Minecraft.getInstance().player;
+        if (player != null && player.hasLineOfSight(entity)) {
             state.outlineColor = RareMobHighlight.highlightedEntities.get(id);
         } else {
             state.outlineColor = 0; // Cleanup outline when entity became not visible

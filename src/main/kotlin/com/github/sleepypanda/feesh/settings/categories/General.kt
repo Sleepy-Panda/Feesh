@@ -8,7 +8,7 @@ import com.teamresourceful.resourcefulconfig.api.annotations.Comment
 import com.teamresourceful.resourcefulconfig.api.annotations.ConfigEntry
 import com.teamresourceful.resourcefulconfig.api.types.options.EntryType
 import com.teamresourceful.resourcefulconfigkt.api.CategoryKt
-import net.minecraft.util.Util
+import net.minecraft.Util
 
 enum class SoundMode(val displayName: String) {
     MEME("Meme"),
@@ -36,7 +36,7 @@ object General : CategoryKt("General") {
             description = "Opens the guide for setting up custom sounds for Meme sound mode."
             text = "Open"
             onClick {
-                Util.getOperatingSystem().open("https://github.com/Sleepy-Panda/Feesh/blob/develop/docs/Custom%20sounds%20guide.md")
+                Util.getPlatform().openUri("https://github.com/Sleepy-Panda/Feesh/blob/develop/docs/Custom%20sounds%20guide.md")
             }
         }
     }
@@ -53,7 +53,7 @@ object General : CategoryKt("General") {
             onClick {
                 val dir = PersistentDataManager.backupDir
                 if (!dir.exists()) dir.mkdirs()
-                Util.getOperatingSystem().open(dir.toURI().toString())
+                Util.getPlatform().openUri(dir.toURI().toString())
             }
         }
     }

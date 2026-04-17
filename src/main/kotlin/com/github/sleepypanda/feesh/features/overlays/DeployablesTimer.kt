@@ -24,8 +24,8 @@ import com.github.sleepypanda.feesh.constants.Sounds
 import com.github.sleepypanda.feesh.settings.categories.General
 import com.github.sleepypanda.feesh.settings.categories.SoundMode
 import com.github.sleepypanda.feesh.events.models.InteractActionType
-import net.minecraft.entity.decoration.ArmorStandEntity
-import net.minecraft.entity.projectile.FireworkRocketEntity
+import net.minecraft.world.entity.decoration.ArmorStand
+import net.minecraft.world.entity.projectile.FireworkRocketEntity
 import java.util.*
 import java.util.Timer
 import java.util.TimerTask
@@ -44,7 +44,7 @@ object DeployablesTimer {
     private class BlackHoleData : BaseDeployableData()
 
     private class UmberellaData : BaseDeployableData() {
-        var id: UUID? = null
+        var id: Int? = null
     }
 
     private class FlareData : BaseDeployableData() {
@@ -54,7 +54,7 @@ object DeployablesTimer {
     }
 
     private class DwarvenLanternData : BaseDeployableData() {
-        var id: UUID? = null
+        var id: Int? = null
         var itemDisplayName: String? = null
     }
 
@@ -128,11 +128,11 @@ object DeployablesTimer {
             if (!WorldUtils.isInSkyblock()) return
             if (!event.isMainHand || (event.actionType != InteractActionType.USE_ITEM && event.actionType != InteractActionType.USE_BLOCK)) return
 
-            val heldItem = FeeshMod.mc.player?.mainHandStack
+            val heldItem = FeeshMod.mc.player?.mainHandItem
             if (heldItem == null || heldItem.isEmpty) return
 
-            val heldItemName = heldItem.name.string
-            val heldItemDisplayName = heldItem.name.getFormattedString()
+            val heldItemName = heldItem.hoverName.string
+            val heldItemDisplayName = heldItem.hoverName.getFormattedString()
             
             if (isUmberellaTrackingEnabled() && heldItemName == "Umberella") {
                 lastUmberellaInteractTimeMs = System.currentTimeMillis()
@@ -175,14 +175,14 @@ object DeployablesTimer {
                 (name.endsWith("300s") || name.endsWith("600s")) &&
                 nowMs - lastDwarvenLanternInteractTimeMs <= 1000L
             ) {
-                dwarvenLanternData.id = armorStand.uuid
+                dwarvenLanternData.id = armorStand.id
                 val formattedName = event.customNameFormatted
                 dwarvenLanternData.itemDisplayName = formattedName.replace(Regex(" §.+\\d+s"), "").replace(BOLD.code, "").trim().ifBlank { "Dwarven Lantern" }
             } else if (isUmberellaTrackingEnabled() &&
                 (name == "Umberella 300s" || name == "Umberella 600s") &&
                 nowMs - lastUmberellaInteractTimeMs <= 1000L
             ) {
-                umberellaData.id = armorStand.uuid
+                umberellaData.id = armorStand.id
             }
         }
     }
@@ -190,9 +190,9 @@ object DeployablesTimer {
     private fun trackFlareRocketNearby(heldItemName: String) {
         CommonUtils.runWithCatching("Failed to track Flare rocket nearby") {
             val player = FeeshMod.mc.player ?: return
-            val world = FeeshMod.mc.world ?: return
+            val world = FeeshMod.mc.level ?: return
 
-            val flareRockets = world.entities
+            val flareRockets = world.entitiesForRendering()
                 .filterIsInstance<FireworkRocketEntity>()
                 .filter { rocket ->
                     val distance = EntityUtils.getDistance(player, rocket)
@@ -281,8 +281,8 @@ object DeployablesTimer {
     private fun trackDeployablesStatus() {
         if (!WorldUtils.isInSkyblock()) return
 
-        val world = FeeshMod.mc.world ?: return
-        val entities = world.entities.filterIsInstance<ArmorStandEntity>()
+        val world = FeeshMod.mc.level ?: return
+        val entities = world.entitiesForRendering().filterIsInstance<ArmorStand>()
 
         if (isTotemTrackingEnabled()) {
             trackTotemStatus(entities)
@@ -301,7 +301,7 @@ object DeployablesTimer {
         }
     }
 
-    private fun trackTotemStatus(entities: List<ArmorStandEntity>) {
+    private fun trackTotemStatus(entities: List<ArmorStand>) {
         CommonUtils.runWithCatching("Failed to track Totem status") {
             if (!WorldUtils.isInSkyblock() || entities.isEmpty()) {
                 resetTotem()
@@ -352,7 +352,7 @@ object DeployablesTimer {
         }
     }
 
-    private fun trackBlackHoleStatus(entities: List<ArmorStandEntity>) {
+    private fun trackBlackHoleStatus(entities: List<ArmorStand>) {
         CommonUtils.runWithCatching("Failed to track Black Hole status") {
             if (!WorldUtils.isInSkyblock() || entities.isEmpty()) {
                 resetBlackHole()
@@ -399,7 +399,7 @@ object DeployablesTimer {
         }
     }
 
-    private fun trackUmberellaStatus(entities: List<ArmorStandEntity>) {
+    private fun trackUmberellaStatus(entities: List<ArmorStand>) {
         CommonUtils.runWithCatching("Failed to track Umberella status") {
             if (!WorldUtils.isInSkyblock() || entities.isEmpty() || !isUmberellaTrackingEnabled()) {
                 resetUmberella()
@@ -408,7 +408,7 @@ object DeployablesTimer {
 
             val umberellaArmorStand = entities.find { entity ->
                 entity.customName?.string?.startsWith("Umberella ") == true &&
-                entity.uuid == umberellaData.id
+                entity.id == umberellaData.id
             }
 
             if (umberellaArmorStand == null) {
@@ -433,7 +433,7 @@ object DeployablesTimer {
     private fun isDwarvenLanternArmorStandName(name: String): Boolean =
         DWARVEN_LANTERN_NAME_PREFIXES.any { name.startsWith(it) }
 
-    private fun trackDwarvenLanternStatus(entities: List<ArmorStandEntity>) {
+    private fun trackDwarvenLanternStatus(entities: List<ArmorStand>) {
         CommonUtils.runWithCatching("Failed to track Dwarven Lantern status") {
             if (!WorldUtils.isInSkyblock() || entities.isEmpty() || !isDwarvenLanternTrackingEnabled()) {
                 resetDwarvenLantern()
@@ -442,7 +442,7 @@ object DeployablesTimer {
 
             val lanternArmorStand = entities.find { entity ->
                 entity.customName?.string?.let { isDwarvenLanternArmorStandName(it) } == true &&
-                entity.uuid == dwarvenLanternData.id
+                entity.id == dwarvenLanternData.id
             }
 
             if (lanternArmorStand == null) {

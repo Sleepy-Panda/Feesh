@@ -19,7 +19,7 @@ import com.github.sleepypanda.feesh.events.models.WorldUnloadEvent
 import java.util.Timer
 import java.util.UUID
 import kotlin.concurrent.timerTask
-import net.minecraft.util.math.Vec3d
+import net.minecraft.world.phys.Vec3
 
 object HotspotGoneAlert {
     private var lastClosestHotspot: HotspotUtils.HotspotData? = null
@@ -79,7 +79,7 @@ object HotspotGoneAlert {
             if (!isHookActive) return
 
             val playerHook = FishingHookUtils.getActiveFishingHook() ?: return
-            val closestHotspot = HotspotUtils.findClosestHotspotInRange(Vec3d(playerHook.x, playerHook.y, playerHook.z), NEAREST_HOTSPOT_RANGE_FROM_HOOK) ?: return
+            val closestHotspot = HotspotUtils.findClosestHotspotInRange(Vec3(playerHook.x, playerHook.y, playerHook.z), NEAREST_HOTSPOT_RANGE_FROM_HOOK) ?: return
 
             lastClosestHotspot = closestHotspot
         }

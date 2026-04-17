@@ -4,24 +4,24 @@ import com.github.sleepypanda.feesh.utils.ChatUtils.removeFormatting
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.GRAY
 import com.google.gson.JsonObject
 import com.mojang.serialization.JsonOps
-import net.minecraft.component.DataComponentTypes
-import net.minecraft.component.type.NbtComponent
-import net.minecraft.item.ItemStack
+import net.minecraft.core.component.DataComponents
+import net.minecraft.world.item.component.CustomData
+import net.minecraft.world.item.ItemStack
 import net.minecraft.nbt.NbtOps
 
 object ItemUtils {
     /**
      * Returns the item's custom data component (CUSTOM_DATA), or null if absent.
      */
-    fun getCustomData(stack: ItemStack): NbtComponent? {
+    fun getCustomData(stack: ItemStack): CustomData? {
         if (stack.isEmpty) return null
-        return stack.get(DataComponentTypes.CUSTOM_DATA)
+        return stack.get(DataComponents.CUSTOM_DATA)
     }
 
     /**
      * Returns the "id" field from custom data (e.g. "PET" for pets).
      */
-    fun getCustomDataId(customData: NbtComponent): String? {
+    fun getCustomDataId(customData: CustomData): String? {
         val obj = customDataToJsonObject(customData) ?: return null
         return obj.get("id")?.takeIf { it.isJsonPrimitive }?.asString
     }
@@ -29,7 +29,7 @@ object ItemUtils {
     /**
      * Returns the "petInfo" JSON string from custom data. Caller should parse it for further processing.
      */
-    fun getCustomDataPetInfo(customData: NbtComponent): String? {
+    fun getCustomDataPetInfo(customData: CustomData): String? {
         val obj = customDataToJsonObject(customData) ?: return null
         return obj.get("petInfo")?.takeIf { it.isJsonPrimitive }?.asString
     }
@@ -39,8 +39,8 @@ object ItemUtils {
      * @param customData The custom data component to convert.
      * @returns {JsonObject} The JSON object, or null if the conversion fails.
      */
-    fun customDataToJsonObject(customData: NbtComponent): JsonObject? {
-        val nbt = customData.copyNbt()
+    fun customDataToJsonObject(customData: CustomData): JsonObject? {
+        val nbt = customData.copyTag()
         if (nbt.isEmpty) return null
         val jsonEl = try {
             NbtOps.INSTANCE.convertTo(JsonOps.INSTANCE, nbt)
@@ -71,7 +71,7 @@ object ItemUtils {
      */
     fun isDirtRod(item: ItemStack?): Boolean {
         if (item == null || item.isEmpty) return false
-        return item.name.string.contains("Dirt Rod")
+        return item.hoverName.string.contains("Dirt Rod")
     }
 
     /*
@@ -82,10 +82,10 @@ object ItemUtils {
     fun isFishingRod(item: ItemStack?): Boolean {
         if (item == null || item.isEmpty) return false
 
-        val name = item.name.string
+        val name = item.hoverName.string
         if (name.contains("Carnival Rod")) return false
 
-        val loreLines = item.get(DataComponentTypes.LORE)?.lines?.map { it.string } ?: listOf()
+        val loreLines = item.get(DataComponents.LORE)?.lines()?.map { it.string } ?: listOf()
         return loreLines.any { it.contains("FISHING ROD", ignoreCase = true) || it.contains("FISHING WEAPON", ignoreCase = true) }
     }
 
@@ -168,8 +168,8 @@ object ItemUtils {
      * @returns {String} The name of the enchanted book, or null if the stack is not an enchanted book.
      */
     fun getEnchantedBookName(stack: ItemStack): String? {
-        val lore = stack.get(DataComponentTypes.LORE)?.lines?.map { it.string.removeFormatting() } ?: emptyList()
-        val filteredLore = lore.filter { !it.isNullOrBlank() && !it.contains("Combinable in Anvil") }
+        val lore = stack.get(DataComponents.LORE)?.lines()?.map { it.string.removeFormatting() } ?: emptyList()
+        val filteredLore = lore.filter { it.isNotBlank() && !it.contains("Combinable in Anvil") }
         val bookName = filteredLore.firstOrNull()?.trim() ?: return null
         if (bookName.isEmpty()) return null
         return bookName

@@ -5,7 +5,7 @@ import com.github.sleepypanda.feesh.events.EventBus
 import com.github.sleepypanda.feesh.events.models.ClientTickEvent
 import com.github.sleepypanda.feesh.events.models.WorldChangedEvent
 import java.util.Date
-import net.minecraft.util.math.Vec3d
+import net.minecraft.world.phys.Vec3
 
 /** 
  * Information about the casted fishing hook. It can be casted into any blocks, air or fluid.
@@ -113,20 +113,20 @@ object FishingHookUtils {
             x = fishingHookEntity.x,
             y = fishingHookEntity.y,
             z = fishingHookEntity.z,
-            age = fishingHookEntity.age,
+            age = fishingHookEntity.tickCount,
         )
 
         if (isOwnFishingHookActive()) {
             submergedFishingHookSeenAt = Date()
 
-            val closestHotspot = if (WorldUtils.isInHotspotFishingWorld()) HotspotUtils.findClosestHotspotInRange(Vec3d(fishingHook!!.x, fishingHook!!.y, fishingHook!!.z), 5.0) else null
+            val closestHotspot = if (WorldUtils.isInHotspotFishingWorld()) HotspotUtils.findClosestHotspotInRange(Vec3(fishingHook!!.x, fishingHook!!.y, fishingHook!!.z), 5.0) else null
             if (closestHotspot != null) submergedFishingHookInHotspotSeenAt = Date()
 
             submergedFishingHook = SubmergedFishingHookInfo(
                 x = fishingHookEntity.x,
                 y = fishingHookEntity.y,
                 z = fishingHookEntity.z,
-                age = fishingHookEntity.age,
+                age = fishingHookEntity.tickCount,
                 isInHotspot = closestHotspot != null,
             )
         } else {
@@ -145,13 +145,13 @@ object FishingHookUtils {
         if (!WorldUtils.isInSkyblock()) return false
         val player = FeeshMod.mc.player ?: return false
 
-        val heldItem = player.mainHandStack
+        val heldItem = player.mainHandItem
         if (!ItemUtils.isFishingRod(heldItem)) return false
 
         val fishingHook = EntityUtils.getPlayersFishingHookEntity() ?: return false
-        if (fishingHook.isInLava() || fishingHook.isTouchingWater()) return true
+        if (fishingHook.isInLava || fishingHook.isInWater) return true
 
-        val isDirtRod = heldItem.name.string.contains("Dirt Rod")
+        val isDirtRod = heldItem.hoverName.string.contains("Dirt Rod")
         if (isDirtRod) return true // For dirt rod, the player's hook can be in dirt
 
         return false

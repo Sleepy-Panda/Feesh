@@ -1,11 +1,11 @@
 package com.github.sleepypanda.feesh.events.models
 
-import net.minecraft.client.MinecraftClient
-import net.minecraft.client.world.ClientWorld
+import net.minecraft.client.Minecraft
+import net.minecraft.client.multiplayer.ClientLevel
 
 /*
  * Called after the world is changed.
- * @param mc The MinecraftClient instance.
- * @param world The new ClientWorld instance.
+ * @param mc The Minecraft instance.
+ * @param world The new ClientLevel instance.
  */
-class WorldChangedEvent(val mc: MinecraftClient, val world: ClientWorld)
+class WorldChangedEvent(val mc: Minecraft, val world: ClientLevel?)

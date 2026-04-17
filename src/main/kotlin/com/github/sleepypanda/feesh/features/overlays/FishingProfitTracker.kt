@@ -35,7 +35,7 @@ import com.github.sleepypanda.feesh.utils.ChatUtils.removeFormatting
 import com.github.sleepypanda.feesh.utils.ChatUtils.getFormattedString
 import com.github.sleepypanda.feesh.utils.ItemUtils
 import com.google.gson.JsonParser
-import net.minecraft.component.DataComponentTypes
+import net.minecraft.core.component.DataComponents
 import java.util.Date
 
 // TODO Drops counter for Rare Drop chat message
@@ -688,9 +688,9 @@ object FishingProfitTracker {
         val player = FeeshMod.mc.player ?: return result
 
         for (i in 0..35) {
-            val stack = player.inventory.getStack(i)
+            val stack = player.inventory.getItem(i)
             if (stack.isEmpty) continue
-            var slotItemName = ItemUtils.getCleanItemName(stack.name.getFormattedString())
+            var slotItemName = ItemUtils.getCleanItemName(stack.hoverName.getFormattedString())
             if (slotItemName.isBlank()) continue
 
             if (slotItemName == "Enchanted Book") {
@@ -701,7 +701,7 @@ object FishingProfitTracker {
             }
 
             if (slotItemName.endsWith("Exp Boost")) {
-                val loreLines = stack.get(DataComponentTypes.LORE)?.lines?.map { it.string } ?: emptyList()
+                val loreLines = stack.get(DataComponents.LORE)?.lines()?.map { it.string } ?: emptyList()
                 val petItemLine = loreLines.find { it.endsWith("PET ITEM") }
                 if (petItemLine != null) {
                     val description = petItemLine.split(" ").firstOrNull() ?: ""
@@ -794,7 +794,7 @@ object FishingProfitTracker {
 
     private fun isPlayerMovingItem(): Boolean {
         val player = FeeshMod.mc.player ?: return false
-        val cursor = player.currentScreenHandler.cursorStack
+        val cursor = player.inventoryMenu.carried
         return !cursor.isEmpty
     }
 

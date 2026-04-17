@@ -16,8 +16,9 @@ import com.github.sleepypanda.feesh.events.EventBus
 import com.github.sleepypanda.feesh.events.models.ClientTickEvent
 import com.github.sleepypanda.feesh.events.models.GuiOpenedEvent
 import com.github.sleepypanda.feesh.events.models.WorldChangedEvent
-import net.minecraft.client.gui.screen.ingame.HandledScreen
-import net.minecraft.component.DataComponentTypes
+import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen
+import net.minecraft.core.component.DataComponents
+import net.minecraft.network.chat.Component
 import java.util.Timer
 import kotlin.concurrent.timerTask
 
@@ -75,8 +76,8 @@ object FishingBagDisabledAlert {
                 !WorldUtils.isInFishingWorld()
             ) return
 
-            val currentScreen = FeeshMod.mc.currentScreen
-            if (currentScreen is HandledScreen<*>) {
+            val currentScreen = FeeshMod.mc.screen
+            if (currentScreen is AbstractContainerScreen<*>) {
                 val title = currentScreen.title.string
 
                 // When player opens disabled fishing bag, avoid receiving alert again while it's disabled
@@ -96,7 +97,7 @@ object FishingBagDisabledAlert {
 
     private fun onGuiOpened(event: GuiOpenedEvent) {
         val screen = event.screen
-        if (screen !is HandledScreen<*> || !Alerts.alertOnFishingBagDisabled || !WorldUtils.isInSkyblock()) return
+        if (screen !is AbstractContainerScreen<*> || !Alerts.alertOnFishingBagDisabled || !WorldUtils.isInSkyblock()) return
         
         onFishingBagOpened(event)
     }
@@ -106,18 +107,18 @@ object FishingBagDisabledAlert {
         Timer().schedule(timerTask {
             CommonUtils.runWithCatching("Failed to check fishing bag state on GUI opened") {
                 val currentScreen = event.screen
-                if (currentScreen !is HandledScreen<*>) return@timerTask
+                if (currentScreen !is AbstractContainerScreen<*>) return@timerTask
 
                 val title = currentScreen.title.string
                 if (!title.contains(FISHING_BAG_TITLE_CONTAINS)) return@timerTask
 
-                val handler = currentScreen.screenHandler ?: return@timerTask
-                val item = handler.getSlot(TOGGLE_SLOT_NUMBER)?.stack ?: return@timerTask
+                val handler = currentScreen.menu
+                val item = handler.getSlot(TOGGLE_SLOT_NUMBER)?.item ?: return@timerTask
                 
-                val itemName = item.name.string.removeFormatting()               
+                val itemName = item.hoverName.string.removeFormatting()
                 if (itemName != USE_BAITS_FROM_BAG_ITEM_NAME) return@timerTask
 
-                val lore = item.get(DataComponentTypes.LORE)?.lines?.map { it.string } ?: return@timerTask
+                val lore = item.get(DataComponents.LORE)?.lines()?.map { it.string } ?: return@timerTask
                 val isEnabled = lore.any { line -> line.contains(CLICK_TO_DISABLE_TEXT) }
                 setFishingBagState(isEnabled)
             }

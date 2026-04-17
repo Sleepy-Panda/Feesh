@@ -5,15 +5,16 @@ import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import java.util.Date
 import java.util.concurrent.TimeUnit
 import java.text.SimpleDateFormat
+import net.minecraft.network.chat.Component
 
 object CommonUtils {
     fun showTitle(title: String, subtitle: String? = null, fadeIn: Int = 0, stay: Int = 40, fadeOut: Int = 10) {      
-        var mc = FeeshMod.mc
+        val mc = FeeshMod.mc
 
-        mc.inGameHud.apply {
-            setTitleTicks(fadeIn, stay, fadeOut)
-            setTitle(net.minecraft.text.Text.literal(title))
-            setSubtitle(net.minecraft.text.Text.literal(subtitle ?: " "))
+        mc.gui.apply {
+            setTimes(fadeIn, stay, fadeOut)
+            setTitle(Component.literal(title))
+            setSubtitle(Component.literal(subtitle ?: " "))
         }
     }
 

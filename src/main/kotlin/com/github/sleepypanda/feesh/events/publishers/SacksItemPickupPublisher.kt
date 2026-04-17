@@ -5,8 +5,8 @@ import com.github.sleepypanda.feesh.events.models.ChatEvent
 import com.github.sleepypanda.feesh.events.models.SacksItemsPickupEvent
 import com.github.sleepypanda.feesh.utils.ChatUtils.removeFormatting
 import com.github.sleepypanda.feesh.utils.WorldUtils
-import net.minecraft.text.HoverEvent
-import net.minecraft.text.Text
+import net.minecraft.network.chat.HoverEvent
+import net.minecraft.network.chat.Component as Text
 
 object SacksItemPickupPublisher {
     private val SACKS_TRIGGER = Regex("^\\[Sacks\\] \\+.*") // [Sacks] +2,362 items, -2,362 items. (Last 16s.)

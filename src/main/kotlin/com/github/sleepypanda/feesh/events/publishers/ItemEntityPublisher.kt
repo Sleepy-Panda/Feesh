@@ -9,7 +9,7 @@ import com.github.sleepypanda.feesh.utils.ChatUtils.getFormattedString
 import com.github.sleepypanda.feesh.utils.ChatUtils.removeFormatting
 import com.github.sleepypanda.feesh.utils.CommonUtils
 import com.github.sleepypanda.feesh.utils.WorldUtils
-import net.minecraft.entity.ItemEntity
+import net.minecraft.world.entity.item.ItemEntity
 
 object ItemEntityPublisher {
     private val loadedThisTick = mutableListOf<ItemEntity>()
@@ -30,9 +30,9 @@ object ItemEntityPublisher {
         if (!WorldUtils.isInSkyblock() || !WorldUtils.isInFishingWorld()) return
         for (itemEntity in checkOnNextClientTick) {
             CommonUtils.runWithCatching("Failed to publish item entity details") {
-                val stack = itemEntity.stack
+                val stack = itemEntity.item
                 if (stack.isEmpty) return@runWithCatching
-                val nameText = stack.customName ?: stack.name
+                val nameText = stack.customName ?: stack.hoverName
                 val formatted = nameText.getFormattedString()
                 val unformatted = nameText.string.removeFormatting()
                 EventBus.publish(ItemEntityDetailsLoadedEvent(itemEntity, itemEntity.id, formatted, unformatted))

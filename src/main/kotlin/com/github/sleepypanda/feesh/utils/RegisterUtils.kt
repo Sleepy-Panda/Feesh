@@ -2,7 +2,7 @@ package com.github.sleepypanda.feesh.utils
 
 import com.github.sleepypanda.feesh.utils.ChatUtils.getFormattedString
 import com.github.sleepypanda.feesh.utils.ChatUtils.removeFormatting
-import net.minecraft.text.Text
+import net.minecraft.network.chat.Component
 import com.mojang.brigadier.arguments.StringArgumentType
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback
@@ -23,7 +23,7 @@ object RegisterUtils {
     fun chat(
         regex: Regex,
         noFormatting: Boolean = true,
-        action: (message: Text, matchResult: MatchResult) -> Unit
+        action: (message: Component, matchResult: MatchResult) -> Unit
     ) {
         ClientReceiveMessageEvents.GAME.register { message, _, ->
             var text = if (noFormatting) message.string.removeFormatting() else message.getFormattedString()
@@ -42,7 +42,7 @@ object RegisterUtils {
     fun chatCancellable(
         regex: Regex,
         noFormatting: Boolean = true,
-        action: (message: Text, matchResult: MatchResult) -> Boolean
+        action: (message: Component, matchResult: MatchResult) -> Boolean
     ) {
         ClientReceiveMessageEvents.ALLOW_GAME.register { message, _ ->
             var text = if (noFormatting) message.string.removeFormatting() else message.getFormattedString()
