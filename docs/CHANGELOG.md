@@ -10,6 +10,10 @@ Released on: ???
 
 -
 
+## Other
+
+- Started preparation for adding 26.1 support - moved to official mappings instead of yarn. It means that every functionality was touched in order to migrate it. Please let me know if something is broken but was working before!
+
 # 1.5.0
 
 Released on: 2026-04-16
