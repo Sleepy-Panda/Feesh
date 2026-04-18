@@ -138,8 +138,8 @@ object Chat : CategoryKt("Chat") {
             text = "Click to open"
             onClick {
                 val mc = FeeshMod.mc
-                mc.execute {
-                    val currentScreen = mc.screen ?: return@execute
+                mc.schedule {
+                    val currentScreen = mc.screen ?: return@schedule
                     mc.setScreen(KeyBindsScreen(currentScreen, mc.options))
                 }
             }

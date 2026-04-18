@@ -2,7 +2,6 @@ package com.github.sleepypanda.feesh.utils.gui
 
 import com.github.sleepypanda.feesh.FeeshMod
 import com.github.sleepypanda.feesh.events.EventBus
-import com.github.sleepypanda.feesh.events.models.ClientTickEvent
 import com.github.sleepypanda.feesh.utils.RegisterUtils
 import com.github.sleepypanda.feesh.utils.ChatUtils
 import com.github.sleepypanda.feesh.utils.WorldUtils
@@ -27,11 +26,9 @@ object MoveGuis {
     const val COMMAND_NAME = "feeshMoveAllGuis"
 
     private val guiMappings = mutableListOf<GuiMapping>()
-    private var pendingOpenScreen = false
 
     fun init() {
         initializeGuiMappings()
-        EventBus.subscribe(ClientTickEvent::class, ::onClientTick)
         RegisterUtils.command(COMMAND_NAME) {
             moveAllGuis()
         }
@@ -43,15 +40,10 @@ object MoveGuis {
             return
         }
 
-        pendingOpenScreen = true // had to add this workaround to fix the issue when the screen cant be opened from chat
-    }
-
-    private fun onClientTick(@Suppress("UNUSED_PARAMETER") event: ClientTickEvent) {
-        if (!pendingOpenScreen) return
-        pendingOpenScreen = false
-
         val mc = FeeshMod.mc
-        mc.setScreen(MoveGuisScreen())
+        FeeshMod.mc.schedule {
+            mc.setScreen(MoveGuisScreen())
+        }
     }
 
     private fun initializeGuiMappings() {

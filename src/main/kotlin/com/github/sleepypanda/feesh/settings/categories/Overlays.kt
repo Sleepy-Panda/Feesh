@@ -84,8 +84,8 @@ object Overlays : CategoryKt("Overlays") {
             text = "Click to open"
             onClick {
                 val mc = FeeshMod.mc
-                mc.execute {
-                    val currentScreen = mc.screen ?: return@execute
+                mc.schedule {
+                    val currentScreen = mc.screen ?: return@schedule
                     mc.setScreen(KeyBindsScreen(currentScreen, mc.options))
                 }
             }
@@ -179,8 +179,8 @@ Hidden if you have no fishing rod in your hotbar!""".trimIndent())
             text = "Click to open"
             onClick {
                 val mc = FeeshMod.mc
-                mc.execute {
-                    val currentScreen = mc.screen ?: return@execute
+                mc.schedule {
+                    val currentScreen = mc.screen ?: return@schedule
                     mc.setScreen(KeyBindsScreen(currentScreen, mc.options))
                 }
             }
