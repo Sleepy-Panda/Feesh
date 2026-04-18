@@ -12,7 +12,7 @@ import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
 import net.fabricmc.loader.api.FabricLoader
 import net.minecraft.SharedConstants
-import net.minecraft.resource.ResourceType
+import net.minecraft.server.packs.PackType
 import java.io.File
 import java.io.FileOutputStream
 import java.util.concurrent.Executors
@@ -162,7 +162,7 @@ object CustomSoundsManager {
             // 69.0 for 1.21.10
             // 75.0 for 1.21.11
             // https://minecraft.wiki/w/Pack_format
-            val packFormat = SharedConstants.getGameVersion().packVersion(ResourceType.CLIENT_RESOURCES)
+            val packFormat = SharedConstants.getCurrentVersion().packVersion(PackType.CLIENT_RESOURCES)
             
             if (!resourcePackMcmetaFile.exists()) {
                 val packMcmetaContent = """

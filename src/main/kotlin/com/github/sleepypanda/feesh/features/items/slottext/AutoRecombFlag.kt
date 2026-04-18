@@ -5,9 +5,9 @@ import com.github.sleepypanda.feesh.utils.ChatUtils.getFormattedString
 import com.github.sleepypanda.feesh.utils.ChatUtils.removeFormatting
 import com.github.sleepypanda.feesh.utils.ItemUtils
 import com.github.sleepypanda.feesh.utils.WorldUtils
-import net.minecraft.client.gui.screen.ingame.HandledScreen
-import net.minecraft.item.ItemStack
-import net.minecraft.screen.slot.Slot
+import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen
+import net.minecraft.world.item.ItemStack
+import net.minecraft.world.inventory.Slot
 import kotlin.math.truncate
 
 object AutoRecombFlag : BaseSlotTextRenderer() {
@@ -22,9 +22,9 @@ object AutoRecombFlag : BaseSlotTextRenderer() {
         return WorldUtils.isInSkyblock() && Items.showAutoRecombFlag
     }
 
-    override fun getItemStackSlotText(stack: ItemStack, screen: HandledScreen<*>, slot: Slot): String? {
-        if (stack.isEmpty()) return null
-        val name = ItemUtils.getCleanItemName(stack.name.getFormattedString())
+    override fun getItemStackSlotText(stack: ItemStack, screen: AbstractContainerScreen<*>, slot: Slot): String? {
+        if (stack.isEmpty) return null
+        val name = ItemUtils.getCleanItemName(stack.hoverName.getFormattedString())
         if (name.isNullOrEmpty()) return null
 
         val isFishingItem =

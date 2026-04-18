@@ -23,9 +23,8 @@ import com.github.sleepypanda.feesh.constants.SeaCreatures
 import com.github.sleepypanda.feesh.constants.Sounds
 import com.github.sleepypanda.feesh.settings.categories.General
 import com.github.sleepypanda.feesh.settings.categories.SoundMode
-import net.minecraft.entity.decoration.ArmorStandEntity
-import net.minecraft.entity.EquipmentSlot
-import net.minecraft.component.DataComponentTypes
+import net.minecraft.world.entity.decoration.ArmorStand
+import net.minecraft.world.entity.EquipmentSlot
 import java.util.Date
 
 object BarnFishingTimer {
@@ -108,8 +107,8 @@ object BarnFishingTimer {
     private fun trackSeaCreaturesCount() {
         if (!WorldUtils.isInSkyblock() || !WorldUtils.isInFishingWorld()) return
 
-        val world = FeeshMod.mc.world ?: return
-        val entities = world.entities.filterIsInstance<ArmorStandEntity>()
+        val world = FeeshMod.mc.level ?: return
+        val entities = world.entitiesForRendering().filterIsInstance<ArmorStand>()
 
         var newMobsCount = 0
         entities.forEach { entity ->
@@ -236,16 +235,15 @@ object BarnFishingTimer {
     private fun isInHunterArmor(): Boolean {
         val player = FeeshMod.mc.player ?: return false
         
-        val helmet = player.getEquippedStack(EquipmentSlot.HEAD)
-        val chestplate = player.getEquippedStack(EquipmentSlot.CHEST)
-        val leggings = player.getEquippedStack(EquipmentSlot.LEGS)
-        val boots = player.getEquippedStack(EquipmentSlot.FEET)
+        val helmet = player.getItemBySlot(EquipmentSlot.HEAD)
+        val chestplate = player.getItemBySlot(EquipmentSlot.CHEST)
+        val leggings = player.getItemBySlot(EquipmentSlot.LEGS)
+        val boots = player.getItemBySlot(EquipmentSlot.FEET)
         
         val armorPieces = listOf(helmet, chestplate, leggings, boots)
         return armorPieces.all { armorPiece ->
-            if (armorPiece == null || armorPiece.isEmpty) return false
-            
-            val itemName = armorPiece.name.string
+            if (armorPiece.isEmpty) return false
+            val itemName = armorPiece.hoverName.string
             return itemName.contains("Hunter", ignoreCase = true)
         }
     }

@@ -4,8 +4,8 @@ import com.github.sleepypanda.feesh.FeeshMod
 import com.github.sleepypanda.feesh.utils.ChatUtils.removeFormatting
 import java.util.Timer
 import kotlin.concurrent.timerTask
-import net.minecraft.scoreboard.ScoreboardDisplaySlot
-import net.minecraft.scoreboard.Team
+import net.minecraft.world.scores.DisplaySlot
+import net.minecraft.world.scores.PlayerTeam
 
 object WorldUtils {
     val CRIMSON_ISLE = "Crimson Isle"
@@ -107,33 +107,40 @@ object WorldUtils {
     }
 
     private fun readZoneName(): String? {
-        val scoreboard = FeeshMod.mc.world?.scoreboard ?: return null
-        val objective = scoreboard.getObjectiveForSlot(ScoreboardDisplaySlot.SIDEBAR) ?: return null
-        
-        val zoneLine = scoreboard.getScoreboardEntries(objective)
-            .filter { entry -> entry?.owner != null && !entry.hidden() }
-            .map { entry -> Team.decorateName(scoreboard.getScoreHolderTeam(entry.owner()), entry.name()).string.removeFormatting() }
+        val scoreboard = FeeshMod.mc.level?.scoreboard ?: return null
+        val objective = scoreboard.getDisplayObjective(DisplaySlot.SIDEBAR) ?: return null
+
+        val zoneLine = scoreboard.listPlayerScores(objective)
+            .filter { entry -> !entry.isHidden }
+            .map { entry ->
+                val team = scoreboard.getPlayersTeam(entry.owner)
+                PlayerTeam.formatNameForTeam(team, entry.ownerName()).string.removeFormatting()
+            }
             .find { line -> line.contains("⏣") || line.contains("ф") }
         if (zoneLine.isNullOrEmpty()) return null
 
         // ⏣ Abandoned🐍 Quarry -> Abandoned Quarry
-        var zoneName = zoneLine.replace("⏣", "").replace("ф", "").replace(Regex("[^\\u0000-\\u007F]"), "").trim()
-        
-        // Some lava in Phlegblast area does not belong to Phlegblast Pool zone but needs to be counted
+        var zoneName = zoneLine
+            .replace("⏣", "")
+            .replace("ф", "")
+            .replace(Regex("[^\\u0000-\\u007F]"), "")
+            .trim()
+
+        // Some lava in Phlegblast area does not belong to Plhlegblast Pool zone but needs to be counted
         val worldName = cachedWorldName
         if (worldName == CRIMSON_ISLE && zoneName == CRIMSON_ISLE) {
             val player = FeeshMod.mc.player ?: return zoneName
             val x = player.x
             val y = player.y
             val z = player.z
-            
-            if (isBetweenIncluding(x, -381.0, -370.0) && 
-                isBetweenIncluding(y, 68.0, 72.0) && 
+
+            if (isBetweenIncluding(x, -381.0, -370.0) &&
+                isBetweenIncluding(y, 68.0, 72.0) &&
                 isBetweenIncluding(z, -708.0, -697.0)) {
                 zoneName = PLHLEGBLAST_POOL
             }
         }
-        
+
         return zoneName
     }
     
@@ -145,10 +152,10 @@ object WorldUtils {
         //val serverAddress = FeeshMod.mc.currentServerEntry?.address ?: return false
         //if (!serverAddress.contains("hypixel", ignoreCase = true)) return false
         // ^ Commented out for now, because people with reverse proxy have other server addresses
-        
-        val scoreboard = FeeshMod.mc.world?.scoreboard ?: return false
-        val objective = scoreboard.getObjectiveForSlot(ScoreboardDisplaySlot.SIDEBAR) ?: return false
-        val title = objective.displayName?.string ?: return false
+
+        val scoreboard = FeeshMod.mc.level?.scoreboard ?: return false
+        val objective = scoreboard.getDisplayObjective(DisplaySlot.SIDEBAR) ?: return false
+        val title = objective.displayName.string
         return title.contains("skyblock", ignoreCase = true)
     }
 

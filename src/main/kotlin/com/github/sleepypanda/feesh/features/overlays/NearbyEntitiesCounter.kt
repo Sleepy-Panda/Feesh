@@ -12,9 +12,9 @@ import com.github.sleepypanda.feesh.utils.EntityUtils
 import com.github.sleepypanda.feesh.utils.gui.FeeshGui
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
-import net.minecraft.entity.projectile.FishingBobberEntity
-import net.minecraft.client.MinecraftClient
-import net.minecraft.util.math.Vec3d
+import net.minecraft.world.entity.projectile.FishingHook
+import net.minecraft.client.Minecraft
+import net.minecraft.world.phys.Vec3
 import java.util.UUID
 
 object NearbyEntitiesCounter {
@@ -86,9 +86,9 @@ object NearbyEntitiesCounter {
         if (!Overlays.nearbyEntitiesCounterTypes.contains(NearbyEntitiesCounterTypes.LEGION)) return 0
 
         val player = FeeshMod.mc.player ?: return 0
-        val world = FeeshMod.mc.world ?: return 0
+        val world = FeeshMod.mc.level ?: return 0
 
-        val players = world.players
+        val players = world.players()
             .filter { it ->
                 it.uuid != player.uuid &&
                 (it.uuid.version() == 4 || it.uuid.version() == 1) && // Players and Watchdog have version 4, nicked players have version 1, this is done to exclude NPCs
@@ -107,26 +107,26 @@ object NearbyEntitiesCounter {
         if (!Overlays.nearbyEntitiesCounterTypes.contains(NearbyEntitiesCounterTypes.BOBBING_TIME)) return 0
 
         val player = FeeshMod.mc.player ?: return 0
-        val world = FeeshMod.mc.world ?: return 0
+        val world = FeeshMod.mc.level ?: return 0
 
-        val fishingHooks = world.entities
-            .filterIsInstance<FishingBobberEntity>()
+        val fishingHooks = world.entitiesForRendering()
+            .filterIsInstance<FishingHook>()
             .filter { hook ->
                 val distance = EntityUtils.getDistance(player, hook)
                 if (distance > BOBBING_TIME_DISTANCE) return@filter false
 
-                val owner = hook.playerOwner
+                val owner = hook.owner
                 if (owner == null) return@filter true
 
-                val ownerName = owner.displayName?.string ?: return@filter true
+                val ownerName = owner.name.string ?: ""
                 return@filter !ownerName.contains("Phantom Fisher", ignoreCase = true)
             }
 
         return fishingHooks.size
     }
 
-    private fun getPlayerPing(client: MinecraftClient, uuid: UUID): Int {
-        return client.networkHandler?.getPlayerListEntry(uuid)?.latency ?: 0
+    private fun getPlayerPing(client: Minecraft, uuid: UUID): Int {
+        return client.connection?.getPlayerInfo(uuid)?.latency ?: 0
     }
 
     private fun getChumcapBucketsCount(): Int {
@@ -134,7 +134,7 @@ object NearbyEntitiesCounter {
         if (WorldUtils.getWorldName() == WorldUtils.CRIMSON_ISLE) return 0
         
         val player = FeeshMod.mc.player ?: return 0
-        val buckets = EntityUtils.getArmorStandsInRange(Vec3d(player.x, player.y, player.z), CHUMCAP_BUCKET_DISTANCE, "Chumcap Bucket", allowContains = true)
+        val buckets = EntityUtils.getArmorStandsInRange(Vec3(player.x, player.y, player.z), CHUMCAP_BUCKET_DISTANCE, "Chumcap Bucket", allowContains = true)
         return buckets.size
     }
 

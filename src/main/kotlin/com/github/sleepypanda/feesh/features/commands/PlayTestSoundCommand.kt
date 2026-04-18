@@ -6,9 +6,8 @@ import com.github.sleepypanda.feesh.utils.ChatUtils
 import com.github.sleepypanda.feesh.utils.CommonUtils
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.FeeshMod
-import net.minecraft.sound.SoundEvent
-import net.minecraft.sound.SoundEvents
-import net.minecraft.util.Identifier
+import net.minecraft.resources.ResourceLocation
+import net.minecraft.sounds.SoundEvent
 
 /**
  * This command allows you to play test sounds in the game.
@@ -65,7 +64,7 @@ object PlayTestSoundCommand {
 
     private fun getSoundEvent(soundName: String): SoundEvent {
         val path = soundName.lowercase()
-        val id = Identifier.of("minecraft", path)
-        return SoundEvent.of(id)
+        val id = ResourceLocation.fromNamespaceAndPath("minecraft", path)
+        return SoundEvent.createVariableRangeEvent(id)
     }
 }

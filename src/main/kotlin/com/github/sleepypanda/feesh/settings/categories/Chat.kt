@@ -13,8 +13,8 @@ import com.teamresourceful.resourcefulconfig.api.annotations.Comment
 import com.teamresourceful.resourcefulconfig.api.annotations.ConfigEntry
 import com.teamresourceful.resourcefulconfig.api.types.options.EntryType
 import com.teamresourceful.resourcefulconfig.api.types.options.TranslatableValue
-import net.minecraft.client.gui.screen.option.KeybindsScreen
-import net.minecraft.util.Util
+import net.minecraft.client.gui.screens.options.controls.KeyBindsScreen
+import net.minecraft.Util
 
 enum class HotspotChatSource(val displayName: String) {
     PARTY_CHAT("Party Chat"),
@@ -56,7 +56,7 @@ object Chat : CategoryKt("Chat") {
             description = "For using custom text templates above, please explore the guide explaining color codes and formatting codes."
             text = "Click to open"
             onClick {
-                Util.getOperatingSystem().open("https://github.com/Sleepy-Panda/Feesh/blob/develop/docs/Colors%20and%20formatting%20guide.md")
+                Util.getPlatform().openUri("https://github.com/Sleepy-Panda/Feesh/blob/develop/docs/Colors%20and%20formatting%20guide.md")
             }
         }
     }
@@ -138,8 +138,9 @@ object Chat : CategoryKt("Chat") {
             text = "Click to open"
             onClick {
                 val mc = FeeshMod.mc
-                mc.send {
-                    mc.setScreen(KeybindsScreen(mc.currentScreen, mc.options))
+                mc.schedule {
+                    val currentScreen = mc.screen ?: return@schedule
+                    mc.setScreen(KeyBindsScreen(currentScreen, mc.options))
                 }
             }
         }

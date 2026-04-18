@@ -1,11 +1,11 @@
 package com.github.sleepypanda.feesh.events.models
 
-import net.minecraft.entity.decoration.ArmorStandEntity
+import net.minecraft.world.entity.decoration.ArmorStand
 
 /**
  * Event for when an Armor Stand is removed from the world (despawned/unloaded).
- * @param armorStand The ArmorStandEntity that was removed.
+ * @param armorStand The ArmorStand that was removed.
  */
 data class ArmorStandDespawnedEvent(
-    val armorStand: ArmorStandEntity
+    val armorStand: ArmorStand
 )

@@ -6,16 +6,16 @@ import com.github.sleepypanda.feesh.FeeshMod
 import com.github.sleepypanda.feesh.events.EventBus
 import com.github.sleepypanda.feesh.events.models.ClientTickEvent
 import com.github.sleepypanda.feesh.events.models.WorldChangedEvent
-import net.minecraft.client.gui.hud.ChatHud
-import net.minecraft.text.Style
-import net.minecraft.text.TextColor
-import net.minecraft.text.Text
-import net.minecraft.text.ClickEvent
-import net.minecraft.text.HoverEvent
-import net.minecraft.text.ClickEvent.OpenUrl
-import net.minecraft.text.ClickEvent.RunCommand
-import net.minecraft.text.HoverEvent.ShowText
-import net.minecraft.util.Formatting
+import net.minecraft.client.gui.components.ChatComponent
+import net.minecraft.network.chat.Style
+import net.minecraft.network.chat.TextColor
+import net.minecraft.network.chat.Component
+import net.minecraft.network.chat.ClickEvent
+import net.minecraft.network.chat.HoverEvent
+import net.minecraft.network.chat.ClickEvent.OpenUrl
+import net.minecraft.network.chat.ClickEvent.RunCommand
+import net.minecraft.network.chat.HoverEvent.ShowText
+import net.minecraft.ChatFormatting
 import java.util.*
 
 object ChatUtils {
@@ -66,11 +66,11 @@ object ChatUtils {
     fun sendLocalChat(message: String, addModPrefix: Boolean = false) {
         if (message.isNullOrEmpty()) return
         val formattedMessage = if (addModPrefix) "${MOD_PREFIX} ${RESET}${message}" else message
-        FeeshMod.mc.inGameHud.chatHud.addMessage(Text.literal(formattedMessage))
+        FeeshMod.mc.gui.chat.addMessage(Component.literal(formattedMessage))
     }
 
-    fun sendLocalChat(message: Text) {
-        FeeshMod.mc.inGameHud.chatHud.addMessage(message)
+    fun sendLocalChat(message: Component) {
+        FeeshMod.mc.gui.chat.addMessage(message)
     }
 
     /**
@@ -92,16 +92,16 @@ object ChatUtils {
     }
 
     private fun sendAllChatImmediate(message: String) {
-        FeeshMod.mc.player?.networkHandler?.sendChatCommand("ac $message")
+        FeeshMod.mc.player?.connection?.sendCommand("ac $message")
     }
 
     private fun sendPartyChatImmediate(message: String) {
-        FeeshMod.mc.player?.networkHandler?.sendChatCommand("pchat $message")
+        FeeshMod.mc.player?.connection?.sendCommand("pchat $message")
     }
 
     fun command(command: String) {
         if (command.isNullOrEmpty()) return
-        FeeshMod.mc.player?.networkHandler?.sendChatCommand(command)
+        FeeshMod.mc.player?.connection?.sendCommand(command)
     }
 
     /*
@@ -115,15 +115,15 @@ object ChatUtils {
         
         val style = Style.EMPTY
             .withClickEvent(RunCommand("/$command"))
-            .withHoverEvent(ShowText(Text.literal("Click to execute /$command")))
+            .withHoverEvent(ShowText(Component.literal("Click to execute /$command")))
         
-        val text = Text.literal(message).setStyle(style)
+        val text = Component.literal(message).setStyle(style)
         
         val finalText = if (addModPrefix) {
-            Text.literal("${MOD_PREFIX} ${RESET}").append(text)
+            Component.literal("${MOD_PREFIX} ${RESET}").append(text)
         } else text
         
-        FeeshMod.mc.inGameHud.chatHud.addMessage(finalText)
+        FeeshMod.mc.gui.chat.addMessage(finalText)
     }
 
     /**
@@ -137,14 +137,14 @@ object ChatUtils {
 
         val linkStyle = Style.EMPTY
             .withClickEvent(OpenUrl(java.net.URI.create(url)))
-            .withHoverEvent(ShowText(Text.literal("Click to open $url")))
+            .withHoverEvent(ShowText(Component.literal("Click to open $url")))
 
-        val fullText = Text.literal(message).append(Text.literal("\n")).append(Text.literal(linkText).setStyle(linkStyle))
+        val fullText = Component.literal(message).append(Component.literal("\n")).append(Component.literal(linkText).setStyle(linkStyle))
         val finalText = if (addModPrefix) {
-            Text.literal("${MOD_PREFIX} ${RESET}").append(fullText)
+            Component.literal("${MOD_PREFIX} ${RESET}").append(fullText)
         } else fullText
 
-        FeeshMod.mc.inGameHud.chatHud.addMessage(finalText)
+        FeeshMod.mc.gui.chat.addMessage(finalText)
     }
 
     fun String.removeFormatting(): String {
@@ -156,7 +156,7 @@ object ChatUtils {
      * Get a string with color and formatting codes.
      * Credits to SkyblockOverhaul
      */
-    fun Text.getFormattedString(): String {
+    fun Component.getFormattedString(): String {
         val builder = StringBuilder()
 
         this.visit(
@@ -178,11 +178,11 @@ object ChatUtils {
         if (color != null) append("§").append(getColorChar(color))
 
         val formatting = when {
-            this@getFormatting.isBold() -> BOLD.code
-            this@getFormatting.isItalic() -> ITALIC.code
-            this@getFormatting.isUnderlined() -> UNDERLINE.code
-            this@getFormatting.isStrikethrough() -> STRIKETHROUGH.code
-            this@getFormatting.isObfuscated() -> OBFUSCATED.code          
+            this@getFormatting.isBold -> BOLD.code
+            this@getFormatting.isItalic -> ITALIC.code
+            this@getFormatting.isUnderlined -> UNDERLINE.code
+            this@getFormatting.isStrikethrough -> STRIKETHROUGH.code
+            this@getFormatting.isObfuscated -> OBFUSCATED.code
             else -> ""
         }
         append(formatting)
@@ -190,11 +190,11 @@ object ChatUtils {
 
     private fun getColorChar(color: TextColor): Char? {
         val formatting = colorToChar[color]
-        return formatting?.code
+        return formatting?.char
     }
 
-    private val colorToChar: Map<TextColor, Formatting> = Formatting.entries.mapNotNull { format ->
-        TextColor.fromFormatting(format)?.let { it to format }
+    private val colorToChar: Map<TextColor, ChatFormatting> = ChatFormatting.entries.mapNotNull { format ->
+        TextColor.fromLegacyFormat(format)?.let { it to format }
     }.toMap()
 
     /**
@@ -207,15 +207,11 @@ object ChatUtils {
         if (character.isNullOrEmpty()) return ""
 
         val mc = FeeshMod.mc
-        val textRenderer = mc.textRenderer ?: return ""
+        val textRenderer = mc.font
 
-        //#if MC >= 1.21.11
-        //$$ val chatWidth = mc.inGameHud?.chatHud?.let { ChatHud.getWidth(mc.options.getChatWidth().getValue()) } ?: return ""
-        //#else
-        val chatWidth = mc.inGameHud?.chatHud?.width ?: return ""
-        //#endif
+        val chatWidth = ChatComponent.getWidth(mc.options.chatWidth().get())
 
-        val characterWidth = textRenderer.getWidth(Text.literal(character))
+        val characterWidth = textRenderer.width(Component.literal(character))
         val characterCount = if (characterWidth > 0) (chatWidth / characterWidth).coerceAtLeast(1).coerceAtMost(200) else 50
 
         return character.repeat(characterCount)

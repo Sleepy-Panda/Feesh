@@ -12,7 +12,7 @@ import com.github.sleepypanda.feesh.events.EventBus
 import com.github.sleepypanda.feesh.events.models.PartyChatEvent
 import com.github.sleepypanda.feesh.utils.ChatUtils.removeFormatting
 import com.github.sleepypanda.feesh.FeeshMod
-import net.minecraft.sound.SoundEvents
+import net.minecraft.sounds.SoundEvents
 
 object PlayerDeathAlert {
     const val YOU_DIED_PATTERN = "^ ☠ You were killed by (Ragnarok|Thunder|Lord Jawbus|Jawbus Follower|Wiki Tiki|Wiki Tiki Laser Totem|Titanoboa|Nessie)\\.$"
@@ -23,12 +23,11 @@ object PlayerDeathAlert {
         EventBus.subscribe(PartyChatEvent::class, ::onPartyChatDeath)
     }
 
-    // TODO Sound is not played on death :c
     private fun onOwnDeath(matchResult: MatchResult) {
         if (!Alerts.alertOnPlayerDeath || !WorldUtils.isInSkyblock()) return
 
         CommonUtils.showTitle("${RED}You were killed ☠")
-        SoundUtils.playSound(SoundEvents.ENTITY_VILLAGER_DEATH)
+        SoundUtils.playSound(SoundEvents.VILLAGER_DEATH)
 
         if (matchResult.groups[1]?.value == "Nessie") {
             ChatUtils.sendLocalChatWithCommand("Click to warp to Murkwater Loch!", "warp murk", true)
@@ -45,6 +44,6 @@ object PlayerDeathAlert {
 
         val title = "${playerName} ${RED}was killed ☠";
 		CommonUtils.showTitle(title, "Wait for them to come back");
-		SoundUtils.playSound(SoundEvents.ENTITY_VILLAGER_DEATH)
+		SoundUtils.playSound(SoundEvents.VILLAGER_DEATH)
     }
 }

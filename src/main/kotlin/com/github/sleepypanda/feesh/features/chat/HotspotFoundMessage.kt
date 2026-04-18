@@ -9,7 +9,6 @@ import com.github.sleepypanda.feesh.utils.PlayerUtils
 import com.github.sleepypanda.feesh.utils.HotspotUtils
 import com.github.sleepypanda.feesh.utils.ChatUtils
 import com.github.sleepypanda.feesh.utils.ChatUtils.removeFormatting
-import com.github.sleepypanda.feesh.utils.EntityUtils
 import com.github.sleepypanda.feesh.utils.SoundUtils
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
@@ -17,16 +16,16 @@ import com.github.sleepypanda.feesh.events.EventBus
 import com.github.sleepypanda.feesh.events.models.ClientTickEvent
 import com.github.sleepypanda.feesh.events.models.WorldChangedEvent
 import com.github.sleepypanda.feesh.events.models.ArmorStandDespawnedEvent
+import net.minecraft.network.chat.Component
+import net.minecraft.network.chat.Style
+import net.minecraft.network.chat.ClickEvent.RunCommand
+import net.minecraft.network.chat.HoverEvent.ShowText
+import net.minecraft.world.phys.Vec3
 import java.util.UUID
-import net.minecraft.text.Text
-import net.minecraft.text.Style
-import net.minecraft.text.ClickEvent.RunCommand
-import net.minecraft.text.HoverEvent.ShowText
-import net.minecraft.util.math.Vec3d
 
 object HotspotFoundMessage {
     private var lastClosestHotspot: HotspotUtils.HotspotData? = null
-    private var lastFoundHotspotIds = mutableListOf<UUID>() // Last 2 found hotspots' uuid, to not alert again and again when moving between 2 close hotspots
+    private var lastFoundHotspotIds = mutableListOf<UUID>() // Last 2 found hotspots, to not alert again and again when moving between 2 close hotspots
     private var tickCounter = 0
     private const val TICKS_PER_CHECK = 10
     private const val NEAREST_HOTSPOT_RANGE_FROM_PLAYER = 10.0
@@ -69,7 +68,7 @@ object HotspotFoundMessage {
         if (!lastFoundHotspotIds.contains(hotspotId) && lastClosestHotspot?.entity?.uuid != hotspotId) return
 
         val player = FeeshMod.mc.player ?: return
-        val distance = EntityUtils.getDistance(player, event.armorStand)
+        val distance = event.armorStand.distanceTo(player)
         if (distance > 30.0) return // Probably user just moved away so the nametag is not rendered anymore
 
         lastFoundHotspotIds.remove(hotspotId)
@@ -83,7 +82,7 @@ object HotspotFoundMessage {
             if (!WorldUtils.isInSkyblock() || !WorldUtils.isInHotspotFishingWorld()) return
 
             val player = FeeshMod.mc.player ?: return
-            val closestHotspot = HotspotUtils.findClosestHotspotInRange(Vec3d(player.x, player.y, player.z), NEAREST_HOTSPOT_RANGE_FROM_PLAYER)
+            val closestHotspot = HotspotUtils.findClosestHotspotInRange(Vec3(player.x, player.y, player.z), NEAREST_HOTSPOT_RANGE_FROM_PLAYER)
             
             if (closestHotspot != null) {
                 announceNearestHotspot(closestHotspot.x, closestHotspot.y, closestHotspot.z, closestHotspot.perk, isParty)
@@ -99,12 +98,13 @@ object HotspotFoundMessage {
             if (!WorldUtils.isInSkyblock() || !WorldUtils.isInHotspotFishingWorld() || !PlayerUtils.hasFishingRodInHotbar()) return
 
             val player = FeeshMod.mc.player ?: return
-            val closestHotspot = HotspotUtils.findClosestHotspotInRange(Vec3d(player.x, player.y, player.z), NEAREST_HOTSPOT_RANGE_FROM_PLAYER) ?: return
+            val closestHotspot = HotspotUtils.findClosestHotspotInRange(Vec3(player.x, player.y, player.z), NEAREST_HOTSPOT_RANGE_FROM_PLAYER) ?: return
+
             val closestHotspotId = closestHotspot.entity.uuid
 
             if (lastFoundHotspotIds.contains(closestHotspotId)) return
 
-            if (lastClosestHotspot == null || (closestHotspot.entity.uuid != lastClosestHotspot!!.entity.uuid)) {
+            if (lastClosestHotspot == null || lastClosestHotspot!!.entity.uuid != closestHotspotId) {
                 announceFoundHotspot(closestHotspot.x, closestHotspot.y, closestHotspot.z, closestHotspot.perk)
 
                 lastFoundHotspotIds.add(0, closestHotspotId)
@@ -124,21 +124,21 @@ object HotspotFoundMessage {
             ChatUtils.sendLocalChat("${WHITE}You found ${perkText}${LIGHT_PURPLE}Hotspot${WHITE}.", true)
             
             val partyMessage = getMessage(x, y, z, perk, false)   
-            val partyChatText = Text.literal("${WHITE}${BOLD}[Share to ${BLUE}${BOLD}PARTY ${WHITE}${BOLD}chat]")
+            val partyChatText = Component.literal("${WHITE}${BOLD}[Share to ${BLUE}${BOLD}PARTY ${WHITE}${BOLD}chat]")
                 .setStyle(
                     Style.EMPTY
                         .withClickEvent(RunCommand("/pchat $partyMessage"))
-                        .withHoverEvent(ShowText(Text.literal("Click to share to PARTY chat")))
+                        .withHoverEvent(ShowText(Component.literal("Click to share to PARTY chat")))
                 )
             
-            val orText = Text.literal(" ${RESET}${GRAY}or ")
+            val orText = Component.literal(" ${RESET}${GRAY}or ")
             
             val allMessage = getMessage(x, y, z, perk, true)
-            val allChatText = Text.literal("${WHITE}${BOLD}[Share to ${YELLOW}${BOLD}ALL ${WHITE}${BOLD}chat]")
+            val allChatText = Component.literal("${WHITE}${BOLD}[Share to ${YELLOW}${BOLD}ALL ${WHITE}${BOLD}chat]")
                 .setStyle(
                     Style.EMPTY
                         .withClickEvent(RunCommand("/achat $allMessage"))
-                        .withHoverEvent(ShowText(Text.literal("Click to share to ALL chat")))
+                        .withHoverEvent(ShowText(Component.literal("Click to share to ALL chat")))
                 )
             
             val shareText = partyChatText.append(orText).append(allChatText)

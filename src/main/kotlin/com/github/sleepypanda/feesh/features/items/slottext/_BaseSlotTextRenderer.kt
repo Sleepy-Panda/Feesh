@@ -1,9 +1,9 @@
 package com.github.sleepypanda.feesh.features.items.slottext
 
 import com.github.sleepypanda.feesh.features.items.slottext.SlotTextRendererManager
-import net.minecraft.client.gui.screen.ingame.HandledScreen
-import net.minecraft.item.ItemStack
-import net.minecraft.screen.slot.Slot
+import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen
+import net.minecraft.world.item.ItemStack
+import net.minecraft.world.inventory.Slot
 
 /**
  * Base class for slot text renderers that draw short text in slot corners.
@@ -41,7 +41,7 @@ abstract class BaseSlotTextRenderer {
      */
     abstract fun getItemStackSlotText(
         stack: ItemStack,
-        screen: HandledScreen<*>,
+        screen: AbstractContainerScreen<*>,
         slot: Slot
     ): String?
 

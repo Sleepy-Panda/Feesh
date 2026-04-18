@@ -85,7 +85,7 @@ import com.teamresourceful.resourcefulconfig.api.loader.Configurator
 import net.minecraft.SharedConstants
 import net.fabricmc.api.ClientModInitializer
 import net.fabricmc.loader.api.FabricLoader
-import net.minecraft.client.MinecraftClient
+import net.minecraft.client.Minecraft
 import org.slf4j.LoggerFactory
 
 class FeeshMod : ClientModInitializer {
@@ -98,9 +98,9 @@ class FeeshMod : ClientModInitializer {
         lateinit var version: String
 
         @JvmField
-        val mc: MinecraftClient = MinecraftClient.getInstance()
+        val mc: Minecraft = Minecraft.getInstance()
         @JvmField
-        val mcVersion: String = SharedConstants.getGameVersion().id()
+        val mcVersion: String = SharedConstants.getCurrentVersion().id()
 
         @JvmStatic
         lateinit var INSTANCE: FeeshMod

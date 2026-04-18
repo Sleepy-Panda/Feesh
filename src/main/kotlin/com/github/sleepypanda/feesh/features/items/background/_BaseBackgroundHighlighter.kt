@@ -1,9 +1,9 @@
 package com.github.sleepypanda.feesh.features.items.background
 
 import com.github.sleepypanda.feesh.features.items.background.BackgroundHighlighterManager
-import net.minecraft.client.gui.screen.ingame.HandledScreen
-import net.minecraft.item.ItemStack
-import net.minecraft.screen.slot.Slot
+import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen
+import net.minecraft.world.item.ItemStack
+import net.minecraft.world.inventory.Slot
 
 /**
  * Base class for all background highlighters that draw backgrounds under item icons in container GUIs.
@@ -43,7 +43,7 @@ abstract class BaseBackgroundHighlighter {
      */
     abstract fun getItemStackBackgroundColor(
         stack: ItemStack,
-        screen: HandledScreen<*>,
+        screen: AbstractContainerScreen<*>,
         slot: Slot
     ): Int?
 

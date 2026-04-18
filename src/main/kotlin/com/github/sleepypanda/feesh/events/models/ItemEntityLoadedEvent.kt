@@ -1,6 +1,6 @@
 package com.github.sleepypanda.feesh.events.models
 
-import net.minecraft.entity.ItemEntity
+import net.minecraft.world.entity.item.ItemEntity
 
 /**
  * Event for when an ItemEntity is initially loaded into the client world.

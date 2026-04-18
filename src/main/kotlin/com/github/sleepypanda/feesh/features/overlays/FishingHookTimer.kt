@@ -16,7 +16,7 @@ import com.github.sleepypanda.feesh.utils.gui.FeeshGui
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
 import com.github.sleepypanda.feesh.utils.enums.Alignment
-import net.minecraft.entity.decoration.ArmorStandEntity
+import net.minecraft.world.entity.decoration.ArmorStand
 import java.util.UUID
 
 enum class FishState {
@@ -147,13 +147,14 @@ object FishingHookTimer {
     }
 
     private fun getHypixelFishingHookTimer(x: Double, y: Double, z: Double): HypixelTimerData? {
-        val world = FeeshMod.mc.world ?: return null
+        val world = FeeshMod.mc.level ?: return null
 
-        val armorStands = world.entities
-            .filterIsInstance<ArmorStandEntity>()
+        val armorStands = world
+            .entitiesForRendering()
+            .filterIsInstance<ArmorStand>()
             .filter { armorStand ->
                 val distance = EntityUtils.getDistance(x, y, z, armorStand.x, armorStand.y, armorStand.z)
-                distance <= 5.0 && armorStand.isCustomNameVisible
+                distance <= 5.0 && armorStand.customName != null
             }
 
         for (armorStand in armorStands) {

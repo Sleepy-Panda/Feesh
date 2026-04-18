@@ -4,10 +4,9 @@ import com.github.sleepypanda.feesh.utils.ChatUtils.removeFormatting
 import com.github.sleepypanda.feesh.utils.ItemUtils
 import com.github.sleepypanda.feesh.utils.WorldUtils
 import com.github.sleepypanda.feesh.settings.categories.Items
-import net.minecraft.client.gui.screen.ingame.HandledScreen
-import net.minecraft.component.DataComponentTypes
-import net.minecraft.item.ItemStack
-import net.minecraft.screen.slot.Slot
+import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen
+import net.minecraft.world.item.ItemStack
+import net.minecraft.world.inventory.Slot
 
 object TrashBooksHighlighter : BaseBackgroundHighlighter() {
 
@@ -24,10 +23,10 @@ object TrashBooksHighlighter : BaseBackgroundHighlighter() {
         return WorldUtils.isInSkyblock() && Items.trashBooksHighlighter
     }
 
-    override fun getItemStackBackgroundColor(stack: ItemStack, screen: HandledScreen<*>, slot: Slot): Int? {
+    override fun getItemStackBackgroundColor(stack: ItemStack, screen: AbstractContainerScreen<*>, slot: Slot): Int? {
         if (trashBookNames.isEmpty()) return null
 
-        val itemName = stack.name.string.removeFormatting()
+        val itemName = stack.hoverName.string.removeFormatting()
         if (itemName != "Enchanted Book") return null
 
         val bookName = ItemUtils.getEnchantedBookName(stack) ?: return null

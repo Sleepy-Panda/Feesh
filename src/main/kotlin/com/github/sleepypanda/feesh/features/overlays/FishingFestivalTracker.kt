@@ -21,7 +21,6 @@ import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
 import com.github.sleepypanda.feesh.utils.FishingHookUtils
 import com.github.sleepypanda.feesh.utils.gui.FeeshGui
 import com.github.sleepypanda.feesh.utils.gui.GuiButton
-import net.minecraft.sound.SoundEvents
 import java.util.Date
 
 object FishingFestivalTracker {
@@ -192,7 +191,7 @@ object FishingFestivalTracker {
         CommonUtils.showTitle("${YELLOW}Fishing Festival ended")
 
         if (General.soundMode != SoundMode.OFF) {
-            SoundUtils.playSound(SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP)
+            SoundUtils.playSound()
         }
 
         val countsText = sharkInfos.zip(SHARK_NAMES.map { sharksCaught[it] ?: 0 }).joinToString(" ") { (info, count) ->

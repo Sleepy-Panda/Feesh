@@ -13,7 +13,7 @@ import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
 import com.github.sleepypanda.feesh.features.help.VersionChecker
 import com.teamresourceful.resourcefulconfig.api.types.options.TranslatableValue
 import com.teamresourceful.resourcefulconfigkt.api.ConfigKt
-import net.minecraft.util.Util
+import net.minecraft.Util
 
 object Settings : ConfigKt("${FeeshMod.MOD_ID}/config") {
     override val name: TranslatableValue
@@ -77,6 +77,6 @@ object Settings : ConfigKt("${FeeshMod.MOD_ID}/config") {
     fun save() = FeeshMod.INSTANCE.settings.save()
 
     private fun openLink(url: String) {
-        Util.getOperatingSystem().open(url)
+        Util.getPlatform().openUri(url)
     }
 }

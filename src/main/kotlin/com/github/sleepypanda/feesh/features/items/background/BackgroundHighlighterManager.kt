@@ -3,10 +3,9 @@ package com.github.sleepypanda.feesh.features.items.background
 import com.github.sleepypanda.feesh.events.EventBus
 import com.github.sleepypanda.feesh.events.models.ScreenBeforeInitEvent
 import com.github.sleepypanda.feesh.events.models.BeforeSlotRenderedEvent
-import net.minecraft.client.gui.DrawContext
-import net.minecraft.client.gui.screen.ingame.HandledScreen
-import net.minecraft.item.ItemStack
-import net.minecraft.screen.slot.Slot
+import net.minecraft.client.gui.GuiGraphics
+import net.minecraft.world.item.ItemStack
+import net.minecraft.world.inventory.Slot
 
 /**
  * Coordinates all [BaseBackgroundHighlighter] instances:
@@ -46,7 +45,7 @@ object BackgroundHighlighterManager {
 
         val screen = event.screen
         val slot = event.slot
-        val stack = slot.stack ?: return
+        val stack = slot.item
         if (stack.isEmpty) return
 
         val identifier = getStackIdentifier(stack)
@@ -61,7 +60,7 @@ object BackgroundHighlighterManager {
         }
     }
 
-    private fun drawBackground(context: DrawContext, slot: Slot, color: Int) {
+    private fun drawBackground(context: GuiGraphics, slot: Slot, color: Int) {
         val x = slot.x
         val y = slot.y
         context.fill(x, y, x + DEFAULT_SLOT_SIZE, y + DEFAULT_SLOT_SIZE, color)
@@ -71,6 +70,6 @@ object BackgroundHighlighterManager {
      * Calculates an item stack identifier used for caching.
      */
     private fun getStackIdentifier(stack: ItemStack): String {
-        return stack.name.string + System.identityHashCode(stack)
+        return stack.hoverName.string + System.identityHashCode(stack)
     }
 }

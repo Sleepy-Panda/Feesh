@@ -13,8 +13,7 @@ import com.github.sleepypanda.feesh.utils.SoundUtils
 import com.github.sleepypanda.feesh.utils.WorldUtils
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
-import net.minecraft.entity.decoration.ArmorStandEntity
-import net.minecraft.entity.passive.SnifferEntity
+import net.minecraft.world.entity.animal.sniffer.Sniffer
 import java.util.Date
 
 object NessieDestinationAlert {
@@ -130,7 +129,7 @@ object NessieDestinationAlert {
 
     private fun checkNessieChosenDestination(nessieEntityId: Int) {
         val mobEntity = EntityUtils.getMcEntityById(nessieEntityId) ?: return
-        if (mobEntity !is SnifferEntity) return
+        if (mobEntity !is Sniffer) return
 
         if (driptoadDelveEntranceCoords.any { (x, y, z) -> EntityUtils.getDistance(mobEntity, x, y, z) <= DESTINATION_ENTRANCE_RADIUS }) {
             alertOnNessieDestinationChosen(nessieEntityId, "Driptoad Delve")

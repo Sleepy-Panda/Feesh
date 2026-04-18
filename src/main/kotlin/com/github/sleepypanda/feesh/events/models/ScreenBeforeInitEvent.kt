@@ -1,6 +1,6 @@
 package com.github.sleepypanda.feesh.events.models
 
-import net.minecraft.client.gui.screen.Screen
+import net.minecraft.client.gui.screens.Screen
 
 /*
  * Called from ScreenEvents.BEFORE_INIT, before a GUI screen is initialized.

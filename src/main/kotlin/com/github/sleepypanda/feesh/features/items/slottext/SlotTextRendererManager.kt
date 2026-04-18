@@ -4,10 +4,10 @@ import com.github.sleepypanda.feesh.FeeshMod
 import com.github.sleepypanda.feesh.events.EventBus
 import com.github.sleepypanda.feesh.events.models.ScreenBeforeInitEvent
 import com.github.sleepypanda.feesh.events.models.AfterSlotRenderedEvent
-import net.minecraft.client.font.TextRenderer
-import net.minecraft.client.gui.DrawContext
-import net.minecraft.item.ItemStack
-import net.minecraft.screen.slot.Slot
+import net.minecraft.client.gui.Font
+import net.minecraft.client.gui.GuiGraphics
+import net.minecraft.world.item.ItemStack
+import net.minecraft.world.inventory.Slot
 
 /**
  * Coordinates all [BaseSlotTextRenderer] instances:
@@ -42,10 +42,10 @@ object SlotTextRendererManager {
         val enabledRenderers = renderers.filter { it.isEnabled() }
         if (enabledRenderers.isEmpty()) return
 
-        val textRenderer = FeeshMod.mc.textRenderer ?: return
+        val textRenderer = FeeshMod.mc.font
         val screen = event.screen
         val slot = event.slot
-        val stack = slot.stack ?: return
+        val stack = slot.item
         if (stack.isEmpty) return
 
         val identifier = getStackIdentifier(stack)
@@ -61,20 +61,20 @@ object SlotTextRendererManager {
     }
 
     private fun drawBottomLeftText(
-        context: DrawContext,
-        textRenderer: TextRenderer,
+        context: GuiGraphics,
+        textRenderer: Font,
         slot: Slot,
         text: String,
         color: Int,
         shadow: Boolean
     ) {
-        val scaledTextHeight = textRenderer.fontHeight * SLOT_TEXT_SCALE
+        val scaledTextHeight = textRenderer.lineHeight * SLOT_TEXT_SCALE
         val x = slot.x + 1
         val y = slot.y + DEFAULT_SLOT_SIZE - scaledTextHeight
 
-        context.matrices.pushMatrix()
-        context.matrices.scale(SLOT_TEXT_SCALE, SLOT_TEXT_SCALE)
-        context.drawText(
+        context.pose().pushMatrix()
+        context.pose().scale(SLOT_TEXT_SCALE, SLOT_TEXT_SCALE)
+        context.drawString(
             textRenderer,
             text,
             (x / SLOT_TEXT_SCALE).toInt(),
@@ -82,25 +82,25 @@ object SlotTextRendererManager {
             color,
             shadow
         )
-        context.matrices.popMatrix()
+        context.pose().popMatrix()
     }
 
     private fun drawBottomRightText(
-        context: DrawContext,
-        textRenderer: TextRenderer,
+        context: GuiGraphics,
+        textRenderer: Font,
         slot: Slot,
         text: String,
         color: Int,
         shadow: Boolean
     ) {
-        val scaledTextWidth = textRenderer.getWidth(text) * SLOT_TEXT_SCALE
-        val scaledTextHeight = textRenderer.fontHeight * SLOT_TEXT_SCALE
+        val scaledTextWidth = textRenderer.width(text) * SLOT_TEXT_SCALE
+        val scaledTextHeight = textRenderer.lineHeight * SLOT_TEXT_SCALE
         val x = slot.x + DEFAULT_SLOT_SIZE - scaledTextWidth - 1
         val y = slot.y + DEFAULT_SLOT_SIZE - scaledTextHeight
 
-        context.matrices.pushMatrix()
-        context.matrices.scale(SLOT_TEXT_SCALE, SLOT_TEXT_SCALE)
-        context.drawText(
+        context.pose().pushMatrix()
+        context.pose().scale(SLOT_TEXT_SCALE, SLOT_TEXT_SCALE)
+        context.drawString(
             textRenderer,
             text,
             (x / SLOT_TEXT_SCALE).toInt(),
@@ -108,10 +108,10 @@ object SlotTextRendererManager {
             color,
             shadow
         )
-        context.matrices.popMatrix()
+        context.pose().popMatrix()
     }
 
     private fun getStackIdentifier(stack: ItemStack): String {
-        return stack.name.string + System.identityHashCode(stack)
+        return stack.hoverName.string + System.identityHashCode(stack)
     }
 }

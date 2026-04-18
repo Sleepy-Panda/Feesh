@@ -11,9 +11,9 @@ import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.events.EventBus
 import com.github.sleepypanda.feesh.events.models.ClientTickEvent
 import com.github.sleepypanda.feesh.events.models.WorldChangedEvent
-import net.minecraft.item.ItemStack
-import net.minecraft.component.DataComponentTypes
-import net.minecraft.entity.EquipmentSlot
+import net.minecraft.world.item.ItemStack
+import net.minecraft.core.component.DataComponents
+import net.minecraft.world.entity.EquipmentSlot
 import java.util.Date
 
 object NonFishingArmorAlert {
@@ -64,10 +64,10 @@ object NonFishingArmorAlert {
     private fun isPlayerWearingFishingArmor(): Boolean {
         val player = FeeshMod.mc.player ?: return false
         
-        val helmet = player.getEquippedStack(EquipmentSlot.HEAD)
-        val chestplate = player.getEquippedStack(EquipmentSlot.CHEST)
-        val leggings = player.getEquippedStack(EquipmentSlot.LEGS)
-        val boots = player.getEquippedStack(EquipmentSlot.FEET) 
+        val helmet = player.getItemBySlot(EquipmentSlot.HEAD)
+        val chestplate = player.getItemBySlot(EquipmentSlot.CHEST)
+        val leggings = player.getItemBySlot(EquipmentSlot.LEGS)
+        val boots = player.getItemBySlot(EquipmentSlot.FEET)
         val armorPieces = listOf(helmet, chestplate, leggings, boots)
         val fishingArmorCount = armorPieces.count { armorPiece -> isFishingArmor(armorPiece) }
 
@@ -77,8 +77,8 @@ object NonFishingArmorAlert {
     private fun isFishingArmor(item: ItemStack?): Boolean {
         if (item == null || item.isEmpty) return false
 
-        val itemName = item.name.string
-        val loreLines = item.get(DataComponentTypes.LORE)?.lines?.map { it.string } ?: listOf()
+        val itemName = item.hoverName.string
+        val loreLines = item.get(DataComponents.LORE)?.lines()?.map { it.string } ?: listOf()
         
         if (itemName.isEmpty() || loreLines.isEmpty()) return false
 

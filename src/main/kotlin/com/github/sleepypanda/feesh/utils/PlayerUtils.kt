@@ -89,7 +89,7 @@ object PlayerUtils {
             return
         }
         for (i in 0..8) {
-            val stack = player.inventory.getStack(i)
+            val stack = player.inventory.getItem(i)
             if (ItemUtils.isFishingRod(stack)) {
                 cachedHasFishingRodInHotbar = true
                 return
@@ -103,10 +103,7 @@ object PlayerUtils {
             cachedHasDirtRodInHand = false
             return
         }
-        val heldItem = player.mainHandStack ?: run {
-            cachedHasDirtRodInHand = false
-            return
-        }
+        val heldItem = player.mainHandItem
         cachedHasDirtRodInHand = ItemUtils.isDirtRod(heldItem)
     }
 }
