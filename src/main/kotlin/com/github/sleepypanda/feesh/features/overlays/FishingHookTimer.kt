@@ -17,6 +17,7 @@ import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
 import com.github.sleepypanda.feesh.utils.enums.Alignment
 import net.minecraft.world.entity.decoration.ArmorStand
+import java.util.UUID
 
 enum class FishState {
     NONE,
@@ -27,7 +28,7 @@ enum class FishState {
 data class FishingHookTimerData(
     var ticksExisted: Int = 0,
     var fishState: FishState = FishState.NONE,
-    var hypixelTimerEntityId: Int? = null,
+    var hypixelTimerUuid: UUID? = null,
     var hypixelTimerText: String = ""
 )
 
@@ -88,7 +89,7 @@ object FishingHookTimer {
         val hypixelHookTimer = getHypixelFishingHookTimer(fishingHook.x, fishingHook.y, fishingHook.z)
         if (hypixelHookTimer != null) {
             fishingHookTimer = fishingHookTimer!!.copy(
-                hypixelTimerEntityId = hypixelHookTimer.entityId,
+                hypixelTimerUuid = hypixelHookTimer.uuid,
                 fishState = hypixelHookTimer.fishState,
                 hypixelTimerText = hypixelHookTimer.name
             )
@@ -132,8 +133,8 @@ object FishingHookTimer {
     }
 
     @JvmStatic
-    fun shouldCancelArmorStandRendering(entityId: Int?): Boolean {
-        if (entityId == null) return false
+    fun shouldCancelArmorStandRendering(entityUuid: UUID?): Boolean {
+        if (entityUuid == null) return false
         if (!Overlays.fishingHookTimerOverlay ||
             !WorldUtils.isInSkyblock() ||
             !WorldUtils.isInFishingWorld() ||
@@ -142,13 +143,14 @@ object FishingHookTimer {
             return false
         }
 
-        return fishingHookTimer?.hypixelTimerEntityId == entityId
+        return fishingHookTimer?.hypixelTimerUuid == entityUuid
     }
 
     private fun getHypixelFishingHookTimer(x: Double, y: Double, z: Double): HypixelTimerData? {
         val world = FeeshMod.mc.level ?: return null
 
-        val armorStands = world.entitiesForRendering()
+        val armorStands = world
+            .entitiesForRendering()
             .filterIsInstance<ArmorStand>()
             .filter { armorStand ->
                 val distance = EntityUtils.getDistance(x, y, z, armorStand.x, armorStand.y, armorStand.z)
@@ -159,7 +161,7 @@ object FishingHookTimer {
             val customName = armorStand.customName?.getFormattedString() ?: continue
             if (customName.matches(FISHING_HOOK_TIMER_UNTIL_REEL_IN_REGEX) || customName == FISH_ARRIVED) {
                 val fishState = if (customName == FISH_ARRIVED) FishState.ARRIVED else FishState.ARRIVING
-                return HypixelTimerData(entityId = armorStand.id, name = customName, fishState = fishState)
+                return HypixelTimerData(uuid = armorStand.uuid, name = customName, fishState = fishState)
             }
         }
 
@@ -167,7 +169,7 @@ object FishingHookTimer {
     }
 
     private data class HypixelTimerData(
-        val entityId: Int,
+        val uuid: UUID,
         val name: String,
         val fishState: FishState
     )

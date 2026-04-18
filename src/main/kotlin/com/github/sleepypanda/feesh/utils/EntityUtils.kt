@@ -56,7 +56,9 @@ object EntityUtils {
     fun getPlayersFishingHookEntity(): FishingHook? {
         val player = FeeshMod.mc.player ?: return null
         val world = FeeshMod.mc.level ?: return null
-        return world.entitiesForRendering().filterIsInstance<FishingHook>().firstOrNull { it.owner == player }
+        val fishingHook = player.fishing
+        return if (fishingHook == null) world.entitiesForRendering().filterIsInstance<FishingHook>().firstOrNull { it.owner == player } 
+            else world.getEntity(player.fishing!!.id) as? FishingHook
     }
 
     /**

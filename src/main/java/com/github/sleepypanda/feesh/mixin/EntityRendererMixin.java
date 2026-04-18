@@ -26,7 +26,7 @@ public abstract class EntityRendererMixin<T extends Entity, S extends EntityRend
     private void feesh$onShouldRender(T entity, Frustum frustum, double camX, double camY, double camZ, CallbackInfoReturnable<Boolean> cir) {
         switch (entity) {
             case ArmorStand armorStand -> {
-                if (FishingHookTimer.shouldCancelArmorStandRendering(armorStand.getId())) {
+                if (FishingHookTimer.shouldCancelArmorStandRendering(armorStand.getUUID())) {
                     cir.setReturnValue(false);
                 }
             }
