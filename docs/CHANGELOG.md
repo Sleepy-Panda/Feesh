@@ -8,7 +8,8 @@ Released on: ???
 
 ## Bugfixes
 
-- Fix the issue of rare sea creatures not being highlighted sometimes.
+- Fixed rare sea creatures not being highlighted sometimes.
+- Fixed Fishing profit tracker not tracking sack drops when SkyHanni Sack hider is enabled.
 
 ## Other
 

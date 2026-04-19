@@ -1,7 +1,7 @@
 package com.github.sleepypanda.feesh.events.publishers
 
 import com.github.sleepypanda.feesh.events.EventBus
-import com.github.sleepypanda.feesh.events.models.ChatEvent
+import com.github.sleepypanda.feesh.events.models.ChatCancellableEvent
 import com.github.sleepypanda.feesh.events.models.SacksItemsPickupEvent
 import com.github.sleepypanda.feesh.utils.ChatUtils.removeFormatting
 import com.github.sleepypanda.feesh.utils.WorldUtils
@@ -13,10 +13,10 @@ object SacksItemPickupPublisher {
     private val ITEM_LINE_REGEX = Regex("(\\+[\\d,]+) (.+) \\((.+)\\)") // +1,344 Pufferfish (Fishing Sack)
 
     fun init() {
-        EventBus.subscribe(ChatEvent::class, ::onChat)
+        EventBus.subscribe(ChatCancellableEvent::class, ::onChat) // Message might be cancelled by sacks hider e.g. from SH
     }
 
-    private fun onChat(event: ChatEvent) {
+    private fun onChat(event: ChatCancellableEvent) {
         if (!WorldUtils.isInSkyblock()) return
 
         val message = event.message
