@@ -8,7 +8,7 @@ Released on: ???
 
 ## Bugfixes
 
--
+- Fix the issue of rare sea creatures not being highlighted sometimes.
 
 ## Other
 
