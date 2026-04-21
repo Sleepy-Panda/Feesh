@@ -104,6 +104,18 @@ class FishingProfitDrops {
                 npcPrice = null,
             ),
             FishingProfitDropInfo(
+                itemId = "GOLDEN_BAIT",
+                itemName = "Golden Bait",
+                itemDisplayName = "${UNCOMMON}Golden Bait", // From Seal pet
+                npcPrice = 100.0,
+            ),
+            FishingProfitDropInfo(
+                itemId = "TREASURE_BAIT",
+                itemName = "Treasure Bait",
+                itemDisplayName = "${RARE}Treasure Bait", // From Seal pet
+                npcPrice = 500.0,
+            ),
+            FishingProfitDropInfo(
                 itemId = "WATER_ORB",
                 itemName = "Water Orb",
                 itemDisplayName = "${EPIC}Water Orb",

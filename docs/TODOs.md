@@ -1,9 +1,9 @@
 ## Players feedback
 
 - TODO: Test in 1.21
-- the highlight rare sc does not work ~20% of the time on Tiki
+- TODO: Test party drops message
 - dropping a tiki mask or a shed does not update this trackers, i have to update the drop count manually each time
-- Sacks hider in SH
+- Deployable in mineshaft
 - 1.21 Fishing Hook armorstand
 - "Hotspot is gone" when I leave lobby or game
 - Sometimes current world&zone is detected wrongly
