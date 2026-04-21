@@ -23,7 +23,7 @@ import com.github.sleepypanda.feesh.utils.ChatUtils.removeFormatting
 object RareDropAlert {
     // §9Компания §8> §b[MVP] PivoTheSadFisher§f: --> A Deep Sea Orb has dropped <--
     // §9Party §8> §6[MVP§3++§6] vadim31§f: --> A Deep Sea Orb has dropped (#10, +365 ✯ Magic Find) <--
-    val FEESH_PCHAT_PATTERN = Regex("^--> (A|An) (?<itemName>(.*)) has dropped (.*)<--$")
+    val FEESH_PCHAT_PATTERN = Regex("^--> (?:A|An) (?<itemName>.+?) has dropped(?: \\([^)]*\\))? <--$")
 
     fun init() {
         EventBus.subscribe(RareDropEvent::class, ::onOwnDrop)
@@ -33,27 +33,28 @@ object RareDropAlert {
     private fun onOwnDrop(event: RareDropEvent) {
         if (!WorldUtils.isInSkyblock() || !Alerts.alertOnRareDrops) return
 
-        val itemName = event.itemName
-        val playerName = PlayerUtils.getFormattedNameWithoutPrefix() ?: return
+        CommonUtils.runWithCatching("Failed to show Own Rare Drop alert") {
+            val itemName = event.itemName
+            val playerName = PlayerUtils.getFormattedNameWithoutPrefix() ?: return@onOwnDrop
 
-        showAlert(itemName, playerName, isOwnDrop = true)
+            showAlert(itemName, playerName, isOwnDrop = true)
+        }
     }
 
     private fun onPartyChatDrop(event: PartyChatEvent) {
         if (!WorldUtils.isInSkyblock() || !Alerts.alertOnRareDrops || Alerts.alertOnRareDropsSource != AlertSource.OWN_AND_PARTY) return
 
-        val message = event.messagePayload.removeFormatting()
-
-        if (!FEESH_PCHAT_PATTERN.containsMatchIn(message)) return
-
-        val match = FEESH_PCHAT_PATTERN.matchEntire(message) ?: return
-        val itemName = match.groups.get("itemName")?.value ?: return
-
-        val me = PlayerUtils.getName() ?: return
-        val playerName = PlayerUtils.getFormattedPlayerNameFromPartyChat(event.rankAndPlayer) ?: return
-        if (!playerName.isNullOrEmpty() && !me.isNullOrEmpty() && playerName.removeFormatting().contains(me)) return
-
-        showAlert(itemName, playerName, isOwnDrop = false)
+        CommonUtils.runWithCatching("Failed to show Party Chat Rare Drop alert") {
+            val message = event.messagePayload.removeFormatting()
+            val match = FEESH_PCHAT_PATTERN.matchEntire(message) ?: return@onPartyChatDrop
+            val itemName = match.groups.get("itemName")?.value ?: return@onPartyChatDrop
+    
+            val me = PlayerUtils.getName() ?: return@onPartyChatDrop
+            val playerName = PlayerUtils.getFormattedPlayerNameFromPartyChat(event.rankAndPlayer) ?: return@onPartyChatDrop
+            if (!playerName.isEmpty() && !me.isEmpty() && playerName.removeFormatting().contains(me)) return@onPartyChatDrop
+    
+            showAlert(itemName, playerName, isOwnDrop = false)
+        }
     }
 
     private fun showAlert(itemName: String, playerName: String, isOwnDrop: Boolean) {
