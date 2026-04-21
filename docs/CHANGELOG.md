@@ -4,7 +4,7 @@ Released on: ???
 
 ## Features
 
--
+- Added Golden Bait and Treasure bait to the Fishing profit tracker, because of Seal pet's perk.
 
 ## Bugfixes
 
