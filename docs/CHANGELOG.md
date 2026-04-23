@@ -4,6 +4,7 @@ Released on: ???
 
 ## Features
 
+- Added Night Squid to the "Highlight rare sea creatures" functionality, to easier hunt them.
 - Added Golden Bait and Treasure bait to the Fishing profit tracker, because of Seal pet's perk.
 
 ## Bugfixes

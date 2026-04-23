@@ -5,7 +5,6 @@
 - dropping a tiki mask or a shed does not update this trackers, i have to update the drop count manually each time
 - Deployable in mineshaft
 - 1.21 Fishing Hook armorstand
-- "Hotspot is gone" when I leave lobby or game
 - Sometimes current world&zone is detected wrongly
 - Ragnarok immunity timer
 - Someone has no Vial title/sound (I checked and did not reproduce, I had my title/sound as usual)
