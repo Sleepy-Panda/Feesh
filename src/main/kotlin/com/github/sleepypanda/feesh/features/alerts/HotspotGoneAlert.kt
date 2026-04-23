@@ -63,12 +63,13 @@ object HotspotGoneAlert {
 
         Timer().schedule(timerTask {
             FeeshMod.mc.execute {
+                if (FeeshMod.mc.level == null) return@execute // Leaving the world or game
                 if (lastClosestHotspot == null) return@execute
                 if (lastClosestHotspot!!.entity.uuid != hotspotUuid) return@execute
                 playAlert(perk)
                 lastClosestHotspot = null
             }
-        }, 100) // If player changes server, it causes armor stand to despawn before, but we don't need alert. Let onWorldChanged trigger first.
+        }, 150) // If player changes server, it causes armor stand to despawn before, but we don't need alert. Let onWorldChanged trigger first.
     }
 
     private fun trackLatestHotspot() {
