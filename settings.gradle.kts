@@ -17,8 +17,8 @@ pluginManagement {
     }
 
     plugins {
-        kotlin("jvm") version("2.2.21")
-        id("dev.deftu.gradle.multiversion-root") version("2.73.0")
+        kotlin("jvm") version("2.3.0")
+        id("dev.deftu.gradle.multiversion-root") version("2.70.0")
         id("net.fabricmc.fabric-loom") version("1.16.1")
     }
 }
@@ -33,10 +33,6 @@ listOf(
     include(":$version")
     project(":$version").apply {
         projectDir = file("versions/$version")
-        buildFileName = if (version == "26.1-fabric") {
-            "build.gradle.kts"
-        } else {
-            "../../build.gradle.kts"
-        }
+        buildFileName = "../../build.gradle.kts"
     }
 }

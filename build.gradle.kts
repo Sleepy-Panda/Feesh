@@ -3,7 +3,7 @@ import dev.deftu.gradle.utils.version.MinecraftVersions
 plugins {
     java
     kotlin("jvm")
-    kotlin("plugin.serialization") version "2.2.21"
+    kotlin("plugin.serialization") version "2.3.0"
 
     // https://github.com/Deftu/Gradle-Toolkit
     id("dev.deftu.gradle.multiversion") // Applies preprocessing for multiple versions of Minecraft and/or multiple mod loaders.
@@ -17,7 +17,7 @@ plugins {
 
 configurations.all {
     resolutionStrategy {
-        force("org.jetbrains.kotlin:kotlin-stdlib:2.2.21")
+        force("org.jetbrains.kotlin:kotlin-stdlib:2.3.0")
     }
 }
 
@@ -33,20 +33,18 @@ toolkitMultiversion {
 dependencies {
     when (mcData.version) {
         MinecraftVersions.VERSION_1_21_10 -> {
-            modImplementation("net.fabricmc:fabric-language-kotlin:${mcData.dependencies.fabric.fabricLanguageKotlinVersion}")
-            modImplementation(include("com.teamresourceful.resourcefulconfigkt:resourcefulconfigkt-fabric-1.21.5:${property("rconfig.version.1.21.5")}")!!)
-            modImplementation("net.fabricmc.fabric-api:fabric-api:0.138.3+1.21.10")
-            modImplementation(include("com.teamresourceful.resourcefulconfig:resourcefulconfig-fabric-1.21.9:${property("rconfig.version.1.21.10")}")!!)
+            maybeModImplementation("net.fabricmc:fabric-language-kotlin:${mcData.dependencies.fabric.fabricLanguageKotlinVersion}")
+            maybeModImplementation(include("com.teamresourceful.resourcefulconfigkt:resourcefulconfigkt-fabric-1.21.5:${property("rconfig.version.1.21.5")}")!!)
+            maybeModImplementation("net.fabricmc.fabric-api:fabric-api:0.138.3+1.21.10")
+            maybeModImplementation(include("com.teamresourceful.resourcefulconfig:resourcefulconfig-fabric-1.21.9:${property("rconfig.version.1.21.10")}")!!)
         }
         MinecraftVersions.VERSION_1_21_11 -> {
-            modImplementation("net.fabricmc:fabric-language-kotlin:${mcData.dependencies.fabric.fabricLanguageKotlinVersion}")
-            modImplementation(include("com.teamresourceful.resourcefulconfigkt:resourcefulconfigkt-fabric-1.21.5:${property("rconfig.version.1.21.5")}")!!)
-            modImplementation("net.fabricmc.fabric-api:fabric-api:0.141.3+1.21.11")
-            modImplementation(include("com.teamresourceful.resourcefulconfig:resourcefulconfig-fabric-1.21.11:${property("rconfig.version.1.21.11")}")!!)
+            maybeModImplementation("net.fabricmc:fabric-language-kotlin:${mcData.dependencies.fabric.fabricLanguageKotlinVersion}")
+            maybeModImplementation(include("com.teamresourceful.resourcefulconfigkt:resourcefulconfigkt-fabric-1.21.5:${property("rconfig.version.1.21.5")}")!!)
+            maybeModImplementation("net.fabricmc.fabric-api:fabric-api:0.141.3+1.21.11")
+            maybeModImplementation(include("com.teamresourceful.resourcefulconfig:resourcefulconfig-fabric-1.21.11:${property("rconfig.version.1.21.11")}")!!)
         }
         MinecraftVersions.VERSION_26_1 -> {
-            //minecraft("com.mojang:minecraft:26.1.2")
-            //implementation("net.fabricmc:fabric-loader:0.18.6")
             implementation("net.fabricmc:fabric-language-kotlin:1.13.10+kotlin.2.3.20")
             implementation("net.fabricmc.fabric-api:fabric-api:0.145.4+26.1.2")
             implementation("com.teamresourceful.resourcefulconfig:resourcefulconfig-fabric-26.1:${property("rconfig.version.26.1")}")
