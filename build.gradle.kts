@@ -1,4 +1,6 @@
 import dev.deftu.gradle.utils.version.MinecraftVersions
+import org.gradle.api.attributes.java.TargetJvmVersion
+import org.gradle.api.tasks.compile.JavaCompile
 
 plugins {
     java
@@ -30,6 +32,25 @@ toolkitMultiversion {
     moveBuildsToRootProject.set(true)
 }
 
+if (mcData.version == MinecraftVersions.VERSION_26_1) {
+    java {
+        toolchain {
+            languageVersion.set(JavaLanguageVersion.of(25))
+        }
+        sourceCompatibility = JavaVersion.VERSION_25
+        targetCompatibility = JavaVersion.VERSION_25
+    }
+    kotlin {
+        jvmToolchain(25)
+    }
+    tasks.withType<JavaCompile>().configureEach {
+        options.release.set(25)
+    }
+    configurations.configureEach {
+        attributes.attribute(TargetJvmVersion.TARGET_JVM_VERSION_ATTRIBUTE, 25)
+    }
+}
+
 dependencies {
     when (mcData.version) {
         MinecraftVersions.VERSION_1_21_10 -> {
@@ -47,6 +68,7 @@ dependencies {
         MinecraftVersions.VERSION_26_1 -> {
             implementation("net.fabricmc:fabric-language-kotlin:1.13.10+kotlin.2.3.20")
             implementation("net.fabricmc.fabric-api:fabric-api:0.145.4+26.1.2")
+            implementation("com.teamresourceful.resourcefulconfigkt:resourcefulconfigkt-fabric-1.21.4:3.4.3")
             implementation("com.teamresourceful.resourcefulconfig:resourcefulconfig-fabric-26.1:${property("rconfig.version.26.1")}")
         }
         else -> {}
