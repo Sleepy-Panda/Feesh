@@ -3,10 +3,6 @@ package com.github.sleepypanda.feesh.utils.data
 import com.github.sleepypanda.feesh.FeeshMod
 import com.github.sleepypanda.feesh.events.EventBus
 import com.github.sleepypanda.feesh.events.models.GameClosedEvent
-import com.github.sleepypanda.feesh.features.overlays.BayouTracker
-import com.github.sleepypanda.feesh.features.overlays.CatchCounterData
-import com.github.sleepypanda.feesh.features.overlays.DropCounterData
-import com.github.sleepypanda.feesh.features.overlays.WaterHotspotsTracker
 import com.github.sleepypanda.feesh.utils.CommonUtils
 import com.github.sleepypanda.feesh.utils.FileUtils
 import com.github.sleepypanda.feesh.utils.gui.FeeshGui
@@ -166,48 +162,8 @@ object PersistentDataManager {
         if (loaded != null) {
             FeeshMod.LOGGER.info("[Feesh] Successfully loaded Feesh data entries")
         }
-
-        // TODO To remove in a while
-        if (hasMigratedLegacyWaterHotspotsAndBayou()) {
-            FileUtils.saveJsonToFileSync(feeshDataFile, feeshData, gson, saveLock, "Feesh data")
-            FeeshMod.LOGGER.info("[Feesh] Successfully migrated waterHotspotsAndBayou into bayouTracker and waterHotspotsTracker")
-        }
     }
 
-    /**
-     * If waterHotspotsAndBayou is present (legacy), deep-copies its counters into bayouTracker and waterHotspotsTracker.
-     * Then it clears the legacy property, and returns flag to save feeshData.
-     */
-    private fun hasMigratedLegacyWaterHotspotsAndBayou(): Boolean {
-        try {
-            val legacy = feeshData.waterHotspotsAndBayou ?: return false
-            val migrated = feeshData.copy(
-                bayouTracker = BayouTracker.BayouTrackerData(
-                    titanoboa = deepCopyCatchCounterData(legacy.titanoboa),
-                    titanoboaSheds = deepCopyDropCounterData(legacy.titanoboaSheds)
-                ),
-                waterHotspotsTracker = WaterHotspotsTracker.WaterHotspotsTrackerData(
-                    wikiTiki = deepCopyCatchCounterData(legacy.wikiTiki),
-                    tikiMasks = deepCopyDropCounterData(legacy.tikiMasks)
-                ),
-                waterHotspotsAndBayou = null
-            )
-            feeshData = migrated
-            return true
-        } catch (ex: Exception) {
-            return false
-        }
-    }
-
-    private fun deepCopyCatchCounterData(value: CatchCounterData): CatchCounterData {
-        val json = gson.toJson(value)
-        return gson.fromJson(json, CatchCounterData::class.java) ?: CatchCounterData()
-    }
-
-    private fun deepCopyDropCounterData(value: DropCounterData): DropCounterData {
-        val json = gson.toJson(value)
-        return gson.fromJson(json, DropCounterData::class.java) ?: DropCounterData()
-    }
     
     private fun saveOverlayCoordsDataToFileAsync() {
         FileUtils.saveJsonToFileAsync(overlayCoordsFile, overlayCoordsData, gson, executor, saveLock, "Overlay coords")
