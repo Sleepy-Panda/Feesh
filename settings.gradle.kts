@@ -33,6 +33,10 @@ listOf(
     include(":$version")
     project(":$version").apply {
         projectDir = file("versions/$version")
-        buildFileName = "../../build.gradle.kts"
+        buildFileName = if (version == "26.1-fabric") {
+            "build.gradle.kts"
+        } else {
+            "../../build.gradle.kts"
+        }
     }
 }
