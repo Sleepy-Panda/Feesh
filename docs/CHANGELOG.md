@@ -9,6 +9,7 @@ Released on: ???
 ## Bugfixes
 
 - Fixed rare sea creatures not being highlighted sometimes.
+- Fixed "Hotspot is gone" appearing sometimes when leaving the world after hotspot fishing.
 - Fixed Fishing profit tracker not tracking sack drops when SkyHanni Sack hider is enabled.
 
 ## Other
