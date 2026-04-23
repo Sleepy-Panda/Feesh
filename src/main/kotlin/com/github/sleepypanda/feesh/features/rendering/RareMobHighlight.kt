@@ -19,9 +19,10 @@ import net.minecraft.world.entity.monster.Slime
 object RareMobHighlight {
     @JvmField
     val highlightedEntities = mutableMapOf<Int, Int>()
-    private val JAWBUS_FOLLOWER_NAME = "Jawbus Follower"
-    private val WIKI_TIKI_LASER_TOTEM_NAME = "Wiki Tiki Laser Totem"
-    private val extraEntities = listOf(JAWBUS_FOLLOWER_NAME, WIKI_TIKI_LASER_TOTEM_NAME);
+    private const val JAWBUS_FOLLOWER_NAME = "Jawbus Follower"
+    private const val WIKI_TIKI_LASER_TOTEM_NAME = "Wiki Tiki Laser Totem"
+    private const val NIGHT_SQUID_NAME = "Night Squid"
+    private val extraEntities = listOf(JAWBUS_FOLLOWER_NAME, WIKI_TIKI_LASER_TOTEM_NAME, NIGHT_SQUID_NAME);
 
     fun init() {
         EventBus.subscribe(WorldChangedEvent::class, ::onWorldChange)
@@ -49,7 +50,7 @@ object RareMobHighlight {
             entity,
             mobNames
         )?.baseMobName ?: return
-        val rareScInfo = SeaCreatures.rareSeaCreatures.find { it.name == cleanName }
+        val rareScInfo = SeaCreatures.allSeaCreatures.find { it.name == cleanName }
 
         if (rareScInfo == null && cleanName !in extraEntities) return
 
