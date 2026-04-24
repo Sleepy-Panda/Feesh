@@ -4,6 +4,8 @@ Released on: ???
 
 ## Features
 
+- Added support for Minecraft 26.1.x (Fabric).
+  - **This is experimental version, not fully tested on 26.1.1 / 26.1.2. Please let me know if you face any issues!**
 - Added Night Squid to the "Highlight rare sea creatures" functionality, to easier hunt them.
 - Added Golden Bait and Treasure bait to the Fishing profit tracker, because of Seal pet's perk.
 

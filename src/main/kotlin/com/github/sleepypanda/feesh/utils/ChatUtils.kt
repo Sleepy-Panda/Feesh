@@ -66,11 +66,19 @@ object ChatUtils {
     fun sendLocalChat(message: String, addModPrefix: Boolean = false) {
         if (message.isNullOrEmpty()) return
         val formattedMessage = if (addModPrefix) "${MOD_PREFIX} ${RESET}${message}" else message
-        FeeshMod.mc.gui.chat.addMessage(Component.literal(formattedMessage))
+        addLocalChatMessage(Component.literal(formattedMessage))
     }
 
     fun sendLocalChat(message: Component) {
+        addLocalChatMessage(message)
+    }
+   
+    private fun addLocalChatMessage(message: Component) {
+        //#if MC >= 26.1
+        //$$ FeeshMod.mc.gui.chat.addClientSystemMessage(message)
+        //#else
         FeeshMod.mc.gui.chat.addMessage(message)
+        //#endif
     }
 
     /**
@@ -123,7 +131,7 @@ object ChatUtils {
             Component.literal("${MOD_PREFIX} ${RESET}").append(text)
         } else text
         
-        FeeshMod.mc.gui.chat.addMessage(finalText)
+        addLocalChatMessage(finalText)
     }
 
     /**
@@ -144,7 +152,7 @@ object ChatUtils {
             Component.literal("${MOD_PREFIX} ${RESET}").append(fullText)
         } else fullText
 
-        FeeshMod.mc.gui.chat.addMessage(finalText)
+        addLocalChatMessage(finalText)
     }
 
     fun String.removeFormatting(): String {

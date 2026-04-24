@@ -10,7 +10,11 @@ import com.github.sleepypanda.feesh.utils.enums.Alignment
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
 import net.minecraft.client.gui.screens.Screen
+//#if MC >= 26.1
+//$$ import net.minecraft.client.gui.GuiGraphicsExtractor as GuiGraphics
+//#else
 import net.minecraft.client.gui.GuiGraphics
+//#endif
 import net.minecraft.client.input.KeyEvent
 import net.minecraft.client.input.MouseButtonEvent
 import net.minecraft.network.chat.Component
@@ -69,23 +73,37 @@ class MoveGuisScreen : Screen(Component.literal("Feesh Move Guis")) {
     private var lastDraggedGui: FeeshGui? = null
     private val color = Color(255, 255, 255, 255).rgb
     
-    override fun render(context: GuiGraphics, mouseX: Int, mouseY: Int, delta: Float) {       
+    //#if MC >= 26.1
+    //$$ override fun extractRenderState(context: GuiGraphics, mouseX: Int, mouseY: Int, delta: Float) {
+    //#else
+    override fun render(context: GuiGraphics, mouseX: Int, mouseY: Int, delta: Float) {
+    //#endif
         val mc = minecraft ?: return
         val textRenderer = mc.font
         
         val hint1 = Component.literal("${RED}${BOLD}Enable GUIs in settings to see them here!")
         val x1 = mc.window.guiScaledWidth / 2 - textRenderer.width(hint1) / 2
-        context.drawString(textRenderer, hint1, x1, 10, color, true)
+        drawStringCompat(context, textRenderer, hint1, x1, 10, color, true)
         val hint2 = Component.literal("${YELLOW}Move them using your mouse. Press +/- or scroll to scale. Press 0 to change alignment. Press ESC to exit.")
         val x2 = mc.window.guiScaledWidth / 2 - textRenderer.width(hint2) / 2
-        context.drawString(textRenderer, hint2, x2, 20, color, true)
+        drawStringCompat(context, textRenderer, hint2, x2, 20, color, true)
         
         enabledGuis.forEach { mapping ->
             val gui = mapping.gui           
             gui.drawSample(context, textRenderer, mc)
         }
         
+        //#if MC < 26.1
         super.render(context, mouseX, mouseY, delta)
+        //#endif
+    }
+
+    private fun drawStringCompat(context: GuiGraphics, textRenderer: net.minecraft.client.gui.Font, text: Component, x: Int, y: Int, color: Int, shadow: Boolean) {
+        //#if MC >= 26.1
+        //$$ context.text(textRenderer, text, x, y, color, shadow)
+        //#else
+        context.drawString(textRenderer, text, x, y, color, shadow)
+        //#endif
     }
     
     override fun mouseClicked(mouseButtonEvent: MouseButtonEvent, doubled: Boolean): Boolean {

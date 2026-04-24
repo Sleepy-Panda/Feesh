@@ -13,7 +13,11 @@ import com.github.sleepypanda.feesh.utils.data.PersistentDataManager
 import net.minecraft.network.chat.Component
 import net.minecraft.client.gui.screens.inventory.InventoryScreen
 import net.minecraft.client.gui.screens.ChatScreen
+//#if MC >= 26.1
+//$$ import net.minecraft.client.gui.GuiGraphicsExtractor as GuiGraphics
+//#else
 import net.minecraft.client.gui.GuiGraphics
+//#endif
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.Font
 import java.awt.Color
@@ -386,22 +390,22 @@ class FeeshGui {
                     Alignment.LEFT -> {
                         val buttonsX = scaledLeftEdge
                         val lineX = scaledLeftEdge + buttonsWidth + spaceWidth
-                        drawContext.drawString(textRenderer, Component.literal(buttonsStr), buttonsX, currentY, color, true)
-                        drawContext.drawString(textRenderer, Component.literal(clippedLine), lineX, currentY, color, true)
+                        drawStringCompat(drawContext, textRenderer, Component.literal(buttonsStr), buttonsX, currentY, color, true)
+                        drawStringCompat(drawContext, textRenderer, Component.literal(clippedLine), lineX, currentY, color, true)
                     }
                     Alignment.RIGHT -> {
                         val lineX = scaledLeftEdge + maxWidth - reservedWidth - clippedLineWidth
                         val buttonsX = scaledLeftEdge + maxWidth - buttonsWidth
-                        drawContext.drawString(textRenderer, Component.literal(clippedLine), lineX, currentY, color, true)
-                        drawContext.drawString(textRenderer, Component.literal(buttonsStr), buttonsX, currentY, color, true)
+                        drawStringCompat(drawContext, textRenderer, Component.literal(clippedLine), lineX, currentY, color, true)
+                        drawStringCompat(drawContext, textRenderer, Component.literal(buttonsStr), buttonsX, currentY, color, true)
                     }
                     Alignment.CENTER -> {
                         val contentWidth = reservedWidth + clippedLineWidth
                         val contentLeft = scaledLeftEdge + (maxWidth - contentWidth) / 2
                         val buttonsX = contentLeft
                         val lineX = contentLeft + buttonsWidth + spaceWidth
-                        drawContext.drawString(textRenderer, Component.literal(buttonsStr), buttonsX, currentY, color, true)
-                        drawContext.drawString(textRenderer, Component.literal(clippedLine), lineX, currentY, color, true)
+                        drawStringCompat(drawContext, textRenderer, Component.literal(buttonsStr), buttonsX, currentY, color, true)
+                        drawStringCompat(drawContext, textRenderer, Component.literal(clippedLine), lineX, currentY, color, true)
                     }
                 }
             } else {
@@ -412,12 +416,20 @@ class FeeshGui {
                     Alignment.RIGHT -> scaledLeftEdge + maxWidth - textWidth
                     Alignment.CENTER -> scaledLeftEdge + (maxWidth - textWidth) / 2
                 }
-                drawContext.drawString(textRenderer, text, actualX, currentY, color, true)
+                drawStringCompat(drawContext, textRenderer, text, actualX, currentY, color, true)
             }
             currentY += lineHeightPx
         }
 
         drawContext.pose().popMatrix()
+    }
+
+    private fun drawStringCompat(drawContext: GuiGraphics, textRenderer: Font, text: Component, x: Int, y: Int, color: Int, shadow: Boolean) {
+        //#if MC >= 26.1
+        //$$ drawContext.text(textRenderer, text, x, y, color, shadow)
+        //#else
+        drawContext.drawString(textRenderer, text, x, y, color, shadow)
+        //#endif
     }
 
     private fun trimTextToWidth(textRenderer: Font, text: String, maxWidth: Int): String {
@@ -557,7 +569,7 @@ class FeeshGui {
                 Alignment.CENTER -> scaledLeftEdge + (maxWidth - textWidth) / 2
             }
 
-            drawContext.drawString(textRenderer, text, actualX, currentY, color, true)
+            drawStringCompat(drawContext, textRenderer, text, actualX, currentY, color, true)
             currentY += textRenderer.lineHeight + 2
         }
 
@@ -571,7 +583,7 @@ class FeeshGui {
         val labelText = Component.literal("${GRAY}$alignmentLabel")
         val labelX = leftEdge - 2
         val labelY = y - 2 - textRenderer.lineHeight
-        drawContext.drawString(textRenderer, labelText, labelX, labelY, color, true)
+        drawStringCompat(drawContext, textRenderer, labelText, labelX, labelY, color, true)
     }
 
     /**

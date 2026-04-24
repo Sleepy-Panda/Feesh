@@ -2,11 +2,15 @@ package com.github.sleepypanda.feesh.utils
 
 import com.github.sleepypanda.feesh.utils.ChatUtils.getFormattedString
 import com.github.sleepypanda.feesh.utils.ChatUtils.removeFormatting
-import net.minecraft.network.chat.Component
 import com.mojang.brigadier.arguments.StringArgumentType
+//#if MC >= 26.1
+//$$ import net.fabricmc.fabric.api.client.command.v2.ClientCommands as ClientCommandManager
+//#else
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager
+//#endif
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents
+import net.minecraft.network.chat.Component
 
 object RegisterUtils {
 
@@ -25,7 +29,7 @@ object RegisterUtils {
         noFormatting: Boolean = true,
         action: (message: Component, matchResult: MatchResult) -> Unit
     ) {
-        ClientReceiveMessageEvents.GAME.register { message, _, ->
+        ClientReceiveMessageEvents.GAME.register { message, _ ->
             var text = if (noFormatting) message.string.removeFormatting() else message.getFormattedString()
             regex.find(text)?.let { result ->
                 action(message, result)
