@@ -18,7 +18,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(Screen.class)
 public class ScreenMixin {
     //#if MC >= 26.1
-    //$$ @Inject(method = "extractBackground", at = @At("RETURN"), require = 0)
+    //$$ @Inject(method = "extractBackground", at = @At("RETURN"))
     //#else
     @Inject(method = "renderBackground", at = @At("RETURN"), require = 0)
     //#endif

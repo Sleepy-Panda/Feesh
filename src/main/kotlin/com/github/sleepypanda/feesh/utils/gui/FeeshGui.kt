@@ -93,14 +93,6 @@ class FeeshGui {
     // Index starts from the first overlay line including buttons.
     private var lineIndexToActions: Map<Int, List<LineAction>> = emptyMap()
 
-    private fun drawStringCompat(drawContext: GuiGraphics, textRenderer: Font, text: Component, x: Int, y: Int, color: Int, shadow: Boolean) {
-        //#if MC >= 26.1
-        //$$ // TODO 26.1: migrate to GuiGraphicsExtractor text collector API.
-        //#else
-        drawContext.drawString(textRenderer, text, x, y, color, shadow)
-        //#endif
-    }
-
     constructor() {
         registeredGuis.add(this)
         EventBus.subscribe(GameRenderEvent::class, { event -> onDraw(event.drawContext, event.textRenderer, event.mcClient) })
@@ -430,6 +422,14 @@ class FeeshGui {
         }
 
         drawContext.pose().popMatrix()
+    }
+
+    private fun drawStringCompat(drawContext: GuiGraphics, textRenderer: Font, text: Component, x: Int, y: Int, color: Int, shadow: Boolean) {
+        //#if MC >= 26.1
+        //$$ drawContext.text(textRenderer, text, x, y, color, shadow)
+        //#else
+        drawContext.drawString(textRenderer, text, x, y, color, shadow)
+        //#endif
     }
 
     private fun trimTextToWidth(textRenderer: Font, text: String, maxWidth: Int): String {

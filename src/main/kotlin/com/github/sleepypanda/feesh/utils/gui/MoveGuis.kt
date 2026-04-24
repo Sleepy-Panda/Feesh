@@ -74,7 +74,7 @@ class MoveGuisScreen : Screen(Component.literal("Feesh Move Guis")) {
     private val color = Color(255, 255, 255, 255).rgb
     
     //#if MC >= 26.1
-    //$$ fun render(context: GuiGraphics, mouseX: Int, mouseY: Int, delta: Float) {
+    //$$ override fun extractRenderState(context: GuiGraphics, mouseX: Int, mouseY: Int, delta: Float) {
     //#else
     override fun render(context: GuiGraphics, mouseX: Int, mouseY: Int, delta: Float) {
     //#endif
@@ -100,7 +100,7 @@ class MoveGuisScreen : Screen(Component.literal("Feesh Move Guis")) {
 
     private fun drawStringCompat(context: GuiGraphics, textRenderer: net.minecraft.client.gui.Font, text: Component, x: Int, y: Int, color: Int, shadow: Boolean) {
         //#if MC >= 26.1
-        //$$ // TODO 26.1: migrate to GuiGraphicsExtractor text collector API.
+        //$$ context.text(textRenderer, text, x, y, color, shadow)
         //#else
         context.drawString(textRenderer, text, x, y, color, shadow)
         //#endif
