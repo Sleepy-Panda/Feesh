@@ -1,6 +1,7 @@
 import dev.deftu.gradle.utils.version.MinecraftVersions
 import org.gradle.api.attributes.java.TargetJvmVersion
 import org.gradle.api.tasks.compile.JavaCompile
+import org.gradle.jvm.tasks.Jar
 
 plugins {
     java
@@ -49,11 +50,24 @@ if (mcData.version == MinecraftVersions.VERSION_26_1) {
     configurations.configureEach {
         attributes.attribute(TargetJvmVersion.TARGET_JVM_VERSION_ATTRIBUTE, 25)
     }
+
+    val includeForJar = configurations.create("includeForJar") {
+        isCanBeResolved = true
+        isCanBeConsumed = false
+        extendsFrom(configurations.getByName("include"))
+    }
+
+    tasks.named<Jar>("jar").configure {
+        from(includeForJar) {
+            into("META-INF/jars")
+            include("resourcefulconfig-*.jar")
+            include("resourcefulconfigkt-*.jar")
+        }
+    }
+
 }
 
 dependencies {
-    compileOnly("org.spongepowered:mixin:0.8.7")
-
     when (mcData.version) {
         MinecraftVersions.VERSION_1_21_10 -> {
             maybeModImplementation("net.fabricmc:fabric-language-kotlin:${mcData.dependencies.fabric.fabricLanguageKotlinVersion}")
@@ -68,11 +82,13 @@ dependencies {
             maybeModImplementation(include("com.teamresourceful.resourcefulconfig:resourcefulconfig-fabric-1.21.11:${property("rconfig.version.1.21.11")}")!!)
         }
         MinecraftVersions.VERSION_26_1 -> {
+            implementation("net.fabricmc:sponge-mixin:0.17.0+mixin.0.8.7")
             implementation("net.fabricmc:fabric-language-kotlin:1.13.10+kotlin.2.3.20")
-            implementation("net.fabricmc.fabric-api:fabric-api:0.145.4+26.1.2")
-            //implementation("com.teamresourceful.resourcefulconfigkt:resourcefulconfigkt-fabric-1.21.11:3.11.0")
+            implementation("net.fabricmc.fabric-api:fabric-api:0.144.0+26.1")
             implementation("com.teamresourceful.resourcefulconfig:resourcefulconfig-fabric-26.1-rc-1:4.0.0-beta.2")
             implementation("com.teamresourceful.resourcefulconfigkt:resourcefulconfigkt-26.1-rc-1:4.0.0-beta.1")
+            include("com.teamresourceful.resourcefulconfig:resourcefulconfig-fabric-26.1-rc-1:4.0.0-beta.2")
+            include("com.teamresourceful.resourcefulconfigkt:resourcefulconfigkt-26.1-rc-1:4.0.0-beta.1")
         }
         else -> {}
     }
