@@ -53,14 +53,14 @@ if (mcData.version == MinecraftVersions.VERSION_26_1) {
     // TODO: Ugly code
     // I had to do this because dependencies .jars are not copied to META-INF/jars and not registered in fabric.mod.json with my deftu setup,
     // I did not manage to find a way to fix that normally so copying jar files manually for now
-    // Resolvable companion of the non-resolvable `include` declaration config
+    // Resolvable companion of the non-resolvable "include()" declaration config
     val nestedJars = configurations.create("nestedJars") {
         isCanBeResolved = true
         isCanBeConsumed = false
         extendsFrom(configurations.getByName("include"))
     }
 
-    // Pack nested mod jars under META-INF/jars and register them in fabric.mod.json.
+    // Pack nested mod jars under META-INF/jars.
     tasks.named<Jar>("jar").configure {
         from(nestedJars) {
             into("META-INF/jars")
@@ -69,6 +69,7 @@ if (mcData.version == MinecraftVersions.VERSION_26_1) {
         }
     }
 
+    // Register nested mod jars in fabric.mod.json as "jars".
     tasks.named<Copy>("processResources").configure {
         doLast {
             val fmj = destinationDir.resolve("fabric.mod.json")
@@ -107,24 +108,24 @@ dependencies {
     when (mcData.version) {
         MinecraftVersions.VERSION_1_21_10 -> {
             maybeModImplementation("net.fabricmc:fabric-language-kotlin:${mcData.dependencies.fabric.fabricLanguageKotlinVersion}")
-            maybeModImplementation(include("com.teamresourceful.resourcefulconfigkt:resourcefulconfigkt-fabric-1.21.5:${property("rconfig.version.1.21.5")}")!!)
-            maybeModImplementation("net.fabricmc.fabric-api:fabric-api:0.138.3+1.21.10")
-            maybeModImplementation(include("com.teamresourceful.resourcefulconfig:resourcefulconfig-fabric-1.21.9:${property("rconfig.version.1.21.10")}")!!)
+            maybeModImplementation("net.fabricmc.fabric-api:fabric-api:${property("fabric-api.version.1.21.10")}")
+            maybeModImplementation(include("com.teamresourceful.resourcefulconfigkt:resourcefulconfigkt-fabric-1.21.5:${property("resourcefulconfig-kt.version.1.21.10")}")!!)
+            maybeModImplementation(include("com.teamresourceful.resourcefulconfig:resourcefulconfig-fabric-1.21.9:${property("resourcefulconfig.version.1.21.10")}")!!)
         }
         MinecraftVersions.VERSION_1_21_11 -> {
             maybeModImplementation("net.fabricmc:fabric-language-kotlin:${mcData.dependencies.fabric.fabricLanguageKotlinVersion}")
-            maybeModImplementation(include("com.teamresourceful.resourcefulconfigkt:resourcefulconfigkt-fabric-1.21.5:${property("rconfig.version.1.21.5")}")!!)
-            maybeModImplementation("net.fabricmc.fabric-api:fabric-api:0.141.3+1.21.11")
-            maybeModImplementation(include("com.teamresourceful.resourcefulconfig:resourcefulconfig-fabric-1.21.11:${property("rconfig.version.1.21.11")}")!!)
+            maybeModImplementation("net.fabricmc.fabric-api:fabric-api:${property("fabric-api.version.1.21.11")}")
+            maybeModImplementation(include("com.teamresourceful.resourcefulconfigkt:resourcefulconfigkt-fabric-1.21.5:${property("resourcefulconfig-kt.version.1.21.11")}")!!)
+            maybeModImplementation(include("com.teamresourceful.resourcefulconfig:resourcefulconfig-fabric-1.21.11:${property("resourcefulconfig.version.1.21.11")}")!!)
         }
         MinecraftVersions.VERSION_26_1 -> {
             implementation("net.fabricmc:sponge-mixin:0.17.0+mixin.0.8.7")
-            implementation("net.fabricmc:fabric-language-kotlin:1.13.10+kotlin.2.3.20")
-            implementation("net.fabricmc.fabric-api:fabric-api:0.144.0+26.1")
-            implementation("com.teamresourceful.resourcefulconfig:resourcefulconfig-fabric-26.1:4.0.1")
-            implementation("com.teamresourceful.resourcefulconfigkt:resourcefulconfigkt-26.1-rc-1:4.0.0-beta.1")
-            include("com.teamresourceful.resourcefulconfig:resourcefulconfig-fabric-26.1:4.0.1")
-            include("com.teamresourceful.resourcefulconfigkt:resourcefulconfigkt-26.1-rc-1:4.0.0-beta.1")
+            implementation("net.fabricmc:fabric-language-kotlin:${mcData.dependencies.fabric.fabricLanguageKotlinVersion}")
+            implementation("net.fabricmc.fabric-api:fabric-api:${property("fabric-api.version.26.1")}")
+            implementation("com.teamresourceful.resourcefulconfig:resourcefulconfig-fabric-26.1:${property("resourcefulconfig.version.26.1")}")
+            implementation("com.teamresourceful.resourcefulconfigkt:resourcefulconfigkt-26.1-rc-1:${property("resourcefulconfig-kt.version.26.1-rc-1")}")
+            include("com.teamresourceful.resourcefulconfig:resourcefulconfig-fabric-26.1:${property("resourcefulconfig.version.26.1")}")
+            include("com.teamresourceful.resourcefulconfigkt:resourcefulconfigkt-26.1-rc-1:${property("resourcefulconfig-kt.version.26.1-rc-1")}")
         }
         else -> {}
     }
