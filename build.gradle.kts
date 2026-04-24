@@ -51,20 +51,54 @@ if (mcData.version == MinecraftVersions.VERSION_26_1) {
         attributes.attribute(TargetJvmVersion.TARGET_JVM_VERSION_ATTRIBUTE, 25)
     }
 
-    val includeForJar = configurations.create("includeForJar") {
+    // Resolvable companion of the non-resolvable `include` declaration config.
+    val nestedJars = configurations.create("nestedJars") {
         isCanBeResolved = true
         isCanBeConsumed = false
         extendsFrom(configurations.getByName("include"))
     }
 
+    // Pack nested mod jars under META-INF/jars and register them in fabric.mod.json.
     tasks.named<Jar>("jar").configure {
-        from(includeForJar) {
+        from(nestedJars) {
             into("META-INF/jars")
             include("resourcefulconfig-*.jar")
             include("resourcefulconfigkt-*.jar")
         }
     }
 
+    tasks.named<Copy>("processResources").configure {
+        doLast {
+            val fmj = destinationDir.resolve("fabric.mod.json")
+            if (!fmj.exists()) return@doLast
+            val original = fmj.readText()
+            if (original.contains("\"jars\":")) return@doLast
+
+            val nestedFiles = nestedJars.resolve()
+                .filter { it.name.startsWith("resourcefulconfig-") || it.name.startsWith("resourcefulconfigkt-") }
+                .map { it.name }
+                .sorted()
+            if (nestedFiles.isEmpty()) return@doLast
+
+            val jarsBlock = buildString {
+                append("\t\"jars\": [\n")
+                nestedFiles.forEachIndexed { index, name ->
+                    append("\t\t{ \"file\": \"META-INF/jars/$name\" }")
+                    if (index < nestedFiles.size - 1) append(",")
+                    append("\n")
+                }
+                append("\t],\n")
+            }
+
+            val anchor = "\t\"depends\":"
+            val modified = if (original.contains(anchor)) {
+                original.replace(anchor, jarsBlock + anchor)
+            } else {
+                original.replaceFirst(Regex("(?m)^\\s*\"depends\":"), jarsBlock + "\t\"depends\":")
+            }
+            fmj.writeText(modified)
+        }
+    }
 }
 
 dependencies {
@@ -85,9 +119,9 @@ dependencies {
             implementation("net.fabricmc:sponge-mixin:0.17.0+mixin.0.8.7")
             implementation("net.fabricmc:fabric-language-kotlin:1.13.10+kotlin.2.3.20")
             implementation("net.fabricmc.fabric-api:fabric-api:0.144.0+26.1")
-            implementation("com.teamresourceful.resourcefulconfig:resourcefulconfig-fabric-26.1-rc-1:4.0.0-beta.2")
+            implementation("com.teamresourceful.resourcefulconfig:resourcefulconfig-fabric-26.1:4.0.1")
             implementation("com.teamresourceful.resourcefulconfigkt:resourcefulconfigkt-26.1-rc-1:4.0.0-beta.1")
-            include("com.teamresourceful.resourcefulconfig:resourcefulconfig-fabric-26.1-rc-1:4.0.0-beta.2")
+            include("com.teamresourceful.resourcefulconfig:resourcefulconfig-fabric-26.1:4.0.1")
             include("com.teamresourceful.resourcefulconfigkt:resourcefulconfigkt-26.1-rc-1:4.0.0-beta.1")
         }
         else -> {}

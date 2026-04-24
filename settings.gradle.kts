@@ -18,7 +18,7 @@ pluginManagement {
 
     plugins {
         kotlin("jvm") version("2.3.0")
-        id("dev.deftu.gradle.multiversion-root") version("2.70.0")
+        id("dev.deftu.gradle.multiversion-root") version("2.73.0")
         id("net.fabricmc.fabric-loom") version("1.16.1")
     }
 }
