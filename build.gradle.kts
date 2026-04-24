@@ -52,6 +52,8 @@ if (mcData.version == MinecraftVersions.VERSION_26_1) {
 }
 
 dependencies {
+    compileOnly("org.spongepowered:mixin:0.8.7")
+
     when (mcData.version) {
         MinecraftVersions.VERSION_1_21_10 -> {
             maybeModImplementation("net.fabricmc:fabric-language-kotlin:${mcData.dependencies.fabric.fabricLanguageKotlinVersion}")
@@ -68,8 +70,9 @@ dependencies {
         MinecraftVersions.VERSION_26_1 -> {
             implementation("net.fabricmc:fabric-language-kotlin:1.13.10+kotlin.2.3.20")
             implementation("net.fabricmc.fabric-api:fabric-api:0.145.4+26.1.2")
-            implementation("com.teamresourceful.resourcefulconfigkt:resourcefulconfigkt-fabric-1.21.4:3.4.3")
-            implementation("com.teamresourceful.resourcefulconfig:resourcefulconfig-fabric-26.1:${property("rconfig.version.26.1")}")
+            //implementation("com.teamresourceful.resourcefulconfigkt:resourcefulconfigkt-fabric-1.21.11:3.11.0")
+            implementation("com.teamresourceful.resourcefulconfig:resourcefulconfig-fabric-26.1-rc-1:4.0.0-beta.2")
+            implementation("com.teamresourceful.resourcefulconfigkt:resourcefulconfigkt-26.1-rc-1:4.0.0-beta.1")
         }
         else -> {}
     }

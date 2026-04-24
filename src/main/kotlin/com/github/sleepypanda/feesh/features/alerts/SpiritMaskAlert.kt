@@ -11,7 +11,6 @@ import com.github.sleepypanda.feesh.events.EventBus
 import com.github.sleepypanda.feesh.events.models.WorldChangedEvent
 import java.util.Timer
 import kotlin.concurrent.timerTask
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientWorldEvents
 
 object SpiritMaskAlert {
     const val SPIRIT_MASK_USED_PATTERN = "^Second Wind Activated\\! Your Spirit Mask saved your life\\!$"

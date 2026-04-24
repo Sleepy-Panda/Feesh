@@ -5,7 +5,11 @@ import com.github.sleepypanda.feesh.events.EventBus
 import com.github.sleepypanda.feesh.events.models.ScreenBeforeInitEvent
 import com.github.sleepypanda.feesh.events.models.AfterSlotRenderedEvent
 import net.minecraft.client.gui.Font
+//#if MC >= 26.1
+//$$ import net.minecraft.client.gui.GuiGraphicsExtractor as GuiGraphics
+//#else
 import net.minecraft.client.gui.GuiGraphics
+//#endif
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.inventory.Slot
 
@@ -22,6 +26,14 @@ object SlotTextRendererManager {
     private const val SLOT_TEXT_SCALE = 0.7f
 
     private val renderers: MutableList<BaseSlotTextRenderer> = mutableListOf()
+
+    private fun drawStringCompat(context: GuiGraphics, textRenderer: Font, text: String, x: Int, y: Int, color: Int, shadow: Boolean) {
+        //#if MC >= 26.1
+        //$$ context.text(textRenderer, text, x, y, color, shadow)
+        //#else
+        context.drawString(textRenderer, text, x, y, color, shadow)
+        //#endif
+    }
 
     fun init() {
         EventBus.subscribe(AfterSlotRenderedEvent::class, ::onSlotRendered)
@@ -74,14 +86,7 @@ object SlotTextRendererManager {
 
         context.pose().pushMatrix()
         context.pose().scale(SLOT_TEXT_SCALE, SLOT_TEXT_SCALE)
-        context.drawString(
-            textRenderer,
-            text,
-            (x / SLOT_TEXT_SCALE).toInt(),
-            (y / SLOT_TEXT_SCALE).toInt(),
-            color,
-            shadow
-        )
+        drawStringCompat(context, textRenderer, text, (x / SLOT_TEXT_SCALE).toInt(), (y / SLOT_TEXT_SCALE).toInt(), color, shadow)
         context.pose().popMatrix()
     }
 
@@ -100,14 +105,7 @@ object SlotTextRendererManager {
 
         context.pose().pushMatrix()
         context.pose().scale(SLOT_TEXT_SCALE, SLOT_TEXT_SCALE)
-        context.drawString(
-            textRenderer,
-            text,
-            (x / SLOT_TEXT_SCALE).toInt(),
-            (y / SLOT_TEXT_SCALE).toInt(),
-            color,
-            shadow
-        )
+        drawStringCompat(context, textRenderer, text, (x / SLOT_TEXT_SCALE).toInt(), (y / SLOT_TEXT_SCALE).toInt(), color, shadow)
         context.pose().popMatrix()
     }
 

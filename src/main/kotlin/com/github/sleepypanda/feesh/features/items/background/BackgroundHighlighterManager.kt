@@ -3,7 +3,11 @@ package com.github.sleepypanda.feesh.features.items.background
 import com.github.sleepypanda.feesh.events.EventBus
 import com.github.sleepypanda.feesh.events.models.ScreenBeforeInitEvent
 import com.github.sleepypanda.feesh.events.models.BeforeSlotRenderedEvent
+//#if MC >= 26.1
+//$$ import net.minecraft.client.gui.GuiGraphicsExtractor as GuiGraphics
+//#else
 import net.minecraft.client.gui.GuiGraphics
+//#endif
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.inventory.Slot
 
