@@ -167,7 +167,7 @@ Requires JDK 25.
 
 For manual building the project in IDE:
 
-```
+```cmd
 ./gradlew build
 ```
 
@@ -177,3 +177,11 @@ As a result, `Feesh-<version>-fabric.jar` file appears in `/build/versions` fold
 
 - https://mappings.dev/1.21.10/
 - https://mappings.dev/1.21.11/
+
+## Updating gradle wrapper files
+
+https://docs.gradle.org/current/userguide/gradle_wrapper.html#sec:upgrading_wrapper
+
+```cmd
+./gradlew.bat wrapper --gradle-version 9.4.1
+```
