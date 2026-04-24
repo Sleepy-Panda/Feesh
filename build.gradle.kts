@@ -15,7 +15,6 @@ plugins {
     id("dev.deftu.gradle.tools.bloom") // Applies the Bloom plugin, which allows us to replace tokens in our source files, such as being able to use `@MOD_VERSION` in our source files.
     id("dev.deftu.gradle.tools.shadow") // Applies the Shadow plugin, which allows us to shade our dependencies into our mod JAR. This is NOT recommended for Fabric mods, but we have an *additional* configuration for those!
     id("dev.deftu.gradle.tools.minecraft.loom") // Applies the Loom plugin, which automagically configures Essential's Architectury Loom plugin for you.
-    id("dev.deftu.gradle.tools.minecraft.releases") // Applies the Minecraft auto-releasing plugin, which allows you to automatically release your mod to CurseForge and Modrinth.
 }
 
 configurations.all {
@@ -51,7 +50,10 @@ if (mcData.version == MinecraftVersions.VERSION_26_1) {
         attributes.attribute(TargetJvmVersion.TARGET_JVM_VERSION_ATTRIBUTE, 25)
     }
 
-    // Resolvable companion of the non-resolvable `include` declaration config.
+    // TODO: Ugly code
+    // I had to do this because dependencies .jars are not copied to META-INF/jars and not registered in fabric.mod.json with my deftu setup,
+    // I did not manage to find a way to fix that normally so copying jar files manually for now
+    // Resolvable companion of the non-resolvable `include` declaration config
     val nestedJars = configurations.create("nestedJars") {
         isCanBeResolved = true
         isCanBeConsumed = false
