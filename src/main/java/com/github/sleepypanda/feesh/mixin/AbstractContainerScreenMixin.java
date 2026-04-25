@@ -29,6 +29,14 @@ public abstract class AbstractContainerScreenMixin {
         EventBus.INSTANCE.publish(new BeforeSlotRenderedEvent(context, slot, screen));
     }
 
+    //#if MC == 1.21.11
+    @Inject(method = "renderSlot(Lnet/minecraft/client/gui/GuiGraphics;Lnet/minecraft/world/inventory/Slot;II)V", at = @At("HEAD"), require = 0)
+    private void feesh$onSlotBeforeItemDrawn_1_21_11(GuiGraphics context, Slot slot, int x, int y, CallbackInfo ci) {
+        AbstractContainerScreen<?> screen = (AbstractContainerScreen<?>) (Object) this;
+        EventBus.INSTANCE.publish(new BeforeSlotRenderedEvent(context, slot, screen));
+    }
+    //#endif
+
     //#if MC >= 26.1
     //$$ @Inject(method = "extractSlot(Lnet/minecraft/client/gui/GuiGraphicsExtractor;Lnet/minecraft/world/inventory/Slot;II)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphicsExtractor;itemDecorations(Lnet/minecraft/client/gui/Font;Lnet/minecraft/world/item/ItemStack;IILjava/lang/String;)V"), require = 1)
     //$$ private void feesh$onSlotAfterItemDrawn(GuiGraphicsExtractor context, Slot slot, int x, int y, CallbackInfo ci) {
@@ -39,4 +47,12 @@ public abstract class AbstractContainerScreenMixin {
         AbstractContainerScreen<?> screen = (AbstractContainerScreen<?>) (Object) this;
         EventBus.INSTANCE.publish(new AfterSlotRenderedEvent(context, slot, screen));
     }
+
+    //#if MC == 1.21.11
+    @Inject(method = "renderSlot(Lnet/minecraft/client/gui/GuiGraphics;Lnet/minecraft/world/inventory/Slot;II)V", at = @At("RETURN"), require = 0)
+    private void feesh$onSlotAfterItemDrawn_1_21_11(GuiGraphics context, Slot slot, int x, int y, CallbackInfo ci) {
+        AbstractContainerScreen<?> screen = (AbstractContainerScreen<?>) (Object) this;
+        EventBus.INSTANCE.publish(new AfterSlotRenderedEvent(context, slot, screen));
+    }
+    //#endif
 }
