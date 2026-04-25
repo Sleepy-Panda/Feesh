@@ -14,6 +14,7 @@ Released on: ???
 - Fixed rare sea creatures not being highlighted sometimes.
 - Fixed "Hotspot is gone" appearing sometimes when leaving the world after hotspot fishing.
 - Fixed Fishing profit tracker not tracking sack drops when SkyHanni Sack hider is enabled.
+- Fixed Legendary Squid catch alert not working when SH pet rarity message modification enabled.
 
 ## Other
 

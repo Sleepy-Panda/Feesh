@@ -37,7 +37,8 @@ object RareDropsPublisher {
     // SH format with pet rarity:
     // §6⛃ §r§6§lGREAT CATCH! §r§fYou caught a §r§7[Lvl 1] §f§lCOMMON §fSquid§r§f!
     // §6⛃ §r§6§lGREAT CATCH! §r§fYou caught a §r§7[Lvl 1] §a§lUNCOMMON §aSquid§r§f!
-    val PET_CATCH_PATTERN = Regex("^(§6⛃ (§r)?§6§lGREAT CATCH!|§d⛃ §d§lOUTSTANDING CATCH!) (§r)?§fYou caught a (§r)?(§r)?§7\\[Lvl 1\\] (?<shRarity>(§6§lLEGENDARY |§5§lEPIC |§9§lRARE |§a§lUNCOMMON |§f§lCOMMON ))?+(?<pet>.+?)§f!$")
+    // §d⛃ §r§d§lOUTSTANDING CATCH! §r§fYou caught a §r§7[Lvl 1] §6§lLEGENDARY §6Squid§r§f!
+    val PET_CATCH_PATTERN = Regex("^(§6⛃ (§r)?§6§lGREAT CATCH!|§d⛃ (§r)?§d§lOUTSTANDING CATCH!) (§r)?§fYou caught a (§r)?(§r)?§7\\[Lvl 1\\] (?<shRarity>(§6§lLEGENDARY |§5§lEPIC |§9§lRARE |§a§lUNCOMMON |§f§lCOMMON ))?+(?<pet>.+?)§f!$")
 
     fun init() {
         EventBus.subscribe(ChatEvent::class, ::onChat)
