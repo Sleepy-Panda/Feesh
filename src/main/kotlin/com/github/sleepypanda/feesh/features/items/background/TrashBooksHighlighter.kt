@@ -10,7 +10,7 @@ import net.minecraft.world.inventory.Slot
 
 object TrashBooksHighlighter : BaseBackgroundHighlighter() {
 
-    private const val TRASH_BOOKS_HIGHLIGHT_COLOR = 0x80FF0000.toInt()
+    private const val TRASH_BOOKS_HIGHLIGHT_COLOR = 0x90FF0000.toInt()
     override val highlightColor: Int = TRASH_BOOKS_HIGHLIGHT_COLOR
 
     private var trashBookNames = emptyList<String>()
