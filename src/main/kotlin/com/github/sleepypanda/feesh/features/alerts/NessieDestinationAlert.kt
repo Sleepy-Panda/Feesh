@@ -6,13 +6,13 @@ import com.github.sleepypanda.feesh.events.models.ArmorStandDetailsLoadedEvent
 import com.github.sleepypanda.feesh.events.models.WorldChangedEvent
 import com.github.sleepypanda.feesh.settings.categories.Alerts
 import com.github.sleepypanda.feesh.utils.ChatUtils
-import com.github.sleepypanda.feesh.utils.ChatUtils.removeFormatting
 import com.github.sleepypanda.feesh.utils.CommonUtils
 import com.github.sleepypanda.feesh.utils.EntityUtils
 import com.github.sleepypanda.feesh.utils.SoundUtils
 import com.github.sleepypanda.feesh.utils.WorldUtils
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
+import com.github.sleepypanda.feesh.utils.ChatUtils.removeFormatting
 import net.minecraft.world.entity.animal.sniffer.Sniffer
 import java.util.Date
 
@@ -143,8 +143,14 @@ object NessieDestinationAlert {
         if (trackedInfo.isDestinationSent) return
 
         trackedNessieMobIds[nessieEntityId] = trackedInfo.copy(isDestinationSent = true)
+        val alertMessage = "${LIGHT_PURPLE}${BOLD}Nessie ${WHITE}is swimming to the ${GREEN}${BOLD}${destination}${WHITE} cave."
+
         CommonUtils.showTitle("", "${LIGHT_PURPLE}Nessie ${WHITE}goes to ${GREEN}${BOLD}${destination}${WHITE} cave!")
         SoundUtils.playSound()
-        ChatUtils.sendLocalChat("${LIGHT_PURPLE}${BOLD}Nessie ${WHITE}is swimming to the ${GREEN}${BOLD}${destination}${WHITE} cave.", true)
+        ChatUtils.sendLocalChat(alertMessage, true)
+
+        if (Alerts.autoShareNessieDestination) {
+            ChatUtils.sendPartyChat(alertMessage.removeFormatting())
+        }
     }
 }
