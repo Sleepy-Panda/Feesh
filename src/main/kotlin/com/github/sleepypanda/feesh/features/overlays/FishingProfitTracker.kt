@@ -11,6 +11,7 @@ import com.github.sleepypanda.feesh.events.models.WorldChangedEvent
 import com.github.sleepypanda.feesh.events.models.PetLevelUpEvent
 import com.github.sleepypanda.feesh.events.models.SacksItemsPickupEvent
 import com.github.sleepypanda.feesh.events.models.PricesUpdatedEvent
+import com.github.sleepypanda.feesh.events.models.IceEssenceStatusBarEvent
 import com.github.sleepypanda.feesh.constants.Sounds
 import com.github.sleepypanda.feesh.features.chat.RareDropMessage
 import com.github.sleepypanda.feesh.settings.categories.SoundMode
@@ -122,6 +123,7 @@ object FishingProfitTracker {
         EventBus.subscribe(GuiClosedEvent::class, ::onGuiClosed)
         EventBus.subscribe(PetLevelUpEvent::class, ::onPetReachedMaxLevel)
         EventBus.subscribe(SacksItemsPickupEvent::class, ::onSacksItemsPickup)
+        EventBus.subscribe(IceEssenceStatusBarEvent::class, ::onIceEssenceStatusBar)
         EventBus.subscribe(PricesUpdatedEvent::class, ::onPricesUpdated)
     }
 
@@ -531,6 +533,12 @@ object FishingProfitTracker {
             }
         }
         if (added) refreshTotalItemsProfits()
+    }
+
+    private fun onIceEssenceStatusBar(event: IceEssenceStatusBarEvent) {
+        if (WorldUtils.getWorldName() != WorldUtils.JERRY_WORKSHOP) return
+        if (!isSessionActive || !isTrackerVisible()) return
+        findAndAddProfitTrackerItem({ it.itemId == "ESSENCE_ICE" }, event.amount)
     }
 
 
