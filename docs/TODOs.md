@@ -1,6 +1,7 @@
 ## Players feedback
 
 - Catches/h for treasures
+- Nessie pchat toggle
 - TODO: Test in 1.21
 - TODO: Test party drops message
 - dropping a tiki mask or a shed does not update this trackers, i have to update the drop count manually each time
