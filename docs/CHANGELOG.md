@@ -7,6 +7,8 @@ Released on: ???
 - Added support for Minecraft 26.1.x (Fabric).
   - **This is experimental version, not fully tested on 26.1.1 / 26.1.2. Please let me know if you face any issues!**
 - Added Night Squid to the "Highlight rare sea creatures" functionality, to easier hunt them.
+- Added Ice Essence gains from actionbar to Fishing profit tracker.
+  - This is not 100% accurate because not all total essence gains are displayed in actionbar.
 - Added Golden Bait and Treasure bait to the Fishing profit tracker, because of Seal pet's perk.
 
 ## Bugfixes

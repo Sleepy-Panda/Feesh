@@ -67,6 +67,7 @@ import com.github.sleepypanda.feesh.events.publishers.RareDropsPublisher
 import com.github.sleepypanda.feesh.events.publishers.PartyChatPublisher
 import com.github.sleepypanda.feesh.events.publishers.PetLevelUpPublisher
 import com.github.sleepypanda.feesh.events.publishers.SacksItemPickupPublisher
+import com.github.sleepypanda.feesh.events.publishers.IceEssenceStatusBarPublisher
 import com.github.sleepypanda.feesh.events.publishers.ArmorStandPublisher
 import com.github.sleepypanda.feesh.events.publishers.ItemEntityPublisher
 import com.github.sleepypanda.feesh.features.rendering.RareMobHighlight
@@ -140,6 +141,7 @@ class FeeshMod : ClientModInitializer {
         PartyChatPublisher.init()
         PetLevelUpPublisher.init()
         SacksItemPickupPublisher.init()
+        IceEssenceStatusBarPublisher.init()
         ArmorStandPublisher.init()
         ItemEntityPublisher.init()
 

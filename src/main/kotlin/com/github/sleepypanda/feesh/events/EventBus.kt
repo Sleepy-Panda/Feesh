@@ -51,8 +51,8 @@ object EventBus {
             publish(ChatEvent(message))
         }
 
-        ClientReceiveMessageEvents.ALLOW_GAME.register { message, _ ->
-            var event = ChatCancellableEvent(message, false)
+        ClientReceiveMessageEvents.ALLOW_GAME.register { message, isOverlay ->
+            var event = ChatCancellableEvent(message, false, isOverlay)
             publish(event)
             !event.isCancelled
         }
