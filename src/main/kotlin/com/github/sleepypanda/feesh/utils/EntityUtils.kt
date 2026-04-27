@@ -50,6 +50,23 @@ object EntityUtils {
     }
 
     /**
+     * Get the squared distance between two points in the world. Used for faster distance checks.
+     * @param xa The x coordinate of the first point.
+     * @param ya The y coordinate of the first point.
+     * @param za The z coordinate of the first point.
+     * @param xb The x coordinate of the second point.
+     * @param yb The y coordinate of the second point.
+     * @param zb The z coordinate of the second point.
+     * @returns {Double} The squared distance between the two points.
+     */
+    fun getDistanceSqr(xa: Double, ya: Double, za: Double, xb: Double, yb: Double, zb: Double): Double {
+        val dx = xb - xa
+        val dy = yb - ya
+        val dz = zb - za
+        return dx * dx + dy * dy + dz * dz
+    }
+
+    /**
      * Get the player's fishing hook if it is active.
      * @returns The player's fishing hook.
      */

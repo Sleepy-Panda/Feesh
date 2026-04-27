@@ -131,9 +131,14 @@ object NessieDestinationAlert {
         val mobEntity = EntityUtils.getMcEntityById(nessieEntityId) ?: return
         if (mobEntity !is Sniffer) return
 
-        if (driptoadDelveEntranceCoords.any { (x, y, z) -> EntityUtils.getDistance(mobEntity, x, y, z) <= DESTINATION_ENTRANCE_RADIUS }) {
+        val sqrRadius = DESTINATION_ENTRANCE_RADIUS * DESTINATION_ENTRANCE_RADIUS
+        val nx = mobEntity.x
+        val ny = mobEntity.y
+        val nz = mobEntity.z
+
+        if (driptoadDelveEntranceCoords.any { (x, y, z) -> EntityUtils.getDistanceSqr(nx, ny, nz, x, y, z) <= sqrRadius }) {
             alertOnNessieDestinationChosen(nessieEntityId, "Driptoad Delve")
-        } else if (jadeDragonEntranceCoords.any { (x, y, z) -> EntityUtils.getDistance(mobEntity, x, y, z) <= DESTINATION_ENTRANCE_RADIUS }) {
+        } else if (jadeDragonEntranceCoords.any { (x, y, z) -> EntityUtils.getDistanceSqr(nx, ny, nz, x, y, z) <= sqrRadius }) {
             alertOnNessieDestinationChosen(nessieEntityId, "Jade Dragon")
         }
     }
