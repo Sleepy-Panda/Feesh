@@ -63,11 +63,6 @@ object Alerts : CategoryKt("Alerts") {
         this.description = Translated("Shows a title and plays a sound when you or your party members are killed by Thunder / Lord Jawbus / Ragnarok / Wiki Tiki / Titanoboa / Nessie.")
     }
 
-    var alertOnNessieDestination by boolean(true) {
-        this.name = Translated("Alert when Nessie has chosen its destination")
-        this.description = Translated("Shows a title and sends a chat message when Nessie is swimming to the Driptoad Delve or Jade Dragon cave.")
-    }
-
     init {
         separator {
             this.title = "${AQUA}${BOLD}Rare drops"
@@ -97,6 +92,22 @@ object Alerts : CategoryKt("Alerts") {
     var alertOnRareDropsPriceMode by enum(PricingModeWithNpc.SELL_OFFER) {
         this.name = Translated("Rare drop price mode")
         this.description = Translated("Defines how to calculate price for the dropped item.")
+    }
+
+    init {
+        separator {
+            this.title = "${AQUA}${BOLD}Nessie"
+        }
+    }
+
+    var alertOnNessieDestination by boolean(true) {
+        this.name = Translated("Alert when Nessie has chosen its destination")
+        this.description = Translated("Shows a title and sends a local chat message when Nessie is swimming to the Driptoad Delve or Jade Dragon cave.")
+    }
+
+    var autoShareNessieDestination by boolean(false) {
+        this.name = Translated("Autoshare to party chat")
+        this.description = Translated("Shares Nessie's chosen destination to PARTY chat automatically.")
     }
 
     init {

@@ -9,6 +9,7 @@ Released on: ???
 - Added Night Squid to the "Highlight rare sea creatures" functionality, to easier hunt them.
 - Added Ice Essence gains from actionbar to Fishing profit tracker.
   - This is not 100% accurate because not all total essence gains are displayed in actionbar.
+- Added setting to autoshare Nessie's destination to party chat [disabled by default].
 - Added Golden Bait and Treasure bait to the Fishing profit tracker, because of Seal pet's perk.
 
 ## Bugfixes
