@@ -2,6 +2,7 @@ package com.github.sleepypanda.feesh.features.overlays
 
 import com.github.sleepypanda.feesh.FeeshMod
 import com.github.sleepypanda.feesh.events.EventBus
+import com.github.sleepypanda.feesh.events.models.ChatEvent
 import com.github.sleepypanda.feesh.events.models.ClientTickEvent
 import com.github.sleepypanda.feesh.events.models.GameClosedEvent
 import com.github.sleepypanda.feesh.events.models.WorldChangedEvent
@@ -96,25 +97,11 @@ object ArchfiendDiceProfitTracker {
         }
 
     fun init() {
-        registerChatHandlers()
         registerCommands()
+        EventBus.subscribe(ChatEvent::class, ::onChat)
         EventBus.subscribe(ClientTickEvent::class, ::onClientTick)
         EventBus.subscribe(WorldChangedEvent::class, ::onWorldChanged)
         EventBus.subscribe(GameClosedEvent::class, ::onGameClosed)
-    }
-
-    private fun registerChatHandlers() {
-        RegisterUtils.chat(ARCHFIEND_DICE_ROLL_MESSAGE) { _, matchResult ->
-            val number = matchResult.groupValues[1].toIntOrNull() ?: return@chat
-            trackArchfiendDiceRoll(data.session, DiceType.ARCHFIEND, number, true)
-            trackArchfiendDiceRoll(data.total, DiceType.ARCHFIEND, number, false)
-        }
-
-        RegisterUtils.chat(HIGH_CLASS_ARCHFIEND_DICE_ROLL_MESSAGE) { _, matchResult ->
-            val number = matchResult.groupValues[1].toIntOrNull() ?: return@chat
-            trackArchfiendDiceRoll(data.session, DiceType.HIGH_CLASS, number, true)
-            trackArchfiendDiceRoll(data.total, DiceType.HIGH_CLASS, number, false)
-        }
     }
 
     private fun registerCommands() {
@@ -131,6 +118,24 @@ object ArchfiendDiceProfitTracker {
 
         RegisterUtils.command(TOGGLE_VIEW_MODE_COMMAND) {
             toggleViewMode()
+        }
+    }
+
+    private fun onChat(event: ChatEvent) {
+        if (!WorldUtils.isInSkyblock() || !Overlays.archfiendDiceProfitTrackerOverlay) return
+        
+        ARCHFIEND_DICE_ROLL_MESSAGE.find(event.unformattedText)?.run {
+            val number = this.groupValues[1].toIntOrNull() ?: return@onChat
+            trackArchfiendDiceRoll(data.session, DiceType.ARCHFIEND, number, true)
+            trackArchfiendDiceRoll(data.total, DiceType.ARCHFIEND, number, false)
+            return@onChat
+        }
+        
+        HIGH_CLASS_ARCHFIEND_DICE_ROLL_MESSAGE.find(event.unformattedText)?.run {
+            val number = this.groupValues[1].toIntOrNull() ?: return@onChat
+            trackArchfiendDiceRoll(data.session, DiceType.HIGH_CLASS, number, true)
+            trackArchfiendDiceRoll(data.total, DiceType.HIGH_CLASS, number, false)
+            return@onChat
         }
     }
 

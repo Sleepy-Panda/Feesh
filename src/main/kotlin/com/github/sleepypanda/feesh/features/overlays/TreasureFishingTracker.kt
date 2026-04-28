@@ -3,6 +3,7 @@ package com.github.sleepypanda.feesh.features.overlays
 import com.github.sleepypanda.feesh.FeeshMod
 import com.github.sleepypanda.feesh.constants.RareDrops
 import com.github.sleepypanda.feesh.events.EventBus
+import com.github.sleepypanda.feesh.events.models.ChatEvent
 import com.github.sleepypanda.feesh.events.models.ClientTickEvent
 import com.github.sleepypanda.feesh.events.models.GameClosedEvent
 import com.github.sleepypanda.feesh.events.models.RareDropEvent
@@ -50,8 +51,8 @@ object TreasureFishingTracker {
 
     const val RESET_SESSION_COMMAND = "feeshResetTreasureFishing"
     const val RESET_TOTAL_COMMAND = "feeshResetTreasureFishingTotal"
+    private const val TOGGLE_VIEW_MODE_COMMAND = "feeshToggleTreasureFishingViewMode"
 
-    private val TOGGLE_VIEW_MODE_COMMAND = "feeshToggleTreasureFishingViewMode"
     private val PATTERN_TREASURE_CATCH = Regex("^⛃ (GOOD|GOOD JUNK|GREAT|GREAT JUNK|OUTSTANDING|OUTSTANDING JUNK) CATCH!")
 
     private var data = PersistentDataManager.feeshData.treasureFishing
@@ -82,16 +83,12 @@ object TreasureFishingTracker {
         }
 
     fun init() {
-        registerChatHandlers()
         registerCommands()
+        EventBus.subscribe(ChatEvent::class, ::onChat)
         EventBus.subscribe(ClientTickEvent::class, ::onClientTick)
         EventBus.subscribe(WorldChangedEvent::class, ::onWorldChanged)
         EventBus.subscribe(RareDropEvent::class, ::onRareDrop)
         EventBus.subscribe(GameClosedEvent::class, ::onGameClosed)
-    }
-
-    private fun registerChatHandlers() {
-        RegisterUtils.chat(PATTERN_TREASURE_CATCH) { _, matchResult -> trackTreasureCatch(matchResult.groupValues[1].orEmpty().lowercase()) }
     }
 
     private fun registerCommands() {
@@ -105,6 +102,15 @@ object TreasureFishingTracker {
         }
         RegisterUtils.command(TOGGLE_VIEW_MODE_COMMAND) {
             toggleViewMode()
+        }
+    }
+
+    private fun onChat(event: ChatEvent) {
+        if (!Overlays.treasureFishingTrackerOverlay || !WorldUtils.isInSkyblock() || !WorldUtils.isInFishingWorld()) return
+
+        CommonUtils.runWithCatching("Failed to track treasure catch") {
+            val matchResult = PATTERN_TREASURE_CATCH.find(event.unformattedText) ?: return@onChat
+            trackTreasureCatch(matchResult.groupValues[1].lowercase())
         }
     }
 

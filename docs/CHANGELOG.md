@@ -22,7 +22,8 @@ Released on: ???
 
 ## Other
 
-- Started preparation for adding 26.1 support - moved to official mappings instead of yarn. It means that every functionality was touched in order to migrate it. Please let me know if something is broken but was working before!
+- Big rework related with adding 26.1 support - moved to official mappings instead of yarn. It means that every functionality was touched in order to migrate it. Please let me know if something is broken but was working before!
+- Refactored how mod subscribes to various chat messages.
 
 # 1.5.0
 

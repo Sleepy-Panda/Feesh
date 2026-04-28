@@ -12,7 +12,7 @@ import com.github.sleepypanda.feesh.utils.CommonUtils
 import net.minecraft.world.entity.decoration.ArmorStand
 
 object ArmorStandPublisher {
-    private const val MAX_ATTEMPTS = 2
+    private const val MAX_ATTEMPTS = 3
 
     private data class PendingNameCheck(val armorStand: ArmorStand, val attempt: Int)
 

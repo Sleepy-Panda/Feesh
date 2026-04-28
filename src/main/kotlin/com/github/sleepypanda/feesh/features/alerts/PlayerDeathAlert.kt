@@ -4,27 +4,28 @@ import com.github.sleepypanda.feesh.settings.categories.Alerts
 import com.github.sleepypanda.feesh.utils.ChatUtils
 import com.github.sleepypanda.feesh.utils.SoundUtils
 import com.github.sleepypanda.feesh.utils.PlayerUtils
-import com.github.sleepypanda.feesh.utils.RegisterUtils
 import com.github.sleepypanda.feesh.utils.WorldUtils
 import com.github.sleepypanda.feesh.utils.CommonUtils
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.events.EventBus
+import com.github.sleepypanda.feesh.events.models.ChatEvent
 import com.github.sleepypanda.feesh.events.models.PartyChatEvent
 import com.github.sleepypanda.feesh.utils.ChatUtils.removeFormatting
-import com.github.sleepypanda.feesh.FeeshMod
 import net.minecraft.sounds.SoundEvents
 
 object PlayerDeathAlert {
-    const val YOU_DIED_PATTERN = "^ ☠ You were killed by (Ragnarok|Thunder|Lord Jawbus|Jawbus Follower|Wiki Tiki|Wiki Tiki Laser Totem|Titanoboa|Nessie)\\.$"
+    val YOU_DIED_PATTERN = Regex("^ ☠ You were killed by (Ragnarok|Thunder|Lord Jawbus|Jawbus Follower|Wiki Tiki|Wiki Tiki Laser Totem|Titanoboa|Nessie)\\.$")
     const val PARTY_MEMBER_DIED_PATTERN = "^--> I was killed, please wait for me until I come back <--$"
 
     fun init() {
-        RegisterUtils.chat(Regex(YOU_DIED_PATTERN)) { _, matchResult -> onOwnDeath(matchResult) }
+        EventBus.subscribe(ChatEvent::class, ::onOwnDeath)
         EventBus.subscribe(PartyChatEvent::class, ::onPartyChatDeath)
     }
 
-    private fun onOwnDeath(matchResult: MatchResult) {
+    private fun onOwnDeath(event: ChatEvent) {
         if (!Alerts.alertOnPlayerDeath || !WorldUtils.isInSkyblock()) return
+
+        val matchResult = YOU_DIED_PATTERN.matchEntire(event.unformattedText) ?: return
 
         CommonUtils.showTitle("${RED}You were killed ☠")
         SoundUtils.playSound(SoundEvents.VILLAGER_DEATH)

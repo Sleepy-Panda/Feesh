@@ -1,7 +1,7 @@
 package com.github.sleepypanda.feesh.features.overlays
 
-import com.github.sleepypanda.feesh.FeeshMod
 import com.github.sleepypanda.feesh.events.EventBus
+import com.github.sleepypanda.feesh.events.models.ChatEvent
 import com.github.sleepypanda.feesh.events.models.ClientTickEvent
 import com.github.sleepypanda.feesh.events.models.WorldChangedEvent
 import com.github.sleepypanda.feesh.settings.categories.Overlays
@@ -10,20 +10,20 @@ import com.github.sleepypanda.feesh.settings.categories.General
 import com.github.sleepypanda.feesh.settings.categories.SoundMode
 import com.github.sleepypanda.feesh.utils.WorldUtils
 import com.github.sleepypanda.feesh.utils.ChatUtils
-import com.github.sleepypanda.feesh.utils.RegisterUtils
 import com.github.sleepypanda.feesh.utils.CommonUtils
 import com.github.sleepypanda.feesh.utils.SoundUtils
 import com.github.sleepypanda.feesh.utils.TabListUtils
 import com.github.sleepypanda.feesh.utils.PlayerUtils
 import com.github.sleepypanda.feesh.utils.gui.FeeshGui
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
-import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
 import com.github.sleepypanda.feesh.constants.Sounds
 import java.util.Date
 
 object RainTimer {
     private const val TICKS_PER_READ = 20
     private const val SECONDS_ALERT_THRESHOLD = 10
+
+    private val PATTERN_RAIN_ADDED = Regex("^You added a minute of rain!.*$")
 
     private var rainSecondsLeft: Int? = null
     private var rainTimer: String? = null // Time to display, e.g. "02m 30s"
@@ -40,20 +40,23 @@ object RainTimer {
         .setApplyCustomStyleKey { Overlays.rainTimerCustomStyle }
 
     fun init() {
+        EventBus.subscribe(ChatEvent::class, ::onChat)
         EventBus.subscribe(ClientTickEvent::class, ::onClientTick)
         EventBus.subscribe(WorldChangedEvent::class, ::onWorldChanged)
-
-        RegisterUtils.chat(Regex("^You added a minute of rain!.*$")) { _, _ ->
-            if (WorldUtils.isInSkyblock() && WorldUtils.getWorldName() == WorldUtils.PARK) {
-                trackRainStatus()
-            }
-        }
     }
 
     private fun isRainArea(): Boolean {
         val worldName = WorldUtils.getWorldName() ?: return false
         val areaName = WorldUtils.getZoneName() ?: return false
         return (worldName == WorldUtils.PARK && areaName == "Birch Park") || (worldName == WorldUtils.SPIDERS_DEN && areaName == "Spider's Den") || (worldName == WorldUtils.JERRY_WORKSHOP)
+    }
+
+
+    private fun onChat(event: ChatEvent) {
+        if (!WorldUtils.isInSkyblock() || WorldUtils.getWorldName() != WorldUtils.PARK) return
+        if (!PATTERN_RAIN_ADDED.matches(event.unformattedText)) return
+
+        trackRainStatus()
     }
 
     private fun onWorldChanged(@Suppress("UNUSED_PARAMETER") event: WorldChangedEvent) {
