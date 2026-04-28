@@ -1,31 +1,31 @@
 package com.github.sleepypanda.feesh.features.alerts
 
 import com.github.sleepypanda.feesh.settings.categories.Alerts
+import com.github.sleepypanda.feesh.events.EventBus
+import com.github.sleepypanda.feesh.events.models.ChatEvent
 import com.github.sleepypanda.feesh.utils.CommonUtils
 import com.github.sleepypanda.feesh.utils.SoundUtils
 import com.github.sleepypanda.feesh.utils.ChatUtils
-import com.github.sleepypanda.feesh.utils.RegisterUtils
 import com.github.sleepypanda.feesh.utils.WorldUtils
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
-import com.github.sleepypanda.feesh.events.EventBus
 import com.github.sleepypanda.feesh.events.models.WorldChangedEvent
 import java.util.Timer
 import kotlin.concurrent.timerTask
 
 object SpiritMaskAlert {
-    const val SPIRIT_MASK_USED_PATTERN = "^Second Wind Activated\\! Your Spirit Mask saved your life\\!$"
+    val SPIRIT_MASK_USED_PATTERN = Regex("^Second Wind Activated\\! Your Spirit Mask saved your life\\!$")
     private var timer: Timer? = null
 
     fun init() {
-        RegisterUtils.chat(Regex(SPIRIT_MASK_USED_PATTERN)) { _, _ -> onSpiritMaskUsed() }
-
+        EventBus.subscribe(ChatEvent::class, ::onChat)
         EventBus.subscribe(WorldChangedEvent::class, ::onWorldChanged)
     }
 
-    private fun onSpiritMaskUsed() {
+    private fun onChat(event: ChatEvent) {
         if (!WorldUtils.isInSkyblock() || !Alerts.alertOnSpiritMaskUsed) return
+        if (!SPIRIT_MASK_USED_PATTERN.matches(event.unformattedText)) return
 
-        CommonUtils.showTitle("${YELLOW}Spirit Mask used")
+        CommonUtils.showTitle("${DARK_PURPLE}Spirit Mask ${YELLOW}used")
         SoundUtils.playSound()
 
         resetTimer()
@@ -42,7 +42,7 @@ object SpiritMaskAlert {
         ChatUtils.sendLocalChat("${DARK_PURPLE}Spirit Mask ${WHITE}is ready!", true)
 
         if (!Alerts.alertOnSpiritMaskBack) return
-        CommonUtils.showTitle("${GREEN}Spirit Mask is ready")
+        CommonUtils.showTitle("${DARK_PURPLE}Spirit Mask ${GREEN}is ready")
         SoundUtils.playSound()
     }
 

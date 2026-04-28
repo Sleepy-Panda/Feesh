@@ -1,6 +1,8 @@
 package com.github.sleepypanda.feesh.features.alerts
 
 import com.github.sleepypanda.feesh.FeeshMod
+import com.github.sleepypanda.feesh.events.EventBus
+import com.github.sleepypanda.feesh.events.models.ChatEvent
 import com.github.sleepypanda.feesh.settings.categories.Alerts
 import com.github.sleepypanda.feesh.utils.CommonUtils
 import com.github.sleepypanda.feesh.utils.SoundUtils
@@ -9,16 +11,13 @@ import com.github.sleepypanda.feesh.utils.WorldUtils
 import com.github.sleepypanda.feesh.utils.FishingHookUtils
 import com.github.sleepypanda.feesh.utils.ChatUtils
 import com.github.sleepypanda.feesh.utils.ChatUtils.removeFormatting
-import com.github.sleepypanda.feesh.utils.RegisterUtils
 import com.github.sleepypanda.feesh.utils.data.PersistentDataManager
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
-import com.github.sleepypanda.feesh.events.EventBus
 import com.github.sleepypanda.feesh.events.models.ClientTickEvent
 import com.github.sleepypanda.feesh.events.models.GuiOpenedEvent
 import com.github.sleepypanda.feesh.events.models.WorldChangedEvent
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen
 import net.minecraft.core.component.DataComponents
-import net.minecraft.network.chat.Component
 import java.util.Timer
 import kotlin.concurrent.timerTask
 
@@ -35,25 +34,24 @@ object FishingBagDisabledAlert {
     private const val CLICK_TO_DISABLE_TEXT = "Click to disable!"
 
     fun init() {
+        EventBus.subscribe(ChatEvent::class, ::onChat)
         EventBus.subscribe(ClientTickEvent::class, ::onClientTick)
         EventBus.subscribe(WorldChangedEvent::class, ::onWorldChanged)
         EventBus.subscribe(GuiOpenedEvent::class, ::onGuiOpened)
-        
-        RegisterUtils.chat(USE_BAITS_FROM_FISHING_BAG_DISABLED_PATTERN) { _, _ ->
-            if (Alerts.alertOnFishingBagDisabled && WorldUtils.isInSkyblock()) {
-                setFishingBagState(false)
-            }
-        }
-        
-        RegisterUtils.chat(USE_BAITS_FROM_FISHING_BAG_ENABLED_PATTERN) { _, _ ->
-            if (Alerts.alertOnFishingBagDisabled && WorldUtils.isInSkyblock()) {
-                setFishingBagState(true)
-            }
-        }
     }
 
     private fun onWorldChanged(@Suppress("UNUSED_PARAMETER") event: WorldChangedEvent) {
         isAlerted = false
+    }
+
+    private fun onChat(event: ChatEvent) {
+        if (!Alerts.alertOnFishingBagDisabled || !WorldUtils.isInSkyblock()) return
+
+        if (USE_BAITS_FROM_FISHING_BAG_DISABLED_PATTERN.matches(event.unformattedText)) {
+            setFishingBagState(false)
+        } else if (USE_BAITS_FROM_FISHING_BAG_ENABLED_PATTERN.matches(event.unformattedText)) {
+            setFishingBagState(true)
+        }
     }
 
     private fun onClientTick(@Suppress("UNUSED_PARAMETER") event: ClientTickEvent) {

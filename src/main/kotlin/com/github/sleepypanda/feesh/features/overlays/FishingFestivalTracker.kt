@@ -3,6 +3,7 @@ package com.github.sleepypanda.feesh.features.overlays
 import com.github.sleepypanda.feesh.constants.SeaCreatures
 import com.github.sleepypanda.feesh.events.EventBus
 import com.github.sleepypanda.feesh.events.models.ClientTickEvent
+import com.github.sleepypanda.feesh.events.models.ChatEvent
 import com.github.sleepypanda.feesh.events.models.OwnSeaCreatureCaughtEvent
 import com.github.sleepypanda.feesh.events.models.WorldChangedEvent
 import com.github.sleepypanda.feesh.settings.categories.General
@@ -26,6 +27,8 @@ import java.util.Date
 object FishingFestivalTracker {
     private const val FESTIVAL_DURATION_MS = 61 * 60 * 1000L // 1 hour 1 minute - how long festival usually lasts, + some extra time to be safe
     private const val TICKS_PER_UPDATE = 20
+
+    private val FESTIVAL_ENDED_PATTERN = Regex("^FISHING FESTIVAL The festival has concluded! Time to dry off and repair your rods!$")
 
     const val RESET_COMMAND = "feeshResetFishingFestival"
 
@@ -65,7 +68,7 @@ object FishingFestivalTracker {
 
     fun init() {
         registerCommands()
-        registerChatHandlers()
+        EventBus.subscribe(ChatEvent::class, ::onChat)
         EventBus.subscribe(OwnSeaCreatureCaughtEvent::class, ::onSeaCreatureCaught)
         EventBus.subscribe(ClientTickEvent::class, ::onClientTick)
         EventBus.subscribe(WorldChangedEvent::class, ::onWorldChanged)
@@ -78,12 +81,13 @@ object FishingFestivalTracker {
         }
     }
 
-    private fun registerChatHandlers() {
-        RegisterUtils.chat(Regex("^FISHING FESTIVAL The festival has concluded! Time to dry off and repair your rods!$")) { _, _ ->
-            alertOnFestivalResults()
-            announcePersonalBest()
-            resetTracker()
-        }
+    private fun onChat(event: ChatEvent) {
+        if (!WorldUtils.isInSkyblock()) return
+        if (!FESTIVAL_ENDED_PATTERN.matches(event.unformattedText)) return
+
+        alertOnFestivalResults()
+        announcePersonalBest()
+        resetTracker()
     }
 
     private fun onWorldChanged(@Suppress("UNUSED_PARAMETER") event: WorldChangedEvent) {

@@ -5,6 +5,7 @@ import com.github.sleepypanda.feesh.constants.FishingProfitDrops
 import com.github.sleepypanda.feesh.constants.FishingProfitDropInfo
 import com.github.sleepypanda.feesh.events.EventBus
 import com.github.sleepypanda.feesh.events.models.ClientTickEvent
+import com.github.sleepypanda.feesh.events.models.ChatEvent
 import com.github.sleepypanda.feesh.events.models.GameClosedEvent
 import com.github.sleepypanda.feesh.events.models.GuiClosedEvent
 import com.github.sleepypanda.feesh.events.models.WorldChangedEvent
@@ -77,6 +78,15 @@ object FishingProfitTracker {
     const val DELETE_ITEM_COMMAND = "feeshDeleteItemFishingProfit"
     const val DELETE_ITEM_TOTAL_COMMAND = "feeshDeleteItemFishingProfitTotal"
 
+    private val COINS_CATCH_PATTERN = Regex("^⛃ (?:GOOD|GREAT|OUTSTANDING) CATCH! You caught ([\\d,]+) Coins.*")
+    private val ICE_ESSENCE_CATCH_PATTERN = Regex("^⛃ (?:GOOD|GREAT|OUTSTANDING) CATCH! You caught Ice Essence x([\\d,]+).*")
+    private val SHARD_CATCH_PATTERN = Regex("^⛃ (?:GOOD|GREAT|OUTSTANDING) CATCH! You caught (?:a|an) (.+) Shard.*")
+    private val SHARDS_PATTERN = Regex("^You caught (.+) Shard[s]?.*")
+    private val SHARD_CHARMED_PATTERN = Regex("^(?:CHARM|NAGA|SALT) You charmed (?:a|an) (.+) and captured its Shard.*")
+    private val SHARDS_CHARMED_PATTERN = Regex("^(?:CHARM|NAGA|SALT) You charmed (?:a|an) (.+) and captured ([\\d]+) Shards from it.*")
+    private val SHARDS_LOOTSHARED_PATTERN = Regex("^LOOT SHARE You received (.+) Shard.*")
+    private val AGATHA_CONTEST_BRACKET_PATTERN = Regex("^\\[NPC] Agatha: You reached the (COMMON|UNCOMMON|RARE|EPIC|LEGENDARY|MYTHIC|DIVINE|SPECIAL) Bracket in my contest!$")
+
     private const val TICKS_TIMER_ELAPSED_TIME = 20
     private const val TICKS_INVENTORY = 5
     private const val MAX_SECONDS_SINCE_HOOK = 60 * 5
@@ -116,7 +126,7 @@ object FishingProfitTracker {
 
     fun init() {
         registerCommands()
-        registerChatHandlers()
+        EventBus.subscribe(ChatEvent::class, ::onChat)
         EventBus.subscribe(ClientTickEvent::class, ::onClientTick)
         EventBus.subscribe(GameClosedEvent::class, ::onGameClosed)
         EventBus.subscribe(WorldChangedEvent::class, ::onWorldChanged)
@@ -156,50 +166,67 @@ object FishingProfitTracker {
         }
     }
 
-    private fun registerChatHandlers() {
+    private fun onChat(event: ChatEvent) {
+        if (!Overlays.fishingProfitTrackerOverlay || !WorldUtils.isInSkyblock() || !WorldUtils.isInFishingWorld()) return
+
+        // [NPC] Agatha: You reached the SPECIAL Bracket in my contest!
+        AGATHA_CONTEST_BRACKET_PATTERN.find(event.unformattedText)?.run {
+            onAgathaContestBracketReached(this.groupValues[1].orEmpty())
+            return@onChat
+        }
+
         // ⛃ GOOD CATCH! You caught 43,642 Coins!
-        RegisterUtils.chat(Regex("^⛃ (?:GOOD|GREAT|OUTSTANDING) CATCH! You caught ([\\d,]+) Coins.*")) { _, matchResult ->
-            onCoinsFished(matchResult.groupValues[1].orEmpty())
+        COINS_CATCH_PATTERN.find(event.unformattedText)?.run {
+            onCoinsFished(this.groupValues[1].orEmpty())
+            return@onChat
         }
+
         // ⛃ GOOD CATCH! You caught Ice Essence x5!
-        RegisterUtils.chat(Regex("^⛃ (?:GOOD|GREAT|OUTSTANDING) CATCH! You caught Ice Essence x([\\d,]+).*")) { _, matchResult ->
+        ICE_ESSENCE_CATCH_PATTERN.find(event.unformattedText)?.run {
             if (WorldUtils.getWorldName() == WorldUtils.JERRY_WORKSHOP) {
-                onIceEssenceFished(matchResult.groupValues[1].orEmpty())
+                onIceEssenceFished(this.groupValues[1].orEmpty())
             }
+            return@onChat
         }
+
         // ⛃ GOOD CATCH! You caught a Shinyfish Shard!
         // ⛃ GOOD CATCH! You caught an Abyssal Lanternfish Shard!
-        RegisterUtils.chat(Regex("^⛃ (?:GOOD|GREAT|OUTSTANDING) CATCH! You caught (?:a|an) (.+) Shard.*")) { _, matchResult ->
-            onShardFished(matchResult.groupValues[1].orEmpty())
+        SHARD_CATCH_PATTERN.find(event.unformattedText)?.run {
+            onShardFished(this.groupValues[1].orEmpty())
+            return@onChat
         }
+
         // You caught a Sea Archer Shard!
         // You caught x4 Sea Archer Shards!
         // You caught x4 Carrot King Shards!
         // You caught x2 Loch Emperor Shards!
-        RegisterUtils.chat(Regex("^You caught (.+) Shard[s]?.*")) { _, matchResult ->
-            onShardCaughtInBlackHole(matchResult.groupValues[1].orEmpty())
+        SHARDS_PATTERN.find(event.unformattedText)?.run {
+            onShardCaughtInBlackHole(this.groupValues[1].orEmpty())
+            return@onChat
         }
+
         // CHARM You charmed a Loch Emperor and captured its Shard.
         // NAGA You charmed a Tadgang and captured its Shard.
-        RegisterUtils.chat(Regex("^(?:CHARM|NAGA|SALT) You charmed (?:a|an) (.+) and captured its Shard.*")) { _, matchResult ->
-            onShardsCharmed(matchResult.groupValues[1].orEmpty(), 1)
+        SHARD_CHARMED_PATTERN.find(event.unformattedText)?.run {
+            onShardsCharmed(this.groupValues[1].orEmpty(), 1)
+            return@onChat
         }
+
         // SALT You charmed a Ent and captured 2 Shards from it.
         // CHARM You charmed a Flaming Spider and captured 2 Shards from it.
         // SALT You charmed a Tadgang and captured 2 Shards from it.
         // SALT You charmed a Magma Slug and captured 3 Shards from it.
-        RegisterUtils.chat(Regex("^(?:CHARM|NAGA|SALT) You charmed (?:a|an) (.+) and captured ([\\d]+) Shards from it.*")) { _, matchResult ->
-            val count = matchResult.groupValues[2].toIntOrNull() ?: 1
-            onShardsCharmed(matchResult.groupValues[1].orEmpty(), count)
+        SHARDS_CHARMED_PATTERN.find(event.unformattedText)?.run {
+            val count = this.groupValues[2].toIntOrNull() ?: 1
+            onShardsCharmed(this.groupValues[1].orEmpty(), count)
+            return@onChat
         }
+
         // LOOT SHARE You received 2 Titanoboa Shards for assisting CuzImCrzz!
         // LOOT SHARE You received 3 Magma Slug Shards for assisting OmeRuben!
-        RegisterUtils.chat(Regex("^LOOT SHARE You received (.+) Shard.*")) { _, matchResult ->
-            onShardLootshared(matchResult.groupValues[1].orEmpty())
-        }
-        // [NPC] Agatha: You reached the SPECIAL Bracket in my contest!
-        RegisterUtils.chat(Regex("^\\[NPC] Agatha: You reached the (COMMON|UNCOMMON|RARE|EPIC|LEGENDARY|MYTHIC|DIVINE|SPECIAL) Bracket in my contest!$")) { _, matchResult ->
-            onAgathaContestBracketReached(matchResult.groupValues[1].orEmpty())
+        SHARDS_LOOTSHARED_PATTERN.find(event.unformattedText)?.run {
+            onShardLootshared(this.groupValues[1].orEmpty())
+            return@onChat
         }
     }
 
@@ -212,7 +239,7 @@ object FishingProfitTracker {
     }
 
     private fun onClientTick(@Suppress("UNUSED_PARAMETER") event: ClientTickEvent) {
-        if (!Overlays.fishingProfitTrackerOverlay || !WorldUtils.isInSkyblock() || !WorldUtils.isInFishingWorld(WorldUtils.getWorldName())) return
+        if (!Overlays.fishingProfitTrackerOverlay || !WorldUtils.isInSkyblock() || !WorldUtils.isInFishingWorld()) return
         tickCounter++
 
         if (tickCounter % TICKS_TIMER_ELAPSED_TIME == 0) {
@@ -229,7 +256,7 @@ object FishingProfitTracker {
     }
 
     private fun isTrackerVisible(): Boolean {
-        if (!Overlays.fishingProfitTrackerOverlay || !WorldUtils.isInSkyblock() || !WorldUtils.isInFishingWorld(WorldUtils.getWorldName())) return false
+        if (!Overlays.fishingProfitTrackerOverlay || !WorldUtils.isInSkyblock() || !WorldUtils.isInFishingWorld()) return false
         if (!FishingHookUtils.wasFishingHookActiveMinutesAgo(HIDE_OVERLAY_AFTER_HOOK_MINUTES)) return false
 
         val viewMode = getCurrentViewMode()
@@ -396,7 +423,7 @@ object FishingProfitTracker {
     }
 
     private fun refreshElapsedTime() {
-        if (!Overlays.fishingProfitTrackerOverlay || !WorldUtils.isInSkyblock() || !WorldUtils.isInFishingWorld(WorldUtils.getWorldName())) {
+        if (!Overlays.fishingProfitTrackerOverlay || !WorldUtils.isInSkyblock() || !WorldUtils.isInFishingWorld()) {
             pause()
             return
         }
@@ -540,7 +567,6 @@ object FishingProfitTracker {
         if (!isSessionActive || !isTrackerVisible()) return
         findAndAddProfitTrackerItem({ it.itemId == "ESSENCE_ICE" }, event.amount)
     }
-
 
     private fun onCoinsFished(coinsStr: String) {
         if (!isSessionActive || !isTrackerVisible()) return

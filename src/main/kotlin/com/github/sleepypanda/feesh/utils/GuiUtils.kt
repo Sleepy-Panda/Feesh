@@ -3,8 +3,8 @@ package com.github.sleepypanda.feesh.utils
 import com.github.sleepypanda.feesh.utils.ChatUtils.removeFormatting
 import com.github.sleepypanda.feesh.FeeshMod
 import com.github.sleepypanda.feesh.events.EventBus
+import com.github.sleepypanda.feesh.events.models.ChatEvent
 import com.github.sleepypanda.feesh.events.models.GuiClosedEvent
-import com.github.sleepypanda.feesh.utils.CommonUtils
 import net.minecraft.client.gui.screens.ChatScreen
 import net.minecraft.client.gui.screens.inventory.InventoryScreen
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen
@@ -35,6 +35,10 @@ data class LastGuisClosed(
 )
 
 object GuiUtils {
+    private val KAT_UPGRADE_PATTERN = Regex("^\\[NPC\\] Kat: I was able to upgrade your pet (.+) to .*")
+    private val ABIPHONE_CALL_PATTERN = Regex("^\\[NPC\\] Kat: ✆ Hi! I've finished training your (.+)!.*")
+    private val GFS_COMMAND_PATTERN = Regex("^Moved [\\d,]+ (.+) from your Sacks to your inventory\\.$")
+
     private var cachedIsInInventoryOrChat: Boolean = false
     private var timer: Timer? = null
 
@@ -44,27 +48,34 @@ object GuiUtils {
 
     fun init() {
         startTimer()
-        registerChatHandlers()
+        EventBus.subscribe(ChatEvent::class, ::onChat)
         EventBus.subscribe(GuiClosedEvent::class, ::onGuiClosed)
     }
 
-    private fun registerChatHandlers() {
+    private fun onChat(event: ChatEvent) {
+        if (!WorldUtils.isInSkyblock()) return
+
         // When talking to NPC.
         // [NPC] Kat: I was able to upgrade your pet Guardian to LEGENDARY.
-        RegisterUtils.chat(Regex("^\\[NPC\\] Kat: I was able to upgrade your pet (.+) to .*")) { _, matchResult ->
+        KAT_UPGRADE_PATTERN.find(event.unformattedText)?.run {
             lastKatUpgrade.lastPetClaimedAt = Date()
-            lastKatUpgrade.petName = matchResult.groupValues[1].orEmpty().removeFormatting()
+            lastKatUpgrade.petName = this.groupValues[1].removeFormatting()
+            return@onChat
         }
+
         // Abiphone call.
         // [NPC] Kat: ✆ Hi! I've finished training your Guardian!
-        RegisterUtils.chat(Regex("^\\[NPC\\] Kat: ✆ Hi! I've finished training your (.+)!.*")) { _, matchResult ->
+        ABIPHONE_CALL_PATTERN.find(event.unformattedText)?.run {
             lastKatUpgrade.lastPetClaimedAt = Date()
-            lastKatUpgrade.petName = matchResult.groupValues[1].orEmpty().removeFormatting()
+            lastKatUpgrade.petName = this.groupValues[1].removeFormatting()
+            return@onChat
         }
-        // Moved 3,900 Enchanted Sea Lumies from your Sacks to your inventory.
-        RegisterUtils.chat(Regex("^Moved [\\d,]+ (.+) from your Sacks to your inventory\\.$")) { _, matchResult ->
+
+        // Moved 3,900 Enchanted Sea Lumies from your Sacks to your inventory.        // Moved 3,900 Enchanted Sea Lumies from your Sacks to your inventory.
+        GFS_COMMAND_PATTERN.find(event.unformattedText)?.run {
             lastGfsCommand.executedAt = Date()
-            lastGfsCommand.itemName = matchResult.groupValues[1].orEmpty().removeFormatting()
+            lastGfsCommand.itemName = this.groupValues[1].removeFormatting()
+            return@onChat
         }
     }
 
@@ -77,7 +88,7 @@ object GuiUtils {
             chestName.contains("Sack") -> lastGuisClosed.lastSacksGuiClosedAt = now
             chestName.contains("Trophy Fishing") -> lastGuisClosed.lastOdgerGuiClosedAt = now
             chestName.contains("Manage Auctions") || chestName.contains("Confirm Purchase") ||
-                chestName.contains("BIN Auction View") || chestName.contains("Your Bids") ->
+            chestName.contains("BIN Auction View") || chestName.contains("Your Bids") ->
                 lastGuisClosed.lastAuctionGuiClosedAt = now
             chestName.endsWith("Recipe") -> lastGuisClosed.lastSupercraftGuiClosedAt = now
             chestName.contains("Craft Item") -> lastGuisClosed.lastCraftGuiClosedAt = now

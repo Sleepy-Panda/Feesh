@@ -3,6 +3,7 @@ package com.github.sleepypanda.feesh.features.overlays
 import com.github.sleepypanda.feesh.FeeshMod
 import com.github.sleepypanda.feesh.events.EventBus
 import com.github.sleepypanda.feesh.events.models.ArmorStandDetailsLoadedEvent
+import com.github.sleepypanda.feesh.events.models.ChatEvent
 import com.github.sleepypanda.feesh.events.models.ClientTickEvent
 import com.github.sleepypanda.feesh.events.models.PlayerInteractEvent
 import com.github.sleepypanda.feesh.events.models.WorldChangedEvent
@@ -17,7 +18,6 @@ import com.github.sleepypanda.feesh.utils.ChatUtils.getFormattedString
 import com.github.sleepypanda.feesh.utils.gui.FeeshGui
 import com.github.sleepypanda.feesh.utils.CommonUtils
 import com.github.sleepypanda.feesh.utils.SoundUtils
-import com.github.sleepypanda.feesh.utils.RegisterUtils
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
 import com.github.sleepypanda.feesh.constants.Sounds
@@ -33,6 +33,9 @@ import java.util.TimerTask
 object DeployablesTimer {
     private const val SECONDS_BEFORE_EXPIRATION = 10
     private const val TICKS_PER_CHECK = 20
+
+    private val FLARE_DISAPPEARED_PATTERN = Regex("^Your flare disappeared because you were too far away\\!$")
+    private val PREVIOUS_DEPLOYABLE_REMOVED_PATTERN = Regex("^Your previous (.*) was removed\\!$")
 
     private open class BaseDeployableData {
         var remainingTime: String? = null
@@ -95,22 +98,11 @@ object DeployablesTimer {
         .setApplyCustomStyleKey { Overlays.deployablesTimerCustomStyle }
 
     fun init() {
+        EventBus.subscribe(ChatEvent::class, ::onChat)
         EventBus.subscribe(ClientTickEvent::class, ::onClientTick)
         EventBus.subscribe(WorldChangedEvent::class, ::onWorldChanged)
         EventBus.subscribe(PlayerInteractEvent::class, ::onPlayerInteract)
         EventBus.subscribe(ArmorStandDetailsLoadedEvent::class, ::onArmorStandDetailsLoaded)
-
-        RegisterUtils.chat(Regex("^Your flare disappeared because you were too far away\\!$")) { _, _ ->
-            if (WorldUtils.isInSkyblock()) {
-                resetFlare()
-            }
-        }
-
-        RegisterUtils.chat(Regex("^Your previous (.*) was removed\\!$")) { _, matchResult ->
-            if (!WorldUtils.isInSkyblock()) return@chat
-            val captured: String = matchResult.groupValues.getOrNull(1) ?: ""
-            if (captured.contains("flare", ignoreCase = true)) resetFlare()
-        }
     }
 
     private fun onWorldChanged(@Suppress("UNUSED_PARAMETER") event: WorldChangedEvent) {
@@ -121,6 +113,18 @@ object DeployablesTimer {
         resetDwarvenLantern()
         lastUmberellaInteractTimeMs = 0L
         lastDwarvenLanternInteractTimeMs = 0L
+    }
+
+    private fun onChat(event: ChatEvent) {
+        if (!WorldUtils.isInSkyblock()) return
+
+        if (FLARE_DISAPPEARED_PATTERN.matches(event.unformattedText)) {
+            resetFlare()
+        } else if (PREVIOUS_DEPLOYABLE_REMOVED_PATTERN.matches(event.unformattedText)) {
+            val matchResult = PREVIOUS_DEPLOYABLE_REMOVED_PATTERN.find(event.unformattedText) ?: return
+            val captured: String = matchResult.groupValues.getOrNull(1) ?: ""
+            if (captured.contains("flare", ignoreCase = true)) resetFlare()
+        }
     }
 
     private fun onPlayerInteract(event: PlayerInteractEvent) {

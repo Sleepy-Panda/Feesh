@@ -4,6 +4,7 @@ import com.github.sleepypanda.feesh.events.EventBus
 import com.github.sleepypanda.feesh.events.models.ChatCancellableEvent
 import com.github.sleepypanda.feesh.events.models.SacksItemsPickupEvent
 import com.github.sleepypanda.feesh.utils.ChatUtils.removeFormatting
+import com.github.sleepypanda.feesh.utils.CommonUtils
 import com.github.sleepypanda.feesh.utils.WorldUtils
 import net.minecraft.network.chat.HoverEvent
 import net.minecraft.network.chat.Component
@@ -19,17 +20,19 @@ object SacksItemPickupPublisher {
     private fun onChat(event: ChatCancellableEvent) {
         if (!WorldUtils.isInSkyblock()) return
 
-        val message = event.message
-        if (!SACKS_TRIGGER.matches(message.string)) return
+        CommonUtils.runWithCatching("Failed to handle sacks item pickup in publisher.") {
+            val message = event.message
+            if (!SACKS_TRIGGER.matches(event.unformattedText)) return@onChat
 
-        val items = parseItemsFromSacksMessage(message)
-            .filter { (itemName, amount, _) -> amount > 0 && itemName.isNotBlank() }
-            .map { (itemName, amount, sackName) ->
-                SacksItemsPickupEvent.SacksPickupItem(itemName = itemName, amount = amount, sackName = sackName)
+            val items = parseItemsFromSacksMessage(message)
+                .filter { (itemName, amount, _) -> amount > 0 && itemName.isNotBlank() }
+                .map { (itemName, amount, sackName) ->
+                    SacksItemsPickupEvent.SacksPickupItem(itemName = itemName, amount = amount, sackName = sackName)
+                }
+                
+            if (items.isNotEmpty()) {
+                EventBus.publish(SacksItemsPickupEvent(items = items))
             }
-            
-        if (items.isNotEmpty()) {
-            EventBus.publish(SacksItemsPickupEvent(items = items))
         }
     }
 

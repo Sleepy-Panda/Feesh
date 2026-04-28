@@ -1,6 +1,8 @@
 package com.github.sleepypanda.feesh.events
 
 import com.github.sleepypanda.feesh.events.models.AfterMouseClickEvent
+import com.github.sleepypanda.feesh.events.models.ActionBarEvent
+import com.github.sleepypanda.feesh.events.models.ActionBarCancellableEvent
 import com.github.sleepypanda.feesh.events.models.ChatCancellableEvent
 import com.github.sleepypanda.feesh.events.models.ChatEvent
 import com.github.sleepypanda.feesh.events.models.ClientTickEvent
@@ -12,6 +14,8 @@ import com.github.sleepypanda.feesh.events.models.ItemEntityLoadedEvent
 import com.github.sleepypanda.feesh.events.models.ArmorStandLoadedEvent
 import com.github.sleepypanda.feesh.events.models.WorldChangedEvent
 import com.github.sleepypanda.feesh.events.models.ScreenBeforeInitEvent
+import com.github.sleepypanda.feesh.utils.ChatUtils.getFormattedString
+import com.github.sleepypanda.feesh.utils.ChatUtils.removeFormatting
 import kotlin.reflect.KClass
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents
@@ -27,11 +31,7 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientEntityEvents
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientWorldEvents
 //#endif
 import net.fabricmc.fabric.api.client.screen.v1.ScreenMouseEvents
-import net.minecraft.network.chat.Component
-import net.minecraft.client.Minecraft
-import net.minecraft.world.level.Level
 import net.minecraft.world.entity.item.ItemEntity
-import net.minecraft.world.entity.LivingEntity
 import net.minecraft.world.entity.decoration.ArmorStand
 
 object EventBus {
@@ -47,14 +47,24 @@ object EventBus {
     }
 
     fun init() {
-        ClientReceiveMessageEvents.GAME.register { message, _ ->
-            publish(ChatEvent(message))
+        ClientReceiveMessageEvents.GAME.register { message, isOverlay ->
+            if (isOverlay) {
+                publish(ActionBarEvent(message, message.getFormattedString(), message.string?.removeFormatting() ?: ""))
+            } else {
+                publish(ChatEvent(message, message.getFormattedString(), message.string?.removeFormatting() ?: ""))
+            }
         }
 
         ClientReceiveMessageEvents.ALLOW_GAME.register { message, isOverlay ->
-            var event = ChatCancellableEvent(message, false, isOverlay)
-            publish(event)
-            !event.isCancelled
+            if (isOverlay) {
+                var event = ActionBarCancellableEvent(message, message.getFormattedString(), message.string?.removeFormatting() ?: "", false)
+                publish(event)
+                !event.isCancelled
+            } else {
+                var event = ChatCancellableEvent(message, message.getFormattedString(), message.string?.removeFormatting() ?: "", false)
+                publish(event)
+                !event.isCancelled
+            }
         }
 
         ScreenEvents.BEFORE_INIT.register { _, screen, _, _ ->

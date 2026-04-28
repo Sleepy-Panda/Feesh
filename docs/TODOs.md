@@ -2,8 +2,14 @@
 
 - Catches/h for treasures
 - TODO: Test in 1.21
-- TODO: Test party drops message
-- dropping a tiki mask or a shed does not update this trackers, i have to update the drop count manually each time
+- TODO:
+  - Test party drops message
+  - Level up pet
+  - Level up bottle
+  - Ice Essence gains, also test with custom mana bar from Skyblocker
+  - Any Reindrake alert
+  - Expired salt
+
 - Deployable in mineshaft
 - 1.21 Fishing Hook armorstand
 - Sometimes current world&zone is detected wrongly
