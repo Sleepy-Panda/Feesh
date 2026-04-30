@@ -69,7 +69,7 @@ object GalateaWaterTracker {
     private fun onSeaCreature(event: OwnSeaCreatureCaughtEvent) {
         if (!Overlays.galateaWaterTrackerOverlay || !WorldUtils.isInSkyblock() || WorldUtils.getWorldName() != WorldUtils.GALATEA) return
 
-        val seaCreatureInfo = SeaCreatures.allSeaCreatures.find { it.name == event.seaCreatureName } ?: return
+        val seaCreatureInfo = event.seaCreatureInfo
         if (seaCreatureInfo.types.contains(SeaCreatures.TYPE_GALATEA_LAVA)) return
 
         val seaCreatureName = event.seaCreatureName

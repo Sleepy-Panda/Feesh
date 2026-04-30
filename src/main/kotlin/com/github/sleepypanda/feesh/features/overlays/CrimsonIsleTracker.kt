@@ -95,7 +95,7 @@ object CrimsonIsleTracker {
         if (!Overlays.crimsonIsleTrackerOverlay || !WorldUtils.isInSkyblock() || WorldUtils.getWorldName() != WorldUtils.CRIMSON_ISLE) return
 
         val seaCreatureName = event.seaCreatureName
-        val seaCreatureInfo = SeaCreatures.allSeaCreatures.find { it.name == seaCreatureName } ?: return
+        val seaCreatureInfo = event.seaCreatureInfo
         if (!seaCreatureInfo.types.contains(SeaCreatures.TYPE_CRIMSON_ISLE_LAVA)) return
 
         val isInHotspot = isFishingInHotspot()
