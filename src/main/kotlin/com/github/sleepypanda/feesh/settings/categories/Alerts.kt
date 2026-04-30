@@ -132,47 +132,52 @@ object Alerts : CategoryKt("Alerts") {
         }
     }
 
+    var alertOnSeaCreaturesPersonalCap by boolean(true) {
+        this.name = Translated("Alert after personal sea creatures count cap")
+        this.description = Translated("Shows a title and plays a sound when the personal sea creatures count cap is reached, and Skyblock says \"There is not enough space for another Sea Creature!\"")
+    }
+
     var alertOnSeaCreaturesTimerThreshold by boolean(true) {
-        this.name = Translated("Alert when sea creatures are alive for 5+ minutes")
-        this.description = Translated("Shows a title and plays a sound when the sea creatures nearby are alive for 5+ minutes and will despawn soon. Disabled if you have no fishing rod in your hotbar!")
+        this.name = Translated("Alert when own/others' sea creatures are alive for 5+ minutes")
+        this.description = Translated("Shows a title and plays a sound when the sea creatures nearby are alive for 5+ minutes and will despawn soon. It does not check if those are own or other people's sea creatures. Disabled if you have no fishing rod in your hotbar!")
     }
 
     var alertOnSeaCreaturesCountThreshold by boolean(true) {
-        this.name = Translated("Alert when sea creatures count hits threshold")
-        this.description = Translated("Shows a title and plays a sound when amount of sea creatures nearby hits the specified threshold. Useful to detect cap when barn fishing. Disabled if you have no fishing rod in your hotbar!")
+        this.name = Translated("Alert when own/others' sea creatures count hits threshold")
+        this.description = Translated("Shows a title and plays a sound when amount of sea creatures nearby hits the specified threshold. It does not check if those are own or other people's sea creatures. Disabled if you have no fishing rod in your hotbar!")
     }
 
     var seaCreaturesCountThreshold_Hub by int(50) {
         this.name = Translated("Sea creatures count threshold - HUB")
-        this.description = Translated("Count of sea creatures nearby required to see the alert when you are in the Hub. Ignored if the sea creatures count alert is disabled.")
+        this.description = Translated("Count of sea creatures nearby required to see the alert when you are in the Hub. It does not check if those are own or other people's sea creatures.Ignored if the sea creatures count alert is disabled.")
         this.range = 5..60
         this.slider = true
     }
 
     var seaCreaturesCountThreshold_CrimsonIsle by int(20) {
         this.name = Translated("Sea creatures count threshold - CRIMSON ISLE")
-        this.description = Translated("Count of sea creatures nearby required to see the alert when you are in the Crimson Isle. Ignored if the sea creatures count alert is disabled.")
+        this.description = Translated("Count of sea creatures nearby required to see the alert when you are in the Crimson Isle. It does not check if those are own or other people's sea creatures. Ignored if the sea creatures count alert is disabled.")
         this.range = 5..60
         this.slider = true
     }
 
     var seaCreaturesCountThreshold_CrystalHollows by int(20) {
         this.name = Translated("Sea creatures count threshold - CRYSTAL HOLLOWS")
-        this.description = Translated("Count of sea creatures nearby required to see the alert when you are in the Crystal Hollows. Ignored if the sea creatures count alert is disabled.")
+        this.description = Translated("Count of sea creatures nearby required to see the alert when you are in the Crystal Hollows. It does not check if those are own or other people's sea creatures. Ignored if the sea creatures count alert is disabled.")
         this.range = 5..60
         this.slider = true
     }
 
     var seaCreaturesCountThreshold_Galatea by int(30) {
         this.name = Translated("Sea creatures count threshold - GALATEA")
-        this.description = Translated("Count of sea creatures nearby required to see the alert when you are in the Galatea. Ignored if the sea creatures count alert is disabled.")
+        this.description = Translated("Count of sea creatures nearby required to see the alert when you are in the Galatea. It does not check if those are own or other people's sea creatures.Ignored if the sea creatures count alert is disabled.")
         this.range = 5..60
         this.slider = true
     }
 
     var seaCreaturesCountThreshold_Default by int(50) {
         this.name = Translated("Sea creatures count threshold - Other")
-        this.description = Translated("Count of sea creatures nearby required to see the alert when you are in other locations. Ignored if the sea creatures count alert is disabled.")
+        this.description = Translated("Count of sea creatures nearby required to see the alert when you are in other locations. It does not check if those are own or other people's sea creatures. Ignored if the sea creatures count alert is disabled.")
         this.range = 5..60
         this.slider = true
     }
