@@ -328,7 +328,7 @@ object SeaCreaturesTracker {
         }
     }
 
-    private fun findSeaCreatureInfoByName(name: String): SeaCreatures.Companion.SeaCreatureInfo? {
+    private fun findSeaCreatureInfoByName(name: String): SeaCreatures.SeaCreatureInfo? {
         return SeaCreatures.allSeaCreatures.find { it.name.equals(name.trim(), ignoreCase = true) }
     }
 
@@ -510,7 +510,7 @@ object SeaCreaturesTracker {
 
     private data class TrackerLineEntry(
         val seaCreature: String,
-        val seaCreatureInfo: SeaCreatures.Companion.SeaCreatureInfo,
+        val seaCreatureInfo: SeaCreatures.SeaCreatureInfo,
         val amount: Int,
         val percent: Double,
         val doubleHookAmount: Int,

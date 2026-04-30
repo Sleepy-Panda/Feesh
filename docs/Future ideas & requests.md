@@ -7,6 +7,16 @@
 - When there is no fishing rod in hand, some trackers can be hidden (optional setting).
 - Pause button pauses all widget's timers so you dont have to click each widget's button individually. Same thing that keybind does.
 
+## Sea creature alerts
+
+- Could be triggered for any sea creature, not only for rares
+
+## Barn fishing timer
+
+- Detect personal cap before it actually happened
+- Change overlay/alerting so it can rely on own creatures
+- Split entities count as 1 (e.g. 3 Baby Magma Slugs give 1 to cap)
+
 ## Sea creature HP tracker
 
 - Add custom Ragnarok immunity timer - when it goes below 50% hp (e.g. 62.4). Max HP is 125 mil, or 250 on Derpy. It takes around 12 seconds, but if server is laggy it takes unpredictable time.
