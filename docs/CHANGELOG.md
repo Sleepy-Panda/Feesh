@@ -12,6 +12,7 @@ Released on: ???
 - Added setting to autoshare Nessie's destination to party chat [disabled by default].
 - Added Golden Bait and Treasure bait to the Fishing profit tracker, because of Seal pet's perk.
 - Added Consumables tracker which shows consumed Moby-Duck's remaining time [disabled by default]. Also has expiration alert.
+- Shortened coordinates chat message for Hotspots and Mythic creatures in Bayou, as there is only one zone on the island and no need to mention it.
 
 ## Bugfixes
 

@@ -3,8 +3,7 @@
 - Alpha:
   - Added the Personal Sea Creature Cap from the Crimson Isle to every island in the game
   - Added the functionality of your current bait being slown in slot #9 while fishing
-  - CHaning crafting recipies for Ml-based items ig
-  - There is not enough space for another Sea Creature! Kill some to make space for new ones!
+  - Chaning crafting recipies for Ml-based items ig
 - Catches/h for treasures
 - Link to changelog? Change hotspot sounds?
 - Some people need other sea creatures alerts, e.g. Ent or Night Squid
@@ -22,6 +21,7 @@
 - Sometimes current world&zone is detected wrongly
 - Ragnarok immunity timer
 - Someone has no Vial title/sound (I checked and did not reproduce, I had my title/sound as usual)
+- Manual "set tracker drops" command does not reset "sc since last" for that drop.
 - Fished coins to add via the command.
 - Carmine dye into tracker
 - Autoupdates
