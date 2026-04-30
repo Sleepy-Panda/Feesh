@@ -195,6 +195,22 @@ object Alerts : CategoryKt("Alerts") {
 
     init {
         separator {
+            this.title = "${AQUA}${BOLD}Consumables"
+        }
+    }
+
+    var alertOnConsumableExpiresSoon by boolean(true) {
+        this.name = Translated("Alert when a Moby-Duck expires soon")
+        this.description = Translated("Shows a title and plays a sound when a Moby-Duck expires in 10 seconds.")
+    }
+        
+    var alertOnSaltExpired by boolean(true) {
+        this.name = Translated("Alert when a Salt has expired")
+        this.description = Translated("Shows a title and plays a sound when a Salt has expired.")
+    }
+
+    init {
+        separator {
             this.title = "${AQUA}${BOLD}Pets"
         }
     }
@@ -281,11 +297,6 @@ object Alerts : CategoryKt("Alerts") {
     var alertOnThunderBottleCharged by boolean(true) {
         this.name = Translated("Alert when Thunder/Storm/Hurricane Bottle is charged")
         this.description = Translated("Shows a title and plays a sound when your Thunder, Storm, or Hurricane Bottle is fully charged.")
-    }
-    
-    var alertOnSaltExpired by boolean(true) {
-        this.name = Translated("Alert when a Salt has expired")
-        this.description = Translated("Shows a title and plays a sound when a Salt has expired.")
     }
     
     var alertOnWormTheFishCaught by boolean(false) {

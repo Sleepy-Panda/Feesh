@@ -56,7 +56,7 @@ This mod requires [Fabric API](https://modrinth.com/mod/fabric-api) and [Fabric 
 - **Any Reindrake** — Alerts when any Reindrake spawns in the lobby, even if caught not by your party. Offers option to warp to island spawn on click.
 - **Spirit Mask** — Alerts when Spirit Mask's Second Wind is activated and when it's back.
 - **Barn fishing timer** — Alerts when sea creatures are alive for 5+ minutes or when their count hits threshold (configurable per location).
-- **Deployables** — Alerts when your deployable item expires in 10 seconds.
+- **Deployables** — Alerts when your deployable item is about to expire.
 - **Pet level up** — Alerts when a pet reaches max level. Can show estimated leveling price in chat.
 - **Hotspot found or gone** — Alerts when a hotspot is found or is gone.
 - **Fishing Bag disabled** — Alerts when you start fishing with Fishing Bag disabled.
@@ -65,8 +65,9 @@ This mod requires [Fabric API](https://modrinth.com/mod/fabric-api) and [Fabric 
 - **Chum bucket auto-pickup** — Alerts when Chum/Chumcap bucket is automatically picked up.
 - **Golden Fish** — Alerts when a Golden Fish has spawned.
 - **Thunder/Storm/Hurricane Bottle charged** — Alerts when bottle is fully charged.
+- **Moby-Duck expires soon** — Alerts when a Moby-Duck is about to expire.
 - **Salt expired** — Alerts when a Salt has expired.
-- **Worm the Fish** — Alerts when Worm the Fish is detected (Dirt Rod fishing).
+- **Worm the Fish** — Alerts when Worm the Fish is caught (Dirt Rod fishing).
 - **Fishing Festival** — Alerts when the Fishing Festival ends, and posts amounts of sharks caught in chat. Also has option to track personal best per festival.
 - **Rain/Thunder/Blizzard ends soon** — Alerts when Rain/Thunder/Blizzard ends soon while in Birch Park / Spider's Den / Jerry's Workshop.
 - **Nessie destination alert** — Alerts destination when a Nessie decides into which cave to swim - to Jade Dragon or to Driptoad Delve.
@@ -80,6 +81,7 @@ This mod requires [Fabric API](https://modrinth.com/mod/fabric-api) and [Fabric 
 - **Nearby entities counter tracker** — Shows players, fishing hooks, and Chumcap buckets count within 30 blocks.
 - **Barn fishing timer** — Shows count of sea creatures nearby and how long they've been alive.
 - **Deployables timer** — Shows remaining time of your deployable items placed nearby.
+- **Consumables timer** — Consumables tracker which shows consumed Moby-Duck's remaining time.
 - **Sea creatures HP** — Shows HP of nearby rare sea creatures in lootshare range with their immunity timer.
 - **Sea creatures tracker** — Overview of caught sea creatures with Session/Total modes, percentages, and double hook statistics.
 - **Fishing hook timer** — Displays hook timer and fish arrival indicator. Requires Skyblock Fishing Timer enabled.

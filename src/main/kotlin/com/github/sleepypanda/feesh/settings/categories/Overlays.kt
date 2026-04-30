@@ -215,6 +215,22 @@ Hidden if you have no fishing rod in your hotbar!""".trimIndent())
 
     init {
         separator {
+            this.title = "${AQUA}${BOLD}Consumables"
+        }
+    }
+
+    var consumablesTimerOverlay by boolean(false) {
+        this.name = Translated("Consumables timer")
+        this.description = Translated("Shows an overlay with the remaining time of active Moby-Duck.")
+    }
+
+    var consumablesTimerCustomStyle by boolean(true) {
+        this.name = Translated("Apply custom style")
+        this.description = Translated(getCustomStyleDescription("Consumables timer"))
+    }
+
+    init {
+        separator {
             this.title = "${AQUA}${BOLD}Sea creatures HP"
         }
     }
