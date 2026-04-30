@@ -1,6 +1,5 @@
 package com.github.sleepypanda.feesh.features.chat
 
-import com.github.sleepypanda.feesh.constants.SeaCreatures
 import com.github.sleepypanda.feesh.utils.CommonUtils
 import com.github.sleepypanda.feesh.utils.ChatUtils
 import com.github.sleepypanda.feesh.utils.WorldUtils
@@ -19,7 +18,7 @@ object CompactCatchMessages {
     private fun onSeaCreature(event: OwnSeaCreatureCaughtEvent) {
         if (!WorldUtils.isInSkyblock() || !ChatSettings.compactSeaCreaturesMessages) return
 
-        val seaCreatureInfo = SeaCreatures.allSeaCreatures.find { it.name == event.seaCreatureName } ?: return
+        val seaCreatureInfo = event.seaCreatureInfo
         val isDoubleHook = event.isDoubleHook
 
         val catchTemplate = (ChatSettings.compactCatchMessageTemplate.firstOrNull() ?: "").ifEmpty { DEFAULT_CATCH_TEMPLATE }

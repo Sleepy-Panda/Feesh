@@ -145,7 +145,7 @@ object MagmaCoreFishingTracker {
         CommonUtils.runWithCatching("Failed to track Magma Fields sea creature catch") {
             if (!Overlays.magmaCoreFishingTrackerOverlay || !WorldUtils.isInSkyblock() || WorldUtils.getWorldName() != WorldUtils.CRYSTAL_HOLLOWS) return
 
-            val seaCreatureInfo = SeaCreatures.allSeaCreatures.find { it.name == event.seaCreatureName } ?: return
+            val seaCreatureInfo = event.seaCreatureInfo
             if (!seaCreatureInfo.types.contains(SeaCreatures.TYPE_MAGMA_FIELDS)) return
 
             isSessionActive = true
