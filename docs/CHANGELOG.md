@@ -11,6 +11,7 @@ Released on: ???
   - This is not 100% accurate because not all total essence gains are displayed in actionbar.
 - Added setting to autoshare Nessie's destination to party chat [disabled by default].
 - Added Golden Bait and Treasure bait to the Fishing profit tracker, because of Seal pet's perk.
+- Added Consumables tracker which shows consumed Moby-Duck's remaining time [disabled by default]. Also has expiration alert.
 
 ## Bugfixes
 
