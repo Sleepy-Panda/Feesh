@@ -164,7 +164,7 @@ object HotspotFoundMessage {
 
     private fun getMessage(x: Double, y: Double, z: Double, perk: String?, needsMessageId: Boolean): String {
         val location = CommonUtils.getFormattedLocation(x, y, z)
-        val zone = WorldUtils.getZoneName()
+        val zone = if (WorldUtils.getWorldName() == WorldUtils.BACKWATER_BAYOU) null else WorldUtils.getZoneName() // Bayou has single zone so no need to show it
         val messageId = if (needsMessageId) " | ${CommonUtils.getMessageId()}" else ""
 
         val perkText = if (perk != null) "${perk.removeFormatting()} " else ""

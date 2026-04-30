@@ -35,8 +35,8 @@ object RareCatchAllChatMessage {
         val player = FeeshMod.mc.player ?: return ""
         val location = CommonUtils.getFormattedLocation(player.getX(), player.getY(), player.getZ())
         val scMessage = if (isDoubleHooked) "${seaCreatureName} x2" else "${seaCreatureName}"
-        val zone = WorldUtils.getZoneName()
-        val zoneText = if (!zone.isNullOrEmpty()) " at ${zone}" else ""
+        val zone = if (WorldUtils.getWorldName() == WorldUtils.BACKWATER_BAYOU) null else WorldUtils.getZoneName() // Bayou has single zone so no need to show it
+        val zoneText = if (!zone.isNullOrEmpty()) " at $zone" else ""
         val messageId = CommonUtils.getMessageId()
     
         var message = "${location} | ${scMessage}${zoneText} | ${messageId}"
