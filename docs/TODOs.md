@@ -1,6 +1,11 @@
 ## Players feedback
 
+- Alpha:
+  - Added the Personal Sea Creature Cap from the Crimson Isle to every island in the game
+  - Added the functionality of your current bait being slown in slot #9 while fishing
+  - There is not enough space for another Sea Creature! Kill some to make space for new ones!
 - Catches/h for treasures
+- Link to changelog? Change hotspot sounds?
 - TODO: Test in 1.21
 - TODO:
   - Test party drops message
