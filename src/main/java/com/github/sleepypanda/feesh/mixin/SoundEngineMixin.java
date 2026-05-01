@@ -1,6 +1,7 @@
 package com.github.sleepypanda.feesh.mixin;
 
 import com.github.sleepypanda.feesh.features.sounds.MuteJadeDragonSound;
+import com.github.sleepypanda.feesh.features.sounds.MuteReindrakeGifts;
 import net.minecraft.client.resources.sounds.SoundInstance;
 import net.minecraft.client.sounds.SoundEngine;
 import org.spongepowered.asm.mixin.Mixin;
@@ -27,9 +28,9 @@ public class SoundEngineMixin {
 
     private boolean shouldCancel(SoundInstance sound) {
         //#if MC >= 1.21.11
-        //$$ return MuteJadeDragonSound.INSTANCE.shouldCancel(sound.getIdentifier());
+        //$$ return MuteJadeDragonSound.INSTANCE.shouldCancel(sound.getIdentifier()) || MuteReindrakeGifts.INSTANCE.shouldCancel(sound.getIdentifier());
         //#else
-        return MuteJadeDragonSound.INSTANCE.shouldCancel(sound.getLocation());
+        return MuteJadeDragonSound.INSTANCE.shouldCancel(sound.getLocation()) || MuteReindrakeGifts.INSTANCE.shouldCancel(sound.getLocation());
         //#endif
     }
 }
