@@ -34,7 +34,7 @@ object Commands : CategoryKt("Commands") {
 
         button {
             title = "Gear craft prices"
-            description = "Calculates the profits for crafting different gear pieces from fishing drops, and displays the results in the chat. Executes ${WHITE}/${GearCraftPricesCommand.COMMAND_NAME}"
+            description = "Calculates profit for crafting gear from fishing drops compared to selling materials as-is, and displays the results in the chat. Optional filter by material type: magmalord, thunder, walnut, skull, agarimoo. Executes ${WHITE}/${GearCraftPricesCommand.COMMAND_NAME} [filter]"
             text = "Click to execute"
             onClick {
                 ChatUtils.command(GearCraftPricesCommand.COMMAND_NAME)
