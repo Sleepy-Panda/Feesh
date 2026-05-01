@@ -1,17 +1,27 @@
-# 1.6.0
+# 1.7.0
 
 Released on: ???
+
+## Features
+
+## Bugfixes
+
+# 1.6.0
+
+Released on: 2026-05-01
 
 ## Features
 
 - Added support for Minecraft 26.1.x (Fabric).
   - **This is experimental version, not fully tested on 26.1.1 / 26.1.2. Please let me know if you face any issues!**
 - Added Night Squid to the "Highlight rare sea creatures" functionality, to easier hunt them.
+- Added True Ice rare drop alert & party chat message. **Make sure to enable if you need it!**
 - Added Ice Essence gains from actionbar to Fishing profit tracker.
   - This is not 100% accurate because not all total essence gains are displayed in actionbar.
 - Added setting to autoshare Nessie's destination to party chat [disabled by default].
 - Added Golden Bait and Treasure bait to the Fishing profit tracker, because of Seal pet's perk.
 - Added Consumables tracker which shows consumed Moby-Duck's remaining time [disabled by default]. Also has expiration alert.
+- Added "Mute Reindrake gifts" setting to mute loud 'totem used' sounds while picking up gifts from a Reindrake [disabled by default].
 - Shortened coordinates chat message for Hotspots and Mythic creatures in Bayou, as there is only one zone on the island and no need to mention it.
 
 ## Bugfixes

@@ -11,7 +11,7 @@ This mod is an evolution of [FeeshNotifier ChatTriggers module](https://chattrig
 - [Features](#features)
 - [Troubleshooting](#troubleshooting)
 - [Contacts](#contacts)
-- [Special thanks](#special-thanks)
+- [Creadits and Special thanks](#credits-and-special-thanks)
 - [Developer's stuff](#developers-stuff)
 
 ## Releases
@@ -121,6 +121,7 @@ This mod requires [Fabric API](https://modrinth.com/mod/fabric-api) and [Fabric 
 - **Highlight rare sea creatures** — Applies glowing border to the rare sea creatures. Not visible through walls.
 - **Hide other players near bobber** — Hides other players near your bobber when a fishing rod is casted.
 - **Mute Jade Dragon** — Mutes Jade dragon sounds while you are in dragon's cave.
+- **Mute Reindrake gifts** — Mutes loud 'totem used' sounds while picking up gifts from a Reindrake.
 
 ### Commands
 
@@ -160,11 +161,12 @@ In case of questions, bug reports, feature requests, bored, feeling alone - plea
 - #feesh-mod / #mod-discussions channels in Casters Discord
 - IGN: MoonTheSadFisher
 
-## Special thanks
+## Credits and Special thanks
 
 Shoutout to the wonderful people who helped this mod to grow!
 
 - [Casters discord](https://discord.gg/79E7Rhv8), for supporting the mod
+- [Moulberry's API](https://moulberry.codes/lowestbin.json), for providing auction lbin prices
 - alpha-r (rare sea creatures highlight feature)
 
 ## Developer's stuff
