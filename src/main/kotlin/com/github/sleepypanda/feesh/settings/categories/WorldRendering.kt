@@ -70,7 +70,7 @@ object WorldRendering : CategoryKt("World Rendering") {
     }
 
     var muteReindrakeGifts by boolean(false) {
-        this.name = Translated("Mute Reindrake Gifts")
+        this.name = Translated("Mute Reindrake gifts")
         this.description = Translated("Mutes loud 'totem used' sounds while picking up gifts from a Reindrake.")
     }
 }
