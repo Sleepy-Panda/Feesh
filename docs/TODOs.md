@@ -4,8 +4,12 @@
   - Added the Personal Sea Creature Cap from the Crimson Isle to every island in the game
   - Added the functionality of your current bait being slown in slot #9 while fishing
   - Chaning crafting recipies for Ml-based items ig
+  - Added a message for when The Primordial / Bloodshot Reforge activates
+    - CAUGHT! You cocooned a Voracious Spider!
+    - CAUGHT! You cocooned a Frozen Steve!
 - Catches/h for treasures
 - Link to changelog? Change hotspot sounds?
+- Mute gifts
 - Some people need other sea creatures alerts, e.g. Ent or Night Squid
 - TODO: Test in 1.21
 - TODO:

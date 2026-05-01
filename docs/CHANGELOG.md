@@ -7,6 +7,7 @@ Released on: ???
 - Added support for Minecraft 26.1.x (Fabric).
   - **This is experimental version, not fully tested on 26.1.1 / 26.1.2. Please let me know if you face any issues!**
 - Added Night Squid to the "Highlight rare sea creatures" functionality, to easier hunt them.
+- Added True Ice rare drop alert & party chat message. **Make sure to enable if you need it!**
 - Added Ice Essence gains from actionbar to Fishing profit tracker.
   - This is not 100% accurate because not all total essence gains are displayed in actionbar.
 - Added setting to autoshare Nessie's destination to party chat [disabled by default].
