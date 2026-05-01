@@ -3,7 +3,7 @@
 - Alpha:
   - Added the Personal Sea Creature Cap from the Crimson Isle to every island in the game
   - Added the functionality of your current bait being slown in slot #9 while fishing
-  - Chaning crafting recipies for Ml-based items ig
+  - Changing crafting recipies for THunder/ML gear
   - Added a message for when The Primordial / Bloodshot Reforge activates
     - CAUGHT! You cocooned a Voracious Spider!
     - CAUGHT! You cocooned a Frozen Steve!
@@ -20,23 +20,16 @@
 - Manual "set tracker drops" command does not reset "sc since last" for that drop.
 - Fished coins to add via the command.
 - Carmine dye into tracker
+- Option to select some API instead of NEU prices API, if it might be decomissioned in a while
 - Autoupdates
 - Settings are not saved after exiting the game, probably because user closes window using X button to exit
 
 ## Tech Debt
 
-- 26.1 support -> https://fabricmc.net/2026/03/14/261.html
-  - Modloader 0.19.*
-  - Java version 25
-  - Check resourcepack generation
-  - Check new version announcements
-  - Check all mixins
-  - Update README for dependencies
 - Go through TODOs in the code
 - Rework ticks counters across all overlays
 - Keybinds periodically reset, probably after MC crashes or turning off PC
 - Version check to correctly detect newer version on Modrinth (e.g. 1.1.0 and 1.1.0-beta)
-- Will NEU prices API be available? Do I need to hop to another one?
 - Enabled highlighters / slot renderers to update dynamically instead of check every render event.
 
 ## Settings
