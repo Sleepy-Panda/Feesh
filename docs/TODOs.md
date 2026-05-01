@@ -9,16 +9,8 @@
     - CAUGHT! You cocooned a Frozen Steve!
 - Catches/h for treasures
 - Link to changelog? Change hotspot sounds?
-- Mute gifts
 - Some people need other sea creatures alerts, e.g. Ent or Night Squid
 - TODO: Test in 1.21
-- TODO:
-  - Test party drops message
-  - Level up pet
-  - Level up bottle
-  - Ice Essence gains, also test with custom mana bar from Skyblocker
-  - Any Reindrake alert
-  - Expired salt
 
 - Deployable in mineshaft
 - 1.21 Fishing Hook armorstand

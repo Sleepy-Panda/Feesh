@@ -121,6 +121,7 @@ This mod requires [Fabric API](https://modrinth.com/mod/fabric-api) and [Fabric 
 - **Highlight rare sea creatures** — Applies glowing border to the rare sea creatures. Not visible through walls.
 - **Hide other players near bobber** — Hides other players near your bobber when a fishing rod is casted.
 - **Mute Jade Dragon** — Mutes Jade dragon sounds while you are in dragon's cave.
+- **Mute Reindrake gifts** — Mutes loud 'totem used' sounds while picking up gifts from a Reindrake.
 
 ### Commands
 
