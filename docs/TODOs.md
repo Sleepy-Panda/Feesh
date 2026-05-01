@@ -1,17 +1,22 @@
-## Players feedback
+# TODOs
+
+## Reminders
+
+- Test each release in 1.21.* and 26.1
+
+## Current issues & feedback
 
 - Alpha:
   - Added the Personal Sea Creature Cap from the Crimson Isle to every island in the game
   - Added the functionality of your current bait being slown in slot #9 while fishing
-  - Changing crafting recipies for THunder/ML gear
+  - Changing crafting recipies for Thunder/ML gear
   - Added a message for when The Primordial / Bloodshot Reforge activates
     - CAUGHT! You cocooned a Voracious Spider!
     - CAUGHT! You cocooned a Frozen Steve!
 - Catches/h for treasures
-- Link to changelog? Change hotspot sounds?
+- Improve link to changelog in settings, and update announcement
+- Work on hotspot sounds to make them more unique
 - Some people need other sea creatures alerts, e.g. Ent or Night Squid
-- TODO: Test in 1.21
-
 - Deployable in mineshaft
 - 1.21 Fishing Hook armorstand
 - Sometimes current world&zone is detected wrongly
