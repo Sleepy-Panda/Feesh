@@ -32,7 +32,7 @@ object Settings : ConfigKt("${FeeshMod.MOD_ID}/config") {
         
         button {
             title = "Modrinth"
-            description = "Find official releases and changelogs here. Open to check latest version."
+            description = "Find official releases and changelogs here. Open a specific version to check its changelog."
             text = "Open"
             onClick {
                 openLink("https://modrinth.com/project/feesh/versions")
@@ -49,6 +49,17 @@ object Settings : ConfigKt("${FeeshMod.MOD_ID}/config") {
         }
 
         button {
+            title = "My Discord"
+            description = "m00nlight_sky - feel free to contact me if you have any questions, feedback, or suggestions."
+            text = "Button does nothing"
+            onClick { }
+        }
+
+        separator {
+            this.title = "${AQUA}${BOLD}Credits"
+        }
+
+        button {
             title = "Casters Discord"
             description = "Big fishing community with guides, discussions and more. Check out #feesh-mod / #mod-discussion channels for mod news & discussions!"
             text = "Join Casters"
@@ -58,10 +69,21 @@ object Settings : ConfigKt("${FeeshMod.MOD_ID}/config") {
         }
 
         button {
-            title = "My Discord"
-            description = "m00nlight_sky - feel free to contact me if you have any questions, feedback, or suggestions."
-            text = "Button does nothing"
-            onClick { }
+            title = "Elite Skyblock's Lowest BIN API"
+            description = "API used by Feesh for getting auction lbin prices."
+            text = "Open API"
+            onClick {
+                openLink("https://api.eliteskyblock.com/resources/auctions/neu")
+            }
+        }
+
+        button {
+            title = "Elite Skyblock"
+            description = "Elite Skyblock is a website to view player's farming stats."
+            text = "Open website"
+            onClick {
+                openLink("https://eliteskyblock.com/")
+            }
         }
 
         // Settings categories
