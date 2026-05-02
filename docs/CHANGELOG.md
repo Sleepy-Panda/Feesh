@@ -6,6 +6,15 @@ Released on: ???
 
 ## Bugfixes
 
+# 1.6.1
+
+Released on: 2026-05-02
+
+## Bugfixes
+
+- Fixed auction items prices not being loaded.
+  - Migrated from Moulberry API to Elite Skyblock API for lowest BIN - https://api.eliteskyblock.com/resources/auctions/neu
+
 # 1.6.0
 
 Released on: 2026-05-01

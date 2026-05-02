@@ -154,7 +154,7 @@ Instead, you can enable "Compact sea creature catch messages" in Feesh, which wi
 
 ## Contacts
 
-In case of questions, bug reports, feature requests, bored, feeling alone - please feel free to contact me:
+In case of questions, bug reports, feature requests - please feel free to contact me:
 
 - Discord: m00nlight_sky
 - Discussions or Issues in the repository [Feesh](https://github.com/Sleepy-Panda/Feesh/discussions)
@@ -163,10 +163,15 @@ In case of questions, bug reports, feature requests, bored, feeling alone - plea
 
 ## Credits and Special thanks
 
-Shoutout to the wonderful people who helped this mod to grow!
+### Credits
 
 - [Casters discord](https://discord.gg/79E7Rhv8), for supporting the mod
-- [Moulberry's API](https://moulberry.codes/lowestbin.json), for providing auction lbin prices
+- [Elite Skyblock](https://eliteskyblock.com/) and [Elite Skyblock Lowest Bin API](https://api.eliteskyblock.com/resources/auctions/neu), for providing auction lbin prices
+
+### Contributors
+
+Shoutout to the wonderful people who helped this mod to grow!
+
 - alpha-r (rare sea creatures highlight feature)
 
 ## Developer's stuff
