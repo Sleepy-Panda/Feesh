@@ -3,6 +3,8 @@ package com.github.sleepypanda.feesh.utils
 import com.github.sleepypanda.feesh.FeeshMod
 import com.github.sleepypanda.feesh.events.EventBus
 import com.github.sleepypanda.feesh.events.models.PricesUpdatedEvent
+import com.github.sleepypanda.feesh.settings.categories.AuctionPriceApiMode
+import com.github.sleepypanda.feesh.settings.categories.General
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import java.io.BufferedReader
@@ -47,7 +49,6 @@ data class AuctionItemPrice(
 
 object PriceUtils {
     private const val BAZAAR_API_URL = "https://api.hypixel.net/skyblock/bazaar"
-    private const val AUCTION_API_URL = "https://api.eliteskyblock.com/resources/auctions/neu" // No more often than every 2 minutes
     private const val UPDATE_INTERVAL_MINUTES = 5L
     private const val REQUEST_TIMEOUT_MS = 45000
     
@@ -59,6 +60,18 @@ object PriceUtils {
     private var scheduler: ScheduledExecutorService? = null
     private var httpExecutor: ExecutorService? = null
     
+    val auctionPriceApi: AuctionPriceApiMode
+        get() = General.auctionPriceApi
+
+    private fun auctionPricesApiUrl(): String =
+        // Agreed rate limit is not to fetch more often than every 2 minutes
+        when (auctionPriceApi) {
+            AuctionPriceApiMode.ELITE_SKYBLOCK_NEU ->
+                "https://api.eliteskyblock.com/resources/auctions/neu"
+            AuctionPriceApiMode.ELITE_SKYBLOCK_7DAY_AVG ->
+                "https://api.eliteskyblock.com/resources/auctions/neu/average-lbin/7day"
+        }
+
     fun init() {
         httpExecutor = Executors.newCachedThreadPool { r ->
             Thread(r, "Feesh-HTTP-Request").apply {
@@ -82,6 +95,23 @@ object PriceUtils {
         )
     }
     
+    /**
+     * Fetches auction prices from the currently selected API URL immediately.
+     */
+    fun refreshAuctionPrices() {
+        if (httpExecutor == null) return
+        trackAuctionPrices().thenAccept { auctionUpdated ->
+            if (auctionUpdated) {
+                EventBus.publish(
+                    PricesUpdatedEvent(
+                        bazaarUpdated = false,
+                        auctionUpdated = true
+                    )
+                )
+            }
+        }
+    }
+
     private fun trackAllPrices() {
         val bazaarFuture = trackBazaarPrices()
         val auctionFuture = trackAuctionPrices()
@@ -194,54 +224,54 @@ object PriceUtils {
         val executor = httpExecutor ?: return CompletableFuture.completedFuture(false)
         
         return CompletableFuture.supplyAsync({
-                try {
-                    val url = URI(AUCTION_API_URL).toURL()
-                    val connection = url.openConnection() as HttpURLConnection
-                    
-                    connection.requestMethod = "GET"
-                    connection.connectTimeout = REQUEST_TIMEOUT_MS
-                    connection.readTimeout = REQUEST_TIMEOUT_MS
-                    
-                    val responseCode = connection.responseCode
-                    if (responseCode != HttpURLConnection.HTTP_OK) {
-                        throw Exception("HTTP error code: $responseCode")
-                    }
-                    
-                    val reader = BufferedReader(InputStreamReader(connection.inputStream))
-                    val response = reader.readText()
-                    reader.close()
-                    connection.disconnect()
-                    
-                    if (response.isBlank()) {
-                        throw Exception("[Feesh] Error loading auctions data: response is empty")
-                    }
-                    
-                    val type = object : TypeToken<Map<String, Double>>() {}.type
-                    val lowestBinMap = gson.fromJson<Map<String, Double>>(response, type)
-                    
-                    if (lowestBinMap == null) {
-                        throw Exception("[Feesh] Error loading auctions data: response is null")
-                    }
-                    
-                    val newPrices = mutableMapOf<String, AuctionItemPrice>()
-                    
-                    lowestBinMap.forEach { (itemId, itemLowestBin) ->
-                        if (itemLowestBin > 0) {
-                            newPrices[itemId] = AuctionItemPrice(lbin = itemLowestBin)
-                        }
-                    }
-                    
-                    synchronized(auctionPricesLock) {
-                        auctionPrices = newPrices
-                    }
-                    
-                    FeeshMod.LOGGER.info("[Feesh] Successfully updated auction prices (${newPrices.size} items)")
-                    true
-                } catch (error: Exception) {
-                    FeeshMod.LOGGER.error("[Feesh] Error loading auctions data: ", error)
-                    false
+            try {
+                val url = URI(auctionPricesApiUrl()).toURL()
+                val connection = url.openConnection() as HttpURLConnection
+                
+                connection.requestMethod = "GET"
+                connection.connectTimeout = REQUEST_TIMEOUT_MS
+                connection.readTimeout = REQUEST_TIMEOUT_MS
+                
+                val responseCode = connection.responseCode
+                if (responseCode != HttpURLConnection.HTTP_OK) {
+                    throw Exception("HTTP error code: $responseCode")
                 }
-            }, executor)
+                
+                val reader = BufferedReader(InputStreamReader(connection.inputStream))
+                val response = reader.readText()
+                reader.close()
+                connection.disconnect()
+                
+                if (response.isBlank()) {
+                    throw Exception("[Feesh] Error loading auctions data: response is empty")
+                }
+                
+                val type = object : TypeToken<Map<String, Double>>() {}.type
+                val lowestBinMap = gson.fromJson<Map<String, Double>>(response, type)
+                
+                if (lowestBinMap == null) {
+                    throw Exception("[Feesh] Error loading auctions data: response is null")
+                }
+                
+                val newPrices = mutableMapOf<String, AuctionItemPrice>()
+                
+                lowestBinMap.forEach { (itemId, itemLowestBin) ->
+                    if (itemLowestBin > 0) {
+                        newPrices[itemId] = AuctionItemPrice(lbin = itemLowestBin)
+                    }
+                }
+                
+                synchronized(auctionPricesLock) {
+                    auctionPrices = newPrices
+                }
+                
+                FeeshMod.LOGGER.info("[Feesh] Successfully updated auction prices (${newPrices.size} items)")
+                true
+            } catch (error: Exception) {
+                FeeshMod.LOGGER.error("[Feesh] Error loading auctions data: ", error)
+                false
+            }
+        }, executor)
     }
     
     fun shutdown() {
