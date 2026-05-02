@@ -68,21 +68,33 @@ object SlotTextRendererManager {
                 renderer.getItemStackSlotText(stack, screen, slot)
             } ?: continue
 
-            drawBottomLeftText(context, textRenderer, slot, text, renderer.getTextColor(), renderer.drawShadow())
+            drawHudSlotTextBottomLeft(
+                context,
+                textRenderer,
+                slot.x,
+                slot.y,
+                text,
+                renderer.getTextColor(),
+                renderer.drawShadow()
+            )
         }
     }
 
-    private fun drawBottomLeftText(
+    /**
+     * Same corner layout as container slot text, using pixel top-left of the 16×16 item area (e.g. HUD hotbar).
+     */
+    fun drawHudSlotTextBottomLeft(
         context: GuiGraphics,
         textRenderer: Font,
-        slot: Slot,
+        slotX: Int,
+        slotY: Int,
         text: String,
         color: Int,
         shadow: Boolean
     ) {
         val scaledTextHeight = textRenderer.lineHeight * SLOT_TEXT_SCALE
-        val x = slot.x + 1
-        val y = slot.y + DEFAULT_SLOT_SIZE - scaledTextHeight
+        val x = slotX + 1
+        val y = slotY + DEFAULT_SLOT_SIZE - scaledTextHeight
 
         context.pose().pushMatrix()
         context.pose().scale(SLOT_TEXT_SCALE, SLOT_TEXT_SCALE)

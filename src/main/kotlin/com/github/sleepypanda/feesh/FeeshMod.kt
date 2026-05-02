@@ -60,6 +60,7 @@ import com.github.sleepypanda.feesh.features.items.background.TrashBooksHighligh
 import com.github.sleepypanda.feesh.features.items.background.BackgroundHighlighterManager
 import com.github.sleepypanda.feesh.features.items.slottext.ThunderBottleProgress
 import com.github.sleepypanda.feesh.features.items.slottext.AutoRecombFlag
+import com.github.sleepypanda.feesh.features.items.slottext.FishingBagPreview
 import com.github.sleepypanda.feesh.features.items.slottext.MobyDuckProgress
 import com.github.sleepypanda.feesh.features.items.slottext.SlotTextRendererManager
 import com.github.sleepypanda.feesh.features.sounds.MuteReindrakeGifts
@@ -209,6 +210,7 @@ class FeeshMod : ClientModInitializer {
         ThunderBottleProgress.init()
         MobyDuckProgress.init()
         AutoRecombFlag.init()
+        FishingBagPreview.init()
         SlotTextRendererManager.init() // After all slot text renderers are initialized and registered
 
         // Commands

@@ -59,4 +59,11 @@ object Items : CategoryKt("Items") {
         this.name = Translated("Auto-recomb flag")
         this.description = Translated("Renders recomb upgrade flag (R) for auto-recombobulated fishing drops in the item slot.")
     }
+
+    var showFishingBagPreview by boolean(false) {
+        this.name = Translated("Fishing bag preview")
+        this.description = Translated(
+            "Renders bait remaining count in the slot when the last hotbar slot contains Fishing Bag."
+        )
+    }
 }
