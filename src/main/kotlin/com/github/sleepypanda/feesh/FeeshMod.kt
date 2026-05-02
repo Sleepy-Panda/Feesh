@@ -62,6 +62,7 @@ import com.github.sleepypanda.feesh.features.items.slottext.ThunderBottleProgres
 import com.github.sleepypanda.feesh.features.items.slottext.AutoRecombFlag
 import com.github.sleepypanda.feesh.features.items.slottext.MobyDuckProgress
 import com.github.sleepypanda.feesh.features.items.slottext.SlotTextRendererManager
+import com.github.sleepypanda.feesh.features.sounds.MuteReindrakeGifts
 import com.github.sleepypanda.feesh.events.EventBus
 import com.github.sleepypanda.feesh.events.publishers.SeaCreaturesPublisher
 import com.github.sleepypanda.feesh.events.publishers.RareDropsPublisher
@@ -196,6 +197,7 @@ class FeeshMod : ClientModInitializer {
         MagmaCoreFishingTracker.init()
         SeaCreaturesPerHourTracker.init()
         RainTimer.init()
+        MuteReindrakeGifts.init()
 
         MoveGuis.init() // After all overlays are initialized and registered FeeshGui objects
 

@@ -11,7 +11,7 @@ This mod is an evolution of [FeeshNotifier ChatTriggers module](https://chattrig
 - [Features](#features)
 - [Troubleshooting](#troubleshooting)
 - [Contacts](#contacts)
-- [Special thanks](#special-thanks)
+- [Creadits and Special thanks](#credits-and-special-thanks)
 - [Developer's stuff](#developers-stuff)
 
 ## Releases
@@ -121,6 +121,7 @@ This mod requires [Fabric API](https://modrinth.com/mod/fabric-api) and [Fabric 
 - **Highlight rare sea creatures** — Applies glowing border to the rare sea creatures. Not visible through walls.
 - **Hide other players near bobber** — Hides other players near your bobber when a fishing rod is casted.
 - **Mute Jade Dragon** — Mutes Jade dragon sounds while you are in dragon's cave.
+- **Mute Reindrake gifts** — Mutes loud 'totem used' sounds while picking up gifts from a Reindrake.
 
 ### Commands
 
@@ -153,18 +154,24 @@ Instead, you can enable "Compact sea creature catch messages" in Feesh, which wi
 
 ## Contacts
 
-In case of questions, bug reports, feature requests, bored, feeling alone - please feel free to contact me:
+In case of questions, bug reports, feature requests - please feel free to contact me:
 
 - Discord: m00nlight_sky
 - Discussions or Issues in the repository [Feesh](https://github.com/Sleepy-Panda/Feesh/discussions)
 - #feesh-mod / #mod-discussions channels in Casters Discord
 - IGN: MoonTheSadFisher
 
-## Special thanks
+## Credits and Special thanks
+
+### Credits
+
+- [Casters discord](https://discord.gg/79E7Rhv8), for supporting the mod
+- [Elite Skyblock](https://eliteskyblock.com/) and [Elite Skyblock Lowest Bin API](https://api.eliteskyblock.com/resources/auctions/neu), for providing auction lbin prices
+
+### Contributors
 
 Shoutout to the wonderful people who helped this mod to grow!
 
-- [Casters discord](https://discord.gg/79E7Rhv8), for supporting the mod
 - alpha-r (rare sea creatures highlight feature)
 
 ## Developer's stuff

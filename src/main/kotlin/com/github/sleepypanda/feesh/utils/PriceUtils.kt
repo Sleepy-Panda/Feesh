@@ -46,10 +46,10 @@ data class AuctionItemPrice(
 )
 
 object PriceUtils {
-    private val BAZAAR_API_URL = "https://api.hypixel.net/skyblock/bazaar"
-    private val AUCTION_API_URL = "https://moulberry.codes/lowestbin.json"
+    private const val BAZAAR_API_URL = "https://api.hypixel.net/skyblock/bazaar"
+    private const val AUCTION_API_URL = "https://api.eliteskyblock.com/resources/auctions/neu" // No more often than every 2 minutes
     private const val UPDATE_INTERVAL_MINUTES = 5L
-    private const val REQUEST_TIMEOUT_MS = 30000
+    private const val REQUEST_TIMEOUT_MS = 45000
     
     private var bazaarPrices: MutableMap<String, BazaarItemPrice> = mutableMapOf()
     private var auctionPrices: MutableMap<String, AuctionItemPrice> = mutableMapOf()
