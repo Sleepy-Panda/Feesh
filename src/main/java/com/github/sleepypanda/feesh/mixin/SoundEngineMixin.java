@@ -1,7 +1,10 @@
 package com.github.sleepypanda.feesh.mixin;
 
+import com.github.sleepypanda.feesh.events.EventBus;
+import com.github.sleepypanda.feesh.events.models.SoundPlayedEvent;
 import com.github.sleepypanda.feesh.features.sounds.MuteJadeDragonSound;
 import com.github.sleepypanda.feesh.features.sounds.MuteReindrakeGifts;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.sounds.SoundInstance;
 import net.minecraft.client.sounds.SoundEngine;
 import org.spongepowered.asm.mixin.Mixin;
@@ -24,6 +27,25 @@ public class SoundEngineMixin {
         if (shouldCancel(sound)) {
             cir.cancel();
         }
+    }
+
+    @Inject(method = "play", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/resources/sounds/SoundInstance;getVolume()F"))
+    public void handleSound(SoundInstance sound, CallbackInfoReturnable<SoundEngine.PlayResult> cir) {
+        feeshPublishSoundPlayed(sound);
+    }
+
+    private void feeshPublishSoundPlayed(SoundInstance sound) {
+        final String path = feeshSoundPath(sound);
+        final float volume = sound.getVolume();
+        EventBus.INSTANCE.publish(new SoundPlayedEvent(path, volume));
+    }
+
+    private static String feeshSoundPath(SoundInstance sound) {
+        //#if MC >= 1.21.11
+        //$$ return sound.getIdentifier().getPath();
+        //#else
+        return sound.getLocation().getPath();
+        //#endif
     }
 
     private boolean shouldCancel(SoundInstance sound) {

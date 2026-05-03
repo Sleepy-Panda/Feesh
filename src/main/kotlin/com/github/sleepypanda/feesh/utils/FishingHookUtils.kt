@@ -4,6 +4,7 @@ import com.github.sleepypanda.feesh.FeeshMod
 import com.github.sleepypanda.feesh.events.EventBus
 import com.github.sleepypanda.feesh.events.models.ClientTickEvent
 import com.github.sleepypanda.feesh.events.models.WorldChangedEvent
+import com.github.sleepypanda.feesh.events.models.SoundPlayedEvent
 import java.util.Date
 import net.minecraft.world.phys.Vec3
 
@@ -34,10 +35,12 @@ object FishingHookUtils {
     private var submergedFishingHook: SubmergedFishingHookInfo? = null
     private var submergedFishingHookSeenAt: Date? = null
     private var submergedFishingHookInHotspotSeenAt: Date? = null
+    private var lastSoundPlayedAt: Date? = null
 
     fun init() {
         EventBus.subscribe(ClientTickEvent::class, ::onClientTick)
         EventBus.subscribe(WorldChangedEvent::class, ::onWorldChanged)
+        EventBus.subscribe(SoundPlayedEvent::class, ::onSoundPlayed)
     }
 
     /**
@@ -103,6 +106,8 @@ object FishingHookUtils {
             return
         }
 
+        val isPrevSubmerged = submergedFishingHook != null
+
         val fishingHookEntity = EntityUtils.getPlayersFishingHookEntity() ?: run {
             fishingHook = null
             submergedFishingHook = null
@@ -132,6 +137,11 @@ object FishingHookUtils {
         } else {
             submergedFishingHook = null
         }
+
+// Double announce
+        if (submergedFishingHook != null && lastSoundPlayedAt != null && Date().time - lastSoundPlayedAt!!.time <= 100) {
+            ChatUtils.sendLocalChat("Fishing hook caught a fish", true)
+        }
     }
 
     private fun onWorldChanged(@Suppress("UNUSED_PARAMETER") event: WorldChangedEvent) {
@@ -139,6 +149,18 @@ object FishingHookUtils {
         submergedFishingHook = null
         submergedFishingHookSeenAt = null
         submergedFishingHookInHotspotSeenAt = null
+    }
+
+    private fun onSoundPlayed(@Suppress("UNUSED_PARAMETER") event: SoundPlayedEvent) {
+        // Check for fishing rod and is fishing
+        // Is in proper world
+        // Requires Players sounds be enabled
+        // Check for reel in click event?
+        // Played when someone kills my sc
+        if (event.soundName == "entity.experience_orb.pickup" && event.volume == 0.5F) {
+            lastSoundPlayedAt = Date()
+            ChatUtils.sendLocalChat("Sound played; is submerged ${submergedFishingHook == null}; last seen ${Date().time - (lastActiveFishingHookSeenAt()?.time ?: 0) < 100}", true)
+        }
     }
 
     private fun isOwnFishingHookActive(): Boolean {
