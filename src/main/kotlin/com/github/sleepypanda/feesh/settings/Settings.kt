@@ -78,6 +78,15 @@ object Settings : ConfigKt("${FeeshMod.MOD_ID}/config") {
         }
 
         button {
+            title = "Elite Skyblock's 7-days average API"
+            description = "API used by Feesh for getting auction average lbin prices."
+            text = "Open API"
+            onClick {
+                openLink("https://api.eliteskyblock.com/resources/auctions/neu/average-lbin/7day")
+            }
+        }
+
+        button {
             title = "Elite Skyblock"
             description = "Elite Skyblock is a website to view player's farming stats."
             text = "Open website"

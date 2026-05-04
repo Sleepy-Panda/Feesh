@@ -154,7 +154,7 @@ object CustomSoundsManager {
     private fun initResourcePackStructure() {
         CommonUtils.runWithCatching("Failed to initialize resource pack structure") {
             if (resourcePackDir.exists()) {
-                FeeshMod.LOGGER.error("[Feesh] Resource pack sounds directory already exists. Skipping initialization.")
+                FeeshMod.LOGGER.warn("[Feesh] Resource pack sounds directory already exists. Skipping initialization.")
                 return
             }
 
