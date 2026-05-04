@@ -49,27 +49,27 @@ data class AuctionItemPrice(
 
 object PriceUtils {
     private const val BAZAAR_API_URL = "https://api.hypixel.net/skyblock/bazaar"
+    private const val ELITE_SKYBLOCK_NEU_API_URL = "https://api.eliteskyblock.com/resources/auctions/neu"
+    private const val ELITE_SKYBLOCK_7DAY_AVG_API_URL = "https://api.eliteskyblock.com/resources/auctions/neu/average-lbin/7day"
     private const val UPDATE_INTERVAL_MINUTES = 5L
     private const val REQUEST_TIMEOUT_MS = 45000
     
     private var bazaarPrices: MutableMap<String, BazaarItemPrice> = mutableMapOf()
     private var auctionPrices: MutableMap<String, AuctionItemPrice> = mutableMapOf()
-    private val pricesLock = Any()
+    private val bazaarPricesLock = Any()
     private val auctionPricesLock = Any()
     private val gson = Gson()
     private var scheduler: ScheduledExecutorService? = null
     private var httpExecutor: ExecutorService? = null
     
-    val auctionPriceApi: AuctionPriceApiMode
+    private val auctionPriceApi: AuctionPriceApiMode
         get() = General.auctionPriceApi
 
     private fun auctionPricesApiUrl(): String =
         // Agreed rate limit is not to fetch more often than every 2 minutes
         when (auctionPriceApi) {
-            AuctionPriceApiMode.ELITE_SKYBLOCK_NEU ->
-                "https://api.eliteskyblock.com/resources/auctions/neu"
-            AuctionPriceApiMode.ELITE_SKYBLOCK_7DAY_AVG ->
-                "https://api.eliteskyblock.com/resources/auctions/neu/average-lbin/7day"
+            AuctionPriceApiMode.ELITE_SKYBLOCK_NEU -> ELITE_SKYBLOCK_NEU_API_URL
+            AuctionPriceApiMode.ELITE_SKYBLOCK_7DAY_AVG -> ELITE_SKYBLOCK_7DAY_AVG_API_URL
         }
 
     fun init() {
@@ -78,9 +78,7 @@ object PriceUtils {
                 isDaemon = true
             }
         }
-        
-        trackAllPrices()
-        
+                
         scheduler = Executors.newScheduledThreadPool(1) { r ->
             Thread(r, "Feesh-Price-Tracker").apply {
                 isDaemon = true
@@ -89,7 +87,7 @@ object PriceUtils {
         
         scheduler?.scheduleAtFixedRate(
             { trackAllPrices() },
-            UPDATE_INTERVAL_MINUTES,
+            0,
             UPDATE_INTERVAL_MINUTES,
             TimeUnit.MINUTES
         )
@@ -99,15 +97,20 @@ object PriceUtils {
      * Fetches auction prices from the currently selected API URL immediately.
      */
     fun refreshAuctionPrices() {
-        if (httpExecutor == null) return
-        trackAuctionPrices().thenAccept { auctionUpdated ->
-            if (auctionUpdated) {
-                EventBus.publish(
-                    PricesUpdatedEvent(
-                        bazaarUpdated = false,
-                        auctionUpdated = true
+        if (httpExecutor == null || scheduler == null) return
+
+        FeeshMod.LOGGER.info("[Feesh] Refreshing auction prices from API source: ${auctionPriceApi}")
+
+        scheduler!!.submit { 
+            trackAuctionPrices().thenAccept { auctionUpdated ->
+                if (auctionUpdated) {
+                    EventBus.publish(
+                        PricesUpdatedEvent(
+                            bazaarUpdated = false,
+                            auctionUpdated = true
+                        )
                     )
-                )
+                }
             }
         }
     }
@@ -116,7 +119,6 @@ object PriceUtils {
         val bazaarFuture = trackBazaarPrices()
         val auctionFuture = trackAuctionPrices()
 
-        // Fire a single aggregated event when at least one source updated successfully.
         CompletableFuture.allOf(bazaarFuture, auctionFuture).thenRun {
             val bazaarUpdated = bazaarFuture.get()
             val auctionUpdated = auctionFuture.get()
@@ -135,7 +137,7 @@ object PriceUtils {
     fun getBazaarItemPrices(itemId: String?): BazaarItemPrice? {
         if (itemId.isNullOrEmpty()) return null
         
-        synchronized(pricesLock) {
+        synchronized(bazaarPricesLock) {
             return bazaarPrices[itemId]
         }
     }
@@ -152,72 +154,72 @@ object PriceUtils {
         val executor = httpExecutor ?: return CompletableFuture.completedFuture(false)
         
         return CompletableFuture.supplyAsync({
-                try {
-                    val url = URI(BAZAAR_API_URL).toURL()
-                    val connection = url.openConnection() as HttpURLConnection
-                    
-                    connection.requestMethod = "GET"
-                    connection.connectTimeout = REQUEST_TIMEOUT_MS
-                    connection.readTimeout = REQUEST_TIMEOUT_MS
-                    
-                    val responseCode = connection.responseCode
-                    if (responseCode != HttpURLConnection.HTTP_OK) {
-                        throw Exception("HTTP error code: $responseCode")
-                    }
-                    
-                    val reader = BufferedReader(InputStreamReader(connection.inputStream))
-                    val response = reader.readText()
-                    reader.close()
-                    connection.disconnect()
-                    
-                    val bazaarResponse = gson.fromJson(response, BazaarApiResponse::class.java)
-                    
-                    if (!bazaarResponse.success) {
-                        throw Exception("[Feesh] Error loading bazaar data: response contains success = false")
-                    }
-                    
-                    val products = bazaarResponse.products ?: emptyMap()
-                    val newPrices = mutableMapOf<String, BazaarItemPrice>()
-                    
-                    products.forEach { (itemId, product) ->
-                        val sellSummary = product.sell_summary
-                        val buySummary = product.buy_summary
-                        val quickStatus = product.quick_status
-                        
-                        val instaSell = when {
-                            !sellSummary.isNullOrEmpty() -> {
-                                sellSummary[0].pricePerUnit
-                            }
-                            quickStatus != null -> {
-                                quickStatus.sellPrice ?: 0.0
-                            }
-                            else -> 0.0
-                        }
-                        
-                        val sellOffer = when {
-                            !buySummary.isNullOrEmpty() -> {
-                                buySummary[0].pricePerUnit
-                            }
-                            quickStatus != null -> {
-                                quickStatus.buyPrice ?: 0.0
-                            }
-                            else -> 0.0
-                        }
-                        
-                        newPrices[itemId] = BazaarItemPrice(instaSell, sellOffer)
-                    }
-                    
-                    synchronized(pricesLock) {
-                        bazaarPrices = newPrices
-                    }
-                    
-                    FeeshMod.LOGGER.info("[Feesh] Successfully updated bazaar prices (${newPrices.size} items)")
-                    true
-                } catch (error: Exception) {
-                    FeeshMod.LOGGER.error("[Feesh] Error loading bazaar data: ", error)
-                    false
+            try {
+                val url = URI(BAZAAR_API_URL).toURL()
+                val connection = url.openConnection() as HttpURLConnection
+                
+                connection.requestMethod = "GET"
+                connection.connectTimeout = REQUEST_TIMEOUT_MS
+                connection.readTimeout = REQUEST_TIMEOUT_MS
+                
+                val responseCode = connection.responseCode
+                if (responseCode != HttpURLConnection.HTTP_OK) {
+                    throw Exception("HTTP error code: $responseCode")
                 }
-            }, executor)
+                
+                val reader = BufferedReader(InputStreamReader(connection.inputStream))
+                val response = reader.readText()
+                reader.close()
+                connection.disconnect()
+                
+                val bazaarResponse = gson.fromJson(response, BazaarApiResponse::class.java)
+                
+                if (!bazaarResponse.success) {
+                    throw Exception("[Feesh] Error loading bazaar data: response contains success = false")
+                }
+                
+                val products = bazaarResponse.products ?: emptyMap()
+                val newPrices = mutableMapOf<String, BazaarItemPrice>()
+                
+                products.forEach { (itemId, product) ->
+                    val sellSummary = product.sell_summary
+                    val buySummary = product.buy_summary
+                    val quickStatus = product.quick_status
+                    
+                    val instaSell = when {
+                        !sellSummary.isNullOrEmpty() -> {
+                            sellSummary[0].pricePerUnit
+                        }
+                        quickStatus != null -> {
+                            quickStatus.sellPrice ?: 0.0
+                        }
+                        else -> 0.0
+                    }
+                    
+                    val sellOffer = when {
+                        !buySummary.isNullOrEmpty() -> {
+                            buySummary[0].pricePerUnit
+                        }
+                        quickStatus != null -> {
+                            quickStatus.buyPrice ?: 0.0
+                        }
+                        else -> 0.0
+                    }
+                    
+                    newPrices[itemId] = BazaarItemPrice(instaSell, sellOffer)
+                }
+                
+                synchronized(bazaarPricesLock) {
+                    bazaarPrices = newPrices
+                }
+                
+                FeeshMod.LOGGER.info("[Feesh] Successfully updated bazaar prices (${newPrices.size} items)")
+                true
+            } catch (error: Exception) {
+                FeeshMod.LOGGER.error("[Feesh] Error loading bazaar data: ", error)
+                false
+            }
+        }, executor)
     }
     
     private fun trackAuctionPrices(): CompletableFuture<Boolean> {

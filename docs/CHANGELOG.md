@@ -4,6 +4,8 @@ Released on: ???
 
 ## Features
 
+- Added selection of Auction prices API source - you can choose between LBIN or 7-days average LBIN.
+
 ## Bugfixes
 
 # 1.6.1

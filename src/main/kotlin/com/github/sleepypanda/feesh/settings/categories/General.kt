@@ -13,8 +13,8 @@ import com.teamresourceful.resourcefulconfigkt.api.ObservableEntry
 import net.minecraft.Util
 
 enum class AuctionPriceApiMode(val displayName: String) {
-    ELITE_SKYBLOCK_NEU("Elite Skyblock (lowest BIN)"),
-    ELITE_SKYBLOCK_7DAY_AVG("Elite Skyblock (7 day average)");
+    ELITE_SKYBLOCK_NEU("Elite (lowest BIN)"),
+    ELITE_SKYBLOCK_7DAY_AVG("Elite (7 days average)");
 
     override fun toString(): String = displayName
 }
@@ -59,7 +59,7 @@ object General : CategoryKt("General") {
     var auctionPriceApi by ObservableEntry(
         enum(AuctionPriceApiMode.ELITE_SKYBLOCK_NEU) {
             this.name = Translated("Auction prices API")
-            this.description = Translated("Source API for auction item prices. You can choose between lowest BIN or 7-day average, to get the most relevant item prices.")
+            this.description = Translated("Source API for LBIN prices for auction items. You can choose between most recent prices or controlled price manipulations.")
         }
     ) { prev, new ->
         if (prev != new) {
