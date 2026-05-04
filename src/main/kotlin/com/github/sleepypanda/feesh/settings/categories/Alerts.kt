@@ -44,7 +44,7 @@ object Alerts : CategoryKt("Alerts") {
     var alertOnSeaCreaturesList by select(
         *AlertableSeaCreatureTypes.values().filter { it.isEnabledByDefault }.toTypedArray(), // Selected by default
     ) {
-        this.name = Translated("Select sea creatures to alert on")
+        this.name = Translated("Select sea creatures to be alerted on")
         this.searchTerms = AlertableSeaCreatureTypes.values().map { it.displayName }.toList()
     }
 
@@ -75,7 +75,7 @@ object Alerts : CategoryKt("Alerts") {
     }
 
     var alertOnRareDropTypes by select(RareDropTypes.LUCKY_CLOVER_CORE, *RareDropTypes.values()) {
-        this.name = Translated("Select rare drops to alert on")
+        this.name = Translated("Select rare drops to be alerted on")
         this.searchTerms = RareDropTypes.values().map { it.displayName }.toList()
     }
 
@@ -189,7 +189,7 @@ object Alerts : CategoryKt("Alerts") {
     }
 
     var alertOnDeployableTypes by select(DeployableTypes.TOTEM_OF_CORRUPTION, *DeployableTypes.values()) {
-        this.name = Translated("Select deployables to alert on")
+        this.name = Translated("Select deployables to be alerted on")
         this.searchTerms = DeployableTypes.values().map { it.displayName }.toList()
     }
 

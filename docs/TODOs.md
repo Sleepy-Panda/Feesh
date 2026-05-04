@@ -14,6 +14,9 @@
     - CAUGHT! You cocooned a Voracious Spider!
     - CAUGHT! You cocooned a Frozen Steve!
 - Catches/h for treasures
+- a double hook-streak counter. What this does is it counts how many double hooks you got in a row and when u then get a non-dh, it saves the dh-streak as a personal best. and whenver u break your PB u get a NEW DOUBLE HOOK PB! 7 Sea Creatures in your chat (to copy and flex on your party ofc).
+the counter doesnt have to be a GUI btw - just like the PB feature with sharks
+- Would also be cool to have a double hook statistic for the total sc counter so you can view ur avg. dhc and how good/bad it is compared to ur actual dhc
 - Improve link to changelog in settings, and update announcement
 - Work on hotspot sounds to make them more unique
 - Some people need other sea creatures alerts, e.g. Ent or Night Squid
