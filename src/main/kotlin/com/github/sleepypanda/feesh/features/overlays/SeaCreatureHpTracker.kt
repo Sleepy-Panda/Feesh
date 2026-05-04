@@ -1,10 +1,12 @@
 package com.github.sleepypanda.feesh.features.overlays
 
 import com.github.sleepypanda.feesh.FeeshMod
+import com.github.sleepypanda.feesh.constants.SeaCreatures
 import com.github.sleepypanda.feesh.events.EventBus
 import com.github.sleepypanda.feesh.events.models.ClientTickEvent
 import com.github.sleepypanda.feesh.events.models.WorldChangedEvent
 import com.github.sleepypanda.feesh.settings.categories.Overlays
+import com.github.sleepypanda.feesh.settings.models.HpTrackableSeaCreatureTypes
 import com.github.sleepypanda.feesh.utils.CommonUtils
 import com.github.sleepypanda.feesh.utils.WorldUtils
 import com.github.sleepypanda.feesh.utils.EntityUtils
@@ -17,12 +19,6 @@ import net.minecraft.world.entity.decoration.ArmorStand
 import net.minecraft.world.entity.animal.sniffer.Sniffer
 import java.util.Date
 import kotlin.math.ceil
-
-data class TrackedMobInfo(
-    val baseMobName: String,
-    val worlds: List<String>,
-    val hasImmunity: Boolean = false
-)
 
 data class MobDisplayInfo(
     val nametag: String,
@@ -39,34 +35,24 @@ object SeaCreatureHpTracker {
     private const val IMMUNITY_TICKS = 20 * 5 // ~5 seconds
     private const val IMMUNITY_MS = 5000L
 
-    private val TRACKED_MOBS = listOf(
-        TrackedMobInfo("Fiery Scuttler", listOf(WorldUtils.CRIMSON_ISLE), hasImmunity = true),
-        TrackedMobInfo("Lord Jawbus", listOf(WorldUtils.CRIMSON_ISLE)),
-        TrackedMobInfo("Jawbus Follower", listOf(WorldUtils.CRIMSON_ISLE)),
-        TrackedMobInfo("Thunder", listOf(WorldUtils.CRIMSON_ISLE), hasImmunity = true),
-        TrackedMobInfo("Plhlegblast", listOf(WorldUtils.CRIMSON_ISLE)),
-        TrackedMobInfo("Vanquisher", listOf(WorldUtils.CRIMSON_ISLE), hasImmunity = true),
-        TrackedMobInfo("Ragnarok", listOf(WorldUtils.CRIMSON_ISLE)),
-        TrackedMobInfo("Nutcracker", listOf(WorldUtils.JERRY_WORKSHOP)),
-        TrackedMobInfo("Reindrake", listOf(WorldUtils.JERRY_WORKSHOP)),
-        TrackedMobInfo("Yeti", listOf(WorldUtils.JERRY_WORKSHOP), hasImmunity = true),
-        TrackedMobInfo("Alligator", WorldUtils.WATER_HOTSPOT_WORLDS, hasImmunity = true),
-        TrackedMobInfo("Blue Ringed Octopus", WorldUtils.WATER_HOTSPOT_WORLDS, hasImmunity = true),
-        TrackedMobInfo("Wiki Tiki", WorldUtils.WATER_HOTSPOT_WORLDS, hasImmunity = true),
-        TrackedMobInfo("Wiki Tiki Laser Totem", WorldUtils.WATER_HOTSPOT_WORLDS),
-        TrackedMobInfo("Titanoboa", listOf(WorldUtils.BACKWATER_BAYOU), hasImmunity = true),
-        TrackedMobInfo("Abyssal Miner", listOf(WorldUtils.CRYSTAL_HOLLOWS), hasImmunity = true),
-        TrackedMobInfo("The Loch Emperor", listOf(WorldUtils.GALATEA), hasImmunity = true),
-        TrackedMobInfo("Nessie", listOf(WorldUtils.GALATEA), hasImmunity = true),
-        TrackedMobInfo("Water Hydra", WorldUtils.WATER_FISHING_WORLDS, hasImmunity = true),
-        TrackedMobInfo("Phantom Fisher", WorldUtils.WATER_FISHING_WORLDS, hasImmunity = true),
-        TrackedMobInfo("Grim Reaper", WorldUtils.WATER_FISHING_WORLDS, hasImmunity = true),
-        TrackedMobInfo("Great White Shark", WorldUtils.WATER_FISHING_WORLDS, hasImmunity = true),
-        TrackedMobInfo("Carrot King", WorldUtils.WATER_FISHING_WORLDS),
+    private val IMMUNE_MOB_TYPES = setOf(
+        HpTrackableSeaCreatureTypes.FIERY_SCUTTLER,
+        HpTrackableSeaCreatureTypes.THUNDER,
+        HpTrackableSeaCreatureTypes.VANQUISHER,
+        HpTrackableSeaCreatureTypes.YETI,
+        HpTrackableSeaCreatureTypes.ALLIGATOR,
+        HpTrackableSeaCreatureTypes.BLUE_RINGED_OCTOPUS,
+        HpTrackableSeaCreatureTypes.WIKI_TIKI,
+        HpTrackableSeaCreatureTypes.TITANOBOA,
+        HpTrackableSeaCreatureTypes.ABYSSAL_MINER,
+        HpTrackableSeaCreatureTypes.THE_LOCH_EMPEROR,
+        HpTrackableSeaCreatureTypes.NESSIE,
+        HpTrackableSeaCreatureTypes.WATER_HYDRA,
+        HpTrackableSeaCreatureTypes.PHANTOM_FISHER,
+        HpTrackableSeaCreatureTypes.GRIM_REAPER,
+        HpTrackableSeaCreatureTypes.GREAT_WHITE_SHARK,
     )
-
-    private val TRACKED_MOB_NAMES = TRACKED_MOBS.map { it.baseMobName }
-    private val TRACKED_WORLD_NAMES = TRACKED_MOBS.flatMap { it.worlds }.distinct()
+    private val trackedMobTypeByName = HpTrackableSeaCreatureTypes.values().associateBy { it.displayName }
 
     private var mobs = mutableListOf<MobDisplayInfo>()
     private val seenMobEntityIds = mutableMapOf<Int, Long>()
@@ -84,7 +70,7 @@ object SeaCreatureHpTracker {
         .setSettingsKey { Overlays.seaCreaturesHpOverlay }
         .setApplyCustomStyleKey { Overlays.seaCreaturesHpCustomStyle }
         .setCondition {
-            TRACKED_WORLD_NAMES.contains(WorldUtils.getWorldName())
+            WorldUtils.isInSkyblock()
         }
 
     fun init() {
@@ -98,18 +84,17 @@ object SeaCreatureHpTracker {
     }
 
     private fun onClientTick(@Suppress("UNUSED_PARAMETER") event: ClientTickEvent) {
-        onClientTick_Overlay()
-        onClientTick_Cleanup()
+        onClientTickOverlay()
+        onClientTickCleanup()
     }
 
-    private fun onClientTick_Overlay() {
+    private fun onClientTickOverlay() {
         tickCounter++
         if (tickCounter < TICKS_PER_CHECK ) return
         tickCounter = 0
 
         if (!Overlays.seaCreaturesHpOverlay ||
-            !WorldUtils.isInSkyblock() ||
-            !TRACKED_WORLD_NAMES.contains(WorldUtils.getWorldName())
+            !WorldUtils.isInSkyblock()
         ) {
             gui.clearLines()
             return
@@ -119,14 +104,13 @@ object SeaCreatureHpTracker {
         updateGuiLines()
     }
 
-    private fun onClientTick_Cleanup() {
+    private fun onClientTickCleanup() {
         cleanupTickCounter++
         if (cleanupTickCounter < CLEANUP_DELAY_TICKS) return
         cleanupTickCounter = 0
 
         if (!Overlays.seaCreaturesHpOverlay ||
-            !WorldUtils.isInSkyblock() ||
-            !TRACKED_WORLD_NAMES.contains(WorldUtils.getWorldName())
+            !WorldUtils.isInSkyblock()
         ) return
 
         cleanupOutdatedSeenEntityIds()
@@ -153,21 +137,25 @@ object SeaCreatureHpTracker {
     private fun trackSeaCreaturesHp() {
         CommonUtils.runWithCatching("Failed to track nearby sea creatures HP") {
             if (!Overlays.seaCreaturesHpOverlay ||
-                !WorldUtils.isInSkyblock() ||
-                !TRACKED_WORLD_NAMES.contains(WorldUtils.getWorldName())
+                !WorldUtils.isInSkyblock()
             ) return
 
-            val seaCreatures = getSeaCreaturesInRange(TRACKED_MOB_NAMES, LOOTSHARE_DISTANCE)
+            val world = WorldUtils.getWorldName() ?: return
+            val enabledScNamesBySetting = Overlays.seaCreaturesHpTrackedList.map { it.displayName }.toSet()
+            val enabledScNamesByWorld = (SeaCreatures.allSeaCreatures.filter { it.worlds.isEmpty() || it.worlds.contains(world) }.map { it.name }).toSet()
+            val possibleScNames = enabledScNamesBySetting.intersect(enabledScNamesByWorld).toList()
+
+            val seaCreatures = getSeaCreaturesInRange(possibleScNames, LOOTSHARE_DISTANCE)
             trackSeenEntityIds(seaCreatures)
 
             val currentMobs = seaCreatures
                 .sortedBy { it.currentHpNumber } // Lowest HP comes first
                 .take(Overlays.seaCreaturesHpOverlayMaxCount.coerceIn(1, 20)) // Top N
                 .map { sc ->
-                    val trackedMob = TRACKED_MOBS.find { it.baseMobName == sc.baseMobName }
-                    val hasImmunity = trackedMob?.hasImmunity ?: false
+                    val scType = trackedMobTypeByName[sc.baseMobName]
+                    val hasImmunity = scType != null && IMMUNE_MOB_TYPES.contains(scType)
                     var isImmune = false
-                    var immunitySecondsLeft: Int = 0
+                    var immunitySecondsLeft = 0
 
                     if (hasImmunity) {
                         val mobEntity = EntityUtils.getMcEntityById(sc.mcEntityId - 1)
@@ -180,7 +168,7 @@ object SeaCreatureHpTracker {
                         } else 0
                     }
 
-                    if (sc.baseMobName == "Nessie") {
+                    if (sc.baseMobName == HpTrackableSeaCreatureTypes.NESSIE.displayName) {
                         val isNessieRunningAway = isNessieRunningAway(sc)
                         if (isNessieRunningAway) {
                             isImmune = true
@@ -200,7 +188,7 @@ object SeaCreatureHpTracker {
                 !mobs.any { m -> m.baseMobName == cm.baseMobName }
             }
 
-            if (currentMobs.size > mobs.size && !addedMobNames.all { it.baseMobName == "Reindrake" }) {
+            if (currentMobs.size > mobs.size && !addedMobNames.all { it.baseMobName == HpTrackableSeaCreatureTypes.REINDRAKE.displayName }) {
                 // Reindrake flies around and goes out of nametags render distance periodically
                 SoundUtils.playSound()
             }
@@ -232,7 +220,6 @@ object SeaCreatureHpTracker {
 
         if (!Overlays.seaCreaturesHpOverlay ||
             !WorldUtils.isInSkyblock() ||
-            !TRACKED_WORLD_NAMES.contains(WorldUtils.getWorldName()) ||
             mobs.isEmpty()
         ) return
 

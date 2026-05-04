@@ -1,6 +1,7 @@
 package com.github.sleepypanda.feesh.features.overlays
 
 import com.github.sleepypanda.feesh.constants.SeaCreatures
+import com.github.sleepypanda.feesh.constants.SeaCreatureMessages
 import com.github.sleepypanda.feesh.events.EventBus
 import com.github.sleepypanda.feesh.events.models.ClientTickEvent
 import com.github.sleepypanda.feesh.events.models.ChatEvent
@@ -35,10 +36,10 @@ object FishingFestivalTracker {
     private val sharkInfos = run {
         val byMessage = SeaCreatures.allSeaCreatures.associateBy { it.pattern.pattern }
         listOfNotNull(
-            byMessage[SeaCreatures.GREAT_WHITE_SHARK_MESSAGE],
-            byMessage[SeaCreatures.TIGER_SHARK_MESSAGE],
-            byMessage[SeaCreatures.BLUE_SHARK_MESSAGE],
-            byMessage[SeaCreatures.NURSE_SHARK_MESSAGE],
+            byMessage[SeaCreatureMessages.GREAT_WHITE_SHARK_MESSAGE],
+            byMessage[SeaCreatureMessages.TIGER_SHARK_MESSAGE],
+            byMessage[SeaCreatureMessages.BLUE_SHARK_MESSAGE],
+            byMessage[SeaCreatureMessages.NURSE_SHARK_MESSAGE],
         )
     }
 

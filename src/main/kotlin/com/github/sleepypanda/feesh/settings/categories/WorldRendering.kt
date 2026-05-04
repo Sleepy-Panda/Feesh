@@ -3,6 +3,7 @@ package com.github.sleepypanda.feesh.settings.categories
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
 import com.github.sleepypanda.feesh.features.rendering.RareMobHighlight
+import com.github.sleepypanda.feesh.settings.models.HighlightableSeaCreatureTypes
 import com.teamresourceful.resourcefulconfig.api.types.options.TranslatableValue
 import com.teamresourceful.resourcefulconfigkt.api.ObservableEntry
 import com.teamresourceful.resourcefulconfigkt.api.CategoryKt
@@ -31,13 +32,20 @@ object WorldRendering : CategoryKt("World Rendering") {
     }
 
     var highlightSeaCreatures by ObservableEntry(boolean(false) {
-        this.name = Translated("Highlight rare sea creatures")
-        this.description = Translated("Applies glowing outline to the rare sea creatures, Jawbus Followers and Wiki Tiki Laser Totems. Outline is colored depending on sea creature rarity. Not visible through walls!")
+        this.name = Translated("Highlight sea creatures")
+        this.description = Translated("Applies glowing outline to selected sea creatures. Outline is colored depending on sea creature rarity. ${RED}Not visible through walls, but use at your own risk anyway!")
     }
     ) { prev, new ->
         if (prev != new) {
             RareMobHighlight.clearHighlightedEntities()
         }
+    }
+
+    var highlightSeaCreaturesList by select(
+        *HighlightableSeaCreatureTypes.values().filter { it.isEnabledByDefault }.toTypedArray(),
+    ) {
+        this.name = Translated("Select sea creatures to highlight")
+        this.searchTerms = HighlightableSeaCreatureTypes.values().map { it.displayName }.toList()
     }
 
     init {
