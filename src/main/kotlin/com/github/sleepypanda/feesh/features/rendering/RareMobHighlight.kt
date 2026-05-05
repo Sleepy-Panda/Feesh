@@ -21,15 +21,19 @@ object RareMobHighlight {
     @JvmField
     val highlightedEntities = mutableMapOf<Int, Int>()
 
+    private var enabledMobTypes = listOf<String>()
+
     fun init() {
         EventBus.subscribe(WorldChangedEvent::class, ::onWorldChange)
         EventBus.subscribe(ClientTickEvent::class, ::onClientTick)
         EventBus.subscribe(ArmorStandDetailsLoadedEvent::class, ::onArmorStandDetailsLoaded)
+        updateEnabledMobTypes()
     }
 
     fun clearHighlightedEntities() {
         if (WorldRendering.highlightSeaCreatures || highlightedEntities.isEmpty()) return
         if (!WorldUtils.isInSkyblock() || !WorldUtils.isInFishingWorld()) return
+
         val world = FeeshMod.mc.level ?: return
 
         highlightedEntities.forEach { (id, _) ->
@@ -38,18 +42,16 @@ object RareMobHighlight {
         highlightedEntities.clear()
     }
 
+    fun updateEnabledMobTypes() {
+        enabledMobTypes = WorldRendering.highlightSeaCreaturesList.map { it.displayName }.distinct().toList()
+    }
+
     private fun onArmorStandDetailsLoaded(event: ArmorStandDetailsLoadedEvent) {
         if (!WorldRendering.highlightSeaCreatures || !WorldUtils.isInSkyblock() || !WorldUtils.isInFishingWorld()) return
 
-        val world = WorldUtils.getWorldName() ?: return
         val entity = event.entity
-        val enabledScNamesBySetting = WorldRendering.highlightSeaCreaturesList.map { it.displayName }
-
-        val cleanName = EntityUtils.parseSeaCreatureNametag(
-            entity,
-            enabledScNamesBySetting
-        )?.baseMobName ?: return
-        if (!enabledScNamesBySetting.contains(cleanName)) return
+        val cleanName = EntityUtils.parseSeaCreatureNametag(entity, enabledMobTypes)?.baseMobName ?: return
+        if (!enabledMobTypes.contains(cleanName)) return
 
         val scInfo = SeaCreatures.allSeaCreatures.find { it.name == cleanName }
 

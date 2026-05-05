@@ -23,6 +23,7 @@ import com.github.sleepypanda.feesh.features.overlays.TreasureFishingTracker
 import com.github.sleepypanda.feesh.features.overlays.BayouTracker
 import com.github.sleepypanda.feesh.features.overlays.WaterHotspotsTracker
 import com.github.sleepypanda.feesh.features.overlays.GalateaWaterTracker
+import com.github.sleepypanda.feesh.features.overlays.SeaCreatureHpTracker
 import com.github.sleepypanda.feesh.settings.models.HpTrackableSeaCreatureTypes
 import com.github.sleepypanda.feesh.utils.gui.MoveGuis
 import net.minecraft.client.gui.screens.options.controls.KeyBindsScreen
@@ -241,11 +242,16 @@ Hidden if you have no fishing rod in your hotbar!""".trimIndent())
         this.description = Translated("Shows an overlay with the HP of nearby sea creatures when they're in lootshare range.\nDisplays ~5 seconds immunity indicator for damage reduction period that some sea creature types have. Not 100% precise!")
     }
 
-    var seaCreaturesHpTrackedList by select(
-        *HpTrackableSeaCreatureTypes.values().filter { it.isEnabledByDefault }.toTypedArray(),
-    ) {
-        this.name = Translated("Select sea creatures to show their nametag in the overlay")
-        this.searchTerms = HpTrackableSeaCreatureTypes.values().map { it.displayName }.toList()
+    var seaCreaturesHpTrackedList by ObservableEntry(select(
+            *HpTrackableSeaCreatureTypes.values().filter { it.isEnabledByDefault }.toTypedArray(),
+        ) {
+            this.name = Translated("Select sea creatures")
+            this.description = Translated("Which sea creatures to track and show in the HP overlay.")
+            this.searchTerms = HpTrackableSeaCreatureTypes.values().map { it.displayName }.toList()
+    }) { prev, new ->
+        if (!prev.contentEquals(new)) {
+            SeaCreatureHpTracker.updateEnabledMobTypes()
+        }
     }
 
     var seaCreaturesHpOverlayMaxCount by int(7) {

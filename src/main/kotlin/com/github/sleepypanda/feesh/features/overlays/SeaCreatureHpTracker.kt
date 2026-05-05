@@ -53,6 +53,7 @@ object SeaCreatureHpTracker {
         HpTrackableSeaCreatureTypes.GREAT_WHITE_SHARK,
     )
     private val trackedMobTypeByName = HpTrackableSeaCreatureTypes.values().associateBy { it.displayName }
+    private var enabledMobTypes = listOf<String>()
 
     private var mobs = mutableListOf<MobDisplayInfo>()
     private val seenMobEntityIds = mutableMapOf<Int, Long>()
@@ -76,6 +77,11 @@ object SeaCreatureHpTracker {
     fun init() {
         EventBus.subscribe(ClientTickEvent::class, ::onClientTick)
         EventBus.subscribe(WorldChangedEvent::class, ::onWorldChanged)
+        updateEnabledMobTypes()
+    }
+
+    fun updateEnabledMobTypes() {
+        enabledMobTypes = Overlays.seaCreaturesHpTrackedList.map { it.displayName }.distinct().toList()
     }
 
     private fun onWorldChanged(@Suppress("UNUSED_PARAMETER") event: WorldChangedEvent) {
@@ -136,14 +142,14 @@ object SeaCreatureHpTracker {
 
     private fun trackSeaCreaturesHp() {
         CommonUtils.runWithCatching("Failed to track nearby sea creatures HP") {
-            if (!Overlays.seaCreaturesHpOverlay ||
-                !WorldUtils.isInSkyblock()
-            ) return
+            if (!Overlays.seaCreaturesHpOverlay || !WorldUtils.isInSkyblock()) return
 
             val world = WorldUtils.getWorldName() ?: return
-            val enabledScNamesBySetting = Overlays.seaCreaturesHpTrackedList.map { it.displayName }.toSet()
-            val enabledScNamesByWorld = (SeaCreatures.allSeaCreatures.filter { it.worlds.isEmpty() || it.worlds.contains(world) }.map { it.name }).toSet()
-            val possibleScNames = enabledScNamesBySetting.intersect(enabledScNamesByWorld).toList()
+            val knownSeaCreatureByName = SeaCreatures.allSeaCreatures.associateBy { it.name }
+            val possibleScNames = enabledMobTypes.filter { enabledName ->
+                val knownSeaCreature = knownSeaCreatureByName[enabledName]
+                knownSeaCreature == null || knownSeaCreature.worlds.isEmpty() || knownSeaCreature.worlds.contains(world)
+            }
 
             val seaCreatures = getSeaCreaturesInRange(possibleScNames, LOOTSHARE_DISTANCE)
             trackSeenEntityIds(seaCreatures)

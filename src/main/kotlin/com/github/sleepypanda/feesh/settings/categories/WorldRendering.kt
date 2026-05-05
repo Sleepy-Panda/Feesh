@@ -41,11 +41,17 @@ object WorldRendering : CategoryKt("World Rendering") {
         }
     }
 
-    var highlightSeaCreaturesList by select(
-        *HighlightableSeaCreatureTypes.values().filter { it.isEnabledByDefault }.toTypedArray(),
-    ) {
-        this.name = Translated("Select sea creatures to highlight")
-        this.searchTerms = HighlightableSeaCreatureTypes.values().map { it.displayName }.toList()
+    var highlightSeaCreaturesList by ObservableEntry(select(
+            *HighlightableSeaCreatureTypes.values().filter { it.isEnabledByDefault }.toTypedArray(),
+        ) {
+            this.name = Translated("Select sea creatures")
+            this.description = Translated("Which sea creatures should have glowing outline applied to.")
+            this.searchTerms = HighlightableSeaCreatureTypes.values().map { it.displayName }.toList()
+        }
+    ) { prev, new ->
+        if (!prev.contentEquals(new)) {
+            RareMobHighlight.updateEnabledMobTypes()
+        }
     }
 
     init {
