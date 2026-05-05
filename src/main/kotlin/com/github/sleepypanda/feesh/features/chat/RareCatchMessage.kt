@@ -1,6 +1,5 @@
 package com.github.sleepypanda.feesh.features.chat
 
-import com.github.sleepypanda.feesh.constants.RareSeaCreatureTypes
 import com.github.sleepypanda.feesh.settings.categories.Chat
 import com.github.sleepypanda.feesh.utils.CommonUtils
 import com.github.sleepypanda.feesh.utils.ChatUtils
@@ -17,14 +16,9 @@ object RareCatchMessage {
         if (!WorldUtils.isInSkyblock() || !Chat.shareRareSeaCreatures) return
 
         val seaCreatureName = event.seaCreatureName
+        val enabledScNames = Chat.shareSeaCreaturesList.map { it.displayName }
+        if (!enabledScNames.contains(seaCreatureName)) return
 
-        val type = try {
-            RareSeaCreatureTypes.valueOf(seaCreatureName.uppercase().replace(" ", "_"))
-        } catch (_: IllegalArgumentException) {
-            return
-        }
-
-        if (!Chat.shareRareSeaCreaturesTypes.contains(type)) return
         val isDoubleHook = event.isDoubleHook
 
         val message = getRareCatchMessage(seaCreatureName, isDoubleHook)
