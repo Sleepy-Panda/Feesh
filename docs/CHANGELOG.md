@@ -8,6 +8,8 @@ Released on: ???
 - Extended list of sea creatures you can select for alert/pchat message/highlight/HP tracker:
   - Basically now you can toggle those functionalities for any sea creature.
   - Only "rare" creatures are selected by default.
+- Added personal best tracking for double hook streak.
+- Added alert after personal SC cap is reached.
 
 ## Bugfixes
 
