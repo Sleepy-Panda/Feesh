@@ -36,6 +36,7 @@ import com.github.sleepypanda.feesh.features.commands.FeeshSettingsCommand
 import com.github.sleepypanda.feesh.features.commands.PlayTestSoundCommand
 import com.github.sleepypanda.feesh.features.commands.SetTrackerDropsCommand
 import com.github.sleepypanda.feesh.features.commands.PauseAllTrackersCommand
+import com.github.sleepypanda.feesh.features.personalbests.DoubleHookPersonalBest
 import com.github.sleepypanda.feesh.features.overlays.JerryWorkshopTracker
 import com.github.sleepypanda.feesh.features.overlays.NearbyEntitiesCounter
 import com.github.sleepypanda.feesh.features.overlays.SeaCreaturesTracker
@@ -176,6 +177,7 @@ class FeeshMod : ClientModInitializer {
         PlayerDeathMessage.init()
         HotspotFoundMessage.init()
         LootshareMessage.init()
+        DoubleHookPersonalBest.init()
 
         // Overlays
         JerryWorkshopTracker.init()

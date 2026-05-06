@@ -24,6 +24,7 @@ import com.github.sleepypanda.feesh.utils.FishingHookUtils
 import com.github.sleepypanda.feesh.utils.gui.FeeshGui
 import com.github.sleepypanda.feesh.utils.gui.GuiButton
 import java.util.Date
+import net.minecraft.sounds.SoundEvents
 
 object FishingFestivalTracker {
     private const val FESTIVAL_DURATION_MS = 61 * 60 * 1000L // 1 hour 1 minute - how long festival usually lasts, + some extra time to be safe
@@ -242,6 +243,7 @@ object FishingFestivalTracker {
         }
 
         if (isNewTotalPb || isNewGwPb) {
+            SoundUtils.playSound(SoundEvents.PLAYER_LEVELUP)
             PersistentDataManager.saveFeeshDataToFileAsync()
         }
     }
