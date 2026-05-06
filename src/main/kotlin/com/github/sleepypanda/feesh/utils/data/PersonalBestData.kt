@@ -9,6 +9,7 @@ data class PersonalBestEntry(
 
 data class PersonalBestData(
     val sharksCaught: PersonalBestEntry = PersonalBestEntry(),
-    val greatWhiteSharksCaught: PersonalBestEntry = PersonalBestEntry()
+    val greatWhiteSharksCaught: PersonalBestEntry = PersonalBestEntry(),
+    val doubleHookStreak: PersonalBestEntry = PersonalBestEntry(),
 )
 
