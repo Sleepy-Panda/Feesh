@@ -2,7 +2,7 @@ package com.github.sleepypanda.feesh.utils.data
 
 import com.github.sleepypanda.feesh.FeeshMod
 import com.github.sleepypanda.feesh.constants.RareDrops
-import com.github.sleepypanda.feesh.constants.SeaCreatures
+import com.github.sleepypanda.feesh.settings.models.AlertableSeaCreatureTypes
 import com.github.sleepypanda.feesh.constants.Sounds
 import com.github.sleepypanda.feesh.utils.CommonUtils
 import com.github.sleepypanda.feesh.utils.FileUtils
@@ -67,8 +67,8 @@ object CustomSoundsManager {
     private fun addDefaultCatchSoundForMissingSeaCreatures(): Boolean {
         var updated = false
         
-        SeaCreatures.seaCreaturesWithAlert.forEach { seaCreature ->
-            val key = seaCreature.name.uppercase()
+        AlertableSeaCreatureTypes.values().forEach { seaCreature ->
+            val key = seaCreature.displayName.uppercase()
             if (!catchSoundsData.containsKey(key)) {
                 catchSoundsData[key] = UserCatchSoundData(Sounds.FEESH_NOTIFICATION)
                 updated = true
@@ -154,7 +154,7 @@ object CustomSoundsManager {
     private fun initResourcePackStructure() {
         CommonUtils.runWithCatching("Failed to initialize resource pack structure") {
             if (resourcePackDir.exists()) {
-                FeeshMod.LOGGER.error("[Feesh] Resource pack sounds directory already exists. Skipping initialization.")
+                FeeshMod.LOGGER.warn("[Feesh] Resource pack sounds directory already exists. Skipping initialization.")
                 return
             }
 

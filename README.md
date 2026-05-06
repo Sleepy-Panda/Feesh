@@ -166,7 +166,9 @@ In case of questions, bug reports, feature requests - please feel free to contac
 ### Credits
 
 - [Casters discord](https://discord.gg/79E7Rhv8), for supporting the mod
-- [Elite Skyblock](https://eliteskyblock.com/) and [Elite Skyblock Lowest Bin API](https://api.eliteskyblock.com/resources/auctions/neu), for providing auction lbin prices
+- [Elite Skyblock](https://eliteskyblock.com/) and their APIs, for providing auction lbin prices
+  - [Elite Skyblock Lowest Bin API](https://api.eliteskyblock.com/resources/auctions/neu)
+  - [Elite Skyblock 7-days average API](https://api.eliteskyblock.com/resources/auctions/neu/average-lbin/7day)
 
 ### Contributors
 

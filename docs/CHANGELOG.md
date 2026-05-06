@@ -4,6 +4,11 @@ Released on: ???
 
 ## Features
 
+- Added selection of Auction prices API source - you can choose between LBIN or 7-days average LBIN.
+- Extended list of sea creatures you can select for alert/pchat message/highlight/HP tracker:
+  - Basically now you can toggle those functionalities for any sea creature.
+  - Only "rare" creatures are selected by default.
+
 ## Bugfixes
 
 # 1.6.1

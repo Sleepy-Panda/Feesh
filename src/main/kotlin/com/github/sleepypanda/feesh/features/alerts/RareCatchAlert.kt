@@ -1,7 +1,7 @@
 package com.github.sleepypanda.feesh.features.alerts
 
 import com.github.sleepypanda.feesh.constants.SeaCreatures
-import com.github.sleepypanda.feesh.constants.RareSeaCreatureTypes
+import com.github.sleepypanda.feesh.constants.SeaCreatureNames
 import com.github.sleepypanda.feesh.events.EventBus
 import com.github.sleepypanda.feesh.events.models.OwnSeaCreatureCaughtEvent
 import com.github.sleepypanda.feesh.events.models.PartyChatEvent
@@ -60,22 +60,17 @@ object RareCatchAlert {
             val match = SH_PCHAT_PATTERN.matchEntire(message) ?: return
             val dh = match.groups.get("dh")?.value ?: return
             var seaCreatureName = match.groups.get("scName")?.value ?: return
-            if (seaCreatureName == "The Sea Emperor") seaCreatureName = "The Loch Emperor"
+            if (seaCreatureName == "The Sea Emperor") seaCreatureName = SeaCreatureNames.THE_LOCH_EMPEROR
             val isDoubleHook = dh.isNotEmpty()
             showAlert(seaCreatureName, isDoubleHook, playerName)
         }
     }
 
     private fun showAlert(seaCreatureName: String, isDoubleHook: Boolean, playerName: String) {
-        var seaCreatureInfo = SeaCreatures.seaCreaturesWithAlert.find { it.name.equals(seaCreatureName, ignoreCase = true) } ?: return
+        val enabledScNames = Alerts.alertOnSeaCreaturesList.map { it.displayName }
+        if (!enabledScNames.contains(seaCreatureName)) return
 
-        val type = try {
-            RareSeaCreatureTypes.valueOf(seaCreatureName.uppercase().replace(" ", "_"))
-        } catch (_: IllegalArgumentException) {
-            return
-        }
-
-        if (!Alerts.alertOnSeaCreaturesTypes.contains(type)) return
+        var seaCreatureInfo = SeaCreatures.allSeaCreatures.find { it.name.equals(seaCreatureName, ignoreCase = true) } ?: return
 
         val title = SeaCreatures.getTitle(seaCreatureInfo.name, isDoubleHook)
         CommonUtils.showTitle(title, playerName)
@@ -86,7 +81,7 @@ object RareCatchAlert {
         if (General.soundMode == SoundMode.MEME) SoundUtils.playCustomSound(soundFileName)
         else SoundUtils.playSound()
 
-        if (seaCreatureInfo.name == "Nessie") {
+        if (seaCreatureInfo.name == SeaCreatureNames.NESSIE) {
             ChatUtils.sendLocalChatWithCommand("Click to warp to Murkwater Loch!", "warp murk", true)
         }
     }

@@ -2,7 +2,7 @@ package com.github.sleepypanda.feesh.settings.categories
 
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
-import com.github.sleepypanda.feesh.constants.RareSeaCreatureTypes
+import com.github.sleepypanda.feesh.settings.models.AlertableSeaCreatureTypes
 import com.github.sleepypanda.feesh.constants.RareDropTypes
 import com.github.sleepypanda.feesh.utils.enums.DeployableTypes
 import com.github.sleepypanda.feesh.utils.enums.PricingModeWithNpc
@@ -32,20 +32,20 @@ object Alerts : CategoryKt("Alerts") {
 
     init {
         separator {
-            this.title = "${AQUA}${BOLD}Rare sea creatures"
+            this.title = "${AQUA}${BOLD}Sea creatures"
         }
     }
 
     var alertOnRareSeaCreatures by boolean(true) {
-        this.name = Translated("Alert on rare sea creatures")
-        this.description = Translated("Shows a title and plays a sound when a rare sea creature is caught by you or your party members. Please enable ${YELLOW}Skyblock Settings -> Personal -> Fishing Settings -> Sea Creature Chat")
+        this.name = Translated("Alert on sea creatures")
+        this.description = Translated("Shows a title and plays a sound when a specific sea creature is caught by you or your party members. Sound can be customized for each creature from the list. Please enable ${YELLOW}Skyblock Settings -> Personal -> Fishing Settings -> Sea Creature Chat")
     }
 
-    var alertOnSeaCreaturesTypes by select(
-        *RareSeaCreatureTypes.values().filter { it != RareSeaCreatureTypes.BANSHEE }.toTypedArray(), // Selected by default
+    var alertOnSeaCreaturesList by select(
+        *AlertableSeaCreatureTypes.values().filter { it.isEnabledByDefault }.toTypedArray(), // Selected by default
     ) {
-        this.name = Translated("Select sea creatures to alert on")
-        this.searchTerms = RareSeaCreatureTypes.values().map { it.displayName }.toList()
+        this.name = Translated("Select sea creatures to be alerted on")
+        this.searchTerms = AlertableSeaCreatureTypes.values().map { it.displayName }.toList()
     }
 
     var alertOnRareSeaCreaturesSource by enum(AlertSource.OWN_AND_PARTY) {
@@ -71,11 +71,11 @@ object Alerts : CategoryKt("Alerts") {
 
     var alertOnRareDrops by boolean(true) {
         this.name = Translated("Alert on rare drops")
-        this.description = Translated("Shows a title and plays a sound when a rare item has dropped by you or your party members.")
+        this.description = Translated("Shows a title and plays a sound when a rare item has dropped by you or your party members. Sound can be customized for each item from the list.")
     }
 
     var alertOnRareDropTypes by select(RareDropTypes.LUCKY_CLOVER_CORE, *RareDropTypes.values()) {
-        this.name = Translated("Select rare drops to alert on")
+        this.name = Translated("Select rare drops to be alerted on")
         this.searchTerms = RareDropTypes.values().map { it.displayName }.toList()
     }
 
@@ -194,7 +194,7 @@ object Alerts : CategoryKt("Alerts") {
     }
 
     var alertOnDeployableTypes by select(DeployableTypes.TOTEM_OF_CORRUPTION, *DeployableTypes.values()) {
-        this.name = Translated("Select deployables to alert on")
+        this.name = Translated("Select deployables to be alerted on")
         this.searchTerms = DeployableTypes.values().map { it.displayName }.toList()
     }
 

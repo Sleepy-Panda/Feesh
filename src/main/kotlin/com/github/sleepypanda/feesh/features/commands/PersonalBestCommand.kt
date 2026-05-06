@@ -24,6 +24,7 @@ object PersonalBestCommand {
         ChatUtils.sendLocalChat("${GREEN}${BOLD}Personal Best", true)
         ChatUtils.sendLocalChat("- Total sharks per festival: ${pb.sharksCaught.amount}")
         ChatUtils.sendLocalChat("- Great White Sharks per festival: ${pb.greatWhiteSharksCaught.amount}")
+        ChatUtils.sendLocalChat("- Double Hook streak: ${pb.doubleHookStreak.amount}")
         ChatUtils.sendLocalChat(chatBreak)
     }
 }
