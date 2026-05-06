@@ -1,17 +1,13 @@
 package com.github.sleepypanda.feesh.settings.categories
 
 import com.github.sleepypanda.feesh.FeeshMod
-import com.github.sleepypanda.feesh.constants.RareSeaCreatureTypes
-import com.github.sleepypanda.feesh.constants.RareSeaCreatureTypesAllChat
+import com.github.sleepypanda.feesh.settings.models.AlertableSeaCreatureTypes
+import com.github.sleepypanda.feesh.settings.models.RareSeaCreatureTypesAllChat
 import com.github.sleepypanda.feesh.constants.RareDropTypes
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
 import com.github.sleepypanda.feesh.features.chat.CompactCatchMessages
 import com.teamresourceful.resourcefulconfigkt.api.CategoryKt
-import com.teamresourceful.resourcefulconfig.api.annotations.Category
-import com.teamresourceful.resourcefulconfig.api.annotations.Comment
-import com.teamresourceful.resourcefulconfig.api.annotations.ConfigEntry
-import com.teamresourceful.resourcefulconfig.api.types.options.EntryType
 import com.teamresourceful.resourcefulconfig.api.types.options.TranslatableValue
 import net.minecraft.client.gui.screens.options.controls.KeyBindsScreen
 import net.minecraft.Util
@@ -63,20 +59,20 @@ object Chat : CategoryKt("Chat") {
 
     init {
         separator {
-            this.title = "${AQUA}${BOLD}Rare sea creatures"
+            this.title = "${AQUA}${BOLD}Sea creatures"
         }
     }
 
     var shareRareSeaCreatures by boolean(true) {
-        this.name = Translated("Share rare sea creatures to the PARTY chat")
-        this.description = Translated("Sends a PARTY chat message when a rare sea creature is caught by you. Please enable ${YELLOW}Skyblock Settings -> Personal -> Fishing Settings -> Sea Creature Chat")
+        this.name = Translated("Share sea creatures to the PARTY chat")
+        this.description = Translated("Sends a PARTY chat message when a sea creature is caught by you. Please enable ${YELLOW}Skyblock Settings -> Personal -> Fishing Settings -> Sea Creature Chat")
     }
 
-    var shareRareSeaCreaturesTypes by select(
-        *RareSeaCreatureTypes.values().filter { it != RareSeaCreatureTypes.BANSHEE }.toTypedArray(), // Selected by default     
+    var shareSeaCreaturesList by select(
+        *AlertableSeaCreatureTypes.values().filter { it.isEnabledByDefault }.toTypedArray(), // Selected by default
     ) {
         this.name = Translated("Select sea creatures to share to the PARTY chat")
-        this.searchTerms = RareSeaCreatureTypes.values().map { it.displayName }.toList()
+        this.searchTerms = AlertableSeaCreatureTypes.values().map { it.displayName }.toList()
     }
 
     var shareRareSeaCreaturesAllChat by boolean(false) {

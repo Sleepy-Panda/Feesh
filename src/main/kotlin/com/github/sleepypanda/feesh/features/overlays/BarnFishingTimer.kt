@@ -3,6 +3,7 @@ package com.github.sleepypanda.feesh.features.overlays
 import com.github.sleepypanda.feesh.FeeshMod
 import com.github.sleepypanda.feesh.events.EventBus
 import com.github.sleepypanda.feesh.events.models.ClientTickEvent
+import com.github.sleepypanda.feesh.events.models.ChatEvent
 import com.github.sleepypanda.feesh.events.models.WorldChangedEvent
 import com.github.sleepypanda.feesh.settings.categories.Overlays
 import com.github.sleepypanda.feesh.settings.categories.Alerts
@@ -31,6 +32,7 @@ object BarnFishingTimer {
     private const val TIMER_THRESHOLD_IN_MINUTES = 5
     private const val TICKS_PER_CHECK = 10
     const val RESET_COMMAND = "feeshResetBarnFishingTimer"
+    private val PERSONAL_CAP_PATTERN = Regex("^There is not enough space for another Sea Creature! Kill some to make space for new ones!$")
 
     private var mobsCount = 0
     private var startTime: Long? = null
@@ -60,6 +62,7 @@ object BarnFishingTimer {
         }
 
     fun init() {
+        EventBus.subscribe(ChatEvent::class, ::onChat)
         EventBus.subscribe(ClientTickEvent::class, ::onClientTick)
         EventBus.subscribe(WorldChangedEvent::class, ::onWorldChanged)
         registerCommands()
@@ -73,6 +76,18 @@ object BarnFishingTimer {
 
     fun triggerResetKeybind() {
         resetSeaCreaturesCountAndTimer()
+    }
+
+    private fun onChat(event: ChatEvent) {
+        if (!WorldUtils.isInSkyblock()) return
+
+        CommonUtils.runWithCatching("Failed to handle personal cap chat message") {
+            if (PERSONAL_CAP_PATTERN.matches(event.unformattedText)) {
+                CommonUtils.showTitle("${RED}Kill sea creatures", "${WHITE}Personal cap reached")
+                if (General.soundMode == SoundMode.MEME) SoundUtils.playCustomSound(Sounds.FEESH_NOTIFICATION_BELL)
+                else SoundUtils.playSound()
+            }
+        }
     }
 
     private fun onWorldChanged(@Suppress("UNUSED_PARAMETER") event: WorldChangedEvent) {

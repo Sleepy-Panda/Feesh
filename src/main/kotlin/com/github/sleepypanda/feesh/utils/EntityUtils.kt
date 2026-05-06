@@ -146,7 +146,7 @@ object EntityUtils {
     /**
      * Parses an ArmorStand nametag and returns a SeaCreatureParsedNametagInfo object.
      * @param entity The ArmorStand to parse.
-     * @param includedSeaCreatureNames The list of sea creatures names to include into result. If null, no filtering is done and all nametags returned.
+     * @param includedSeaCreatureNames The list of sea creatures names to include into result (using "contains" check). If null, no filtering is done and all nametags returned.
      * @returns The SeaCreatureParsedNametagInfo object if the nametag is a valid sea creature nametag, null otherwise.
      */
     fun parseSeaCreatureNametag(entity: ArmorStand, includedSeaCreatureNames: List<String>? = null): SeaCreatureParsedNametagInfo? {

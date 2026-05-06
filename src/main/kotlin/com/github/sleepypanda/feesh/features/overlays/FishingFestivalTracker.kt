@@ -1,6 +1,7 @@
 package com.github.sleepypanda.feesh.features.overlays
 
 import com.github.sleepypanda.feesh.constants.SeaCreatures
+import com.github.sleepypanda.feesh.constants.SeaCreatureMessages
 import com.github.sleepypanda.feesh.events.EventBus
 import com.github.sleepypanda.feesh.events.models.ClientTickEvent
 import com.github.sleepypanda.feesh.events.models.ChatEvent
@@ -23,6 +24,7 @@ import com.github.sleepypanda.feesh.utils.FishingHookUtils
 import com.github.sleepypanda.feesh.utils.gui.FeeshGui
 import com.github.sleepypanda.feesh.utils.gui.GuiButton
 import java.util.Date
+import net.minecraft.sounds.SoundEvents
 
 object FishingFestivalTracker {
     private const val FESTIVAL_DURATION_MS = 61 * 60 * 1000L // 1 hour 1 minute - how long festival usually lasts, + some extra time to be safe
@@ -35,10 +37,10 @@ object FishingFestivalTracker {
     private val sharkInfos = run {
         val byMessage = SeaCreatures.allSeaCreatures.associateBy { it.pattern.pattern }
         listOfNotNull(
-            byMessage[SeaCreatures.GREAT_WHITE_SHARK_MESSAGE],
-            byMessage[SeaCreatures.TIGER_SHARK_MESSAGE],
-            byMessage[SeaCreatures.BLUE_SHARK_MESSAGE],
-            byMessage[SeaCreatures.NURSE_SHARK_MESSAGE],
+            byMessage[SeaCreatureMessages.GREAT_WHITE_SHARK_MESSAGE],
+            byMessage[SeaCreatureMessages.TIGER_SHARK_MESSAGE],
+            byMessage[SeaCreatureMessages.BLUE_SHARK_MESSAGE],
+            byMessage[SeaCreatureMessages.NURSE_SHARK_MESSAGE],
         )
     }
 
@@ -241,6 +243,7 @@ object FishingFestivalTracker {
         }
 
         if (isNewTotalPb || isNewGwPb) {
+            SoundUtils.playSound(SoundEvents.PLAYER_LEVELUP)
             PersistentDataManager.saveFeeshDataToFileAsync()
         }
     }

@@ -1,6 +1,6 @@
 package com.github.sleepypanda.feesh.features.chat
 
-import com.github.sleepypanda.feesh.constants.RareSeaCreatureTypesAllChat
+import com.github.sleepypanda.feesh.settings.models.RareSeaCreatureTypesAllChat
 import com.github.sleepypanda.feesh.settings.categories.Chat
 import com.github.sleepypanda.feesh.utils.CommonUtils
 import com.github.sleepypanda.feesh.utils.ChatUtils

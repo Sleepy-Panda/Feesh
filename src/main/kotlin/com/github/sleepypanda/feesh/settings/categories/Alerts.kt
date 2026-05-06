@@ -2,7 +2,7 @@ package com.github.sleepypanda.feesh.settings.categories
 
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
-import com.github.sleepypanda.feesh.constants.RareSeaCreatureTypes
+import com.github.sleepypanda.feesh.settings.models.AlertableSeaCreatureTypes
 import com.github.sleepypanda.feesh.constants.RareDropTypes
 import com.github.sleepypanda.feesh.utils.enums.DeployableTypes
 import com.github.sleepypanda.feesh.utils.enums.PricingModeWithNpc
@@ -32,20 +32,20 @@ object Alerts : CategoryKt("Alerts") {
 
     init {
         separator {
-            this.title = "${AQUA}${BOLD}Rare sea creatures"
+            this.title = "${AQUA}${BOLD}Sea creatures"
         }
     }
 
     var alertOnRareSeaCreatures by boolean(true) {
-        this.name = Translated("Alert on rare sea creatures")
-        this.description = Translated("Shows a title and plays a sound when a rare sea creature is caught by you or your party members. Please enable ${YELLOW}Skyblock Settings -> Personal -> Fishing Settings -> Sea Creature Chat")
+        this.name = Translated("Alert on sea creatures")
+        this.description = Translated("Shows a title and plays a sound when a specific sea creature is caught by you or your party members. Sound can be customized for each creature from the list. Please enable ${YELLOW}Skyblock Settings -> Personal -> Fishing Settings -> Sea Creature Chat")
     }
 
-    var alertOnSeaCreaturesTypes by select(
-        *RareSeaCreatureTypes.values().filter { it != RareSeaCreatureTypes.BANSHEE }.toTypedArray(), // Selected by default
+    var alertOnSeaCreaturesList by select(
+        *AlertableSeaCreatureTypes.values().filter { it.isEnabledByDefault }.toTypedArray(), // Selected by default
     ) {
-        this.name = Translated("Select sea creatures to alert on")
-        this.searchTerms = RareSeaCreatureTypes.values().map { it.displayName }.toList()
+        this.name = Translated("Select sea creatures to be alerted on")
+        this.searchTerms = AlertableSeaCreatureTypes.values().map { it.displayName }.toList()
     }
 
     var alertOnRareSeaCreaturesSource by enum(AlertSource.OWN_AND_PARTY) {
@@ -71,11 +71,11 @@ object Alerts : CategoryKt("Alerts") {
 
     var alertOnRareDrops by boolean(true) {
         this.name = Translated("Alert on rare drops")
-        this.description = Translated("Shows a title and plays a sound when a rare item has dropped by you or your party members.")
+        this.description = Translated("Shows a title and plays a sound when a rare item has dropped by you or your party members. Sound can be customized for each item from the list.")
     }
 
     var alertOnRareDropTypes by select(RareDropTypes.LUCKY_CLOVER_CORE, *RareDropTypes.values()) {
-        this.name = Translated("Select rare drops to alert on")
+        this.name = Translated("Select rare drops to be alerted on")
         this.searchTerms = RareDropTypes.values().map { it.displayName }.toList()
     }
 
@@ -132,47 +132,52 @@ object Alerts : CategoryKt("Alerts") {
         }
     }
 
+    var alertOnSeaCreaturesPersonalCap by boolean(true) {
+        this.name = Translated("Alert after personal sea creatures count cap")
+        this.description = Translated("Shows a title and plays a sound when the personal sea creatures count cap is reached, and Skyblock says \"There is not enough space for another Sea Creature!\"")
+    }
+
     var alertOnSeaCreaturesTimerThreshold by boolean(true) {
-        this.name = Translated("Alert when sea creatures are alive for 5+ minutes")
-        this.description = Translated("Shows a title and plays a sound when the sea creatures nearby are alive for 5+ minutes and will despawn soon. Disabled if you have no fishing rod in your hotbar!")
+        this.name = Translated("Alert when own/others' sea creatures are alive for 5+ minutes")
+        this.description = Translated("Shows a title and plays a sound when the sea creatures nearby are alive for 5+ minutes and will despawn soon. It does not check if those are own or other people's sea creatures. Disabled if you have no fishing rod in your hotbar!")
     }
 
     var alertOnSeaCreaturesCountThreshold by boolean(true) {
-        this.name = Translated("Alert when sea creatures count hits threshold")
-        this.description = Translated("Shows a title and plays a sound when amount of sea creatures nearby hits the specified threshold. Useful to detect cap when barn fishing. Disabled if you have no fishing rod in your hotbar!")
+        this.name = Translated("Alert when own/others' sea creatures count hits threshold")
+        this.description = Translated("Shows a title and plays a sound when amount of sea creatures nearby hits the specified threshold. It does not check if those are own or other people's sea creatures. Disabled if you have no fishing rod in your hotbar!")
     }
 
     var seaCreaturesCountThreshold_Hub by int(50) {
         this.name = Translated("Sea creatures count threshold - HUB")
-        this.description = Translated("Count of sea creatures nearby required to see the alert when you are in the Hub. Ignored if the sea creatures count alert is disabled.")
+        this.description = Translated("Count of sea creatures nearby required to see the alert when you are in the Hub. It does not check if those are own or other people's sea creatures.Ignored if the sea creatures count alert is disabled.")
         this.range = 5..60
         this.slider = true
     }
 
     var seaCreaturesCountThreshold_CrimsonIsle by int(20) {
         this.name = Translated("Sea creatures count threshold - CRIMSON ISLE")
-        this.description = Translated("Count of sea creatures nearby required to see the alert when you are in the Crimson Isle. Ignored if the sea creatures count alert is disabled.")
+        this.description = Translated("Count of sea creatures nearby required to see the alert when you are in the Crimson Isle. It does not check if those are own or other people's sea creatures. Ignored if the sea creatures count alert is disabled.")
         this.range = 5..60
         this.slider = true
     }
 
     var seaCreaturesCountThreshold_CrystalHollows by int(20) {
         this.name = Translated("Sea creatures count threshold - CRYSTAL HOLLOWS")
-        this.description = Translated("Count of sea creatures nearby required to see the alert when you are in the Crystal Hollows. Ignored if the sea creatures count alert is disabled.")
+        this.description = Translated("Count of sea creatures nearby required to see the alert when you are in the Crystal Hollows. It does not check if those are own or other people's sea creatures. Ignored if the sea creatures count alert is disabled.")
         this.range = 5..60
         this.slider = true
     }
 
     var seaCreaturesCountThreshold_Galatea by int(30) {
         this.name = Translated("Sea creatures count threshold - GALATEA")
-        this.description = Translated("Count of sea creatures nearby required to see the alert when you are in the Galatea. Ignored if the sea creatures count alert is disabled.")
+        this.description = Translated("Count of sea creatures nearby required to see the alert when you are in the Galatea. It does not check if those are own or other people's sea creatures.Ignored if the sea creatures count alert is disabled.")
         this.range = 5..60
         this.slider = true
     }
 
     var seaCreaturesCountThreshold_Default by int(50) {
         this.name = Translated("Sea creatures count threshold - Other")
-        this.description = Translated("Count of sea creatures nearby required to see the alert when you are in other locations. Ignored if the sea creatures count alert is disabled.")
+        this.description = Translated("Count of sea creatures nearby required to see the alert when you are in other locations. It does not check if those are own or other people's sea creatures. Ignored if the sea creatures count alert is disabled.")
         this.range = 5..60
         this.slider = true
     }
@@ -189,7 +194,7 @@ object Alerts : CategoryKt("Alerts") {
     }
 
     var alertOnDeployableTypes by select(DeployableTypes.TOTEM_OF_CORRUPTION, *DeployableTypes.values()) {
-        this.name = Translated("Select deployables to alert on")
+        this.name = Translated("Select deployables to be alerted on")
         this.searchTerms = DeployableTypes.values().map { it.displayName }.toList()
     }
 

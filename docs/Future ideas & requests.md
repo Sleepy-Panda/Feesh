@@ -28,7 +28,6 @@
 
 ## Fishing profit tracker
 
-- View price as 7 days avg to avoid price manipulations.
 - Add levelled Magma Necklaces as some people level them for profits. Vanquished Magma Necklace upgraded to +10☠! Vanquished Magma Necklace upgraded to +1☠!
 - Propose compacting or selling items like raw fish going to the inventory (full sack).
 - Use drop # in the chat message based on current profit tracker.
