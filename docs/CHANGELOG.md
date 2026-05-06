@@ -10,6 +10,9 @@ Released on: ???
   - Only "rare" creatures are selected by default.
 - Added personal best tracking for double hook streak.
 - Added alert after personal SC cap is reached.
+- Reworked /feeshGearCraftPrices to rely on up-to-date crafting recipies.
+  - Now you can optionally filter command output by desired material (e.g. /feeshGearCraftPrices magmalord)
+  - Added profit calculations for Agarimoo Tongue recipies.
 
 ## Bugfixes
 

@@ -63,7 +63,7 @@ object GearCraftItems {
     val MAGMA_LORD_CHESTPLATE_NAME = "${LEGENDARY}Magma Lord Chestplate"
     val MAGMA_LORD_LEGGINGS_NAME = "${LEGENDARY}Magma Lord Leggings"
     val MAGMA_LORD_BOOTS_NAME = "${LEGENDARY}Magma Lord Boots"
-    val MAGMA_LORD_GAUNTLET_NAME = "${LEGENDARY}Magma Lord Necklace"
+    val MAGMA_LORD_NECKLACE_NAME = "${LEGENDARY}Magma Lord Necklace"
     val NUTCRACKER_HELMET_NAME = "${LEGENDARY}Nutcracker Helmet"
     val NUTCRACKER_CHESTPLATE_NAME = "${LEGENDARY}Nutcracker Chestplate"
     val NUTCRACKER_LEGGINGS_NAME = "${LEGENDARY}Nutcracker Leggings"
@@ -100,7 +100,7 @@ object GearCraftItems {
         MAGMA_LORD_CHESTPLATE_ID to MAGMA_LORD_CHESTPLATE_NAME,
         MAGMA_LORD_LEGGINGS_ID to MAGMA_LORD_LEGGINGS_NAME,
         MAGMA_LORD_BOOTS_ID to MAGMA_LORD_BOOTS_NAME,
-        MAGMA_LORD_GAUNTLET_ID to MAGMA_LORD_GAUNTLET_NAME,
+        MAGMA_LORD_GAUNTLET_ID to MAGMA_LORD_NECKLACE_NAME,
         NUTCRACKER_HELMET_ID to NUTCRACKER_HELMET_NAME,
         NUTCRACKER_CHESTPLATE_ID to NUTCRACKER_CHESTPLATE_NAME,
         NUTCRACKER_LEGGINGS_ID to NUTCRACKER_LEGGINGS_NAME,
@@ -136,7 +136,6 @@ object GearCraftItems {
                     ShopItemCost(
                         baseItemCosts = listOf(
                             BaseItemCost(MAGMA_LORD_FRAGMENT_ID, 5),
-                            BaseItemCost(THUNDER_HELMET_ID, 1)
                         )
                     )
                 ),
@@ -146,7 +145,6 @@ object GearCraftItems {
                     ShopItemCost(
                         baseItemCosts = listOf(
                             BaseItemCost(MAGMA_LORD_FRAGMENT_ID, 8),
-                            BaseItemCost(THUNDER_CHESTPLATE_ID, 1)
                         )
                     )
                 ),
@@ -156,7 +154,6 @@ object GearCraftItems {
                     ShopItemCost(
                         baseItemCosts = listOf(
                             BaseItemCost(MAGMA_LORD_FRAGMENT_ID, 7),
-                            BaseItemCost(THUNDER_LEGGINGS_ID, 1)
                         )
                     )
                 ),
@@ -166,17 +163,15 @@ object GearCraftItems {
                     ShopItemCost(
                         baseItemCosts = listOf(
                             BaseItemCost(MAGMA_LORD_FRAGMENT_ID, 4),
-                            BaseItemCost(THUNDER_BOOTS_ID, 1)
                         )
                     )
                 ),
                 ShopItem(
                     MAGMA_LORD_GAUNTLET_ID,
-                    MAGMA_LORD_GAUNTLET_NAME,
+                    MAGMA_LORD_NECKLACE_NAME,
                     ShopItemCost(
                         baseItemCosts = listOf(
                 BaseItemCost(MAGMA_LORD_FRAGMENT_ID, 5),
-                            BaseItemCost(THUNDERBOLT_NECKLACE_ID, 1)
                         )
                     )
                 )
@@ -194,7 +189,6 @@ object GearCraftItems {
                     ShopItemCost(
                         baseItemCosts = listOf(
                             BaseItemCost(THUNDER_SHARDS_ID, 5),
-                            BaseItemCost(TAURUS_HELMET_ID, 1)
                         )
                     )
                 ),
@@ -204,7 +198,6 @@ object GearCraftItems {
                     ShopItemCost(
                         baseItemCosts = listOf(
                             BaseItemCost(THUNDER_SHARDS_ID, 8),
-                            BaseItemCost(FLAMING_CHESTPLATE_ID, 1)
                         )
                     )
                 ),
@@ -214,7 +207,6 @@ object GearCraftItems {
                     ShopItemCost(
                         baseItemCosts = listOf(
                             BaseItemCost(THUNDER_SHARDS_ID, 7),
-                            BaseItemCost(MOOGMA_LEGGINGS_ID, 1)
                         )
                     )
                 ),
@@ -224,7 +216,6 @@ object GearCraftItems {
                     ShopItemCost(
                         baseItemCosts = listOf(
                             BaseItemCost(THUNDER_SHARDS_ID, 4),
-                            BaseItemCost(SLUG_BOOTS_ID, 1)
                         )
                     )
                 ),
