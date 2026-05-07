@@ -25,6 +25,7 @@ data class LastGfsCommand(
 data class LastGuisClosed(
     var lastSacksGuiClosedAt: Date? = null,
     var lastOdgerGuiClosedAt: Date? = null,
+    var lastTrophyFrogsGuiClosedAt: Date? = null,
     var lastAuctionGuiClosedAt: Date? = null,
     var lastSupercraftGuiClosedAt: Date? = null,
     var lastCraftGuiClosedAt: Date? = null,
@@ -86,7 +87,8 @@ object GuiUtils {
         val now = Date()
         when {
             chestName.contains("Sack") -> lastGuisClosed.lastSacksGuiClosedAt = now
-            chestName.contains("Trophy Fishing") -> lastGuisClosed.lastOdgerGuiClosedAt = now
+            chestName.contains("Trophy Fish") -> lastGuisClosed.lastOdgerGuiClosedAt = now
+            chestName.contains("Trophy Frogs") -> lastGuisClosed.lastTrophyFrogsGuiClosedAt = now
             chestName.contains("Manage Auctions") || chestName.contains("Confirm Purchase") ||
             chestName.contains("BIN Auction View") || chestName.contains("Your Bids") ->
                 lastGuisClosed.lastAuctionGuiClosedAt = now

@@ -495,6 +495,9 @@ object FishingProfitTracker {
         if (dropInfo.amountOfMagmaFish != null) {
             val magmaPrice = getPriceByMode("MAGMA_FISH")
             return dropInfo.amountOfMagmaFish * magmaPrice
+        } else if (dropInfo.amountOfLotus != null) {
+            val lotusPrice = getPriceByMode("LOTUS")
+            return dropInfo.amountOfLotus * lotusPrice
         }
         if (Overlays.calculateProfitInCrimsonEssence && dropInfo.salvage != null && dropInfo.salvage.essenceItemId == "ESSENCE_CRIMSON") {
             if (Overlays.fishingProfitTrackerPriceMode == PricingModeWithNpc.NPC_SELL) return 0.0
@@ -550,6 +553,9 @@ object FishingProfitTracker {
             if (dropInfo.itemId.startsWith("MAGMA_FISH") && 
                 lastGuisClosed.lastOdgerGuiClosedAt != null && Date().time - lastGuisClosed.lastOdgerGuiClosedAt!!.time < cooldownMilliseconds) {
                 continue; // User probably just filleted trophy fish
+            } else if (dropInfo.itemId.startsWith("LOTUS") && 
+                lastGuisClosed.lastTrophyFrogsGuiClosedAt != null && Date().time - lastGuisClosed.lastTrophyFrogsGuiClosedAt!!.time < cooldownMilliseconds) {
+                continue; // User probably just picked up trophy frogs
             }
 
             addProfitTrackerItem(dropInfo.itemId, dropInfo.itemName, item.amount, null, true)
@@ -805,6 +811,9 @@ object FishingProfitTracker {
 
         if (itemId.startsWith("MAGMA_FISH") && lastGuisClosed.lastOdgerGuiClosedAt != null &&
             now.time - lastGuisClosed.lastOdgerGuiClosedAt!!.time < 1000) return true // User probably just filleted trophy fish
+
+        if (itemId.startsWith("LOTUS") && lastGuisClosed.lastTrophyFrogsGuiClosedAt != null &&
+            now.time - lastGuisClosed.lastTrophyFrogsGuiClosedAt!!.time < 1000) return true // User probably just exchanged trophy frogs
 
         if (dropInfo.categories.contains(FishingProfitDrops.PET_ITEM_CATEGORY) && lastGuisClosed.lastPetItemSwapGuiClosedAt != null && 
             now.time - lastGuisClosed.lastPetItemSwapGuiClosedAt!!.time < 1000) return true
