@@ -8,28 +8,31 @@ import net.minecraft.world.scores.DisplaySlot
 import net.minecraft.world.scores.PlayerTeam
 
 object WorldUtils {
-    val CRIMSON_ISLE = "Crimson Isle"
-    val HUB = "Hub"
-    val PRIVATE_ISLAND = "Private Island"
-    val CRYSTAL_HOLLOWS = "Crystal Hollows"
-    val DWARVEN_MINES = "Dwarven Mines"
-    val ABANDONED_QUARRY = "Abandoned Quarry"
-    val BACKWATER_BAYOU = "Backwater Bayou"
-    val JERRY_WORKSHOP = "Jerry's Workshop"
-    val SPIDERS_DEN = "Spider's Den"
-    val PARK = "The Park"
-    val FARMING_ISLANDS = "The Farming Islands"
-    val KUUDRA = "Kuudra"
-    val DUNGEONS = "Catacombs"
-    val GARDEN = "Garden"
-    val DUNGEON_HUB = "Dungeon Hub"
-    val THE_END = "The End"
-    val GLACITE_MINESHAFTS = "Glacite Mineshafts"
-    val RIFT = "Rift Dimension"
-    val GALATEA = "Galatea"
-    val PLHLEGBLAST_POOL = "Plhlegblast Pool"
-    val MURKWATER_DEPTHS = "Murkwater Depths"
-    val DRAGON_LAIR = "Dragon's Lair"
+    const val CRIMSON_ISLE = "Crimson Isle"
+    const val HUB = "Hub"
+    const val PRIVATE_ISLAND = "Private Island"
+    const val CRYSTAL_HOLLOWS = "Crystal Hollows"
+    const val DWARVEN_MINES = "Dwarven Mines"
+    const val ABANDONED_QUARRY = "Abandoned Quarry"
+    const val BACKWATER_BAYOU = "Backwater Bayou"
+    const val JERRY_WORKSHOP = "Jerry's Workshop"
+    const val SPIDERS_DEN = "Spider's Den"
+    const val PARK = "The Park"
+    const val FARMING_ISLANDS = "The Farming Islands"
+    const val KUUDRA = "Kuudra"
+    const val DUNGEONS = "Catacombs"
+    const val GARDEN = "Garden"
+    const val DUNGEON_HUB = "Dungeon Hub"
+    const val THE_END = "The End"
+    const val GLACITE_MINESHAFTS = "Glacite Mineshafts"
+    const val RIFT = "Rift Dimension"
+    const val GALATEA = "Galatea"
+    const val LOTUS_ATOLL = "Lotus Atoll"
+
+    // Zones
+    const val PLHLEGBLAST_POOL = "Plhlegblast Pool"
+    const val MURKWATER_DEPTHS = "Murkwater Depths"
+    const val DRAGON_LAIR = "Dragon's Lair"
 
     val NO_FISHING_WORLDS = listOf(
         RIFT,
@@ -50,7 +53,8 @@ object WorldUtils {
         JERRY_WORKSHOP,
         PARK,
         FARMING_ISLANDS,
-        GALATEA
+        GALATEA,
+        LOTUS_ATOLL,
     )
 
     val HOTSPOT_WORLDS = listOf(
@@ -58,6 +62,7 @@ object WorldUtils {
         SPIDERS_DEN,
         HUB,
         JERRY_WORKSHOP,
+        LOTUS_ATOLL,
         CRIMSON_ISLE
     )
 
@@ -66,6 +71,7 @@ object WorldUtils {
         SPIDERS_DEN,
         HUB,
         JERRY_WORKSHOP,
+        LOTUS_ATOLL,
     )
 
     private var cachedIsInSkyblock: Boolean = false

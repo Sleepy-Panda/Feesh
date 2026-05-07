@@ -48,7 +48,10 @@ object RainTimer {
     private fun isRainArea(): Boolean {
         val worldName = WorldUtils.getWorldName() ?: return false
         val areaName = WorldUtils.getZoneName() ?: return false
-        return (worldName == WorldUtils.PARK && areaName == "Birch Park") || (worldName == WorldUtils.SPIDERS_DEN && areaName == "Spider's Den") || (worldName == WorldUtils.JERRY_WORKSHOP)
+        return (worldName == WorldUtils.PARK && areaName == "Birch Park") ||
+            (worldName == WorldUtils.SPIDERS_DEN && areaName == "Spider's Den") ||
+            worldName == WorldUtils.JERRY_WORKSHOP ||
+            worldName == WorldUtils.LOTUS_ATOLL
     }
 
 
@@ -104,7 +107,7 @@ object RainTimer {
                 eventName = "Rain"
                 isActiveEvent = true
             }
-        } else if (worldName == WorldUtils.SPIDERS_DEN) {
+        } else if (worldName == WorldUtils.SPIDERS_DEN || worldName == WorldUtils.LOTUS_ATOLL) {
             val thunderValue = TabListUtils.getLineAfter("Thunder:").trim()
             val rainValue = TabListUtils.getLineAfter("Rain:").trim()
             val raw = when {
@@ -115,7 +118,7 @@ object RainTimer {
             if (raw != null) {
                 eventName = raw.first
                 isActiveEvent = raw.second.endsWith(" left")
-                rainTimer = raw.second.removeSuffix(" left")
+                rainTimer = raw.second.removePrefix("in ").removeSuffix(" left")
             } else {
                 rainTimer = null
                 eventName = null
@@ -144,8 +147,9 @@ object RainTimer {
         if (!WorldUtils.isInSkyblock() || !PlayerUtils.hasFishingRodInHotbar() || !isRainArea()) return
 
         val label = eventName ?: "Rain"
+        val worldName = WorldUtils.getWorldName()
         val color = if (isActiveEvent && rainSecondsLeft!! in 0..SECONDS_ALERT_THRESHOLD) RED else WHITE
-        val timePart = if (WorldUtils.getWorldName() == WorldUtils.SPIDERS_DEN && !isActiveEvent) "${GRAY}starts in ${WHITE}${rainTimer}" else "${GRAY}ends in ${color}${rainTimer}"
+        val timePart = if ((worldName == WorldUtils.SPIDERS_DEN || worldName == WorldUtils.LOTUS_ATOLL) && !isActiveEvent) "${GRAY}starts in ${WHITE}${rainTimer}" else "${GRAY}ends in ${color}${rainTimer}"
         gui.setLines(listOf("${BLUE}${label} $timePart"))
     }
 
@@ -163,7 +167,7 @@ object RainTimer {
      * Returns -1 if parsing fails.
      */
     private fun parseRainTimeToSeconds(timeStr: String): Int {
-        val t = timeStr.replace(" left", "").trim()
+        val t = timeStr.replace(" left", "").replace("in ", "").trim()
         return try {
             if (t.contains("m")) {
                 val parts = t.split("m")
