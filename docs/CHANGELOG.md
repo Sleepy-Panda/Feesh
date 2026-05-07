@@ -8,6 +8,7 @@ Released on: ???
   - Enabled Hotspot and Rain timer functionalities.
   - Added new Atoll sea creatures to all existing functionalities.
   - Added Atoll sea creatures drops to profit tracker.
+- Added new Hotspot creatures to all existing functionalities.
 - Added selection of Auction prices API source - you can choose between LBIN or 7-days average LBIN.
 - Extended list of sea creatures you can select for alert/pchat message/highlight/HP tracker:
   - Basically now you can toggle those functionalities for any sea creature.
