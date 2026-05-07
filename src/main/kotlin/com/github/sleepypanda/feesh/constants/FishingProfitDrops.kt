@@ -1423,6 +1423,56 @@ class FishingProfitDrops {
                 npcPrice = 1_000_000.0,
             ),
 
+            // Lotus Atoll
+            FishingProfitDropInfo(
+                itemId = "LOTUS",
+                itemName = "Lotus",
+                itemDisplayName = "${UNCOMMON}Lotus",
+                npcPrice = 15.0,
+            ),
+            FishingProfitDropInfo(
+                itemId = "LOTUS_SILVER",
+                itemName = "Silver Lotus",
+                itemDisplayName = "${RARE}Silver Lotus",
+                npcPrice = 1_200.0,
+            ),
+            FishingProfitDropInfo(
+                itemId = "LOTUS_GOLD",
+                itemName = "Gold Lotus",
+                itemDisplayName = "${EPIC}Gold Lotus",
+                npcPrice = 96_000.0,
+            ),
+            FishingProfitDropInfo(
+                itemId = "FROGCOIN",
+                itemName = "Frogcoin",
+                itemDisplayName = "${UNCOMMON}Frogcoin",
+                npcPrice = null,
+            ),
+            FishingProfitDropInfo(
+                itemId = "ENCHANTED_GOLD_BLOCK",
+                itemName = "Enchanted Gold Block",
+                itemDisplayName = "${RARE}Enchanted Gold Block",
+                npcPrice = 76_800.0,
+            ),
+            FishingProfitDropInfo(
+                itemId = "UNLUCKY_DOUBLOON",
+                itemName = "Unlucky Doubloon",
+                itemDisplayName = "${EPIC}Unlucky Doubloon",
+                npcPrice = 100_000.0,
+            ),
+            FishingProfitDropInfo(
+                itemId = "REVERSE_REFORGE_STONE_CORE",
+                itemName = "eroC enotS egrofeR",
+                itemDisplayName = "${RARE}eroC enotS egrofeR",
+                npcPrice = 25_000.0,
+            ),
+            FishingProfitDropInfo(
+                itemId = "PRINCE_CROWN_JEWEL",
+                itemName = "Prince's Crown Jewel",
+                itemDisplayName = "${LEGENDARY}Prince's Crown Jewel",
+                npcPrice = 1_000_000.0,
+            ),
+
             // Crimson Isle
 
             FishingProfitDropInfo(
