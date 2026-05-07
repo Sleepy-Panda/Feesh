@@ -97,6 +97,14 @@ object SeaCreatureNames {
     const val WETWING = "Wetwing"
     const val STRIDERSURFER = "Stridersurfer"
 
+    // LOTUS ATOLL
+    const val ATOLL_CROAKER = "Atoll Croaker"
+    const val LOTUS_GUARDIAN = "Lotus Guardian"
+    const val DROWNED_CAPTAIN = "Drowned Captain"
+    const val GORF = "gorF"
+    const val PUDDLE_JUMPER = "Puddle Jumper"
+    const val FROG_PRINCE = "Frog Prince"
+
     // EXTRA
     const val VANQUISHER = "Vanquisher"
 }
@@ -195,10 +203,26 @@ object SeaCreatureMessages {
     const val WETWING_MESSAGE = "^Look\\! A Wetwing emerges\\!$"
     const val STRIDERSURFER_MESSAGE = "^You caught a Stridersurfer\\.$"
     const val BOGGED_MESSAGE = "^You\\'ve hooked a Bogged\\!$"
+
+    // LOTUS ATOLL
+    const val ATOLL_CROAKER_MESSAGE = "^An inquisitive Atoll Croaker takes the bait!$"
+    const val LOTUS_GUARDIAN_MESSAGE = "^A Lotus Guardian emerges, ready to protect the Atoll.$"
+    const val DROWNED_CAPTAIN_MESSAGE = "^A Drowned Captain takes hold of your bobber!$"
+    const val GORF_MESSAGE = "^What even is that\\?! A\\.\\.\\. gorF\\?$"
+    const val PUDDLE_JUMPER_MESSAGE = "^A Puddle Jumper is preparing for liftoff—cast your rod into it and hold on tight!$"
+    const val FROG_PRINCE_MESSAGE = "^Bow down before the Frog Prince\\.\\.\\. or pay the hefty price!$"
 }
 
 class SeaCreatures {
-    data class SeaCreatureInfo(val name: String, val rarityColorCode: String, val pattern: Regex, val isRare: Boolean, val types: List<String> = emptyList(), val worlds: List<String> = emptyList()) {
+    data class SeaCreatureInfo(
+        val name: String,
+        val rarityColorCode: String,
+        val pattern: Regex,
+        val isRare: Boolean,
+        val canBeDoubleHooked: Boolean = true,
+        val types: List<String> = emptyList(),
+        val worlds: List<String> = emptyList()
+    ) {
         val displayName: String get() = rarityColorCode + name
         val boldDisplayName: String get() = rarityColorCode + BOLD + name
     }
@@ -398,7 +422,7 @@ class SeaCreatures {
                 COMMON.code,
                 Regex(SeaCreatureMessages.FRIED_CHICKEN_MESSAGE),
                 false,
-                listOf(TYPE_CRIMSON_ISLE_LAVA),
+                types = listOf(TYPE_CRIMSON_ISLE_LAVA),
                 worlds = listOf(WorldUtils.CRIMSON_ISLE),
             ),
             SeaCreatureInfo(
@@ -406,7 +430,7 @@ class SeaCreatures {
                 RARE.code,
                 Regex(SeaCreatureMessages.FIREPROOF_WITCH_MESSAGE),
                 false,
-                listOf(TYPE_CRIMSON_ISLE_LAVA),
+                types = listOf(TYPE_CRIMSON_ISLE_LAVA),
                 worlds = listOf(WorldUtils.CRIMSON_ISLE),
             ),
             SeaCreatureInfo(
@@ -414,7 +438,7 @@ class SeaCreatures {
                 UNCOMMON.code,
                 Regex(SeaCreatureMessages.MAGMA_SLUG_MESSAGE),
                 false,
-                listOf(TYPE_CRIMSON_ISLE_LAVA),
+                types = listOf(TYPE_CRIMSON_ISLE_LAVA),
                 worlds = listOf(WorldUtils.CRIMSON_ISLE),
             ),
             SeaCreatureInfo(
@@ -422,7 +446,7 @@ class SeaCreatures {
                 UNCOMMON.code,
                 Regex(SeaCreatureMessages.MOOGMA_MESSAGE),
                 false,
-                listOf(TYPE_CRIMSON_ISLE_LAVA),
+                types = listOf(TYPE_CRIMSON_ISLE_LAVA),
                 worlds = listOf(WorldUtils.CRIMSON_ISLE),
             ),
             SeaCreatureInfo(
@@ -430,7 +454,7 @@ class SeaCreatures {
                 RARE.code,
                 Regex(SeaCreatureMessages.LAVA_LEECH_MESSAGE),
                 false,
-                listOf(TYPE_CRIMSON_ISLE_LAVA),
+                types = listOf(TYPE_CRIMSON_ISLE_LAVA),
                 worlds = listOf(WorldUtils.CRIMSON_ISLE),
             ),
             SeaCreatureInfo(
@@ -438,7 +462,7 @@ class SeaCreatures {
                 RARE.code,
                 Regex(SeaCreatureMessages.PYROCLASTIC_WORM_MESSAGE),
                 false,
-                listOf(TYPE_CRIMSON_ISLE_LAVA),
+                types = listOf(TYPE_CRIMSON_ISLE_LAVA),
                 worlds = listOf(WorldUtils.CRIMSON_ISLE),
             ),
             SeaCreatureInfo(
@@ -446,7 +470,7 @@ class SeaCreatures {
                 RARE.code,
                 Regex(SeaCreatureMessages.LAVA_FLAME_MESSAGE),
                 false,
-                listOf(TYPE_CRIMSON_ISLE_LAVA),
+                types = listOf(TYPE_CRIMSON_ISLE_LAVA),
                 worlds = listOf(WorldUtils.CRIMSON_ISLE),
             ),
             SeaCreatureInfo(
@@ -454,7 +478,7 @@ class SeaCreatures {
                 RARE.code,
                 Regex(SeaCreatureMessages.FIRE_EEL_MESSAGE),
                 false,
-                listOf(TYPE_CRIMSON_ISLE_LAVA),
+                types = listOf(TYPE_CRIMSON_ISLE_LAVA),
                 worlds = listOf(WorldUtils.CRIMSON_ISLE),
             ),
             SeaCreatureInfo(
@@ -462,7 +486,7 @@ class SeaCreatures {
                 EPIC.code,
                 Regex(SeaCreatureMessages.TAURUS_MESSAGE),
                 false,
-                listOf(TYPE_CRIMSON_ISLE_LAVA),
+                types = listOf(TYPE_CRIMSON_ISLE_LAVA),
                 worlds = listOf(WorldUtils.CRIMSON_ISLE),
             ),
             SeaCreatureInfo(
@@ -470,7 +494,7 @@ class SeaCreatures {
                 LEGENDARY.code,
                 Regex(SeaCreatureMessages.FIERY_SCUTTLER_MESSAGE),
                 true,
-                listOf(TYPE_CRIMSON_ISLE_LAVA),
+                types = listOf(TYPE_CRIMSON_ISLE_LAVA),
                 worlds = listOf(WorldUtils.CRIMSON_ISLE),
             ),
             SeaCreatureInfo(
@@ -478,7 +502,7 @@ class SeaCreatures {
                 MYTHIC.code,
                 Regex(SeaCreatureMessages.THUNDER_MESSAGE),
                 true,
-                listOf(TYPE_CRIMSON_ISLE_LAVA),
+                types = listOf(TYPE_CRIMSON_ISLE_LAVA),
                 worlds = listOf(WorldUtils.CRIMSON_ISLE),
             ),
             SeaCreatureInfo(
@@ -486,7 +510,7 @@ class SeaCreatures {
                 MYTHIC.code,
                 Regex(SeaCreatureMessages.LORD_JAWBUS_MESSAGE),
                 true,
-                listOf(TYPE_CRIMSON_ISLE_LAVA),
+                types = listOf(TYPE_CRIMSON_ISLE_LAVA),
                 worlds = listOf(WorldUtils.CRIMSON_ISLE),
             ),
             SeaCreatureInfo(
@@ -494,7 +518,7 @@ class SeaCreatures {
                 MYTHIC.code,
                 Regex(SeaCreatureMessages.PLHLEGBLAST_MESSAGE),
                 true,
-                listOf(TYPE_CRIMSON_ISLE_LAVA),
+                types = listOf(TYPE_CRIMSON_ISLE_LAVA),
                 worlds = listOf(WorldUtils.CRIMSON_ISLE),
             ),
             SeaCreatureInfo(
@@ -502,7 +526,7 @@ class SeaCreatures {
                 MYTHIC.code,
                 Regex(SeaCreatureMessages.RAGNAROK_MESSAGE),
                 true,
-                listOf(TYPE_CRIMSON_ISLE_LAVA),
+                types = listOf(TYPE_CRIMSON_ISLE_LAVA),
                 worlds = listOf(WorldUtils.CRIMSON_ISLE),
             ),
             SeaCreatureInfo(
@@ -510,7 +534,8 @@ class SeaCreatures {
                 EPIC.code,
                 Regex(SeaCreatureMessages.VANQUISHER_MESSAGE),
                 true,
-                listOf(TYPE_CRIMSON_ISLE_LAVA),
+                canBeDoubleHooked = false,
+                types = listOf(TYPE_CRIMSON_ISLE_LAVA),
                 worlds = listOf(WorldUtils.CRIMSON_ISLE),
             ),
 
@@ -562,7 +587,7 @@ class SeaCreatures {
                 EPIC.code,
                 Regex(SeaCreatureMessages.LAVA_BLAZE_MESSAGE),
                 false,
-                listOf(TYPE_MAGMA_FIELDS),
+                types = listOf(TYPE_MAGMA_FIELDS),
                 worlds = listOf(WorldUtils.CRYSTAL_HOLLOWS),
             ),
             SeaCreatureInfo(
@@ -570,7 +595,7 @@ class SeaCreatures {
                 EPIC.code,
                 Regex(SeaCreatureMessages.LAVA_PIGMAN_MESSAGE),
                 false,
-                listOf(TYPE_MAGMA_FIELDS),
+                types = listOf(TYPE_MAGMA_FIELDS),
                 worlds = listOf(WorldUtils.CRYSTAL_HOLLOWS),
             ),
 
@@ -715,8 +740,52 @@ class SeaCreatures {
                 RARE.code,
                 Regex(SeaCreatureMessages.STRIDERSURFER_MESSAGE),
                 false,
-                listOf(TYPE_GALATEA_LAVA),
+                types = listOf(TYPE_GALATEA_LAVA),
                 worlds = listOf(WorldUtils.GALATEA),
+            ),
+
+            SeaCreatureInfo(
+                SeaCreatureNames.ATOLL_CROAKER,
+                COMMON.code,
+                Regex(SeaCreatureMessages.ATOLL_CROAKER_MESSAGE),
+                false,
+                worlds = listOf(WorldUtils.LOTUS_ATOLL),
+            ),
+            SeaCreatureInfo(
+                SeaCreatureNames.LOTUS_GUARDIAN,
+                UNCOMMON.code,
+                Regex(SeaCreatureMessages.LOTUS_GUARDIAN_MESSAGE),
+                false,
+                worlds = listOf(WorldUtils.LOTUS_ATOLL),
+            ),
+            SeaCreatureInfo(
+                SeaCreatureNames.GORF,
+                RARE.code,
+                Regex(SeaCreatureMessages.GORF_MESSAGE),
+                false,
+                worlds = listOf(WorldUtils.LOTUS_ATOLL),
+            ),
+            SeaCreatureInfo(
+                SeaCreatureNames.DROWNED_CAPTAIN,
+                EPIC.code,
+                Regex(SeaCreatureMessages.DROWNED_CAPTAIN_MESSAGE),
+                false,
+                worlds = listOf(WorldUtils.LOTUS_ATOLL),
+            ),
+            SeaCreatureInfo(
+                SeaCreatureNames.PUDDLE_JUMPER,
+                LEGENDARY.code,
+                Regex(SeaCreatureMessages.PUDDLE_JUMPER_MESSAGE),
+                true,
+                canBeDoubleHooked = false,
+                worlds = listOf(WorldUtils.LOTUS_ATOLL),
+            ),
+            SeaCreatureInfo(
+                SeaCreatureNames.FROG_PRINCE,
+                MYTHIC.code,
+                Regex(SeaCreatureMessages.FROG_PRINCE_MESSAGE),
+                true,
+                worlds = listOf(WorldUtils.LOTUS_ATOLL),
             ),
         )
 

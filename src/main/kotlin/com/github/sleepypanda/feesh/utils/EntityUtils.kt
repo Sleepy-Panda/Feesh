@@ -156,7 +156,7 @@ object EntityUtils {
         if (plainName.isEmpty() ||
             !plainName.contains("[Lv") ||
             !plainName.contains("]") ||
-            !plainName.contains("❤") ||
+            (!plainName.contains("❤") && !plainName.contains("Puddle Jumper")) || // Jumper has no health indicator
             (includedSeaCreatureNames != null && !includedSeaCreatureNames.any { plainName.contains(it) })
         ) return null
 
@@ -183,9 +183,9 @@ object EntityUtils {
             .trim()
 
         val unformattedShortName = shortName.removeFormatting()
-        val hpMatch = Regex("([0-9.,]+[kKmMbB]?)\\/([0-9.,]+[kKmMbB]?)\\s*❤").find(unformattedShortName) ?: return null
-        val currentHpNumber = CommonUtils.parseShortNumber(hpMatch.groupValues[1])
-        val maxHpNumber = CommonUtils.parseShortNumber(hpMatch.groupValues[2])
+        val hpMatch = Regex("([0-9.,]+[kKmMbB]?)\\/([0-9.,]+[kKmMbB]?)\\s*❤").find(unformattedShortName)
+        val currentHpNumber = if (hpMatch != null) CommonUtils.parseShortNumber(hpMatch.groupValues[1]) else 0.0
+        val maxHpNumber = if (hpMatch != null) CommonUtils.parseShortNumber(hpMatch.groupValues[2]) else 0.0
 
         return SeaCreatureParsedNametagInfo(
             mcEntityId = entity.id,
