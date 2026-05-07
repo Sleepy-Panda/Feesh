@@ -18,10 +18,6 @@ https://hypixel.net/threads/may-6th-lotus-atoll-alpha-testing.6094444/
 - Lotum (frog)
 - Lotus Shard
 
-### Bayou
-
-- Added rain to the Backwater Bayou (52m left)
-
 ### Sea creatures
 
 - Need to migrate old sea creature names without removal from trackers.
@@ -53,6 +49,7 @@ https://hypixel.net/threads/may-6th-lotus-atoll-alpha-testing.6094444/
 - Pumpkin, Ench Pumpkin, Polished Pumpkin
 - Ench Ink Sac, Ink Splat (RARE, 25K)
 - You caught x2 Inkling Shards!
+- Check item IDs for Spooky Hook and Inkling Shard after release
 
 ## Other
 
