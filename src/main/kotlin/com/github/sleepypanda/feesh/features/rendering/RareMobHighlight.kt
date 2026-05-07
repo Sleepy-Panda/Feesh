@@ -56,6 +56,8 @@ object RareMobHighlight {
         val scInfo = SeaCreatures.allSeaCreatures.find { it.name == cleanName }
 
         val mobEntityShift = when (cleanName) {
+            HighlightableSeaCreatureTypes.DROWNED_CAPTAIN.displayName -> 6 // Drowned entity shifted from its armor stand
+            HighlightableSeaCreatureTypes.PUDDLE_JUMPER.displayName -> 2 // Frog entity shifted from its armor stand
             HighlightableSeaCreatureTypes.REINDRAKE.displayName -> 8 // Ender Dragon entity shifted from its armor stand
             HighlightableSeaCreatureTypes.TITANOBOA.displayName -> 43 // It consists of chain of mixed slimes and armor stands, and zombie on 45th position
             else -> 1
