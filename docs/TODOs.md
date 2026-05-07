@@ -27,36 +27,32 @@ https://hypixel.net/threads/may-6th-lotus-atoll-alpha-testing.6094444/
   - You caught x2 Inkling Shards!
 - Manta Ray (EPIC Water Hotspot Sea Creature)
   - Add to default alert/highlight/HP?
-- Volcanic Snail (UNCOMMON Lava Hotspot Sea Creature)
-  - Seared Escargot (Rare, 25K)
-- Magma Pillar (EPIC Lava Hotspot Sea Creature)
-  - Magmarizer VI - 0.05%
 
 ### Drops
 
 - Need to check RARE DROP! presence to understand if some alerts are broken.
-- Need to migrate old item names, without removal from trackers.
 - Add new items from trophy frogging
-- Titanoboa - Snake Eyes (1 mil, Legendary)
-- Magmarizer V - Magma Pillar Sea Creature drop
-- Check Alligator Shard to be in drop pool (from salt)
-- Luck of the Sea VI probably removed
-- Renamed Phantom Hook to Spooky Hook
 - Adjusted all Bayou Sea Creature stats and drop chances - ????
 - Adjusted the drop tables, bestiaries, and stats of all Hotspot and Event Sea Creatures
-- Removed RARE Fishing EXP Boost from Sea Leech
-- Removed EPIC Fishing EXP Boost from Sea Leech, Deep Sea Protector, Water Hydra
-- Pumpkin, Ench Pumpkin, Polished Pumpkin
-- Ench Ink Sac, Ink Splat (RARE, 25K)
-- You caught x2 Inkling Shards!
 - Check item IDs for Spooky Hook and Inkling Shard after release
 
 ## Other
 
 - Junker Joel has bigger shop
-- Odgers gui named Trophy Fish
-- Trophy Frogs
-- Prevent picking up drops like from Odger
+
+WISE! You've been granted +1⛃ Treasure Chance for 30m while on the Lotus Atoll!
+WISE! You've been granted +2.5α Sea Creature Chance for 30m while on the Lotus Atoll!
+WISE! You've been granted +10☂ Fishing Speed for 30m while on the Lotus Atoll!
+
+You donated 9 Trophy Frogs and received Silver Lotus x3 and Lotus x304!
+You donated 1 Trophy Frog and received Lotus x8!
+
+RIBBIT! [MVP+] _etaF caught their first DIAMOND Common Frog!
+♔ TROPHY FROG! You caught a Common Frog BRONZE!
+♔ TROPHY FROG! You caught a Puddle Jumper SILVER!
+NEW DISCOVERY: Blessed Frog BRONZE
+NEW DISCOVERY: Common Frog BRONZE
+NEW DISCOVERY: Common Frog SILVER
 
 SCHLURP! The Hotspot Tonic Mixin grants you effects for 86h 24m! They will pause if your God Potion expires.
 SCHLURP! The effects of the Celestial Mason Jar have been extended by 86h 24m! They will pause if your God Potion expires.

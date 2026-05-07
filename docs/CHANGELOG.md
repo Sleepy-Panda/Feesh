@@ -4,11 +4,9 @@ Released on: ???
 
 ## Features
 
-- Lotus Atoll features:
-  - Added new Atoll sea creatures to all existing functionalities.
-  - Added Atoll sea creatures drops to profit tracker.
-  - Enabled Hotspot functionalities.
-- Added new Hotspot creatures to all existing functionalities.
+- Enabled some features on Lotus Atoll features.
+- Added new Lotus Atoll & Hotspot creatures to all existing functionalities.
+- Added new drops to Fishing profit tracker.
 - Enabled Rain timer/alert functionality for Bayou and Lotus Atoll.
 - Added selection of Auction prices API source - you can choose between LBIN or 7-days average LBIN.
 - Extended list of sea creatures you can select for alert/pchat message/highlight/HP tracker:
