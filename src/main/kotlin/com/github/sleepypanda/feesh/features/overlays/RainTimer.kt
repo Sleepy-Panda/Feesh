@@ -51,7 +51,8 @@ object RainTimer {
         return (worldName == WorldUtils.PARK && areaName == "Birch Park") ||
             (worldName == WorldUtils.SPIDERS_DEN && areaName == "Spider's Den") ||
             worldName == WorldUtils.JERRY_WORKSHOP ||
-            worldName == WorldUtils.LOTUS_ATOLL
+            worldName == WorldUtils.LOTUS_ATOLL ||
+            worldName == WorldUtils.BACKWATER_BAYOU
     }
 
 
@@ -107,7 +108,7 @@ object RainTimer {
                 eventName = "Rain"
                 isActiveEvent = true
             }
-        } else if (worldName == WorldUtils.SPIDERS_DEN || worldName == WorldUtils.LOTUS_ATOLL) {
+        } else if (worldName == WorldUtils.SPIDERS_DEN || worldName == WorldUtils.LOTUS_ATOLL || worldName == WorldUtils.BACKWATER_BAYOU) {
             val thunderValue = TabListUtils.getLineAfter("Thunder:").trim()
             val rainValue = TabListUtils.getLineAfter("Rain:").trim()
             val raw = when {
@@ -149,7 +150,7 @@ object RainTimer {
         val label = eventName ?: "Rain"
         val worldName = WorldUtils.getWorldName()
         val color = if (isActiveEvent && rainSecondsLeft!! in 0..SECONDS_ALERT_THRESHOLD) RED else WHITE
-        val timePart = if ((worldName == WorldUtils.SPIDERS_DEN || worldName == WorldUtils.LOTUS_ATOLL) && !isActiveEvent) "${GRAY}starts in ${WHITE}${rainTimer}" else "${GRAY}ends in ${color}${rainTimer}"
+        val timePart = if ((worldName == WorldUtils.SPIDERS_DEN || worldName == WorldUtils.LOTUS_ATOLL || worldName == WorldUtils.BACKWATER_BAYOU) && !isActiveEvent) "${GRAY}starts in ${WHITE}${rainTimer}" else "${GRAY}ends in ${color}${rainTimer}"
         gui.setLines(listOf("${BLUE}${label} $timePart"))
     }
 
