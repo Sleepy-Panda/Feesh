@@ -10,13 +10,9 @@ https://hypixel.net/threads/may-6th-lotus-atoll-alpha-testing.6094444/
 
 ### Atoll
 
-- Volcanic Snail highlight
+- Volcanic Snail highlight broken
 - [NPC] Puddle Jumper: Let's get ready for a ride!
 - [NPC] Puddle Jumper: Wow! You caught me!
-
-- Treasures/trophy frogs?
-- Lotum (frog)
-- Lotus Shard
 
 ### Sea creatures
 
@@ -25,8 +21,7 @@ https://hypixel.net/threads/may-6th-lotus-atoll-alpha-testing.6094444/
   - ???
 - Night Squid => Inkling (UNCOMMON Water Hotspot Sea Creature)
   - You caught x2 Inkling Shards!
-- Manta Ray (EPIC Water Hotspot Sea Creature)
-  - Add to default alert/highlight/HP?
+  - Make Shards trackable with both names.
 
 ### Drops
 
@@ -50,9 +45,6 @@ You donated 1 Trophy Frog and received Lotus x8!
 RIBBIT! [MVP+] _etaF caught their first DIAMOND Common Frog!
 ♔ TROPHY FROG! You caught a Common Frog BRONZE!
 ♔ TROPHY FROG! You caught a Puddle Jumper SILVER!
-NEW DISCOVERY: Blessed Frog BRONZE
-NEW DISCOVERY: Common Frog BRONZE
-NEW DISCOVERY: Common Frog SILVER
 
 SCHLURP! The Hotspot Tonic Mixin grants you effects for 86h 24m! They will pause if your God Potion expires.
 SCHLURP! The effects of the Celestial Mason Jar have been extended by 86h 24m! They will pause if your God Potion expires.
