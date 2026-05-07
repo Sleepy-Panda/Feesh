@@ -16,6 +16,7 @@ import com.github.sleepypanda.feesh.features.alerts.FishingBagDisabledAlert
 import com.github.sleepypanda.feesh.features.alerts.RareDropAlert
 import com.github.sleepypanda.feesh.features.alerts.WormTheFishCaughtAlert
 import com.github.sleepypanda.feesh.features.alerts.NessieDestinationAlert
+import com.github.sleepypanda.feesh.features.alerts.TrophyFrogDiscoveredAlert
 import com.github.sleepypanda.feesh.features.chat.RareCatchMessage
 import com.github.sleepypanda.feesh.features.chat.RareDropMessage
 import com.github.sleepypanda.feesh.features.chat.RareCatchAllChatMessage
@@ -168,6 +169,7 @@ class FeeshMod : ClientModInitializer {
         FishingBagDisabledAlert.init()
         WormTheFishCaughtAlert.init()
         NessieDestinationAlert.init()
+        TrophyFrogDiscoveredAlert.init()
 
         // Chat
         RareCatchMessage.init()

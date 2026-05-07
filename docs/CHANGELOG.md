@@ -8,6 +8,7 @@ Released on: ???
 - Added new Lotus Atoll & Hotspot creatures to all existing functionalities.
 - Added new drops to Fishing profit tracker.
 - Enabled Rain timer/alert functionality for Bayou and Lotus Atoll.
+- Added settings for alert & pchat message when a new Trophy Frog discovered.
 - Added selection of Auction prices API source - you can choose between LBIN or 7-days average LBIN.
 - Extended list of sea creatures you can select for alert/pchat message/highlight/HP tracker:
   - Basically now you can toggle those functionalities for any sea creature.
