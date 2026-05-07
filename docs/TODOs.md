@@ -10,7 +10,7 @@ https://hypixel.net/threads/may-6th-lotus-atoll-alpha-testing.6094444/
 
 ### Atoll
 
-- Highlight for Drowned Captain, Puddler, Prince not working
+- Volcanic Snail highlight
 - [NPC] Puddle Jumper: Let's get ready for a ride!
 - [NPC] Puddle Jumper: Wow! You caught me!
 
@@ -28,23 +28,13 @@ https://hypixel.net/threads/may-6th-lotus-atoll-alpha-testing.6094444/
 - Sea Guardian => Jumpin' Jack (COMMON Spooky Sea Creature)
   - ???
 - Night Squid => Inkling (UNCOMMON Water Hotspot Sea Creature)
-  - You get an inkling that you've caught... an Inkling!
-  - Check Shard Name, can be blackholed?
-  - CAUGHT! You cocooned a Inkling!
+  - You caught x2 Inkling Shards!
 - Manta Ray (EPIC Water Hotspot Sea Creature)
-  - A majestic creature rises from the water. It's a Manta Ray.
   - Add to default alert/highlight/HP?
 - Volcanic Snail (UNCOMMON Lava Hotspot Sea Creature)
-  - You feel a burning sensation as you reel in a Volcanic Snail!
   - Seared Escargot (Rare, 25K)
 - Magma Pillar (EPIC Lava Hotspot Sea Creature)
-  - A Magma Pillar rises from the lava. EPIC, 1,25M HP
   - Magmarizer VI - 0.05%
-- Scarecrow from COMMON -> UNCOMMON
-- Grim Reaper from LEGENDARY -> MYTHIC
-- Reduced Thunder rarity from MYTHIC -> LEGENDARY
-  - Change color in Isle tracker
-- SLudge is EPIC
 
 ### Drops
 
@@ -62,6 +52,7 @@ https://hypixel.net/threads/may-6th-lotus-atoll-alpha-testing.6094444/
 - Removed EPIC Fishing EXP Boost from Sea Leech, Deep Sea Protector, Water Hydra
 - Pumpkin, Ench Pumpkin, Polished Pumpkin
 - Ench Ink Sac, Ink Splat (RARE, 25K)
+- You caught x2 Inkling Shards!
 
 ## Other
 
@@ -92,7 +83,6 @@ Newly released - https://hypixel.net/threads/hypixel-skyblock-0-24-5-assorted-qo
 - Would also be cool to have a double hook statistic for the total sc counter so you can view ur avg. dhc and how good/bad it is compared to ur actual dhc
 - Improve link to changelog in settings, and update announcement
 - Work on hotspot sounds to make them more unique
-- Some people need other sea creatures alerts, e.g. Ent or Night Squid
 - Deployable in mineshaft
 - 1.21 Fishing Hook armorstand
 - Sometimes current world&zone is detected wrongly

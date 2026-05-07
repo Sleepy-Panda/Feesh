@@ -21,6 +21,14 @@ object SeaCreatureNames {
     const val DEEP_SEA_PROTECTOR = "Deep Sea Protector"
     const val AGARIMOO = "Agarimoo"
 
+    // WATER HOTSPOTS
+    const val INKLING = "Inkling"
+    const val MANTA_RAY = "Manta Ray"
+    const val FROG_MAN = "Frog Man"
+    const val SNAPPING_TURTLE = "Snapping Turtle"
+    const val BLUE_RINGED_OCTOPUS = "Blue Ringed Octopus"
+    const val WIKI_TIKI = "Wiki Tiki"
+
     // FISHING FESTIVAL
     const val GREAT_WHITE_SHARK = "Great White Shark"
     const val NURSE_SHARK = "Nurse Shark"
@@ -52,6 +60,8 @@ object SeaCreatureNames {
     const val LAVA_FLAME = "Lava Flame"
     const val FIRE_EEL = "Fire Eel"
     const val TAURUS = "Taurus"
+    const val VOLCANIC_SNAIL = "Volcanic Snail"
+    const val MAGMA_PILLAR = "Magma Pillar"
     const val FIERY_SCUTTLER = "Fiery Scuttler"
     const val THUNDER = "Thunder"
     const val LORD_JAWBUS = "Lord Jawbus"
@@ -77,16 +87,12 @@ object SeaCreatureNames {
     const val BLOATED_MITHRIL_GRUBBER = "Bloated Mithril Grubber"
 
     // BACKWATER BAYOU
-    const val FROG_MAN = "Frog Man"
     const val TRASH_GOBBLER = "Trash Gobbler"
     const val DUMPSTER_DIVER = "Dumpster Diver"
     const val BANSHEE = "Banshee"
-    const val SNAPPING_TURTLE = "Snapping Turtle"
     const val BAYOU_SLUDGE = "Bayou Sludge"
     const val ALLIGATOR = "Alligator"
     const val TITANOBOA = "Titanoboa"
-    const val BLUE_RINGED_OCTOPUS = "Blue Ringed Octopus"
-    const val WIKI_TIKI = "Wiki Tiki"
 
     // GALATEA
     const val NESSIE = "Nessie"
@@ -126,6 +132,14 @@ object SeaCreatureMessages {
     const val DEEP_SEA_PROTECTOR_MESSAGE = "^You have awoken the Deep Sea Protector, prepare for a battle\\!$"
     const val AGARIMOO_MESSAGE = "^Your Chumcap Bucket trembles, it\\'s an Agarimoo\\.$"
 
+    // WATER HOTSPOTS
+    const val INKLING_MESSAGE = "^You get an inkling that you\\'ve caught\\.\\.\\. an Inkling!$"
+    const val MANTA_RAY_MESSAGE = "^A majestic creature rises from the water\\. It\\'s a Manta Ray\\.$"
+    const val FROG_MAN_MESSAGE = "^Is it a frog\\? Is it a man\\? Well, yes, sorta, IT\\'S FROG MAN\\!\\!\\!\\!\\!\\!$"
+    const val SNAPPING_TURTLE_MESSAGE = "^A Snapping Turtle is coming your way, and it\\'s ANGRY\\!$"
+    const val BLUE_RINGED_OCTOPUS_MESSAGE = "^A garish set of tentacles arise\\. It\\'s a Blue Ringed Octopus\\!$"
+    const val WIKI_TIKI_MESSAGE = "^The water bubbles and froths\\. A massive form emerges- you have disturbed the Wiki Tiki\\! You shall pay the price\\.$"
+
     // FISHING FESTIVAL
     const val GREAT_WHITE_SHARK_MESSAGE = "^Hide no longer, a Great White Shark has tracked your scent and thirsts for your blood\\!$"
     const val NURSE_SHARK_MESSAGE = "^A tiny fin emerges from the water, you\\'ve caught a Nurse Shark\\.$"
@@ -157,6 +171,8 @@ object SeaCreatureMessages {
     const val LAVA_FLAME_MESSAGE = "^A Lava Flame flies out from beneath the lava\\.$"
     const val FIRE_EEL_MESSAGE = "^A Fire Eel slithers out from the depths\\.$"
     const val TAURUS_MESSAGE = "^Taurus and his steed emerge\\.$"
+    const val VOLCANIC_SNAIL_MESSAGE = "^You feel a burning sensation as you reel in a Volcanic Snail!$"
+    const val MAGMA_PILLAR_MESSAGE = "^A Magma Pillar rises from the lava\\.$"
     const val FIERY_SCUTTLER_MESSAGE = "^A Fiery Scuttler inconspicuously waddles up to you, friends in tow\\.$"
     const val THUNDER_MESSAGE = "^You hear a massive rumble as Thunder emerges\\.$"
     const val LORD_JAWBUS_MESSAGE = "^You have angered a legendary creature\\.\\.\\. Lord Jawbus has arrived\\.$"
@@ -184,16 +200,12 @@ object SeaCreatureMessages {
     const val BLOATED_MITHRIL_GRUBBER_MESSAGE = "^A leech of the mines surfaces\\.\\.\\. you\\'ve caught a Bloated Mithril Grubber\\.$"
 
     // BACKWATER BAYOU
-    const val FROG_MAN_MESSAGE = "^Is it a frog\\? Is it a man\\? Well, yes, sorta, IT\\'S FROG MAN\\!\\!\\!\\!\\!\\!$"
     const val TRASH_GOBBLER_MESSAGE = "^The Trash Gobbler is hungry for you\\!$"
     const val DUMPSTER_DIVER_MESSAGE = "^A Dumpster Diver has emerged from the swamp\\!$"
     const val BANSHEE_MESSAGE = "^The desolate wail of a Banshee breaks the silence\\.$"
-    const val SNAPPING_TURTLE_MESSAGE = "^A Snapping Turtle is coming your way, and it\\'s ANGRY\\!$"
     const val BAYOU_SLUDGE_MESSAGE = "^A swampy mass of slime emerges, the Bayou Sludge\\!$"
     const val ALLIGATOR_MESSAGE = "^A long snout breaks the surface of the water\\. It\\'s an Alligator\\!$"
     const val TITANOBOA_MESSAGE = "^A massive Titanoboa surfaces\\. Its body stretches as far as the eye can see\\.$"
-    const val BLUE_RINGED_OCTOPUS_MESSAGE = "^A garish set of tentacles arise\\. It\\'s a Blue Ringed Octopus\\!$"
-    const val WIKI_TIKI_MESSAGE = "^The water bubbles and froths\\. A massive form emerges- you have disturbed the Wiki Tiki\\! You shall pay the price\\.$"
 
     // GALATEA
     const val NESSIE_MESSAGE = "^You\\'ve caused a disturbance in the loch\\. Could it be\\.\\.\\. Nessie\\?$"
@@ -233,6 +245,7 @@ class SeaCreatures {
         const val TYPE_MAGMA_FIELDS = "MAGMA_FIELDS"
 
         val allSeaCreatures = listOf(
+            // WATER
             SeaCreatureInfo(
                 SeaCreatureNames.WATER_HYDRA,
                 LEGENDARY.code,
@@ -318,6 +331,45 @@ class SeaCreatures {
                 false,
             ),
 
+            // WATER HOTSPOTS
+            SeaCreatureInfo(
+                SeaCreatureNames.INKLING,
+                UNCOMMON.code,
+                Regex(SeaCreatureMessages.INKLING_MESSAGE),
+                false,
+            ),
+            SeaCreatureInfo(
+                SeaCreatureNames.MANTA_RAY,
+                EPIC.code,
+                Regex(SeaCreatureMessages.MANTA_RAY_MESSAGE),
+                false,
+            ),
+            SeaCreatureInfo(
+                SeaCreatureNames.FROG_MAN,
+                COMMON.code,
+                Regex(SeaCreatureMessages.FROG_MAN_MESSAGE),
+                false,
+            ),
+            SeaCreatureInfo(
+                SeaCreatureNames.SNAPPING_TURTLE,
+                RARE.code,
+                Regex(SeaCreatureMessages.SNAPPING_TURTLE_MESSAGE),
+                false,
+            ),
+            SeaCreatureInfo(
+                SeaCreatureNames.BLUE_RINGED_OCTOPUS,
+                LEGENDARY.code,
+                Regex(SeaCreatureMessages.BLUE_RINGED_OCTOPUS_MESSAGE),
+                true,
+            ),
+            SeaCreatureInfo(
+                SeaCreatureNames.WIKI_TIKI,
+                MYTHIC.code,
+                Regex(SeaCreatureMessages.WIKI_TIKI_MESSAGE),
+                true,
+            ),
+
+            // FISHING FESTIVAL
             SeaCreatureInfo(
                 SeaCreatureNames.GREAT_WHITE_SHARK,
                 LEGENDARY.code,
@@ -343,6 +395,7 @@ class SeaCreatures {
                 false,
             ),
 
+            // WINTER
             SeaCreatureInfo(
                 SeaCreatureNames.REINDRAKE,
                 MYTHIC.code,
@@ -386,6 +439,7 @@ class SeaCreatures {
                 worlds = listOf(WorldUtils.JERRY_WORKSHOP),
             ),
 
+            // SPOOKY
             SeaCreatureInfo(
                 SeaCreatureNames.PHANTOM_FISHER,
                 LEGENDARY.code,
@@ -394,13 +448,13 @@ class SeaCreatures {
             ),
             SeaCreatureInfo(
                 SeaCreatureNames.GRIM_REAPER,
-                LEGENDARY.code,
+                MYTHIC.code,
                 Regex(SeaCreatureMessages.GRIM_REAPER_MESSAGE),
                 true,
             ),
             SeaCreatureInfo(
                 SeaCreatureNames.SCARECROW,
-                COMMON.code,
+                UNCOMMON.code,
                 Regex(SeaCreatureMessages.SCARECROW_MESSAGE),
                 false,
             ),
@@ -417,6 +471,7 @@ class SeaCreatures {
                 false,
             ),
 
+            // CRIMSON ISLE
             SeaCreatureInfo(
                 SeaCreatureNames.FRIED_CHICKEN,
                 COMMON.code,
@@ -490,6 +545,22 @@ class SeaCreatures {
                 worlds = listOf(WorldUtils.CRIMSON_ISLE),
             ),
             SeaCreatureInfo(
+                SeaCreatureNames.VOLCANIC_SNAIL,
+                UNCOMMON.code,
+                Regex(SeaCreatureMessages.VOLCANIC_SNAIL_MESSAGE),
+                false,
+                types = listOf(TYPE_CRIMSON_ISLE_LAVA),
+                worlds = listOf(WorldUtils.CRIMSON_ISLE),
+            ),
+            SeaCreatureInfo(
+                SeaCreatureNames.MAGMA_PILLAR,
+                EPIC.code,
+                Regex(SeaCreatureMessages.MAGMA_PILLAR_MESSAGE),
+                false,
+                types = listOf(TYPE_CRIMSON_ISLE_LAVA),
+                worlds = listOf(WorldUtils.CRIMSON_ISLE),
+            ),
+            SeaCreatureInfo(
                 SeaCreatureNames.FIERY_SCUTTLER,
                 LEGENDARY.code,
                 Regex(SeaCreatureMessages.FIERY_SCUTTLER_MESSAGE),
@@ -499,7 +570,7 @@ class SeaCreatures {
             ),
             SeaCreatureInfo(
                 SeaCreatureNames.THUNDER,
-                MYTHIC.code,
+                LEGENDARY.code,
                 Regex(SeaCreatureMessages.THUNDER_MESSAGE),
                 true,
                 types = listOf(TYPE_CRIMSON_ISLE_LAVA),
@@ -554,6 +625,7 @@ class SeaCreatures {
                 worlds = listOf(WorldUtils.FARMING_ISLANDS),
             ),
 
+            // CRYSTAL HOLLOWS
             SeaCreatureInfo(
                 SeaCreatureNames.ABYSSAL_MINER,
                 LEGENDARY.code,
@@ -599,6 +671,7 @@ class SeaCreatures {
                 worlds = listOf(WorldUtils.CRYSTAL_HOLLOWS),
             ),
 
+            // ABANDONED QUARRY
             SeaCreatureInfo(
                 SeaCreatureNames.SMALL_MITHRIL_GRUBBER,
                 UNCOMMON.code,
@@ -628,12 +701,7 @@ class SeaCreatures {
                 worlds = listOf(WorldUtils.DWARVEN_MINES),
             ),
 
-            SeaCreatureInfo(
-                SeaCreatureNames.FROG_MAN,
-                COMMON.code,
-                Regex(SeaCreatureMessages.FROG_MAN_MESSAGE),
-                false,
-            ),
+            // BACKWATER BAYOU
             SeaCreatureInfo(
                 SeaCreatureNames.TRASH_GOBBLER,
                 COMMON.code,
@@ -654,14 +722,8 @@ class SeaCreatures {
                 worlds = listOf(WorldUtils.BACKWATER_BAYOU),
             ),
             SeaCreatureInfo(
-                SeaCreatureNames.SNAPPING_TURTLE,
-                RARE.code,
-                Regex(SeaCreatureMessages.SNAPPING_TURTLE_MESSAGE),
-                false,
-            ),
-            SeaCreatureInfo(
                 SeaCreatureNames.BAYOU_SLUDGE,
-                RARE.code,
+                EPIC.code,
                 Regex(SeaCreatureMessages.BAYOU_SLUDGE_MESSAGE),
                 false,
                 worlds = listOf(WorldUtils.BACKWATER_BAYOU),
@@ -674,18 +736,6 @@ class SeaCreatures {
                 worlds = listOf(WorldUtils.BACKWATER_BAYOU),
             ),
             SeaCreatureInfo(
-                SeaCreatureNames.BLUE_RINGED_OCTOPUS,
-                LEGENDARY.code,
-                Regex(SeaCreatureMessages.BLUE_RINGED_OCTOPUS_MESSAGE),
-                true,
-            ),
-            SeaCreatureInfo(
-                SeaCreatureNames.WIKI_TIKI,
-                MYTHIC.code,
-                Regex(SeaCreatureMessages.WIKI_TIKI_MESSAGE),
-                true,
-            ),
-            SeaCreatureInfo(
                 SeaCreatureNames.TITANOBOA,
                 MYTHIC.code,
                 Regex(SeaCreatureMessages.TITANOBOA_MESSAGE),
@@ -693,6 +743,7 @@ class SeaCreatures {
                 worlds = listOf(WorldUtils.BACKWATER_BAYOU),
             ),
 
+            // GALATEA
             SeaCreatureInfo(
                 SeaCreatureNames.NESSIE,
                 MYTHIC.code,
@@ -744,6 +795,7 @@ class SeaCreatures {
                 worlds = listOf(WorldUtils.GALATEA),
             ),
 
+            // LOTUS ATOLL
             SeaCreatureInfo(
                 SeaCreatureNames.ATOLL_CROAKER,
                 COMMON.code,
