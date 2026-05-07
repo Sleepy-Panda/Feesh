@@ -35,16 +35,8 @@ https://hypixel.net/threads/may-6th-lotus-atoll-alpha-testing.6094444/
 
 - Junker Joel has bigger shop
 
-WISE! You've been granted +1⛃ Treasure Chance for 30m while on the Lotus Atoll!
-WISE! You've been granted +2.5α Sea Creature Chance for 30m while on the Lotus Atoll!
-WISE! You've been granted +10☂ Fishing Speed for 30m while on the Lotus Atoll!
-
 You donated 9 Trophy Frogs and received Silver Lotus x3 and Lotus x304!
 You donated 1 Trophy Frog and received Lotus x8!
-
-RIBBIT! [MVP+] _etaF caught their first DIAMOND Common Frog!
-♔ TROPHY FROG! You caught a Common Frog BRONZE!
-♔ TROPHY FROG! You caught a Puddle Jumper SILVER!
 
 SCHLURP! The Hotspot Tonic Mixin grants you effects for 86h 24m! They will pause if your God Potion expires.
 SCHLURP! The effects of the Celestial Mason Jar have been extended by 86h 24m! They will pause if your God Potion expires.

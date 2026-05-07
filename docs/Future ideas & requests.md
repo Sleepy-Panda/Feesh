@@ -7,19 +7,16 @@
 - When there is no fishing rod in hand, some trackers can be hidden (optional setting).
 - Pause button pauses all widget's timers so you dont have to click each widget's button individually. Same thing that keybind does.
 
-## Sea creature alerts
-
-- Could be triggered for any sea creature, not only for rares
-
 ## Barn fishing timer
 
-- Detect personal cap before it actually happened
+- Detect personal cap before it actually happened. Currently there is cap 10 SC.
 - Change overlay/alerting so it can rely on own creatures
-- Split entities count as 1 (e.g. 3 Baby Magma Slugs give 1 to cap)
+- Split entities count as 1 (e.g. 3 Baby Magma Slugs give 1 to cap). How to detect ownership?
 
 ## Sea creature HP tracker
 
 - Add custom Ragnarok immunity timer - when it goes below 50% hp (e.g. 62.4). Max HP is 125 mil, or 250 on Derpy. It takes around 12 seconds, but if server is laggy it takes unpredictable time.
+- Add custom immunity logic for Puddle Jumper.
 - Add owner's name for sea creatures (might be more tricky for cocooned).
 
 ## SC tracker
@@ -28,12 +25,12 @@
 
 ## Fishing profit tracker
 
+- Track Blizzard in Bottle, Moby Duck, bought rain, consumed bait (exclude from profits).
 - Add levelled Magma Necklaces as some people level them for profits. Vanquished Magma Necklace upgraded to +10☠! Vanquished Magma Necklace upgraded to +1☠!
 - Propose compacting or selling items like raw fish going to the inventory (full sack).
 - Use drop # in the chat message based on current profit tracker.
 - Option to render icons instead of item names
 - Track scavenged coins in Fishing Profit Tracker
-- Track Ice Essence drop from mobs in Fishing Profit Tracker
 - Track pet level progress in coins while it's not maxed
 - Find out price calculation for Kuudra Keys
 - Develop calculation for Level 100 pets on Ironman. So far I'm lazy to store NPC price for each existing pet in the module
@@ -42,13 +39,26 @@
 - [Bug] Some items are tracked by Fishing Profit Tracker when dropped, but drop was prevented by SB settings (basically it drops and picks up again).
 - [Bug] Trading with other players adds items to the profit trackers.
 
+## Trophy
+
+Some highlight / icon rendering to detect missing trophies/rarities in Odger and Trophy Frogs menu.
+
+Sample messages:
+
+RIBBIT! [MVP+] _etaF caught their first DIAMOND Common Frog!
+♔ TROPHY FROG! You caught a Common Frog BRONZE!
+♔ TROPHY FROG! You caught a Puddle Jumper SILVER!
+
 ## Deployables
 
-- See other players' Black Holes around.
-  Context: About the Black Hole list for parties: my idea was simply to show which players have already placed a Black Hole. When several Black Holes are stacked in the same spot, it can be a bit hard to visually tell who has placed one and who hasn’t. The main reason I thought of this is that some players still use vanilla or other third-party clients (such as BLC) and might not have access to this mod. In those situations, having a simple list can help party members coordinate and gently remind each other if needed.
-
-- Allow viewing other players deployables in the overlay. Does someone need it?
 - Overflux and its variations
+
+## Consumables
+
+Buffs from Lotus Atoll cave donations:
+WISE! You've been granted +1⛃ Treasure Chance for 30m while on the Lotus Atoll!
+WISE! You've been granted +2.5α Sea Creature Chance for 30m while on the Lotus Atoll!
+WISE! You've been granted +10☂ Fishing Speed for 30m while on the Lotus Atoll!
 
 ## Party commands
 
@@ -131,6 +141,7 @@ It might be not 100% correct due to how Hypixel API works, the person who reques
 
 ## Baits
 
+- SB added the functionality of your current bait being slown in slot #9 while fishing
 - Bait changed alert
 - No bait used alert
 - Track baits cost in Fishing profit tracker
