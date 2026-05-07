@@ -2805,7 +2805,7 @@ class FishingProfitDrops {
                 itemName = "Sea Frog BRONZE",
                 itemDisplayName = "${RARE}Sea Frog ${DARK_GRAY}${BOLD}BRONZE",
                 npcPrice = null,
-                amountOfLotus = 0, // ???
+                amountOfLotus = 40,
             ),
             FishingProfitDropInfo(
                 itemId = "SEA_FROG_SILVER",
@@ -2833,21 +2833,21 @@ class FishingProfitDrops {
                 itemName = "Bullfrog BRONZE",
                 itemDisplayName = "${RARE}Bullfrog ${DARK_GRAY}${BOLD}BRONZE",
                 npcPrice = null,
-                amountOfLotus = 0, // ???
+                amountOfLotus = 40,
             ),
             FishingProfitDropInfo(
                 itemId = "BULLFROG_SILVER",
                 itemName = "Bullfrog SILVER",
                 itemDisplayName = "${RARE}Bullfrog ${GRAY}${BOLD}SILVER",
                 npcPrice = null,
-                amountOfLotus = 0, // ???
+                amountOfLotus = 80,
             ),
             FishingProfitDropInfo(
                 itemId = "BULLFROG_GOLD",
                 itemName = "Bullfrog GOLD",
                 itemDisplayName = "${RARE}Bullfrog ${GOLD}${BOLD}GOLD",
                 npcPrice = null,
-                amountOfLotus = 0, // ???
+                amountOfLotus = 160,
             ),
             FishingProfitDropInfo(
                 itemId = "BULLFROG_DIAMOND",
@@ -2861,14 +2861,14 @@ class FishingProfitDrops {
                 itemName = "Tree Frog BRONZE",
                 itemDisplayName = "${EPIC}Tree Frog ${DARK_GRAY}${BOLD}BRONZE",
                 npcPrice = null,
-                amountOfLotus = 0, // ???
+                amountOfLotus = 80,
             ),
             FishingProfitDropInfo(
                 itemId = "TREE_FROG_SILVER",
                 itemName = "Tree Frog SILVER",
                 itemDisplayName = "${EPIC}Tree Frog ${GRAY}${BOLD}SILVER",
                 npcPrice = null,
-                amountOfLotus = 0, // ???
+                amountOfLotus = 160,
             ),
             FishingProfitDropInfo(
                 itemId = "TREE_FROG_GOLD",
@@ -2889,7 +2889,7 @@ class FishingProfitDrops {
                 itemName = "Cave Frog BRONZE",
                 itemDisplayName = "${EPIC}Cave Frog ${DARK_GRAY}${BOLD}BRONZE",
                 npcPrice = null,
-                amountOfLotus = 0, // ???
+                amountOfLotus = 80,
             ),
             FishingProfitDropInfo(
                 itemId = "CAVE_FROG_SILVER",
@@ -2917,7 +2917,7 @@ class FishingProfitDrops {
                 itemName = "Highlands Frog BRONZE",
                 itemDisplayName = "${EPIC}Highlands Frog ${DARK_GRAY}${BOLD}BRONZE",
                 npcPrice = null,
-                amountOfLotus = 0, // ???
+                amountOfLotus = 80,
             ),
             FishingProfitDropInfo(
                 itemId = "HIGHLANDS_FROG_SILVER",
