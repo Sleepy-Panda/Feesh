@@ -10,26 +10,11 @@ https://hypixel.net/threads/may-6th-lotus-atoll-alpha-testing.6094444/
 
 ### Atoll
 
-Register new fishing world - Lotus Atoll
-- Has hotspots? YES
-- Has rain, 19m left
-- Prevent picking up drops like from Odger
-- New sea creatures and drops
-  - An inquisitive Atoll Croaker takes the bait! COMMON
-  - Lotus
-  - A Lotus Guardian emerges, ready to protect the Atoll. UNCOMMON
-  - Lotus, Frogcoin (Uncommon, no npc)
-  - A Drowned Captain takes hold of your bobber! EPIC
-  - Ench Gold Ingot, Silver Lotus (Rare, 1200), Ench Gold Block, Unlucky Doubloon (EPIC 1% 100k coins)
-  - RARE DROP! Unlucky Doubloon (+153 ✯ Magic Find)
-  - What even is that?! A... gorF? RARE
-  - eroC enotS egrofeR (RARE, 1%, 25K)
-  - RARE DROP! eroC enotS egrofeR (+192 ✯ Magic Find)
-  - A Puddle Jumper is preparing for liftoff—cast your rod into it and hold on tight! LEG, No DH
-  - Gold Lotus (Epic, 96K), Epic, 0.5%; PUDDLE JUMPER BRONZE
-  - 
-  - Add to MYTHIC announce
+- Highlight for Drowned Captain, Puddler, Prince not working
+- [NPC] Puddle Jumper: Let's get ready for a ride!
+- [NPC] Puddle Jumper: Wow! You caught me!
 
+- Treasures/trophy frogs?
 - Lotum (frog)
 - Lotus Shard
 
@@ -41,8 +26,10 @@ Register new fishing world - Lotus Atoll
 
 - Need to migrate old sea creature names without removal from trackers.
 - Sea Guardian => Jumpin' Jack (COMMON Spooky Sea Creature)
+  - ???
 - Night Squid => Inkling (UNCOMMON Water Hotspot Sea Creature)
   - You get an inkling that you've caught... an Inkling!
+  - Check Shard Name, can be blackholed?
   - CAUGHT! You cocooned a Inkling!
 - Manta Ray (EPIC Water Hotspot Sea Creature)
   - A majestic creature rises from the water. It's a Manta Ray.
@@ -81,6 +68,7 @@ Register new fishing world - Lotus Atoll
 - Junker Joel has bigger shop
 - Odgers gui named Trophy Fish
 - Trophy Frogs
+- Prevent picking up drops like from Odger
 
 SCHLURP! The Hotspot Tonic Mixin grants you effects for 86h 24m! They will pause if your God Potion expires.
 SCHLURP! The effects of the Celestial Mason Jar have been extended by 86h 24m! They will pause if your God Potion expires.
