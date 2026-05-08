@@ -728,6 +728,7 @@ object FishingProfitTracker {
         val player = FeeshMod.mc.player ?: return result
 
         for (i in 0..35) {
+            if (i == 8) continue // Bottom-right slot in player inventory UI (hotbar rightmost slot) which contains Bait Bag preview
             val stack = player.inventory.getItem(i)
             if (stack.isEmpty) continue
             var slotItemName = ItemUtils.getCleanItemName(stack.hoverName.getFormattedString())
