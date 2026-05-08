@@ -19,9 +19,6 @@ https://hypixel.net/threads/may-6th-lotus-atoll-alpha-testing.6094444/
 - Need to migrate old sea creature names without removal from trackers.
 - Sea Guardian => Jumpin' Jack (COMMON Spooky Sea Creature)
   - ???
-- Night Squid => Inkling (UNCOMMON Water Hotspot Sea Creature)
-  - You caught x2 Inkling Shards!
-  - Make Shards trackable with both names.
 
 ### Drops
 
@@ -30,6 +27,7 @@ https://hypixel.net/threads/may-6th-lotus-atoll-alpha-testing.6094444/
 - Adjusted all Bayou Sea Creature stats and drop chances - ????
 - Adjusted the drop tables, bestiaries, and stats of all Hotspot and Event Sea Creatures
 - Check item IDs for Spooky Hook and Inkling Shard after release
+- Change display name / alternate names for Spooky Hook and Inkling Shard
 
 ## Other
 

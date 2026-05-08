@@ -81,7 +81,7 @@ object FishingProfitTracker {
     private val COINS_CATCH_PATTERN = Regex("^⛃ (?:GOOD|GREAT|OUTSTANDING) CATCH! You caught ([\\d,]+) Coins.*")
     private val ICE_ESSENCE_CATCH_PATTERN = Regex("^⛃ (?:GOOD|GREAT|OUTSTANDING) CATCH! You caught Ice Essence x([\\d,]+).*")
     private val SHARD_CATCH_PATTERN = Regex("^⛃ (?:GOOD|GREAT|OUTSTANDING) CATCH! You caught (?:a|an) (.+) Shard.*")
-    private val SHARDS_PATTERN = Regex("^You caught (.+) Shard[s]?.*")
+    private val SHARDS_BLACK_HOLE_PATTERN = Regex("^You caught (.+) Shard[s]?.*")
     private val SHARD_CHARMED_PATTERN = Regex("^(?:CHARM|NAGA|SALT) You charmed (?:a|an) (.+) and captured its Shard.*")
     private val SHARDS_CHARMED_PATTERN = Regex("^(?:CHARM|NAGA|SALT) You charmed (?:a|an) (.+) and captured ([\\d]+) Shards from it.*")
     private val SHARDS_LOOTSHARED_PATTERN = Regex("^LOOT SHARE You received (.+) Shard.*")
@@ -200,7 +200,7 @@ object FishingProfitTracker {
         // You caught x4 Sea Archer Shards!
         // You caught x4 Carrot King Shards!
         // You caught x2 Loch Emperor Shards!
-        SHARDS_PATTERN.find(event.unformattedText)?.run {
+        SHARDS_BLACK_HOLE_PATTERN.find(event.unformattedText)?.run {
             onShardCaughtInBlackHole(this.groupValues[1].orEmpty())
             return@onChat
         }
@@ -589,7 +589,8 @@ object FishingProfitTracker {
     private fun onShardFished(shard: String) {
         if (!isSessionActive || !isTrackerVisible()) return
         val shardName = shard + " Shard"
-        findAndAddProfitTrackerItem({ it.itemName.equals(shardName, ignoreCase = true) }, 1)
+        val predicate = { item: FishingProfitDropInfo -> item.itemName.equals(shardName, ignoreCase = true) || item.itemAlternateNames.any { alt -> alt.equals(shardName, ignoreCase = true) } }
+        findAndAddProfitTrackerItem(predicate, 1)
     }
 
     private fun onShardCaughtInBlackHole(shardsText: String) { // a|an|x5 Carrot King
@@ -601,13 +602,15 @@ object FishingProfitTracker {
             else -> countText.replace("x", "").toIntOrNull() ?: 1
         }
         val shardName = parts.drop(1).joinToString(" ") + " Shard"
-        findAndAddProfitTrackerItem({ it.itemName.equals(shardName, ignoreCase = true) }, count)
+        val predicate = { item: FishingProfitDropInfo -> item.itemName.equals(shardName, ignoreCase = true) || item.itemAlternateNames.any { alt -> alt.equals(shardName, ignoreCase = true) } }
+        findAndAddProfitTrackerItem(predicate, count)
     }
 
     private fun onShardsCharmed(mobName: String, shardsCount: Int) {
         if (!isSessionActive || !isTrackerVisible() || shardsCount <= 0) return
         val shardName = mobName + " Shard"
-        findAndAddProfitTrackerItem({ it.itemName.equals(shardName, ignoreCase = true) }, shardsCount)
+        val predicate = { item: FishingProfitDropInfo -> item.itemName.equals(shardName, ignoreCase = true) || item.itemAlternateNames.any { alt -> alt.equals(shardName, ignoreCase = true) } }
+        findAndAddProfitTrackerItem(predicate, shardsCount)
     }
 
     private fun onShardLootshared(shardsText: String) { // a|an|2 Titanoboa
@@ -619,7 +622,8 @@ object FishingProfitTracker {
             else -> countText.toIntOrNull() ?: 1
         }
         val shardName = parts.drop(1).joinToString(" ") + " Shard"
-        findAndAddProfitTrackerItem({ it.itemName.equals(shardName, ignoreCase = true) }, count)
+        val predicate = { item: FishingProfitDropInfo -> item.itemName.equals(shardName, ignoreCase = true) || item.itemAlternateNames.any { alt -> alt.equals(shardName, ignoreCase = true) } }
+        findAndAddProfitTrackerItem(predicate, count)
     }
 
     private fun onAgathaContestBracketReached(bracket: String) {

@@ -11,7 +11,7 @@ data class SalvageableItemInfo(
 data class FishingProfitDropInfo(
     val itemId: String, // Item ID aligned with IDs in Bazaar/Auction APIs
     val itemName: String, // Unformatted item name
-    val itemAlternateNames: List<String> = listOf(), // Alternate names for the item, to support some popular renamings by mods
+    val itemAlternateNames: List<String> = listOf(), // Alternate names for the item, to support some popular item renamings by mods, or item renamings by SB
     val itemDisplayName: String, // Formatted item name
     val npcPrice: Double?,
     val ignoreFromInventory: Boolean = false, // If the item should be ignored from inventory tracking
@@ -707,8 +707,9 @@ class FishingProfitDrops {
             ),
             FishingProfitDropInfo(
                 itemId = "SHARD_NIGHT_SQUID", // TODO check if ID remains the same
-                itemName = "Inkling Shard",
-                itemDisplayName = "${COMMON}Inkling ${WHITE}Shard",
+                itemName = "Night Squid Shard",
+                itemDisplayName = "${COMMON}Night Squid ${WHITE}Shard",
+                itemAlternateNames = listOf("Inkling Shard"),
                 npcPrice = null,
             ),
             FishingProfitDropInfo(
@@ -1914,9 +1915,9 @@ class FishingProfitDrops {
             ),
             FishingProfitDropInfo(
                 itemId = "PHANTOM_HOOK",
-                itemName = "Spooky Hook",
-                itemAlternateNames = listOf("Phantom Hook"),
-                itemDisplayName = "${RARE}Spooky Hook",
+                itemName = "Phantom Hook",
+                itemDisplayName = "${RARE}Phantom Hook",
+                itemAlternateNames = listOf("Spooky Hook"),
                 npcPrice = 250_000.0,
             ),
 
