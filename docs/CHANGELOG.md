@@ -18,6 +18,8 @@ Released on: ???
 
 ## Bugfixes
 
+- Fixed some baits being added to Fishing profit tracker after adding Bait Bag preview in slot #9.
+
 # 1.6.1
 
 Released on: 2026-05-02
