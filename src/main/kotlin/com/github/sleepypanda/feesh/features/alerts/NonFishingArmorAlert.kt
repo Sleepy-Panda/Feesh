@@ -20,6 +20,8 @@ object NonFishingArmorAlert {
     private var lastHookDetectedAt: Date? = null
     private var tickCounter = 0
     private const val TICKS_PER_CHECK = 10
+    private val SPECIAL_ARMOR_ITEM_NAMES = listOf("Hunter", "Squid Hat", "Froggles", "Red Sweater")
+    private val FISHING_STATS_LORE_LINES = listOf("Sea Creature Chance:", "Fishing Speed:", "Treasure Chance:", "Trophy Chance:")
 
     fun init() {
         EventBus.subscribe(ClientTickEvent::class, ::onClientTick)
@@ -82,10 +84,10 @@ object NonFishingArmorAlert {
         
         if (itemName.isEmpty() || loreLines.isEmpty()) return false
 
-        if (itemName.contains("Hunter") || itemName.contains("Squid Hat")) return true
+        if (SPECIAL_ARMOR_ITEM_NAMES.any { itemName.contains(it, ignoreCase = true) }) return true
 
         return loreLines.any { loreLine ->
-            loreLine.startsWith("Sea Creature Chance:") || loreLine.startsWith("Fishing Speed:")
+            FISHING_STATS_LORE_LINES.any { loreLine.startsWith(it) }
         }
     }
 }
