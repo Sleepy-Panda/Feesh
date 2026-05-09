@@ -46,7 +46,7 @@ object GearCraftPricesCommand {
                 CraftableItem("MAGMA_LORD_CHESTPLATE", "${LEGENDARY}Magma Lord Chestplate", 8),
                 CraftableItem("MAGMA_LORD_LEGGINGS", "${LEGENDARY}Magma Lord Leggings", 7),
                 CraftableItem("MAGMA_LORD_BOOTS", "${LEGENDARY}Magma Lord Boots", 4),
-                CraftableItem("MAGMA_LORD_GAUNTLET", "${EPIC}Magma Lord Gauntlet", 6)
+                CraftableItem("MAGMA_LORD_GAUNTLET", "${LEGENDARY}Magma Lord Necklace", 5)
             )
         ),
         CraftableCategory(
