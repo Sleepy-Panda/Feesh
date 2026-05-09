@@ -19,6 +19,7 @@ Released on: ???
 ## Bugfixes
 
 - Fixed some baits being added to Fishing profit tracker after adding Bait Bag preview in slot #9.
+- Fixed Magma Lord Necklace crafting recipe for /feeshGearCraftPrices.
 
 # 1.6.1
 
