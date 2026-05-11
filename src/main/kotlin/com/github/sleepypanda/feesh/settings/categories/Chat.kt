@@ -156,4 +156,15 @@ object Chat : CategoryKt("Chat") {
         this.name = Translated("Autoshare to")
         this.description = Translated("Source chat type to autoshare the found hotspots (if autosharing enabled).")
     }
+
+    init {
+        separator {
+            this.title = "${AQUA}${BOLD}Trophy Frogs"
+        }
+    }
+
+    var shareTrophyFrogDiscovered by boolean(false) {
+        this.name = Translated("Share Trophy Frog discovery to the PARTY chat")
+        this.description = Translated("Sends a PARTY chat message when you discovered a new Trophy Frog.")
+    }
 }

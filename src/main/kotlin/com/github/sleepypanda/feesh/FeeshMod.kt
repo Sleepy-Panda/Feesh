@@ -24,6 +24,7 @@ import com.github.sleepypanda.feesh.features.chat.CompactCatchMessages
 import com.github.sleepypanda.feesh.features.chat.PlayerDeathMessage
 import com.github.sleepypanda.feesh.features.chat.HotspotFoundMessage
 import com.github.sleepypanda.feesh.features.chat.LootshareMessage
+import com.github.sleepypanda.feesh.features.chat.TrophyFrogDiscoveredMessage
 import com.github.sleepypanda.feesh.features.help.VersionChecker
 import com.github.sleepypanda.feesh.features.help.Welcome
 import com.github.sleepypanda.feesh.features.commands.PersonalBestCommand
@@ -70,6 +71,7 @@ import com.github.sleepypanda.feesh.events.publishers.SeaCreaturesPublisher
 import com.github.sleepypanda.feesh.events.publishers.SeaCreaturesCocoonPublisher
 import com.github.sleepypanda.feesh.events.publishers.RareDropsPublisher
 import com.github.sleepypanda.feesh.events.publishers.PartyChatPublisher
+import com.github.sleepypanda.feesh.events.publishers.TrophyFrogDiscoveredPublisher
 import com.github.sleepypanda.feesh.events.publishers.PetLevelUpPublisher
 import com.github.sleepypanda.feesh.events.publishers.SacksItemPickupPublisher
 import com.github.sleepypanda.feesh.events.publishers.IceEssenceStatusBarPublisher
@@ -145,6 +147,7 @@ class FeeshMod : ClientModInitializer {
         SeaCreaturesCocoonPublisher.init()
         RareDropsPublisher.init()
         PartyChatPublisher.init()
+        TrophyFrogDiscoveredPublisher.init()
         PetLevelUpPublisher.init()
         SacksItemPickupPublisher.init()
         IceEssenceStatusBarPublisher.init()
@@ -181,6 +184,7 @@ class FeeshMod : ClientModInitializer {
         PlayerDeathMessage.init()
         HotspotFoundMessage.init()
         LootshareMessage.init()
+        TrophyFrogDiscoveredMessage.init()
         DoubleHookPersonalBest.init()
 
         // Overlays
