@@ -48,6 +48,11 @@ object Alerts : CategoryKt("Alerts") {
         this.searchTerms = AlertableSeaCreatureTypes.values().map { it.displayName }.toList()
     }
 
+    var alertOnSeaCreaturesIncludeCocooned by boolean(true) {
+        this.name = Translated("Alert on cocooned sea creature")
+        this.description = Translated("Also alerts when selected sea creatures are cocooned by you or your party members.")
+    }
+
     var alertOnRareSeaCreaturesSource by enum(AlertSource.OWN_AND_PARTY) {
         this.name = Translated("Alert source")
         this.description = Translated("\"Own and party\" = your catches and party members' catches; \"Own\" = only your catches.")

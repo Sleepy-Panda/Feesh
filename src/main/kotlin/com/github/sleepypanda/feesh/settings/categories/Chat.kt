@@ -75,6 +75,11 @@ object Chat : CategoryKt("Chat") {
         this.searchTerms = AlertableSeaCreatureTypes.values().map { it.displayName }.toList()
     }
 
+    var shareSeaCreaturesIncludeCocooned by boolean(true) {
+        this.name = Translated("Share cocooned sea creature")
+        this.description = Translated("Also sends a PARTY chat message when selected sea creatures are cocooned by you.")
+    }
+
     var shareRareSeaCreaturesAllChat by boolean(false) {
         this.name = Translated("Share rare sea creatures location to the ALL chat")
         this.description = Translated("Sends an ALL chat message with coordinates when a rare sea creature is caught by you. Please enable ${YELLOW}Skyblock Settings -> Personal -> Fishing Settings -> Sea Creature Chat")
