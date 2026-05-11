@@ -18,7 +18,7 @@ object SeaCreaturesPublisher {
     private fun onChat(event: ChatCancellableEvent) {
         if (!WorldUtils.isInSkyblock()) return
         
-        var chatMessage = event.message.string
+        var chatMessage = event.unformattedText
 
         if (doubleHookPattern.containsMatchIn(chatMessage)) {
             isDoubleHook = true

@@ -67,6 +67,7 @@ import com.github.sleepypanda.feesh.features.items.slottext.SlotTextRendererMana
 import com.github.sleepypanda.feesh.features.sounds.MuteReindrakeGifts
 import com.github.sleepypanda.feesh.events.EventBus
 import com.github.sleepypanda.feesh.events.publishers.SeaCreaturesPublisher
+import com.github.sleepypanda.feesh.events.publishers.SeaCreaturesCocoonPublisher
 import com.github.sleepypanda.feesh.events.publishers.RareDropsPublisher
 import com.github.sleepypanda.feesh.events.publishers.PartyChatPublisher
 import com.github.sleepypanda.feesh.events.publishers.PetLevelUpPublisher
@@ -141,6 +142,7 @@ class FeeshMod : ClientModInitializer {
 
         // Event publishers
         SeaCreaturesPublisher.init()
+        SeaCreaturesCocoonPublisher.init()
         RareDropsPublisher.init()
         PartyChatPublisher.init()
         PetLevelUpPublisher.init()

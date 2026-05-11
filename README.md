@@ -50,11 +50,12 @@ This mod requires [Fabric API](https://modrinth.com/mod/fabric-api) and [Fabric 
 
 ### Alerts
 
-- **Rare sea creatures** — Shows a title and plays a sound when a rare sea creature is caught by you or your party members.
+- **Sea creatures** — Shows a title and plays a sound when a specific sea creature is caught/cocooned by you or your party members.
 - **Rare drops** — Shows a title and plays a sound when a rare item drops. Supports price display and customizable drop types.
 - **Any Reindrake** — Alerts when any Reindrake spawns in the lobby, even if caught not by your party. Offers option to warp to island spawn on click.
 - **Spirit Mask** — Alerts when Spirit Mask's Second Wind is activated and when it's back.
 - **Barn fishing timer** — Alerts when sea creatures are alive for 5+ minutes or when their count hits threshold (configurable per location).
+- **Cap reached** — Alerts after personal SC cap is reached.
 - **Deployables** — Alerts when your deployable item is about to expire.
 - **Pet level up** — Alerts when a pet reaches max level. Can show estimated leveling price in chat.
 - **Hotspot found or gone** — Alerts when a hotspot is found or is gone.
@@ -70,6 +71,18 @@ This mod requires [Fabric API](https://modrinth.com/mod/fabric-api) and [Fabric 
 - **Fishing Festival** — Alerts when the Fishing Festival ends, and posts amounts of sharks caught in chat. Also has option to track personal best per festival.
 - **Rain/Thunder/Blizzard ends soon** — Alerts when Rain/Thunder/Blizzard ends soon while in relevant areas.
 - **Nessie destination alert** — Alerts destination when a Nessie decides into which cave to swim - to Jade Dragon or to Driptoad Delve.
+- **Trophy Frog discovered alert** — Alerts when a new Trophy Frog is discovered.
+
+### Chat
+
+- **Compact sea creature messages** — Shortens double hook and catch messages in your chat.
+- **Share sea creatures** — Sends to PARTY chat when you catch/cocoon a specific sea creature.
+- **Share sea creatures location - ALL chat** — Sends to ALL chat with coordinates when you catch specific rare creatures (big bosses).
+- **Player death message** — Sends party chat when killed by Mythic sea creature (Thunder, Lord Jawbus, etc.).
+- **Share rare drops** — Sends to PARTY chat when rare item drops.
+- **Hotspot sharing** — Clickable message to share found hotspot location to PARTY or ALL chat. Optional autoshare.
+- **Lootshare message** — Sends to PARTY chat when it's time to lootshare. Available via Keybind.
+- **Share Trophy Frog discovered** — Sends to PARTY chat when a new Trophy Frog is discovered.
 
 ### Overlays
 
@@ -95,16 +108,6 @@ This mod requires [Fabric API](https://modrinth.com/mod/fabric-api) and [Fabric 
 - **Magma Core fishing tracker** — Lava Pigman/Lava Blaze catch stats and Magma Core drop profits (total and per hour), while in Crystal Hollows.
 - **Archfiend Dice profit tracker** — Archfiend Dice / High Class Archfiend Dice profit overlay with Session/Total modes.
 - **Rain/Thunder/Blizzard timer** — Shows Rain/Thunder/Blizzard timer while in relevant areas.
-
-### Chat
-
-- **Compact sea creature messages** — Shortens double hook and catch messages in your chat.
-- **Share rare sea creatures** — Sends to PARTY chat when you catch a rare sea creature.
-- **Share rare sea creatures location - ALL chat** — Sends to ALL chat with coordinates when you catch selected rare creatures.
-- **Player death message** — Sends party chat when killed by Mythic sea creature (Thunder, Lord Jawbus, etc.).
-- **Share rare drops** — Sends to PARTY chat when rare item drops.
-- **Hotspot sharing** — Clickable message to share found hotspot location to PARTY or ALL chat. Optional autoshare.
-- **Lootshare message** — Sends to PARTY chat when it's time to lootshare. Available via Keybind.
 
 ## Items
 
