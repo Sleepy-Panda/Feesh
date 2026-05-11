@@ -163,7 +163,7 @@ object Chat : CategoryKt("Chat") {
         }
     }
 
-    var shareTrophyFrogDiscovered by boolean(false) {
+    var shareTrophyFrogDiscovered by boolean(true) {
         this.name = Translated("Share Trophy Frog discovery to the PARTY chat")
         this.description = Translated("Sends a PARTY chat message when you discovered a new Trophy Frog.")
     }
