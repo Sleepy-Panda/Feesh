@@ -126,11 +126,6 @@ object Alerts : CategoryKt("Alerts") {
         this.description = Translated("Shows a title and plays a sound when you discover a new Trophy Frog on Lotus Atoll.")
     }
 
-    var autoShareTrophyFrogDiscovered by boolean(false) {
-        this.name = Translated("Autoshare to party chat")
-        this.description = Translated("Shares discovered Trophy Frog to PARTY chat automatically.")
-    }
-
     init {
         separator {
             this.title = "${AQUA}${BOLD}Spirit Mask"
