@@ -12,7 +12,6 @@ This mod is an evolution of [FeeshNotifier ChatTriggers module](https://chattrig
 - [Troubleshooting](#troubleshooting)
 - [Contacts](#contacts)
 - [Creadits and Special thanks](#credits-and-special-thanks)
-- [Developer's stuff](#developers-stuff)
 
 ## Releases
 
@@ -175,30 +174,3 @@ In case of questions, bug reports, feature requests - please feel free to contac
 Shoutout to the wonderful people who helped this mod to grow!
 
 - alpha-r (rare sea creatures highlight feature)
-
-## Developer's stuff
-
-### Build
-
-Requires JDK 25.
-
-For manual building the project in IDE:
-
-```cmd
-./gradlew build
-```
-
-As a result, `Feesh-<version>-fabric.jar` file appears in `/build/versions` folder. It contains both 1.21.10 and 1.21.11 mod versions.
-
-### Mappings
-
-- https://mappings.dev/1.21.10/
-- https://mappings.dev/1.21.11/
-
-## Updating gradle wrapper files
-
-https://docs.gradle.org/current/userguide/gradle_wrapper.html#sec:upgrading_wrapper
-
-```cmd
-./gradlew.bat wrapper --gradle-version 9.4.1
-```
