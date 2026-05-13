@@ -20,6 +20,7 @@ import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
 import com.github.sleepypanda.feesh.utils.FishingHookUtils
 import com.github.sleepypanda.feesh.utils.data.PersistentDataManager
+import net.minecraft.network.chat.Component
 import java.text.DecimalFormat
 
 object SeaCreaturesTracker {
@@ -397,6 +398,7 @@ object SeaCreaturesTracker {
         val showPercentage = Overlays.showSeaCreaturesPercentage && displayMode == SeaCreaturesTrackerDisplayMode.ALL
         val showDoubleHook = Overlays.showSeaCreaturesDoubleHookStatistics
         val sorting = Overlays.seaCreaturesTrackerSorting
+
         val entries = sourceObj.catches.mapNotNull { (key, value) ->
             val seaCreatureInfo = SeaCreatures.allSeaCreatures.find { it.name.uppercase() == key }
             if (seaCreatureInfo == null) return@mapNotNull null
@@ -419,9 +421,13 @@ object SeaCreaturesTracker {
                 seaCreature = key,
                 seaCreatureInfo = seaCreatureInfo,
                 amount = value.amount,
+                formattedAmount = CommonUtils.formatNumberWithSpaces(value.amount),
                 percent = percent,
+                formattedPercent = "${decimalFormat.format(percent)}%",
                 doubleHookAmount = value.doubleHookAmount,
-                doubleHookPercent = doubleHookPercent
+                formattedDoubleHookAmount = CommonUtils.formatNumberWithSpaces(value.doubleHookAmount),
+                doubleHookPercent = doubleHookPercent,
+                formattedDoubleHookPercent = "${decimalFormat.format(doubleHookPercent)}%",
             )
         }
 
@@ -452,17 +458,15 @@ object SeaCreaturesTracker {
         val nextModeText = getViewModeDisplayText(nextMode)
 
         val viewModeText = getViewModeDisplayText(viewMode)
-        lines.add("${baseTitle} ${viewModeText}")
+        lines.add("$baseTitle $viewModeText")
 
         entriesToShow.forEach { entry ->
             val seaCreatureText = if (entry.seaCreatureInfo.isRare) "${entry.seaCreatureInfo.boldDisplayName}" else "${entry.seaCreatureInfo.displayName}"
-            val countText = "${WHITE}${CommonUtils.formatNumberWithSpaces(entry.amount)}"
-            val percentText = if (showPercentage) " ${GRAY}${decimalFormat.format(entry.percent)}%" else ""
+            val countText = "${WHITE}${entry.formattedAmount}"
+            val percentText = if (showPercentage) " ${GRAY}${entry.formattedPercent}" else ""
             
             val doubleHookText = if (showDoubleHook && entry.seaCreatureInfo.canBeDoubleHooked) {
-                val dhAmount = CommonUtils.formatNumberWithSpaces(entry.doubleHookAmount)
-                val dhPercent = decimalFormat.format(entry.doubleHookPercent)
-                " ${DARK_GRAY}| ${GRAY}DH: ${WHITE}$dhAmount ${GRAY}$dhPercent%"
+                " ${DARK_GRAY}| ${GRAY}DH: ${WHITE}${entry.formattedDoubleHookAmount} ${GRAY}${entry.formattedDoubleHookPercent}"
             } else ""
 
             lines.add("${GRAY}- $seaCreatureText${GRAY}: $countText$percentText$doubleHookText")
@@ -474,32 +478,29 @@ object SeaCreaturesTracker {
             lines.add("${GRAY}- Other sea creatures of ${WHITE}$otherSeaCreaturesTypes ${GRAY}types: ${WHITE}$otherSeaCreaturesCount")
         }
 
-        val totalCount = if (displayMode == SeaCreaturesTrackerDisplayMode.ALL) {
-            sourceObj.totalCount
-        } else {
-            sortedEntries.sumOf { it.amount }
-        }
-
-        val totalText = if (displayMode == SeaCreaturesTrackerDisplayMode.ALL) {
-            "${AQUA}Total: ${WHITE}${CommonUtils.formatNumberWithSpaces(totalCount)}"
-        } else {
-            val rareTotal = sortedEntries.sumOf { it.amount }
-            "${AQUA}Total: ${WHITE}${CommonUtils.formatNumberWithSpaces(rareTotal)} ${GRAY}rare out of ${WHITE}${CommonUtils.formatNumberWithSpaces(sourceObj.totalCount)}"
-        }
+        val totalLineText = getTotalLineText(displayMode, sourceObj, sortedEntries)
+        val totalLineTooltip = getTotalLineTooltip()
         lines.add("")
-        lines.add(totalText)
+        lines.add(totalLineText)
 
         gui.setLines(lines)
+
         val lineIndexToActions = mutableMapOf<Int, List<LineAction>>()
+        val lineIndexToTooltip = mutableMapOf<Int, Component>()
         val buttonLinesCount = 2 // Buttons count (view mode, reset)
         val titleLineIndex = buttonLinesCount
         entriesToShow.forEachIndexed { index, entry ->
-            lineIndexToActions[titleLineIndex + 1 + index] = listOf(
+            val creatureLineIndex = titleLineIndex + 1 + index
+            lineIndexToActions[creatureLineIndex] = listOf(
                 LineAction("${GRAY}[${GREEN}+${GRAY}]") { onLineSeaCreatureIncrease(entry.seaCreature) },
                 LineAction("${GRAY}[${RED}-${GRAY}]") { onLineSeaCreatureDecrease(entry.seaCreature) },
                 LineAction("${GRAY}[${RED}x${GRAY}]") { onLineSeaCreatureDelete(entry.seaCreature) }
             )
+            lineIndexToTooltip[creatureLineIndex] = getSeaCreatureTooltip(entry)
         }
+        
+        lineIndexToTooltip[titleLineIndex + entriesToShow.size + 1] = totalLineTooltip // Other SC line
+        gui.setTooltips(lineIndexToTooltip)
         gui.setLineActions(lineIndexToActions)
 
         gui.setButtons(listOf(
@@ -508,13 +509,50 @@ object SeaCreaturesTracker {
         ))
     }
 
+    private fun getTotalLineText(displayMode: SeaCreaturesTrackerDisplayMode, sourceObj: SeaCreaturesData, sortedEntries: List<TrackerLineEntry>): String {
+        when (displayMode) {
+            SeaCreaturesTrackerDisplayMode.ALL -> {
+                val totalCount = sourceObj.totalCount
+                return "${AQUA}Total: ${WHITE}${CommonUtils.formatNumberWithSpaces(totalCount)}"
+            }
+            SeaCreaturesTrackerDisplayMode.ONLY_RARE -> {
+                val totalCount = sortedEntries.sumOf { it.amount }
+                val rareTotal = sortedEntries.sumOf { it.amount }
+                return "${AQUA}Total: ${WHITE}${CommonUtils.formatNumberWithSpaces(rareTotal)} ${GRAY}rare out of ${WHITE}${CommonUtils.formatNumberWithSpaces(sourceObj.totalCount)}"
+            }
+        }
+    }
+
+    private fun getSeaCreatureTooltip(entry: TrackerLineEntry): Component {
+        return Component.literal(
+"""
+${entry.seaCreatureInfo.boldDisplayName}
+${GRAY}Caught: ${WHITE}${entry.formattedAmount} ${GRAY} sea creature(s)
+${GRAY}Double hook: ${WHITE}${entry.formattedDoubleHookAmount} ${GRAY} time(s) - ${WHITE}${entry.formattedDoubleHookPercent}%
+""".trim()
+        )
+    }
+
+    private fun getTotalLineTooltip(): Component {
+        return Component.literal(
+"""
+${AQUA}Total: ???
+${AQUA}Rare: ???
+""".trim()
+        )
+    }
+
     private data class TrackerLineEntry(
         val seaCreature: String,
         val seaCreatureInfo: SeaCreatures.SeaCreatureInfo,
         val amount: Int,
+        val formattedAmount: String,
         val percent: Double,
+        val formattedPercent: String,
         val doubleHookAmount: Int,
-        val doubleHookPercent: Double
+        val formattedDoubleHookAmount: String,
+        val doubleHookPercent: Double,
+        val formattedDoubleHookPercent: String
     )
 }
 

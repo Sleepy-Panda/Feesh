@@ -21,6 +21,7 @@ import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.Font
 import java.awt.Color
+import kotlin.math.max
 import kotlin.math.roundToInt
 
 /**
@@ -44,6 +45,12 @@ data class GuiButton(
 data class LineAction(
     val text: String,
     val onClick: () -> Unit
+)
+
+data class LineInfo (
+    val text: String,
+    val tooltip: Component? = null,
+    val actions: List<LineAction> = emptyList()
 )
 
 /**
@@ -92,6 +99,9 @@ class FeeshGui {
     // Inline actions are shown when hovering over a line (e.g. [+], [-], [x]).
     // Index starts from the first overlay line including buttons.
     private var lineIndexToActions: Map<Int, List<LineAction>> = emptyMap()
+    // Tooltips are shown when hovering over a line.
+    // Index starts from the first overlay line including buttons.
+    private var lineIndexToTooltip: Map<Int, Component> = emptyMap()
 
     constructor() {
         registeredGuis.add(this)
@@ -185,11 +195,20 @@ class FeeshGui {
     fun getButtons(): List<GuiButton> = buttons
 
     /**
-     * Sets the mapping of line index to inline actions. Each overlay defines its own actions
-     * (e.g. [+], [-], [x]) and callbacks. Buttons are shown when in inventory/chat and hovering the line.
+     * Sets the mapping of line indexes to multiple inline actions. Each overlay line can have its own actions (e.g. [+], [-], [x]) and callbacks.
+     * Buttons are shown when in inventory and hovering a line.
      */
     fun setLineActions(lineIndexToActions: Map<Int, List<LineAction>>): FeeshGui {
         this.lineIndexToActions = lineIndexToActions
+        return this
+    }
+
+    /**
+     * Sets the mapping of line indexes to optional tooltips. Each overlay line can have its own tooltip.
+     * Buttons are shown when in inventory and hovering a line.
+     */
+    fun setTooltips(lineIndexToTooltip: Map<Int, Component>): FeeshGui {
+        this.lineIndexToTooltip = lineIndexToTooltip
         return this
     }
 
@@ -197,6 +216,7 @@ class FeeshGui {
         this.lines = emptyList()
         this.buttons = emptyList()
         this.lineIndexToActions = emptyMap()
+        this.lineIndexToTooltip = emptyMap()
         return this
     }
 
@@ -207,7 +227,8 @@ class FeeshGui {
 
     private fun onDraw(drawContext: GuiGraphics, textRenderer: Font, mcClient: Minecraft) {
         if (mcClient.screen is InventoryScreen && isClickable) return
-        draw(drawContext, textRenderer, mcClient, null, null)
+       // val mouse = getScaledMouse(mcClient)
+        draw(drawContext, textRenderer, mcClient)
     }
 
     private fun onPostDrawAfterBackground(event: ScreenAfterBackgroundRenderEvent) { // Draw in front of dark background when Inventory is opened
@@ -340,6 +361,15 @@ class FeeshGui {
         }
     }
 
+    //private fun getScaledMouse(mcClient: Minecraft): Pair<Int, Int> {
+    //    val w = mcClient.window
+    //    val mw = max(w.width, 1)
+    //    val mh = max(w.height, 1)
+    //    val mx = (mcClient.mouseHandler.xpos() * w.guiScaledWidth / mw).toInt()
+    //    val my = (mcClient.mouseHandler.ypos() * w.guiScaledHeight / mh).toInt()
+    //    return mx to my
+    //}
+
     private fun draw(drawContext: GuiGraphics, textRenderer: Font, mcClient: Minecraft, mouseX: Int? = null, mouseY: Int? = null) {
         if (lines.isEmpty()) return
         if (!WorldUtils.isInSkyblock()) return
@@ -352,11 +382,13 @@ class FeeshGui {
         val fontHeight = textRenderer.lineHeight
         val lineHeightPx = fontHeight + 2
 
-        val hoveredLineIndex = if (mouseX != null && mouseY != null && lineIndexToActions.isNotEmpty()) {
+        val hoveredLineIndex = if (mouseX != null && mouseY != null && (lineIndexToActions.isNotEmpty() || lineIndexToTooltip.isNotEmpty())) {
             getHoveredLineIndex(textRenderer, allLines, mouseX.toDouble(), mouseY.toDouble())
         } else null
 
         val hoveredActions = hoveredLineIndex?.let { lineIndexToActions[it] }?.takeIf { it.isNotEmpty() }
+
+        val hoveredTooltip = hoveredLineIndex?.let { lineIndexToTooltip[it] }
 
         val maxWidth = getMaxWidth(textRenderer, allLines)
         val leftEdge = getLeftEdge(textRenderer, allLines)
@@ -422,6 +454,21 @@ class FeeshGui {
         }
 
         drawContext.pose().popMatrix()
+
+        if (hoveredTooltip != null && mouseX != null && mouseY != null) {
+            val (anchorX, anchorY) = tooltipAnchorForAlignment(mouseX, mouseY)
+            drawContext.setComponentTooltipForNextFrame(textRenderer, listOf(hoveredTooltip), anchorX, anchorY)
+        }
+    }
+
+    /** Biases the tooltip anchor so it tends to open inward from the screen edge for each alignment mode. */
+    private fun tooltipAnchorForAlignment(mouseX: Int, mouseY: Int): Pair<Int, Int> {
+        val ox = when (alignment) {
+            Alignment.LEFT -> 10
+            Alignment.RIGHT -> -10
+            Alignment.CENTER -> 0
+        }
+        return (mouseX + ox) to (mouseY + 12)
     }
 
     private fun drawStringCompat(drawContext: GuiGraphics, textRenderer: Font, text: Component, x: Int, y: Int, color: Int, shadow: Boolean) {
