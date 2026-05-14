@@ -54,6 +54,7 @@ Newly released - https://hypixel.net/threads/hypixel-skyblock-0-24-5-assorted-qo
 
 ## Current issues & feedback
 
+- Nessie destination alert to work for fishers only
 - Catches/h for treasures
 - Would also be cool to have a double hook statistic for the total sc counter so you can view ur avg. dhc and how good/bad it is compared to ur actual dhc
 - Improve link to changelog in settings, and update announcement
