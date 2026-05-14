@@ -18,7 +18,9 @@ Released on: ???
   - So even if you hide % or DH info in the tracker, you still can see it on hover.
 - Added personal best tracking for double hook streak.
 - Added alert after personal SC cap is reached (based on chat message).
-
+- Changed alert on Nessie destination to appear only if you fished recently.
+  - So basically only fishers are alerted, other players don't get notified even if they're close.
+  
 ## Bugfixes
 
 - Fixed some baits being added to Fishing profit tracker after adding Bait Bag preview in slot #9.

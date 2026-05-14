@@ -107,7 +107,7 @@ object Alerts : CategoryKt("Alerts") {
 
     var alertOnNessieDestination by boolean(true) {
         this.name = Translated("Alert when Nessie has chosen its destination")
-        this.description = Translated("Shows a title and sends a local chat message when Nessie is swimming to the Driptoad Delve or Jade Dragon cave.")
+        this.description = Translated("Shows a title and sends a local chat message when Nessie is swimming to the Driptoad Delve or Jade Dragon cave. Tracks Nessies only if you fished recently!")
     }
 
     var autoShareNessieDestination by boolean(false) {

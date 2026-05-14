@@ -13,6 +13,7 @@ import com.github.sleepypanda.feesh.utils.WorldUtils
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
 import com.github.sleepypanda.feesh.utils.ChatUtils.removeFormatting
+import com.github.sleepypanda.feesh.utils.FishingHookUtils
 import net.minecraft.world.entity.animal.sniffer.Sniffer
 import java.util.Date
 
@@ -85,6 +86,7 @@ object NessieDestinationAlert {
     private fun onArmorStandLoaded(event: ArmorStandDetailsLoadedEvent) {
         if (!Alerts.alertOnNessieDestination || !WorldUtils.isInSkyblock() || WorldUtils.getWorldName() != WorldUtils.GALATEA) return
         if (!event.customNameUnformatted.contains(NESSIE_NAME)) return
+        if (!FishingHookUtils.wasFishingHookActiveMinutesAgo(5)) return
 
         EntityUtils.parseSeaCreatureNametag(event.entity, listOf(NESSIE_NAME)) ?: return
 
