@@ -201,7 +201,6 @@ class FeeshGui {
 
     private fun onDraw(drawContext: GuiGraphics, textRenderer: Font, mcClient: Minecraft) {
         if (mcClient.screen is InventoryScreen && isClickable) return
-       // val mouse = getScaledMouse(mcClient)
         draw(drawContext, textRenderer, mcClient)
     }
 
@@ -344,15 +343,6 @@ class FeeshGui {
         }
     }
 
-    //private fun getScaledMouse(mcClient: Minecraft): Pair<Int, Int> {
-    //    val w = mcClient.window
-    //    val mw = max(w.width, 1)
-    //    val mh = max(w.height, 1)
-    //    val mx = (mcClient.mouseHandler.xpos() * w.guiScaledWidth / mw).toInt()
-    //    val my = (mcClient.mouseHandler.ypos() * w.guiScaledHeight / mh).toInt()
-    //    return mx to my
-    //}
-
     private fun draw(drawContext: GuiGraphics, textRenderer: Font, mcClient: Minecraft, mouseX: Int? = null, mouseY: Int? = null) {
         if (lines.isEmpty()) return
         if (!WorldUtils.isInSkyblock()) return
@@ -440,19 +430,8 @@ class FeeshGui {
         drawContext.pose().popMatrix()
 
         if (!hoveredTooltip.isNullOrEmpty() && mouseX != null && mouseY != null) {
-            //val (anchorX, anchorY) = tooltipAnchorForAlignment(mouseX, mouseY)
             drawContext.setComponentTooltipForNextFrame(textRenderer, hoveredTooltip, mouseX, mouseY)
         }
-    }
-
-    /** Biases the tooltip anchor so it tends to open inward from the screen edge for each alignment mode. */
-    private fun tooltipAnchorForAlignment(mouseX: Int, mouseY: Int): Pair<Int, Int> {
-        val ox = when (alignment) {
-            Alignment.LEFT -> 10
-            Alignment.RIGHT -> -10
-            Alignment.CENTER -> 10
-        }
-        return (mouseX + ox) to (mouseY + 10)
     }
 
     private fun drawStringCompat(drawContext: GuiGraphics, textRenderer: Font, text: Component, x: Int, y: Int, color: Int, shadow: Boolean) {
