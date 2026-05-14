@@ -23,6 +23,7 @@ import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
 import com.github.sleepypanda.feesh.utils.FishingHookUtils
 import com.github.sleepypanda.feesh.utils.gui.FeeshGui
 import com.github.sleepypanda.feesh.utils.gui.GuiButton
+import com.github.sleepypanda.feesh.utils.gui.LineInfo
 import java.util.Date
 import net.minecraft.sounds.SoundEvents
 
@@ -182,7 +183,7 @@ object FishingFestivalTracker {
         }.trimIndent()
 
         val sharksLine = "${AQUA}${BOLD}Sharks: ${WHITE}$total ${GRAY}($countsText${GRAY})"
-        gui.setLines(listOf(sharksLine))
+        gui.setLines(listOf(LineInfo(sharksLine)))
         gui.setButtons(listOf(GuiButton(0, "${GRAY}[${RED}Click to reset${GRAY}]", { resetFishingFestivalTracker(false) })))
     }
 

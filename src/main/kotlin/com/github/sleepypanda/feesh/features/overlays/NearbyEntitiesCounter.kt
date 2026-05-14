@@ -10,6 +10,7 @@ import com.github.sleepypanda.feesh.utils.WorldUtils
 import com.github.sleepypanda.feesh.utils.PlayerUtils
 import com.github.sleepypanda.feesh.utils.EntityUtils
 import com.github.sleepypanda.feesh.utils.gui.FeeshGui
+import com.github.sleepypanda.feesh.utils.gui.LineInfo
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
 import net.minecraft.world.entity.projectile.FishingHook
@@ -160,6 +161,6 @@ object NearbyEntitiesCounter {
             lines.add(bucketsText)
         }
 
-        gui.setLines(lines)
+        gui.setLines(lines.map { LineInfo(it) })
     }
 }

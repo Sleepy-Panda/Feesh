@@ -13,6 +13,7 @@ import com.github.sleepypanda.feesh.utils.WorldUtils
 import com.github.sleepypanda.feesh.constants.Sounds
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.utils.gui.FeeshGui
+import com.github.sleepypanda.feesh.utils.gui.LineInfo
 
 object ConsumablesTimer {
     private const val MOBY_DUCK_EFFECTIVE_SECONDS = 60 * 60
@@ -159,7 +160,7 @@ object ConsumablesTimer {
             val timerText = if (isSoonState) "Soon" else fromSecondsToTimeString(mobyDuckData.remainingTime.coerceAtLeast(0))
             val timeColor = if (mobyDuckData.remainingTime <= SECONDS_BEFORE_EXPIRATION || isSoonState) RED else WHITE
             val line = "${DARK_PURPLE}Moby-Duck: $timeColor$timerText"
-            gui.setLines(listOf(line))
+            gui.setLines(listOf(LineInfo(line)))
         }
     }
 

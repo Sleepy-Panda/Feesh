@@ -122,7 +122,7 @@ class MoveGuisScreen : Screen(Component.literal("Feesh Move Guis")) {
                 lastDraggedGui = gui
                 
                 // Calculate left edge for drag offset
-                val linesToUse = if (gui.getSampleLines().isNotEmpty()) gui.getSampleLines() else gui.getLines()
+                val linesToUse = gui.getSampleLines()
                 val maxWidth = linesToUse.maxOfOrNull { textRenderer.width(Component.literal(it)) } ?: 0
                 val leftEdge = when (gui.getAlignment()) {
                     Alignment.LEFT -> gui.getX()
@@ -148,7 +148,7 @@ class MoveGuisScreen : Screen(Component.literal("Feesh Move Guis")) {
             val mouseY = mouseButtonEvent.y()
             
             // Calculate the left edge of the overlay based on current alignment
-            val linesToUse = if (gui.getSampleLines().isNotEmpty()) gui.getSampleLines() else gui.getLines()
+            val linesToUse = gui.getSampleLines()
             val maxWidth = linesToUse.maxOfOrNull { textRenderer.width(Component.literal(it)) } ?: 0
             
             // Calculate new left edge from mouse position

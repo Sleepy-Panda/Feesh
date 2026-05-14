@@ -28,6 +28,7 @@ import com.github.sleepypanda.feesh.utils.GuiUtils
 import com.github.sleepypanda.feesh.utils.gui.FeeshGui
 import com.github.sleepypanda.feesh.utils.gui.GuiButton
 import com.github.sleepypanda.feesh.utils.gui.LineAction
+import com.github.sleepypanda.feesh.utils.gui.LineInfo
 import com.github.sleepypanda.feesh.utils.data.PersistentDataManager
 import com.github.sleepypanda.feesh.utils.enums.PricingModeWithNpc
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
@@ -959,20 +960,30 @@ object FishingProfitTracker {
 
             val displayData = getDisplayTrackerData(viewMode)
 
-            val lines = mutableListOf<String>()
-            lines.add("$baseTitle $viewModeText")
+            val lines = mutableListOf<LineInfo>()
+            lines.add(LineInfo("$baseTitle $viewModeText"))
 
             for (entry in displayData.entriesToShow) {
                 val countStr = CommonUtils.formatNumberWithSpaces(entry.amount)
                 val profitStr = CommonUtils.toShortNumber(entry.profit) ?: "0"
-                lines.add("${GRAY}- ${WHITE}${countStr}${GRAY}x ${entry.item}${GRAY}: ${GOLD}$profitStr")
+                val itemId = entry.itemId
+                val actions = if (itemId == FISHED_COINS_ITEM_ID) {
+                    listOf(LineAction("${GRAY}[${RED}x${GRAY}]") { onLineItemDelete(itemId) })
+                } else {
+                    listOf(
+                        LineAction("${GRAY}[${GREEN}+${GRAY}]") { onLineItemIncrease(itemId) },
+                        LineAction("${GRAY}[${RED}-${GRAY}]") { onLineItemDecrease(itemId) },
+                        LineAction("${GRAY}[${RED}x${GRAY}]") { onLineItemDelete(itemId) }
+                    )
+                }
+                lines.add(LineInfo("${GRAY}- ${WHITE}${countStr}${GRAY}x ${entry.item}${GRAY}: ${GOLD}$profitStr", actions = actions))
             }
 
             if (displayData.entriesToHide.isNotEmpty()) {
                 val profitStr = CommonUtils.toShortNumber(displayData.totalCheapItemsProfit) ?: "0"
                 val countStr = CommonUtils.formatNumberWithSpaces(displayData.totalCheapItemsCount)
                 val typesStr = CommonUtils.formatNumberWithSpaces(displayData.totalCheapItemsTypesCount)
-                lines.add("${GRAY}- ${WHITE}${countStr}${GRAY}x Cheap items of ${WHITE}${typesStr} ${GRAY}types: ${GOLD}$profitStr")
+                lines.add(LineInfo("${GRAY}- ${WHITE}${countStr}${GRAY}x Cheap items of ${WHITE}${typesStr} ${GRAY}types: ${GOLD}$profitStr"))
             }
 
             val totalStr = CommonUtils.toShortNumber(displayData.totalProfit) ?: "0"
@@ -981,41 +992,20 @@ object FishingProfitTracker {
                 PricingModeWithNpc.INSTA_SELL -> "${DARK_GRAY}[insta-sell]"
                 PricingModeWithNpc.NPC_SELL -> "${DARK_GRAY}[NPC sell]"
             }
-            lines.add("")
+            lines.add(LineInfo(""))
 
             if (Overlays.shouldHideTimerInTotal && viewMode == ViewMode.TOTAL) {
-                lines.add("${AQUA}Total: ${GOLD}${BOLD}$totalStr $priceModeStr")
+                lines.add(LineInfo("${AQUA}Total: ${GOLD}${BOLD}$totalStr $priceModeStr"))
             } else {
                 val perHourStr = CommonUtils.toShortNumber(displayData.profitPerHour) ?: "0"
-                lines.add("${AQUA}Total: ${GOLD}${BOLD}$totalStr ${RESET}${GRAY}(${GOLD}$perHourStr${GRAY}/h) $priceModeStr")
+                lines.add(LineInfo("${AQUA}Total: ${GOLD}${BOLD}$totalStr ${RESET}${GRAY}(${GOLD}$perHourStr${GRAY}/h) $priceModeStr"))
 
                 val elapsedStr = CommonUtils.formatTimeElapsed(displayData.elapsedTime)
                 val pausedSuffix = if (isSessionActive) "" else " ${GRAY}[Paused]"
-                lines.add("${AQUA}Elapsed time: ${WHITE}$elapsedStr$pausedSuffix")    
+                lines.add(LineInfo("${AQUA}Elapsed time: ${WHITE}$elapsedStr$pausedSuffix"))    
             }
 
             gui.setLines(lines)
-
-            val lineIndexToActions = mutableMapOf<Int, List<LineAction>>()
-            val buttonLinesCount = 3 // Buttons count (view mode, pause, reset)
-            val titleLineIndex = buttonLinesCount
-            displayData.entriesToShow.forEachIndexed { index, entry ->
-                val itemId = entry.itemId
-                var actions: List<LineAction>
-                if (entry.itemId == FISHED_COINS_ITEM_ID) {
-                    actions = listOf(
-                        LineAction("${GRAY}[${RED}x${GRAY}]") { onLineItemDelete(itemId) }
-                    )
-                } else {
-                    actions = listOf(
-                        LineAction("${GRAY}[${GREEN}+${GRAY}]") { onLineItemIncrease(itemId) },
-                        LineAction("${GRAY}[${RED}-${GRAY}]") { onLineItemDecrease(itemId) },
-                        LineAction("${GRAY}[${RED}x${GRAY}]") { onLineItemDelete(itemId) }
-                    )
-                }
-                lineIndexToActions[titleLineIndex + 1 + index] = actions
-            }
-            gui.setLineActions(lineIndexToActions)
 
             gui.setButtons(listOf(
                 GuiButton(0, "${GRAY}[Click to show $nextText${GRAY}]", { toggleViewMode() }),

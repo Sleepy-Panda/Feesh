@@ -16,10 +16,12 @@ import com.github.sleepypanda.feesh.utils.RegisterUtils
 import com.github.sleepypanda.feesh.utils.gui.FeeshGui
 import com.github.sleepypanda.feesh.utils.gui.GuiButton
 import com.github.sleepypanda.feesh.utils.gui.LineAction
+import com.github.sleepypanda.feesh.utils.gui.LineInfo
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
 import com.github.sleepypanda.feesh.utils.FishingHookUtils
 import com.github.sleepypanda.feesh.utils.data.PersistentDataManager
+import net.minecraft.network.chat.Component
 import java.text.DecimalFormat
 
 object SeaCreaturesTracker {
@@ -397,6 +399,7 @@ object SeaCreaturesTracker {
         val showPercentage = Overlays.showSeaCreaturesPercentage && displayMode == SeaCreaturesTrackerDisplayMode.ALL
         val showDoubleHook = Overlays.showSeaCreaturesDoubleHookStatistics
         val sorting = Overlays.seaCreaturesTrackerSorting
+
         val entries = sourceObj.catches.mapNotNull { (key, value) ->
             val seaCreatureInfo = SeaCreatures.allSeaCreatures.find { it.name.uppercase() == key }
             if (seaCreatureInfo == null) return@mapNotNull null
@@ -415,13 +418,17 @@ object SeaCreaturesTracker {
                 }
             } else 0.0
 
-            TrackerLineEntry(
+            TrackerSeaCreatureEntry(
                 seaCreature = key,
                 seaCreatureInfo = seaCreatureInfo,
                 amount = value.amount,
+                formattedAmount = CommonUtils.formatNumberWithSpaces(value.amount),
                 percent = percent,
+                formattedPercent = "${decimalFormat.format(percent)}%",
                 doubleHookAmount = value.doubleHookAmount,
-                doubleHookPercent = doubleHookPercent
+                formattedDoubleHookAmount = CommonUtils.formatNumberWithSpaces(value.doubleHookAmount),
+                doubleHookPercent = doubleHookPercent,
+                formattedDoubleHookPercent = "${decimalFormat.format(doubleHookPercent)}%",
             )
         }
 
@@ -434,11 +441,11 @@ object SeaCreaturesTracker {
             SeaCreaturesTrackerSorting.CATCHES_COUNT_DESC -> entries.sortedByDescending { it.amount }
             SeaCreaturesTrackerSorting.CATCHES_COUNT_ASC -> entries.sortedBy { it.amount }
             SeaCreaturesTrackerSorting.RARITY_ASC -> entries.sortedWith(
-                compareBy<TrackerLineEntry> { CommonUtils.getRarityNumericCode(it.seaCreatureInfo.rarityColorCode) }
+                compareBy<TrackerSeaCreatureEntry> { CommonUtils.getRarityNumericCode(it.seaCreatureInfo.rarityColorCode) }
                 .thenByDescending { it.amount }
             )
             SeaCreaturesTrackerSorting.RARITY_DESC -> entries.sortedWith(
-                compareByDescending<TrackerLineEntry> { CommonUtils.getRarityNumericCode(it.seaCreatureInfo.rarityColorCode) }
+                compareByDescending<TrackerSeaCreatureEntry> { CommonUtils.getRarityNumericCode(it.seaCreatureInfo.rarityColorCode) }
                 .thenByDescending { it.amount }
             )
         }
@@ -447,60 +454,47 @@ object SeaCreaturesTracker {
         val entriesToShow = sortedEntries.take(maxLines)
         val hiddenEntries = sortedEntries.drop(maxLines)
 
-        val lines = mutableListOf<String>()
         val nextMode = if (viewMode == ViewMode.SESSION) ViewMode.TOTAL else ViewMode.SESSION
         val nextModeText = getViewModeDisplayText(nextMode)
 
         val viewModeText = getViewModeDisplayText(viewMode)
-        lines.add("${baseTitle} ${viewModeText}")
+        val lines = mutableListOf<LineInfo>()
+        lines.add(LineInfo("$baseTitle $viewModeText"))
 
         entriesToShow.forEach { entry ->
-            val seaCreatureText = if (entry.seaCreatureInfo.isRare) "${entry.seaCreatureInfo.boldDisplayName}" else "${entry.seaCreatureInfo.displayName}"
-            val countText = "${WHITE}${CommonUtils.formatNumberWithSpaces(entry.amount)}"
-            val percentText = if (showPercentage) " ${GRAY}${decimalFormat.format(entry.percent)}%" else ""
+            val seaCreatureText = if (entry.seaCreatureInfo.isRare) entry.seaCreatureInfo.boldDisplayName else entry.seaCreatureInfo.displayName
+            val countText = "${WHITE}${entry.formattedAmount}"
+            val percentText = if (showPercentage) " ${GRAY}${entry.formattedPercent}" else ""
             
             val doubleHookText = if (showDoubleHook && entry.seaCreatureInfo.canBeDoubleHooked) {
-                val dhAmount = CommonUtils.formatNumberWithSpaces(entry.doubleHookAmount)
-                val dhPercent = decimalFormat.format(entry.doubleHookPercent)
-                " ${DARK_GRAY}| ${GRAY}DH: ${WHITE}$dhAmount ${GRAY}$dhPercent%"
+                " ${DARK_GRAY}| ${GRAY}DH: ${WHITE}${entry.formattedDoubleHookAmount} ${GRAY}${entry.formattedDoubleHookPercent}"
             } else ""
 
-            lines.add("${GRAY}- $seaCreatureText${GRAY}: $countText$percentText$doubleHookText")
+            lines.add(
+                LineInfo(
+                    text = "${GRAY}- $seaCreatureText${GRAY}: $countText$percentText$doubleHookText",
+                    tooltip = getSeaCreatureTooltip(entry),
+                    actions = listOf(
+                        LineAction("${GRAY}[${GREEN}+${GRAY}]") { onLineSeaCreatureIncrease(entry.seaCreature) },
+                        LineAction("${GRAY}[${RED}-${GRAY}]") { onLineSeaCreatureDecrease(entry.seaCreature) },
+                        LineAction("${GRAY}[${RED}x${GRAY}]") { onLineSeaCreatureDelete(entry.seaCreature) }
+                    )
+                )
+            )
         }
 
         if (hiddenEntries.isNotEmpty()) {
             val otherSeaCreaturesCount = CommonUtils.formatNumberWithSpaces(hiddenEntries.sumOf { it.amount })
             val otherSeaCreaturesTypes = CommonUtils.formatNumberWithSpaces(hiddenEntries.size)
-            lines.add("${GRAY}- Other sea creatures of ${WHITE}$otherSeaCreaturesTypes ${GRAY}types: ${WHITE}$otherSeaCreaturesCount")
+            lines.add(LineInfo("${GRAY}- Other sea creatures of ${WHITE}$otherSeaCreaturesTypes ${GRAY}types: ${WHITE}$otherSeaCreaturesCount"))
         }
 
-        val totalCount = if (displayMode == SeaCreaturesTrackerDisplayMode.ALL) {
-            sourceObj.totalCount
-        } else {
-            sortedEntries.sumOf { it.amount }
-        }
-
-        val totalText = if (displayMode == SeaCreaturesTrackerDisplayMode.ALL) {
-            "${AQUA}Total: ${WHITE}${CommonUtils.formatNumberWithSpaces(totalCount)}"
-        } else {
-            val rareTotal = sortedEntries.sumOf { it.amount }
-            "${AQUA}Total: ${WHITE}${CommonUtils.formatNumberWithSpaces(rareTotal)} ${GRAY}rare out of ${WHITE}${CommonUtils.formatNumberWithSpaces(sourceObj.totalCount)}"
-        }
-        lines.add("")
-        lines.add(totalText)
+        val totalLineText = getTotalLineText(displayMode, sourceObj, sortedEntries)
+        val totalLineTooltip = getTotalLineTooltip(sourceObj)
+        lines.add(LineInfo(""))
+        lines.add(LineInfo(totalLineText, tooltip = totalLineTooltip))
 
         gui.setLines(lines)
-        val lineIndexToActions = mutableMapOf<Int, List<LineAction>>()
-        val buttonLinesCount = 2 // Buttons count (view mode, reset)
-        val titleLineIndex = buttonLinesCount
-        entriesToShow.forEachIndexed { index, entry ->
-            lineIndexToActions[titleLineIndex + 1 + index] = listOf(
-                LineAction("${GRAY}[${GREEN}+${GRAY}]") { onLineSeaCreatureIncrease(entry.seaCreature) },
-                LineAction("${GRAY}[${RED}-${GRAY}]") { onLineSeaCreatureDecrease(entry.seaCreature) },
-                LineAction("${GRAY}[${RED}x${GRAY}]") { onLineSeaCreatureDelete(entry.seaCreature) }
-            )
-        }
-        gui.setLineActions(lineIndexToActions)
 
         gui.setButtons(listOf(
             GuiButton(0, "${GRAY}[Click to show ${nextModeText}${GRAY}]", { toggleViewMode() }),
@@ -508,13 +502,53 @@ object SeaCreaturesTracker {
         ))
     }
 
-    private data class TrackerLineEntry(
+    private fun getSeaCreatureTooltip(entry: TrackerSeaCreatureEntry): List<Component> {
+        val dhText = if (entry.seaCreatureInfo.canBeDoubleHooked) {
+            "${GRAY}DH: ${WHITE}${entry.formattedDoubleHookAmount} ${GRAY}(${WHITE}${entry.formattedDoubleHookPercent} ${GRAY}of catches)"
+        } else ""
+        val lines = listOf(
+            entry.seaCreatureInfo.displayName,
+            "${GRAY}Total: ${WHITE}${entry.formattedAmount}",
+            dhText
+        )
+        return lines.map { Component.literal(it) }
+    }
+
+    private fun getTotalLineText(displayMode: SeaCreaturesTrackerDisplayMode, sourceObj: SeaCreaturesData, sortedEntries: List<TrackerSeaCreatureEntry>): String {
+        val allTotal = sourceObj.totalCount
+        val allTotalFormatted = CommonUtils.formatNumberWithSpaces(allTotal)
+        when (displayMode) {
+            SeaCreaturesTrackerDisplayMode.ALL -> {
+                return "${AQUA}Total: ${WHITE}${allTotalFormatted}"
+            }
+            SeaCreaturesTrackerDisplayMode.ONLY_RARE -> {
+                val rareTotal = sortedEntries.sumOf { it.amount }
+                val rareTotalFormatted = CommonUtils.formatNumberWithSpaces(rareTotal)
+                return "${AQUA}Total: ${WHITE}${rareTotalFormatted} ${GRAY}rare out of ${WHITE}${allTotalFormatted}"
+            }
+        }
+    }
+
+    private fun getTotalLineTooltip(sourceObj: SeaCreaturesData): List<Component> {
+        val allTotal = sourceObj.totalCount
+        val allTotalFormatted = CommonUtils.formatNumberWithSpaces(allTotal)
+        val lines = listOf(
+            "${GRAY}Total: ${WHITE}${allTotalFormatted}",
+        )
+        return lines.map { Component.literal(it) }
+    }
+
+    private data class TrackerSeaCreatureEntry(
         val seaCreature: String,
         val seaCreatureInfo: SeaCreatures.SeaCreatureInfo,
         val amount: Int,
+        val formattedAmount: String,
         val percent: Double,
+        val formattedPercent: String,
         val doubleHookAmount: Int,
-        val doubleHookPercent: Double
+        val formattedDoubleHookAmount: String,
+        val doubleHookPercent: Double,
+        val formattedDoubleHookPercent: String
     )
 }
 

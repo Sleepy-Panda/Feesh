@@ -14,6 +14,7 @@ import com.github.sleepypanda.feesh.utils.WorldUtils
 import com.github.sleepypanda.feesh.utils.ChatUtils
 import com.github.sleepypanda.feesh.utils.RegisterUtils
 import com.github.sleepypanda.feesh.utils.gui.FeeshGui
+import com.github.sleepypanda.feesh.utils.gui.LineInfo
 import com.github.sleepypanda.feesh.utils.gui.GuiButton
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
@@ -293,7 +294,7 @@ object TreasureFishingTracker {
         lines.add("")
         lines.addAll(data.total.treasureDyes.getOverlayText(treasureDye.displayName, "treasure"))
 
-        gui.setLines(lines)
+        gui.setLines(lines.map { LineInfo(it) })
         gui.setButtons(listOf(
             GuiButton(0, "${GRAY}[Click to show $nextModeText${GRAY}]", { toggleViewMode() }),
             GuiButton(1, "${GRAY}[${RED}Click to reset${GRAY}]", { resetTreasureFishingTracker(false, getCurrentViewMode()) })

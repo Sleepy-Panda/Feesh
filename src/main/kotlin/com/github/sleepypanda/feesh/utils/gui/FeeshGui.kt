@@ -21,6 +21,7 @@ import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.Font
 import java.awt.Color
+import kotlin.math.max
 import kotlin.math.roundToInt
 
 /**
@@ -46,6 +47,12 @@ data class LineAction(
     val onClick: () -> Unit
 )
 
+data class LineInfo(
+    val text: String,
+    val tooltip: List<Component>? = null,
+    val actions: List<LineAction> = emptyList()
+)
+
 /**
  * A class that represents a GUI for the Feesh mod. GUI is shown when in Skyblock and the condition is met.
  * @property coordsDataKey The unique key for this GUI, used for saving/loading coords/scale configuration.
@@ -57,7 +64,7 @@ data class LineAction(
  * @property settingsKey The settings key that must be enabled for the GUI to be displayed.
  * @property applyCustomStyleKey The settings key that must be enabled for the GUI to have custom style applied. When false, custom Overlays style (background, border, colors) is not applied to this GUI.
  * @property isClickable Whether the GUI is clickable, and will be rendered in front of background when Inventory GUI is opened.
- * @property lines The lines of the GUI.
+ * @property lines The lines of the GUI (text, optional tooltips, optional inline actions).
  * @property sampleLines The sample lines of the GUI for MoveGuis screen.
  */
 class FeeshGui {
@@ -83,15 +90,12 @@ class FeeshGui {
     private var settingsKey: (() -> Boolean)? = null
     private var applyCustomStyleKey: () -> Boolean = { true }
     private var isClickable: Boolean = false
-    private var lines: List<String> = emptyList()
+    private var lines: List<LineInfo> = emptyList()
     private var sampleLines: List<String> = emptyList()
 
     private var color: Int = Color(255, 255, 255, 255).rgb
     // Buttons are shown when in inventory/chat on top of the overlay (e.g. Reset, Pause, switch mode).
     private var buttons: List<GuiButton> = emptyList()
-    // Inline actions are shown when hovering over a line (e.g. [+], [-], [x]).
-    // Index starts from the first overlay line including buttons.
-    private var lineIndexToActions: Map<Int, List<LineAction>> = emptyMap()
 
     constructor() {
         registeredGuis.add(this)
@@ -105,7 +109,7 @@ class FeeshGui {
     fun getY(): Int = y
     fun getScale(): Float = scale
     fun getAlignment(): Alignment = alignment
-    fun getLines(): List<String> = lines
+    fun getLines(): List<LineInfo> = lines
     fun getSampleLines(): List<String> = sampleLines
     fun getSettingsKey(): (() -> Boolean)? = settingsKey
     fun getCondition(): () -> Boolean = condition
@@ -169,7 +173,7 @@ class FeeshGui {
         return this
     }
 
-    fun setLines(lines: List<String>): FeeshGui {
+    fun setLines(lines: List<LineInfo>): FeeshGui {
         this.lines = lines
         return this
     }
@@ -184,19 +188,9 @@ class FeeshGui {
 
     fun getButtons(): List<GuiButton> = buttons
 
-    /**
-     * Sets the mapping of line index to inline actions. Each overlay defines its own actions
-     * (e.g. [+], [-], [x]) and callbacks. Buttons are shown when in inventory/chat and hovering the line.
-     */
-    fun setLineActions(lineIndexToActions: Map<Int, List<LineAction>>): FeeshGui {
-        this.lineIndexToActions = lineIndexToActions
-        return this
-    }
-
     fun clearLines(): FeeshGui {
         this.lines = emptyList()
         this.buttons = emptyList()
-        this.lineIndexToActions = emptyMap()
         return this
     }
 
@@ -207,7 +201,7 @@ class FeeshGui {
 
     private fun onDraw(drawContext: GuiGraphics, textRenderer: Font, mcClient: Minecraft) {
         if (mcClient.screen is InventoryScreen && isClickable) return
-        draw(drawContext, textRenderer, mcClient, null, null)
+        draw(drawContext, textRenderer, mcClient)
     }
 
     private fun onPostDrawAfterBackground(event: ScreenAfterBackgroundRenderEvent) { // Draw in front of dark background when Inventory is opened
@@ -235,7 +229,7 @@ class FeeshGui {
             }
         }
    
-        if (lineIndexToActions.isNotEmpty() && event.screen is InventoryScreen) { // TODO: Inline buttons are not rendered when in chat, due to missing mouseX/mouseY for hover.
+        if (lines.any { it.actions.isNotEmpty() } && event.screen is InventoryScreen) { // TODO: Inline buttons are not rendered when in chat, due to missing mouseX/mouseY for hover.
             val clickedLineAction = getClickedLineAction(textRenderer, event.mouseX, event.mouseY)
             if (clickedLineAction != null) {
                 clickedLineAction.onClick()
@@ -284,14 +278,23 @@ class FeeshGui {
      */
     private fun getAllDisplayLines(): List<String> {
         val buttonLines = buttons.sortedBy { it.lineIndex }.map { it.text }
-        return buttonLines + lines
+        return buttonLines + lines.map { it.text }
+    }
+
+    /**
+     * Gets the LineInfo for the given line index, skipping the buttons.
+     */
+    private fun getLineInfoByDisplayIndex(displayIndex: Int): LineInfo? {
+        val offset = if (GuiUtils.isInInventoryOrChat()) buttons.size else 0
+        if (displayIndex < offset) return null
+        return lines.getOrNull(displayIndex - offset)
     }
 
     /**
      * Gets display lines for rendering. Buttons are included only when in inventory or chat.
      */
     private fun getDisplayLinesForRender(): List<String> {
-        return if (GuiUtils.isInInventoryOrChat()) getAllDisplayLines() else lines
+        return if (GuiUtils.isInInventoryOrChat()) getAllDisplayLines() else lines.map { it.text }
     }
 
     /**
@@ -352,11 +355,14 @@ class FeeshGui {
         val fontHeight = textRenderer.lineHeight
         val lineHeightPx = fontHeight + 2
 
-        val hoveredLineIndex = if (mouseX != null && mouseY != null && lineIndexToActions.isNotEmpty()) {
+        val hasHoverableLines = lines.any { it.actions.isNotEmpty() || !it.tooltip.isNullOrEmpty() }
+        val hoveredLineIndex = if (mouseX != null && mouseY != null && hasHoverableLines) {
             getHoveredLineIndex(textRenderer, allLines, mouseX.toDouble(), mouseY.toDouble())
         } else null
+        val hoveredLineInfo = hoveredLineIndex?.let { getLineInfoByDisplayIndex(it) }
 
-        val hoveredActions = hoveredLineIndex?.let { lineIndexToActions[it] }?.takeIf { it.isNotEmpty() }
+        val hoveredActions = hoveredLineInfo?.actions?.takeIf { it.isNotEmpty() }
+        val hoveredTooltip = hoveredLineInfo?.tooltip
 
         val maxWidth = getMaxWidth(textRenderer, allLines)
         val leftEdge = getLeftEdge(textRenderer, allLines)
@@ -422,6 +428,10 @@ class FeeshGui {
         }
 
         drawContext.pose().popMatrix()
+
+        if (!hoveredTooltip.isNullOrEmpty() && mouseX != null && mouseY != null) {
+            drawContext.setComponentTooltipForNextFrame(textRenderer, hoveredTooltip, mouseX, mouseY)
+        }
     }
 
     private fun drawStringCompat(drawContext: GuiGraphics, textRenderer: Font, text: Component, x: Int, y: Int, color: Int, shadow: Boolean) {
@@ -612,15 +622,16 @@ class FeeshGui {
      * Button positions: LEFT/CENTER = buttons on left before line; RIGHT = buttons on right after line.
      */
     private fun getClickedLineAction(textRenderer: Font, mouseX: Double, mouseY: Double): LineAction? {
-        if (lines.isEmpty() || lineIndexToActions.isEmpty()) return null
+        if (lines.none { it.actions.isNotEmpty() }) return null
 
         val allLines = getDisplayLinesForRender()
         val hoveredLineIndex = getHoveredLineIndex(textRenderer, allLines, mouseX, mouseY) ?: return null
-        val actions = lineIndexToActions[hoveredLineIndex] ?: return null
+        val lineInfo = getLineInfoByDisplayIndex(hoveredLineIndex) ?: return null
+        val actions = lineInfo.actions
         if (actions.isEmpty()) return null
 
         val scaleDouble = scale.toDouble()
-        val lineStr = allLines[hoveredLineIndex]
+        val lineStr = lineInfo.text
         val buttonsStr = actions.joinToString("") { it.text }
         val buttonsWidth = textRenderer.width(Component.literal(buttonsStr))
         val spaceWidth = textRenderer.width(Component.literal(" "))
