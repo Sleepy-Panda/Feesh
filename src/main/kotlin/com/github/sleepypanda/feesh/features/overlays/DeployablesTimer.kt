@@ -16,6 +16,7 @@ import com.github.sleepypanda.feesh.utils.EntityUtils
 import com.github.sleepypanda.feesh.utils.ChatUtils
 import com.github.sleepypanda.feesh.utils.ChatUtils.getFormattedString
 import com.github.sleepypanda.feesh.utils.gui.FeeshGui
+import com.github.sleepypanda.feesh.utils.gui.LineInfo
 import com.github.sleepypanda.feesh.utils.CommonUtils
 import com.github.sleepypanda.feesh.utils.SoundUtils
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
@@ -541,7 +542,7 @@ object DeployablesTimer {
         }
 
         if (lines.isNotEmpty()) {
-            gui.setLines(lines)
+            gui.setLines(lines.map { LineInfo(it) })
         }
     }
 

@@ -14,6 +14,7 @@ import com.github.sleepypanda.feesh.events.models.ClientTickEvent
 import com.github.sleepypanda.feesh.events.models.GameClosedEvent
 import com.github.sleepypanda.feesh.events.models.OwnSeaCreatureCaughtEvent
 import com.github.sleepypanda.feesh.utils.gui.FeeshGui
+import com.github.sleepypanda.feesh.utils.gui.LineInfo
 import com.github.sleepypanda.feesh.utils.gui.GuiButton
 import com.github.sleepypanda.feesh.settings.categories.Overlays
 import com.github.sleepypanda.feesh.utils.data.PersistentDataManager
@@ -121,7 +122,7 @@ object GalateaWaterTracker {
         lines.addAll(data.lochEmperor.getOverlayText(lochEmperor.displayName))
         lines.addAll(data.nessie.getOverlayText(nessie.displayName))
 
-        gui.setLines(lines)
+        gui.setLines(lines.map { LineInfo(it) })
         gui.setButtons(listOf(GuiButton(0, "${GRAY}[${RED}Click to reset${GRAY}]", { resetGalateaWaterTracker(false) })))
     }
 

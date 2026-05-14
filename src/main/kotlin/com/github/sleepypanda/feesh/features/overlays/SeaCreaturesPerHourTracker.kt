@@ -11,6 +11,7 @@ import com.github.sleepypanda.feesh.utils.FishingHookUtils
 import com.github.sleepypanda.feesh.utils.ChatUtils
 import com.github.sleepypanda.feesh.utils.RegisterUtils
 import com.github.sleepypanda.feesh.utils.gui.FeeshGui
+import com.github.sleepypanda.feesh.utils.gui.LineInfo
 import com.github.sleepypanda.feesh.utils.gui.GuiButton
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
@@ -146,7 +147,7 @@ object SeaCreaturesPerHourTracker {
         lines.add("")
         lines.add("${AQUA}Elapsed time: ${WHITE}${CommonUtils.formatTimeElapsed(elapsedSeconds)}${pausedText}")
 
-        gui.setLines(lines)
+        gui.setLines(lines.map { LineInfo(it) })
         gui.setButtons(listOf(
             GuiButton(0, "${GRAY}[${YELLOW}Click to pause${GRAY}]", { pause() }),
             GuiButton(1, "${GRAY}[${RED}Click to reset${GRAY}]", { reset(false) })

@@ -13,6 +13,7 @@ import com.github.sleepypanda.feesh.utils.EntityUtils
 import com.github.sleepypanda.feesh.utils.FishingHookUtils
 import com.github.sleepypanda.feesh.utils.ChatUtils.getFormattedString
 import com.github.sleepypanda.feesh.utils.gui.FeeshGui
+import com.github.sleepypanda.feesh.utils.gui.LineInfo
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
 import com.github.sleepypanda.feesh.utils.enums.Alignment
@@ -126,7 +127,7 @@ object FishingHookTimer {
         }
 
         if (text != null) {
-            gui.setLines(listOf(text))
+            gui.setLines(listOf(LineInfo(text)))
         } else {
             gui.clearLines()
         }

@@ -22,6 +22,7 @@ import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
 import com.github.sleepypanda.feesh.utils.enums.PricingModeWithNpc
 import com.github.sleepypanda.feesh.utils.gui.FeeshGui
+import com.github.sleepypanda.feesh.utils.gui.LineInfo
 import com.github.sleepypanda.feesh.utils.gui.GuiButton
 import java.util.Date
 
@@ -351,7 +352,7 @@ object MagmaCoreFishingTracker {
             lines.add("${AQUA}Total: ${GOLD}${BOLD}${CommonUtils.toShortNumber(totalCoins.toDouble()) ?: "0"} ${GRAY}(${GOLD}${CommonUtils.toShortNumber(coinsPerHour.toDouble()) ?: "0"}${GRAY}/h) ${priceModeStr}")
             lines.add("${AQUA}Elapsed time: ${WHITE}${CommonUtils.formatTimeElapsed(sourceObj.elapsedSeconds)}$pausedText")
 
-            gui.setLines(lines)
+            gui.setLines(lines.map { LineInfo(it) })
             gui.setButtons(listOf(
                 GuiButton(0, "${GRAY}[Click to show $nextModeText${GRAY}]") { toggleViewMode() },
                 GuiButton(1, "${GRAY}[${YELLOW}Click to pause${GRAY}]") { pauseMagmaCoreFishingTracker() },

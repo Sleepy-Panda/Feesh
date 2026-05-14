@@ -47,6 +47,7 @@ Newly released - https://hypixel.net/threads/hypixel-skyblock-0-24-5-assorted-qo
 - Added the Personal Sea Creature Cap - 10 mobs (probably except Isle, there might be 5)
   - I need to write better "own" sea creature detection to alert before personal cap actually happens.
 - Added the functionality of your current bait being slown in slot #9 while fishing
+  - Show current baits amount as icon or as movable text
 - Added a message for when The Primordial / Bloodshot Reforge activates
   - CAUGHT! You cocooned a Voracious Spider!
   - CAUGHT! You cocooned a Frozen Steve!

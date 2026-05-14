@@ -47,9 +47,9 @@ data class LineAction(
     val onClick: () -> Unit
 )
 
-data class LineInfo (
+data class LineInfo(
     val text: String,
-    val tooltip: Component? = null,
+    val tooltip: List<Component>? = null,
     val actions: List<LineAction> = emptyList()
 )
 
@@ -64,7 +64,7 @@ data class LineInfo (
  * @property settingsKey The settings key that must be enabled for the GUI to be displayed.
  * @property applyCustomStyleKey The settings key that must be enabled for the GUI to have custom style applied. When false, custom Overlays style (background, border, colors) is not applied to this GUI.
  * @property isClickable Whether the GUI is clickable, and will be rendered in front of background when Inventory GUI is opened.
- * @property lines The lines of the GUI.
+ * @property lines The lines of the GUI (text, optional tooltips, optional inline actions).
  * @property sampleLines The sample lines of the GUI for MoveGuis screen.
  */
 class FeeshGui {
@@ -90,18 +90,12 @@ class FeeshGui {
     private var settingsKey: (() -> Boolean)? = null
     private var applyCustomStyleKey: () -> Boolean = { true }
     private var isClickable: Boolean = false
-    private var lines: List<String> = emptyList()
+    private var lines: List<LineInfo> = emptyList()
     private var sampleLines: List<String> = emptyList()
 
     private var color: Int = Color(255, 255, 255, 255).rgb
     // Buttons are shown when in inventory/chat on top of the overlay (e.g. Reset, Pause, switch mode).
     private var buttons: List<GuiButton> = emptyList()
-    // Inline actions are shown when hovering over a line (e.g. [+], [-], [x]).
-    // Index starts from the first overlay line including buttons.
-    private var lineIndexToActions: Map<Int, List<LineAction>> = emptyMap()
-    // Tooltips are shown when hovering over a line.
-    // Index starts from the first overlay line including buttons.
-    private var lineIndexToTooltip: Map<Int, Component> = emptyMap()
 
     constructor() {
         registeredGuis.add(this)
@@ -115,7 +109,7 @@ class FeeshGui {
     fun getY(): Int = y
     fun getScale(): Float = scale
     fun getAlignment(): Alignment = alignment
-    fun getLines(): List<String> = lines
+    fun getLines(): List<LineInfo> = lines
     fun getSampleLines(): List<String> = sampleLines
     fun getSettingsKey(): (() -> Boolean)? = settingsKey
     fun getCondition(): () -> Boolean = condition
@@ -179,7 +173,7 @@ class FeeshGui {
         return this
     }
 
-    fun setLines(lines: List<String>): FeeshGui {
+    fun setLines(lines: List<LineInfo>): FeeshGui {
         this.lines = lines
         return this
     }
@@ -194,29 +188,9 @@ class FeeshGui {
 
     fun getButtons(): List<GuiButton> = buttons
 
-    /**
-     * Sets the mapping of line indexes to multiple inline actions. Each overlay line can have its own actions (e.g. [+], [-], [x]) and callbacks.
-     * Buttons are shown when in inventory and hovering a line.
-     */
-    fun setLineActions(lineIndexToActions: Map<Int, List<LineAction>>): FeeshGui {
-        this.lineIndexToActions = lineIndexToActions
-        return this
-    }
-
-    /**
-     * Sets the mapping of line indexes to optional tooltips. Each overlay line can have its own tooltip.
-     * Buttons are shown when in inventory and hovering a line.
-     */
-    fun setTooltips(lineIndexToTooltip: Map<Int, Component>): FeeshGui {
-        this.lineIndexToTooltip = lineIndexToTooltip
-        return this
-    }
-
     fun clearLines(): FeeshGui {
         this.lines = emptyList()
         this.buttons = emptyList()
-        this.lineIndexToActions = emptyMap()
-        this.lineIndexToTooltip = emptyMap()
         return this
     }
 
@@ -256,7 +230,7 @@ class FeeshGui {
             }
         }
    
-        if (lineIndexToActions.isNotEmpty() && event.screen is InventoryScreen) { // TODO: Inline buttons are not rendered when in chat, due to missing mouseX/mouseY for hover.
+        if (lines.any { it.actions.isNotEmpty() } && event.screen is InventoryScreen) { // TODO: Inline buttons are not rendered when in chat, due to missing mouseX/mouseY for hover.
             val clickedLineAction = getClickedLineAction(textRenderer, event.mouseX, event.mouseY)
             if (clickedLineAction != null) {
                 clickedLineAction.onClick()
@@ -305,14 +279,23 @@ class FeeshGui {
      */
     private fun getAllDisplayLines(): List<String> {
         val buttonLines = buttons.sortedBy { it.lineIndex }.map { it.text }
-        return buttonLines + lines
+        return buttonLines + lines.map { it.text }
+    }
+
+    /**
+     * Gets the LineInfo for the given line index, skipping the buttons.
+     */
+    private fun getLineInfoByDisplayIndex(displayIndex: Int): LineInfo? {
+        val offset = if (GuiUtils.isInInventoryOrChat()) buttons.size else 0
+        if (displayIndex < offset) return null
+        return lines.getOrNull(displayIndex - offset)
     }
 
     /**
      * Gets display lines for rendering. Buttons are included only when in inventory or chat.
      */
     private fun getDisplayLinesForRender(): List<String> {
-        return if (GuiUtils.isInInventoryOrChat()) getAllDisplayLines() else lines
+        return if (GuiUtils.isInInventoryOrChat()) getAllDisplayLines() else lines.map { it.text }
     }
 
     /**
@@ -382,13 +365,14 @@ class FeeshGui {
         val fontHeight = textRenderer.lineHeight
         val lineHeightPx = fontHeight + 2
 
-        val hoveredLineIndex = if (mouseX != null && mouseY != null && (lineIndexToActions.isNotEmpty() || lineIndexToTooltip.isNotEmpty())) {
+        val hasHoverableLines = lines.any { it.actions.isNotEmpty() || !it.tooltip.isNullOrEmpty() }
+        val hoveredLineIndex = if (mouseX != null && mouseY != null && hasHoverableLines) {
             getHoveredLineIndex(textRenderer, allLines, mouseX.toDouble(), mouseY.toDouble())
         } else null
+        val hoveredLineInfo = hoveredLineIndex?.let { getLineInfoByDisplayIndex(it) }
 
-        val hoveredActions = hoveredLineIndex?.let { lineIndexToActions[it] }?.takeIf { it.isNotEmpty() }
-
-        val hoveredTooltip = hoveredLineIndex?.let { lineIndexToTooltip[it] }
+        val hoveredActions = hoveredLineInfo?.actions?.takeIf { it.isNotEmpty() }
+        val hoveredTooltip = hoveredLineInfo?.tooltip
 
         val maxWidth = getMaxWidth(textRenderer, allLines)
         val leftEdge = getLeftEdge(textRenderer, allLines)
@@ -455,9 +439,9 @@ class FeeshGui {
 
         drawContext.pose().popMatrix()
 
-        if (hoveredTooltip != null && mouseX != null && mouseY != null) {
-            val (anchorX, anchorY) = tooltipAnchorForAlignment(mouseX, mouseY)
-            drawContext.setComponentTooltipForNextFrame(textRenderer, listOf(hoveredTooltip), anchorX, anchorY)
+        if (!hoveredTooltip.isNullOrEmpty() && mouseX != null && mouseY != null) {
+            //val (anchorX, anchorY) = tooltipAnchorForAlignment(mouseX, mouseY)
+            drawContext.setComponentTooltipForNextFrame(textRenderer, hoveredTooltip, mouseX, mouseY)
         }
     }
 
@@ -466,9 +450,9 @@ class FeeshGui {
         val ox = when (alignment) {
             Alignment.LEFT -> 10
             Alignment.RIGHT -> -10
-            Alignment.CENTER -> 0
+            Alignment.CENTER -> 10
         }
-        return (mouseX + ox) to (mouseY + 12)
+        return (mouseX + ox) to (mouseY + 10)
     }
 
     private fun drawStringCompat(drawContext: GuiGraphics, textRenderer: Font, text: Component, x: Int, y: Int, color: Int, shadow: Boolean) {
@@ -659,15 +643,16 @@ class FeeshGui {
      * Button positions: LEFT/CENTER = buttons on left before line; RIGHT = buttons on right after line.
      */
     private fun getClickedLineAction(textRenderer: Font, mouseX: Double, mouseY: Double): LineAction? {
-        if (lines.isEmpty() || lineIndexToActions.isEmpty()) return null
+        if (lines.none { it.actions.isNotEmpty() }) return null
 
         val allLines = getDisplayLinesForRender()
         val hoveredLineIndex = getHoveredLineIndex(textRenderer, allLines, mouseX, mouseY) ?: return null
-        val actions = lineIndexToActions[hoveredLineIndex] ?: return null
+        val lineInfo = getLineInfoByDisplayIndex(hoveredLineIndex) ?: return null
+        val actions = lineInfo.actions
         if (actions.isEmpty()) return null
 
         val scaleDouble = scale.toDouble()
-        val lineStr = allLines[hoveredLineIndex]
+        val lineStr = lineInfo.text
         val buttonsStr = actions.joinToString("") { it.text }
         val buttonsWidth = textRenderer.width(Component.literal(buttonsStr))
         val spaceWidth = textRenderer.width(Component.literal(" "))

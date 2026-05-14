@@ -12,6 +12,7 @@ import com.github.sleepypanda.feesh.utils.WorldUtils
 import com.github.sleepypanda.feesh.utils.EntityUtils
 import com.github.sleepypanda.feesh.utils.SoundUtils
 import com.github.sleepypanda.feesh.utils.gui.FeeshGui
+import com.github.sleepypanda.feesh.utils.gui.LineInfo
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
 import com.github.sleepypanda.feesh.utils.EntityUtils.SeaCreatureParsedNametagInfo
@@ -236,7 +237,7 @@ object SeaCreatureHpTracker {
             lines.add("${mob.nametag}$immunityText")
         }
 
-        gui.setLines(lines)
+        gui.setLines(lines.map { LineInfo(it) })
     }
 
     private fun getSeaCreaturesInRange(includedSeaCreatureNames: List<String>, distance: Double): List<SeaCreatureParsedNametagInfo> {

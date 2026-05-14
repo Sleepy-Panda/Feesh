@@ -15,6 +15,7 @@ import com.github.sleepypanda.feesh.utils.SoundUtils
 import com.github.sleepypanda.feesh.utils.TabListUtils
 import com.github.sleepypanda.feesh.utils.PlayerUtils
 import com.github.sleepypanda.feesh.utils.gui.FeeshGui
+import com.github.sleepypanda.feesh.utils.gui.LineInfo
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.constants.Sounds
 import java.util.Date
@@ -151,7 +152,7 @@ object RainTimer {
         val worldName = WorldUtils.getWorldName()
         val color = if (isActiveEvent && rainSecondsLeft!! in 0..SECONDS_ALERT_THRESHOLD) RED else WHITE
         val timePart = if ((worldName == WorldUtils.SPIDERS_DEN || worldName == WorldUtils.LOTUS_ATOLL || worldName == WorldUtils.BACKWATER_BAYOU) && !isActiveEvent) "${GRAY}starts in ${WHITE}${rainTimer}" else "${GRAY}ends in ${color}${rainTimer}"
-        gui.setLines(listOf("${BLUE}${label} $timePart"))
+        gui.setLines(listOf(LineInfo("${BLUE}${label} $timePart")))
     }
 
     private fun playRainEndingSoonAlert() {
