@@ -787,23 +787,11 @@ ${GRAY}To pause: ${WHITE}/${FishingProfitTracker.PAUSE_COMMAND}
  
     init {
         button {
-            title = "Fishing profit tracker commands"
-            description = "Explains in your chat how to use manual commands to adjust items count in the Fishing profit tracker [Session] and [Total]."
-            text = "Click for help"
+            title = "Editing Fishing profit tracker guide"
+            description = "Opens a guide on how to adjust item counts and elapsed time in the Fishing profit tracker [Session] and [Total]."
+            text = "Click to open"
             onClick {
-                ChatUtils.sendLocalChat("${AQUA}${BOLD}Fishing profit tracker commands${RESET}", true)
-                ChatUtils.sendLocalChat("${GRAY}Use these to manually fix/import drops:")
-                ChatUtils.sendLocalChat("${YELLOW}Command: ${GRAY}set [Session] count ->")
-                ChatUtils.sendLocalChat("${WHITE}/${FishingProfitTracker.SET_ITEM_COUNT_COMMAND}${GOLD} <ITEM_ID> <COUNT>")
-                ChatUtils.sendLocalChat("${YELLOW}Command: ${GRAY}set [Total] count ->")
-                ChatUtils.sendLocalChat("${WHITE}/${FishingProfitTracker.SET_ITEM_COUNT_TOTAL_COMMAND}${GOLD} <ITEM_ID> <COUNT>")
-                ChatUtils.sendLocalChat("${YELLOW}Command: ${GRAY}delete from [Session] ->")
-                ChatUtils.sendLocalChat("${WHITE}/${FishingProfitTracker.DELETE_ITEM_COMMAND}${GOLD} <ITEM_ID>")
-                ChatUtils.sendLocalChat("${YELLOW}Command: ${GRAY}delete from [Total] ->")
-                ChatUtils.sendLocalChat("${WHITE}/${FishingProfitTracker.DELETE_ITEM_TOTAL_COMMAND}${GOLD} <ITEM_ID>")
-                ChatUtils.sendLocalChat("${DARK_AQUA}Arg <ITEM_ID>: ${GRAY}drop ID (e.g. MAGMA_FISH, MAGMA_FISH_SILVER, FLYING_FISH;4; SQUID;4+100)")
-                ChatUtils.sendLocalChat("${DARK_AQUA}Arg <COUNT>: ${GRAY}count to show - positive integer")
-                ChatUtils.sendLocalChat("${GREEN}Example: ${WHITE}/${FishingProfitTracker.SET_ITEM_COUNT_COMMAND} MAGMA_FISH 64")
+                Util.getPlatform().openUri("https://github.com/Sleepy-Panda/Feesh/blob/develop/docs/Editing%20profit%20tracker.md")
             }
         }
     }

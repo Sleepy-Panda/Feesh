@@ -78,6 +78,8 @@ object FishingProfitTracker {
     const val SET_ITEM_COUNT_TOTAL_COMMAND = "feeshSetItemCountFishingProfitTotal"
     const val DELETE_ITEM_COMMAND = "feeshDeleteItemFishingProfit"
     const val DELETE_ITEM_TOTAL_COMMAND = "feeshDeleteItemFishingProfitTotal"
+    const val SET_TIME_COMMAND = "feeshSetTimeFishingProfit"
+    const val SET_TIME_TOTAL_COMMAND = "feeshSetTimeFishingProfitTotal"
 
     private val COINS_CATCH_PATTERN = Regex("^⛃ (?:GOOD|GREAT|OUTSTANDING) CATCH! You caught ([\\d,]+) Coins.*")
     private val ICE_ESSENCE_CATCH_PATTERN = Regex("^⛃ (?:GOOD|GREAT|OUTSTANDING) CATCH! You caught Ice Essence x([\\d,]+).*")
@@ -164,6 +166,12 @@ object FishingProfitTracker {
         }
         RegisterUtils.command(DELETE_ITEM_TOTAL_COMMAND) { args ->
             onDeleteItemCommand(args, ViewMode.TOTAL)
+        }
+        RegisterUtils.command(SET_TIME_COMMAND) { args ->
+            onSetElapsedTimeCommand(args, ViewMode.SESSION)
+        }
+        RegisterUtils.command(SET_TIME_TOTAL_COMMAND) { args ->
+            onSetElapsedTimeCommand(args, ViewMode.TOTAL)
         }
     }
 
@@ -404,6 +412,66 @@ object FishingProfitTracker {
             refreshTotalItemsProfitsInMode(viewMode)
             updateGuiLines()
             ChatUtils.sendLocalChat("${WHITE}Deleted ${WHITE}${entry.amount}x ${displayName}${WHITE} from the Fishing profit tracker ${viewModeText}${WHITE}.", true)
+        }
+    }
+
+    private fun onSetElapsedTimeCommand(args: Array<String>, viewMode: ViewMode) {
+        
+        fun getNewElapsedSeconds(value: String, currentElapsedSeconds: Int): Int? {
+            val trimmed = value.trim()
+            if (trimmed.isEmpty()) return null
+    
+            val newSeconds = when {
+                trimmed.startsWith("+") -> {
+                    val delta = trimmed.drop(1).toIntOrNull() ?: return null
+                    if (delta <= 0) return null
+                    currentElapsedSeconds + delta
+                }
+                trimmed.startsWith("-") -> {
+                    val delta = trimmed.drop(1).toIntOrNull() ?: return null
+                    if (delta <= 0) return null
+                    currentElapsedSeconds - delta
+                }
+                else -> trimmed.toIntOrNull()
+            } ?: return null
+    
+            if (newSeconds < 0) return null
+            return newSeconds
+        }
+
+        CommonUtils.runWithCatching("Failed to change elapsed time in Fishing profit tracker") {
+            if (args.isEmpty()) {
+                val commandName = when (viewMode) {
+                    ViewMode.SESSION -> SET_TIME_COMMAND
+                    ViewMode.TOTAL -> SET_TIME_TOTAL_COMMAND
+                }
+                ChatUtils.sendLocalChat(
+                    "${RED}Usage: /$commandName <seconds> ${GRAY}(e.g. 10000, +500, -500)",
+                    true
+                )
+                return
+            }
+
+            val sourceObj = getSourceObject(viewMode)
+            val newElapsedSeconds = getNewElapsedSeconds(args[0], sourceObj.elapsedSeconds)
+            if (newElapsedSeconds == null) {
+                ChatUtils.sendLocalChat(
+                    "${RED}Invalid value. Use seconds as a positive integer, or +N / -N to adjust (result must stay positive).",
+                    true
+                )
+                return
+            }
+
+            sourceObj.elapsedSeconds = newElapsedSeconds
+            saveData()
+            updateGuiLines()
+
+            val viewModeText = getViewModeDisplayText(viewMode)
+            val elapsedStr = CommonUtils.formatTimeElapsed(newElapsedSeconds)
+            ChatUtils.sendLocalChat(
+                "${WHITE}Elapsed time in Fishing profit tracker $viewModeText ${WHITE}is now ${AQUA}$elapsedStr${WHITE}.",
+                true
+            )
         }
     }
 
