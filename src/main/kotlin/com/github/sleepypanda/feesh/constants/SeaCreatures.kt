@@ -49,6 +49,7 @@ object SeaCreatureNames {
     const val SCARECROW = "Scarecrow"
     const val NIGHTMARE = "Nightmare"
     const val WEREWOLF = "Werewolf"
+    const val JUMPIN_JACK = "Jumpin' Jack"
 
     // CRIMSON ISLE
     const val FRIED_CHICKEN = "Fried Chicken"
@@ -160,6 +161,7 @@ object SeaCreatureMessages {
     const val SCARECROW_MESSAGE = "^Phew\\! It\\'s only a Scarecrow\\.$"
     const val NIGHTMARE_MESSAGE = "^You hear trotting from beneath the waves, you caught a Nightmare\\.$"
     const val WEREWOLF_MESSAGE = "^It must be a full moon, a Werewolf appears\\.$"
+    const val JUMPIN_JACK_MESSAGE = "^Jumpin' Jack has appeared\\.$" // TODO find actual message
 
     // CRIMSON ISLE
     const val FRIED_CHICKEN_MESSAGE = "^Smells of burning\\. Must be a Fried Chicken\\.$"
@@ -265,7 +267,7 @@ class SeaCreatures {
                 false,
             ),
             SeaCreatureInfo(
-                SeaCreatureNames.NIGHT_SQUID,
+                SeaCreatureNames.NIGHT_SQUID, // Legacy
                 COMMON.code,
                 Regex(SeaCreatureMessages.NIGHT_SQUID_MESSAGE),
                 false,
@@ -276,7 +278,7 @@ class SeaCreatures {
                 Regex(SeaCreatureMessages.SEA_WALKER_MESSAGE),
                 false,
             ),
-            SeaCreatureInfo(
+            SeaCreatureInfo( // Legacy
                 SeaCreatureNames.SEA_GUARDIAN,
                 COMMON.code,
                 Regex(SeaCreatureMessages.SEA_GUARDIAN_MESSAGE),
@@ -468,6 +470,12 @@ class SeaCreatures {
                 SeaCreatureNames.WEREWOLF,
                 EPIC.code,
                 Regex(SeaCreatureMessages.WEREWOLF_MESSAGE),
+                false,
+            ),
+            SeaCreatureInfo(
+                SeaCreatureNames.JUMPIN_JACK,
+                COMMON.code,
+                Regex(SeaCreatureMessages.JUMPIN_JACK_MESSAGE),
                 false,
             ),
 
