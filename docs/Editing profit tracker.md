@@ -23,41 +23,50 @@ Open your **inventory** while the overlay is visible. It makes no difference if 
 
 | Button | Action |
 |--------|--------|
-| `[+]` | Add **1** to item count |
-| `[-]` | Remove **1**  from item count |
+| `[+]` | Add **1** to current count |
+| `[-]` | Subtract **1** from current count |
 | `[x]` | Delete the item from tracker (with confirmation) |
 
 The commands affect only the currently selected view mode. Use `Click to show [Total] / [Session]` if you need to edit the other view mode.
 
 ### 3. Commands
 
-While the overlay is visible, use chat commands when you need to set an exact count for the items.
+You can use chat commands when you need to set or adjust count for the items. Make sure the overlay is **visible**, to control the results of commands execution.
 
 | Action | [Session] | [Total] |
 |--------|-----------|---------|
-| Set count | `/feeshSetItemCountFishingProfit <ITEM_ID> <COUNT>` | `/feeshSetItemCountFishingProfitTotal <ITEM_ID> <COUNT>` |
-| Delete item | `/feeshDeleteItemFishingProfit <ITEM_ID>` | `/feeshDeleteItemFishingProfitTotal <ITEM_ID>` |
+| Set / adjust item count | `/feeshSetItemCountFishingProfit <ITEM_ID> <COUNT>` | `/feeshSetItemCountFishingProfitTotal <ITEM_ID> <COUNT>` |
+| Delete item (with confirmation) | `/feeshDeleteItemFishingProfit <ITEM_ID>` | `/feeshDeleteItemFishingProfitTotal <ITEM_ID>` |
 
-- `ITEM_ID` - look at the section below to identify IDs.
-- `COUNT` - positive integer; **sets** the line to that amount.
-- Delete commands ask for confirmation.
+**`<COUNT>` formats**
+
+| Format | Meaning |
+|--------|---------|
+| `100` | Set item count to **100** - replace current count |
+| `+1` | Add **1** to current count |
+| `-1` | Subtract **1** from current count |
+
+- `ITEM_ID` - look at the section below to find item ID.
 
 ### Examples
 
 ```text
-/feeshSetItemCountFishingProfit RADIOACTIVE_VIAL 2
+/feeshSetItemCountFishingProfit RADIOACTIVE_VIAL +1
+/feeshSetItemCountFishingProfit MAGMA_FISH 64000
 /feeshSetItemCountFishingProfitTotal MAGMA_FISH_SILVER 10000
 /feeshSetItemCountFishingProfit FLYING_FISH;4+100 3
+/feeshSetItemCountFishingProfit ENCHANTED_SPONGE -10
 /feeshDeleteItemFishingProfit ENCHANTED_SPONGE
 ```
 
 ### Item IDs
 
-Commands and internal storage use **item IDs** aligned with **Bazaar** and **Auction House (lowest bin)** APIs.
+Commands and internal storage use **item IDs** aligned with **Bazaar** and **Auction House lowest bin** APIs.
 
 1. **Built-in list** - Most fishing drops are defined in [`FishingProfitDrops.kt`](https://github.com/Sleepy-Panda/Feesh/blob/develop/src/main/kotlin/com/github/sleepypanda/feesh/constants/FishingProfitDrops.kt). Search that file for the item name; use the `itemId` field (e.g. `MAGMA_FISH`, `MAGMA_FISH_SILVER`, `CORRUPTED_NETHER_STAR`).
 2. **Bazaar items** - Alternatively, for bazaar items, you can rely on `product_id` field of [Bazaar API](https://api.hypixel.net/skyblock/bazaar?product).
 3. **Auction items** - Alternatively, for Auction items, you can rely on auction API (Settings -> **Auction price API**), use `product_id`.
+4. **Max level pets** - see section below.
 
 #### Max level pets (level 100 / 200)
 
@@ -79,9 +88,9 @@ Examples:
 
 ## Editing elapsed time
 
-Coins/h is calculated from total profit and elapsed time. You might need to adjust elapsed time to fix coins/h after editing drops.
+Coins/h is calculated from total profit and elapsed time. You might need to adjust elapsed time to fix coins/h after editing drop list.
 
-While the overlay is visible, you can use the following commands:
+While the overlay is **visible**, you can use the following commands:
 
 | Action | [Session] | [Total] |
 |--------|-----------|---------|

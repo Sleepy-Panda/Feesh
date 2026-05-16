@@ -310,9 +310,39 @@ object FishingProfitTracker {
     }
 
     private fun onSetItemCountCommand(args: Array<String>, viewMode: ViewMode) {
+        
+        fun getNewCount(value: String, currentCount: Int): Int? {
+            val trimmed = value.trim()
+            if (trimmed.isEmpty()) return null
+    
+            val newCount = when {
+                trimmed.startsWith("+") -> {
+                    val delta = trimmed.drop(1).toIntOrNull() ?: return null
+                    if (delta <= 0) return null
+                    currentCount + delta
+                }
+                trimmed.startsWith("-") -> {
+                    val delta = trimmed.drop(1).toIntOrNull() ?: return null
+                    if (delta <= 0) return null
+                    currentCount - delta
+                }
+                else -> trimmed.toIntOrNull()
+            } ?: return null
+    
+            if (newCount <= 0) return null
+            return newCount
+        }
+
         CommonUtils.runWithCatching("Failed to change item count in Fishing profit tracker") {
             if (args.size < 2) {
-                ChatUtils.sendLocalChat("${RED}Usage: /$SET_ITEM_COUNT_COMMAND <itemID> <count>", true)
+                val commandName = when (viewMode) {
+                    ViewMode.SESSION -> SET_ITEM_COUNT_COMMAND
+                    ViewMode.TOTAL -> SET_ITEM_COUNT_TOTAL_COMMAND
+                }
+                ChatUtils.sendLocalChat(
+                    "${RED}Usage: /$commandName <itemID> <count> ${GRAY}(e.g. 64, +1, -1)",
+                    true
+                )
                 return
             }
          
@@ -322,9 +352,14 @@ object FishingProfitTracker {
                 return
             }
 
-            val count = args[1].toIntOrNull()
-            if (count == null || count == 0) {
-                ChatUtils.sendLocalChat("${RED}Invalid count, should be a positive number: ${args[0]}", true)
+            val sourceObj = getSourceObject(viewMode)
+            val currentCount = sourceObj.profitTrackerItems[itemId]?.amount ?: 0
+            val count = getNewCount(args[1], currentCount)
+            if (count == null) {
+                ChatUtils.sendLocalChat(
+                    "${RED}Invalid count. Use a positive integer, or +N / -N to adjust (result must stay positive).",
+                    true
+                )
                 return
             }
 
@@ -340,8 +375,8 @@ object FishingProfitTracker {
             }
             val displayName = getDisplayNameForGui(itemId, itemName)
 
-            val sourceObj = getSourceObject(viewMode)
             val existing = sourceObj.profitTrackerItems[itemId]
+            val previousCount = existing?.amount ?: 0
 
             if (existing == null) {
                 sourceObj.profitTrackerItems[itemId] = ProfitTrackerItemEntry(
@@ -359,7 +394,7 @@ object FishingProfitTracker {
             updateGuiLines()
 
             val viewModeText = getViewModeDisplayText(viewMode)
-            ChatUtils.sendLocalChat("${WHITE}Changed count of ${displayName} ${WHITE}to ${count} in Fishing profit tracker $viewModeText${WHITE}.", true)
+            ChatUtils.sendLocalChat("${WHITE}Count of ${displayName} ${WHITE}in Fishing profit tracker $viewModeText ${WHITE}is changed from ${AQUA}${previousCount} ${WHITE}to ${AQUA}${count}${WHITE}.", true)
         }
     }
 
@@ -462,14 +497,18 @@ object FishingProfitTracker {
                 return
             }
 
-            sourceObj.elapsedSeconds = newElapsedSeconds
-            saveData()
-            updateGuiLines()
+            val previousElapsedSeconds = sourceObj.elapsedSeconds
+            if (previousElapsedSeconds != newElapsedSeconds) {
+                sourceObj.elapsedSeconds = newElapsedSeconds
+                saveData()
+                updateGuiLines()
+            }
 
             val viewModeText = getViewModeDisplayText(viewMode)
+            val previousElapsedStr = CommonUtils.formatTimeElapsed(previousElapsedSeconds)
             val elapsedStr = CommonUtils.formatTimeElapsed(newElapsedSeconds)
             ChatUtils.sendLocalChat(
-                "${WHITE}Elapsed time in Fishing profit tracker $viewModeText ${WHITE}is now ${AQUA}$elapsedStr${WHITE}.",
+                "${WHITE}Elapsed time in Fishing profit tracker $viewModeText ${WHITE}is changed from ${AQUA}${previousElapsedStr} ${WHITE}to ${AQUA}${elapsedStr}${WHITE}.",
                 true
             )
         }
@@ -945,7 +984,7 @@ object FishingProfitTracker {
     }
 
     private fun onLineItemIncrease(itemId: String) {
-        CommonUtils.runWithCatching("Failed to change item amount in Fishing profit tracker") {
+        CommonUtils.runWithCatching("Failed to change item count in Fishing profit tracker") {
             if (!isTrackerVisible()) return
 
             val viewMode = getCurrentViewMode()
@@ -966,7 +1005,7 @@ object FishingProfitTracker {
     }
 
     private fun onLineItemDecrease(itemId: String) {
-        CommonUtils.runWithCatching("Failed to change item amount in Fishing profit tracker") {
+        CommonUtils.runWithCatching("Failed to change item count in the Fishing profit tracker") {
             if (!isTrackerVisible()) return
 
             val viewMode = getCurrentViewMode()
