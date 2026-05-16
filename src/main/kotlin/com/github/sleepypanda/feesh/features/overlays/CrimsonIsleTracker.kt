@@ -58,17 +58,17 @@ object CrimsonIsleTracker {
         .setSampleLines(listOf(
             baseTitle,
             "${fieryScuttler.displayName}${GRAY}: ${WHITE}50 ${GRAY}catches ago ${DARK_GRAY}(${GRAY}avg: ${WHITE}100${DARK_GRAY})",
-            "${GRAY}Last on: ${WHITE}30m ago ${GRAY}(${WHITE}2025-01-15 15:00:00${GRAY})",
+            "${GRAY}Last on: ${WHITE}30m ago",
             "${ragnarok.displayName}${GRAY}: ${WHITE}500 ${GRAY}catches ago ${DARK_GRAY}(${GRAY}avg: ${WHITE}1 000${DARK_GRAY})",
-            "${GRAY}Last on: ${WHITE}3h 45m ago ${GRAY}(${WHITE}2025-01-15 12:00:00${GRAY})",
+            "${GRAY}Last on: ${WHITE}3h 45m ago",
             "${plhlegblast.displayName}${GRAY}: ${WHITE}200 ${GRAY}catches ago ${DARK_GRAY}(${GRAY}avg: ${WHITE}400${DARK_GRAY})",
-            "${GRAY}Last on: ${WHITE}1h 20m ago ${GRAY}(${WHITE}2025-01-15 14:00:00${GRAY})",
+            "${GRAY}Last on: ${WHITE}1h 20m ago",
             "${thunder.displayName}${GRAY}: ${WHITE}10 ${GRAY}catches ago ${DARK_GRAY}(${GRAY}avg: ${WHITE}200${DARK_GRAY})",
-            "${GRAY}Last on: ${WHITE}10m ago ${GRAY}(${WHITE}2025-01-15 14:30:00${GRAY})",
+            "${GRAY}Last on: ${WHITE}10m ago",
             "${lordJawbus.displayName}${GRAY}: ${WHITE}1 000 ${GRAY}catches ago ${DARK_GRAY}(${GRAY}avg: ${WHITE}500${DARK_GRAY})",
-            "${GRAY}Last on: ${WHITE}5h 20m ago ${GRAY}(${WHITE}2025-01-15 10:10:00${GRAY})",
+            "${GRAY}Last on: ${WHITE}5h 20m ago",
             "${radioactiveVial.displayName}s${GRAY}: ${WHITE}5",
-            "${GRAY}Last on: ${WHITE}2h 15m ${GRAY}(${WHITE}2025-01-15 13:15:00${GRAY})",
+            "${GRAY}Last on: ${WHITE}2h 15m ago",
             "${GRAY}Last on: ${WHITE}5 ${GRAY}Lord Jawbuses ago"
         ))
         .setSettingsKey { Overlays.crimsonIsleTrackerOverlay }
@@ -237,23 +237,23 @@ object CrimsonIsleTracker {
 
         val isInHotspot = isFishingInHotspot()
         val isInPlhlegblastPool = isInPlhlegblastPool()
-        val lines = mutableListOf<String>()
-        lines.add(baseTitle)
+        val lines = mutableListOf<LineInfo>()
+        lines.add(LineInfo(baseTitle))
 
         if (isInHotspot) {
-            lines.addAll(data.fieryScuttler.getOverlayText(fieryScuttler.displayName))
-            lines.addAll(data.ragnarok.getOverlayText(ragnarok.displayName))
+            lines.addAll(data.fieryScuttler.getOverlayLines(fieryScuttler.displayName))
+            lines.addAll(data.ragnarok.getOverlayLines(ragnarok.displayName))
         }
 
         if (isInPlhlegblastPool) {
-            lines.addAll(data.plhlegblast.getOverlayText(plhlegblast.displayName))
+            lines.addAll(data.plhlegblast.getOverlayLines(plhlegblast.displayName))
         }
 
-        lines.addAll(data.thunder.getOverlayText(thunder.displayName))
-        lines.addAll(data.lordJawbus.getOverlayText(lordJawbus.displayName))
-        lines.addAll(data.radioactiveVials.getOverlayText(radioactiveVial.displayName, lordJawbus.displayName))
+        lines.addAll(data.thunder.getOverlayLines(thunder.displayName))
+        lines.addAll(data.lordJawbus.getOverlayLines(lordJawbus.displayName))
+        lines.addAll(data.radioactiveVials.getOverlayLines(radioactiveVial.displayName, lordJawbus.displayName))
 
-        gui.setLines(lines.map { LineInfo(it) })
+        gui.setLines(lines)
         gui.setButtons(listOf(GuiButton(0, "${GRAY}[${RED}Click to reset${GRAY}]", { resetCrimsonIsleTracker(false) })))
     }
 

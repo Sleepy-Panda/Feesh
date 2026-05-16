@@ -45,9 +45,9 @@ object WaterHotspotsTracker {
         .setSampleLines(listOf(
             baseTitle,
             "${wikiTiki.displayName}${GRAY}: ${WHITE}1 000 ${GRAY}catches ago ${DARK_GRAY}(${GRAY}avg: ${WHITE}500${DARK_GRAY})",
-            "${GRAY}Last on: ${WHITE}5h 20m ago ${GRAY}(${WHITE}2025-01-15 10:10:00${GRAY})",
+            "${GRAY}Last on: ${WHITE}5h 20m ago",
             "${tikiMask.displayName}s${GRAY}: ${WHITE}3",
-            "${GRAY}Last on: ${WHITE}3h 45m ${GRAY}(${WHITE}2025-01-15 11:45:00${GRAY})",
+            "${GRAY}Last on: ${WHITE}3h 45m ago",
             "${GRAY}Last on: ${WHITE}567 ${GRAY}Wiki Tikis ago"
         ))
         .setSettingsKey { Overlays.waterHotspotsTrackerOverlay }
@@ -122,11 +122,11 @@ object WaterHotspotsTracker {
             !FishingHookUtils.wasFishingHookActiveInHotspotSecondsAgo(300)
         ) return
 
-        val lines = mutableListOf<String>()
-        lines.add(baseTitle)
-        lines.addAll(data.wikiTiki.getOverlayText(wikiTiki.displayName))
-        lines.addAll(data.tikiMasks.getOverlayText(tikiMask.displayName, wikiTiki.displayName))
-        gui.setLines(lines.map { LineInfo(it) })
+        val lines = mutableListOf<LineInfo>()
+        lines.add(LineInfo(baseTitle))
+        lines.addAll(data.wikiTiki.getOverlayLines(wikiTiki.displayName))
+        lines.addAll(data.tikiMasks.getOverlayLines(tikiMask.displayName, wikiTiki.displayName))
+        gui.setLines(lines)
         gui.setButtons(listOf(GuiButton(0, "${GRAY}[${RED}Click to reset${GRAY}]", { resetWaterHotspotsTracker(false) })))
     }
 

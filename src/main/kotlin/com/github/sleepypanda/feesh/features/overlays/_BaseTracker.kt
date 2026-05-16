@@ -4,7 +4,9 @@ import com.github.sleepypanda.feesh.utils.CommonUtils
 import com.github.sleepypanda.feesh.utils.ChatUtils
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
+import com.github.sleepypanda.feesh.utils.gui.LineInfo
 import com.github.sleepypanda.feesh.utils.ChatUtils.removeFormatting
+import net.minecraft.network.chat.Component
 import java.text.SimpleDateFormat
 import java.util.Date
 
@@ -14,22 +16,25 @@ data class CatchCounterData(
     var averageCatches: Int? = null,
     var catchesHistory: List<Int> = emptyList()
 ) {
-    fun getOverlayText(seaCreatureDisplayName: String): List<String> {
+    fun getOverlayLines(seaCreatureDisplayName: String): List<LineInfo> {
         val averageCatchesText = if (averageCatches != null) "${GRAY}avg: ${WHITE}${CommonUtils.formatNumberWithSpaces(averageCatches!!)}" else "${GRAY}avg: ${WHITE}N/A"
         val catchesText = CommonUtils.formatNumberWithSpaces(catchesSinceLast)
         val catchesSinceLastText = if (catchesSinceLast == 1) "${WHITE}${catchesText} ${GRAY}catch ago" else "${WHITE}${catchesText} ${GRAY}catches ago"
-        val counterText = "${seaCreatureDisplayName}${GRAY}: ${catchesSinceLastText} ${DARK_GRAY}(${averageCatchesText}${DARK_GRAY})"
-        val lastOnText = getLastOnOverlayText()
-        return listOf(counterText, lastOnText)
+        val counterLine = LineInfo("${seaCreatureDisplayName}${GRAY}: ${catchesSinceLastText} ${DARK_GRAY}(${averageCatchesText}${DARK_GRAY})")
+        val lastOnLine = getLastOnOverlayLine()
+        return listOf(counterLine, lastOnLine)
     }
 
-    private fun getLastOnOverlayText(): String {
+    private fun getLastOnOverlayLine(): LineInfo {
         if (lastCatchTime != null) {
             val lastOn = CommonUtils.formatDate(lastCatchTime)
             val since = CommonUtils.formatTimeElapsed(lastCatchTime)
-            return "${GRAY}Last on: ${WHITE}${since} ago ${GRAY}(${WHITE}${lastOn}${GRAY})"
+            return LineInfo(
+                "${GRAY}Last on: ${WHITE}${since} ago", 
+                tooltip = listOf(Component.literal("${GRAY}Last on: ${WHITE}${lastOn}"))
+            )
         } else {
-            return "${GRAY}Last on: ${WHITE}N/A${GRAY}"
+            return LineInfo("${GRAY}Last on: ${WHITE}N/A${GRAY}")
         }
     }
 
@@ -116,13 +121,13 @@ data class DropCounterData(
         dropsHistory = emptyList()
     }
 
-    fun getOverlayText(dropDisplayName: String, seaCreatureName: String): List<String> {
-        val lastDropTime = if (dropsHistory.isNotEmpty()) {
+    fun getOverlayLines(dropDisplayName: String, seaCreatureName: String): List<LineInfo> {
+        val lastDropTimeLine = if (dropsHistory.isNotEmpty()) {
             val lastDrop = dropsHistory[0]
             val timeElapsed = CommonUtils.formatTimeElapsed(lastDrop.time)
             val dateFormatted = CommonUtils.formatDate(lastDrop.time)
-            "${WHITE}${timeElapsed} ${GRAY}(${WHITE}${dateFormatted}${GRAY})"
-        } else "${WHITE}N/A"
+            LineInfo("${GRAY}Last on: ${WHITE}${timeElapsed}", tooltip = listOf(Component.literal("${GRAY}Last on: ${WHITE}${dateFormatted}")))
+        } else LineInfo("${GRAY}Last on: ${WHITE}N/A")
         
         val catchesSinceLastDrop = catchesSinceLast
         
@@ -130,9 +135,9 @@ data class DropCounterData(
         val pluralizedSeaCreatureName = if (catchesSinceLastDrop != 1) pluralize(seaCreatureName) else seaCreatureName
         
         return listOf(
-            "${pluralizedDropName}${GRAY}: ${WHITE}${CommonUtils.formatNumberWithSpaces(count)}",
-            "${GRAY}Last on: ${lastDropTime}",
-            "${GRAY}Last on: ${WHITE}${CommonUtils.formatNumberWithSpaces(catchesSinceLastDrop)} ${GRAY}${pluralizedSeaCreatureName.removeFormatting()} ago"
+            LineInfo("${pluralizedDropName}${GRAY}: ${WHITE}${CommonUtils.formatNumberWithSpaces(count)}"),
+            lastDropTimeLine,
+            LineInfo("${GRAY}Last on: ${WHITE}${CommonUtils.formatNumberWithSpaces(catchesSinceLastDrop)} ${GRAY}${pluralizedSeaCreatureName.removeFormatting()} ago")
         )
     }
 

@@ -74,7 +74,7 @@ object TreasureFishingTracker {
             "${GRAY}Total Treasures: ${WHITE}160",
             "",
             "${GOLD}Treasure Dyes${GRAY}: ${WHITE}2",
-            "${GRAY}Last on: ${WHITE}7h 15m ${GRAY}(${WHITE}2025-01-15 13:15:00${GRAY})",
+            "${GRAY}Last on: ${WHITE}7h 15m ago",
             "${GRAY}Last on: ${WHITE}5 000 ${GRAY}Treasures ago"
         ))
         .setSettingsKey { Overlays.treasureFishingTrackerOverlay }
@@ -285,16 +285,16 @@ object TreasureFishingTracker {
         val nextMode = if (viewMode == ViewMode.SESSION) ViewMode.TOTAL else ViewMode.SESSION
         val nextModeText = getViewModeDisplayText(nextMode)
 
-        val lines = mutableListOf<String>()
-        lines.add("$baseTitle $viewModeText")
-        lines.add("${GRAY}- ${DARK_PURPLE}Good catch${GRAY}: ${WHITE}${CommonUtils.formatNumberWithSpaces(catches.good)}")
-        lines.add("${GRAY}- ${GOLD}Great catch${GRAY}: ${WHITE}${CommonUtils.formatNumberWithSpaces(catches.great)}")
-        lines.add("${GRAY}- ${LIGHT_PURPLE}Outstanding catch${GRAY}: ${WHITE}${CommonUtils.formatNumberWithSpaces(catches.outstanding)}")
-        lines.add("${GRAY}Total Treasures: ${WHITE}${CommonUtils.formatNumberWithSpaces(catches.totalCatches())}")
-        lines.add("")
-        lines.addAll(data.total.treasureDyes.getOverlayText(treasureDye.displayName, "treasure"))
+        val lines = mutableListOf<LineInfo>()
+        lines.add(LineInfo("$baseTitle $viewModeText"))
+        lines.add(LineInfo("${GRAY}- ${DARK_PURPLE}Good catch${GRAY}: ${WHITE}${CommonUtils.formatNumberWithSpaces(catches.good)}"))
+        lines.add(LineInfo("${GRAY}- ${GOLD}Great catch${GRAY}: ${WHITE}${CommonUtils.formatNumberWithSpaces(catches.great)}"))
+        lines.add(LineInfo("${GRAY}- ${LIGHT_PURPLE}Outstanding catch${GRAY}: ${WHITE}${CommonUtils.formatNumberWithSpaces(catches.outstanding)}"))
+        lines.add(LineInfo("${GRAY}Total Treasures: ${WHITE}${CommonUtils.formatNumberWithSpaces(catches.totalCatches())}"))
+        lines.add(LineInfo(""))
+        lines.addAll(data.total.treasureDyes.getOverlayLines(treasureDye.displayName, "treasure"))
 
-        gui.setLines(lines.map { LineInfo(it) })
+        gui.setLines(lines)
         gui.setButtons(listOf(
             GuiButton(0, "${GRAY}[Click to show $nextModeText${GRAY}]", { toggleViewMode() }),
             GuiButton(1, "${GRAY}[${RED}Click to reset${GRAY}]", { resetTreasureFishingTracker(false, getCurrentViewMode()) })

@@ -801,7 +801,7 @@ ${GRAY}To pause: ${WHITE}/${FishingProfitTracker.PAUSE_COMMAND}
                 ChatUtils.sendLocalChat("${WHITE}/${FishingProfitTracker.DELETE_ITEM_COMMAND}${GOLD} <ITEM_ID>")
                 ChatUtils.sendLocalChat("${YELLOW}Command: ${GRAY}delete from [Total] ->")
                 ChatUtils.sendLocalChat("${WHITE}/${FishingProfitTracker.DELETE_ITEM_TOTAL_COMMAND}${GOLD} <ITEM_ID>")
-                ChatUtils.sendLocalChat("${DARK_AQUA}Arg <ITEM_ID>: ${GRAY}drop ID (e.g. MAGMA_FISH, SILVER_MAGMAFISH, FLYING_FISH;4; SQUID;4+100)")
+                ChatUtils.sendLocalChat("${DARK_AQUA}Arg <ITEM_ID>: ${GRAY}drop ID (e.g. MAGMA_FISH, MAGMA_FISH_SILVER, FLYING_FISH;4; SQUID;4+100)")
                 ChatUtils.sendLocalChat("${DARK_AQUA}Arg <COUNT>: ${GRAY}count to show - positive integer")
                 ChatUtils.sendLocalChat("${GREEN}Example: ${WHITE}/${FishingProfitTracker.SET_ITEM_COUNT_COMMAND} MAGMA_FISH 64")
             }
