@@ -16,6 +16,8 @@ https://hypixel.net/threads/may-6th-lotus-atoll-alpha-testing.6094444/
 
 ### Sea creatures
 
+- Do some of them have immunity?
+- Line to Puddle Jumper?
 - Need to migrate old sea creature names without removal from trackers.
 - Sea Guardian => Jumpin' Jack (COMMON Spooky Sea Creature)
   - ???
@@ -31,10 +33,13 @@ https://hypixel.net/threads/may-6th-lotus-atoll-alpha-testing.6094444/
 
 ## Other
 
+- Added Fishing Hotspots to The Park
 - Junker Joel has bigger shop
 
 You donated 9 Trophy Frogs and received Silver Lotus x3 and Lotus x304!
 You donated 1 Trophy Frog and received Lotus x8!
+
+Your Wormhole closed up...
 
 SCHLURP! The Hotspot Tonic Mixin grants you effects for 86h 24m! They will pause if your God Potion expires.
 SCHLURP! The effects of the Celestial Mason Jar have been extended by 86h 24m! They will pause if your God Potion expires.
@@ -48,9 +53,6 @@ Newly released - https://hypixel.net/threads/hypixel-skyblock-0-24-5-assorted-qo
   - I need to write better "own" sea creature detection to alert before personal cap actually happens.
 - Added the functionality of your current bait being slown in slot #9 while fishing
   - Show current baits amount as icon or as movable text
-- Added a message for when The Primordial / Bloodshot Reforge activates
-  - CAUGHT! You cocooned a Voracious Spider!
-  - CAUGHT! You cocooned a Frozen Steve!
 
 ## Current issues & feedback
 
