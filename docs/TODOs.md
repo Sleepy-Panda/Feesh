@@ -20,6 +20,7 @@ https://hypixel.net/threads/may-6th-lotus-atoll-alpha-testing.6094444/
 - Line to Puddle Jumper?
 - Need to migrate old sea creature names without removal from trackers.
 - Sea Guardian => Jumpin' Jack (COMMON Spooky Sea Creature)
+  - Will it cause issues storing ' in JSON keys? Sounds, sc tracker
   - ???
 
 ### Drops
@@ -33,7 +34,6 @@ https://hypixel.net/threads/may-6th-lotus-atoll-alpha-testing.6094444/
 
 ## Other
 
-- Added Fishing Hotspots to The Park
 - Junker Joel has bigger shop
 
 You donated 9 Trophy Frogs and received Silver Lotus x3 and Lotus x304!

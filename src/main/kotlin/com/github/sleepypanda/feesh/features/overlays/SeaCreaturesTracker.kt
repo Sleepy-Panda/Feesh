@@ -66,10 +66,10 @@ object SeaCreaturesTracker {
         .setClickable(true)
         .setSampleLines(listOf(
             baseTitle,
-            "${GRAY}- ${GOLD}Yeti: ${WHITE}10 ${GRAY}1% | DH: ${WHITE}1 ${GRAY}20%",
-            "${GRAY}- ${LIGHT_PURPLE}Reindrake: ${WHITE}1 ${GRAY}0.1%",
+            "${GRAY}- ${GOLD}Yeti: ${WHITE}10 ${GRAY}1% ${DARK_GRAY}| ${GRAY}DH: ${WHITE}1 ${GRAY}20%",
+            "${GRAY}- ${LIGHT_PURPLE}Reindrake: ${WHITE}1 ${GRAY}0.1% ${DARK_GRAY}| ${GRAY}DH: ${WHITE}0 ${GRAY}0%",
             "",
-            "${AQUA}Total: ${WHITE}11 ${GRAY}rare out of ${WHITE}1000",
+            "${AQUA}Total: ${WHITE}11 ${GRAY}rare out of ${WHITE}1000 ${DARK_GRAY}| ${GRAY}DH: ${WHITE}1 ${GRAY}20%",
         ))
         .setSettingsKey { Overlays.seaCreaturesTrackerOverlay }
         .setApplyCustomStyleKey { Overlays.seaCreaturesTrackerCustomStyle }

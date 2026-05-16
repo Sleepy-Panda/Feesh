@@ -63,6 +63,7 @@ object WorldUtils {
         HUB,
         JERRY_WORKSHOP,
         LOTUS_ATOLL,
+        PARK,
         CRIMSON_ISLE
     )
 
@@ -72,6 +73,7 @@ object WorldUtils {
         HUB,
         JERRY_WORKSHOP,
         LOTUS_ATOLL,
+        PARK,
     )
 
     private var cachedIsInSkyblock: Boolean = false
