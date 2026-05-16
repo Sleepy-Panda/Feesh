@@ -78,7 +78,7 @@ This mod requires [Fabric API](https://modrinth.com/mod/fabric-api) and [Fabric 
 - **Compact sea creature messages** — Shortens double hook and catch messages in your chat.
 - **Share sea creatures** — Sends to PARTY chat when you catch/cocoon a specific sea creature.
 - **Share sea creatures location - ALL chat** — Sends to ALL chat with coordinates when you catch specific rare creatures (big bosses).
-- **Player death message** — Sends party chat when killed by Mythic sea creature (Thunder, Lord Jawbus, etc.).
+- **Player death message** — Sends party chat when killed by a fishing boss (Thunder, Lord Jawbus, etc.).
 - **Share rare drops** — Sends to PARTY chat when rare item drops.
 - **Hotspot sharing** — Clickable message to share found hotspot location to PARTY or ALL chat. Optional autoshare.
 - **Lootshare message** — Sends to PARTY chat when it's time to lootshare. Available via Keybind.
