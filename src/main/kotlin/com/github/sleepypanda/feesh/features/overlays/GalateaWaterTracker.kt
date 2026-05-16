@@ -42,9 +42,9 @@ object GalateaWaterTracker {
         .setSampleLines(listOf(
             baseTitle,
             "${lochEmperor.displayName}${GRAY}: ${WHITE}200 ${GRAY}catches ago ${DARK_GRAY}(${GRAY}avg: ${WHITE}150${DARK_GRAY})",
-            "${GRAY}Last on: ${WHITE}1h ago ${GRAY}(${WHITE}2025-01-15 13:30:00${GRAY})",
+            "${GRAY}Last on: ${WHITE}1h ago",
             "${nessie.displayName}${GRAY}: ${WHITE}350 ${GRAY}catches ago ${DARK_GRAY}(${GRAY}avg: ${WHITE}450${DARK_GRAY})",
-            "${GRAY}Last on: ${WHITE}1h 30m ago ${GRAY}(${WHITE}2025-01-15 15:00:00${GRAY})"
+            "${GRAY}Last on: ${WHITE}1h 30m ago"
         ))
         .setSettingsKey { Overlays.galateaWaterTrackerOverlay }
         .setApplyCustomStyleKey { Overlays.galateaWaterTrackerCustomStyle }
@@ -117,12 +117,12 @@ object GalateaWaterTracker {
         if (!hasData()) return
         if (!Overlays.galateaWaterTrackerOverlay || !WorldUtils.isInSkyblock() || WorldUtils.getWorldName() != WorldUtils.GALATEA || !FishingHookUtils.wasFishingHookActiveMinutesAgo(5)) return
 
-        val lines = mutableListOf<String>()
-        lines.add(baseTitle)
-        lines.addAll(data.lochEmperor.getOverlayText(lochEmperor.displayName))
-        lines.addAll(data.nessie.getOverlayText(nessie.displayName))
+        val lines = mutableListOf<LineInfo>()
+        lines.add(LineInfo(baseTitle))
+        lines.addAll(data.lochEmperor.getOverlayLines(lochEmperor.displayName))
+        lines.addAll(data.nessie.getOverlayLines(nessie.displayName))
 
-        gui.setLines(lines.map { LineInfo(it) })
+        gui.setLines(lines)
         gui.setButtons(listOf(GuiButton(0, "${GRAY}[${RED}Click to reset${GRAY}]", { resetGalateaWaterTracker(false) })))
     }
 

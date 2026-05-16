@@ -45,9 +45,9 @@ object BayouTracker {
         .setSampleLines(listOf(
             baseTitle,
             "${titanoboa.displayName}${GRAY}: ${WHITE}10 ${GRAY}catches ago ${DARK_GRAY}(${GRAY}avg: ${WHITE}500${DARK_GRAY})",
-            "${GRAY}Last on: ${WHITE}1h 30m ago ${GRAY}(${WHITE}2025-01-15 14:30:00${GRAY})",
+            "${GRAY}Last on: ${WHITE}1h 30m ago",
             "${titanoboaShed.displayName}s${GRAY}: ${WHITE}5",
-            "${GRAY}Last on: ${WHITE}2h 15m ${GRAY}(${WHITE}2025-01-15 13:15:00${GRAY})",
+            "${GRAY}Last on: ${WHITE}2h 15m ago",
             "${GRAY}Last on: ${WHITE}1 234 ${GRAY}Titanoboas ago"
         ))
         .setSettingsKey { Overlays.bayouTrackerOverlay }
@@ -123,11 +123,11 @@ object BayouTracker {
         ) return
         if (WorldUtils.getWorldName() != WorldUtils.BACKWATER_BAYOU) return
 
-        val lines = mutableListOf<String>()
-        lines.add(baseTitle)
-        lines.addAll(data.titanoboa.getOverlayText(titanoboa.displayName))
-        lines.addAll(data.titanoboaSheds.getOverlayText(titanoboaShed.displayName, titanoboa.displayName))
-        gui.setLines(lines.map { LineInfo(it) })
+        val lines = mutableListOf<LineInfo>()
+        lines.add(LineInfo(baseTitle))
+        lines.addAll(data.titanoboa.getOverlayLines(titanoboa.displayName))
+        lines.addAll(data.titanoboaSheds.getOverlayLines(titanoboaShed.displayName, titanoboa.displayName))
+        gui.setLines(lines)
         gui.setButtons(listOf(GuiButton(0, "${GRAY}[${RED}Click to reset${GRAY}]", { resetBayouTracker(false) })))
     }
 

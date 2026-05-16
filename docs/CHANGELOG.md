@@ -22,6 +22,7 @@ Released on: ???
 - Added alert after personal SC cap is reached (based on chat message).
 - Changed alert on Nessie destination to appear only if you fished recently.
   - So basically only fishers are alerted, other players don't get notified even if they're close.
+- Moved all "Last on" datetimes from the overlays into tooltip appearing on line hover (while in Inventory).
   
 ## Bugfixes
 

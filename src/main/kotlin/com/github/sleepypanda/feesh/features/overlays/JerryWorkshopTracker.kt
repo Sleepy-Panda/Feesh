@@ -43,9 +43,9 @@ object JerryWorkshopTracker {
         .setSampleLines(listOf(
             baseTitle,
             "${yeti.displayName}${GRAY}: ${WHITE}10 ${GRAY}catches ago ${DARK_GRAY}(${GRAY}avg: ${WHITE}50${DARK_GRAY})",
-            "${GRAY}Last on: ${WHITE}1 minute ago ${GRAY}(${WHITE}2025-01-15 14:30:00${GRAY})",
+            "${GRAY}Last on: ${WHITE}1 minute ago",
             "${reindrake.displayName}${GRAY}: ${WHITE}100 ${GRAY}catches ago ${DARK_GRAY}(${GRAY}avg: ${WHITE}500${DARK_GRAY})",
-            "${GRAY}Last on: ${WHITE}1 hour ago ${GRAY}(${WHITE}2025-01-15 13:30:00${GRAY})",
+            "${GRAY}Last on: ${WHITE}1 hour ago",
             "${GRAY}Island closes in: 1h"
         ))
         .setSettingsKey { Overlays.jerryWorkshopTrackerOverlay }
@@ -118,23 +118,23 @@ object JerryWorkshopTracker {
         if (!hasData()) return
         if (!Overlays.jerryWorkshopTrackerOverlay || !WorldUtils.isInSkyblock() || WorldUtils.getWorldName() != WorldUtils.JERRY_WORKSHOP || !FishingHookUtils.wasFishingHookActiveMinutesAgo(5)) return
 
-        val lines = mutableListOf<String>()
-        lines.add(baseTitle)
+        val lines = mutableListOf<LineInfo>()
+        lines.add(LineInfo(baseTitle))
 
-        lines.addAll(data.yeti.getOverlayText(yeti.displayName))
-        lines.addAll(data.reindrake.getOverlayText(reindrake.displayName))
+        lines.addAll(data.yeti.getOverlayLines(yeti.displayName))
+        lines.addAll(data.reindrake.getOverlayLines(reindrake.displayName))
 
         val islandOpen = TabListUtils.getLineAfter("Island open:")
         val islandClosesIn = TabListUtils.getLineAfter("Island closes in:")
         if (!islandOpen.isNullOrEmpty()) {
-            val islandOpenLine = "${GRAY}Island open: ${WHITE}${islandOpen}"
+            val islandOpenLine = LineInfo("${GRAY}Island open: ${WHITE}${islandOpen}")
             lines.add(islandOpenLine)
         } else if (!islandClosesIn.isNullOrEmpty()) {
-            val islandClosesInLine = "${GRAY}Island closes in: ${WHITE}${islandClosesIn}"
+            val islandClosesInLine = LineInfo("${GRAY}Island closes in: ${WHITE}${islandClosesIn}")
             lines.add(islandClosesInLine)
         }
 
-        gui.setLines(lines.map { LineInfo(it) })
+        gui.setLines(lines)
         gui.setButtons(listOf(GuiButton(0, "${GRAY}[${RED}Click to reset${GRAY}]", { resetJerryWorkshopTracker(false) })))
     }
 
