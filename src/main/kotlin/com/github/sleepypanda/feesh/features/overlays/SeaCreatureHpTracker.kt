@@ -52,6 +52,7 @@ object SeaCreatureHpTracker {
         HpTrackableSeaCreatureTypes.PHANTOM_FISHER,
         HpTrackableSeaCreatureTypes.GRIM_REAPER,
         HpTrackableSeaCreatureTypes.GREAT_WHITE_SHARK,
+        HpTrackableSeaCreatureTypes.FROG_PRINCE,
     )
     private val trackedMobTypeByName = HpTrackableSeaCreatureTypes.values().associateBy { it.displayName }
     private var enabledMobTypes = listOf<String>()

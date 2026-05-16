@@ -35,6 +35,7 @@ enum class AlertableSeaCreatureTypes(val displayName: String, val isEnabledByDef
     GRINCH(SeaCreatureNames.GRINCH, false),
     GUARDIAN_DEFENDER(SeaCreatureNames.GUARDIAN_DEFENDER, false),
     INKLING(SeaCreatureNames.INKLING, false),
+    JUMPIN_JACK(SeaCreatureNames.JUMPIN_JACK, false),
     LARGE_MITHRIL_GRUBBER(SeaCreatureNames.LARGE_MITHRIL_GRUBBER, false),
     LAVA_BLAZE(SeaCreatureNames.LAVA_BLAZE, false),
     LAVA_FLAME(SeaCreatureNames.LAVA_FLAME, false),

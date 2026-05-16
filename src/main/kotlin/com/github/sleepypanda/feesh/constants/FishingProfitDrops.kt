@@ -2729,7 +2729,7 @@ class FishingProfitDrops {
                 itemName = "Reality Hopper SILVER",
                 itemDisplayName = "${UNCOMMON}Reality Hopper ${GRAY}${BOLD}SILVER",
                 npcPrice = null,
-                amountOfLotus = 0, // ???
+                amountOfLotus = 40,
             ),
             FishingProfitDropInfo(
                 itemId = "REALITY_HOPPER_GOLD",
@@ -2750,14 +2750,14 @@ class FishingProfitDrops {
                 itemName = "Exploding Frog BRONZE",
                 itemDisplayName = "${UNCOMMON}Exploding Frog ${DARK_GRAY}${BOLD}BRONZE",
                 npcPrice = null,
-                amountOfLotus = 0, // ???
+                amountOfLotus = 12,
             ),
             FishingProfitDropInfo(
                 itemId = "EXPLODING_FROG_SILVER",
                 itemName = "Exploding Frog SILVER",
                 itemDisplayName = "${UNCOMMON}Exploding Frog ${GRAY}${BOLD}SILVER",
                 npcPrice = null,
-                amountOfLotus = 0, // ???
+                amountOfLotus = 24,
             ),
             FishingProfitDropInfo(
                 itemId = "EXPLODING_FROG_GOLD",
@@ -2960,7 +2960,7 @@ class FishingProfitDrops {
                 itemName = "Puddle Jumper GOLD",
                 itemDisplayName = "${LEGENDARY}Puddle Jumper ${GOLD}${BOLD}GOLD",
                 npcPrice = null,
-                amountOfLotus = 0, // ???
+                amountOfLotus = 256,
             ),
             FishingProfitDropInfo(
                 itemId = "PUDDLE_JUMPER_DIAMOND",
