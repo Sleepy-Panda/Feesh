@@ -7,6 +7,7 @@
 ## Alpha Lotus Atoll
 
 https://hypixel.net/threads/may-6th-lotus-atoll-alpha-testing.6094444/
+https://hypixel.net/threads/may-14th-lotus-atoll-alpha-testing-2.6097759/
 
 ### Atoll
 
@@ -21,7 +22,7 @@ https://hypixel.net/threads/may-6th-lotus-atoll-alpha-testing.6094444/
 - Need to migrate old sea creature names without removal from trackers.
 - Sea Guardian => Jumpin' Jack (COMMON Spooky Sea Creature)
   - Will it cause issues storing ' in JSON keys? Sounds, sc tracker
-  - ???
+  - Catch message is unknown
 
 ### Drops
 

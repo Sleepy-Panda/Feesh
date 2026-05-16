@@ -4,29 +4,41 @@ Released on: ???
 
 ## Features
 
+### Lotus Atoll SB Update
+
 - Enabled existing features for Lotus Atoll.
-- Added new Lotus Atoll & Hotspot creatures to all existing functionalities.
-- Added new drops to Fishing profit tracker.
+- Added new Lotus Atoll and Hotspot sea creatures to existing features.
+- Added new fishing drops and applied item renamings.
+- Added settings for alert & pchat message when a new Trophy Frog discovered.
+- Adjusted sea creatures rarities as per new /scg.
 - Enabled Rain timer/alert functionality for Bayou.
 - Enabled hotspots functionality for Park.
-- Added settings for alert & pchat message when a new Trophy Frog discovered.
-- Added selection of Auction prices API source - you can choose between LBIN or 7-days average LBIN.
+
+### Sea creatures tracker
+
+- Added tooltips with various extra info when you hover over a line (while in Inventory).
+  - So even if you hide % or DH info in the tracker, you still can see it on hover.
+- Added DH count and DH % to Total line (if "Show double hook statistics" is enabled).
+
+### Fishing profit tracker
+
+- Improved editing data in the Fishing profit tracker, for easier data migration:
+  - Added commands to set count / +count / -count for items.
+  - Added commands to manage elapsed time.
+  - Added detailed [user guidance](https://github.com/Sleepy-Panda/Feesh/blob/develop/docs/Editing%20profit%20tracker.md).
+
+### Other
+
 - Extended list of sea creatures you can select for alert/pchat message/highlight/HP tracker:
   - Basically now you can toggle those functionalities for any sea creature.
   - Only "rare" creatures are selected by default.
 - Added alert/pchat message when you cocoon a specific sea creature.
-- Added tooltips with various extra info when you hover over a line in Sea creature tracker (while in Inventory).
-  - So even if you hide % or DH info in the tracker, you still can see it on hover.
-- Added total DHC count and % to Sea creatures tracker (if "Show double hook statistics" is enabled).
+- Added selection of Auction prices API source - you can choose between LBIN or 7-days average LBIN.
 - Added personal best tracking for double hook streak.
 - Added alert after personal SC cap is reached (based on chat message).
 - Changed alert on Nessie destination to appear only if you were fishing recently.
   - So basically only fishers are alerted, other players don't get notified even if they're close.
 - Moved all "Last on" datetimes from the overlays into tooltip appearing on line hover (while in Inventory).
-- Improved editing data in the Fishing profit tracker, for easier data migration:
-  - Added commands to set count / +count / -count for items.
-  - Added commands to manage elapsed time.
-  - Added detailed [user guidance](https://github.com/Sleepy-Panda/Feesh/blob/develop/docs/Editing%20profit%20tracker.md).
 
 ## Bugfixes
 
