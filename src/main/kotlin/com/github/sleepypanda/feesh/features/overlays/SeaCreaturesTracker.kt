@@ -495,7 +495,7 @@ object SeaCreaturesTracker {
     }
 
     private fun getSeaCreatureLineText(entry: TrackerSeaCreatureEntry, displayMode: SeaCreaturesTrackerDisplayMode): String {
-        val showPercentage = Overlays.showSeaCreaturesPercentage && displayMode == SeaCreaturesTrackerDisplayMode.ALL
+        val showPercentage = Overlays.showSeaCreaturesPercentage
         val showDoubleHook = Overlays.showSeaCreaturesDoubleHookStatistics
 
         val seaCreatureText = if (entry.seaCreatureInfo.isRare) entry.seaCreatureInfo.boldDisplayName else entry.seaCreatureInfo.displayName
@@ -515,7 +515,7 @@ object SeaCreaturesTracker {
         } else ""
         val lines = listOf(
             entry.seaCreatureInfo.displayName,
-            "${GRAY}Total: ${WHITE}${entry.formattedAmount}",
+            "${GRAY}Total: ${WHITE}${entry.formattedAmount} ${GRAY}(${WHITE}${entry.formattedPercent}${GRAY})",
             dhText
         )
         return lines.map { Component.literal(it) }

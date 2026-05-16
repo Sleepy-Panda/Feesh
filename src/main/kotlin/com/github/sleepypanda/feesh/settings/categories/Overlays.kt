@@ -288,7 +288,7 @@ ${GRAY}To reset [Total]: ${WHITE}/${SeaCreaturesTracker.RESET_TOTAL}
 
     var showSeaCreaturesPercentage by boolean(true) {
         this.name = Translated("Show sea creatures percentage")
-        this.description = Translated("Show statistics with a percentage for each sea creature. It is not shown when in the \"Only rare sea creatures\" mode.")
+        this.description = Translated("Show percentage for each sea creature out of all sea creatures.")
     }
 
     var showSeaCreaturesDoubleHookStatistics by boolean(true) {

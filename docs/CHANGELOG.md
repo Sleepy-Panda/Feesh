@@ -4,7 +4,7 @@ Released on: ???
 
 ## Features
 
-- Enabled some features on Lotus Atoll features.
+- Enabled some features on Lotus Atoll.
 - Added new Lotus Atoll & Hotspot creatures to all existing functionalities.
 - Added new drops to Fishing profit tracker.
 - Enabled Rain timer/alert functionality for Bayou and Lotus Atoll.
@@ -16,6 +16,7 @@ Released on: ???
 - Added alert/pchat message when you cocoon a specific sea creature.
 - Added tooltips with various extra info when you hover over a line in Sea creature tracker (while in Inventory).
   - So even if you hide % or DH info in the tracker, you still can see it on hover.
+- Added total DHC count and % to Sea creatures tracker (if "Show double hook statistics" is enabled).
 - Added personal best tracking for double hook streak.
 - Added alert after personal SC cap is reached (based on chat message).
 - Changed alert on Nessie destination to appear only if you fished recently.
