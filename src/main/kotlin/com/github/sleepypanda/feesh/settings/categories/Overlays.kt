@@ -276,6 +276,7 @@ Hidden if you have no fishing rod in your hotbar!""".trimIndent())
         this.name = Translated("Sea creatures tracker")
         this.description = Translated("""
 ${GRAY}Shows an overlay with the overview of the sea creatures caught, and different related statistics. This overlay has [Session] and [Total] view mode.
+${GRAY}To view details: Hover over a line while in Inventory screen.
 ${GRAY}To reset [Session]: ${WHITE}/${SeaCreaturesTracker.RESET_SESSION}
 ${GRAY}To reset [Total]: ${WHITE}/${SeaCreaturesTracker.RESET_TOTAL}
 """.trimIndent())
@@ -286,14 +287,24 @@ ${GRAY}To reset [Total]: ${WHITE}/${SeaCreaturesTracker.RESET_TOTAL}
         this.description = Translated("Setups whether to hide regular sea creatures in the overlay, showing just rare ones. All sea creatures are tracked regardless this setting.")
     }
 
+    var countCocoonedSeaCreatures by boolean(true) {
+        this.name = Translated("Count cocooned sea creatures")
+        this.description = Translated("Track sea creatures cocooned by your Bloodshot reforge in the Sea creatures tracker.")
+    }
+
     var showSeaCreaturesPercentage by boolean(true) {
-        this.name = Translated("Show sea creatures percentage")
-        this.description = Translated("Show percentage for each sea creature out of all sea creatures.")
+        this.name = Translated("Show percentage")
+        this.description = Translated("Show percentage for each sea creature out of total amount of sea creatures. If disabled, the statistics will be still visible in the tooltip.")
     }
 
     var showSeaCreaturesDoubleHookStatistics by boolean(true) {
         this.name = Translated("Show double hook statistics")
-        this.description = Translated("Show statistics how often the sea creatures were double hooked.")
+        this.description = Translated("Show statistics how often the caught sea creatures were double hooked (shown as 'DH' in the overlay). If disabled, the statistics will be still visible in the tooltip.")
+    }
+
+    var showCocoonedStatistics by boolean(false) {
+        this.name = Translated("Show cocooned statistics")
+        this.description = Translated("Show statistics how often the sea creatures were cocooned by your Bloodshot reforge (shown as 'BS' in the overlay). If disabled, the statistics will be still visible in the tooltip.")
     }
 
     var seaCreaturesTrackerSorting by enum(SeaCreaturesTrackerSorting.RARITY_DESC) {
