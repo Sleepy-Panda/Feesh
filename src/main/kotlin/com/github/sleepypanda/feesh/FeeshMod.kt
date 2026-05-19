@@ -95,6 +95,7 @@ class FeeshMod : ClientModInitializer {
         NonFishingArmorAlert.init()
         GoldenFishSpawnAlert.init()
         HotspotGoneAlert.init()
+        WormholeGoneAlert.init()
         SaltExpiredAlert.init()
         PlayerDeathAlert.init()
         LootshareAlert.init()
