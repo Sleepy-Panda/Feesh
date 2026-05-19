@@ -46,6 +46,11 @@ SCHLURP! The Hotspot Tonic Mixin grants you effects for 86h 24m! They will pause
 SCHLURP! The effects of the Celestial Mason Jar have been extended by 86h 24m! They will pause if your God Potion expires.
 SCHLURP! The Blended Fish Mixin grants you effects for 86h 24m! They will pause if your God Potion expires.
 
+WISE! You've been granted +2.5α Sea Creature Chance for 30m while on the Lotus Atoll! - 4 perks
+WISE! You've been granted +10☂ Fishing Speed for 30m while on the Lotus Atoll!
+WISE! You've been granted +1⛃ Treasure Chance for 30m while on the Lotus Atoll!
+WISE! You've been granted +5♔ Trophy Chance for 30m while on the Lotus Atoll!
+
 ## 0.24.5
 
 Newly released - https://hypixel.net/threads/hypixel-skyblock-0-24-5-assorted-qol-changes.6094244/
@@ -58,14 +63,12 @@ Newly released - https://hypixel.net/threads/hypixel-skyblock-0-24-5-assorted-qo
 ## Current issues & feedback
 
 - Catches/h for treasures
-- Would also be cool to have a double hook statistic for the total sc counter so you can view ur avg. dhc and how good/bad it is compared to ur actual dhc
 - Improve link to changelog in settings, and update announcement
 - Work on hotspot sounds to make them more unique
 - Deployable in mineshaft
 - 1.21 Fishing Hook armorstand
 - Sometimes current world&zone is detected wrongly
 - Ragnarok immunity timer
-- Someone has no Vial title/sound (I checked and did not reproduce, I had my title/sound as usual)
 - Manual "set tracker drops" command does not reset "sc since last" for that drop.
 - Fished coins to add via the command.
 - Carmine dye into tracker
@@ -76,14 +79,9 @@ Newly released - https://hypixel.net/threads/hypixel-skyblock-0-24-5-assorted-qo
 
 - Go through TODOs in the code
 - Rework ticks counters across all overlays
-- Keybinds periodically reset, probably after MC crashes or turning off PC
 - Version check to correctly detect newer version on Modrinth (e.g. 1.1.0 and 1.1.0-beta)
 - Enabled highlighters / slot renderers to update dynamically instead of check every render event.
 
 ## Settings
 
 Make sure newly added values in the dropdowns are selected if needed. E.g. if I add new rare drop type to Alerts, alert for this drop should be enabled.
-
-## Overlays
-
-- Check if "0" key works for numpad in /feeshMoveAllGuis
