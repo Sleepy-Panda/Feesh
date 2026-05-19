@@ -154,7 +154,6 @@ object ArchfiendDiceProfitTracker {
 
     private fun onGameClosed(@Suppress("UNUSED_PARAMETER") event: GameClosedEvent) {
         if (Overlays.resetArchfiendDiceProfitTrackerSessionOnGameClosed &&
-            Overlays.archfiendDiceProfitTrackerOverlay &&
             (data.session.archfiend.rollsCount > 0 || data.session.highClass.rollsCount > 0)) {
             resetSession(force = true)
             FeeshMod.LOGGER.info("[Feesh] Automatically reset Archfiend Dice profit tracker [Session] on game closed.")

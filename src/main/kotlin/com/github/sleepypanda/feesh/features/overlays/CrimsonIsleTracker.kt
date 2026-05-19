@@ -263,7 +263,6 @@ object CrimsonIsleTracker {
 
     private fun onGameClosed(@Suppress("UNUSED_PARAMETER") event: GameClosedEvent) {
         if (Overlays.resetCrimsonIsleTrackerOnGameClosed &&
-            Overlays.crimsonIsleTrackerOverlay &&
             hasData()) {
             reset(force = true)
             FeeshMod.LOGGER.info("[Feesh] Automatically reset Crimson Isle tracker on game closed.")

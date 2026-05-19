@@ -129,7 +129,6 @@ object TreasureFishingTracker {
 
     private fun onGameClosed(@Suppress("UNUSED_PARAMETER") event: GameClosedEvent) {
         if (Overlays.resetTreasureFishingTrackerSessionOnGameClosed &&
-            Overlays.treasureFishingTrackerOverlay &&
             data.session.catches.totalCatches() > 0) {
             resetSession(force = true)
             FeeshMod.LOGGER.info("[Feesh] Automatically reset Treasure fishing tracker [Session] on game closed.")

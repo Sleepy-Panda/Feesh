@@ -136,7 +136,6 @@ object WaterHotspotsTracker {
 
     private fun onGameClosed(@Suppress("UNUSED_PARAMETER") event: GameClosedEvent) {
         if (Overlays.resetWaterHotspotsTrackerOnGameClosed &&
-            Overlays.waterHotspotsTrackerOverlay &&
             hasData()
         ) {
             reset(force = true)
