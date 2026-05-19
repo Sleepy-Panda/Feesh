@@ -25,11 +25,6 @@ import com.github.sleepypanda.feesh.utils.data.PersistentDataManager
 import net.minecraft.network.chat.Component
 import java.text.DecimalFormat
 
-// TODO [Feesh] Changed count of Sea Guardian to 1x in the Sea creatures tracker [Session]. While its 2x due to 1 bloodshot
-// [Feesh] Do you want to delete 1x Sea Guardian from the Sea creatures tracker [Session]? [Click to confirm] - should be 2 due to 1 bs
-// Remove +- buttons as they are not intuitive, from what number to substract
-// Adjust set command to set the count of caught and cocooned and DH?
-// Add guidance on how to use the commands
 object SeaCreaturesTracker {
     enum class ViewMode {
         SESSION,
