@@ -37,8 +37,9 @@ Released on: ???
 ### Other
 
 - Extended list of sea creatures you can select for alert/pchat message/highlight/HP tracker:
-  - Basically now you can toggle those functionalities for any sea creature.
+  - **Now you can toggle those functionalities for any sea creature.**
   - Only "rare" creatures are selected by default.
+  - Please actualize your selections :) As they might reset due to this change.
 - Added alert/pchat message when you cocoon a specific sea creature.
 - Added selection of Auction prices API source - you can choose between LBIN or 7-days average LBIN.
 - Added personal best tracking for double hook streak.
@@ -46,6 +47,7 @@ Released on: ???
 - Changed alert on Nessie destination to appear only if you were fishing recently.
   - So basically only fishers are alerted, other players don't get notified even if they're close.
 - Moved all "Last on" datetimes from the overlays into tooltip appearing on line hover (while in Inventory).
+- Added 2 more items to `/feeshJunkerJoelShopPrices` output.
 
 ## Bugfixes
 
