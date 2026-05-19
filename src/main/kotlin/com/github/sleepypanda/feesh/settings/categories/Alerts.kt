@@ -257,6 +257,11 @@ object Alerts : CategoryKt("Alerts") {
         this.description = Translated("Shows a title and plays a sound when the hotspot you recently fished in, is gone.")
     }
 
+    var alertOnWormholeGone by boolean(true) {
+        this.name = Translated("Alert when the wormhole is gone")
+        this.description = Translated("Shows a title and plays a sound when the wormhole you recently fished in, is gone.")
+    }
+
     init {
         separator {
             this.title = "${AQUA}${BOLD}Rain, Thunder, Blizzard"

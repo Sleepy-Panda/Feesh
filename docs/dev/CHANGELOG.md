@@ -13,6 +13,7 @@ Released on: ???
 - Adjusted sea creatures rarities as per new /scg.
 - Enabled Rain timer/alert functionality for Bayou.
 - Enabled hotspots functionality for Park.
+- Added alert when a Wormhole is gone.
 
 ### Sea creatures tracker
 
