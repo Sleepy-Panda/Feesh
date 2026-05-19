@@ -18,7 +18,7 @@ Released on: ???
 ### Sea creatures tracker
 
 - Added option to count cocooned sea creatures into the tracker.
-- Added option to show cocooned SC stats in the tracker [disabled by default,to not make overlay too bloated with details].
+- Added option to show cocooned SC stats in the tracker [disabled by default, to not make overlay too bloated with details].
 - Added tooltips with various extra info when you hover over a line (while in Inventory).
   - So even if you hide %, DH or BS info from the tracker, you still can explore it on line hover.
 - Added overall DH and BS statistics to Total line.

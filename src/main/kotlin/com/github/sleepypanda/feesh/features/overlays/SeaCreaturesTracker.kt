@@ -736,15 +736,16 @@ object SeaCreaturesTracker {
     }
     
     private fun getTotalLineText(displayMode: SeaCreaturesTrackerDisplayMode, totalInfo: TotalTrackerEntry): String {
+        val showCocooned = Overlays.countCocoonedSeaCreatures
         when (displayMode) {
             SeaCreaturesTrackerDisplayMode.ALL -> {
                 val doubleHookText = " ${DARK_GRAY}| ${GRAY}DH: ${WHITE}${totalInfo.allDoubleHookAmountFormatted} ${GRAY}${totalInfo.allDoubleHookPercentFormatted}"
-                val cocoonedText = " ${DARK_GRAY}| ${GRAY}BS: ${WHITE}${totalInfo.allCocoonedAmountFormatted} ${GRAY}${totalInfo.allCocoonedPercentFormatted}"
+                val cocoonedText = if (showCocooned) " ${DARK_GRAY}| ${GRAY}BS: ${WHITE}${totalInfo.allCocoonedAmountFormatted} ${GRAY}${totalInfo.allCocoonedPercentFormatted}" else ""
                 return "${AQUA}Total: ${WHITE}${totalInfo.allTotalAmountFormatted}${doubleHookText}${cocoonedText}"
             }
             SeaCreaturesTrackerDisplayMode.ONLY_RARE -> {
                 val doubleHookText = " ${DARK_GRAY}| ${GRAY}DH: ${WHITE}${totalInfo.rareDoubleHookAmountFormatted} ${GRAY}${totalInfo.rareDoubleHookPercentFormatted}"
-                val cocoonedText = " ${DARK_GRAY}| ${GRAY}BS: ${WHITE}${totalInfo.rareCocoonedAmountFormatted} ${GRAY}${totalInfo.rareCocoonedPercentFormatted}"
+                val cocoonedText = if (showCocooned) " ${DARK_GRAY}| ${GRAY}BS: ${WHITE}${totalInfo.rareCocoonedAmountFormatted} ${GRAY}${totalInfo.rareCocoonedPercentFormatted}" else ""
                 return "${AQUA}Total: ${WHITE}${totalInfo.rareTotalAmountFormatted} ${GRAY}rare out of ${WHITE}${totalInfo.allTotalAmountFormatted}${doubleHookText}${cocoonedText}"
             }
         }
