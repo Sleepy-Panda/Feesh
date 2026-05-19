@@ -16,13 +16,19 @@ Released on: ???
 
 ### Sea creatures tracker
 
+- Added option to count cocooned sea creatures into the tracker.
+- Added option to show cocooned SC stats in the tracker [disabled by default,to not make overlay too bloated with details].
 - Added tooltips with various extra info when you hover over a line (while in Inventory).
-  - So even if you hide % or DH info in the tracker, you still can see it on hover.
-- Added DH count and DH % to Total line (if "Show double hook statistics" is enabled).
+  - So even if you hide %, DH or BS info from the tracker, you still can explore it on line hover.
+- Added overall DH and BS statistics to Total line.
+- Improved editing data in the tracker, for easier data migration/fixes:
+  - Added commands to set count / +count / -count for Total, DH and BS stats of a sea creature.
+  - Removed inline buttons for [+] and [-], as it was misleading what stats they should affect.
+  - Added detailed [user guidance](https://github.com/Sleepy-Panda/Feesh/blob/develop/docs/Editing%20sea%20creatures%20tracker.md).
 
 ### Fishing profit tracker
 
-- Improved editing data in the Fishing profit tracker, for easier data migration:
+- Improved editing data in the tracker, for easier data migration/fixes:
   - Added commands to set count / +count / -count for items.
   - Added commands to manage elapsed time.
   - Added detailed [user guidance](https://github.com/Sleepy-Panda/Feesh/blob/develop/docs/Editing%20profit%20tracker.md).
