@@ -187,7 +187,6 @@ object SeaCreaturesTracker {
 
     private fun onGameClosed(@Suppress("UNUSED_PARAMETER") event: GameClosedEvent) {
         if (Overlays.resetSeaCreaturesTrackerSessionOnGameClosed && 
-            Overlays.seaCreaturesTrackerOverlay && 
             (data.session.totalCount > 0 || data.session.totalCocoonedCount > 0)) {
             resetSession(force = true)
             FeeshMod.LOGGER.info("[Feesh] Automatically reset Sea creatures tracker [Session] on game closed.")

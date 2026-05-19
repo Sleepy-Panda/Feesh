@@ -1170,7 +1170,7 @@ object FishingProfitTracker {
     }
 
     private fun onGameClosed(@Suppress("UNUSED_PARAMETER") event: GameClosedEvent) {
-        if (!Overlays.fishingProfitTrackerOverlay || !Overlays.resetFishingProfitTrackerOnGameClosed) return
+        if (!Overlays.resetFishingProfitTrackerOnGameClosed) return
         val session = data.session
         if (session.profitTrackerItems.isNotEmpty() || session.elapsedSeconds > 0 || session.totalProfit != 0.0) {
             resetSession(force = true)

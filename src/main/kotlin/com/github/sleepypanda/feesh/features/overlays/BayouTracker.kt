@@ -137,7 +137,6 @@ object BayouTracker {
 
     private fun onGameClosed(@Suppress("UNUSED_PARAMETER") event: GameClosedEvent) {
         if (Overlays.resetBayouTrackerOnGameClosed &&
-            Overlays.bayouTrackerOverlay &&
             hasData()
         ) {
             reset(force = true)

@@ -144,7 +144,6 @@ object JerryWorkshopTracker {
 
     private fun onGameClosed(@Suppress("UNUSED_PARAMETER") event: GameClosedEvent) {
         if (Overlays.resetJerryWorkshopTrackerOnGameClosed &&
-            Overlays.jerryWorkshopTrackerOverlay &&
             hasData()) {
             reset(force = true)
             FeeshMod.LOGGER.info("[Feesh] Automatically reset Jerry Workshop tracker on game closed.")
