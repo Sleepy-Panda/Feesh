@@ -59,7 +59,7 @@ object BarnFishingTimer {
         .setCondition {
             WorldUtils.isInFishingWorld() &&
             PlayerUtils.hasFishingRodInHotbar() &&
-            !isInHunterArmor()
+            !PlayerUtils.isInTrophyArmor()
         }
 
     fun init() {
@@ -159,7 +159,7 @@ object BarnFishingTimer {
         if (!Alerts.alertOnSeaCreaturesCountThreshold ||
             !WorldUtils.isInSkyblock() ||
             !WorldUtils.isInFishingWorld() ||
-            isInHunterArmor() ||
+            PlayerUtils.isInTrophyArmor() ||
             !PlayerUtils.hasFishingRodInHotbar()
         ) return
 
@@ -182,7 +182,7 @@ object BarnFishingTimer {
             !Alerts.alertOnSeaCreaturesTimerThreshold ||
             !WorldUtils.isInSkyblock() ||
             !WorldUtils.isInFishingWorld() ||
-            isInHunterArmor() ||
+            PlayerUtils.isInTrophyArmor() ||
             !PlayerUtils.hasFishingRodInHotbar()
         ) return
 
@@ -210,7 +210,7 @@ object BarnFishingTimer {
             !WorldUtils.isInSkyblock() ||
             !WorldUtils.isInFishingWorld() ||
             !PlayerUtils.hasFishingRodInHotbar() ||
-            isInHunterArmor()
+            PlayerUtils.isInTrophyArmor()
         ) return
 
         val deltaInMillis = System.currentTimeMillis() - startTime!!
@@ -245,22 +245,6 @@ object BarnFishingTimer {
             WorldUtils.CRYSTAL_HOLLOWS -> Alerts.seaCreaturesCountThreshold_CrystalHollows
             WorldUtils.GALATEA -> Alerts.seaCreaturesCountThreshold_Galatea
             else -> Alerts.seaCreaturesCountThreshold_Default
-        }
-    }
-
-    private fun isInHunterArmor(): Boolean {
-        val player = FeeshMod.mc.player ?: return false
-        
-        val helmet = player.getItemBySlot(EquipmentSlot.HEAD)
-        val chestplate = player.getItemBySlot(EquipmentSlot.CHEST)
-        val leggings = player.getItemBySlot(EquipmentSlot.LEGS)
-        val boots = player.getItemBySlot(EquipmentSlot.FEET)
-        
-        val armorPieces = listOf(helmet, chestplate, leggings, boots)
-        return armorPieces.all { armorPiece ->
-            if (armorPiece.isEmpty) return false
-            val itemName = armorPiece.hoverName.string
-            return itemName.contains("Hunter", ignoreCase = true)
         }
     }
 }

@@ -8,10 +8,12 @@ import com.github.sleepypanda.feesh.events.EventBus
 import com.github.sleepypanda.feesh.events.models.WorldChangedEvent
 import java.util.Timer
 import kotlin.concurrent.timerTask
+import net.minecraft.world.entity.EquipmentSlot
 
 object PlayerUtils {
     private var cachedHasFishingRodInHotbar: Boolean = false
     private var cachedHasDirtRodInHand: Boolean = false
+    private var cachedIsInTrophyArmor: Boolean = false
     private var timer: Timer? = null
 
     fun init() {
@@ -27,6 +29,7 @@ object PlayerUtils {
             CommonUtils.runWithCatching("Failed to update player utils cache") {
                 setHasFishingRodInHotbar()
                 setHasDirtRodInHand()
+                setIsInTrophyArmor()
             }
         }
         timer?.scheduleAtFixedRate(task, 0, 500)
@@ -35,6 +38,7 @@ object PlayerUtils {
     private fun onWorldChanged(@Suppress("UNUSED_PARAMETER") event: WorldChangedEvent) {
         cachedHasFishingRodInHotbar = false
         cachedHasDirtRodInHand = false
+        cachedIsInTrophyArmor = false
     }
 
     /*
@@ -83,6 +87,11 @@ object PlayerUtils {
         return cachedHasDirtRodInHand
     }
 
+    /** Whether the player is wearing the armor for trophy fishing / trophy frogging (Bronze/Silver/Gold/Diamond Hunter, Froggles, Red Sweater). */
+    fun isInTrophyArmor(): Boolean {
+        return cachedIsInTrophyArmor
+    }
+
     private fun setHasFishingRodInHotbar() {
         val player = FeeshMod.mc.player ?: run {
             cachedHasFishingRodInHotbar = false
@@ -105,5 +114,26 @@ object PlayerUtils {
         }
         val heldItem = player.mainHandItem
         cachedHasDirtRodInHand = ItemUtils.isDirtRod(heldItem)
+    }
+
+    private fun setIsInTrophyArmor() {
+        val player = FeeshMod.mc.player ?: run {
+            cachedIsInTrophyArmor = false
+            return
+        }
+        
+        val helmet = player.getItemBySlot(EquipmentSlot.HEAD)
+        val chestplate = player.getItemBySlot(EquipmentSlot.CHEST)
+        val leggings = player.getItemBySlot(EquipmentSlot.LEGS)
+        val boots = player.getItemBySlot(EquipmentSlot.FEET)
+        
+        val armorPieces = listOf(helmet, chestplate, leggings, boots)
+        cachedIsInTrophyArmor = armorPieces.all { armorPiece ->
+            if (armorPiece.isEmpty) return@all false
+            val itemName = armorPiece.hoverName.string
+            return@all itemName.contains("Hunter", ignoreCase = true) || 
+                itemName.contains("Froggles", ignoreCase = true) || 
+                itemName.contains("Red Sweater", ignoreCase = true)
+        }
     }
 }
