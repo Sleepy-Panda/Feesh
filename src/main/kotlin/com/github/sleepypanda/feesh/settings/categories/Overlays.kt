@@ -276,6 +276,7 @@ Hidden if you have no fishing rod in your hotbar!""".trimIndent())
         this.name = Translated("Sea creatures tracker")
         this.description = Translated("""
 ${GRAY}Shows an overlay with the overview of the sea creatures caught, and different related statistics. This overlay has [Session] and [Total] view mode.
+${GRAY}To view details: Hover over a line while in Inventory screen.
 ${GRAY}To reset [Session]: ${WHITE}/${SeaCreaturesTracker.RESET_SESSION}
 ${GRAY}To reset [Total]: ${WHITE}/${SeaCreaturesTracker.RESET_TOTAL}
 """.trimIndent())
@@ -286,19 +287,29 @@ ${GRAY}To reset [Total]: ${WHITE}/${SeaCreaturesTracker.RESET_TOTAL}
         this.description = Translated("Setups whether to hide regular sea creatures in the overlay, showing just rare ones. All sea creatures are tracked regardless this setting.")
     }
 
+    var countCocoonedSeaCreatures by boolean(true) {
+        this.name = Translated("Count cocooned sea creatures")
+        this.description = Translated("Include sea creatures cocooned by your Bloodshot reforge in the Sea creatures tracker, as SB treats them as your own.")
+    }
+
     var showSeaCreaturesPercentage by boolean(true) {
-        this.name = Translated("Show sea creatures percentage")
-        this.description = Translated("Show percentage for each sea creature out of all sea creatures.")
+        this.name = Translated("Show percentage")
+        this.description = Translated("Show percentage for each sea creature out of total amount of sea creatures. If disabled, the statistics will be still visible in the tooltip.")
     }
 
     var showSeaCreaturesDoubleHookStatistics by boolean(true) {
         this.name = Translated("Show double hook statistics")
-        this.description = Translated("Show statistics how often the sea creatures were double hooked.")
+        this.description = Translated("Show statistics for each sea creature how often it was double hooked (shown as 'DH' in the overlay). If disabled, the statistics will be still visible in the tooltip.")
+    }
+
+    var showCocoonedStatistics by boolean(false) {
+        this.name = Translated("Show cocooned statistics")
+        this.description = Translated("Show statistics for each sea creature how often it was cocooned by your Bloodshot reforge (shown as 'BS' in the overlay). If disabled, the statistics will be still visible in the tooltip.")
     }
 
     var seaCreaturesTrackerSorting by enum(SeaCreaturesTrackerSorting.RARITY_DESC) {
         this.name = Translated("Sea creatures sorting")
-        this.description = Translated("Setups sorting order for the sea creatures.")
+        this.description = Translated("Setups sorting order for the sea creatures list.")
     }
 
     var seaCreaturesTrackerShowTop by int(50) {
@@ -315,23 +326,11 @@ ${GRAY}To reset [Total]: ${WHITE}/${SeaCreaturesTracker.RESET_TOTAL}
 
     init {
         button {
-            title = "Sea creatures tracker commands"
-            description = "Explains in your chat how to use manual commands to adjust sea creatures count in [Session] and [Total]."
-            text = "Click for help"
+            title = "Editing Sea creatures tracker guide"
+            description = "Opens a guide on how to adjust sea creature counts and statistics in Sea creatures tracker [Session] and [Total]."
+            text = "Click to open"
             onClick {
-                ChatUtils.sendLocalChat("${AQUA}${BOLD}Sea creatures tracker commands${RESET}", true)
-                ChatUtils.sendLocalChat("${GRAY}Use these to manually fix/import sea creatures:")
-                ChatUtils.sendLocalChat("${YELLOW}Command: ${GRAY}set [Session] count ->")
-                ChatUtils.sendLocalChat("${WHITE}/${SeaCreaturesTracker.SET_SEA_CREATURE_COUNT_COMMAND}${GOLD} <SEA_CREATURE_NAME> <COUNT>")
-                ChatUtils.sendLocalChat("${YELLOW}Command: ${GRAY}set [Total] count ->")
-                ChatUtils.sendLocalChat("${WHITE}/${SeaCreaturesTracker.SET_SEA_CREATURE_COUNT_TOTAL_COMMAND}${GOLD} <SEA_CREATURE_NAME> <COUNT>")
-                ChatUtils.sendLocalChat("${YELLOW}Command: ${GRAY}delete from [Session] ->")
-                ChatUtils.sendLocalChat("${WHITE}/${SeaCreaturesTracker.DELETE_SEA_CREATURE_COMMAND}${GOLD} <SEA_CREATURE_NAME>")
-                ChatUtils.sendLocalChat("${YELLOW}Command: ${GRAY}delete from [Total] ->")
-                ChatUtils.sendLocalChat("${WHITE}/${SeaCreaturesTracker.DELETE_SEA_CREATURE_TOTAL_COMMAND}${GOLD} <SEA_CREATURE_NAME>")
-                ChatUtils.sendLocalChat("${DARK_AQUA}Arg <SEA_CREATURE_NAME>: ${GRAY}exact name (e.g. Yeti, Reindrake, Lord Jawbus), case insensitive")
-                ChatUtils.sendLocalChat("${DARK_AQUA}Arg <COUNT>: ${GRAY}count to show - positive integer")
-                ChatUtils.sendLocalChat("${GREEN}Example: ${WHITE}/${SeaCreaturesTracker.SET_SEA_CREATURE_COUNT_COMMAND} Lord Jawbus 100")
+                Util.getPlatform().openUri("https://github.com/Sleepy-Panda/Feesh/blob/develop/docs/Editing%20sea%20creatures%20tracker.md")
             }
         }
     }

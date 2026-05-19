@@ -1,13 +1,16 @@
 # Editing Fishing profit tracker
 
+## Table of contents
+
+- [Intro](#intro)
+- [Editing tracker items](#editing-tracker-items)
+- [Editing elapsed time](#editing-elapsed-time)
+
+## Intro
+
 The **Fishing profit tracker** has two view modes: **[Session]** (resets on game close by default, unless disabled) and **[Total]** (persists until you reset it manually). This guide explains how to add, change, or remove items in each mode.
 
 It can be used if some item was not tracked during fishing, or you want to initialize your past drops history in Feesh.
-
-## Table of contents
-
-- [Editing tracker items](#editing-tracker-items)
-- [Editing elapsed time](#editing-elapsed-time)
 
 ## Editing tracker items
 

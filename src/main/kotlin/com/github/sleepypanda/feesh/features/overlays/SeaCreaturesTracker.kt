@@ -6,6 +6,7 @@ import com.github.sleepypanda.feesh.events.EventBus
 import com.github.sleepypanda.feesh.events.models.ClientTickEvent
 import com.github.sleepypanda.feesh.events.models.GameClosedEvent
 import com.github.sleepypanda.feesh.events.models.OwnSeaCreatureCaughtEvent
+import com.github.sleepypanda.feesh.events.models.SeaCreatureCocoonedByYouEvent
 import com.github.sleepypanda.feesh.settings.categories.Overlays
 import com.github.sleepypanda.feesh.settings.categories.SeaCreaturesTrackerDisplayMode
 import com.github.sleepypanda.feesh.settings.categories.SeaCreaturesTrackerSorting
@@ -31,13 +32,15 @@ object SeaCreaturesTracker {
     }
     
     data class SeaCreatureCatchData(
-        var amount: Int = 0,
-        var doubleHookAmount: Int = 0
+        var amount: Int = 0, // Caught amount
+        var cocoonedAmount: Int = 0,
+        var doubleHookAmount: Int = 0 // Applies only to caught amount
     )
     
     data class SeaCreaturesData(
         val catches: MutableMap<String, SeaCreatureCatchData> = mutableMapOf(),
-        var totalCount: Int = 0
+        var totalCount: Int = 0, // Total caught amount
+        var totalCocoonedCount: Int = 0
     )
     
     data class SeaCreaturesTrackerData(
@@ -69,7 +72,7 @@ object SeaCreaturesTracker {
             "${GRAY}- ${GOLD}Yeti: ${WHITE}10 ${GRAY}1% ${DARK_GRAY}| ${GRAY}DH: ${WHITE}1 ${GRAY}20%",
             "${GRAY}- ${LIGHT_PURPLE}Reindrake: ${WHITE}1 ${GRAY}0.1% ${DARK_GRAY}| ${GRAY}DH: ${WHITE}0 ${GRAY}0%",
             "",
-            "${AQUA}Total: ${WHITE}11 ${GRAY}rare out of ${WHITE}1000 ${DARK_GRAY}| ${GRAY}DH: ${WHITE}1 ${GRAY}20%",
+            "${AQUA}Total: ${WHITE}11 ${GRAY}rare out of ${WHITE}1000 ${DARK_GRAY}| ${GRAY}DH: ${WHITE}1 ${GRAY}20% ${DARK_GRAY}| ${GRAY}BS: ${WHITE}1 ${GRAY}10%",
         ))
         .setSettingsKey { Overlays.seaCreaturesTrackerOverlay }
         .setApplyCustomStyleKey { Overlays.seaCreaturesTrackerCustomStyle }
@@ -82,6 +85,7 @@ object SeaCreaturesTracker {
         registerCommands()
 
         EventBus.subscribe(OwnSeaCreatureCaughtEvent::class, ::onSeaCreatureCaught)
+        EventBus.subscribe(SeaCreatureCocoonedByYouEvent::class, ::onSeaCreatureCocooned)
         EventBus.subscribe(ClientTickEvent::class, ::onClientTick)
         EventBus.subscribe(GameClosedEvent::class, ::onGameClosed)
     }
@@ -119,6 +123,21 @@ object SeaCreaturesTracker {
         saveData()
     }
 
+    private fun onSeaCreatureCocooned(event: SeaCreatureCocoonedByYouEvent) {
+        if (!Overlays.seaCreaturesTrackerOverlay || !WorldUtils.isInSkyblock() || !WorldUtils.isInFishingWorld()) return
+        if (!Overlays.countCocoonedSeaCreatures) return
+
+        val seaCreatureName = event.seaCreatureName
+
+        if (seaCreatureName == "Vanquisher" && !FishingHookUtils.wasFishingHookActiveMinutesAgo(5)) return
+
+        trackSeaCreatureCocoon(data.session, seaCreatureName)
+        trackSeaCreatureCocoon(data.total, seaCreatureName)
+
+        updateGuiLines()
+        saveData()
+    }
+
     private fun trackSeaCreatureCatch(sourceObj: SeaCreaturesData, seaCreatureName: String, valueToAdd: Int, isDoubleHook: Boolean) {
         val key = seaCreatureName.uppercase()
         val catchData = sourceObj.catches.getOrPut(key) { SeaCreatureCatchData() }
@@ -126,7 +145,14 @@ object SeaCreaturesTracker {
         if (isDoubleHook) {
             catchData.doubleHookAmount++
         }
-        recalculateTotalCount(sourceObj)
+        recalculateTotalCaughtCount(sourceObj)
+    }
+
+    private fun trackSeaCreatureCocoon(sourceObj: SeaCreaturesData, seaCreatureName: String) {
+        val key = seaCreatureName.uppercase()
+        val catchData = sourceObj.catches.getOrPut(key) { SeaCreatureCatchData() }
+        catchData.cocoonedAmount += 1
+        recalculateTotalCocoonedCount(sourceObj)
     }
 
     private fun getCurrentViewMode(): ViewMode {
@@ -162,7 +188,7 @@ object SeaCreaturesTracker {
     private fun onGameClosed(@Suppress("UNUSED_PARAMETER") event: GameClosedEvent) {
         if (Overlays.resetSeaCreaturesTrackerSessionOnGameClosed && 
             Overlays.seaCreaturesTrackerOverlay && 
-            data.session.totalCount > 0) {
+            (data.session.totalCount > 0 || data.session.totalCocoonedCount > 0)) {
             resetSession(force = true)
             FeeshMod.LOGGER.info("[Feesh] Automatically reset Sea creatures tracker [Session] on game closed.")
         }
@@ -238,19 +264,73 @@ object SeaCreaturesTracker {
     }
 
     private fun onSetSeaCreatureCountCommand(args: Array<String>, viewMode: ViewMode) {
+
+        fun isArgValidCount(value: String): Boolean {
+            val trimmed = value.trim()
+            if (trimmed.isEmpty()) return false
+            return when {
+                trimmed.startsWith("+") -> trimmed.drop(1).toIntOrNull() != null
+                trimmed.startsWith("-") -> trimmed.drop(1).toIntOrNull() != null
+                else -> trimmed.toIntOrNull() != null && trimmed.toInt() >= 0
+            }
+        }
+
+        fun applyChangeToCurrentValue(value: String, currentCount: Int): Int? {
+            val trimmed = value.trim()
+            if (trimmed.isEmpty()) return null
+    
+            val newCount = when {
+                trimmed.startsWith("+") -> {
+                    val delta = trimmed.drop(1).toIntOrNull() ?: return null
+                    if (delta < 0) return null
+                    currentCount + delta
+                }
+                trimmed.startsWith("-") -> {
+                    val delta = trimmed.drop(1).toIntOrNull() ?: return null
+                    if (delta < 0) return null
+                    currentCount - delta
+                }
+                else -> trimmed.toIntOrNull()
+            } ?: return null
+    
+            if (newCount < 0) return null
+            return newCount
+        }
+
+        fun findSeaCreatureInfoByName(name: String): SeaCreatures.SeaCreatureInfo? {
+            return SeaCreatures.allSeaCreatures.find { it.name.equals(name.trim(), ignoreCase = true) }
+        }
+
         CommonUtils.runWithCatching("Failed to change sea creature count in Sea creatures tracker") {
-            if (args.size < 2) {
-                ChatUtils.sendLocalChat("${RED}Usage: /$SET_SEA_CREATURE_COUNT_COMMAND <SEA_CREATURE_NAME> <count>", true)
+            val commandName = when (viewMode) {
+                ViewMode.SESSION -> SET_SEA_CREATURE_COUNT_COMMAND
+                ViewMode.TOTAL -> SET_SEA_CREATURE_COUNT_TOTAL_COMMAND
+            }
+
+            if (args.isEmpty()) {
+                ChatUtils.sendLocalChat(
+                    "${RED}Usage: /$commandName <SEA_CREATURE_NAME> <TOTAL_COUNT> [DH_COUNT] [BS_COUNT] ${GRAY}(e.g. 100, +1, -10)",
+                    true
+                )
                 return
             }
 
-            val count = args.last().toIntOrNull()
-            if (count == null || count <= 0) {
-                ChatUtils.sendLocalChat("${RED}Invalid count, should be a positive number: ${args.last()}", true)
+            val countArgTokens = mutableListOf<String>()
+            var nameEndIndex = args.size
+            while (nameEndIndex > 0 && countArgTokens.size < 3 && isArgValidCount(args[nameEndIndex - 1])) {
+                countArgTokens.add(0, args[nameEndIndex - 1])
+                nameEndIndex--
+            }
+
+            if (countArgTokens.isEmpty()) {
+                ChatUtils.sendLocalChat(
+                    "${RED}Usage: /$commandName <SEA_CREATURE_NAME> <TOTAL_COUNT> [DH_COUNT] [BS_COUNT] ${GRAY}(e.g. 100, +1, -10)",
+                    true
+                )
                 return
             }
 
-            val seaCreatureName = args.dropLast(1).joinToString(" ").trim()
+            val seaCreatureName = args.take(nameEndIndex).joinToString(" ").trim()
             if (seaCreatureName.isBlank()) {
                 ChatUtils.sendLocalChat("${RED}Sea creature name is required.", true)
                 return
@@ -258,7 +338,7 @@ object SeaCreaturesTracker {
 
             val seaCreatureInfo = findSeaCreatureInfoByName(seaCreatureName)
             if (seaCreatureInfo == null) {
-                ChatUtils.sendLocalChat("${RED}Sea creature not found by name: $seaCreatureName", true)
+                ChatUtils.sendLocalChat("${RED}Sea creature name is not supported: $seaCreatureName", true)
                 return
             }
 
@@ -266,19 +346,96 @@ object SeaCreaturesTracker {
             val key = seaCreatureInfo.name.uppercase()
             val existing = sourceObj.catches[key]
 
-            if (existing == null) {
-                sourceObj.catches[key] = SeaCreatureCatchData(amount = count, doubleHookAmount = 0)
-            } else {
-                existing.amount = count
-                existing.doubleHookAmount = existing.doubleHookAmount.coerceAtMost(existing.amount / 2)
+            val previousCaught = existing?.amount ?: 0
+            val previousDoubleHook = existing?.doubleHookAmount ?: 0
+            val previousCocooned = existing?.cocoonedAmount ?: 0
+            val previousTotal = previousCaught + previousCocooned
+
+            val newTotal = applyChangeToCurrentValue(countArgTokens[0], previousTotal)
+            if (newTotal == null || newTotal <= 0) {
+                ChatUtils.sendLocalChat(
+                    "${RED}Invalid TOTAL_COUNT. Use an integer > 0, or +N / -N to adjust (e.g. 100, +1, -10).",
+                    true
+                )
+                return
             }
 
-            recalculateTotalCount(sourceObj)
+            var newDoubleHook = previousDoubleHook
+            if (countArgTokens.size >= 2) {
+                newDoubleHook = applyChangeToCurrentValue(countArgTokens[1], previousDoubleHook) ?: run {
+                    ChatUtils.sendLocalChat(
+                        "${RED}Invalid DH_COUNT. Use an integer >= 0, or +N / -N to adjust (e.g. 10, +1, -10).",
+                        true
+                    )
+                    return
+                }
+            }
+
+            var newCocooned = previousCocooned
+            if (countArgTokens.size >= 3) {
+                newCocooned = applyChangeToCurrentValue(countArgTokens[2], previousCocooned) ?: run {
+                    ChatUtils.sendLocalChat(
+                        "${RED}Invalid BS_COUNT. Use an integer >= 0, or +N / -N to adjust (e.g. 1, +1, -10).",
+                        true
+                    )
+                    return
+                }
+            }
+
+            val newCaught = newTotal - newCocooned
+            if (newCaught < 0) {
+                ChatUtils.sendLocalChat(
+                    "${RED}Cocooned count ($newCocooned) cannot exceed total count ($newTotal).",
+                    true
+                )
+                return
+            }
+            if (newDoubleHook < 0 || newDoubleHook > newCaught / 2) {
+                ChatUtils.sendLocalChat(
+                    "${RED}Double hook count must be between 0 and ${newCaught / 2} (half of caught count).",
+                    true
+                )
+                return
+            }
+
+            if (existing != null) {
+                existing.amount = newCaught
+                existing.doubleHookAmount = newDoubleHook
+                existing.cocoonedAmount = newCocooned
+            } else {
+                sourceObj.catches[key] = SeaCreatureCatchData(
+                    amount = newCaught,
+                    cocoonedAmount = newCocooned,
+                    doubleHookAmount = newDoubleHook,
+                )
+            }
+
+            recalculateTotalCaughtCount(sourceObj)
+            recalculateTotalCocoonedCount(sourceObj)
             saveData()
             updateGuiLines()
 
             val viewModeText = getViewModeDisplayText(viewMode)
-            ChatUtils.sendLocalChat("${WHITE}Changed count of ${seaCreatureInfo.displayName} ${WHITE}to ${count} in Sea creatures tracker ${viewModeText}${WHITE}.", true)
+            val changes = buildList {
+                if (newTotal != previousTotal) {
+                    add("${GRAY}Total: ${AQUA}$previousTotal ${WHITE}-> ${AQUA}$newTotal")
+                }
+                if (countArgTokens.size >= 2 && newDoubleHook != previousDoubleHook) {
+                    add("${GRAY}DH: ${AQUA}$previousDoubleHook ${WHITE}-> ${AQUA}$newDoubleHook")
+                }
+                if (countArgTokens.size >= 3 && newCocooned != previousCocooned) {
+                    add("${GRAY}BS: ${AQUA}$previousCocooned ${WHITE}-> ${AQUA}$newCocooned")
+                }
+            }
+            val changesText = if (changes.isEmpty()) {
+                "${GRAY}(no changes)"
+            } else {
+                changes.joinToString("${WHITE}, ")
+            }
+            ChatUtils.sendLocalChat(
+                "${WHITE}Changed ${seaCreatureInfo.displayName} ${WHITE}in Sea creatures tracker $viewModeText${WHITE}: $changesText${WHITE}.",
+                true
+            )
         }
     }
 
@@ -301,7 +458,7 @@ object SeaCreaturesTracker {
             val key = sourceObj.catches.keys.find { it.equals(normalizedName, ignoreCase = true) }
                 ?: SeaCreatures.allSeaCreatures.find { it.name.equals(normalizedName, ignoreCase = true) }?.name?.uppercase()
             if (key == null || !sourceObj.catches.containsKey(key)) {
-                ChatUtils.sendLocalChat("${RED}Sea creature is not found in the tracker, nothing to delete: $normalizedName", true)
+                ChatUtils.sendLocalChat("${RED}Sea creature is not found in Sea creatures tracker, nothing to delete: $normalizedName", true)
                 return
             }
 
@@ -315,7 +472,7 @@ object SeaCreaturesTracker {
                     ViewMode.TOTAL -> "$DELETE_SEA_CREATURE_TOTAL_COMMAND ${seaCreatureInfo?.name ?: key} noconfirm"
                 }
                 ChatUtils.sendLocalChatWithCommand(
-                    "${WHITE}Do you want to delete ${WHITE}${entry.amount}x ${displayName}${WHITE} from the Sea creatures tracker ${viewModeText}${WHITE}? ${RED}${BOLD}[Click to confirm]",
+                    "${WHITE}Do you want to delete ${displayName}${WHITE} from Sea creatures tracker ${viewModeText}${WHITE}? ${RED}${BOLD}[Click to confirm]",
                     command,
                     true
                 )
@@ -323,58 +480,23 @@ object SeaCreaturesTracker {
             }
 
             sourceObj.catches.remove(key)
-            recalculateTotalCount(sourceObj)
+            recalculateTotalCaughtCount(sourceObj)
+            recalculateTotalCocoonedCount(sourceObj)
             saveData()
             updateGuiLines()
-            ChatUtils.sendLocalChat("${WHITE}Deleted ${WHITE}${entry.amount}x ${displayName}${WHITE} from the Sea creatures tracker ${viewModeText}${WHITE}.", true)
+            ChatUtils.sendLocalChat("${WHITE}Deleted ${displayName}${WHITE} from the Sea creatures tracker ${viewModeText}${WHITE}.", true)
         }
     }
 
-    private fun findSeaCreatureInfoByName(name: String): SeaCreatures.SeaCreatureInfo? {
-        return SeaCreatures.allSeaCreatures.find { it.name.equals(name.trim(), ignoreCase = true) }
-    }
-
-    private fun recalculateTotalCount(sourceObj: SeaCreaturesData) {
+    private fun recalculateTotalCaughtCount(sourceObj: SeaCreaturesData) {
         sourceObj.totalCount = sourceObj.catches.values.sumOf { it.amount }
     }
 
-    private fun onLineSeaCreatureIncrease(seaCreatureKey: String) {
-        CommonUtils.runWithCatching("Failed to change sea creature amount in Sea creatures tracker") {
-            val viewMode = getCurrentViewMode()
-            val sourceObj = getSourceObject(viewMode)
-            val entry = sourceObj.catches[seaCreatureKey] ?: return
-            val seaCreatureInfo = SeaCreatures.allSeaCreatures.find { it.name.uppercase() == seaCreatureKey } ?: return
-
-            entry.amount += 1
-            recalculateTotalCount(sourceObj)
-            saveData()
-            updateGuiLines()
-
-            val viewModeText = getViewModeDisplayText(viewMode)
-            ChatUtils.sendLocalChat("${WHITE}Changed count of ${seaCreatureInfo.displayName} ${WHITE}to ${GRAY}${entry.amount}x ${WHITE}in the Sea creatures tracker ${viewModeText}${WHITE}.", true)
-        }
+    private fun recalculateTotalCocoonedCount(sourceObj: SeaCreaturesData) {
+        sourceObj.totalCocoonedCount = sourceObj.catches.values.sumOf { it.cocoonedAmount }
     }
 
-    private fun onLineSeaCreatureDecrease(seaCreatureKey: String) {
-        CommonUtils.runWithCatching("Failed to change sea creature amount in Sea creatures tracker") {
-            val viewMode = getCurrentViewMode()
-            val sourceObj = getSourceObject(viewMode)
-            val entry = sourceObj.catches[seaCreatureKey] ?: return
-            val seaCreatureInfo = SeaCreatures.allSeaCreatures.find { it.name.uppercase() == seaCreatureKey } ?: return
-            if (entry.amount <= 1) return
-
-            entry.amount -= 1
-            entry.doubleHookAmount = entry.doubleHookAmount.coerceAtMost(entry.amount / 2)
-            recalculateTotalCount(sourceObj)
-            saveData()
-            updateGuiLines()
-
-            val viewModeText = getViewModeDisplayText(viewMode)
-            ChatUtils.sendLocalChat("${WHITE}Changed count of ${seaCreatureInfo.displayName} ${WHITE}to ${GRAY}${entry.amount}x ${WHITE}in the Sea creatures tracker ${viewModeText}${WHITE}.", true)
-        }
-    }
-
-    private fun onLineSeaCreatureDelete(seaCreatureKey: String) {
+    private fun onDeleteSeaCreatureInline(seaCreatureKey: String) {
         CommonUtils.runWithCatching("Failed to delete sea creature from Sea creatures tracker") {
             val viewMode = getCurrentViewMode()
             val seaCreatureInfo = SeaCreatures.allSeaCreatures.find { it.name.uppercase() == seaCreatureKey } ?: return
@@ -405,23 +527,29 @@ object SeaCreaturesTracker {
                 if (seaCreatureInfo == null) return@mapNotNull null
                 if (displayMode == SeaCreaturesTrackerDisplayMode.ONLY_RARE && !seaCreatureInfo.isRare) return@mapNotNull null
 
-                val percent = if (sourceObj.totalCount > 0) {
-                    ((value.amount.toDouble() / sourceObj.totalCount) * 100.0)
-                } else 0.0
+                val caughtAmount = value.amount
+                val totalAmount = caughtAmount + value.cocoonedAmount
+                val percent = getPercentage(sourceObj, totalAmount)
+                val doubleHookPercent = getDoubleHookPercent(caughtAmount, value.doubleHookAmount)
+                val cocoonedPercent = getCocoonedPercent(totalAmount, value.cocoonedAmount)
 
-                val doubleHookPercent = getDoubleHookPercent(value.amount, value.doubleHookAmount)
-
-                TrackerSeaCreatureEntry(
+                SeaCreatureTrackerEntry(
                     seaCreature = key,
                     seaCreatureInfo = seaCreatureInfo,
-                    amount = value.amount,
-                    formattedAmount = CommonUtils.formatNumberWithSpaces(value.amount),
+                    totalAmount = totalAmount,
+                    totalAmountFormatted = CommonUtils.formatNumberWithSpaces(totalAmount),
+                    caughtAmount = caughtAmount,
+                    caughtAmountFormatted = CommonUtils.formatNumberWithSpaces(caughtAmount),
+                    cocoonedAmount = value.cocoonedAmount,
+                    cocoonedAmountFormatted = CommonUtils.formatNumberWithSpaces(value.cocoonedAmount),
                     percent = percent,
-                    formattedPercent = "${decimalFormat.format(percent)}%",
+                    percentFormatted = formatPercent(percent),
+                    cocoonedPercent = cocoonedPercent,
+                    cocoonedPercentFormatted = formatPercent(cocoonedPercent),
                     doubleHookAmount = value.doubleHookAmount,
-                    formattedDoubleHookAmount = CommonUtils.formatNumberWithSpaces(value.doubleHookAmount),
+                    doubleHookAmountFormatted = CommonUtils.formatNumberWithSpaces(value.doubleHookAmount),
                     doubleHookPercent = doubleHookPercent,
-                    formattedDoubleHookPercent = "${decimalFormat.format(doubleHookPercent)}%",
+                    doubleHookPercentFormatted = formatPercent(doubleHookPercent),
                 )
             }
 
@@ -449,16 +577,14 @@ object SeaCreaturesTracker {
                         text = seaCreatureText,
                         tooltip = getSeaCreatureLineTooltip(entry),
                         actions = listOf(
-                            LineAction("${GRAY}[${GREEN}+${GRAY}]") { onLineSeaCreatureIncrease(entry.seaCreature) },
-                            LineAction("${GRAY}[${RED}-${GRAY}]") { onLineSeaCreatureDecrease(entry.seaCreature) },
-                            LineAction("${GRAY}[${RED}x${GRAY}]") { onLineSeaCreatureDelete(entry.seaCreature) }
+                            LineAction("${GRAY}[${RED}x${GRAY}]") { onDeleteSeaCreatureInline(entry.seaCreature) }
                         )
                     )
                 )
             }
 
             if (hiddenEntries.isNotEmpty()) {
-                val otherSeaCreaturesCount = CommonUtils.formatNumberWithSpaces(hiddenEntries.sumOf { it.amount })
+                val otherSeaCreaturesCount = CommonUtils.formatNumberWithSpaces(hiddenEntries.sumOf { it.totalAmount })
                 val otherSeaCreaturesTypes = CommonUtils.formatNumberWithSpaces(hiddenEntries.size)
                 lines.add(LineInfo("${GRAY}- Other sea creatures of ${WHITE}$otherSeaCreaturesTypes ${GRAY}types: ${WHITE}$otherSeaCreaturesCount"))
             }
@@ -478,45 +604,53 @@ object SeaCreaturesTracker {
         }
     }
 
-    private fun getSortedSeaCreatureEntries(entries: List<TrackerSeaCreatureEntry>, sorting: SeaCreaturesTrackerSorting): List<TrackerSeaCreatureEntry> {
+    private fun formatPercent(percent: Double): String = "${decimalFormat.format(percent)}%"
+
+    private fun getSortedSeaCreatureEntries(entries: List<SeaCreatureTrackerEntry>, sorting: SeaCreaturesTrackerSorting): List<SeaCreatureTrackerEntry> {
         val sorted = when (sorting) {
-            SeaCreaturesTrackerSorting.CATCHES_COUNT_DESC -> entries.sortedByDescending { it.amount }
-            SeaCreaturesTrackerSorting.CATCHES_COUNT_ASC -> entries.sortedBy { it.amount }
+            SeaCreaturesTrackerSorting.CATCHES_COUNT_DESC -> entries.sortedByDescending { it.totalAmount }
+            SeaCreaturesTrackerSorting.CATCHES_COUNT_ASC -> entries.sortedBy { it.totalAmount }
             SeaCreaturesTrackerSorting.RARITY_ASC -> entries.sortedWith(
-                compareBy<TrackerSeaCreatureEntry> { CommonUtils.getRarityNumericCode(it.seaCreatureInfo.rarityColorCode) }
-                .thenByDescending { it.amount }
+                compareBy<SeaCreatureTrackerEntry> { CommonUtils.getRarityNumericCode(it.seaCreatureInfo.rarityColorCode) }
+                .thenByDescending { it.totalAmount }
             )
             SeaCreaturesTrackerSorting.RARITY_DESC -> entries.sortedWith(
-                compareByDescending<TrackerSeaCreatureEntry> { CommonUtils.getRarityNumericCode(it.seaCreatureInfo.rarityColorCode) }
-                .thenByDescending { it.amount }
+                compareByDescending<SeaCreatureTrackerEntry> { CommonUtils.getRarityNumericCode(it.seaCreatureInfo.rarityColorCode) }
+                .thenByDescending { it.totalAmount }
             )
         }
         return sorted
     }
 
-    private fun getSeaCreatureLineText(entry: TrackerSeaCreatureEntry, displayMode: SeaCreaturesTrackerDisplayMode): String {
+    private fun getSeaCreatureLineText(entry: SeaCreatureTrackerEntry, displayMode: SeaCreaturesTrackerDisplayMode): String {
         val showPercentage = Overlays.showSeaCreaturesPercentage
         val showDoubleHook = Overlays.showSeaCreaturesDoubleHookStatistics
+        val showCocooned = Overlays.showCocoonedStatistics
 
         val seaCreatureText = if (entry.seaCreatureInfo.isRare) entry.seaCreatureInfo.boldDisplayName else entry.seaCreatureInfo.displayName
-        val countText = "${WHITE}${entry.formattedAmount}"
-        val percentText = if (showPercentage) " ${GRAY}${entry.formattedPercent}" else ""
+        val countText = "${WHITE}${entry.totalAmountFormatted}"
+        val percentText = if (showPercentage) " ${GRAY}${entry.percentFormatted}" else ""
             
         val doubleHookText = if (showDoubleHook && entry.seaCreatureInfo.canBeDoubleHooked) {
-            " ${DARK_GRAY}| ${GRAY}DH: ${WHITE}${entry.formattedDoubleHookAmount} ${GRAY}${entry.formattedDoubleHookPercent}"
+            " ${DARK_GRAY}| ${GRAY}DH: ${WHITE}${entry.doubleHookAmountFormatted} ${GRAY}${entry.doubleHookPercentFormatted}"
+        } else ""
+        val cocoonedText = if (showCocooned) {
+            " ${DARK_GRAY}| ${GRAY}BS: ${WHITE}${entry.cocoonedAmountFormatted} ${GRAY}${entry.cocoonedPercentFormatted}"
         } else ""
 
-        return "${GRAY}- $seaCreatureText${GRAY}: $countText$percentText$doubleHookText"
+        return "${GRAY}- $seaCreatureText${GRAY}: $countText$percentText$doubleHookText$cocoonedText"
     }
 
-    private fun getSeaCreatureLineTooltip(entry: TrackerSeaCreatureEntry): List<Component> {
-        val dhText = if (entry.seaCreatureInfo.canBeDoubleHooked) {
-            "${GRAY}DH: ${WHITE}${entry.formattedDoubleHookAmount} ${GRAY}(${WHITE}${entry.formattedDoubleHookPercent} ${GRAY}of catches)"
-        } else ""
-        val lines = listOf(
+    private fun getSeaCreatureLineTooltip(entry: SeaCreatureTrackerEntry): List<Component> {
+        val doubleHookText = if (entry.seaCreatureInfo.canBeDoubleHooked) {
+            "${GRAY}Double hook: ${WHITE}${entry.doubleHookAmountFormatted} ${GRAY}(${WHITE}${entry.doubleHookPercentFormatted} ${GRAY}of catches)"
+        } else null
+        val lines = listOfNotNull(
             entry.seaCreatureInfo.displayName,
-            "${GRAY}Total: ${WHITE}${entry.formattedAmount} ${GRAY}(${WHITE}${entry.formattedPercent}${GRAY})",
-            dhText
+            "${WHITE}${entry.totalAmountFormatted} ${GRAY}(${WHITE}${entry.percentFormatted} ${GRAY}out of all SC)",
+            "${WHITE}${entry.caughtAmountFormatted} ${GRAY}caught, ${WHITE}${entry.cocoonedAmountFormatted} ${GRAY}cocooned",
+            doubleHookText,
+            "${GRAY}Bloodshot: ${WHITE}${entry.cocoonedAmountFormatted} ${GRAY}(${WHITE}${entry.cocoonedPercentFormatted}${GRAY})",
         )
         return lines.map { Component.literal(it) }
     }
@@ -531,7 +665,19 @@ object SeaCreaturesTracker {
         } else 0.0
     }
 
-    private fun getTotalLineInfo(sourceObj: SeaCreaturesData): TrackerTotal {
+    private fun getCocoonedPercent(totalAmount: Int, cocoonedAmount: Int): Double {
+        if (totalAmount <= 0 || cocoonedAmount <= 0) return 0.0
+        return (cocoonedAmount.toDouble() / totalAmount.toDouble()) * 100.0
+    }
+
+    private fun getPercentage(sourceObj: SeaCreaturesData, totalAmount: Int): Double {
+        val percent = if (sourceObj.totalCount + sourceObj.totalCocoonedCount > 0) {
+            ((totalAmount.toDouble() / (sourceObj.totalCount + sourceObj.totalCocoonedCount)) * 100.0)
+        } else 0.0
+        return percent
+    }
+
+    private fun getTotalLineInfo(sourceObj: SeaCreaturesData): TotalTrackerEntry {
 
         fun getDoubleHookCatches(catches: MutableMap<String, SeaCreatureCatchData>): Int {
             var doubleHookSum = 0
@@ -547,89 +693,125 @@ object SeaCreaturesTracker {
             return sourceObj.catches.filter { (k, v) -> SeaCreatures.allSeaCreatures.find { it.name.uppercase() == k }?.isRare == true }.toMutableMap()
         }
 
-        val totalAmount = sourceObj.totalCount
-        val totalAmountFormatted = CommonUtils.formatNumberWithSpaces(totalAmount)
+        val totalCaughtAmount = sourceObj.totalCount
+        val totalCocoonedAmount = sourceObj.totalCocoonedCount
+        val totalAmount = totalCaughtAmount + totalCocoonedAmount
         val totalDoubleHookAmount = getDoubleHookCatches(sourceObj.catches)
-        val totalDoubleHookAmountFormatted = CommonUtils.formatNumberWithSpaces(totalDoubleHookAmount)
-        val totalDoubleHookPercent = getDoubleHookPercent(totalAmount, totalDoubleHookAmount)
-        val totalDoubleHookPercentFormatted = "${decimalFormat.format(totalDoubleHookPercent)}%"
+        val totalDoubleHookPercent = getDoubleHookPercent(totalCaughtAmount, totalDoubleHookAmount)
+        val totalCocoonedPercent = getCocoonedPercent(totalAmount, totalCocoonedAmount)
 
         val rareCatches = getRareCatches(sourceObj)
-        val rareTotalAmount = rareCatches.values.sumOf { it.amount }
-        val rareTotalAmountFormatted = CommonUtils.formatNumberWithSpaces(rareTotalAmount)
-        val rareTotalDoubleHookAmount = getDoubleHookCatches(rareCatches)
-        val rareTotalDoubleHookAmountFormatted = CommonUtils.formatNumberWithSpaces(rareTotalDoubleHookAmount)
-        val rareTotalDoubleHookPercent = getDoubleHookPercent(rareTotalAmount, rareTotalDoubleHookAmount)
-        val rareTotalDoubleHookPercentFormatted = "${decimalFormat.format(rareTotalDoubleHookPercent)}%"
+        val rareCaughtAmount = rareCatches.values.sumOf { it.amount }
+        val rareCocoonedAmount = rareCatches.values.sumOf { it.cocoonedAmount }
+        val rareTotalAmount = rareCaughtAmount + rareCocoonedAmount
+        val rareDoubleHookAmount = getDoubleHookCatches(rareCatches)
+        val rareDoubleHookPercent = getDoubleHookPercent(rareTotalAmount, rareDoubleHookAmount)
+        val rareCocoonedPercent = getCocoonedPercent(rareTotalAmount, rareCocoonedAmount)
 
-        return TrackerTotal(
-            totalAmount = totalAmount,
-            totalAmountFormatted = totalAmountFormatted,
-            totalDoubleHookAmount = totalDoubleHookAmount,
-            totalDoubleHookAmountFormatted = totalDoubleHookAmountFormatted,
-            totalDoubleHookPercent = totalDoubleHookPercent,
-            totalDoubleHookPercentFormatted = totalDoubleHookPercentFormatted,
+        return TotalTrackerEntry(
+            allTotalAmount = totalAmount,
+            allTotalAmountFormatted = CommonUtils.formatNumberWithSpaces(totalAmount),
+            allCaughtAmount = totalCaughtAmount,
+            allCaughtAmountFormatted = CommonUtils.formatNumberWithSpaces(totalCaughtAmount),
+            allDoubleHookAmount = totalDoubleHookAmount,
+            allDoubleHookAmountFormatted = CommonUtils.formatNumberWithSpaces(totalDoubleHookAmount),
+            allDoubleHookPercent = totalDoubleHookPercent,
+            allDoubleHookPercentFormatted = formatPercent(totalDoubleHookPercent),
+            allCocoonedAmount = totalCocoonedAmount,
+            allCocoonedAmountFormatted = CommonUtils.formatNumberWithSpaces(totalCocoonedAmount),
+            allCocoonedPercent = totalCocoonedPercent,
+            allCocoonedPercentFormatted = formatPercent(totalCocoonedPercent),
             rareTotalAmount = rareTotalAmount,
-            rareTotalAmountFormatted = rareTotalAmountFormatted,
-            rareTotalDoubleHookAmount = rareTotalDoubleHookAmount,
-            rareTotalDoubleHookAmountFormatted = rareTotalDoubleHookAmountFormatted,
-            rareTotalDoubleHookPercent = rareTotalDoubleHookPercent,
-            rareTotalDoubleHookPercentFormatted = rareTotalDoubleHookPercentFormatted,
+            rareTotalAmountFormatted = CommonUtils.formatNumberWithSpaces(rareTotalAmount),
+            rareCaughtAmount = rareCaughtAmount,
+            rareCaughtAmountFormatted = CommonUtils.formatNumberWithSpaces(rareCaughtAmount),
+            rareDoubleHookAmount = rareDoubleHookAmount,
+            rareDoubleHookAmountFormatted = CommonUtils.formatNumberWithSpaces(rareDoubleHookAmount),
+            rareDoubleHookPercent = rareDoubleHookPercent,
+            rareDoubleHookPercentFormatted = formatPercent(rareDoubleHookPercent),
+            rareCocoonedAmount = rareCocoonedAmount,
+            rareCocoonedAmountFormatted = CommonUtils.formatNumberWithSpaces(rareCocoonedAmount),
+            rareCocoonedPercent = rareCocoonedPercent,
+            rareCocoonedPercentFormatted = formatPercent(rareCocoonedPercent),
         )
     }
     
-    private fun getTotalLineText(displayMode: SeaCreaturesTrackerDisplayMode, totalInfo: TrackerTotal): String {
-        val showDoubleHook = Overlays.showSeaCreaturesDoubleHookStatistics
-
+    private fun getTotalLineText(displayMode: SeaCreaturesTrackerDisplayMode, totalInfo: TotalTrackerEntry): String {
         when (displayMode) {
             SeaCreaturesTrackerDisplayMode.ALL -> {
-                val doubleHookText = if (showDoubleHook) " ${DARK_GRAY}| ${GRAY}DH: ${WHITE}${totalInfo.totalDoubleHookAmountFormatted} ${GRAY}${totalInfo.totalDoubleHookPercentFormatted}" else ""
-                return "${AQUA}Total: ${WHITE}${totalInfo.totalAmountFormatted}${doubleHookText}"
+                val doubleHookText = " ${DARK_GRAY}| ${GRAY}DH: ${WHITE}${totalInfo.allDoubleHookAmountFormatted} ${GRAY}${totalInfo.allDoubleHookPercentFormatted}"
+                val cocoonedText = " ${DARK_GRAY}| ${GRAY}BS: ${WHITE}${totalInfo.allCocoonedAmountFormatted} ${GRAY}${totalInfo.allCocoonedPercentFormatted}"
+                return "${AQUA}Total: ${WHITE}${totalInfo.allTotalAmountFormatted}${doubleHookText}${cocoonedText}"
             }
             SeaCreaturesTrackerDisplayMode.ONLY_RARE -> {
-                val doubleHookText = if (showDoubleHook) " ${DARK_GRAY}| ${GRAY}DH: ${WHITE}${totalInfo.rareTotalDoubleHookAmountFormatted} ${GRAY}${totalInfo.rareTotalDoubleHookPercentFormatted}" else ""
-                return "${AQUA}Total: ${WHITE}${totalInfo.rareTotalAmountFormatted} ${GRAY}rare out of ${WHITE}${totalInfo.totalAmountFormatted}${doubleHookText}"
+                val doubleHookText = " ${DARK_GRAY}| ${GRAY}DH: ${WHITE}${totalInfo.rareDoubleHookAmountFormatted} ${GRAY}${totalInfo.rareDoubleHookPercentFormatted}"
+                val cocoonedText = " ${DARK_GRAY}| ${GRAY}BS: ${WHITE}${totalInfo.rareCocoonedAmountFormatted} ${GRAY}${totalInfo.rareCocoonedPercentFormatted}"
+                return "${AQUA}Total: ${WHITE}${totalInfo.rareTotalAmountFormatted} ${GRAY}rare out of ${WHITE}${totalInfo.allTotalAmountFormatted}${doubleHookText}${cocoonedText}"
             }
         }
     }
 
-    private fun getTotalLineTooltip(totalInfo: TrackerTotal): List<Component> {
-        val lines = listOf(
+    private fun getTotalLineTooltip(totalInfo: TotalTrackerEntry): List<Component> {
+        val lines = listOfNotNull(
             "${AQUA}Total",
-            "${GRAY}All sc: ${WHITE}${totalInfo.totalAmountFormatted}",
-            "${GRAY}Double hook: ${WHITE}${totalInfo.totalDoubleHookAmountFormatted} ${GRAY}(${WHITE}${totalInfo.totalDoubleHookPercentFormatted} ${GRAY}of catches)",
-            "${GRAY}Rare sc: ${WHITE}${totalInfo.rareTotalAmountFormatted}",
-            "${GRAY}Double hook: ${WHITE}${totalInfo.rareTotalDoubleHookAmountFormatted} ${GRAY}(${WHITE}${totalInfo.rareTotalDoubleHookPercentFormatted} ${GRAY}of catches)",
+            "${GRAY}All SC: ${WHITE}${totalInfo.allTotalAmountFormatted}",
+            "  ${WHITE}${totalInfo.allCaughtAmountFormatted} ${GRAY}caught, ${WHITE}${totalInfo.allCocoonedAmountFormatted} ${GRAY}cocooned",
+            "  ${GRAY}Double hook: ${WHITE}${totalInfo.allDoubleHookAmountFormatted} ${GRAY}(${WHITE}${totalInfo.allDoubleHookPercentFormatted} ${GRAY}of catches)",
+            "  ${GRAY}Bloodshot: ${WHITE}${totalInfo.allCocoonedAmountFormatted} ${GRAY}(${WHITE}${totalInfo.allCocoonedPercentFormatted}${GRAY})",
+            "",
+            "${GRAY}Rare SC: ${WHITE}${totalInfo.rareCaughtAmountFormatted}",
+            "  ${WHITE}${totalInfo.rareCaughtAmountFormatted} ${GRAY}caught, ${WHITE}${totalInfo.rareCocoonedAmountFormatted} ${GRAY}cocooned",
+            "  ${GRAY}Double hook: ${WHITE}${totalInfo.rareDoubleHookAmountFormatted} ${GRAY}(${WHITE}${totalInfo.rareDoubleHookPercentFormatted} ${GRAY}of catches)",
+            "  ${GRAY}Bloodshot: ${WHITE}${totalInfo.rareCocoonedAmountFormatted} ${GRAY}(${WHITE}${totalInfo.rareCocoonedPercentFormatted}${GRAY})",
         )
         return lines.map { Component.literal(it) }
     }
 
-    private data class TrackerSeaCreatureEntry(
+    private data class SeaCreatureTrackerEntry(
         val seaCreature: String,
         val seaCreatureInfo: SeaCreatures.SeaCreatureInfo,
-        val amount: Int,
-        val formattedAmount: String,
-        val percent: Double,
-        val formattedPercent: String,
-        val doubleHookAmount: Int,
-        val formattedDoubleHookAmount: String,
-        val doubleHookPercent: Double,
-        val formattedDoubleHookPercent: String
-    )
-
-    private data class TrackerTotal(
         val totalAmount: Int,
         val totalAmountFormatted: String,
-        val totalDoubleHookAmount: Int,
-        val totalDoubleHookAmountFormatted: String,
-        val totalDoubleHookPercent: Double,
-        val totalDoubleHookPercentFormatted: String,
+        val caughtAmount: Int,
+        val caughtAmountFormatted: String,
+        val percent: Double,
+        val percentFormatted: String,
+        val cocoonedAmount: Int,
+        val cocoonedAmountFormatted: String,
+        val cocoonedPercent: Double,
+        val cocoonedPercentFormatted: String,
+        val doubleHookAmount: Int,
+        val doubleHookAmountFormatted: String,
+        val doubleHookPercent: Double,
+        val doubleHookPercentFormatted: String
+    )
+
+    private data class TotalTrackerEntry(
+        // All sea creatures without rare filtering
+        val allTotalAmount: Int,
+        val allTotalAmountFormatted: String,
+        val allCaughtAmount: Int,
+        val allCaughtAmountFormatted: String,
+        val allDoubleHookAmount: Int,
+        val allDoubleHookAmountFormatted: String,
+        val allDoubleHookPercent: Double,
+        val allDoubleHookPercentFormatted: String,
+        val allCocoonedAmount: Int,
+        val allCocoonedAmountFormatted: String,
+        val allCocoonedPercent: Double,
+        val allCocoonedPercentFormatted: String,
+        // Rare sea creatures
         val rareTotalAmount: Int,
         val rareTotalAmountFormatted: String,
-        val rareTotalDoubleHookAmount: Int,
-        val rareTotalDoubleHookAmountFormatted: String,
-        val rareTotalDoubleHookPercent: Double,
-        val rareTotalDoubleHookPercentFormatted: String,
+        val rareCaughtAmount: Int,
+        val rareCaughtAmountFormatted: String,
+        val rareDoubleHookAmount: Int,
+        val rareDoubleHookAmountFormatted: String,
+        val rareDoubleHookPercent: Double,
+        val rareDoubleHookPercentFormatted: String,
+        val rareCocoonedAmount: Int,
+        val rareCocoonedAmountFormatted: String,
+        val rareCocoonedPercent: Double,
+        val rareCocoonedPercentFormatted: String,
     )
 }
-
