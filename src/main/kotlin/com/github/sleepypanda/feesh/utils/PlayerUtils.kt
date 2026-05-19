@@ -129,8 +129,8 @@ object PlayerUtils {
         
         val armorPieces = listOf(helmet, chestplate, leggings, boots)
         cachedIsInTrophyArmor = armorPieces.all { armorPiece ->
-            if (armorPiece.isEmpty) return@all false
-            val itemName = armorPiece.hoverName.string
+            if (armorPiece == null || armorPiece.isEmpty) return@all false
+            val itemName = armorPiece.hoverName?.string ?: return@all false
             return@all itemName.contains("Hunter", ignoreCase = true) || 
                 itemName.contains("Froggles", ignoreCase = true) || 
                 itemName.contains("Red Sweater", ignoreCase = true)
