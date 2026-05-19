@@ -9,8 +9,6 @@ import com.github.sleepypanda.feesh.settings.categories.Overlays
 import com.github.sleepypanda.feesh.settings.categories.Alerts
 import com.github.sleepypanda.feesh.utils.WorldUtils
 import com.github.sleepypanda.feesh.utils.PlayerUtils
-import com.github.sleepypanda.feesh.utils.EntityUtils
-import com.github.sleepypanda.feesh.utils.ChatUtils
 import com.github.sleepypanda.feesh.utils.ChatUtils.getFormattedString
 import com.github.sleepypanda.feesh.utils.ChatUtils.removeFormatting
 import com.github.sleepypanda.feesh.utils.gui.FeeshGui
@@ -20,13 +18,11 @@ import com.github.sleepypanda.feesh.utils.CommonUtils
 import com.github.sleepypanda.feesh.utils.SoundUtils
 import com.github.sleepypanda.feesh.utils.RegisterUtils
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
-import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
 import com.github.sleepypanda.feesh.constants.SeaCreatures
 import com.github.sleepypanda.feesh.constants.Sounds
 import com.github.sleepypanda.feesh.settings.categories.General
 import com.github.sleepypanda.feesh.settings.categories.SoundMode
 import net.minecraft.world.entity.decoration.ArmorStand
-import net.minecraft.world.entity.EquipmentSlot
 import java.util.Date
 
 object BarnFishingTimer {
@@ -59,7 +55,7 @@ object BarnFishingTimer {
         .setCondition {
             WorldUtils.isInFishingWorld() &&
             PlayerUtils.hasFishingRodInHotbar() &&
-            !isInHunterArmor()
+            !PlayerUtils.isInTrophyArmor()
         }
 
     fun init() {
@@ -159,7 +155,7 @@ object BarnFishingTimer {
         if (!Alerts.alertOnSeaCreaturesCountThreshold ||
             !WorldUtils.isInSkyblock() ||
             !WorldUtils.isInFishingWorld() ||
-            isInHunterArmor() ||
+            PlayerUtils.isInTrophyArmor() ||
             !PlayerUtils.hasFishingRodInHotbar()
         ) return
 
@@ -182,7 +178,7 @@ object BarnFishingTimer {
             !Alerts.alertOnSeaCreaturesTimerThreshold ||
             !WorldUtils.isInSkyblock() ||
             !WorldUtils.isInFishingWorld() ||
-            isInHunterArmor() ||
+            PlayerUtils.isInTrophyArmor() ||
             !PlayerUtils.hasFishingRodInHotbar()
         ) return
 
@@ -210,7 +206,7 @@ object BarnFishingTimer {
             !WorldUtils.isInSkyblock() ||
             !WorldUtils.isInFishingWorld() ||
             !PlayerUtils.hasFishingRodInHotbar() ||
-            isInHunterArmor()
+            PlayerUtils.isInTrophyArmor()
         ) return
 
         val deltaInMillis = System.currentTimeMillis() - startTime!!
@@ -245,22 +241,6 @@ object BarnFishingTimer {
             WorldUtils.CRYSTAL_HOLLOWS -> Alerts.seaCreaturesCountThreshold_CrystalHollows
             WorldUtils.GALATEA -> Alerts.seaCreaturesCountThreshold_Galatea
             else -> Alerts.seaCreaturesCountThreshold_Default
-        }
-    }
-
-    private fun isInHunterArmor(): Boolean {
-        val player = FeeshMod.mc.player ?: return false
-        
-        val helmet = player.getItemBySlot(EquipmentSlot.HEAD)
-        val chestplate = player.getItemBySlot(EquipmentSlot.CHEST)
-        val leggings = player.getItemBySlot(EquipmentSlot.LEGS)
-        val boots = player.getItemBySlot(EquipmentSlot.FEET)
-        
-        val armorPieces = listOf(helmet, chestplate, leggings, boots)
-        return armorPieces.all { armorPiece ->
-            if (armorPiece.isEmpty) return false
-            val itemName = armorPiece.hoverName.string
-            return itemName.contains("Hunter", ignoreCase = true)
         }
     }
 }
