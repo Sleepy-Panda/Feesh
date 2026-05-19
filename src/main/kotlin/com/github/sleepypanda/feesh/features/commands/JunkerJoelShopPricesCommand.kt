@@ -22,6 +22,16 @@ object JunkerJoelShopPricesCommand {
 
     private val SHOP_ITEMS = listOf(
         ShopItem(
+            "ENCHANTMENT_LUCK_OF_THE_SEA_6",
+            "${RARE}Luck of the Sea VI",
+            ShopItemCost(baseItemCosts = listOf(BaseItemCost(RUSTY_COIN, 16)))
+        ),
+        ShopItem(
+            "HERMIT_CRAB;0",
+            "${GRAY}[Lvl 1] ${COMMON}Hermit Crab",
+            ShopItemCost(baseItemCosts = listOf(BaseItemCost(RUSTY_COIN, 32)))
+        ),
+        ShopItem(
             "JUNK_TALISMAN",
             "${COMMON}Junk Talisman",
             ShopItemCost(baseItemCosts = listOf(BaseItemCost(RUSTY_COIN, 32)))
