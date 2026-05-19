@@ -161,7 +161,7 @@ object SeaCreatureMessages {
     const val SCARECROW_MESSAGE = "^Phew\\! It\\'s only a Scarecrow\\.$"
     const val NIGHTMARE_MESSAGE = "^You hear trotting from beneath the waves, you caught a Nightmare\\.$"
     const val WEREWOLF_MESSAGE = "^It must be a full moon, a Werewolf appears\\.$"
-    const val JUMPIN_JACK_MESSAGE = "^Jumpin' Jack has appeared\\.$" // TODO find actual message
+    const val JUMPIN_JACK_MESSAGE = "^Watch out! It\\'s Jumpin\\' Jack\\.$"
 
     // CRIMSON ISLE
     const val FRIED_CHICKEN_MESSAGE = "^Smells of burning\\. Must be a Fried Chicken\\.$"
