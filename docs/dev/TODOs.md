@@ -11,7 +11,7 @@ https://hypixel.net/threads/may-14th-lotus-atoll-alpha-testing-2.6097759/
 
 ### Atoll
 
-- Volcanic Snail highlight broken
+- Jumpin' Jack - retest highlight
 - [NPC] Puddle Jumper: Let's get ready for a ride!
 - [NPC] Puddle Jumper: Wow! You caught me!
 
@@ -22,7 +22,6 @@ https://hypixel.net/threads/may-14th-lotus-atoll-alpha-testing-2.6097759/
 - Need to migrate old sea creature names without removal from trackers.
 - Sea Guardian => Jumpin' Jack (COMMON Spooky Sea Creature)
   - Will it cause issues storing ' in JSON keys? Sounds, sc tracker
-  - Catch message is unknown
 
 ### Drops
 
@@ -35,12 +34,8 @@ https://hypixel.net/threads/may-14th-lotus-atoll-alpha-testing-2.6097759/
 
 ## Other
 
-- Junker Joel has bigger shop
-
 You donated 9 Trophy Frogs and received Silver Lotus x3 and Lotus x304!
 You donated 1 Trophy Frog and received Lotus x8!
-
-Your Wormhole closed up...
 
 SCHLURP! The Hotspot Tonic Mixin grants you effects for 86h 24m! They will pause if your God Potion expires.
 SCHLURP! The effects of the Celestial Mason Jar have been extended by 86h 24m! They will pause if your God Potion expires.

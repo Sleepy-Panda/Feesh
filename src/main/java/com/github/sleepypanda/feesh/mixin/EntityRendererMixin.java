@@ -13,6 +13,7 @@ import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.FishingHook;
 import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.Display.ItemDisplay;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -50,7 +51,8 @@ public abstract class EntityRendererMixin<T extends Entity, S extends EntityRend
 
     @Inject(method = "extractRenderState", at = @At("TAIL"))
     private void feesh$onExtractRenderState(T entity, S state, float tickProgress, CallbackInfo ci) {
-        if (!(entity instanceof Mob) && !(entity instanceof Player)) return; // Some rare creatures have player entity type
+        // Some rare creatures have Player entity type or Display entity type
+        if (!(entity instanceof Mob) && !(entity instanceof Player) && !(entity instanceof ItemDisplay)) return;
 
         var id = entity.getId();
         if (!RareMobHighlight.highlightedEntities.containsKey(id)) return;

@@ -18,7 +18,7 @@ Released on: ???
 ### Sea creatures tracker
 
 - Added option to count cocooned sea creatures into the tracker.
-- Added option to show cocooned SC stats in the tracker [disabled by default,to not make overlay too bloated with details].
+- Added option to show cocooned SC stats in the tracker [disabled by default, to not make overlay too bloated with details].
 - Added tooltips with various extra info when you hover over a line (while in Inventory).
   - So even if you hide %, DH or BS info from the tracker, you still can explore it on line hover.
 - Added overall DH and BS statistics to Total line.
@@ -37,8 +37,9 @@ Released on: ???
 ### Other
 
 - Extended list of sea creatures you can select for alert/pchat message/highlight/HP tracker:
-  - Basically now you can toggle those functionalities for any sea creature.
+  - **Now you can toggle those functionalities for any sea creature.**
   - Only "rare" creatures are selected by default.
+  - Please actualize your selections :) As they might reset due to this change.
 - Added alert/pchat message when you cocoon a specific sea creature.
 - Added selection of Auction prices API source - you can choose between LBIN or 7-days average LBIN.
 - Added personal best tracking for double hook streak.
@@ -46,12 +47,15 @@ Released on: ???
 - Changed alert on Nessie destination to appear only if you were fishing recently.
   - So basically only fishers are alerted, other players don't get notified even if they're close.
 - Moved all "Last on" datetimes from the overlays into tooltip appearing on line hover (while in Inventory).
+- Added 2 more items to `/feeshJunkerJoelShopPrices` output.
 
 ## Bugfixes
 
 - Fixed some baits being added to Fishing profit tracker after adding Bait Bag preview in slot #9.
 - Fixed Magma Lord Necklace crafting recipe for /feeshGearCraftPrices.
 - Fixed some overlays data not auto-resetting after disabling that overlay.
+- Fixed trophy armor checks to be executed more often than needed.
+- (Hopefully) solved world detection issues that I can't reproduce.
 
 # 1.6.1
 
