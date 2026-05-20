@@ -2,8 +2,9 @@ package com.github.sleepypanda.feesh.utils
 
 import com.github.sleepypanda.feesh.FeeshMod
 import com.github.sleepypanda.feesh.utils.ChatUtils.removeFormatting
-import java.util.Timer
-import kotlin.concurrent.timerTask
+import com.github.sleepypanda.feesh.events.EventBus
+import com.github.sleepypanda.feesh.events.models.ClientTickEvent
+import com.github.sleepypanda.feesh.events.models.WorldChangedEvent
 import net.minecraft.world.scores.DisplaySlot
 import net.minecraft.world.scores.PlayerTeam
 
@@ -79,39 +80,49 @@ object WorldUtils {
     private var cachedIsInSkyblock: Boolean = false
     private var cachedWorldName: String? = null
     private var cachedZoneName: String? = null
-    private var timer: Timer? = null
+
+    private const val TICKS_PER_UPDATE = 20
+    private var tickCounter = 0
 
     fun init() {
-        startTimer()
+        EventBus.subscribe(ClientTickEvent::class, ::onClientTick)
+        EventBus.subscribe(WorldChangedEvent::class, ::onWorldChanged)
     }
 
-    private fun startTimer() {
-        timer?.cancel()
-        timer = Timer()
+    private fun onClientTick(@Suppress("UNUSED_PARAMETER") event: ClientTickEvent) {
+        tickCounter++
+        if (tickCounter < TICKS_PER_UPDATE) return
+        tickCounter = 0
 
-        val task = timerTask {
-            CommonUtils.runWithCatching("Failed to update world utils cache") {
-                updateCache()
-            }
-        }
-        timer?.scheduleAtFixedRate(task, 0, 1000) // Every second
+        updateCache()
+    }
+
+    private fun onWorldChanged(@Suppress("UNUSED_PARAMETER") event: WorldChangedEvent) {
+        tickCounter = TICKS_PER_UPDATE
+        cachedIsInSkyblock = false
+        cachedWorldName = null
+        cachedZoneName = null
+
+        updateCache()
     }
 
     private fun updateCache() {
-        cachedIsInSkyblock = readIsInSkyblock()
-        
-        cachedWorldName = if (cachedIsInSkyblock) {
-            readWorldName()
-        } else null
-        
-        cachedZoneName = if (cachedIsInSkyblock && !cachedWorldName.isNullOrEmpty()) {
-            readZoneName()
-        } else null
+        CommonUtils.runWithCatching("Failed to update world utils cache") {
+            cachedIsInSkyblock = readIsInSkyblock()
+
+            cachedWorldName = if (cachedIsInSkyblock) {
+                readWorldName()
+            } else null
+
+            cachedZoneName = if (cachedIsInSkyblock && !cachedWorldName.isNullOrEmpty()) {
+                readZoneName()
+            } else null        
+        }
     }
     
     private fun readWorldName(): String? {
         val worldName = TabListUtils.getLineAfter("Area:")
-        return if (worldName.isNotEmpty()) worldName else null
+        return worldName.ifEmpty { null }
     }
 
     private fun readZoneName(): String? {
