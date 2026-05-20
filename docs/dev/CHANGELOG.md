@@ -55,6 +55,7 @@ Released on: ???
 - Fixed Magma Lord Necklace crafting recipe for /feeshGearCraftPrices.
 - Fixed some overlays data not auto-resetting after disabling that overlay.
 - Fixed trophy armor checks to be executed more often than needed.
+- (Hopefully) solved world detection issues that I can't reproduce.
 
 # 1.6.1
 
