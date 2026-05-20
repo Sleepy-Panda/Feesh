@@ -1,8 +1,9 @@
 package com.github.sleepypanda.feesh.mixin;
 
+import com.github.sleepypanda.feesh.events.EventBus;
+import com.github.sleepypanda.feesh.events.models.SoundPlayEvent;
 import com.github.sleepypanda.feesh.features.sounds.MuteJadeDragonSound;
 import com.github.sleepypanda.feesh.features.sounds.MuteReindrakeGifts;
-import com.github.sleepypanda.feesh.features.alerts.WormholeGoneAlert;
 import net.minecraft.client.resources.sounds.SoundInstance;
 import net.minecraft.client.sounds.SoundEngine;
 import org.spongepowered.asm.mixin.Mixin;
@@ -22,10 +23,23 @@ public class SoundEngineMixin {
 
     @Inject(method = "play(Lnet/minecraft/client/resources/sounds/SoundInstance;)Lnet/minecraft/client/sounds/SoundEngine$PlayResult;", at = @At("HEAD"), cancellable = true, require = 0)
     private void feesh$onPlay_1_21_11(SoundInstance sound, CallbackInfoReturnable<SoundEngine.PlayResult> cir) {
-        WormholeGoneAlert.shouldLog(sound);
         if (shouldCancel(sound)) {
             cir.cancel();
         }
+    }
+
+    @Inject(method = "play", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/resources/sounds/SoundInstance;getVolume()F"))
+    public void handleSound(SoundInstance sound, CallbackInfoReturnable<SoundEngine.PlayResult> cir) {
+        final String path = getSoundPath(sound);
+        EventBus.INSTANCE.publish(new SoundPlayEvent(path, sound.getVolume(), sound.getPitch(), sound.getX(), sound.getY(), sound.getZ()));
+    }
+
+    private static String getSoundPath(SoundInstance sound) {
+        //#if MC >= 1.21.11
+        //$$ return sound.getIdentifier().getPath();
+        //#else
+        return sound.getLocation().getPath();
+        //#endif
     }
 
     private boolean shouldCancel(SoundInstance sound) {

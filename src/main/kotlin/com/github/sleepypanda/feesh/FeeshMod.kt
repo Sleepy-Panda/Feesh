@@ -16,6 +16,7 @@ import com.github.sleepypanda.feesh.settings.Settings
 import com.github.sleepypanda.feesh.utils.*
 import com.github.sleepypanda.feesh.utils.data.*
 import com.github.sleepypanda.feesh.utils.gui.*
+import com.github.sleepypanda.feesh.utils.rendering.*
 import com.teamresourceful.resourcefulconfig.api.loader.Configurator
 import net.fabricmc.api.ClientModInitializer
 import net.fabricmc.loader.api.FabricLoader
@@ -68,6 +69,7 @@ class FeeshMod : ClientModInitializer {
         GuiUtils.init()
         PriceUtils.init()
         KeybindUtils.init()
+        WaypointUtils.init()
 
         // Event publishers
         SeaCreaturesPublisher.init()
