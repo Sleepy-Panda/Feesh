@@ -11,7 +11,7 @@ https://hypixel.net/threads/may-14th-lotus-atoll-alpha-testing-2.6097759/
 
 ### Atoll
 
-- Volcanic Snail highlight broken
+- Jumpin' Jack - retest highlight
 - [NPC] Puddle Jumper: Let's get ready for a ride!
 - [NPC] Puddle Jumper: Wow! You caught me!
 
@@ -22,7 +22,6 @@ https://hypixel.net/threads/may-14th-lotus-atoll-alpha-testing-2.6097759/
 - Need to migrate old sea creature names without removal from trackers.
 - Sea Guardian => Jumpin' Jack (COMMON Spooky Sea Creature)
   - Will it cause issues storing ' in JSON keys? Sounds, sc tracker
-  - Catch message is unknown
 
 ### Drops
 
