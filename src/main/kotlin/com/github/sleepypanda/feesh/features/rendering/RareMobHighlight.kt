@@ -12,7 +12,9 @@ import com.github.sleepypanda.feesh.utils.WorldUtils
 import com.github.sleepypanda.feesh.utils.EntityUtils
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes
 import kotlin.jvm.JvmField
+import net.minecraft.world.entity.Entity
 import net.minecraft.world.entity.LivingEntity
+import net.minecraft.world.entity.Display.ItemDisplay
 import net.minecraft.world.entity.monster.MagmaCube
 import net.minecraft.world.entity.player.Player
 import net.minecraft.world.entity.monster.Slime
@@ -56,6 +58,7 @@ object RareMobHighlight {
         val scInfo = SeaCreatures.allSeaCreatures.find { it.name == cleanName }
 
         val mobEntityShift = when (cleanName) {
+            HighlightableSeaCreatureTypes.FIRE_EEL.displayName -> 11 // Find head instead of tail
             HighlightableSeaCreatureTypes.DROWNED_CAPTAIN.displayName -> 6 // Drowned entity shifted from its armor stand
             HighlightableSeaCreatureTypes.PUDDLE_JUMPER.displayName -> 2 // Frog entity shifted from its armor stand
             HighlightableSeaCreatureTypes.REINDRAKE.displayName -> 8 // Ender Dragon entity shifted from its armor stand
@@ -63,15 +66,17 @@ object RareMobHighlight {
             else -> 1
         }
 
-        val entities: MutableList<LivingEntity> = mutableListOf()
+        val entities: MutableList<Entity> = mutableListOf()
 
-        var mobEntity = entity.level().getEntity(entity.id - mobEntityShift) as? LivingEntity ?: return
-        
+        // Volcanic Snail and Jumpin Jack are ItemDisplay entities instead of LivingEntity
+        val potentialMobEntity = entity.level().getEntity(entity.id - mobEntityShift)
+        var mobEntity = if (potentialMobEntity is LivingEntity || potentialMobEntity is ItemDisplay) potentialMobEntity else return
+
         if (cleanName == HighlightableSeaCreatureTypes.JAWBUS_FOLLOWER.displayName && mobEntity is Slime && mobEntity !is MagmaCube) { // Fire Eel
             mobEntity = entity.level().getEntity(entity.id - 11) as? LivingEntity ?: return // -1 is for tail, we want to find Fire Eel's head
         }
 
-        if (!mobEntity.isAlive) return
+        if (mobEntity is LivingEntity && !mobEntity.isAlive) return
         if (mobEntity is Player && (mobEntity.uuid.version() == 4 || mobEntity.uuid.version() == 1)) return // Some creatures are player entities, e.g. Alligator or Abyssal Miner
 
         entities.add(mobEntity)
@@ -124,7 +129,7 @@ object RareMobHighlight {
         }
     }
 
-    private fun applyGlow(target: LivingEntity, color: Int) {
+    private fun applyGlow(target: Entity, color: Int) {
         highlightedEntities[target.id] = color
     }
 
