@@ -1641,7 +1641,7 @@ class FishingProfitDrops {
                     essenceItemId = "ESSENCE_CRIMSON",
                     essenceCount = 15
                 ),
-                categories = listOf(CRIMSON_ISLE_GEAR_CATEGORY),
+                categories = listOf(CRIMSON_ISLE_TRASH_GEAR_CATEGORY),
             ),
             FishingProfitDropInfo(
                 itemId = "MOOGMA_LEGGINGS",
@@ -1652,7 +1652,7 @@ class FishingProfitDrops {
                     essenceItemId = "ESSENCE_CRIMSON",
                     essenceCount = 20
                 ),
-                categories = listOf(CRIMSON_ISLE_GEAR_CATEGORY),
+                categories = listOf(CRIMSON_ISLE_TRASH_GEAR_CATEGORY),
             ),
             FishingProfitDropInfo(
                 itemId = "FLAMING_CHESTPLATE",
