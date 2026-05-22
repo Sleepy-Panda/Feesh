@@ -1516,6 +1516,7 @@ class FishingProfitDrops {
                 itemName = "Singed Powder",
                 itemDisplayName = "${UNCOMMON}Singed Powder",
                 npcPrice = 1_000.0,
+                shouldAnnounceRareDrop = true,
             ),
             FishingProfitDropInfo(
                 itemId = "ENCHANTMENT_FIRE_PROTECTION_6",
@@ -1529,6 +1530,7 @@ class FishingProfitDrops {
                 itemName = "Scorched Crab Stick",
                 itemDisplayName = "${RARE}Scorched Crab Stick",
                 npcPrice = 25_000.0,
+                shouldAnnounceRareDrop = true,
             ),
             FishingProfitDropInfo(
                 itemId = "SCUTTLER_SHELL",
