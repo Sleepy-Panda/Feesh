@@ -98,18 +98,16 @@ Session: 10x Baby Yeti (Epic), 5x Baby Yeti (Legendary), 1x Level 100
 
 - RARE DROP! Troubled Bubble (+406 ✯ Magic Find) - with no mf also possible
 - RARE DROP! Octopus Tendril (+190 ✯ Magic Find)
-- Rare SC cocooned alert
 - Alert which soul has dropped for Summoning Ring.
 - Alert on Hotspot fishing without Tiki Mask
 - Reminder if user is fishing with wrong hook/sinker during events or in hotspots.
-  - When first rod cast on Jerry: check for Icy Sinker
   - When first Spooky mob caught: check for Phantom Hook
   - When first hotspot rod cast: check for Hotspot Hook and Sinker (except for treasure fishing)
   - Check for Junk Sinker for treasure fishing in Bayou?
   - TODO: Other stuff?
 - Spooky festival event ending alert (to kill mobs before despawn)
 - Phoenix proc'ed alert / Phoenix back alert (same as Spirit Mask)
-- Write smarter logic to detect personal cap alert (20 for CH, 5 for Crimson)
+- Write smarter logic to detect personal cap alert (10 sc, probably still 5 for Crimson)
 - Do not include baby magma slugs when producing cap alert.
 - Attach Vials drop number to the pchat message
 - Clean chat for spammy messages:
@@ -153,6 +151,7 @@ It might be not 100% correct due to how Hypixel API works, the person who reques
 
 ## Other
 
+- Separate data tracking/settings for Alpha and Live server? Probably for Bingo too?
 - Way to disable all module features with one toggle.
 - Golden fish timer
 "can you add a golden fish timer tracker into this? i only have golden fish diamond left and i like playing other games while just having my bobber in lava, and setting a 15min timer every time is p annoying lmao"
