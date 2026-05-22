@@ -18,6 +18,7 @@ import com.github.sleepypanda.feesh.features.chat.RareDropMessage
 import com.github.sleepypanda.feesh.settings.categories.SoundMode
 import com.github.sleepypanda.feesh.settings.categories.General
 import com.github.sleepypanda.feesh.settings.categories.Overlays
+import com.github.sleepypanda.feesh.settings.categories.CrimsonIsleTrashGearDropsPriceMode
 import com.github.sleepypanda.feesh.utils.ChatUtils
 import com.github.sleepypanda.feesh.utils.CommonUtils
 import com.github.sleepypanda.feesh.utils.PriceUtils
@@ -607,15 +608,26 @@ object FishingProfitTracker {
             val lotusPrice = getPriceByMode("LOTUS")
             return dropInfo.amountOfLotus * lotusPrice
         }
-        if (Overlays.calculateProfitInCrimsonEssence && dropInfo.salvage != null && dropInfo.salvage.essenceItemId == "ESSENCE_CRIMSON") {
-            if (Overlays.fishingProfitTrackerPriceMode == PricingModeWithNpc.NPC_SELL) return 0.0
-            val bazaar = PriceUtils.getBazaarItemPrices(dropInfo.salvage.essenceItemId)
-            val price = when (Overlays.fishingProfitTrackerPriceMode) {
-                PricingModeWithNpc.INSTA_SELL -> bazaar?.instaSell ?: 0.0
-                else -> bazaar?.sellOffer ?: 0.0
+
+        if (dropInfo.categories.contains(FishingProfitDrops.CRIMSON_ISLE_TRASH_GEAR_CATEGORY)) {
+            return when (Overlays.priceModeForCrimsonIsleTrashGearDrops) {
+                CrimsonIsleTrashGearDropsPriceMode.ESSENCE -> {
+                    if (Overlays.fishingProfitTrackerPriceMode == PricingModeWithNpc.NPC_SELL) return 0.0
+                    if (dropInfo.salvage == null) return 0.0
+                    val bazaar = PriceUtils.getBazaarItemPrices(dropInfo.salvage.essenceItemId)
+                    val price = when (Overlays.fishingProfitTrackerPriceMode) {
+                        PricingModeWithNpc.INSTA_SELL -> bazaar?.instaSell ?: 0.0
+                        else -> bazaar?.sellOffer ?: 0.0
+                    }
+                    dropInfo.salvage.essenceCount * price
+                }
+                CrimsonIsleTrashGearDropsPriceMode.NPC_PRICE -> {
+                    dropInfo.npcPrice ?: 0.0
+                }
+                CrimsonIsleTrashGearDropsPriceMode.NORMAL -> getPriceByMode(dropInfo.itemId)
             }
-            return dropInfo.salvage.essenceCount * price
         }
+
         return getPriceByMode(dropInfo.itemId)
     }
 
