@@ -25,6 +25,7 @@ data class FishingProfitDropInfo(
 class FishingProfitDrops {  
     companion object {
         const val PET_ITEM_CATEGORY = "Pet Item"
+        const val CRIMSON_ISLE_TRASH_GEAR_CATEGORY = "Crimson Isle trash gear"
 
         val items = listOf(
             // Dyes
@@ -1640,6 +1641,7 @@ class FishingProfitDrops {
                     essenceItemId = "ESSENCE_CRIMSON",
                     essenceCount = 15
                 ),
+                categories = listOf(CRIMSON_ISLE_GEAR_CATEGORY),
             ),
             FishingProfitDropInfo(
                 itemId = "MOOGMA_LEGGINGS",
@@ -1650,6 +1652,7 @@ class FishingProfitDrops {
                     essenceItemId = "ESSENCE_CRIMSON",
                     essenceCount = 20
                 ),
+                categories = listOf(CRIMSON_ISLE_GEAR_CATEGORY),
             ),
             FishingProfitDropInfo(
                 itemId = "FLAMING_CHESTPLATE",
@@ -1660,6 +1663,7 @@ class FishingProfitDrops {
                     essenceItemId = "ESSENCE_CRIMSON",
                     essenceCount = 25
                 ),
+                categories = listOf(CRIMSON_ISLE_TRASH_GEAR_CATEGORY),
             ),
             FishingProfitDropInfo(
                 itemId = "TAURUS_HELMET",
@@ -1670,6 +1674,7 @@ class FishingProfitDrops {
                     essenceItemId = "ESSENCE_CRIMSON",
                     essenceCount = 30
                 ),
+                categories = listOf(CRIMSON_ISLE_TRASH_GEAR_CATEGORY),
             ),
             FishingProfitDropInfo(
                 itemId = "BLADE_OF_THE_VOLCANO",
@@ -1680,6 +1685,7 @@ class FishingProfitDrops {
                     essenceItemId = "ESSENCE_CRIMSON",
                     essenceCount = 10
                 ),
+                categories = listOf(CRIMSON_ISLE_TRASH_GEAR_CATEGORY),
             ),
             FishingProfitDropInfo(
                 itemId = "STAFF_OF_THE_VOLCANO",
@@ -1690,6 +1696,7 @@ class FishingProfitDrops {
                     essenceItemId = "ESSENCE_CRIMSON",
                     essenceCount = 10
                 ),
+                categories = listOf(CRIMSON_ISLE_TRASH_GEAR_CATEGORY),
             ),
             FishingProfitDropInfo(
                 itemId = "PITCHIN_KOI",

@@ -61,6 +61,14 @@ enum class NearbyEntitiesCounterTypes(val displayName: String) {
     override fun toString(): String = displayName
 }
 
+enum class CrimsonIsleTrashGearDropsPriceMode(val displayName: String) {
+    NORMAL("Normal AH price"),
+    ESSENCE("Crimson Essence"),
+    NPC_PRICE("NPC price");
+
+    override fun toString(): String = displayName
+}
+
 object Overlays : CategoryKt("Overlays") {
     private fun getCustomStyleDescription(overlayName: String): String {
         return "Whether to apply custom style from \"Custom overlays style\" category to $overlayName. When disabled, the overlay is drawn as a text without those decorations."
@@ -741,10 +749,10 @@ ${GRAY}To pause: ${WHITE}/${FishingProfitTracker.PAUSE_COMMAND}
         }
     }
     
-    var calculateProfitInCrimsonEssence by ObservableEntry(
-        boolean(false) {
-            this.name = Translated("Show profits in Crimson Essence when applicable")
-            this.description = Translated("Calculate price in Crimson Essence for salvageable crimson fishing items e.g. Slug Boots, Moogma Leggings, Flaming Chestplate, Blade of the Volcano, Staff of the Volcano.")
+    var priceModeForCrimsonIsleTrashGearDrops by ObservableEntry(
+        enum(CrimsonIsleTrashGearDropsPriceMode.NPC_PRICE) {
+            this.name = Translated("Price mode for Crimson Isle trash gear drops")
+            this.description = Translated("How to calculate prices for Crimson Isle fishing drops: Slug Boots, Moogma Leggings, Flaming Chestplate, Blade of the Volcano, Staff of the Volcano.")
         }
     ) { prev, new ->
         if (prev != new) {
