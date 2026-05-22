@@ -85,7 +85,7 @@ object RareCatchAlert {
 
     private fun showCaughtAlert(seaCreatureName: String, isDoubleHook: Boolean, playerName: String) {
         val enabledScNames = Alerts.alertOnSeaCreaturesList.map { it.displayName }
-        if (!enabledScNames.contains(seaCreatureName)) return
+        if (!enabledScNames.any { it.equals(seaCreatureName, ignoreCase = true) }) return
 
         var seaCreatureInfo = SeaCreatures.allSeaCreatures.find { it.name.equals(seaCreatureName, ignoreCase = true) } ?: return
 
@@ -105,7 +105,7 @@ object RareCatchAlert {
 
     private fun showCocoonAlert(seaCreatureName: String, playerName: String) {
         val enabledScNames = Alerts.alertOnSeaCreaturesList.map { it.displayName }
-        if (!enabledScNames.contains(seaCreatureName)) return
+        if (!enabledScNames.any { it.equals(seaCreatureName, ignoreCase = true) }) return
 
         var seaCreatureInfo = SeaCreatures.allSeaCreatures.find { it.name.equals(seaCreatureName, ignoreCase = true) } ?: return
 
