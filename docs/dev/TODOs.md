@@ -59,7 +59,7 @@ Newly released - https://hypixel.net/threads/hypixel-skyblock-0-24-5-assorted-qo
 
 - Catches/h for treasures
 - Improve link to changelog in settings, and update announcement
-- Work on hotspot sounds to make them more unique
+- Work on various events sounds to make them more unique
 - Deployable in mineshaft
 - 1.21 Fishing Hook armorstand
 - Sometimes current world&zone is detected wrongly

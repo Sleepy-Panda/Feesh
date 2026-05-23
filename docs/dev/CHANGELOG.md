@@ -33,6 +33,7 @@ Released on: ???
   - Added commands to set count / +count / -count for items.
   - Added commands to manage elapsed time.
   - Added detailed [user guidance](https://github.com/Sleepy-Panda/Feesh/blob/develop/docs/Editing%20profit%20tracker.md).
+- Added option to count trash Isle drops (Slug Boots, Moogma Leggings, etc) as AH price/NPC price/Crimson Essence.
 
 ### Other
 
