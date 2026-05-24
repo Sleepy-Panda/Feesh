@@ -53,6 +53,7 @@ Released on: ???
 ## Bugfixes
 
 - Fixed some baits being added to Fishing profit tracker after adding Bait Bag preview in slot #9.
+- Fixed Flash 1 book alert/pchat message not triggering when Roman numerals are enabled in SB settings.
 - Fixed Magma Lord Necklace crafting recipe for /feeshGearCraftPrices.
 - Fixed some overlays data not auto-resetting after disabling that overlay.
 - Fixed trophy armor checks to be executed more often than needed.
