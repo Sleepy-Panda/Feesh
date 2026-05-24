@@ -11,6 +11,10 @@ import com.github.sleepypanda.feesh.utils.FishingHookUtils
 import com.github.sleepypanda.feesh.utils.SoundUtils
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
+import net.minecraft.network.chat.Component
+import net.minecraft.network.chat.Style
+import net.minecraft.network.chat.ClickEvent.RunCommand
+import net.minecraft.network.chat.HoverEvent.ShowText
 
 object BaitAlert {
     private var tickCounter = 0
@@ -38,6 +42,25 @@ object BaitAlert {
             if (!FishingHookUtils.wasFishingHookActiveMinutesAgo(5)) return
 
             ChatUtils.sendLocalChat("You are almost out of ${event.baitDisplayName}${WHITE}.", true)
+
+            val baitName = event.baitName
+            if (!baitName.contains("Obfuscated")) {
+                val supercraftText = Component.literal("${WHITE}${BOLD}[Supercraft]")
+                    .setStyle(
+                        Style.EMPTY
+                            .withClickEvent(RunCommand("/recipe $baitName"))
+                            .withHoverEvent(ShowText(Component.literal("Click to open Supercraft menu for $baitName")))
+                    )
+                val orText = Component.literal(" ${RESET}${GRAY}or ")
+                val bazaarText = Component.literal("${WHITE}${BOLD}[Bazaar]")
+                    .setStyle(
+                        Style.EMPTY
+                            .withClickEvent(RunCommand("/bz $baitName"))
+                            .withHoverEvent(ShowText(Component.literal("Click to open Bazaar for $baitName")))
+                    )
+                ChatUtils.sendLocalChat(supercraftText.append(orText).append(bazaarText))
+            }
+
             CommonUtils.showTitle("${YELLOW}Out of bait soon")
             SoundUtils.playSound()
         }

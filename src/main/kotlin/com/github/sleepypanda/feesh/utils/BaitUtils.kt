@@ -11,14 +11,19 @@ import com.github.sleepypanda.feesh.utils.ChatUtils.getFormattedString
 import net.minecraft.core.component.DataComponents
 
 object BaitUtils {
-    private const val BAIT_RUNNING_OUT_THRESHOLD = 10
+    private const val BAIT_RUNNING_OUT_THRESHOLD = 16
+    private const val BAIT_RUNNING_OUT_CACHE_MS = 120_000L
+    private const val BAIT_CHANGED_CACHE_MS = 60_000L
+
     private const val TICKS_PER_UPDATE = 20
     private var tickCounter = 0
+
+    private val baitChangedPublishCache = mutableMapOf<String, Long>()
+    private val baitRunningOutPublishCache = mutableMapOf<String, Long>()
 
     private var lastBaitName = ""
     private var lastBaitDisplayName = ""
     private var lastBaitRemaining = null as Int?
-    private var isBaitRunningOutPublished = false
 
     fun getBaitDisplayName(): String = lastBaitDisplayName
 
@@ -34,6 +39,16 @@ object BaitUtils {
         if (tickCounter < TICKS_PER_UPDATE) return
         tickCounter = 0
 
+        CommonUtils.runWithCatching("Failed to update bait info") {
+            updateBaitInfo()
+        }
+    }
+
+    private fun onWorldChanged(@Suppress("UNUSED_PARAMETER") event: WorldChangedEvent) {
+        reset()
+    }
+
+    private fun updateBaitInfo() {
         if (!WorldUtils.isInSkyblock() || !WorldUtils.isInFishingWorld()) {
             reset()
             return
@@ -53,37 +68,53 @@ object BaitUtils {
 
         if (currentBaitName == lastBaitName && lastBaitRemaining != null && currentBaitRemaining == lastBaitRemaining!! + 1) return // SB does some kind of "+1 bait refund" when not spending a bait
         if (currentBaitName == lastBaitName && lastBaitRemaining != null && currentBaitRemaining > lastBaitRemaining!! + 1) { // User added more bait
-            isBaitRunningOutPublished = false
+            baitRunningOutPublishCache.remove(currentBaitName)
         }
 
-        if (lastBaitName.isNotEmpty() && lastBaitName != currentBaitName) {
+        if (lastBaitName.isNotEmpty() && lastBaitName != currentBaitName && shouldPublishBaitChanged(lastBaitName, currentBaitName)) {
             EventBus.publish(BaitChangedEvent(lastBaitName, lastBaitDisplayName, currentBaitName, currentBaitDisplayName))
-            isBaitRunningOutPublished = false
         }
 
-        if (currentBaitRemaining <= BAIT_RUNNING_OUT_THRESHOLD && !isBaitRunningOutPublished) {
-            isBaitRunningOutPublished = true
+        if (currentBaitRemaining <= BAIT_RUNNING_OUT_THRESHOLD && shouldPublishBaitRunningOut(currentBaitName)) {
             EventBus.publish(BaitRunningOutEvent(lastBaitName, lastBaitDisplayName))
         }
-
-        //if (currentBaitRemaining == 1) {
-        //    return // To avoid false triggers when last bait is consumed and then refunded a few times
-        //}
-        //How to cleanup when bait is over?
 
         lastBaitName = currentBaitName
         lastBaitDisplayName = currentBaitDisplayName
         lastBaitRemaining = currentBaitRemaining
     }
 
-    private fun onWorldChanged(@Suppress("UNUSED_PARAMETER") event: WorldChangedEvent) {
-        reset()
+    private fun shouldPublishBaitChanged(oldBaitName: String, newBaitName: String): Boolean {
+        /** Order-independent key - SB can repeat bait change A<->B a few times due to "bait refund". */
+        fun baitPairCacheKey(baitA: String, baitB: String): String =
+            if (baitA <= baitB) "$baitA|$baitB" else "$baitB|$baitA"
+
+        val key = baitPairCacheKey(oldBaitName, newBaitName)
+        val now = System.currentTimeMillis()
+        val lastPublishedAt = baitChangedPublishCache[key]
+        if (lastPublishedAt != null && now - lastPublishedAt < BAIT_CHANGED_CACHE_MS) return false
+
+        baitChangedPublishCache.entries.removeIf { now - it.value >= BAIT_CHANGED_CACHE_MS }
+        baitChangedPublishCache[key] = now
+        return true
+    }
+
+    private fun shouldPublishBaitRunningOut(baitName: String): Boolean {
+        val key = baitName
+        val now = System.currentTimeMillis()
+        val lastPublishedAt = baitRunningOutPublishCache[key]
+        if (lastPublishedAt != null && now - lastPublishedAt < BAIT_RUNNING_OUT_CACHE_MS) return false
+
+        baitRunningOutPublishCache.entries.removeIf { now - it.value >= BAIT_RUNNING_OUT_CACHE_MS }
+        baitRunningOutPublishCache[key] = now
+        return true
     }
 
     private fun reset() {
         lastBaitName = ""
         lastBaitDisplayName = ""
         lastBaitRemaining = null
-        isBaitRunningOutPublished = false
+        baitChangedPublishCache.clear()
+        baitRunningOutPublishCache.clear()
     }
 }
