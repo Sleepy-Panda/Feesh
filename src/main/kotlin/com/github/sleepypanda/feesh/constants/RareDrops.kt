@@ -41,7 +41,15 @@ enum class RareDropTypes(val displayName: String) {
 
 class RareDrops {
     companion object {
-        data class RareDropInfo(val id: String, val itemName: String, val rarityColorCode: String, val npcPrice: Int?, val isExtremelyRare: Boolean, val defaultSoundFileName: String) {
+        data class RareDropInfo(
+            val id: String, 
+            val itemName: String, 
+            val rarityColorCode: String, 
+            val npcPrice: Int?, 
+            val isExtremelyRare: Boolean, 
+            val defaultSoundFileName: String,
+            val alternateNames: List<String> = listOf()
+        ) {
             val displayName: String get() = rarityColorCode + itemName
             val boldDisplayName: String get() = rarityColorCode + BOLD + itemName
 
@@ -123,7 +131,8 @@ class RareDrops {
                 rarityColorCode = MYTHIC.code,
                 npcPrice = 0,
                 isExtremelyRare = false,
-                defaultSoundFileName = Sounds.FEESH_OH_MY_GOD
+                defaultSoundFileName = Sounds.FEESH_OH_MY_GOD,
+                alternateNames = listOf("Flash I")
             ),
             RareDropInfo(
                 id = "VIBRANT_CORAL",
