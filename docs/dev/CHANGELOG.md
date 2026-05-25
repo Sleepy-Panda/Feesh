@@ -42,6 +42,7 @@ Released on: ???
   - Only "rare" creatures are selected by default.
   - Please actualize your selections :) As they might reset due to this change.
 - Added alert/pchat message when you cocoon a specific sea creature.
+- Added option to set idle time to autopause all trackers' timers (set to 3 minutes by default).
 - Added selection of Auction prices API source - you can choose between LBIN or 7-days average LBIN.
 - Added personal best tracking for double hook streak.
 - Added alert after personal SC cap is reached (based on chat message).
@@ -53,7 +54,7 @@ Released on: ???
 ## Bugfixes
 
 - Fixed some baits being added to Fishing profit tracker after adding Bait Bag preview in slot #9.
-- Fixed Flash 1 book alert/pchat message not triggering when Roman numerals are enabled in SB settings.
+- Fixed Flash 1 book alert/pchat message not triggering when Roman skill numerals are enabled in SB settings.
 - Fixed Magma Lord Necklace crafting recipe for /feeshGearCraftPrices.
 - Fixed some overlays data not auto-resetting after disabling that overlay.
 - Fixed trophy armor checks to be executed more often than needed.
