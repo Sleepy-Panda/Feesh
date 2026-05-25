@@ -58,8 +58,8 @@ object RareDropAlert {
     }
 
     private fun showAlert(itemName: String, playerName: String, isOwnDrop: Boolean) {
-        val dropInfo = RareDrops.rareDrops.find { it.itemName == itemName } ?: return
-        val type = RareDropTypes.values().find { it.displayName == itemName } ?: return
+        val dropInfo = RareDrops.rareDrops.find { it.itemName == itemName || it.alternateNames.contains(itemName) } ?: return
+        val type = RareDropTypes.values().find { it.displayName == dropInfo.itemName } ?: return
 
         if (!Alerts.alertOnRareDropTypes.contains(type)) return
 

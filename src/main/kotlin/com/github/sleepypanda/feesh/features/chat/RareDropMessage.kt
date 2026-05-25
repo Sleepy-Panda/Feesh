@@ -36,13 +36,13 @@ object RareDropMessage {
         CommonUtils.runWithCatching("Failed to send rare drop message") {
             if (!WorldUtils.isInSkyblock() || !Chat.messageOnRareDrops) return
 
-            val itemName = event.itemName
-            val type = RareDropTypes.values().find { it.displayName == itemName } ?: return
+            val dropInfo = RareDrops.rareDrops.find { it.itemName == event.itemName || it.alternateNames.contains(event.itemName) } ?: return
+            val type = RareDropTypes.values().find { it.displayName == dropInfo.itemName } ?: return
     
             if (!Chat.messageOnRareDropTypes.contains(type)) return
     
             var metadata = listOf<String>()
-            val dropNumber = getDropNumber(itemName)
+            val dropNumber = getDropNumber(dropInfo.itemName)
             if (dropNumber != null) {
                 metadata += "#$dropNumber"
             }
@@ -50,7 +50,7 @@ object RareDropMessage {
                 metadata += "+${event.magicFind} ✯ Magic Find"
             }
     
-            val message = getDropMessage(itemName, metadata)
+            val message = getDropMessage(dropInfo.itemName, metadata)
             ChatUtils.sendPartyChat(message) 
         }
     }

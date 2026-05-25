@@ -22,7 +22,7 @@ object SeaCreaturesPerHourTracker {
     const val PAUSE_COMMAND = "feeshPauseSeaCreaturesPerHour"
 
     private const val TICKS_PER_UPDATE = 20
-    private const val MAX_SECONDS_ELAPSED_SINCE_LAST_ACTION = 60 * 5
+    private const val HIDE_OVERLAY_MINUTES = 5
 
     private var totalSeaCreaturesCaughtCount = 0
     private var lastSeaCreatureCaughtAt: Date? = null
@@ -44,7 +44,7 @@ object SeaCreaturesPerHourTracker {
         .setApplyCustomStyleKey { Overlays.seaCreaturesPerHourTrackerCustomStyle }
         .setCondition {
             WorldUtils.isInFishingWorld() &&
-            FishingHookUtils.wasFishingHookActiveMinutesAgo(5)
+            FishingHookUtils.wasFishingHookActiveMinutesAgo(HIDE_OVERLAY_MINUTES)
         }
 
     fun init() {
@@ -97,7 +97,7 @@ object SeaCreaturesPerHourTracker {
 
             val elapsedSecondsSinceLastCatch = (now.time - lastCatch.time) / 1000
 
-            if (elapsedSecondsSinceLastCatch < MAX_SECONDS_ELAPSED_SINCE_LAST_ACTION) {
+            if (elapsedSecondsSinceLastCatch < Overlays.trackersAutoPauseSeconds) {
                 isSessionActive = true
                 elapsedSeconds += 1
                 updateGuiLines()
@@ -130,7 +130,7 @@ object SeaCreaturesPerHourTracker {
             !WorldUtils.isInSkyblock() ||
             !WorldUtils.isInFishingWorld() ||
             (totalSeaCreaturesCaughtCount == 0) ||
-            !FishingHookUtils.wasFishingHookActiveMinutesAgo(5)
+            !FishingHookUtils.wasFishingHookActiveMinutesAgo(HIDE_OVERLAY_MINUTES)
         ) return
 
         val elapsedHours = elapsedSeconds / 3600.0
