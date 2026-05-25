@@ -707,10 +707,10 @@ class FishingProfitDrops {
                 npcPrice = null,
             ),
             FishingProfitDropInfo(
-                itemId = "SHARD_NIGHT_SQUID", // TODO check if ID remains the same
-                itemName = "Night Squid Shard",
-                itemDisplayName = "${COMMON}Night Squid ${WHITE}Shard",
-                itemAlternateNames = listOf("Inkling Shard"),
+                itemId = "SHARD_NIGHT_SQUID",
+                itemName = "Inkling Shard",
+                itemDisplayName = "${COMMON}Inkling ${WHITE}Shard",
+                itemAlternateNames = listOf("Night Squid Shard"),
                 npcPrice = null,
             ),
             FishingProfitDropInfo(
@@ -1924,9 +1924,9 @@ class FishingProfitDrops {
             ),
             FishingProfitDropInfo(
                 itemId = "PHANTOM_HOOK",
-                itemName = "Phantom Hook",
-                itemDisplayName = "${RARE}Phantom Hook",
-                itemAlternateNames = listOf("Spooky Hook"),
+                itemName = "Spooky Hook",
+                itemDisplayName = "${RARE}Spooky Hook",
+                itemAlternateNames = listOf("Phantom Hook"),
                 npcPrice = 250_000.0,
             ),
 
