@@ -102,6 +102,13 @@ object Overlays : CategoryKt("Overlays") {
         }
     }
 
+    var trackersAutoPauseSeconds by int(180) {
+        this.name = Translated("Idle seconds to auto-pause all trackers")
+        this.description = Translated("Pauses elapsed timers on various widgets when you stop fishing for this long (in seconds).\n${YELLOW}Make sure to choose enough time to kill any fishing mob and get loot from it, so it gets counted by the trackers!")
+        this.range = 30..300
+        this.slider = true
+    }
+
     init {
         separator {
             this.title = "${AQUA}${BOLD}Custom overlays style"

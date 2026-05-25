@@ -53,7 +53,6 @@ object MagmaCoreFishingTracker {
     private const val TOGGLE_VIEW_MODE_COMMAND = "feeshToggleMagmaCoreFishingViewMode"
 
     private const val TICKS_PER_UPDATE = 20
-    private const val PAUSE_TIMER_SECONDS = 60
     private const val HIDE_OVERLAY_MINUTES = 5
     private const val DEDUPE_CORES_MILLISECONDS = 10_000L // To aggregate multiple drops in a short period of time (e.g. clearing cap)
 
@@ -196,7 +195,7 @@ object MagmaCoreFishingTracker {
         }
 
         val elapsedSinceCatch = (Date().time - lastCatch.time) / 1000
-        if (elapsedSinceCatch <= PAUSE_TIMER_SECONDS) {
+        if (elapsedSinceCatch < Overlays.trackersAutoPauseSeconds) {
             isSessionActive = true
             data.session.elapsedSeconds += 1
             data.total.elapsedSeconds += 1

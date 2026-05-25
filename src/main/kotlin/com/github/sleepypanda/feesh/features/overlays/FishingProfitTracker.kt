@@ -93,7 +93,6 @@ object FishingProfitTracker {
 
     private const val TICKS_TIMER_ELAPSED_TIME = 20
     private const val TICKS_INVENTORY = 5
-    private const val MAX_SECONDS_SINCE_HOOK = 60 * 5
     private const val HIDE_OVERLAY_AFTER_HOOK_MINUTES = 5
     private const val FISHED_COINS_ITEM_ID = "FISHED_COINS"
 
@@ -556,7 +555,7 @@ object FishingProfitTracker {
         if (!isSessionActive || !isTrackerVisible()) return
         val lastHookSeenAt = FishingHookUtils.lastActiveFishingHookSeenAt() ?: return
         val elapsedSinceHook = (Date().time - lastHookSeenAt.time) / 1000
-        if (elapsedSinceHook < MAX_SECONDS_SINCE_HOOK) {
+        if (elapsedSinceHook < Overlays.trackersAutoPauseSeconds) {
             data.session.elapsedSeconds += 1
             data.total.elapsedSeconds += 1
             saveData()
