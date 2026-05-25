@@ -396,6 +396,22 @@ ${GRAY}To reset [Total]: ${WHITE}/${SeaCreaturesTracker.RESET_TOTAL}
         this.name = Translated("Apply custom style")
         this.description = Translated(getCustomStyleDescription("Fishing hook timer"))
     }
+
+    init {
+        separator {
+            this.title = "${AQUA}${BOLD}Bait"
+        }
+    }
+
+    var baitTrackerOverlay by boolean(false) {
+        this.name = Translated("Bait tracker")
+        this.description = Translated("${GRAY}Shows remaining bait count from your fishing bag preview (hotbar slot #9).")
+    }
+
+    var baitTrackerCustomStyle by boolean(true) {
+        this.name = Translated("Apply custom style")
+        this.description = Translated(getCustomStyleDescription("Bait tracker"))
+    }
     
     init {
         separator {

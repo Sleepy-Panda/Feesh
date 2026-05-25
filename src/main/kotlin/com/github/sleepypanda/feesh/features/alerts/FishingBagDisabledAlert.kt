@@ -100,7 +100,7 @@ object FishingBagDisabledAlert {
         onFishingBagOpened(event)
     }
 
-    private fun onFishingBagOpened(@Suppress("UNUSED_PARAMETER") event: GuiOpenedEvent) {
+    private fun onFishingBagOpened(event: GuiOpenedEvent) {
         // Schedule task to check after GUI is fully loaded (~2 ticks delay)
         Timer().schedule(timerTask {
             CommonUtils.runWithCatching("Failed to check fishing bag state on GUI opened") {

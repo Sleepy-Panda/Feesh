@@ -291,13 +291,29 @@ object Alerts : CategoryKt("Alerts") {
 
     init {
         separator {
-            this.title = "${AQUA}${BOLD}Other"
+            this.title = "${AQUA}${BOLD}Bait"
         }
     }
-
+    
     var alertOnFishingBagDisabled by boolean(true) {
         this.name = Translated("Alert when Fishing Bag is disabled")
         this.description = Translated("Shows a title and plays a sound when current player starts fishing with Fishing Bag disabled.\n${YELLOW}After enabling the setting, please open your fishing bag once to initialize its state!")
+    }
+
+    var alertOnBaitChanged by boolean(true) {
+        this.name = Translated("Alert when bait is changed")
+        this.description = Translated("Shows a title and plays a sound when bait is changed while fishing.")
+    }
+
+    var alertOnBaitRunningOut by boolean(true) {
+        this.name = Translated("Alert when bait is running out")
+        this.description = Translated("Shows a title and plays a sound when almost no bait is remaining while fishing.")
+    }
+
+    init {
+        separator {
+            this.title = "${AQUA}${BOLD}Other"
+        }
     }
 
     var alertOnNonFishingArmor by boolean(true) {

@@ -34,6 +34,8 @@ https://hypixel.net/threads/may-14th-lotus-atoll-alpha-testing-2.6097759/
 
 ## Other
 
+- Check Bait Bag slot number
+
 You donated 9 Trophy Frogs and received Silver Lotus x3 and Lotus x304!
 You donated 1 Trophy Frog and received Lotus x8!
 
