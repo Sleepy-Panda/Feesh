@@ -42,6 +42,7 @@ Released on: ???
   - Only "rare" creatures are selected by default.
   - Please actualize your selections :) As they might reset due to this change.
 - Added alert/pchat message when you cocoon a specific sea creature.
+- Added Bait tracker [disabled by default] & related out of bait / bait changed alerts.
 - Added option to set idle time to autopause all trackers' timers (set to 3 minutes by default).
 - Added selection of Auction prices API source - you can choose between LBIN or 7-days average LBIN.
 - Added personal best tracking for double hook streak.
