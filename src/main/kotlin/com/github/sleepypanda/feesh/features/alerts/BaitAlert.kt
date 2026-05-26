@@ -50,14 +50,14 @@ object BaitAlert {
             val baitName = event.baitName
             val isCraftableOrBuyable = !baitName.contains("Obfuscated")
             if (isCraftableOrBuyable) {
-                val supercraftText = Component.literal("${WHITE}${BOLD}[Supercraft]")
+                val supercraftText = Component.literal("${GRAY}[${YELLOW}${BOLD}Supercraft${GRAY}]")
                     .setStyle(
                         Style.EMPTY
                             .withClickEvent(RunCommand("/recipe $baitName"))
                             .withHoverEvent(ShowText(Component.literal("Click to open Supercraft menu for $baitName")))
                     )
                 val orText = Component.literal(" ${RESET}${GRAY}or ")
-                val bazaarText = Component.literal("${WHITE}${BOLD}[Bazaar]")
+                val bazaarText = Component.literal("${GRAY}[${GOLD}${BOLD}Buy on BZ${GRAY}]")
                     .setStyle(
                         Style.EMPTY
                             .withClickEvent(RunCommand("/bz $baitName"))

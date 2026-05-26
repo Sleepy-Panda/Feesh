@@ -9,6 +9,13 @@
 https://hypixel.net/threads/may-6th-lotus-atoll-alpha-testing.6094444/
 https://hypixel.net/threads/may-14th-lotus-atoll-alpha-testing-2.6097759/
 
+### TODOs
+
+- Check Bait Bag slot number
+- Check presence of Night Squid, Scarecrow and Sea Guardian SC
+- Check item IDs for Spooky Hook and Inkling Shard after release
+- Change display name / alternate names for Spooky Hook and Inkling Shard
+
 ### Atoll
 
 - Jumpin' Jack - retest highlight
@@ -20,8 +27,6 @@ https://hypixel.net/threads/may-14th-lotus-atoll-alpha-testing-2.6097759/
 - Do some of them have immunity?
 - Line to Puddle Jumper?
 - Need to migrate old sea creature names without removal from trackers.
-- Sea Guardian => Jumpin' Jack (COMMON Spooky Sea Creature)
-  - Will it cause issues storing ' in JSON keys? Sounds, sc tracker
 
 ### Drops
 
@@ -29,12 +34,8 @@ https://hypixel.net/threads/may-14th-lotus-atoll-alpha-testing-2.6097759/
 - Add new items from trophy frogging
 - Adjusted all Bayou Sea Creature stats and drop chances - ????
 - Adjusted the drop tables, bestiaries, and stats of all Hotspot and Event Sea Creatures
-- Check item IDs for Spooky Hook and Inkling Shard after release
-- Change display name / alternate names for Spooky Hook and Inkling Shard
 
 ## Other
-
-- Check Bait Bag slot number
 
 You donated 9 Trophy Frogs and received Silver Lotus x3 and Lotus x304!
 You donated 1 Trophy Frog and received Lotus x8!

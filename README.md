@@ -59,7 +59,9 @@ This mod requires [Fabric API](https://modrinth.com/mod/fabric-api) and [Fabric 
 - **Deployables** — Alerts when your deployable item is about to expire.
 - **Pet level up** — Alerts when a pet reaches max level. Can show estimated leveling price in chat.
 - **Hotspot found or gone** — Alerts when a hotspot is found or is gone.
+- **Wormhole gone** — Alerts when a wormhole is gone.
 - **Fishing Bag disabled** — Alerts when you start fishing with Fishing Bag disabled.
+- **Bait changed/running out of bait** — Alerts when active bait has changed or almost no bait remaining.
 - **No fishing armor** — Alerts when fishing without fishing armor equipped.
 - **Lootshare** — Alerts when "Lootshare!" message appears in party chat.
 - **Chum bucket auto-pickup** — Alerts when Chum/Chumcap bucket is automatically picked up.
@@ -108,6 +110,7 @@ This mod requires [Fabric API](https://modrinth.com/mod/fabric-api) and [Fabric 
 - **Magma Core fishing tracker** — Lava Pigman/Lava Blaze catch stats and Magma Core drop profits (total and per hour), while in Crystal Hollows.
 - **Archfiend Dice profit tracker** — Archfiend Dice / High Class Archfiend Dice profit overlay with Session/Total modes.
 - **Rain/Thunder/Blizzard timer** — Shows Rain/Thunder/Blizzard timer while in relevant areas.
+- **Bait tracker** — Remaining bait counter based on bait preview in hotbar slot #9.
 
 ## Items
 
