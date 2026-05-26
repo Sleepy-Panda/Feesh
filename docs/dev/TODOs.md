@@ -9,13 +9,6 @@
 https://hypixel.net/threads/may-6th-lotus-atoll-alpha-testing.6094444/
 https://hypixel.net/threads/may-14th-lotus-atoll-alpha-testing-2.6097759/
 
-### TODOs
-
-- Check Bait Bag slot number
-- Check presence of Night Squid, Scarecrow and Sea Guardian SC
-- Check item IDs for Spooky Hook and Inkling Shard after release
-- Change display name / alternate names for Spooky Hook and Inkling Shard
-
 ### Atoll
 
 - Jumpin' Jack - retest highlight
