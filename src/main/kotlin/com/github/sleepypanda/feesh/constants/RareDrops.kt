@@ -17,6 +17,7 @@ enum class RareDropTypes(val displayName: String) {
     FLASH_1("Flash 1"),
     VIBRANT_CORAL("Vibrant Coral"),
     TRUE_ICE("True Ice"),
+    PRINCES_CROWN_JEWEL("Prince's Crown Jewel"),
 
     MEGALODON_LEGENDARY("Megalodon (Legendary)"),
     MEGALODON_EPIC("Megalodon (Epic)"),
@@ -149,6 +150,14 @@ class RareDrops {
                 npcPrice = null,
                 isExtremelyRare = false,
                 defaultSoundFileName = Sounds.FEESH_OH_MY_GOD
+            ),
+            RareDropInfo(
+                id = "PRINCE_CROWN_JEWEL",
+                itemName = RareDropTypes.PRINCES_CROWN_JEWEL.displayName,
+                rarityColorCode = LEGENDARY.code,
+                npcPrice = 1_000_000,
+                isExtremelyRare = true,
+                defaultSoundFileName = Sounds.FEESH_MINECRAFT_CHALLENGE_COMPLETED
             ),
             RareDropInfo(
                 id = "FLYING_FISH;4",

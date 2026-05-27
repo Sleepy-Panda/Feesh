@@ -53,6 +53,7 @@ Newly released - https://hypixel.net/threads/hypixel-skyblock-0-24-5-assorted-qo
 
 ## Current issues & feedback
 
+- Add treasure dye pity rng meter (millerzz)
 - Catches/h for treasures
 - Improve link to changelog in settings, and update announcement
 - Work on various events sounds to make them more unique
