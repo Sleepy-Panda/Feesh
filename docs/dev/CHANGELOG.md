@@ -2,8 +2,10 @@
 
 ## Features
 
-- Added Lotus Atoll tracker with Frog Prince and Puddle Jumper catch statistics while fishing on Lotus Atoll.
-- Added alert & pchat message for Prince's Crown Jewel.
+- Added Lotus Atoll tracker with while fishing on Lotus Atoll [disabled by default]:
+  - Frog Prince and Puddle Jumper catch statistics
+  - Prince's Crown Jewel drop statistics
+- Added alert & pchat message when dropping a Prince's Crown Jewel.
   - **Make sure to select it in the settings dropdowns if you need it!**
 
 ## Bugfixes

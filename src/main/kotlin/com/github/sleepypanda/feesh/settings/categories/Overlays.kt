@@ -651,7 +651,7 @@ ${GRAY}To reset: ${WHITE}/${GalateaWaterTracker.RESET_COMMAND}
     var lotusAtollTrackerOverlay by boolean(false) {
         this.name = Translated("Lotus Atoll tracker")
         this.description = Translated("""
-${GRAY}Shows an overlay with Frog Prince and Puddle Jumper catch statistics while fishing on Lotus Atoll.
+${GRAY}Shows an overlay with Frog Prince and Puddle Jumper catch statistics, and Prince's Crown Jewel drop statistics while fishing on Lotus Atoll.
 ${GRAY}To reset: ${WHITE}/${LotusAtollTracker.RESET_COMMAND}
         """.trimIndent())
     }
@@ -659,6 +659,22 @@ ${GRAY}To reset: ${WHITE}/${LotusAtollTracker.RESET_COMMAND}
     var resetLotusAtollTrackerOnGameClosed by boolean(false) {
         this.name = Translated("Autoreset on closing game")
         this.description = Translated("Automatically reset the Lotus Atoll tracker when you close Minecraft.")
+    }
+
+    init {
+        button {
+            title = "Set Prince's Crown Jewels count"
+            description = "Explains in your chat how to init Prince's Crown Jewels count and last drop date for the Lotus Atoll tracker."
+            text = "Click for help"
+            onClick {
+                ChatUtils.sendLocalChat("${AQUA}${BOLD}Prince's Crown Jewels setup${RESET}", true)
+                ChatUtils.sendLocalChat("${YELLOW}Command: ${WHITE}/${SetTrackerDropsCommand.COMMAND_NAME}${GOLD} <ITEM_ID> <COUNT> [LAST_ON_DATE]")
+                ChatUtils.sendLocalChat("${DARK_AQUA}<ITEM_ID>: ${GRAY}must be PRINCE_CROWN_JEWEL")
+                ChatUtils.sendLocalChat("${DARK_AQUA}<COUNT>: ${GRAY}how many drops you got")
+                ChatUtils.sendLocalChat("${DARK_AQUA}[LAST_ON_DATE]: ${GRAY}optional, YYYY-MM-DD hh:mm:ss, cannot be future")
+                ChatUtils.sendLocalChat("${GREEN}Example: ${WHITE}/${SetTrackerDropsCommand.COMMAND_NAME} PRINCE_CROWN_JEWEL 2 2025-05-30 23:59:00")
+            }
+        }
     }
 
     var lotusAtollTrackerCustomStyle by boolean(true) {

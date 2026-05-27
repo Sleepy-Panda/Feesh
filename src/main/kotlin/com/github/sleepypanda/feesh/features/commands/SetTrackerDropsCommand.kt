@@ -6,6 +6,7 @@ import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.features.overlays.BayouTracker
 import com.github.sleepypanda.feesh.features.overlays.WaterHotspotsTracker
 import com.github.sleepypanda.feesh.features.overlays.CrimsonIsleTracker
+import com.github.sleepypanda.feesh.features.overlays.LotusAtollTracker
 import com.github.sleepypanda.feesh.features.overlays.TreasureFishingTracker
 import java.util.Date
 import java.text.SimpleDateFormat
@@ -48,6 +49,7 @@ object SetTrackerDropsCommand {
                 "TITANOBOA_SHED" -> BayouTracker.setTitanoboaSheds(count, lastOn)
                 "TIKI_MASK" -> WaterHotspotsTracker.setTikiMasks(count, lastOn)
                 "RADIOACTIVE_VIAL" -> CrimsonIsleTracker.setRadioactiveVials(count, lastOn)
+                "PRINCE_CROWN_JEWEL" -> LotusAtollTracker.setPrincesCrownJewels(count, lastOn)
                 "DYE_TREASURE" -> TreasureFishingTracker.setTreasureDyes(count, lastOn)
                 else -> ChatUtils.sendLocalChat("${RED}Unknown drop ID: $dropId.", true)
             }
