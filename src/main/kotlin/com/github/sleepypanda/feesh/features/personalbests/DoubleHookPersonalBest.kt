@@ -56,6 +56,7 @@ object DoubleHookPersonalBest {
                 "${LIGHT_PURPLE}${BOLD}PERSONAL BEST!${RESET} Double Hook streak: ${GREEN}${BOLD}$currentStreak",
                 true
             )
+            CommonUtils.showTitle("${LIGHT_PURPLE}${BOLD}PERSONAL BEST!", "DH streak: ${GREEN}$currentStreak")
             SoundUtils.playSound(SoundEvents.PLAYER_LEVELUP)
         }
     }
