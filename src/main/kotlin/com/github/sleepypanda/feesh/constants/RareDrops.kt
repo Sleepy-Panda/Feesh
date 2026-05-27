@@ -12,6 +12,7 @@ enum class RareDropTypes(val displayName: String) {
     MAGMA_CORE("Magma Core"),
     TIKI_MASK("Tiki Mask"),
     TITANOBOA_SHED("Titanoboa Shed"),
+    SNAKE_EYES("Snake Eyes"),
     SCUTTLER_SHELL("Scuttler Shell"),
     BURNT_TEXTS("Burnt Texts"),
     FLASH_1("Flash 1"),
@@ -107,6 +108,14 @@ class RareDrops {
                 itemName = RareDropTypes.TITANOBOA_SHED.displayName,
                 rarityColorCode = LEGENDARY.code,
                 npcPrice = 500_000,
+                isExtremelyRare = true,
+                defaultSoundFileName = Sounds.FEESH_MINECRAFT_CHALLENGE_COMPLETED
+            ),
+            RareDropInfo(
+                id = "SNAKE_EYES",
+                itemName = RareDropTypes.SNAKE_EYES.displayName,
+                rarityColorCode = LEGENDARY.code,
+                npcPrice = 1_000_000,
                 isExtremelyRare = true,
                 defaultSoundFileName = Sounds.FEESH_MINECRAFT_CHALLENGE_COMPLETED
             ),
