@@ -132,6 +132,7 @@ class FeeshMod : ClientModInitializer {
         WaterHotspotsTracker.init()
         CrimsonIsleTracker.init()
         GalateaWaterTracker.init()
+        LotusAtollTracker.init()
         ArchfiendDiceProfitTracker.init()
         FishingFestivalTracker.init()
         FishingProfitTracker.init()

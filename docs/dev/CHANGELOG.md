@@ -2,7 +2,7 @@
 
 ## Features
 
--
+- Added Lotus Atoll tracker with Frog Prince and Puddle Jumper catch statistics while fishing on Lotus Atoll.
 
 ## Bugfixes
 

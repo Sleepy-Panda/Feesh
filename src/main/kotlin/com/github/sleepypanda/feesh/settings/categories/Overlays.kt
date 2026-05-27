@@ -23,6 +23,7 @@ import com.github.sleepypanda.feesh.features.overlays.TreasureFishingTracker
 import com.github.sleepypanda.feesh.features.overlays.BayouTracker
 import com.github.sleepypanda.feesh.features.overlays.WaterHotspotsTracker
 import com.github.sleepypanda.feesh.features.overlays.GalateaWaterTracker
+import com.github.sleepypanda.feesh.features.overlays.LotusAtollTracker
 import com.github.sleepypanda.feesh.features.overlays.SeaCreatureHpTracker
 import com.github.sleepypanda.feesh.settings.models.HpTrackableSeaCreatureTypes
 import com.github.sleepypanda.feesh.utils.gui.MoveGuis
@@ -639,6 +640,30 @@ ${GRAY}To reset: ${WHITE}/${GalateaWaterTracker.RESET_COMMAND}
     var galateaWaterTrackerCustomStyle by boolean(true) {
         this.name = Translated("Apply custom style")
         this.description = Translated(getCustomStyleDescription("Galatea water tracker"))
+    }
+
+    init {
+        separator {
+            this.title = "${AQUA}${BOLD}Lotus Atoll tracker"
+        }
+    }
+
+    var lotusAtollTrackerOverlay by boolean(false) {
+        this.name = Translated("Lotus Atoll tracker")
+        this.description = Translated("""
+${GRAY}Shows an overlay with Frog Prince and Puddle Jumper catch statistics while fishing on Lotus Atoll.
+${GRAY}To reset: ${WHITE}/${LotusAtollTracker.RESET_COMMAND}
+        """.trimIndent())
+    }
+
+    var resetLotusAtollTrackerOnGameClosed by boolean(false) {
+        this.name = Translated("Autoreset on closing game")
+        this.description = Translated("Automatically reset the Lotus Atoll tracker when you close Minecraft.")
+    }
+
+    var lotusAtollTrackerCustomStyle by boolean(true) {
+        this.name = Translated("Apply custom style")
+        this.description = Translated(getCustomStyleDescription("Lotus Atoll tracker"))
     }
 
     init {

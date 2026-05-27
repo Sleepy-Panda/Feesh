@@ -1,0 +1,172 @@
+package com.github.sleepypanda.feesh.features.overlays
+
+import com.github.sleepypanda.feesh.FeeshMod
+import com.github.sleepypanda.feesh.constants.SeaCreatureNames
+import com.github.sleepypanda.feesh.constants.SeaCreatures
+import com.github.sleepypanda.feesh.utils.RegisterUtils
+import com.github.sleepypanda.feesh.utils.WorldUtils
+import com.github.sleepypanda.feesh.utils.ChatUtils
+import com.github.sleepypanda.feesh.utils.CommonUtils
+import com.github.sleepypanda.feesh.utils.FishingHookUtils
+import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
+import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
+import com.github.sleepypanda.feesh.events.EventBus
+import com.github.sleepypanda.feesh.events.models.ClientTickEvent
+import com.github.sleepypanda.feesh.events.models.GameClosedEvent
+import com.github.sleepypanda.feesh.events.models.OwnSeaCreatureCaughtEvent
+import com.github.sleepypanda.feesh.utils.gui.FeeshGui
+import com.github.sleepypanda.feesh.utils.gui.LineInfo
+import com.github.sleepypanda.feesh.utils.gui.GuiButton
+import com.github.sleepypanda.feesh.settings.categories.Overlays
+import com.github.sleepypanda.feesh.utils.data.PersistentDataManager
+
+object LotusAtollTracker {
+    data class LotusAtollTrackerData(
+        val frogPrince: CatchCounterData = CatchCounterData(),
+        val puddleJumper: CatchCounterData = CatchCounterData()
+    )
+
+    const val RESET_COMMAND = "feeshResetLotusAtoll"
+
+    private const val TICKS_PER_UPDATE = 20
+
+    private var data = PersistentDataManager.feeshData.lotusAtollTracker
+    private var tickCounter = 0
+
+    private val baseTitle = "${AQUA}${BOLD}Lotus Atoll tracker"
+    private val frogPrince = SeaCreatures.allSeaCreatures.find { it.name == SeaCreatureNames.FROG_PRINCE }!!
+    private val puddleJumper = SeaCreatures.allSeaCreatures.find { it.name == SeaCreatureNames.PUDDLE_JUMPER }!!
+
+    private val gui = FeeshGui()
+        .setCoordsDataKey("lotusAtollTracker")
+        .setClickable(true)
+        .setSampleLines(listOf(
+            baseTitle,
+            "${frogPrince.displayName}${GRAY}: ${WHITE}1200 ${GRAY}catches ago ${DARK_GRAY}(${GRAY}avg: ${WHITE}500${DARK_GRAY})",
+            "${GRAY}Last on: ${WHITE}1h ago",
+            "${puddleJumper.displayName}${GRAY}: ${WHITE}200 ${GRAY}catches ago ${DARK_GRAY}(${GRAY}avg: ${WHITE}50${DARK_GRAY})",
+            "${GRAY}Last on: ${WHITE}10m ago"
+        ))
+        .setSettingsKey { Overlays.lotusAtollTrackerOverlay }
+        .setApplyCustomStyleKey { Overlays.lotusAtollTrackerCustomStyle }
+        .setCondition {
+            WorldUtils.getWorldName() == WorldUtils.LOTUS_ATOLL &&
+                FishingHookUtils.wasFishingHookActiveMinutesAgo(5)
+        }
+
+    fun init() {
+        registerCommands()
+        EventBus.subscribe(OwnSeaCreatureCaughtEvent::class, ::onSeaCreature)
+        EventBus.subscribe(ClientTickEvent::class, ::onClientTick)
+        EventBus.subscribe(GameClosedEvent::class, ::onGameClosed)
+    }
+
+    private fun registerCommands() {
+        RegisterUtils.command(RESET_COMMAND) { args ->
+            val isConfirmed = args.isNotEmpty() && args[0] == "noconfirm"
+            resetLotusAtollTracker(isConfirmed)
+        }
+    }
+
+    private fun onSeaCreature(event: OwnSeaCreatureCaughtEvent) {
+        
+        fun onFrogPrince() {
+            data.frogPrince.updateAfterCatch(frogPrince.boldDisplayName)
+            data.puddleJumper.incrementCatches()
+            saveData()
+            updateGuiLines()
+        }
+    
+        fun onPuddleJumper() {
+            data.puddleJumper.updateAfterCatch(puddleJumper.boldDisplayName)
+            data.frogPrince.incrementCatches()
+            saveData()
+            updateGuiLines()
+        }
+    
+        fun onOtherSeaCreature() {
+            data.frogPrince.incrementCatches()
+            data.puddleJumper.incrementCatches()
+            saveData()
+            updateGuiLines()
+        }
+
+        CommonUtils.runWithCatching("Failed to track catch for Lotus Atoll tracker.") {
+            if (!Overlays.lotusAtollTrackerOverlay || !WorldUtils.isInSkyblock() || WorldUtils.getWorldName() != WorldUtils.LOTUS_ATOLL) return
+
+            val seaCreatureName = event.seaCreatureName
+            when (seaCreatureName) {
+                frogPrince.name -> onFrogPrince()
+                puddleJumper.name -> onPuddleJumper()
+                else -> onOtherSeaCreature()
+            }
+        }
+    }
+
+    private fun onClientTick(@Suppress("UNUSED_PARAMETER") event: ClientTickEvent) {
+        tickCounter++
+        if (tickCounter < TICKS_PER_UPDATE) return
+        tickCounter = 0
+        CommonUtils.runWithCatching("Failed to update Lotus Atoll tracker GUI lines.") {
+            updateGuiLines()
+        }
+    }
+
+    private fun updateGuiLines() {
+        gui.clearLines()
+
+        if (!hasData()) return
+        if (!Overlays.lotusAtollTrackerOverlay || !WorldUtils.isInSkyblock() || WorldUtils.getWorldName() != WorldUtils.LOTUS_ATOLL) return
+        if (!FishingHookUtils.wasFishingHookActiveMinutesAgo(5)) return
+
+        val lines = mutableListOf<LineInfo>()
+        lines.add(LineInfo(baseTitle))
+        lines.addAll(data.frogPrince.getOverlayLines(frogPrince.displayName))
+        lines.addAll(data.puddleJumper.getOverlayLines(puddleJumper.displayName))
+
+        gui.setLines(lines)
+        gui.setButtons(listOf(GuiButton(0, "${GRAY}[${RED}Click to reset${GRAY}]", { resetLotusAtollTracker(false) })))
+    }
+
+    private fun hasData(): Boolean {
+        return data.frogPrince.hasData() || data.puddleJumper.hasData()
+    }
+
+    private fun onGameClosed(@Suppress("UNUSED_PARAMETER") event: GameClosedEvent) {
+        if (Overlays.resetLotusAtollTrackerOnGameClosed && hasData()) {
+            reset(force = true)
+            FeeshMod.LOGGER.info("[Feesh] Automatically reset Lotus Atoll tracker on game closed.")
+        }
+    }
+
+    private fun reset(force: Boolean = false) {
+        data.frogPrince.reset()
+        data.puddleJumper.reset()
+        saveData(force)
+    }
+
+    private fun resetLotusAtollTracker(isConfirmed: Boolean) {
+        CommonUtils.runWithCatching("Failed to reset Lotus Atoll tracker.") {
+            if (!isConfirmed) {
+                ChatUtils.sendLocalChatWithCommand(
+                    "${WHITE}Do you want to reset Lotus Atoll tracker? ${RED}${BOLD}[Click to confirm]",
+                    "${RESET_COMMAND} noconfirm",
+                    true
+                )
+                return
+            }
+
+            reset()
+            updateGuiLines()
+            ChatUtils.sendLocalChat("${WHITE}Lotus Atoll tracker was reset.", true)
+        }
+    }
+
+    private fun saveData(force: Boolean = false) {
+        if (force) {
+            PersistentDataManager.forceSaveFeeshDataToFileSync()
+        } else {
+            PersistentDataManager.saveFeeshDataToFileAsync()
+        }
+    }
+}
