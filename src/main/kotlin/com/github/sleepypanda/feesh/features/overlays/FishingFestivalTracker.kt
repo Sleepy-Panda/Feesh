@@ -231,6 +231,7 @@ object FishingFestivalTracker {
                 "${LIGHT_PURPLE}${BOLD}PERSONAL BEST!${RESET} You caught ${GREEN}${BOLD}$total${RESET} sharks during the Fishing Festival!",
                 true
             )
+            CommonUtils.showTitle("${LIGHT_PURPLE}${BOLD}PERSONAL BEST!", "Sharks: ${GREEN}$total")
         }
 
         if (greatWhiteCount > personalBest.greatWhiteSharksCaught.amount) {
@@ -241,6 +242,7 @@ object FishingFestivalTracker {
                 "${LIGHT_PURPLE}${BOLD}PERSONAL BEST!${RESET} You caught ${GREEN}${BOLD}$greatWhiteCount${RESET} Great White Sharks during the Fishing Festival!",
                 true
             )
+            CommonUtils.showTitle("${LIGHT_PURPLE}${BOLD}PERSONAL BEST!", "Great White Sharks: ${GREEN}$greatWhiteCount")
         }
 
         if (isNewTotalPb || isNewGwPb) {
