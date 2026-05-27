@@ -6,6 +6,8 @@
 
 ## Bugfixes
 
+- Added Flipflopper and Seashine creatures to HP tracker and mob highlighting.
+- Added Flipflopper Shard and Seashine Shard to Fishing profit tracker.
 - Decreased minimum value to 10 seconds for "Idle seconds to auto-pause all trackers" setting.
 
 # 1.7.0

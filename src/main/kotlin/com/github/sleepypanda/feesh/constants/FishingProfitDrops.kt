@@ -791,6 +791,18 @@ class FishingProfitDrops {
                 itemDisplayName = "${LEGENDARY}Nessie ${WHITE}Shard",
                 npcPrice = null,
             ),
+            FishingProfitDropInfo(
+                itemId = "SHARD_SEA_SHINE",
+                itemName = "Seashine Shard",
+                itemDisplayName = "${RARE}Seashine ${WHITE}Shard",
+                npcPrice = null,
+            ),
+            FishingProfitDropInfo(
+                itemId = "SHARD_FLIP_FLOPPER",
+                itemName = "Flipflopper Shard",
+                itemDisplayName = "${UNCOMMON}Flipflopper ${WHITE}Shard",
+                npcPrice = null,
+            ),
 
             // Water
 

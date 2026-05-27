@@ -90,6 +90,7 @@ object RareMobHighlight {
             scInfo?.rarityColorCode == ColorCodes.MYTHIC.code -> 0xFF55FF
             scInfo?.rarityColorCode == ColorCodes.DIVINE.code -> 0x55FFFF
             scInfo?.rarityColorCode == ColorCodes.SPECIAL.code -> 0xFF5555
+            cleanName == HighlightableSeaCreatureTypes.FLIPFLOPPER.displayName || cleanName == HighlightableSeaCreatureTypes.SEASHINE.displayName -> 0x55FFFF
             cleanName == HighlightableSeaCreatureTypes.JAWBUS_FOLLOWER.displayName || cleanName == HighlightableSeaCreatureTypes.WIKI_TIKI_LASER_TOTEM.displayName -> 0xF01616
             else -> 0x00FFFF
         }
