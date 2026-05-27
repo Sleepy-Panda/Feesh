@@ -1,6 +1,7 @@
 package com.github.sleepypanda.feesh.features.overlays
 
 import com.github.sleepypanda.feesh.FeeshMod
+import com.github.sleepypanda.feesh.constants.RareDrops
 import com.github.sleepypanda.feesh.constants.SeaCreatureNames
 import com.github.sleepypanda.feesh.constants.SeaCreatures
 import com.github.sleepypanda.feesh.utils.RegisterUtils
@@ -14,16 +15,19 @@ import com.github.sleepypanda.feesh.events.EventBus
 import com.github.sleepypanda.feesh.events.models.ClientTickEvent
 import com.github.sleepypanda.feesh.events.models.GameClosedEvent
 import com.github.sleepypanda.feesh.events.models.OwnSeaCreatureCaughtEvent
+import com.github.sleepypanda.feesh.events.models.RareDropEvent
 import com.github.sleepypanda.feesh.utils.gui.FeeshGui
 import com.github.sleepypanda.feesh.utils.gui.LineInfo
 import com.github.sleepypanda.feesh.utils.gui.GuiButton
 import com.github.sleepypanda.feesh.settings.categories.Overlays
 import com.github.sleepypanda.feesh.utils.data.PersistentDataManager
+import java.util.Date
 
 object LotusAtollTracker {
     data class LotusAtollTrackerData(
+        val puddleJumper: CatchCounterData = CatchCounterData(),
         val frogPrince: CatchCounterData = CatchCounterData(),
-        val puddleJumper: CatchCounterData = CatchCounterData()
+        val princesCrownJewels: DropCounterData = DropCounterData(),
     )
 
     const val RESET_COMMAND = "feeshResetLotusAtoll"
@@ -36,16 +40,20 @@ object LotusAtollTracker {
     private val baseTitle = "${AQUA}${BOLD}Lotus Atoll tracker"
     private val frogPrince = SeaCreatures.allSeaCreatures.find { it.name == SeaCreatureNames.FROG_PRINCE }!!
     private val puddleJumper = SeaCreatures.allSeaCreatures.find { it.name == SeaCreatureNames.PUDDLE_JUMPER }!!
+    private val princesCrownJewel = RareDrops.rareDrops.find { it.itemName == "Prince's Crown Jewel" }!!
 
     private val gui = FeeshGui()
         .setCoordsDataKey("lotusAtollTracker")
         .setClickable(true)
         .setSampleLines(listOf(
             baseTitle,
+            "${puddleJumper.displayName}${GRAY}: ${WHITE}200 ${GRAY}catches ago ${DARK_GRAY}(${GRAY}avg: ${WHITE}50${DARK_GRAY})",
+            "${GRAY}Last on: ${WHITE}10m ago",
             "${frogPrince.displayName}${GRAY}: ${WHITE}1200 ${GRAY}catches ago ${DARK_GRAY}(${GRAY}avg: ${WHITE}500${DARK_GRAY})",
             "${GRAY}Last on: ${WHITE}1h ago",
-            "${puddleJumper.displayName}${GRAY}: ${WHITE}200 ${GRAY}catches ago ${DARK_GRAY}(${GRAY}avg: ${WHITE}50${DARK_GRAY})",
-            "${GRAY}Last on: ${WHITE}10m ago"
+            "${princesCrownJewel.displayName}s${GRAY}: ${WHITE}3",
+            "${GRAY}Last on: ${WHITE}5h ago",
+            "${GRAY}Last on: ${WHITE}10 ${GRAY}Frog Princes ago",
         ))
         .setSettingsKey { Overlays.lotusAtollTrackerOverlay }
         .setApplyCustomStyleKey { Overlays.lotusAtollTrackerCustomStyle }
@@ -58,6 +66,7 @@ object LotusAtollTracker {
         registerCommands()
         EventBus.subscribe(OwnSeaCreatureCaughtEvent::class, ::onSeaCreature)
         EventBus.subscribe(ClientTickEvent::class, ::onClientTick)
+        EventBus.subscribe(RareDropEvent::class, ::onRareDrop)
         EventBus.subscribe(GameClosedEvent::class, ::onGameClosed)
     }
 
@@ -73,6 +82,7 @@ object LotusAtollTracker {
         fun onFrogPrince() {
             data.frogPrince.updateAfterCatch(frogPrince.boldDisplayName)
             data.puddleJumper.incrementCatches()
+            data.princesCrownJewels.updateAfterCatch(event.isDoubleHook)
             saveData()
             updateGuiLines()
         }
@@ -112,6 +122,17 @@ object LotusAtollTracker {
         }
     }
 
+    private fun onRareDrop(event: RareDropEvent) {
+        CommonUtils.runWithCatching("Failed to track rare drop for Lotus Atoll tracker.") {
+            if (!Overlays.lotusAtollTrackerOverlay || !WorldUtils.isInSkyblock() || WorldUtils.getWorldName() != WorldUtils.LOTUS_ATOLL) return
+            if (event.itemName != princesCrownJewel.itemName) return
+
+            data.princesCrownJewels.updateAfterDrop(princesCrownJewel.boldDisplayName, frogPrince.displayName, event.magicFind)
+            saveData()
+            updateGuiLines()
+        }
+    }
+
     private fun updateGuiLines() {
         gui.clearLines()
 
@@ -121,15 +142,16 @@ object LotusAtollTracker {
 
         val lines = mutableListOf<LineInfo>()
         lines.add(LineInfo(baseTitle))
-        lines.addAll(data.frogPrince.getOverlayLines(frogPrince.displayName))
         lines.addAll(data.puddleJumper.getOverlayLines(puddleJumper.displayName))
+        lines.addAll(data.frogPrince.getOverlayLines(frogPrince.displayName))
+        lines.addAll(data.princesCrownJewels.getOverlayLines(princesCrownJewel.displayName, frogPrince.displayName))
 
         gui.setLines(lines)
-        gui.setButtons(listOf(GuiButton(0, "${GRAY}[${RED}Click to reset${GRAY}]", { resetLotusAtollTracker(false) })))
+        gui.setButtons(listOf(GuiButton(0, "${GRAY}[${RED}Click to reset${GRAY}]") { resetLotusAtollTracker(false) }))
     }
 
     private fun hasData(): Boolean {
-        return data.frogPrince.hasData() || data.puddleJumper.hasData()
+        return data.frogPrince.hasData() || data.puddleJumper.hasData() || data.princesCrownJewels.hasData()
     }
 
     private fun onGameClosed(@Suppress("UNUSED_PARAMETER") event: GameClosedEvent) {
@@ -142,7 +164,23 @@ object LotusAtollTracker {
     private fun reset(force: Boolean = false) {
         data.frogPrince.reset()
         data.puddleJumper.reset()
+        data.princesCrownJewels.reset()
         saveData(force)
+    }
+
+    fun setPrincesCrownJewels(count: Int, lastOn: Date?) {
+        CommonUtils.runWithCatching(
+            message = "Failed to set Prince's Crown Jewels.",
+            onError = {
+                ChatUtils.sendLocalChat("${RED}Failed to set Prince's Crown Jewels.", true)
+            }
+        ) {
+            if (!WorldUtils.isInSkyblock()) return
+
+            data.princesCrownJewels.initDropCount(count, lastOn)
+            saveData()
+            ChatUtils.sendLocalChat("${GRAY}Successfully changed Prince's Crown Jewels count to $count in the Lotus Atoll tracker.", true)
+        }
     }
 
     private fun resetLotusAtollTracker(isConfirmed: Boolean) {
@@ -150,7 +188,7 @@ object LotusAtollTracker {
             if (!isConfirmed) {
                 ChatUtils.sendLocalChatWithCommand(
                     "${WHITE}Do you want to reset Lotus Atoll tracker? ${RED}${BOLD}[Click to confirm]",
-                    "${RESET_COMMAND} noconfirm",
+                    "$RESET_COMMAND noconfirm",
                     true
                 )
                 return
