@@ -803,6 +803,12 @@ class FishingProfitDrops {
                 itemDisplayName = "${UNCOMMON}Flipflopper ${WHITE}Shard",
                 npcPrice = null,
             ),
+            FishingProfitDropInfo(
+                itemId = "SHARD_STRIDER_SURFER",
+                itemName = "Stridersurfer Shard",
+                itemDisplayName = "${UNCOMMON}Stridersurfer ${WHITE}Shard",
+                npcPrice = null,
+            ),
 
             // Water
 
@@ -836,6 +842,12 @@ class FishingProfitDrops {
                 itemName = "Enchanted Lily Pad",
                 itemDisplayName = "${UNCOMMON}Enchanted Lily Pad",
                 npcPrice = 1_600.0,
+            ),
+            FishingProfitDropInfo(
+                itemId = "CONDENSED_WATER_LILY",
+                itemName = "Condensed Lily Pad",
+                itemDisplayName = "${RARE}Condensed Lily Pad",
+                npcPrice = 256_000.0,
             ),
             FishingProfitDropInfo(
                 itemId = "INK_SACK",
