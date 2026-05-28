@@ -1,0 +1,82 @@
+{
+  "migratedEntries": 264,
+  "updatedExisting": 212,
+  "createdNew": 52,
+  "skippedExplicit": [
+    "HOT_BAIT",
+    "BABY_YETI;3",
+    "BABY_YETI;4",
+    "FISH_BAIT",
+    "SPOOKY_BAIT",
+    "SHARK_BAIT"
+  ],
+  "skippedNoExactMatch": [
+    {
+      "sourceKey": "SKYBLOCK_COIN",
+      "normalized": "SKYBLOCK_COIN",
+      "totalAmount": 12915257,
+      "closestFeeshItemId": null
+    },
+    {
+      "sourceKey": "LUCK_OF_THE_SEA;6",
+      "normalized": "ENCHANTMENT_LUCK_OF_THE_SEA_6",
+      "totalAmount": 16,
+      "closestFeeshItemId": "ENCHANTMENT_LURE_6"
+    },
+    {
+      "sourceKey": "ATTRIBUTE_SHARD_HUNTER;1",
+      "normalized": "ATTRIBUTE_SHARD_HUNTER;1",
+      "totalAmount": 2305,
+      "closestFeeshItemId": null
+    },
+    {
+      "sourceKey": "ATTRIBUTE_SHARD_FISHING_EXPERIENCE;1",
+      "normalized": "ATTRIBUTE_SHARD_FISHING_EXPERIENCE;1",
+      "totalAmount": 72,
+      "closestFeeshItemId": null
+    },
+    {
+      "sourceKey": "ATTRIBUTE_SHARD_MAGMATIC_RULER;1",
+      "normalized": "ATTRIBUTE_SHARD_MAGMATIC_RULER;1",
+      "totalAmount": 1798,
+      "closestFeeshItemId": null
+    },
+    {
+      "sourceKey": "ATTRIBUTE_SHARD_FOREST_STRENGTH;1",
+      "normalized": "ATTRIBUTE_SHARD_FOREST_STRENGTH;1",
+      "totalAmount": 56,
+      "closestFeeshItemId": null
+    },
+    {
+      "sourceKey": "ATTRIBUTE_SHARD_MOONGLADE_SERENDIPITY;1",
+      "normalized": "ATTRIBUTE_SHARD_MOONGLADE_SERENDIPITY;1",
+      "totalAmount": 29,
+      "closestFeeshItemId": null
+    },
+    {
+      "sourceKey": "ATTRIBUTE_SHARD_INFECTION;1",
+      "normalized": "ATTRIBUTE_SHARD_INFECTION;1",
+      "totalAmount": 116,
+      "closestFeeshItemId": null
+    },
+    {
+      "sourceKey": "ATTRIBUTE_SHARD_TROPHY_HUNTER;1",
+      "normalized": "ATTRIBUTE_SHARD_TROPHY_HUNTER;1",
+      "totalAmount": 229,
+      "closestFeeshItemId": null
+    },
+    {
+      "sourceKey": "ATTRIBUTE_SHARD_DOUBLE_HOOK;1",
+      "normalized": "ATTRIBUTE_SHARD_DOUBLE_HOOK;1",
+      "totalAmount": 6,
+      "closestFeeshItemId": null
+    },
+    {
+      "sourceKey": "ATTRIBUTE_SHARD_MAXIMAL_TORMENT;1",
+      "normalized": "ATTRIBUTE_SHARD_MAXIMAL_TORMENT;1",
+      "totalAmount": 128,
+      "closestFeeshItemId": null
+    }
+  ],
+  "dedupedKeysRemoved": []
+}

@@ -1,0 +1,1488 @@
+{
+  "fishing": {
+    "fishingProfitTracker": {
+      "totalCatchAmount": 77619,
+      "items": {
+        "SKYBLOCK_COIN": {
+          "timesGained": 214,
+          "totalAmount": 12915257,
+          "hidden": false
+
+                  },
+                  "INK_SACK": {
+                    "timesGained": 4419,
+                    "totalAmount": 23693,
+                    "hidden": false
+                  },
+                  "WATER_LILY": {
+                    "timesGained": 12075,
+                    "totalAmount": 232766,
+                    "hidden": false
+                  },
+                  "PURPLE_CANDY": {
+                    "timesGained": 1664,
+                    "totalAmount": 5108,
+                    "hidden": false
+                  },
+                  "GREEN_CANDY": {
+                    "timesGained": 2176,
+                    "totalAmount": 13308,
+                    "hidden": false
+                  },
+                  "BONE": {
+                    "timesGained": 2570,
+                    "totalAmount": 45589,
+                    "hidden": false
+                  },
+                  "RAW_FISH": {
+                    "timesGained": 8872,
+                    "totalAmount": 159016,
+                    "hidden": false
+                  },
+                  "ENCHANTED_FEATHER": {
+                    "timesGained": 654,
+                    "totalAmount": 708,
+                    "hidden": false
+                  },
+                  "ROTTEN_FLESH": {
+                    "timesGained": 3256,
+                    "totalAmount": 40021,
+                    "hidden": false
+                  },
+                  "RAW_FISH-2": {
+                    "timesGained": 5111,
+                    "totalAmount": 23932,
+                    "hidden": false
+                  },
+                  "HALF_EATEN_MUSHROOM": {
+                    "timesGained": 2130,
+                    "totalAmount": 6040,
+                    "hidden": false
+                  },
+                  "CLAY_BALL": {
+                    "timesGained": 3336,
+                    "totalAmount": 29682,
+                    "hidden": false
+                  },
+                  "SPONGE": {
+                    "timesGained": 4815,
+                    "totalAmount": 12512,
+                    "hidden": false
+                  },
+                  "ENCHANTED_ROTTEN_FLESH": {
+                    "timesGained": 1508,
+                    "totalAmount": 2457,
+                    "hidden": false
+                  },
+                  "RAW_FISH-3": {
+                    "timesGained": 3262,
+                    "totalAmount": 15084,
+                    "hidden": false
+                  },
+                  "RAW_FISH-1": {
+                    "timesGained": 5524,
+                    "totalAmount": 50540,
+                    "hidden": false
+                  },
+                  "DIVER_FRAGMENT": {
+                    "timesGained": 13,
+                    "totalAmount": 13,
+                    "hidden": false
+                  },
+                  "ENCHANTED_WATER_LILY": {
+                    "timesGained": 716,
+                    "totalAmount": 2831,
+                    "hidden": false
+                  },
+                  "ENCHANTED_PRISMARINE_SHARD": {
+                    "timesGained": 623,
+                    "totalAmount": 799,
+                    "hidden": false
+                  },
+                  "ENCHANTED_BONE": {
+                    "timesGained": 134,
+                    "totalAmount": 137,
+                    "hidden": false
+                  },
+                  "DARK_BAIT": {
+                    "timesGained": 1527,
+                    "totalAmount": 1693,
+                    "hidden": false
+                  },
+                  "PET_ITEM_VAMPIRE_FANG": {
+                    "timesGained": 8,
+                    "totalAmount": 9,
+                    "hidden": false
+                  },
+                  "SOUL_FRAGMENT": {
+                    "timesGained": 68,
+                    "totalAmount": 107,
+                    "hidden": false
+                  },
+                  "PRISMARINE_CRYSTALS": {
+                    "timesGained": 2520,
+                    "totalAmount": 11952,
+                    "hidden": false
+                  },
+                  "RUSTY_COIN": {
+                    "timesGained": 101,
+                    "totalAmount": 157,
+                    "hidden": false
+                  },
+                  "ENCHANTED_RAW_SALMON": {
+                    "timesGained": 197,
+                    "totalAmount": 906,
+                    "hidden": false
+                  },
+                  "LUCKY_HOOF": {
+                    "timesGained": 51,
+                    "totalAmount": 52,
+                    "hidden": false
+                  },
+                  "WEREWOLF_SKIN": {
+                    "timesGained": 506,
+                    "totalAmount": 977,
+                    "hidden": false
+                  },
+                  "PRISMARINE_SHARD": {
+                    "timesGained": 2513,
+                    "totalAmount": 11961,
+                    "hidden": false
+                  },
+                  "SULPHUR_ORE": {
+                    "timesGained": 797,
+                    "totalAmount": 4277,
+                    "hidden": false
+                  },
+                  "CORRUPTED_FRAGMENT": {
+                    "timesGained": 223,
+                    "totalAmount": 309,
+                    "hidden": false
+                  },
+                  "OVERFLOWING_TRASH_CAN": {
+                    "timesGained": 146,
+                    "totalAmount": 147,
+                    "hidden": false
+                  },
+                  "OBFUSCATED_FISH_1_BRONZE": {
+                    "timesGained": 467,
+                    "totalAmount": 947,
+                    "hidden": false
+                  },
+                  "CAN_OF_WORMS": {
+                    "timesGained": 640,
+                    "totalAmount": 698,
+                    "hidden": false
+                  },
+                  "BLOBFISH_BRONZE": {
+                    "timesGained": 366,
+                    "totalAmount": 402,
+                    "hidden": false
+                  },
+                  "STEAMING_HOT_FLOUNDER_BRONZE": {
+                    "timesGained": 3,
+                    "totalAmount": 3,
+                    "hidden": false
+                  },
+                  "MAGMA_CREAM": {
+                    "timesGained": 91,
+                    "totalAmount": 2146,
+                    "hidden": false
+                  },
+                  "FLYFISH_BRONZE": {
+                    "timesGained": 30,
+                    "totalAmount": 36,
+                    "hidden": false
+                  },
+                  "BLOBFISH_SILVER": {
+                    "timesGained": 135,
+                    "totalAmount": 138,
+                    "hidden": false
+                  },
+                  "GAZING_PEARL": {
+                    "timesGained": 2,
+                    "totalAmount": 2,
+                    "hidden": false
+                  },
+                  "LAVA_HORSE_BRONZE": {
+                    "timesGained": 84,
+                    "totalAmount": 116,
+                    "hidden": false
+                  },
+                  "MAGMA_FISH": {
+                    "timesGained": 4301,
+                    "totalAmount": 217090,
+                    "hidden": false
+                  },
+                  "MOOGMA_PELT": {
+                    "timesGained": 1687,
+                    "totalAmount": 5557,
+                    "hidden": false
+                  },
+                  "GUSHER_BRONZE": {
+                    "timesGained": 102,
+                    "totalAmount": 122,
+                    "hidden": false
+                  },
+                  "ENCHANTED_MYCELIUM": {
+                    "timesGained": 3,
+                    "totalAmount": 55,
+                    "hidden": false
+                  },
+                  "GUSHER_SILVER": {
+                    "timesGained": 44,
+                    "totalAmount": 46,
+                    "hidden": false
+                  },
+                  "LUMP_OF_MAGMA": {
+                    "timesGained": 2043,
+                    "totalAmount": 7268,
+                    "hidden": false
+                  },
+                  "CUP_OF_BLOOD": {
+                    "timesGained": 915,
+                    "totalAmount": 1815,
+                    "hidden": false
+                  },
+                  "BOUNCY_BEACH_BALL": {
+                    "timesGained": 102,
+                    "totalAmount": 102,
+                    "hidden": false
+                  },
+                  "FAIRY_HELMET": {
+                    "timesGained": 30,
+                    "totalAmount": 30,
+                    "hidden": false
+                  },
+                  "BUSTED_BELT_BUCKLE": {
+                    "timesGained": 12,
+                    "totalAmount": 15,
+                    "hidden": false
+                  },
+                  "LUCK_OF_THE_SEA;6": {
+                    "timesGained": 16,
+                    "totalAmount": 16,
+                    "hidden": false
+                  },
+                  "FISH_AFFINITY_TALISMAN": {
+                    "timesGained": 70,
+                    "totalAmount": 73,
+                    "hidden": false
+                  },
+                  "ENCHANTED_IRON": {
+                    "timesGained": 496,
+                    "totalAmount": 1581,
+                    "hidden": false
+                  },
+                  "CARROT_ITEM": {
+                    "timesGained": 1814,
+                    "totalAmount": 5045,
+                    "hidden": false
+                  },
+                  "ICE_HUNK": {
+                    "timesGained": 2725,
+                    "totalAmount": 17859,
+                    "hidden": false
+                  },
+                  "ICE": {
+                    "timesGained": 4423,
+                    "totalAmount": 81694,
+                    "hidden": false
+                  },
+                  "SNOW_BLOCK": {
+                    "timesGained": 1930,
+                    "totalAmount": 45662,
+                    "hidden": false
+                  },
+                  "PACKED_ICE": {
+                    "timesGained": 95,
+                    "totalAmount": 936,
+                    "hidden": false
+                  },
+                  "CHUM": {
+                    "timesGained": 9680,
+                    "totalAmount": 25200,
+                    "hidden": false
+                  },
+                  "ENCHANTED_PRISMARINE_CRYSTALS": {
+                    "timesGained": 533,
+                    "totalAmount": 692,
+                    "hidden": false
+                  },
+                  "ENCHANTED_PUFFERFISH": {
+                    "timesGained": 45,
+                    "totalAmount": 356,
+                    "hidden": false
+                  },
+                  "ENCHANTED_RAW_FISH": {
+                    "timesGained": 218,
+                    "totalAmount": 1424,
+                    "hidden": false
+                  },
+                  "ENCHANTED_SPONGE": {
+                    "timesGained": 5,
+                    "totalAmount": 68,
+                    "hidden": false
+                  },
+                  "ENCHANTED_CLOWNFISH": {
+                    "timesGained": 6,
+                    "totalAmount": 97,
+                    "hidden": false
+                  },
+                  "ENCHANTED_WET_SPONGE": {
+                    "timesGained": 2,
+                    "totalAmount": 5,
+                    "hidden": false
+                  },
+                  "FIG_LOG": {
+                    "timesGained": 1976,
+                    "totalAmount": 165630,
+                    "hidden": false
+                  },
+                  "MANGROVE_LOG": {
+                    "timesGained": 3344,
+                    "totalAmount": 219906,
+                    "hidden": true
+                  },
+                  "FLEXBONE": {
+                    "timesGained": 103,
+                    "totalAmount": 104,
+                    "hidden": false
+                  },
+                  "MAGNET;6": {
+                    "timesGained": 191,
+                    "totalAmount": 191,
+                    "hidden": false
+                  },
+                  "FAIRY_LEGGINGS": {
+                    "timesGained": 94,
+                    "totalAmount": 94,
+                    "hidden": false
+                  },
+                  "SLIME_BALL": {
+                    "timesGained": 634,
+                    "totalAmount": 5702,
+                    "hidden": false
+                  },
+                  "RESPITE;1": {
+                    "timesGained": 30,
+                    "totalAmount": 30,
+                    "hidden": false
+                  },
+                  "ENCHANTED_SLIME_BALL": {
+                    "timesGained": 37,
+                    "totalAmount": 37,
+                    "hidden": false
+                  },
+                  "SEA_LUMIES": {
+                    "timesGained": 1747,
+                    "totalAmount": 14534,
+                    "hidden": false
+                  },
+                  "ATTRIBUTE_SHARD_SPIRIT_AXE;1": {
+                    "timesGained": 149,
+                    "totalAmount": 390,
+                    "hidden": false
+                  },
+                  "FISH_THE_FISH": {
+                    "timesGained": 12,
+                    "totalAmount": 12,
+                    "hidden": false
+                  },
+                  "ENCHANTED_FIG_LOG": {
+                    "timesGained": 132,
+                    "totalAmount": 380,
+                    "hidden": false
+                  },
+                  "ATTRIBUTE_SHARD_UNITY_IS_STRENGTH;1": {
+                    "timesGained": 415,
+                    "totalAmount": 875,
+                    "hidden": false
+                  },
+                  "GILL_MEMBRANE": {
+                    "timesGained": 4553,
+                    "totalAmount": 9315,
+                    "hidden": false
+                  },
+                  "ATTRIBUTE_SHARD_HUNTER;1": {
+                    "timesGained": 1115,
+                    "totalAmount": 2305,
+                    "hidden": false
+                  },
+                  "ENCHANTED_MANGROVE_LOG": {
+                    "timesGained": 429,
+                    "totalAmount": 1207,
+                    "hidden": false
+                  },
+                  "ATTRIBUTE_SHARD_FISHING_EXPERIENCE;1": {
+                    "timesGained": 39,
+                    "totalAmount": 72,
+                    "hidden": false
+                  },
+                  "ENCHANTED_SEA_LUMIES": {
+                    "timesGained": 54,
+                    "totalAmount": 56,
+                    "hidden": false
+                  },
+                  "ENCHANTED_CLAY_BALL": {
+                    "timesGained": 123,
+                    "totalAmount": 776,
+                    "hidden": false
+                  },
+                  "ENCHANTED_DIAMOND": {
+                    "timesGained": 1,
+                    "totalAmount": 305,
+                    "hidden": false
+                  },
+                  "ATTRIBUTE_SHARD_FISHERMAN;1": {
+                    "timesGained": 4,
+                    "totalAmount": 27,
+                    "hidden": false
+                  },
+                  "FLYING_FISH;3": {
+                    "timesGained": 2,
+                    "totalAmount": 2,
+                    "hidden": false
+                  },
+                  "FLYING_FISH;2": {
+                    "timesGained": 1,
+                    "totalAmount": 1,
+                    "hidden": false
+                  },
+                  "WET_WATER": {
+                    "timesGained": 78,
+                    "totalAmount": 79,
+                    "hidden": false
+                  },
+                  "WET_BOOK": {
+                    "timesGained": 11,
+                    "totalAmount": 11,
+                    "hidden": false
+                  },
+                  "GOLD_INGOT": {
+                    "timesGained": 836,
+                    "totalAmount": 35059,
+                    "hidden": false
+                  },
+                  "SPIKED_HOOK;6": {
+                    "timesGained": 97,
+                    "totalAmount": 98,
+                    "hidden": false
+                  },
+                  "RABBIT": {
+                    "timesGained": 147,
+                    "totalAmount": 2376,
+                    "hidden": false
+                  },
+                  "ENCHANTED_RABBIT_FOOT": {
+                    "timesGained": 137,
+                    "totalAmount": 229,
+                    "hidden": false
+                  },
+                  "ALLIGATOR_SKIN": {
+                    "timesGained": 133,
+                    "totalAmount": 228,
+                    "hidden": false
+                  },
+                  "CALCIFIED_HEART": {
+                    "timesGained": 48,
+                    "totalAmount": 48,
+                    "hidden": false
+                  },
+                  "FAIRY_CHESTPLATE": {
+                    "timesGained": 29,
+                    "totalAmount": 29,
+                    "hidden": false
+                  },
+                  "STURDY_BONE": {
+                    "timesGained": 2166,
+                    "totalAmount": 2662,
+                    "hidden": false
+                  },
+                  "SQUID;0": {
+                    "timesGained": 2,
+                    "totalAmount": 2,
+                    "hidden": false
+                  },
+                  "GRAND_EXP_BOTTLE": {
+                    "timesGained": 12,
+                    "totalAmount": 54,
+                    "hidden": false
+                  },
+                  "ANGLER;6": {
+                    "timesGained": 49,
+                    "totalAmount": 49,
+                    "hidden": false
+                  },
+                  "SQUID;3": {
+                    "timesGained": 1,
+                    "totalAmount": 1,
+                    "hidden": false
+                  },
+                  "TORN_CLOTH": {
+                    "timesGained": 80,
+                    "totalAmount": 80,
+                    "hidden": false
+                  },
+                  "ATTRIBUTE_SHARD_BAYOU_BITER;1": {
+                    "timesGained": 9,
+                    "totalAmount": 17,
+                    "hidden": false
+                  },
+                  "ENCHANTED_GOLD": {
+                    "timesGained": 216,
+                    "totalAmount": 286,
+                    "hidden": false
+                  },
+                  "TITANIC_EXP_BOTTLE": {
+                    "timesGained": 1,
+                    "totalAmount": 1,
+                    "hidden": false
+                  },
+                  "WATER_HYDRA_HEAD": {
+                    "timesGained": 30,
+                    "totalAmount": 30,
+                    "hidden": false
+                  },
+                  "BRONZE_BOWL": {
+                    "timesGained": 108,
+                    "totalAmount": 109,
+                    "hidden": false
+                  },
+                  "ATTRIBUTE_SHARD_MAGMATIC_RULER;1": {
+                    "timesGained": 734,
+                    "totalAmount": 1798,
+                    "hidden": false
+                  },
+                  "ATTRIBUTE_SHARD_CHEAPSTAKE;1": {
+                    "timesGained": 89,
+                    "totalAmount": 93,
+                    "hidden": false
+                  },
+                  "ATTRIBUTE_SHARD_FOREST_FISHING;1": {
+                    "timesGained": 87,
+                    "totalAmount": 87,
+                    "hidden": false
+                  },
+                  "BLAZE_ROD": {
+                    "timesGained": 24,
+                    "totalAmount": 149,
+                    "hidden": false
+                  },
+                  "ORB_OF_ENERGY": {
+                    "timesGained": 533,
+                    "totalAmount": 1006,
+                    "hidden": false
+                  },
+                  "CHARM;1": {
+                    "timesGained": 47,
+                    "totalAmount": 47,
+                    "hidden": false
+                  },
+                  "PYROCLASTIC_SCALE": {
+                    "timesGained": 650,
+                    "totalAmount": 1198,
+                    "hidden": false
+                  },
+                  "VOLCANIC_STONEFISH_BRONZE": {
+                    "timesGained": 22,
+                    "totalAmount": 22,
+                    "hidden": false
+                  },
+                  "MUTATED_BLAZE_ASHES": {
+                    "timesGained": 27,
+                    "totalAmount": 27,
+                    "hidden": false
+                  },
+                  "HOT_BAIT": {
+                    "timesGained": 1,
+                    "totalAmount": 16,
+                    "hidden": false
+                  },
+                  "GOLDEN_FISH_BRONZE": {
+                    "timesGained": 19,
+                    "totalAmount": 19,
+                    "hidden": false
+                  },
+                  "BLOBFISH_GOLD": {
+                    "timesGained": 19,
+                    "totalAmount": 19,
+                    "hidden": false
+                  },
+                  "FLAMING_HEART": {
+                    "timesGained": 616,
+                    "totalAmount": 1221,
+                    "hidden": false
+                  },
+                  "BEZOS": {
+                    "timesGained": 23,
+                    "totalAmount": 23,
+                    "hidden": false
+                  },
+                  "SPECTRE_DUST": {
+                    "timesGained": 32,
+                    "totalAmount": 32,
+                    "hidden": false
+                  },
+                  "HORN_OF_TAURUS": {
+                    "timesGained": 294,
+                    "totalAmount": 494,
+                    "hidden": false
+                  },
+                  "MAGMA_FISH_SILVER": {
+                    "timesGained": 680,
+                    "totalAmount": 3861,
+                    "hidden": false
+                  },
+                  "MANA_RAY_BRONZE": {
+                    "timesGained": 16,
+                    "totalAmount": 17,
+                    "hidden": false
+                  },
+                  "VANILLE_BRONZE": {
+                    "timesGained": 14,
+                    "totalAmount": 14,
+                    "hidden": false
+                  },
+                  "BLAZE_ASHES": {
+                    "timesGained": 30,
+                    "totalAmount": 30,
+                    "hidden": false
+                  },
+                  "KADA_LEAD": {
+                    "timesGained": 11,
+                    "totalAmount": 11,
+                    "hidden": false
+                  },
+                  "LAVA_HORSE_SILVER": {
+                    "timesGained": 24,
+                    "totalAmount": 24,
+                    "hidden": false
+                  },
+                  "NETHERRACK": {
+                    "timesGained": 19,
+                    "totalAmount": 880,
+                    "hidden": false
+                  },
+                  "SAND-1": {
+                    "timesGained": 64,
+                    "totalAmount": 1597,
+                    "hidden": false
+                  },
+                  "BURNING_EYE": {
+                    "timesGained": 27,
+                    "totalAmount": 27,
+                    "hidden": false
+                  },
+                  "MAGMA_CHUNK": {
+                    "timesGained": 33,
+                    "totalAmount": 33,
+                    "hidden": false
+                  },
+                  "WITHER_SOUL": {
+                    "timesGained": 15,
+                    "totalAmount": 15,
+                    "hidden": false
+                  },
+                  "QUARTZ": {
+                    "timesGained": 207,
+                    "totalAmount": 4092,
+                    "hidden": false
+                  },
+                  "MYCEL": {
+                    "timesGained": 68,
+                    "totalAmount": 1637,
+                    "hidden": false
+                  },
+                  "RED_MUSHROOM": {
+                    "timesGained": 80,
+                    "totalAmount": 2813,
+                    "hidden": false
+                  },
+                  "DIGESTED_MUSHROOMS": {
+                    "timesGained": 33,
+                    "totalAmount": 38,
+                    "hidden": false
+                  },
+                  "MOLDFIN_BRONZE": {
+                    "timesGained": 20,
+                    "totalAmount": 20,
+                    "hidden": false
+                  },
+                  "MAGMAG": {
+                    "timesGained": 11,
+                    "totalAmount": 11,
+                    "hidden": false
+                  },
+                  "GOLDEN_FISH_SILVER": {
+                    "timesGained": 10,
+                    "totalAmount": 10,
+                    "hidden": false
+                  },
+                  "ENCHANTED_GLOWSTONE_DUST": {
+                    "timesGained": 111,
+                    "totalAmount": 234,
+                    "hidden": false
+                  },
+                  "ENCHANTED_RED_SAND": {
+                    "timesGained": 5,
+                    "totalAmount": 107,
+                    "hidden": false
+                  },
+                  "TENTACLE_MEAT": {
+                    "timesGained": 2,
+                    "totalAmount": 2,
+                    "hidden": false
+                  },
+                  "KARATE_FISH_BRONZE": {
+                    "timesGained": 10,
+                    "totalAmount": 10,
+                    "hidden": false
+                  },
+                  "VANILLE_SILVER": {
+                    "timesGained": 9,
+                    "totalAmount": 9,
+                    "hidden": false
+                  },
+                  "SULPHUR_SKITTER_BRONZE": {
+                    "timesGained": 58,
+                    "totalAmount": 65,
+                    "hidden": false
+                  },
+                  "MANA_RAY_SILVER": {
+                    "timesGained": 4,
+                    "totalAmount": 4,
+                    "hidden": false
+                  },
+                  "SULPHUR_SKITTER_SILVER": {
+                    "timesGained": 23,
+                    "totalAmount": 23,
+                    "hidden": false
+                  },
+                  "VOLCANIC_STONEFISH_SILVER": {
+                    "timesGained": 10,
+                    "totalAmount": 10,
+                    "hidden": false
+                  },
+                  "FLYFISH_SILVER": {
+                    "timesGained": 11,
+                    "totalAmount": 11,
+                    "hidden": false
+                  },
+                  "GOLDEN_FISH_GOLD": {
+                    "timesGained": 2,
+                    "totalAmount": 2,
+                    "hidden": false
+                  },
+                  "MOLDFIN_SILVER": {
+                    "timesGained": 8,
+                    "totalAmount": 8,
+                    "hidden": false
+                  },
+                  "ATTRIBUTE_SHARD_FOREST_STRENGTH;1": {
+                    "timesGained": 56,
+                    "totalAmount": 56,
+                    "hidden": false
+                  },
+                  "ATTRIBUTE_SHARD_MOONGLADE_SERENDIPITY;1": {
+                    "timesGained": 29,
+                    "totalAmount": 29,
+                    "hidden": false
+                  },
+                  "STAFF_OF_THE_VOLCANO": {
+                    "timesGained": 44,
+                    "totalAmount": 44,
+                    "hidden": false
+                  },
+                  "ATTRIBUTE_SHARD_INFECTION;1": {
+                    "timesGained": 57,
+                    "totalAmount": 116,
+                    "hidden": false
+                  },
+                  "ATTRIBUTE_SHARD_TROPHY_HUNTER;1": {
+                    "timesGained": 87,
+                    "totalAmount": 229,
+                    "hidden": false
+                  },
+                  "RAW_CHICKEN": {
+                    "timesGained": 358,
+                    "totalAmount": 2202,
+                    "hidden": false
+                  },
+                  "FRIED_FEATHER": {
+                    "timesGained": 314,
+                    "totalAmount": 457,
+                    "hidden": false
+                  },
+                  "ATTRIBUTE_SHARD_BLAZING_FORTUNE;1": {
+                    "timesGained": 34,
+                    "totalAmount": 75,
+                    "hidden": false
+                  },
+                  "SKELETON_FISH_SILVER": {
+                    "timesGained": 2,
+                    "totalAmount": 2,
+                    "hidden": false
+                  },
+                  "SKELETON_FISH_BRONZE": {
+                    "timesGained": 3,
+                    "totalAmount": 3,
+                    "hidden": false
+                  },
+                  "MANA_RAY_GOLD": {
+                    "timesGained": 1,
+                    "totalAmount": 1,
+                    "hidden": false
+                  },
+                  "KUUDRA_FIERY_TIER_KEY": {
+                    "timesGained": 1,
+                    "totalAmount": 1,
+                    "hidden": false
+                  },
+                  "ENCHANTED_NETHER_STALK": {
+                    "timesGained": 2,
+                    "totalAmount": 128,
+                    "hidden": false
+                  },
+                  "LAVA_SHELL": {
+                    "timesGained": 1,
+                    "totalAmount": 1,
+                    "hidden": false
+                  },
+                  "GUSHER_GOLD": {
+                    "timesGained": 5,
+                    "totalAmount": 5,
+                    "hidden": false
+                  },
+                  "SULPHUR_SKITTER_GOLD": {
+                    "timesGained": 2,
+                    "totalAmount": 2,
+                    "hidden": false
+                  },
+                  "BLUE_RING": {
+                    "timesGained": 122,
+                    "totalAmount": 211,
+                    "hidden": false
+                  },
+                  "OBFUSCATED_FISH_1_SILVER": {
+                    "timesGained": 261,
+                    "totalAmount": 306,
+                    "hidden": false
+                  },
+                  "BROKEN_RADAR": {
+                    "timesGained": 94,
+                    "totalAmount": 96,
+                    "hidden": false
+                  },
+                  "ATTRIBUTE_SHARD_FISHING_SPEED;1": {
+                    "timesGained": 28,
+                    "totalAmount": 60,
+                    "hidden": false
+                  },
+                  "OBFUSCATED_FISH_1_GOLD": {
+                    "timesGained": 26,
+                    "totalAmount": 26,
+                    "hidden": false
+                  },
+                  "AGARIMOO_TONGUE": {
+                    "timesGained": 86,
+                    "totalAmount": 196,
+                    "hidden": false
+                  },
+                  "LURE;6": {
+                    "timesGained": 75,
+                    "totalAmount": 75,
+                    "hidden": false
+                  },
+                  "OBFUSCATED_FISH_2_BRONZE": {
+                    "timesGained": 13,
+                    "totalAmount": 19,
+                    "hidden": false
+                  },
+                  "FLYFISH_GOLD": {
+                    "timesGained": 2,
+                    "totalAmount": 2,
+                    "hidden": false
+                  },
+                  "OBFUSCATED_FISH_2_SILVER": {
+                    "timesGained": 4,
+                    "totalAmount": 4,
+                    "hidden": false
+                  },
+                  "KARATE_FISH_SILVER": {
+                    "timesGained": 5,
+                    "totalAmount": 5,
+                    "hidden": false
+                  },
+                  "LAVA_HORSE_GOLD": {
+                    "timesGained": 5,
+                    "totalAmount": 5,
+                    "hidden": false
+                  },
+                  "POISON_SAMPLE": {
+                    "timesGained": 20,
+                    "totalAmount": 20,
+                    "hidden": false
+                  },
+                  "DEEP_SEA_ORB": {
+                    "timesGained": 18,
+                    "totalAmount": 17,
+                    "hidden": false
+                  },
+                  "WHITE_GIFT": {
+                    "timesGained": 1812,
+                    "totalAmount": 6212,
+                    "hidden": false
+                  },
+                  "ENCHANTED_PACKED_ICE": {
+                    "timesGained": 115,
+                    "totalAmount": 131,
+                    "hidden": false
+                  },
+                  "BLUE_ICE_HUNK": {
+                    "timesGained": 217,
+                    "totalAmount": 813,
+                    "hidden": false
+                  },
+                  "RED_GIFT": {
+                    "timesGained": 582,
+                    "totalAmount": 2116,
+                    "hidden": false
+                  },
+                  "WALNUT": {
+                    "timesGained": 377,
+                    "totalAmount": 610,
+                    "hidden": false
+                  },
+                  "MANGCORE": {
+                    "timesGained": 1,
+                    "totalAmount": 1,
+                    "hidden": false
+                  },
+                  "HILT_OF_TRUE_ICE": {
+                    "timesGained": 10,
+                    "totalAmount": 10,
+                    "hidden": false
+                  },
+                  "ICY_SINKER": {
+                    "timesGained": 345,
+                    "totalAmount": 349,
+                    "hidden": false
+                  },
+                  "GREEN_GIFT": {
+                    "timesGained": 184,
+                    "totalAmount": 1030,
+                    "hidden": false
+                  },
+                  "PROSPERITY;1": {
+                    "timesGained": 20,
+                    "totalAmount": 30,
+                    "hidden": false
+                  },
+                  "FRAIL;6": {
+                    "timesGained": 74,
+                    "totalAmount": 76,
+                    "hidden": false
+                  },
+                  "BABY_YETI;3": {
+                    "timesGained": 16,
+                    "totalAmount": 16,
+                    "hidden": false
+                  },
+                  "OBFUSCATED_FISH_1_DIAMOND": {
+                    "timesGained": 1,
+                    "totalAmount": 1,
+                    "hidden": false
+                  },
+                  "ATTRIBUTE_SHARD_LOST_AND_FOUND;1": {
+                    "timesGained": 14,
+                    "totalAmount": 14,
+                    "hidden": false
+                  },
+                  "BOBBIN_SCRIPTURES": {
+                    "timesGained": 30,
+                    "totalAmount": 30,
+                    "hidden": false
+                  },
+                  "ENCHANTED_CARROT": {
+                    "timesGained": 8,
+                    "totalAmount": 12,
+                    "hidden": false
+                  },
+                  "RABBIT_HAT": {
+                    "timesGained": 6,
+                    "totalAmount": 6,
+                    "hidden": false
+                  },
+                  "BABY_YETI;4": {
+                    "timesGained": 8,
+                    "totalAmount": 8,
+                    "hidden": false
+                  },
+                  "SWAMP_THE_FISH": {
+                    "timesGained": 4,
+                    "totalAmount": 4,
+                    "hidden": false
+                  },
+                  "ENCHANTED_QUARTZ": {
+                    "timesGained": 4,
+                    "totalAmount": 24,
+                    "hidden": false
+                  },
+                  "THUNDER_SHARDS": {
+                    "timesGained": 95,
+                    "totalAmount": 100,
+                    "hidden": true
+                  },
+                  "OBFUSCATED_FISH_2_GOLD": {
+                    "timesGained": 1,
+                    "totalAmount": 1,
+                    "hidden": false
+                  },
+                  "OBFUSCATED_FISH_3_BRONZE": {
+                    "timesGained": 4,
+                    "totalAmount": 4,
+                    "hidden": false
+                  },
+                  "OBFUSCATED_FISH_3_SILVER": {
+                    "timesGained": 1,
+                    "totalAmount": 1,
+                    "hidden": false
+                  },
+                  "BLADE_OF_THE_VOLCANO": {
+                    "timesGained": 111,
+                    "totalAmount": 111,
+                    "hidden": false
+                  },
+                  "MOOGMA_LEGGINGS": {
+                    "timesGained": 226,
+                    "totalAmount": 226,
+                    "hidden": false
+                  },
+                  "ENCHANTED_SLIME_BLOCK": {
+                    "timesGained": 11,
+                    "totalAmount": 11,
+                    "hidden": false
+                  },
+                  "SHREDDED_LINE": {
+                    "timesGained": 2,
+                    "totalAmount": 2,
+                    "hidden": false
+                  },
+                  "FISH_BAIT": {
+                    "timesGained": 13,
+                    "totalAmount": 766,
+                    "hidden": false
+                  },
+                  "SHARK_FIN": {
+                    "timesGained": 1532,
+                    "totalAmount": 38067,
+                    "hidden": false
+                  },
+                  "NURSE_SHARK_TOOTH": {
+                    "timesGained": 555,
+                    "totalAmount": 775,
+                    "hidden": false
+                  },
+                  "TIGER_SHARK_TOOTH": {
+                    "timesGained": 237,
+                    "totalAmount": 284,
+                    "hidden": false
+                  },
+                  "GREAT_WHITE_SHARK_TOOTH": {
+                    "timesGained": 129,
+                    "totalAmount": 129,
+                    "hidden": false
+                  },
+                  "PET_ITEM_FISHING_SKILL_BOOST_EPIC": {
+                    "timesGained": 2,
+                    "totalAmount": 2,
+                    "hidden": false
+                  },
+                  "MEGALODON;4": {
+                    "timesGained": 30,
+                    "totalAmount": 30,
+                    "hidden": false
+                  },
+                  "BLUE_SHARK_TOOTH": {
+                    "timesGained": 321,
+                    "totalAmount": 402,
+                    "hidden": false
+                  },
+                  "PHANTOM_HOOK": {
+                    "timesGained": 20,
+                    "totalAmount": 20,
+                    "hidden": false
+                  },
+                  "SPOOKY_BAIT": {
+                    "timesGained": 1,
+                    "totalAmount": 64,
+                    "hidden": false
+                  },
+                  "GIANT_BOUNCY_BEACH_BALL": {
+                    "timesGained": 3,
+                    "totalAmount": 3,
+                    "hidden": false
+                  },
+                  "FLAWED_JADE_GEM": {
+                    "timesGained": 34,
+                    "totalAmount": 34,
+                    "hidden": false
+                  },
+                  "ROUGH_JADE_GEM": {
+                    "timesGained": 105,
+                    "totalAmount": 3492,
+                    "hidden": false
+                  },
+                  "ROUGH_SAPPHIRE_GEM": {
+                    "timesGained": 106,
+                    "totalAmount": 3532,
+                    "hidden": false
+                  },
+                  "FLAWED_AMETHYST_GEM": {
+                    "timesGained": 30,
+                    "totalAmount": 37,
+                    "hidden": false
+                  },
+                  "ROUGH_AMETHYST_GEM": {
+                    "timesGained": 115,
+                    "totalAmount": 4102,
+                    "hidden": false
+                  },
+                  "OLD_LEATHER_BOOT": {
+                    "timesGained": 2,
+                    "totalAmount": 2,
+                    "hidden": false
+                  },
+                  "PARTY_GIFT": {
+                    "timesGained": 13,
+                    "totalAmount": 14,
+                    "hidden": false
+                  },
+                  "SOUL_FISH_SILVER": {
+                    "timesGained": 2,
+                    "totalAmount": 2,
+                    "hidden": false
+                  },
+                  "EDIBLE_SEAWEED": {
+                    "timesGained": 35,
+                    "totalAmount": 35,
+                    "hidden": false
+                  },
+                  "ENCHANTED_ICE": {
+                    "timesGained": 30,
+                    "totalAmount": 845,
+                    "hidden": false
+                  },
+                  "PET_ITEM_FISHING_SKILL_BOOST_UNCOMMON": {
+                    "timesGained": 1,
+                    "totalAmount": 1,
+                    "hidden": false
+                  },
+                  "ENCHANTED_JUNGLE_LOG": {
+                    "timesGained": 33,
+                    "totalAmount": 1632,
+                    "hidden": false
+                  },
+                  "SOUL_FISH_BRONZE": {
+                    "timesGained": 3,
+                    "totalAmount": 3,
+                    "hidden": false
+                  },
+                  "SLUG_BOOTS": {
+                    "timesGained": 263,
+                    "totalAmount": 264,
+                    "hidden": false
+                  },
+                  "ENCHANTED_RAW_CHICKEN": {
+                    "timesGained": 30,
+                    "totalAmount": 30,
+                    "hidden": false
+                  },
+                  "FLAMING_CHESTPLATE": {
+                    "timesGained": 67,
+                    "totalAmount": 69,
+                    "hidden": false
+                  },
+                  "PITCHIN_KOI": {
+                    "timesGained": 25,
+                    "totalAmount": 25,
+                    "hidden": false
+                  },
+                  "SCORCHED_CRAB_STICK": {
+                    "timesGained": 24,
+                    "totalAmount": 43,
+                    "hidden": false
+                  },
+                  "CHAIN_END_TIMES": {
+                    "timesGained": 1,
+                    "totalAmount": 1,
+                    "hidden": false
+                  },
+                  "SINGED_POWDER": {
+                    "timesGained": 14,
+                    "totalAmount": 14,
+                    "hidden": false
+                  },
+                  "FLAMES": {
+                    "timesGained": 1,
+                    "totalAmount": 1,
+                    "hidden": false
+                  },
+                  "SPELL_POWDER": {
+                    "timesGained": 2,
+                    "totalAmount": 2,
+                    "hidden": false
+                  },
+                  "MAGMA_LORD_FRAGMENT": {
+                    "timesGained": 34,
+                    "totalAmount": 36,
+                    "hidden": false
+                  },
+                  "ULTIMATE_FLASH;1": {
+                    "timesGained": 9,
+                    "totalAmount": 13,
+                    "hidden": false
+                  },
+                  "ATTRIBUTE_SHARD_DOUBLE_HOOK;1": {
+                    "timesGained": 4,
+                    "totalAmount": 6,
+                    "hidden": false
+                  },
+                  "ENCHANTED_BLAZE_ROD": {
+                    "timesGained": 2,
+                    "totalAmount": 2,
+                    "hidden": false
+                  },
+                  "TAURUS_HELMET": {
+                    "timesGained": 22,
+                    "totalAmount": 22,
+                    "hidden": false
+                  },
+                  "KUUDRA_HOT_TIER_KEY": {
+                    "timesGained": 1,
+                    "totalAmount": 1,
+                    "hidden": false
+                  },
+                  "LEATHER_CLOTH": {
+                    "timesGained": 2,
+                    "totalAmount": 2,
+                    "hidden": false
+                  },
+                  "ATTRIBUTE_SHARD_MAXIMAL_TORMENT;1": {
+                    "timesGained": 50,
+                    "totalAmount": 128,
+                    "hidden": false
+                  },
+                  "ENCHANTED_MAGMA_CREAM": {
+                    "timesGained": 3,
+                    "totalAmount": 18,
+                    "hidden": false
+                  },
+                  "STORM_IN_A_BOTTLE": {
+                    "timesGained": 1,
+                    "totalAmount": 1,
+                    "hidden": false
+                  },
+                  "ATTRIBUTE_SHARD_RABBIT_CREW;1": {
+                    "timesGained": 1,
+                    "totalAmount": 3,
+                    "hidden": false
+                  },
+                  "TROUBLED_BUBBLE": {
+                    "timesGained": 1,
+                    "totalAmount": 1,
+                    "hidden": false
+                  },
+                  "ENCHANTED_COAL": {
+                    "timesGained": 3,
+                    "totalAmount": 128,
+                    "hidden": false
+                  },
+                  "OCTOPUS_TENDRIL": {
+                    "timesGained": 2,
+                    "totalAmount": 2,
+                    "hidden": false
+                  },
+                  "SQUID_BOOTS": {
+                    "timesGained": 1,
+                    "totalAmount": 1,
+                    "hidden": false
+                  },
+                  "COAL": {
+                    "timesGained": 3,
+                    "totalAmount": 3,
+                    "hidden": false
+                  },
+                  "MEGALODON;3": {
+                    "timesGained": 71,
+                    "totalAmount": 72,
+                    "hidden": false
+                  },
+                  "SHARK_BAIT": {
+                    "timesGained": 1,
+                    "totalAmount": 1,
+                    "hidden": false
+                  },
+                  "SQUID;1": {
+                    "timesGained": 1,
+                    "totalAmount": 1,
+                    "hidden": false
+                  },
+                  "PET_ITEM_FISHING_SKILL_BOOST_RARE": {
+                    "timesGained": 3,
+                    "totalAmount": 3,
+                    "hidden": false
+                  },
+                  "ENCHANTED_GLOWSTONE": {
+                    "timesGained": 1,
+                    "totalAmount": 1,
+                    "hidden": false
+                  },
+                  "FLAWED_SAPPHIRE_GEM": {
+                    "timesGained": 37,
+                    "totalAmount": 38,
+                    "hidden": false
+                  },
+                  "TIKI_MASK": {
+                    "timesGained": 5,
+                    "totalAmount": 1,
+                    "hidden": false
+                  },
+                  "FAIRY_BOOTS": {
+                    "timesGained": 2,
+                    "totalAmount": 2,
+                    "hidden": false
+                  },
+                  "HARD_STONE": {
+                    "timesGained": 8,
+                    "totalAmount": 1719,
+                    "hidden": false
+                  },
+                  "ENCHANTED_CLAY_BLOCK": {
+                    "timesGained": 1,
+                    "totalAmount": 1,
+                    "hidden": false
+                  },
+                  "RADIOACTIVE_VIAL": {
+                    "timesGained": 1,
+                    "totalAmount": 1,
+                    "hidden": false
+                  },
+                  "PISCARY;6": {
+                    "timesGained": 11,
+                    "totalAmount": 11,
+                    "hidden": false
+                  },
+                  "SLUGFISH_BRONZE": {
+                    "timesGained": 23,
+                    "totalAmount": 23,
+                    "hidden": false
+                  },
+                  "SLUGFISH_SILVER": {
+                    "timesGained": 11,
+                    "totalAmount": 11,
+                    "hidden": false
+                  },
+                  "SLUGFISH_GOLD": {
+                    "timesGained": 2,
+                    "totalAmount": 2,
+                    "hidden": false
+                  },
+                  "REKINDLED_EMBER_FRAGMENT": {
+                    "timesGained": 1,
+                    "totalAmount": 1,
+                    "hidden": false
+                  },
+                  "MOLDFIN_GOLD": {
+                    "timesGained": 1,
+                    "totalAmount": 1,
+                    "hidden": false
+                  },
+                  "BABY_YETI;0": {
+                    "timesGained": 2,
+                    "totalAmount": 2,
+                    "hidden": false
+                  },
+                  "VOLCANIC_STONEFISH_GOLD": {
+                    "timesGained": 2,
+                    "totalAmount": 2,
+                    "hidden": false
+                  }
+                },
+                "migrated": true,
+                "sessionUptime": [
+                  [
+                    {
+                      "type": "normal",
+                      "session": "NORMAL"
+                    },
+                    "172886853"
+                  ]
+                ]
+    },
+    "seaCreatureTracker": {
+      "amount": {
+        "Squid": 6252,
+        "Sea Archer": 2745,
+        "Sea Walker": 4111,
+        "Rider of the Deep": 2064,
+        "Scarecrow": 1892,
+        "Catfish": 1360,
+        "Frog Man": 3973,
+        "Dumpster Diver": 1388,
+        "Nightmare": 994,
+        "The Sea Emperor": 38,
+        "Grim Reaper": 51,
+        "Werewolf": 528,
+        "Sea Guardian": 3004,
+        "Sea Witch": 3436,
+        "Phantom Fisher": 198,
+        "Sea Leech": 930,
+        "Banshee": 884,
+        "Moogma": 2391,
+        "Magma Slug": 3161,
+        "Lava Leech": 1166,
+        "Trash Gobbler": 1971,
+        "Titanoboa": 33,
+        "Water Hydra": 124,
+        "Deep Sea Protector": 492,
+        "Frosty": 3754,
+        "Frozen Steve": 5265,
+        "Guardian Defender": 729,
+        "Bayou Sludge": 520,
+        "Tadgang": 541,
+        "Wetwing": 955,
+        "Bogged": 1701,
+        "Ent": 166,
+        "Snapping Turtle": 1145,
+        "Alligator": 140,
+        "Stridersurfer": 6634,
+        "Pyroclastic Worm": 822,
+        "Fire Eel": 611,
+        "Lava Flame": 781,
+        "Taurus": 341,
+        "Fried Chicken": 590,
+        "Blue Ringed Octopus": 128,
+        "Agarimoo": 26,
+        "Night Squid": 47,
+        "Yeti": 147,
+        "Nutcracker": 312,
+        "Grinch": 297,
+        "Reindrake": 45,
+        "Carrot King": 10,
+        "Thunder": 93,
+        "Fireproof Witch": 150,
+        "Blue Shark": 1214,
+        "Nurse Shark": 2342,
+        "Great White Shark": 363,
+        "Tiger Shark": 820,
+        "Abyssal Miner": 95,
+        "Lord Jawbus": 28,
+        "Wiki Tiki": 32,
+        "Fiery Scuttler": 17,
+        "Ragnarok": 3
+      }
+    }
+  }
+}

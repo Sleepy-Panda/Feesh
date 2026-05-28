@@ -1,0 +1,2202 @@
+{
+  "isWelcomeMessageShown": true,
+  "lastChangelogShown": "0.0.0",
+  "isFishingBagEnabled": true,
+  "jerryWorkshop": {
+    "yeti": {
+      "catchesSinceLast": 274,
+      "lastCatchTime": "2026-01-02T23:44:53Z",
+      "averageCatches": 131,
+      "catchesHistory": [
+        27,
+        309,
+        9,
+        11,
+        372,
+        7,
+        108,
+        14,
+        54,
+        403
+      ]
+    },
+    "reindrake": {
+      "catchesSinceLast": 442,
+      "lastCatchTime": "2026-01-02T23:10:04Z",
+      "averageCatches": 164,
+      "catchesHistory": [
+        45,
+        80,
+        288,
+        106,
+        37,
+        326,
+        264
+      ]
+    }
+  },
+  "treasureFishing": {
+    "session": {
+      "catches": {
+        "good": 0,
+        "great": 0,
+        "outstanding": 0
+      }
+    },
+    "total": {
+      "catches": {
+        "good": 0,
+        "great": 0,
+        "outstanding": 0
+      },
+      "treasureDyes": {
+        "count": 0,
+        "catchesSinceLast": 0,
+        "dropsHistory": []
+      }
+    },
+    "viewMode": "SESSION"
+  },
+  "seaCreatures": {
+    "session": {
+      "catches": {
+        "BANSHEE": {
+          "amount": 1,
+          "cocoonedAmount": 0,
+          "doubleHookAmount": 0
+        }
+      },
+      "totalCount": 1,
+      "totalCocoonedCount": 0
+    },
+    "total": {
+      "catches": {
+        "FROSTY": {
+          "amount": 480,
+          "cocoonedAmount": 0,
+          "doubleHookAmount": 38
+        },
+        "SEA GUARDIAN": {
+          "amount": 1208,
+          "cocoonedAmount": 0,
+          "doubleHookAmount": 151
+        },
+        "FROZEN STEVE": {
+          "amount": 779,
+          "cocoonedAmount": 0,
+          "doubleHookAmount": 82
+        },
+        "SEA ARCHER": {
+          "amount": 1188,
+          "cocoonedAmount": 0,
+          "doubleHookAmount": 133
+        },
+        "GUARDIAN DEFENDER": {
+          "amount": 332,
+          "cocoonedAmount": 0,
+          "doubleHookAmount": 45
+        },
+        "SEA WALKER": {
+          "amount": 1757,
+          "cocoonedAmount": 0,
+          "doubleHookAmount": 245
+        },
+        "SEA LEECH": {
+          "amount": 398,
+          "cocoonedAmount": 0,
+          "doubleHookAmount": 58
+        },
+        "RIDER OF THE DEEP": {
+          "amount": 909,
+          "cocoonedAmount": 0,
+          "doubleHookAmount": 119
+        },
+        "SQUID": {
+          "amount": 2665,
+          "cocoonedAmount": 0,
+          "doubleHookAmount": 356
+        },
+        "DEEP SEA PROTECTOR": {
+          "amount": 199,
+          "cocoonedAmount": 0,
+          "doubleHookAmount": 20
+        },
+        "SEA WITCH": {
+          "amount": 1372,
+          "cocoonedAmount": 0,
+          "doubleHookAmount": 176
+        },
+        "CATFISH": {
+          "amount": 651,
+          "cocoonedAmount": 0,
+          "doubleHookAmount": 79
+        },
+        "REINDRAKE": {
+          "amount": 12,
+          "cocoonedAmount": 0,
+          "doubleHookAmount": 2
+        },
+        "GRINCH": {
+          "amount": 81,
+          "cocoonedAmount": 0,
+          "doubleHookAmount": 6
+        },
+        "NUTCRACKER": {
+          "amount": 33,
+          "cocoonedAmount": 0,
+          "doubleHookAmount": 1
+        },
+        "MOOGMA": {
+          "amount": 1086,
+          "cocoonedAmount": 0,
+          "doubleHookAmount": 99
+        },
+        "MAGMA SLUG": {
+          "amount": 1393,
+          "cocoonedAmount": 0,
+          "doubleHookAmount": 123
+        },
+        "LAVA LEECH": {
+          "amount": 507,
+          "cocoonedAmount": 0,
+          "doubleHookAmount": 48
+        },
+        "PYROCLASTIC WORM": {
+          "amount": 358,
+          "cocoonedAmount": 0,
+          "doubleHookAmount": 29
+        },
+        "VANQUISHER": {
+          "amount": 22,
+          "cocoonedAmount": 0,
+          "doubleHookAmount": 0
+        },
+        "LAVA FLAME": {
+          "amount": 412,
+          "cocoonedAmount": 0,
+          "doubleHookAmount": 42
+        },
+        "TAURUS": {
+          "amount": 174,
+          "cocoonedAmount": 0,
+          "doubleHookAmount": 14
+        },
+        "YETI": {
+          "amount": 18,
+          "cocoonedAmount": 0,
+          "doubleHookAmount": 2
+        },
+        "WATER HYDRA": {
+          "amount": 48,
+          "cocoonedAmount": 0,
+          "doubleHookAmount": 5
+        },
+        "BLUE SHARK": {
+          "amount": 960,
+          "cocoonedAmount": 0,
+          "doubleHookAmount": 115
+        },
+        "TIGER SHARK": {
+          "amount": 688,
+          "cocoonedAmount": 0,
+          "doubleHookAmount": 102
+        },
+        "TRASH GOBBLER": {
+          "amount": 798,
+          "cocoonedAmount": 0,
+          "doubleHookAmount": 113
+        },
+        "NURSE SHARK": {
+          "amount": 1893,
+          "cocoonedAmount": 0,
+          "doubleHookAmount": 232
+        },
+        "GREAT WHITE SHARK": {
+          "amount": 308,
+          "cocoonedAmount": 0,
+          "doubleHookAmount": 43
+        },
+        "BAYOU SLUDGE": {
+          "amount": 219,
+          "cocoonedAmount": 0,
+          "doubleHookAmount": 28
+        },
+        "FROG MAN": {
+          "amount": 2491,
+          "cocoonedAmount": 0,
+          "doubleHookAmount": 361
+        },
+        "SNAPPING TURTLE": {
+          "amount": 787,
+          "cocoonedAmount": 0,
+          "doubleHookAmount": 117
+        },
+        "DUMPSTER DIVER": {
+          "amount": 540,
+          "cocoonedAmount": 0,
+          "doubleHookAmount": 81
+        },
+        "BANSHEE": {
+          "amount": 394,
+          "cocoonedAmount": 0,
+          "doubleHookAmount": 58
+        },
+        "BLUE RINGED OCTOPUS": {
+          "amount": 80,
+          "cocoonedAmount": 0,
+          "doubleHookAmount": 14
+        },
+        "ALLIGATOR": {
+          "amount": 53,
+          "cocoonedAmount": 0,
+          "doubleHookAmount": 5
+        },
+        "WIKI TIKI": {
+          "amount": 24,
+          "cocoonedAmount": 0,
+          "doubleHookAmount": 5
+        },
+        "TITANOBOA": {
+          "amount": 21,
+          "cocoonedAmount": 0,
+          "doubleHookAmount": 4
+        },
+        "NIGHT SQUID": {
+          "amount": 17,
+          "cocoonedAmount": 0,
+          "doubleHookAmount": 1
+        },
+        "FIRE EEL": {
+          "amount": 292,
+          "cocoonedAmount": 0,
+          "doubleHookAmount": 34
+        },
+        "THUNDER": {
+          "amount": 45,
+          "cocoonedAmount": 0,
+          "doubleHookAmount": 4
+        },
+        "FRIED CHICKEN": {
+          "amount": 246,
+          "cocoonedAmount": 0,
+          "doubleHookAmount": 25
+        },
+        "RAGNAROK": {
+          "amount": 1,
+          "cocoonedAmount": 0,
+          "doubleHookAmount": 0
+        },
+        "LORD JAWBUS": {
+          "amount": 18,
+          "cocoonedAmount": 0,
+          "doubleHookAmount": 1
+        },
+        "FIREPROOF WITCH": {
+          "amount": 74,
+          "cocoonedAmount": 0,
+          "doubleHookAmount": 5
+        },
+        "FIERY SCUTTLER": {
+          "amount": 6,
+          "cocoonedAmount": 0,
+          "doubleHookAmount": 0
+        },
+        "ABYSSAL MINER": {
+          "amount": 91,
+          "cocoonedAmount": 0,
+          "doubleHookAmount": 5
+        },
+        "NIGHTMARE": {
+          "amount": 127,
+          "cocoonedAmount": 0,
+          "doubleHookAmount": 7
+        },
+        "WEREWOLF": {
+          "amount": 64,
+          "cocoonedAmount": 0,
+          "doubleHookAmount": 3
+        },
+        "GRIM REAPER": {
+          "amount": 11,
+          "cocoonedAmount": 0,
+          "doubleHookAmount": 1
+        },
+        "SCARECROW": {
+          "amount": 212,
+          "cocoonedAmount": 0,
+          "doubleHookAmount": 17
+        },
+        "PHANTOM FISHER": {
+          "amount": 30,
+          "cocoonedAmount": 0,
+          "doubleHookAmount": 3
+        },
+        "CARROT KING": {
+          "amount": 2,
+          "cocoonedAmount": 0,
+          "doubleHookAmount": 0
+        },
+        "BOGGED": {
+          "amount": 3,
+          "cocoonedAmount": 0,
+          "doubleHookAmount": 0
+        },
+        "OASIS RABBIT": {
+          "amount": 1,
+          "cocoonedAmount": 0,
+          "doubleHookAmount": 0
+        },
+        "WETWING": {
+          "amount": 1,
+          "cocoonedAmount": 0,
+          "doubleHookAmount": 0
+        }
+      },
+      "totalCount": 26579,
+      "totalCocoonedCount": 0
+    },
+    "viewMode": "SESSION"
+  },
+  "bayouTracker": {
+    "titanoboa": {
+      "catchesSinceLast": 201,
+      "lastCatchTime": "2026-01-14T01:55:45Z",
+      "averageCatches": 589,
+      "catchesHistory": [
+        124,
+        601,
+        644,
+        362,
+        818,
+        553,
+        356,
+        952,
+        93,
+        266,
+        321,
+        373,
+        76,
+        2552,
+        737
+      ]
+    },
+    "titanoboaSheds": {
+      "count": 0,
+      "catchesSinceLast": 18,
+      "dropsHistory": []
+    }
+  },
+  "waterHotspotsTracker": {
+    "wikiTiki": {
+      "catchesSinceLast": 264,
+      "lastCatchTime": "2026-01-14T01:48:47Z",
+      "averageCatches": 450,
+      "catchesHistory": [
+        143,
+        243,
+        6,
+        366,
+        281,
+        713,
+        729,
+        73,
+        422,
+        537,
+        1066,
+        68,
+        328,
+        110,
+        2090,
+        7,
+        548,
+        626,
+        200
+      ]
+    },
+    "tikiMasks": {
+      "count": 1,
+      "catchesSinceLast": 16,
+      "dropsHistory": [
+        {
+          "catches": 0,
+          "time": "2026-01-08T22:51:38Z",
+          "magicFind": 280
+        }
+      ]
+    }
+  },
+  "crimsonIsle": {
+    "thunder": {
+      "catchesSinceLast": 10,
+      "lastCatchTime": "2026-01-13T21:39:23Z",
+      "averageCatches": 104,
+      "catchesHistory": [
+        157,
+        11,
+        103,
+        99,
+        76,
+        370,
+        8,
+        175,
+        29,
+        80,
+        13,
+        23,
+        65,
+        167,
+        187
+      ]
+    },
+    "lordJawbus": {
+      "catchesSinceLast": 143,
+      "lastCatchTime": "2026-01-13T21:20:16Z",
+      "averageCatches": 204,
+      "catchesHistory": [
+        214,
+        82,
+        51,
+        34,
+        416,
+        291,
+        342
+      ]
+    },
+    "fieryScuttler": {
+      "catchesSinceLast": 422,
+      "averageCatches": 0,
+      "catchesHistory": []
+    },
+    "ragnarok": {
+      "catchesSinceLast": 422,
+      "averageCatches": 0,
+      "catchesHistory": []
+    },
+    "plhlegblast": {
+      "catchesSinceLast": 13,
+      "averageCatches": 0,
+      "catchesHistory": []
+    },
+    "radioactiveVials": {
+      "count": 0,
+      "catchesSinceLast": 0,
+      "dropsHistory": []
+    }
+  },
+  "galateaWater": {
+    "lochEmperor": {
+      "catchesSinceLast": 0,
+      "catchesHistory": []
+    },
+    "nessie": {
+      "catchesSinceLast": 0,
+      "catchesHistory": []
+    }
+  },
+  "archfiendDiceProfit": {
+    "session": {
+      "archfiend": {
+        "rollsCount": 0,
+        "rollsCost": 0,
+        "count6": 0,
+        "count7": 0,
+        "lostDicesCost": 0,
+        "earnedCost": 0,
+        "profit": 0
+      },
+      "highClass": {
+        "rollsCount": 0,
+        "rollsCost": 0,
+        "count6": 0,
+        "count7": 0,
+        "lostDicesCost": 0,
+        "earnedCost": 0,
+        "profit": 0
+      },
+      "profit": 0
+    },
+    "total": {
+      "archfiend": {
+        "rollsCount": 0,
+        "rollsCost": 0,
+        "count6": 0,
+        "count7": 0,
+        "lostDicesCost": 0,
+        "earnedCost": 0,
+        "profit": 0
+      },
+      "highClass": {
+        "rollsCount": 0,
+        "rollsCost": 0,
+        "count6": 0,
+        "count7": 0,
+        "lostDicesCost": 0,
+        "earnedCost": 0,
+        "profit": 0
+      },
+      "profit": 0
+    },
+    "viewMode": "SESSION"
+  },
+  "fishingProfit": {
+    "session": {
+      "profitTrackerItems": {
+        "ENCHANTED_WATER_LILY": {
+          "itemName": "Enchanted Lily Pad",
+          "itemId": "ENCHANTED_WATER_LILY",
+          "amount": 1,
+          "totalItemProfit": 29999.1
+        },
+        "WATER_LILY": {
+          "itemName": "Lily Pad",
+          "itemId": "WATER_LILY",
+          "amount": 12,
+          "totalItemProfit": 2690.3999999999996
+        }
+      },
+      "totalProfit": 32689.5,
+      "elapsedSeconds": 183
+    },
+    "total": {
+      "profitTrackerItems": {
+        "ICE": {
+          "itemName": "Ice",
+          "itemId": "ICE",
+          "amount": 16963,
+          "totalItemProfit": 25444.5
+        },
+        "CHUM": {
+          "itemName": "Chum",
+          "itemId": "CHUM",
+          "amount": 6370,
+          "totalItemProfit": 14650.999999999998
+        },
+        "BONE": {
+          "itemName": "Bone",
+          "itemId": "BONE",
+          "amount": 20050,
+          "totalItemProfit": 198495.0
+        },
+        "CARROT_ITEM": {
+          "itemName": "Carrot",
+          "itemId": "CARROT_ITEM",
+          "amount": 493,
+          "totalItemProfit": 2218.5
+        },
+        "ENCHANTED_PRISMARINE_CRYSTALS": {
+          "itemName": "Enchanted Prismarine Crystals",
+          "itemId": "ENCHANTED_PRISMARINE_CRYSTALS",
+          "amount": 295,
+          "totalItemProfit": 119770.0
+        },
+        "ENCHANTED_PRISMARINE_SHARD": {
+          "itemName": "Enchanted Prismarine Shard",
+          "itemId": "ENCHANTED_PRISMARINE_SHARD",
+          "amount": 346,
+          "totalItemProfit": 135320.6
+        },
+        "ICE_HUNK": {
+          "itemName": "Hunk of Ice",
+          "itemId": "ICE_HUNK",
+          "amount": 2054,
+          "totalItemProfit": 5934827.600000001
+        },
+        "WATER_LILY": {
+          "itemName": "Lily Pad",
+          "itemId": "WATER_LILY",
+          "amount": 70933,
+          "totalItemProfit": 1.59031786E7
+        },
+        "PRISMARINE_CRYSTALS": {
+          "itemName": "Prismarine Crystals",
+          "itemId": "PRISMARINE_CRYSTALS",
+          "amount": 4996,
+          "totalItemProfit": 9992000.0
+        },
+        "PRISMARINE_SHARD": {
+          "itemName": "Prismarine Shard",
+          "itemId": "PRISMARINE_SHARD",
+          "amount": 4968,
+          "totalItemProfit": 22356.0
+        },
+        "RAW_FISH:3": {
+          "itemName": "Pufferfish",
+          "itemId": "RAW_FISH:3",
+          "amount": 6009,
+          "totalItemProfit": 105758.40000000001
+        },
+        "RAW_FISH": {
+          "itemName": "Raw Cod",
+          "itemId": "RAW_FISH",
+          "amount": 61320,
+          "totalItemProfit": 8830080.0
+        },
+        "RAW_FISH:1": {
+          "itemName": "Raw Salmon",
+          "itemId": "RAW_FISH:1",
+          "amount": 18993,
+          "totalItemProfit": 258304.8
+        },
+        "SNOW_BLOCK": {
+          "itemName": "Snow Block",
+          "itemId": "SNOW_BLOCK",
+          "amount": 9242,
+          "totalItemProfit": 128463.8
+        },
+        "SPONGE": {
+          "itemName": "Sponge",
+          "itemId": "SPONGE",
+          "amount": 3218,
+          "totalItemProfit": 151246.0
+        },
+        "WHITE_GIFT": {
+          "itemName": "White Gift",
+          "itemId": "WHITE_GIFT",
+          "amount": 3552,
+          "totalItemProfit": 1.3857417600000001E7
+        },
+        "ROTTEN_FLESH": {
+          "itemName": "Rotten Flesh",
+          "itemId": "ROTTEN_FLESH",
+          "amount": 17181,
+          "totalItemProfit": 104804.09999999999
+        },
+        "PET_ITEM_FISHING_SKILL_BOOST_RARE": {
+          "itemName": "Fishing Exp Boost (RARE)",
+          "itemId": "PET_ITEM_FISHING_SKILL_BOOST_RARE",
+          "amount": 3,
+          "totalItemProfit": 2610000.0
+        },
+        "RAW_FISH:2": {
+          "itemName": "Tropical Fish",
+          "itemId": "RAW_FISH:2",
+          "amount": 12378,
+          "totalItemProfit": 392382.6
+        },
+        "ICY_SINKER": {
+          "itemName": "Icy Sinker",
+          "itemId": "ICY_SINKER",
+          "amount": 55,
+          "totalItemProfit": 2337500.0
+        },
+        "DARK_BAIT": {
+          "itemName": "Dark Bait",
+          "itemId": "DARK_BAIT",
+          "amount": 3425,
+          "totalItemProfit": 1.12165325E7
+        },
+        "ENCHANTMENT_MAGNET_6": {
+          "itemName": "Enchanted Book (Magnet VI)",
+          "itemId": "ENCHANTMENT_MAGNET_6",
+          "amount": 93,
+          "totalItemProfit": 0.0
+        },
+        "ENCHANTED_ROTTEN_FLESH": {
+          "itemName": "Enchanted Rotten Flesh",
+          "itemId": "ENCHANTED_ROTTEN_FLESH",
+          "amount": 542,
+          "totalItemProfit": 331433.0
+        },
+        "INK_SACK": {
+          "itemName": "Ink Sac",
+          "itemId": "INK_SACK",
+          "amount": 10190,
+          "totalItemProfit": 2.6184224E7
+        },
+        "ENCHANTED_FEATHER": {
+          "itemName": "Enchanted Feather",
+          "itemId": "ENCHANTED_FEATHER",
+          "amount": 377,
+          "totalItemProfit": 184503.8
+        },
+        "ENCHANTED_IRON": {
+          "itemName": "Enchanted Iron Ingot",
+          "itemId": "ENCHANTED_IRON",
+          "amount": 657,
+          "totalItemProfit": 713370.6
+        },
+        "GREEN_GIFT": {
+          "itemName": "Green Gift",
+          "itemId": "GREEN_GIFT",
+          "amount": 1535,
+          "totalItemProfit": 1.09351865E7
+        },
+        "RED_GIFT": {
+          "itemName": "Red Gift",
+          "itemId": "RED_GIFT",
+          "amount": 923,
+          "totalItemProfit": 1.6360267299999999E7
+        },
+        "ENCHANTMENT_PROSPERITY_1": {
+          "itemName": "Enchanted Book (Prosperity I)",
+          "itemId": "ENCHANTMENT_PROSPERITY_1",
+          "amount": 14,
+          "totalItemProfit": 2.1111700400000002E7
+        },
+        "ENCHANTED_WATER_LILY": {
+          "itemName": "Enchanted Lily Pad",
+          "itemId": "ENCHANTED_WATER_LILY",
+          "amount": 666,
+          "totalItemProfit": 1.9979400599999998E7
+        },
+        "WALNUT": {
+          "itemName": "Walnut",
+          "itemId": "WALNUT",
+          "amount": 65,
+          "totalItemProfit": 1716338.0
+        },
+        "ENCHANTMENT_SPIKED_HOOK_6": {
+          "itemName": "Enchanted Book (Spiked Hook VI)",
+          "itemId": "ENCHANTMENT_SPIKED_HOOK_6",
+          "amount": 54,
+          "totalItemProfit": 0.0
+        },
+        "BLUE_ICE_HUNK": {
+          "itemName": "Hunk of Blue Ice",
+          "itemId": "BLUE_ICE_HUNK",
+          "amount": 94,
+          "totalItemProfit": 3.5101414199999996E7
+        },
+        "ENCHANTMENT_CHARM_1": {
+          "itemName": "Enchanted Book (Charm I)",
+          "itemId": "ENCHANTMENT_CHARM_1",
+          "amount": 19,
+          "totalItemProfit": 1.13619411E7
+        },
+        "MOOGMA_LEGGINGS": {
+          "itemName": "Moogma Leggings",
+          "itemId": "MOOGMA_LEGGINGS",
+          "amount": 112,
+          "totalItemProfit": 1120000.0
+        },
+        "MAGMA_FISH": {
+          "itemName": "Magmafish",
+          "itemId": "MAGMA_FISH",
+          "amount": 105145,
+          "totalItemProfit": 2.22802255E7
+        },
+        "BLOBFISH_BRONZE": {
+          "itemName": "Blobfish BRONZE",
+          "itemId": "BLOBFISH_BRONZE",
+          "amount": 100,
+          "totalItemProfit": 84760.0
+        },
+        "LUMP_OF_MAGMA": {
+          "itemName": "Lump of Magma",
+          "itemId": "LUMP_OF_MAGMA",
+          "amount": 3362,
+          "totalItemProfit": 174824.0
+        },
+        "GLOWSTONE_DUST": {
+          "itemName": "Glowstone Dust",
+          "itemId": "GLOWSTONE_DUST",
+          "amount": 361,
+          "totalItemProfit": 9747.0
+        },
+        "MOOGMA_PELT": {
+          "itemName": "Moogma Pelt",
+          "itemId": "MOOGMA_PELT",
+          "amount": 2630,
+          "totalItemProfit": 128081.00000000001
+        },
+        "PYROCLASTIC_SCALE": {
+          "itemName": "Pyroclastic Scale",
+          "itemId": "PYROCLASTIC_SCALE",
+          "amount": 575,
+          "totalItemProfit": 152835.0
+        },
+        "MAGMA_FISH_SILVER": {
+          "itemName": "Silver Magmafish",
+          "itemId": "MAGMA_FISH_SILVER",
+          "amount": 2564,
+          "totalItemProfit": 2.5315654E7
+        },
+        "CUP_OF_BLOOD": {
+          "itemName": "Cup of Blood",
+          "itemId": "CUP_OF_BLOOD",
+          "amount": 808,
+          "totalItemProfit": 484396.0
+        },
+        "FLAMING_HEART": {
+          "itemName": "Flaming Heart",
+          "itemId": "FLAMING_HEART",
+          "amount": 668,
+          "totalItemProfit": 238142.0
+        },
+        "MAGMA_CREAM": {
+          "itemName": "Magma Cream",
+          "itemId": "MAGMA_CREAM",
+          "amount": 443,
+          "totalItemProfit": 3721.2000000000003
+        },
+        "CORRUPTED_NETHER_STAR": {
+          "itemName": "Nether Star",
+          "itemId": "CORRUPTED_NETHER_STAR",
+          "amount": 109,
+          "totalItemProfit": 2339401.6
+        },
+        "LAVAHORSE_BRONZE": {
+          "itemName": "Lavahorse BRONZE",
+          "itemId": "LAVAHORSE_BRONZE",
+          "amount": 26,
+          "totalItemProfit": 66112.8
+        },
+        "SLUG_BOOTS": {
+          "itemName": "Slug Boots",
+          "itemId": "SLUG_BOOTS",
+          "amount": 130,
+          "totalItemProfit": 650000.0
+        },
+        "FLAMING_CHESTPLATE": {
+          "itemName": "Flaming Chestplate",
+          "itemId": "FLAMING_CHESTPLATE",
+          "amount": 47,
+          "totalItemProfit": 1175000.0
+        },
+        "HORN_OF_TAURUS": {
+          "itemName": "Horn of Taurus",
+          "itemId": "HORN_OF_TAURUS",
+          "amount": 269,
+          "totalItemProfit": 241965.5
+        },
+        "ENCHANTMENT_FRAIL_6": {
+          "itemName": "Enchanted Book (Frail VI)",
+          "itemId": "ENCHANTMENT_FRAIL_6",
+          "amount": 34,
+          "totalItemProfit": 1088.0
+        },
+        "ENCHANTED_BONE": {
+          "itemName": "Enchanted Bone",
+          "itemId": "ENCHANTED_BONE",
+          "amount": 68,
+          "totalItemProfit": 88325.20000000001
+        },
+        "FAIRY_LEGGINGS": {
+          "itemName": "Fairy\u0027s Trousers",
+          "itemId": "FAIRY_LEGGINGS",
+          "amount": 20,
+          "totalItemProfit": 5388400.0
+        },
+        "ENCHANTMENT_LURE_6": {
+          "itemName": "Enchanted Book (Lure VI)",
+          "itemId": "ENCHANTMENT_LURE_6",
+          "amount": 44,
+          "totalItemProfit": 0.0
+        },
+        "ENCHANTED_PUFFERFISH": {
+          "itemName": "Enchanted Pufferfish",
+          "itemId": "ENCHANTED_PUFFERFISH",
+          "amount": 165,
+          "totalItemProfit": 390868.5
+        },
+        "BOBBIN_SCRIPTURES": {
+          "itemName": "Bobbin\u0027 Scriptures",
+          "itemId": "BOBBIN_SCRIPTURES",
+          "amount": 15,
+          "totalItemProfit": 4716183.0
+        },
+        "ENCHANTED_PACKED_ICE": {
+          "itemName": "Enchanted Packed Ice",
+          "itemId": "ENCHANTED_PACKED_ICE",
+          "amount": 24,
+          "totalItemProfit": 576000.0
+        },
+        "AGARIMOO_TONGUE": {
+          "itemName": "Agarimoo Tongue",
+          "itemId": "AGARIMOO_TONGUE",
+          "amount": 10,
+          "totalItemProfit": 102771.0
+        },
+        "NURSE_SHARK_TOOTH": {
+          "itemName": "Nurse Shark Tooth",
+          "itemId": "NURSE_SHARK_TOOTH",
+          "amount": 631,
+          "totalItemProfit": 1.26196845E7
+        },
+        "SHARK_FIN": {
+          "itemName": "Shark Fin",
+          "itemId": "SHARK_FIN",
+          "amount": 31635,
+          "totalItemProfit": 9240583.5
+        },
+        "SLIME_BALL": {
+          "itemName": "Slimeball",
+          "itemId": "SLIME_BALL",
+          "amount": 2381,
+          "totalItemProfit": 99763.9
+        },
+        "BLUE_SHARK_TOOTH": {
+          "itemName": "Blue Shark Tooth",
+          "itemId": "BLUE_SHARK_TOOTH",
+          "amount": 332,
+          "totalItemProfit": 1.2178756E7
+        },
+        "HALF_EATEN_MUSHROOM": {
+          "itemName": "Half-Eaten Mushroom",
+          "itemId": "HALF_EATEN_MUSHROOM",
+          "amount": 3794,
+          "totalItemProfit": 3013574.1999999997
+        },
+        "MEGALODON;3": {
+          "itemName": "[Lvl 1] Megalodon (EPIC)",
+          "itemId": "MEGALODON;3",
+          "amount": 64,
+          "totalItemProfit": 3.2E7
+        },
+        "GOLD_INGOT": {
+          "itemName": "Gold Ingot",
+          "itemId": "GOLD_INGOT",
+          "amount": 6389,
+          "totalItemProfit": 38334.0
+        },
+        "CAN_OF_WORMS": {
+          "itemName": "Can of Worms",
+          "itemId": "CAN_OF_WORMS",
+          "amount": 274,
+          "totalItemProfit": 4514752.8
+        },
+        "TORN_CLOTH": {
+          "itemName": "Torn Cloth",
+          "itemId": "TORN_CLOTH",
+          "amount": 33,
+          "totalItemProfit": 2.55277407E7
+        },
+        "BLUE_RING": {
+          "itemName": "Blue Ring",
+          "itemId": "BLUE_RING",
+          "amount": 137,
+          "totalItemProfit": 3.1481065599999998E7
+        },
+        "ENCHANTED_RAW_FISH": {
+          "itemName": "Enchanted Raw Cod",
+          "itemId": "ENCHANTED_RAW_FISH",
+          "amount": 946,
+          "totalItemProfit": 947608.2000000001
+        },
+        "ENCHANTED_RAW_SALMON": {
+          "itemName": "Enchanted Raw Salmon",
+          "itemId": "ENCHANTED_RAW_SALMON",
+          "amount": 424,
+          "totalItemProfit": 670768.0
+        },
+        "POISON_SAMPLE": {
+          "itemName": "Poison Sample",
+          "itemId": "POISON_SAMPLE",
+          "amount": 10,
+          "totalItemProfit": 6624034.0
+        },
+        "BRONZE_BOWL": {
+          "itemName": "Bronze Bowl",
+          "itemId": "BRONZE_BOWL",
+          "amount": 41,
+          "totalItemProfit": 2318705.8000000003
+        },
+        "TIGER_SHARK_TOOTH": {
+          "itemName": "Tiger Shark Tooth",
+          "itemId": "TIGER_SHARK_TOOTH",
+          "amount": 239,
+          "totalItemProfit": 1.4884250799999999E7
+        },
+        "GREAT_WHITE_SHARK_TOOTH": {
+          "itemName": "Great White Shark Tooth",
+          "itemId": "GREAT_WHITE_SHARK_TOOTH",
+          "amount": 100,
+          "totalItemProfit": 1.2449996000000001E8
+        },
+        "ALLIGATOR_SKIN": {
+          "itemName": "Alligator Skin",
+          "itemId": "ALLIGATOR_SKIN",
+          "amount": 93,
+          "totalItemProfit": 5.6950010099999994E7
+        },
+        "ENCHANTED_RABBIT_FOOT": {
+          "itemName": "Enchanted Rabbit Foot",
+          "itemId": "ENCHANTED_RABBIT_FOOT",
+          "amount": 83,
+          "totalItemProfit": 64864.5
+        },
+        "RABBIT": {
+          "itemName": "Raw Rabbit",
+          "itemId": "RABBIT",
+          "amount": 1105,
+          "totalItemProfit": 263874.0
+        },
+        "ENCHANTED_GOLD": {
+          "itemName": "Enchanted Gold Ingot",
+          "itemId": "ENCHANTED_GOLD",
+          "amount": 260,
+          "totalItemProfit": 136318.0
+        },
+        "ENCHANTMENT_RESPITE_1": {
+          "itemName": "Enchanted Book (Respite I)",
+          "itemId": "ENCHANTMENT_RESPITE_1",
+          "amount": 18,
+          "totalItemProfit": 452122.2
+        },
+        "OVERFLOWING_TRASH_CAN": {
+          "itemName": "Overflowing Trash Can",
+          "itemId": "OVERFLOWING_TRASH_CAN",
+          "amount": 76,
+          "totalItemProfit": 756724.4
+        },
+        "ENCHANTMENT_ANGLER_6": {
+          "itemName": "Enchanted Book (Angler VI)",
+          "itemId": "ENCHANTMENT_ANGLER_6",
+          "amount": 19,
+          "totalItemProfit": 101099.0
+        },
+        "MEGALODON;4": {
+          "itemName": "[Lvl 1] Megalodon (LEGENDARY)",
+          "itemId": "MEGALODON;4",
+          "amount": 28,
+          "totalItemProfit": 7.84E7
+        },
+        "CARNIVAL_TICKET": {
+          "itemName": "Carnival Ticket",
+          "itemId": "CARNIVAL_TICKET",
+          "amount": 61,
+          "totalItemProfit": 0.0
+        },
+        "ENCHANTED_SLIME_BALL": {
+          "itemName": "Enchanted Slimeball",
+          "itemId": "ENCHANTED_SLIME_BALL",
+          "amount": 18,
+          "totalItemProfit": 16016.4
+        },
+        "SHARD_WATER_HYDRA": {
+          "itemName": "Water Hydra Shard",
+          "itemId": "SHARD_WATER_HYDRA",
+          "amount": 34,
+          "totalItemProfit": 8500000.0
+        },
+        "HILT_OF_TRUE_ICE": {
+          "itemName": "Hilt of True Ice",
+          "itemId": "HILT_OF_TRUE_ICE",
+          "amount": 1,
+          "totalItemProfit": 3400000.0
+        },
+        "EDIBLE_SEAWEED": {
+          "itemName": "Edible Seaweed",
+          "itemId": "EDIBLE_SEAWEED",
+          "amount": 28,
+          "totalItemProfit": 2.6599972E7
+        },
+        "ENCHANTED_SLIME_BLOCK": {
+          "itemName": "Enchanted Slime Block",
+          "itemId": "ENCHANTED_SLIME_BLOCK",
+          "amount": 5,
+          "totalItemProfit": 635432.0
+        },
+        "BROKEN_RADAR": {
+          "itemName": "Broken Radar",
+          "itemId": "BROKEN_RADAR",
+          "amount": 74,
+          "totalItemProfit": 9075508.0
+        },
+        "CALCIFIED_HEART": {
+          "itemName": "Calcified Heart",
+          "itemId": "CALCIFIED_HEART",
+          "amount": 20,
+          "totalItemProfit": 2.0872648E7
+        },
+        "PARTY_GIFT": {
+          "itemName": "Party Gift",
+          "itemId": "PARTY_GIFT",
+          "amount": 193,
+          "totalItemProfit": 1.4811399E7
+        },
+        "BLOBFISH_SILVER": {
+          "itemName": "Blobfish SILVER",
+          "itemId": "BLOBFISH_SILVER",
+          "amount": 29,
+          "totalItemProfit": 49160.8
+        },
+        "ORB_OF_ENERGY": {
+          "itemName": "Orb of Energy",
+          "itemId": "ORB_OF_ENERGY",
+          "amount": 483,
+          "totalItemProfit": 3646118.6999999997
+        },
+        "BLADE_OF_THE_VOLCANO": {
+          "itemName": "Blade of the Volcano",
+          "itemId": "BLADE_OF_THE_VOLCANO",
+          "amount": 46,
+          "totalItemProfit": 2300000.0
+        },
+        "THUNDER_SHARDS": {
+          "itemName": "Thunder Fragment",
+          "itemId": "THUNDER_SHARDS",
+          "amount": 76,
+          "totalItemProfit": 3958581.6
+        },
+        "GOLDEN_FISH_BRONZE": {
+          "itemName": "Golden Fish BRONZE",
+          "itemId": "GOLDEN_FISH_BRONZE",
+          "amount": 4,
+          "totalItemProfit": 339040.0
+        },
+        "SHARD_MAGMA_SLUG": {
+          "itemName": "Magma Slug Shard",
+          "itemId": "SHARD_MAGMA_SLUG",
+          "amount": 57,
+          "totalItemProfit": 500528.4
+        },
+        "SHARD_LAVA_FLAME": {
+          "itemName": "Lava Flame Shard",
+          "itemId": "SHARD_LAVA_FLAME",
+          "amount": 30,
+          "totalItemProfit": 901695.0
+        },
+        "PITCHIN_KOI": {
+          "itemName": "Pitchin\u0027 Koi",
+          "itemId": "PITCHIN_KOI",
+          "amount": 16,
+          "totalItemProfit": 7199968.0
+        },
+        "SHARD_SEA_EMPEROR": {
+          "itemName": "Loch Emperor Shard",
+          "itemId": "SHARD_SEA_EMPEROR",
+          "amount": 2,
+          "totalItemProfit": 641181.6
+        },
+        "GAZING_PEARL": {
+          "itemName": "Gazing Pearl",
+          "itemId": "GAZING_PEARL",
+          "amount": 3,
+          "totalItemProfit": 2249.1000000000004
+        },
+        "GRAND_EXP_BOTTLE": {
+          "itemName": "Grand Experience Bottle",
+          "itemId": "GRAND_EXP_BOTTLE",
+          "amount": 12,
+          "totalItemProfit": 52838.399999999994
+        },
+        "WATER_HYDRA_HEAD": {
+          "itemName": "Water Hydra Head",
+          "itemId": "WATER_HYDRA_HEAD",
+          "amount": 10,
+          "totalItemProfit": 1.9E7
+        },
+        "ENCHANTMENT_LUCK_OF_THE_SEA_6": {
+          "itemName": "Enchanted Book (Luck of the Sea VI)",
+          "itemId": "ENCHANTMENT_LUCK_OF_THE_SEA_6",
+          "amount": 6,
+          "totalItemProfit": 6741055.800000001
+        },
+        "TAURUS_HELMET": {
+          "itemName": "Taurus Helmet",
+          "itemId": "TAURUS_HELMET",
+          "amount": 15,
+          "totalItemProfit": 750000.0
+        },
+        "STAFF_OF_THE_VOLCANO": {
+          "itemName": "Staff of the Volcano",
+          "itemId": "STAFF_OF_THE_VOLCANO",
+          "amount": 20,
+          "totalItemProfit": 100000.0
+        },
+        "ENCHANTMENT_ULTIMATE_FLASH_1": {
+          "itemName": "Enchanted Book (Flash I)",
+          "itemId": "ENCHANTMENT_ULTIMATE_FLASH_1",
+          "amount": 7,
+          "totalItemProfit": 4.1290886699999996E7
+        },
+        "MAGMA_LORD_FRAGMENT": {
+          "itemName": "Magma Lord Fragment",
+          "itemId": "MAGMA_LORD_FRAGMENT",
+          "amount": 23,
+          "totalItemProfit": 1.186710162E8
+        },
+        "SHARD_FIRE_EEL": {
+          "itemName": "Fire Eel Shard",
+          "itemId": "SHARD_FIRE_EEL",
+          "amount": 55,
+          "totalItemProfit": 4355444.5
+        },
+        "COAL": {
+          "itemName": "Coal",
+          "itemId": "COAL",
+          "amount": 306,
+          "totalItemProfit": 3060.0
+        },
+        "HALLOWED_SKULL": {
+          "itemName": "Hallowed Skull",
+          "itemId": "HALLOWED_SKULL",
+          "amount": 3,
+          "totalItemProfit": 122929.5
+        },
+        "FRIED_FEATHER": {
+          "itemName": "Fried Feather",
+          "itemId": "FRIED_FEATHER",
+          "amount": 200,
+          "totalItemProfit": 3999040.0
+        },
+        "RAW_CHICKEN": {
+          "itemName": "Raw Chicken",
+          "itemId": "RAW_CHICKEN",
+          "amount": 958,
+          "totalItemProfit": 15136.400000000001
+        },
+        "ENCHANTED_COAL": {
+          "itemName": "Enchanted Coal",
+          "itemId": "ENCHANTED_COAL",
+          "amount": 98,
+          "totalItemProfit": 166531.4
+        },
+        "WITHER_SOUL": {
+          "itemName": "Wither Soul",
+          "itemId": "WITHER_SOUL",
+          "amount": 3,
+          "totalItemProfit": 3584.7000000000003
+        },
+        "SHARD_LORD_JAWBUS": {
+          "itemName": "Lord Jawbus Shard",
+          "itemId": "SHARD_LORD_JAWBUS",
+          "amount": 5,
+          "totalItemProfit": 1241310.0
+        },
+        "AMMONITE;4+100": {
+          "itemName": "Ammonite",
+          "itemId": "AMMONITE;4+100",
+          "amount": 1,
+          "totalItemProfit": 2.0749999E7
+        },
+        "SHARD_TAURUS": {
+          "itemName": "Taurus Shard",
+          "itemId": "SHARD_TAURUS",
+          "amount": 45,
+          "totalItemProfit": 2228998.5
+        },
+        "SHARD_NIGHT_SQUID": {
+          "itemName": "Night Squid Shard",
+          "itemId": "SHARD_NIGHT_SQUID",
+          "amount": 3,
+          "totalItemProfit": 99783.0
+        },
+        "SCORCHED_CRAB_STICK": {
+          "itemName": "Scorched Crab Stick",
+          "itemId": "SCORCHED_CRAB_STICK",
+          "amount": 12,
+          "totalItemProfit": 2081558.4000000001
+        },
+        "ENCHANTED_GLOWSTONE_DUST": {
+          "itemName": "Enchanted Glowstone Dust",
+          "itemId": "ENCHANTED_GLOWSTONE_DUST",
+          "amount": 69,
+          "totalItemProfit": 121971.3
+        },
+        "ENCHANTED_RAW_CHICKEN": {
+          "itemName": "Enchanted Raw Chicken",
+          "itemId": "ENCHANTED_RAW_CHICKEN",
+          "amount": 18,
+          "totalItemProfit": 11534.4
+        },
+        "SINGED_POWDER": {
+          "itemName": "Singed Powder",
+          "itemId": "SINGED_POWDER",
+          "amount": 8,
+          "totalItemProfit": 2286775.2
+        },
+        "REINDEER;4+100": {
+          "itemName": "Reindeer",
+          "itemId": "REINDEER;4+100",
+          "amount": 1,
+          "totalItemProfit": 7320000.0
+        },
+        "CORRUPTED_FRAGMENT": {
+          "itemName": "Corrupted Fragment",
+          "itemId": "CORRUPTED_FRAGMENT",
+          "amount": 11,
+          "totalItemProfit": 1.1
+        },
+        "SULPHUR_ORE": {
+          "itemName": "Sulphur",
+          "itemId": "SULPHUR_ORE",
+          "amount": 236,
+          "totalItemProfit": 2124.0
+        },
+        "ENCHANTMENT_CORRUPTION_1": {
+          "itemName": "Enchanted Book (Corruption I)",
+          "itemId": "ENCHANTMENT_CORRUPTION_1",
+          "amount": 3,
+          "totalItemProfit": 0.30000000000000004
+        },
+        "PACKED_ICE": {
+          "itemName": "Packed Ice",
+          "itemId": "PACKED_ICE",
+          "amount": 136,
+          "totalItemProfit": 2584.0
+        },
+        "RED_MUSHROOM": {
+          "itemName": "Red Mushroom",
+          "itemId": "RED_MUSHROOM",
+          "amount": 135,
+          "totalItemProfit": 1174.5
+        },
+        "FLAWED_AMETHYST_GEM": {
+          "itemName": "❈ Flawed Amethyst Gemstone",
+          "itemId": "FLAWED_AMETHYST_GEM",
+          "amount": 78,
+          "totalItemProfit": 36293.4
+        },
+        "ROUGH_AMETHYST_GEM": {
+          "itemName": "❈ Rough Amethyst Gemstone",
+          "itemId": "ROUGH_AMETHYST_GEM",
+          "amount": 4458,
+          "totalItemProfit": 70436.40000000001
+        },
+        "HARD_STONE": {
+          "itemName": "Hard Stone",
+          "itemId": "HARD_STONE",
+          "amount": 6141,
+          "totalItemProfit": 15966.6
+        },
+        "QUARTZ": {
+          "itemName": "Nether Quartz",
+          "itemId": "QUARTZ",
+          "amount": 1931,
+          "totalItemProfit": 17379.0
+        },
+        "ROUGH_JADE_GEM": {
+          "itemName": "☘ Rough Jade Gemstone",
+          "itemId": "ROUGH_JADE_GEM",
+          "amount": 3372,
+          "totalItemProfit": 15848.400000000001
+        },
+        "ROUGH_SAPPHIRE_GEM": {
+          "itemName": "✎ Rough Sapphire Gemstone",
+          "itemId": "ROUGH_SAPPHIRE_GEM",
+          "amount": 3392,
+          "totalItemProfit": 11872.0
+        },
+        "FLAWED_JADE_GEM": {
+          "itemName": "☘ Flawed Jade Gemstone",
+          "itemId": "FLAWED_JADE_GEM",
+          "amount": 32,
+          "totalItemProfit": 16624.0
+        },
+        "SHARD_SEA_ARCHER": {
+          "itemName": "Bogged Shard",
+          "itemId": "SHARD_SEA_ARCHER",
+          "amount": 4,
+          "totalItemProfit": 17999.2
+        },
+        "FISH_AFFINITY_TALISMAN": {
+          "itemName": "Fish Affinity Talisman",
+          "itemId": "FISH_AFFINITY_TALISMAN",
+          "amount": 22,
+          "totalItemProfit": 4400000.0
+        },
+        "ENCHANTED_GLOWSTONE": {
+          "itemName": "Enchanted Glowstone",
+          "itemId": "ENCHANTED_GLOWSTONE",
+          "amount": 1,
+          "totalItemProfit": 62927.7
+        },
+        "FLAWED_SAPPHIRE_GEM": {
+          "itemName": "✎ Flawed Sapphire Gemstone",
+          "itemId": "FLAWED_SAPPHIRE_GEM",
+          "amount": 38,
+          "totalItemProfit": 37817.6
+        },
+        "SHARD_SILENTDEPTH": {
+          "itemName": "Silentdepth Shard",
+          "itemId": "SHARD_SILENTDEPTH",
+          "amount": 1,
+          "totalItemProfit": 294697.8
+        },
+        "FAIRY_HELMET": {
+          "itemName": "Fairy\u0027s Fedora",
+          "itemId": "FAIRY_HELMET",
+          "amount": 2,
+          "totalItemProfit": 520000.0
+        },
+        "FAIRY_CHESTPLATE": {
+          "itemName": "Fairy\u0027s Polo",
+          "itemId": "FAIRY_CHESTPLATE",
+          "amount": 5,
+          "totalItemProfit": 175000.0
+        },
+        "TIKI_MASK": {
+          "itemName": "Tiki Mask",
+          "itemId": "TIKI_MASK",
+          "amount": 1,
+          "totalItemProfit": 2.2E8
+        },
+        "SHARD_TITANOBOA": {
+          "itemName": "Titanoboa Shard",
+          "itemId": "SHARD_TITANOBOA",
+          "amount": 1,
+          "totalItemProfit": 498999.3
+        },
+        "FAIRY_BOOTS": {
+          "itemName": "Fairy\u0027s Galoshes",
+          "itemId": "FAIRY_BOOTS",
+          "amount": 1,
+          "totalItemProfit": 200000.0
+        },
+        "FISHED_COINS": {
+          "itemName": "Fished Coins",
+          "itemId": "FISHED_COINS",
+          "amount": 5,
+          "totalItemProfit": 185594.0
+        },
+        "ENCHANTED_CLAY_BLOCK": {
+          "itemName": "Enchanted Clay Block",
+          "itemId": "ENCHANTED_CLAY_BLOCK",
+          "amount": 1,
+          "totalItemProfit": 75961.2
+        },
+        "ENCHANTED_CLOWNFISH": {
+          "itemName": "Enchanted Tropical Fish",
+          "itemId": "ENCHANTED_CLOWNFISH",
+          "amount": 128,
+          "totalItemProfit": 403161.6
+        },
+        "LEATHER_CLOTH": {
+          "itemName": "Leather Cloth",
+          "itemId": "LEATHER_CLOTH",
+          "amount": 4,
+          "totalItemProfit": 188244.0
+        },
+        "RADIOACTIVE_VIAL": {
+          "itemName": "Radioactive Vial",
+          "itemId": "RADIOACTIVE_VIAL",
+          "amount": 1,
+          "totalItemProfit": 6.1999999E7
+        },
+        "ENCHANTMENT_PISCARY_6": {
+          "itemName": "Enchanted Book (Piscary VI)",
+          "itemId": "ENCHANTMENT_PISCARY_6",
+          "amount": 11,
+          "totalItemProfit": 8.79999967E7
+        },
+        "GREEN_CANDY": {
+          "itemName": "Green Candy",
+          "itemId": "GREEN_CANDY",
+          "amount": 1442,
+          "totalItemProfit": 2883567.4
+        },
+        "PURPLE_CANDY": {
+          "itemName": "Purple Candy",
+          "itemId": "PURPLE_CANDY",
+          "amount": 638,
+          "totalItemProfit": 1.41828676E7
+        },
+        "WEREWOLF_SKIN": {
+          "itemName": "Werewolf Skin",
+          "itemId": "WEREWOLF_SKIN",
+          "amount": 119,
+          "totalItemProfit": 562536.7999999999
+        },
+        "SOUL_FRAGMENT": {
+          "itemName": "Soul Fragment",
+          "itemId": "SOUL_FRAGMENT",
+          "amount": 22,
+          "totalItemProfit": 1.5399901E7
+        },
+        "HAY_BLOCK": {
+          "itemName": "Hay Bale",
+          "itemId": "HAY_BLOCK",
+          "amount": 695,
+          "totalItemProfit": 0.0
+        },
+        "LUCKY_HOOF": {
+          "itemName": "Lucky Hoof",
+          "itemId": "LUCKY_HOOF",
+          "amount": 11,
+          "totalItemProfit": 2200000.0
+        },
+        "PHANTOM_HOOK": {
+          "itemName": "Phantom Hook",
+          "itemId": "PHANTOM_HOOK",
+          "amount": 1,
+          "totalItemProfit": 500000.0
+        },
+        "DEEP_SEA_ORB": {
+          "itemName": "Deep Sea Orb",
+          "itemId": "DEEP_SEA_ORB",
+          "amount": 2,
+          "totalItemProfit": 1.27772578E7
+        },
+        "RABBIT_HAT": {
+          "itemName": "Rabbit Hat",
+          "itemId": "RABBIT_HAT",
+          "amount": 1,
+          "totalItemProfit": 99000.0
+        },
+        "ENCHANTED_CARROT": {
+          "itemName": "Enchanted Carrot",
+          "itemId": "ENCHANTED_CARROT",
+          "amount": 2,
+          "totalItemProfit": 997.6
+        },
+        "BEZOS": {
+          "itemName": "Bezos",
+          "itemId": "BEZOS",
+          "amount": 5,
+          "totalItemProfit": 18292.5
+        },
+        "MAGMA_CHUNK": {
+          "itemName": "Magma Chunk",
+          "itemId": "MAGMA_CHUNK",
+          "amount": 6,
+          "totalItemProfit": 4197.6
+        },
+        "WET_BOOK": {
+          "itemName": "Wet Book",
+          "itemId": "WET_BOOK",
+          "amount": 2,
+          "totalItemProfit": 190506.4
+        },
+        "MOLDFIN_SILVER": {
+          "itemName": "Moldfin SILVER",
+          "itemId": "MOLDFIN_SILVER",
+          "amount": 3,
+          "totalItemProfit": 30513.600000000002
+        },
+        "MYCEL": {
+          "itemName": "Mycelium",
+          "itemId": "MYCEL",
+          "amount": 323,
+          "totalItemProfit": 6944.5
+        },
+        "BLOBFISH_GOLD": {
+          "itemName": "Blobfish GOLD",
+          "itemId": "BLOBFISH_GOLD",
+          "amount": 6,
+          "totalItemProfit": 15256.800000000001
+        },
+        "BLAZE_ASHES": {
+          "itemName": "Blaze Ashes",
+          "itemId": "BLAZE_ASHES",
+          "amount": 9,
+          "totalItemProfit": 7243.2
+        },
+        "MAGMAG": {
+          "itemName": "Magmag",
+          "itemId": "MAGMAG",
+          "amount": 4,
+          "totalItemProfit": 9710.8
+        },
+        "DIGESTED_MUSHROOMS": {
+          "itemName": "Digested Mushrooms",
+          "itemId": "DIGESTED_MUSHROOMS",
+          "amount": 10,
+          "totalItemProfit": 89993.0
+        },
+        "KARATE_FISH_BRONZE": {
+          "itemName": "Karate Fish BRONZE",
+          "itemId": "KARATE_FISH_BRONZE",
+          "amount": 7,
+          "totalItemProfit": 59332.0
+        },
+        "SAND:1": {
+          "itemName": "Red Sand",
+          "itemId": "SAND:1",
+          "amount": 423,
+          "totalItemProfit": 32740.2
+        },
+        "NETHERRACK": {
+          "itemName": "Netherrack",
+          "itemId": "NETHERRACK",
+          "amount": 107,
+          "totalItemProfit": 10.700000000000001
+        },
+        "VANILLE_BRONZE": {
+          "itemName": "Vanille BRONZE",
+          "itemId": "VANILLE_BRONZE",
+          "amount": 8,
+          "totalItemProfit": 135616.0
+        },
+        "KARATE_FISH_SILVER": {
+          "itemName": "Karate Fish SILVER",
+          "itemId": "KARATE_FISH_SILVER",
+          "amount": 2,
+          "totalItemProfit": 25428.0
+        },
+        "SLUGFISH_SILVER": {
+          "itemName": "Slugfish SILVER",
+          "itemId": "SLUGFISH_SILVER",
+          "amount": 12,
+          "totalItemProfit": 152568.0
+        },
+        "VANILLE_SILVER": {
+          "itemName": "Vanille SILVER",
+          "itemId": "VANILLE_SILVER",
+          "amount": 8,
+          "totalItemProfit": 203424.0
+        },
+        "MUTATED_BLAZE_ASHES": {
+          "itemName": "Mutated Blaze Ashes",
+          "itemId": "MUTATED_BLAZE_ASHES",
+          "amount": 8,
+          "totalItemProfit": 32604.0
+        },
+        "SLUGFISH_BRONZE": {
+          "itemName": "Slugfish BRONZE",
+          "itemId": "SLUGFISH_BRONZE",
+          "amount": 23,
+          "totalItemProfit": 194948.0
+        },
+        "LAVAHORSE_GOLD": {
+          "itemName": "Lavahorse GOLD",
+          "itemId": "LAVAHORSE_GOLD",
+          "amount": 4,
+          "totalItemProfit": 16952.0
+        },
+        "MOLDFIN_BRONZE": {
+          "itemName": "Moldfin BRONZE",
+          "itemId": "MOLDFIN_BRONZE",
+          "amount": 8,
+          "totalItemProfit": 54246.4
+        },
+        "SPECTRE_DUST": {
+          "itemName": "Spectre Dust",
+          "itemId": "SPECTRE_DUST",
+          "amount": 5,
+          "totalItemProfit": 2775.0
+        },
+        "SLUGFISH_GOLD": {
+          "itemName": "Slugfish GOLD",
+          "itemId": "SLUGFISH_GOLD",
+          "amount": 2,
+          "totalItemProfit": 33904.0
+        },
+        "LAVAHORSE_SILVER": {
+          "itemName": "Lavahorse SILVER",
+          "itemId": "LAVAHORSE_SILVER",
+          "amount": 8,
+          "totalItemProfit": 27123.2
+        },
+        "BURNING_EYE": {
+          "itemName": "Burning Eye",
+          "itemId": "BURNING_EYE",
+          "amount": 5,
+          "totalItemProfit": 4990.5
+        },
+        "ENCHANTED_NETHER_STALK": {
+          "itemName": "Enchanted Nether Wart",
+          "itemId": "ENCHANTED_NETHER_STALK",
+          "amount": 64,
+          "totalItemProfit": 42688.0
+        },
+        "KADA_LEAD": {
+          "itemName": "Kada Lead",
+          "itemId": "KADA_LEAD",
+          "amount": 2,
+          "totalItemProfit": 42638.8
+        },
+        "MEGALODON;4+100": {
+          "itemName": "Megalodon",
+          "itemId": "MEGALODON;4+100",
+          "amount": 2,
+          "totalItemProfit": 2.84E7
+        },
+        "ENCHANTED_BLAZE_ROD": {
+          "itemName": "Enchanted Blaze Rod",
+          "itemId": "ENCHANTED_BLAZE_ROD",
+          "amount": 1,
+          "totalItemProfit": 237686.8
+        },
+        "ENCHANTED_MAGMA_CREAM": {
+          "itemName": "Enchanted Magma Cream",
+          "itemId": "ENCHANTED_MAGMA_CREAM",
+          "amount": 4,
+          "totalItemProfit": 7275.2
+        },
+        "REKINDLED_EMBER_FRAGMENT": {
+          "itemName": "Rekindled Ember Fragment",
+          "itemId": "REKINDLED_EMBER_FRAGMENT",
+          "amount": 3,
+          "totalItemProfit": 245429.40000000002
+        },
+        "OCTOPUS_TENDRIL": {
+          "itemName": "Octopus Tendril",
+          "itemId": "OCTOPUS_TENDRIL",
+          "amount": 1,
+          "totalItemProfit": 4999998.6
+        },
+        "SULPHUR_SKITTER_BRONZE": {
+          "itemName": "Sulphur Skitter BRONZE",
+          "itemId": "SULPHUR_SKITTER_BRONZE",
+          "amount": 15,
+          "totalItemProfit": 127140.0
+        },
+        "SULPHUR_SKITTER_SILVER": {
+          "itemName": "Sulphur Skitter SILVER",
+          "itemId": "SULPHUR_SKITTER_SILVER",
+          "amount": 4,
+          "totalItemProfit": 50856.0
+        },
+        "GUSHER_BRONZE": {
+          "itemName": "Gusher BRONZE",
+          "itemId": "GUSHER_BRONZE",
+          "amount": 35,
+          "totalItemProfit": 237328.0
+        },
+        "VOLCANIC_STONEFISH_BRONZE": {
+          "itemName": "Volcanic Stonefish BRONZE",
+          "itemId": "VOLCANIC_STONEFISH_BRONZE",
+          "amount": 3,
+          "totalItemProfit": 12714.0
+        },
+        "GUSHER_SILVER": {
+          "itemName": "Gusher SILVER",
+          "itemId": "GUSHER_SILVER",
+          "amount": 8,
+          "totalItemProfit": 81369.6
+        },
+        "GUSHER_GOLD": {
+          "itemName": "Gusher GOLD",
+          "itemId": "GUSHER_GOLD",
+          "amount": 2,
+          "totalItemProfit": 27123.2
+        },
+        "SULPHUR_SKITTER_GOLD": {
+          "itemName": "Sulphur Skitter GOLD",
+          "itemId": "SULPHUR_SKITTER_GOLD",
+          "amount": 1,
+          "totalItemProfit": 16952.0
+        },
+        "VOLCANIC_STONEFISH_SILVER": {
+          "itemName": "Volcanic Stonefish SILVER",
+          "itemId": "VOLCANIC_STONEFISH_SILVER",
+          "amount": 3,
+          "totalItemProfit": 17799.6
+        },
+        "SPELL_POWDER": {
+          "itemName": "Spell Powder",
+          "itemId": "SPELL_POWDER",
+          "amount": 1,
+          "totalItemProfit": 12890.8
+        },
+        "MOLDFIN_GOLD": {
+          "itemName": "Moldfin GOLD",
+          "itemId": "MOLDFIN_GOLD",
+          "amount": 1,
+          "totalItemProfit": 13561.6
+        },
+        "RUSTY_COIN": {
+          "itemName": "Rusty Coin",
+          "itemId": "RUSTY_COIN",
+          "amount": 95,
+          "totalItemProfit": 3215132.5
+        },
+        "MANGROVE_LOG": {
+          "itemName": "Mangrove Log",
+          "itemId": "MANGROVE_LOG",
+          "amount": 5488,
+          "totalItemProfit": 37318.4
+        },
+        "SEA_LUMIES": {
+          "itemName": "Sea Lumies",
+          "itemId": "SEA_LUMIES",
+          "amount": 6,
+          "totalItemProfit": 4178.4
+        },
+        "FIG_LOG": {
+          "itemName": "Fig Log",
+          "itemId": "FIG_LOG",
+          "amount": 6688,
+          "totalItemProfit": 36784.0
+        },
+        "RABBIT_FOOT": {
+          "itemName": "Rabbit\u0027s Foot",
+          "itemId": "RABBIT_FOOT",
+          "amount": 55,
+          "totalItemProfit": 599.5
+        },
+        "RABBIT_HIDE": {
+          "itemName": "Rabbit Hide",
+          "itemId": "RABBIT_HIDE",
+          "amount": 57,
+          "totalItemProfit": 843.6
+        },
+        "WOOL": {
+          "itemName": "White Wool",
+          "itemId": "WOOL",
+          "amount": 27,
+          "totalItemProfit": 129.6
+        },
+        "ENCHANTED_MANGROVE_LOG": {
+          "itemName": "Enchanted Mangrove Log",
+          "itemId": "ENCHANTED_MANGROVE_LOG",
+          "amount": 6,
+          "totalItemProfit": 9529.8
+        },
+        "ENCHANTED_FIG_LOG": {
+          "itemName": "Enchanted Fig Log",
+          "itemId": "ENCHANTED_FIG_LOG",
+          "amount": 14,
+          "totalItemProfit": 15710.800000000001
+        },
+        "ESSENCE_ICE": {
+          "itemName": "Ice Essence",
+          "itemId": "ESSENCE_ICE",
+          "amount": 1582,
+          "totalItemProfit": 2209104.8000000003
+        },
+        "ENCHANTED_ICE": {
+          "itemName": "Enchanted Ice",
+          "itemId": "ENCHANTED_ICE",
+          "amount": 732,
+          "totalItemProfit": 121072.8
+        },
+        "BABY_YETI;0": {
+          "itemName": "[Lvl 1] Baby Yeti (COMMON)",
+          "itemId": "BABY_YETI;0",
+          "amount": 2,
+          "totalItemProfit": 2000000.0
+        },
+        "ENCHANTED_SNOW_BLOCK": {
+          "itemName": "Enchanted Snow Block",
+          "itemId": "ENCHANTED_SNOW_BLOCK",
+          "amount": 4,
+          "totalItemProfit": 2388.0
+        },
+        "TREASURE_BAIT": {
+          "itemName": "Treasure Bait",
+          "itemId": "TREASURE_BAIT",
+          "amount": 2160,
+          "totalItemProfit": 4687416.0
+        },
+        "SHARD_VERDANT": {
+          "itemName": "Verdant Shard",
+          "itemId": "SHARD_VERDANT",
+          "amount": 27,
+          "totalItemProfit": 97305.3
+        },
+        "FLEXBONE": {
+          "itemName": "Flexbone",
+          "itemId": "FLEXBONE",
+          "amount": 7,
+          "totalItemProfit": 1.13614886E7
+        },
+        "SHARD_COD": {
+          "itemName": "Cod Shard",
+          "itemId": "SHARD_COD",
+          "amount": 12,
+          "totalItemProfit": 38518.8
+        },
+        "SHARD_AZURE": {
+          "itemName": "Azure Shard",
+          "itemId": "SHARD_AZURE",
+          "amount": 11,
+          "totalItemProfit": 38138.1
+        },
+        "SHARD_SALMON": {
+          "itemName": "Salmon Shard",
+          "itemId": "SHARD_SALMON",
+          "amount": 4,
+          "totalItemProfit": 29997.6
+        },
+        "AGATHA_COUPON": {
+          "itemName": "Agatha\u0027s Coupon",
+          "itemId": "AGATHA_COUPON",
+          "amount": 25,
+          "totalItemProfit": 247857.49999999997
+        },
+        "ESSENCE_FOREST": {
+          "itemName": "Forest Essence",
+          "itemId": "ESSENCE_FOREST",
+          "amount": 40,
+          "totalItemProfit": 27272.0
+        },
+        "ENCHANTED_SPONGE": {
+          "itemName": "Enchanted Sponge",
+          "itemId": "ENCHANTED_SPONGE",
+          "amount": 60,
+          "totalItemProfit": 123984.0
+        },
+        "PET_ITEM_VAMPIRE_FANG": {
+          "itemName": "Vampire Fang",
+          "itemId": "PET_ITEM_VAMPIRE_FANG",
+          "amount": 1,
+          "totalItemProfit": 1755195.3
+        },
+        "PET_ITEM_FISHING_SKILL_BOOST_EPIC": {
+          "itemName": "Fishing Exp Boost (EPIC)",
+          "itemId": "PET_ITEM_FISHING_SKILL_BOOST_EPIC",
+          "amount": 1,
+          "totalItemProfit": 5850000.0
+        },
+        "VOLCANIC_STONEFISH_GOLD": {
+          "itemName": "Volcanic Stonefish GOLD",
+          "itemId": "VOLCANIC_STONEFISH_GOLD",
+          "amount": 2,
+          "totalItemProfit": 16952.0
+        },
+        "FLYFISH_BRONZE": {
+          "itemName": "Flyfish BRONZE",
+          "itemId": "FLYFISH_BRONZE",
+          "amount": 11,
+          "totalItemProfit": 74588.8
+        },
+        "FLYFISH_SILVER": {
+          "itemName": "Flyfish SILVER",
+          "itemId": "FLYFISH_SILVER",
+          "amount": 2,
+          "totalItemProfit": 20342.4
+        },
+        "OBFUSCATED_FISH_1_BRONZE": {
+          "itemName": "Obfuscated-1 BRONZE",
+          "itemId": "OBFUSCATED_FISH_1_BRONZE",
+          "amount": 192,
+          "totalItemProfit": 650956.8
+        },
+        "OBFUSCATED_FISH_2_BRONZE": {
+          "itemName": "Obfuscated-2 BRONZE",
+          "itemId": "OBFUSCATED_FISH_2_BRONZE",
+          "amount": 12,
+          "totalItemProfit": 101712.0
+        },
+        "OBFUSCATED_FISH_2_SILVER": {
+          "itemName": "Obfuscated-2 SILVER",
+          "itemId": "OBFUSCATED_FISH_2_SILVER",
+          "amount": 2,
+          "totalItemProfit": 25428.0
+        },
+        "GOLDEN_FISH_SILVER": {
+          "itemName": "Golden Fish SILVER",
+          "itemId": "GOLDEN_FISH_SILVER",
+          "amount": 1,
+          "totalItemProfit": 148330.0
+        },
+        "FLYFISH_GOLD": {
+          "itemName": "Flyfish GOLD",
+          "itemId": "FLYFISH_GOLD",
+          "amount": 1,
+          "totalItemProfit": 13561.6
+        },
+        "ENCHANTED_RED_SAND": {
+          "itemName": "Enchanted Red Sand",
+          "itemId": "ENCHANTED_RED_SAND",
+          "amount": 19,
+          "totalItemProfit": 29938.3
+        },
+        "BUSTED_BELT_BUCKLE": {
+          "itemName": "Busted Belt Buckle",
+          "itemId": "BUSTED_BELT_BUCKLE",
+          "amount": 8,
+          "totalItemProfit": 5540632.8
+        },
+        "OLD_LEATHER_BOOT": {
+          "itemName": "Old Leather Boot",
+          "itemId": "OLD_LEATHER_BOOT",
+          "amount": 1,
+          "totalItemProfit": 240631.7
+        },
+        "SQUID;0": {
+          "itemName": "[Lvl 1] Squid (COMMON)",
+          "itemId": "SQUID;0",
+          "amount": 1,
+          "totalItemProfit": 8999.0
+        },
+        "REALITY_HOPPER_BRONZE": {
+          "itemName": "Reality Hopper BRONZE",
+          "itemId": "REALITY_HOPPER_BRONZE",
+          "amount": 18,
+          "totalItemProfit": 190224.0
+        },
+        "COMMON_FROG_GOLD": {
+          "itemName": "Common Frog GOLD",
+          "itemId": "COMMON_FROG_GOLD",
+          "amount": 6,
+          "totalItemProfit": 101452.79999999999
+        },
+        "COMMON_FROG_BRONZE": {
+          "itemName": "Common Frog BRONZE",
+          "itemId": "COMMON_FROG_BRONZE",
+          "amount": 81,
+          "totalItemProfit": 342403.2
+        },
+        "BULLFROG_SILVER": {
+          "itemName": "Bullfrog SILVER",
+          "itemId": "BULLFROG_SILVER",
+          "amount": 9,
+          "totalItemProfit": 380448.0
+        },
+        "LOTUS": {
+          "itemName": "Lotus",
+          "itemId": "LOTUS",
+          "amount": 903,
+          "totalItemProfit": 477145.19999999995
+        },
+        "COMMON_FROG_SILVER": {
+          "itemName": "Common Frog SILVER",
+          "itemId": "COMMON_FROG_SILVER",
+          "amount": 26,
+          "totalItemProfit": 219814.4
+        },
+        "REALITY_HOPPER_SILVER": {
+          "itemName": "Reality Hopper SILVER",
+          "itemId": "REALITY_HOPPER_SILVER",
+          "amount": 2,
+          "totalItemProfit": 42272.0
+        },
+        "BULLFROG_GOLD": {
+          "itemName": "Bullfrog GOLD",
+          "itemId": "BULLFROG_GOLD",
+          "amount": 1,
+          "totalItemProfit": 84544.0
+        },
+        "SEA_FROG_SILVER": {
+          "itemName": "Sea Frog SILVER",
+          "itemId": "SEA_FROG_SILVER",
+          "amount": 3,
+          "totalItemProfit": 126816.0
+        },
+        "SEA_FROG_BRONZE": {
+          "itemName": "Sea Frog BRONZE",
+          "itemId": "SEA_FROG_BRONZE",
+          "amount": 11,
+          "totalItemProfit": 232496.0
+        },
+        "BULLFROG_BRONZE": {
+          "itemName": "Bullfrog BRONZE",
+          "itemId": "BULLFROG_BRONZE",
+          "amount": 26,
+          "totalItemProfit": 549536.0
+        },
+        "WETLANDS_FROG_BRONZE": {
+          "itemName": "Wetlands Frog BRONZE",
+          "itemId": "WETLANDS_FROG_BRONZE",
+          "amount": 20,
+          "totalItemProfit": 211360.0
+        },
+        "WETLANDS_FROG_SILVER": {
+          "itemName": "Wetlands Frog SILVER",
+          "itemId": "WETLANDS_FROG_SILVER",
+          "amount": 5,
+          "totalItemProfit": 105680.0
+        },
+        "EXPLODING_FROG_BRONZE": {
+          "itemName": "Exploding Frog BRONZE",
+          "itemId": "EXPLODING_FROG_BRONZE",
+          "amount": 1,
+          "totalItemProfit": 6340.799999999999
+        },
+        "EXPLODING_FROG_SILVER": {
+          "itemName": "Exploding Frog SILVER",
+          "itemId": "EXPLODING_FROG_SILVER",
+          "amount": 1,
+          "totalItemProfit": 12681.599999999999
+        },
+        "PUDDLE_JUMPER_BRONZE": {
+          "itemName": "Puddle Jumper BRONZE",
+          "itemId": "PUDDLE_JUMPER_BRONZE",
+          "amount": 1,
+          "totalItemProfit": 67635.2
+        },
+        "LOTUS_SILVER": {
+          "itemName": "Silver Lotus",
+          "itemId": "LOTUS_SILVER",
+          "amount": 1,
+          "totalItemProfit": 32580.4
+        },
+        "REALITY_HOPPER_GOLD": {
+          "itemName": "Reality Hopper GOLD",
+          "itemId": "REALITY_HOPPER_GOLD",
+          "amount": 3,
+          "totalItemProfit": 126816.0
+        },
+        "BLESSED_FROG_BRONZE": {
+          "itemName": "Blessed Frog BRONZE",
+          "itemId": "BLESSED_FROG_BRONZE",
+          "amount": 24,
+          "totalItemProfit": 405811.19999999995
+        },
+        "CAVE_FROG_SILVER": {
+          "itemName": "Cave Frog SILVER",
+          "itemId": "CAVE_FROG_SILVER",
+          "amount": 1,
+          "totalItemProfit": 84544.0
+        },
+        "CAVE_FROG_BRONZE": {
+          "itemName": "Cave Frog BRONZE",
+          "itemId": "CAVE_FROG_BRONZE",
+          "amount": 4,
+          "totalItemProfit": 169088.0
+        },
+        "BLESSED_FROG_SILVER": {
+          "itemName": "Blessed Frog SILVER",
+          "itemId": "BLESSED_FROG_SILVER",
+          "amount": 16,
+          "totalItemProfit": 541081.6
+        },
+        "LEAP_FROG_BRONZE": {
+          "itemName": "Leap Frog BRONZE",
+          "itemId": "LEAP_FROG_BRONZE",
+          "amount": 2,
+          "totalItemProfit": 25363.199999999997
+        },
+        "TREE_FROG_SILVER": {
+          "itemName": "Tree Frog SILVER",
+          "itemId": "TREE_FROG_SILVER",
+          "amount": 1,
+          "totalItemProfit": 84544.0
+        },
+        "BLESSED_FROG_GOLD": {
+          "itemName": "Blessed Frog GOLD",
+          "itemId": "BLESSED_FROG_GOLD",
+          "amount": 2,
+          "totalItemProfit": 135270.4
+        },
+        "TREE_FROG_BRONZE": {
+          "itemName": "Tree Frog BRONZE",
+          "itemId": "TREE_FROG_BRONZE",
+          "amount": 1,
+          "totalItemProfit": 42272.0
+        },
+        "HIGHLANDS_FROG_BRONZE": {
+          "itemName": "Highlands Frog BRONZE",
+          "itemId": "HIGHLANDS_FROG_BRONZE",
+          "amount": 1,
+          "totalItemProfit": 42272.0
+        },
+        "HIGHLANDS_FROG_SILVER": {
+          "itemName": "Highlands Frog SILVER",
+          "itemId": "HIGHLANDS_FROG_SILVER",
+          "amount": 1,
+          "totalItemProfit": 84544.0
+        }
+      },
+      "totalProfit": 1.540183255399999E9,
+      "elapsedSeconds": 184878
+    },
+    "viewMode": "TOTAL"
+  },
+  "magmaCoreFishing": {
+    "session": {
+      "magmaCoresCount": 0,
+      "lastAddedMagmaCoresCount": 0,
+      "seaCreaturesCaughtCount": 0,
+      "elapsedSeconds": 0
+    },
+    "total": {
+      "magmaCoresCount": 0,
+      "lastAddedMagmaCoresCount": 0,
+      "seaCreaturesCaughtCount": 0,
+      "elapsedSeconds": 0
+    },
+    "viewMode": "SESSION"
+  },
+  "rareDropNotifications": {
+    "items": {}
+  },
+  "personalBest": {
+    "sharksCaught": {
+      "amount": 308,
+      "at": "2026-05-17T21:14:56Z"
+    },
+    "greatWhiteSharksCaught": {
+      "amount": 25,
+      "at": "2026-05-16T14:14:58Z"
+    },
+    "doubleHookStreak": {
+      "amount": 1,
+      "at": "2026-05-27T16:57:49Z"
+    }
+  }
+}
