@@ -126,7 +126,7 @@ data class DropCounterData(
             val lastDrop = dropsHistory[0]
             val timeElapsed = CommonUtils.formatTimeElapsed(lastDrop.time)
             val dateFormatted = CommonUtils.formatDate(lastDrop.time)
-            LineInfo("${GRAY}Last on: ${WHITE}${timeElapsed}", tooltip = listOf(Component.literal("${GRAY}Last on: ${WHITE}${dateFormatted}")))
+            LineInfo("${GRAY}Last on: ${WHITE}${timeElapsed} ago", tooltip = listOf(Component.literal("${GRAY}Last on: ${WHITE}${dateFormatted}")))
         } else LineInfo("${GRAY}Last on: ${WHITE}N/A")
         
         val catchesSinceLastDrop = catchesSinceLast
