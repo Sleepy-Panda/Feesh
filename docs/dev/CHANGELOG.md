@@ -6,6 +6,10 @@ Released on: ???
 
 -
 
+## Bugfixes
+
+- Fixed Condensed Lily Pad and Stridersurfer Shard not being tracked by Fishing profit tracker.
+
 # 1.7.1
 
 Released on: 2026-05-27
