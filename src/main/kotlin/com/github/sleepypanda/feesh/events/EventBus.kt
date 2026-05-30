@@ -16,6 +16,7 @@ import com.github.sleepypanda.feesh.events.models.WorldChangedEvent
 import com.github.sleepypanda.feesh.events.models.ScreenBeforeInitEvent
 import com.github.sleepypanda.feesh.utils.ChatUtils.getFormattedString
 import com.github.sleepypanda.feesh.utils.ChatUtils.removeFormatting
+import com.github.sleepypanda.feesh.utils.InputUtils
 import kotlin.reflect.KClass
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents
@@ -83,7 +84,7 @@ object EventBus {
             }
 
             ScreenMouseEvents.afterMouseClick(screen).register { scr, click, consumed ->
-               publish(AfterMouseClickEvent(scr, click.x(), click.y(), click.buttonInfo().button))
+               publish(AfterMouseClickEvent(scr, click.x(), click.y(), click.buttonInfo().button, InputUtils.hasControlDown(click)))
                consumed
             }
         }

@@ -4,7 +4,7 @@ Released on: ???
 
 ## Features
 
--
+- Added option to use Ctrl+Click instead of Click, to interact with overlay buttons, to avoid undesired interactions when in Chat/Inventory.
 
 ## Bugfixes
 
