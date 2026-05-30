@@ -218,6 +218,7 @@ class FeeshGui {
         if (!GuiUtils.isInInventoryOrChat()) return
         if (event.button != 0) return
         if (event.screen !is InventoryScreen && event.screen !is ChatScreen) return
+        if (Overlays.overlayButtonsRequireCtrlClick && !event.hasControlDown) return
 
         val textRenderer = Minecraft.getInstance().font
 

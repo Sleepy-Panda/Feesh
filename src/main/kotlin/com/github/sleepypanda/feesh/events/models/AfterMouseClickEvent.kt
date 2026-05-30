@@ -6,5 +6,6 @@ data class AfterMouseClickEvent(
     val screen: Screen,
     val mouseX: Double,
     val mouseY: Double,
-    val button: Int
+    val button: Int,
+    val hasControlDown: Boolean,
 )

@@ -88,7 +88,14 @@ object Overlays : CategoryKt("Overlays") {
                 MoveGuis.moveAllGuis()
             }
         }
+    }
 
+    var overlayButtonsRequireCtrlClick by boolean(false) {
+        this.name = Translated("Overlays buttons require Ctrl+Click")
+        this.description = Translated("When enabled, overlays buttons (Reset, Pause, switch view mode, and inline +/-/x buttons) only activate on Ctrl+Click, to avoid undesired interactions.")
+    }
+    
+    init {
         button {
             title = "Pause all trackers keybind"
             description = "Set a keybind in Minecraft's Controls menu to pause all active trackers on button pressed (so the timers stop). Default is PAUSE.\nExecutes ${WHITE}/${PauseAllTrackersCommand.COMMAND_NAME}"
