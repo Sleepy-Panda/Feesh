@@ -4,11 +4,12 @@ Released on: ???
 
 ## Features
 
-- Added option to use Ctrl+Click instead of Click, to interact with overlay buttons, to avoid undesired interactions when in Chat/Inventory.
+- Added option to use Ctrl+Click instead of Click to interact with overlay buttons. This might help to avoid undesired overlays interactions when in Chat/Inventory.
 
 ## Bugfixes
 
 - Fixed Condensed Lily Pad and Stridersurfer Shard not being tracked by Fishing profit tracker.
+- Fixed blank bait name in "Out of bait soon" chat message.
 
 # 1.7.1
 
