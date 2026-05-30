@@ -18,11 +18,13 @@ import com.github.sleepypanda.feesh.utils.gui.FeeshGui
 import com.github.sleepypanda.feesh.utils.gui.GuiButton
 import com.github.sleepypanda.feesh.utils.gui.LineAction
 import com.github.sleepypanda.feesh.utils.gui.LineInfo
+import com.github.sleepypanda.feesh.utils.gui.LineSegment
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
 import com.github.sleepypanda.feesh.utils.FishingHookUtils
 import com.github.sleepypanda.feesh.utils.data.PersistentDataManager
 import net.minecraft.network.chat.Component
+import net.minecraft.client.gui.Font
 import java.text.DecimalFormat
 
 object SeaCreaturesTracker {
@@ -569,11 +571,17 @@ object SeaCreaturesTracker {
             val lines = mutableListOf<LineInfo>()
             lines.add(LineInfo("$baseTitle $viewModeText"))
 
+            val columnRows = entriesToShow.map { getSeaCreatureLineColumns(it) }
+            val columnLayout = getColumnLayout(FeeshMod.mc.font, columnRows)
+            val segmentTableWidth = getTableLayoutWidth(columnLayout)
+
             entriesToShow.forEach { entry ->
-                val seaCreatureText = getSeaCreatureLineText(entry, displayMode)
+                val columns = getSeaCreatureLineColumns(entry)
                 lines.add(
                     LineInfo(
-                        text = seaCreatureText,
+                        text = "",
+                        segments = columnsToLineSegments(columns, columnLayout),
+                        segmentTableWidth = segmentTableWidth,
                         tooltip = getSeaCreatureLineTooltip(entry),
                         actions = listOf(
                             LineAction("${GRAY}[${RED}x${GRAY}]") { onDeleteSeaCreatureInline(entry.seaCreature) }
@@ -621,7 +629,17 @@ object SeaCreaturesTracker {
         return sorted
     }
 
-    private fun getSeaCreatureLineText(entry: SeaCreatureTrackerEntry, displayMode: SeaCreaturesTrackerDisplayMode): String {
+    private data class TrackerLineColumns(val main: String, val dh: String, val bs: String)
+
+    private data class TrackerColumnLayout(
+        val mainWidth: Int,
+        val dhWidth: Int,
+        val bsWidth: Int,
+        val dhX: Int,
+        val bsX: Int,
+    )
+
+    private fun getSeaCreatureLineColumns(entry: SeaCreatureTrackerEntry): TrackerLineColumns {
         val showPercentage = Overlays.showSeaCreaturesPercentage
         val showDoubleHook = Overlays.showSeaCreaturesDoubleHookStatistics
         val showCocooned = Overlays.showCocoonedStatistics
@@ -629,15 +647,70 @@ object SeaCreaturesTracker {
         val seaCreatureText = if (entry.seaCreatureInfo.isRare) entry.seaCreatureInfo.boldDisplayName else entry.seaCreatureInfo.displayName
         val countText = "${WHITE}${entry.totalAmountFormatted}"
         val percentText = if (showPercentage) " ${GRAY}${entry.percentFormatted}" else ""
-            
-        val doubleHookText = if (showDoubleHook && entry.seaCreatureInfo.canBeDoubleHooked) {
-            " ${DARK_GRAY}| ${GRAY}DH: ${WHITE}${entry.doubleHookAmountFormatted} ${GRAY}${entry.doubleHookPercentFormatted}"
-        } else ""
-        val cocoonedText = if (showCocooned) {
-            " ${DARK_GRAY}| ${GRAY}BS: ${WHITE}${entry.cocoonedAmountFormatted} ${GRAY}${entry.cocoonedPercentFormatted}"
+        val main = "${GRAY}- $seaCreatureText${GRAY}: $countText$percentText"
+
+        val dh = if (showDoubleHook && entry.seaCreatureInfo.canBeDoubleHooked) {
+            "${GRAY}DH: ${WHITE}${entry.doubleHookAmountFormatted} ${GRAY}${entry.doubleHookPercentFormatted}"
         } else ""
 
-        return "${GRAY}- $seaCreatureText${GRAY}: $countText$percentText$doubleHookText$cocoonedText"
+        val bs = if (showCocooned) {
+            "${GRAY}BS: ${WHITE}${entry.cocoonedAmountFormatted} ${GRAY}${entry.cocoonedPercentFormatted}"
+        } else ""
+
+        return TrackerLineColumns(main, dh, bs)
+    }
+
+    private fun getTotalLineText(displayMode: SeaCreaturesTrackerDisplayMode, totalInfo: TotalTrackerEntry): String {
+        val showCocooned = Overlays.countCocoonedSeaCreatures
+        return when (displayMode) {
+            SeaCreaturesTrackerDisplayMode.ALL -> {
+                val doubleHookText = " ${DARK_GRAY}| ${GRAY}DH: ${WHITE}${totalInfo.allDoubleHookAmountFormatted} ${GRAY}${totalInfo.allDoubleHookPercentFormatted}"
+                val cocoonedText = if (showCocooned) {
+                    " ${DARK_GRAY}| ${GRAY}BS: ${WHITE}${totalInfo.allCocoonedAmountFormatted} ${GRAY}${totalInfo.allCocoonedPercentFormatted}"
+                } else ""
+                "${AQUA}Total: ${WHITE}${totalInfo.allTotalAmountFormatted}$doubleHookText$cocoonedText"
+            }
+            SeaCreaturesTrackerDisplayMode.ONLY_RARE -> {
+                val doubleHookText = " ${DARK_GRAY}| ${GRAY}DH: ${WHITE}${totalInfo.rareDoubleHookAmountFormatted} ${GRAY}${totalInfo.rareDoubleHookPercentFormatted}"
+                val cocoonedText = if (showCocooned) {
+                    " ${DARK_GRAY}| ${GRAY}BS: ${WHITE}${totalInfo.rareCocoonedAmountFormatted} ${GRAY}${totalInfo.rareCocoonedPercentFormatted}"
+                } else ""
+                "${AQUA}Total: ${WHITE}${totalInfo.rareTotalAmountFormatted} ${GRAY}rare out of ${WHITE}${totalInfo.allTotalAmountFormatted}$doubleHookText$cocoonedText"
+            }
+        }
+    }
+
+    private fun getColumnLayout(font: Font, rows: List<TrackerLineColumns>): TrackerColumnLayout {
+        val columnsSeparatorWidth = font.width(Component.literal(" "))
+        val mainWidth = rows.maxOf { font.width(Component.literal(it.main)) }
+        val dhWidth = rows.maxOf { font.width(Component.literal(it.dh)) }
+        val bsWidth = rows.maxOf { font.width(Component.literal(it.bs)) }
+
+        val dhX = if (dhWidth > 0) mainWidth + columnsSeparatorWidth else -1
+        val bsX = if (bsWidth > 0) {
+            if (dhWidth > 0) dhX + dhWidth + columnsSeparatorWidth else mainWidth + columnsSeparatorWidth
+        } else -1
+
+        return TrackerColumnLayout(mainWidth, dhWidth, bsWidth, dhX, bsX)
+    }
+
+    private fun getTableLayoutWidth(layout: TrackerColumnLayout): Int {
+        return when {
+            layout.bsX >= 0 -> layout.bsX + layout.bsWidth
+            layout.dhX >= 0 -> layout.dhX + layout.dhWidth
+            else -> layout.mainWidth
+        }
+    }
+
+    private fun columnsToLineSegments(columns: TrackerLineColumns, layout: TrackerColumnLayout): List<LineSegment> {
+        val segments = mutableListOf(LineSegment(columns.main, 0, layout.mainWidth))
+        if (columns.dh.isNotEmpty() && layout.dhX >= 0) {
+            segments.add(LineSegment(columns.dh, layout.dhX, layout.dhWidth))
+        }
+        if (columns.bs.isNotEmpty() && layout.bsX >= 0) {
+            segments.add(LineSegment(columns.bs, layout.bsX, layout.bsWidth))
+        }
+        return segments
     }
 
     private fun getSeaCreatureLineTooltip(entry: SeaCreatureTrackerEntry): List<Component> {
@@ -735,22 +808,6 @@ object SeaCreaturesTracker {
         )
     }
     
-    private fun getTotalLineText(displayMode: SeaCreaturesTrackerDisplayMode, totalInfo: TotalTrackerEntry): String {
-        val showCocooned = Overlays.countCocoonedSeaCreatures
-        when (displayMode) {
-            SeaCreaturesTrackerDisplayMode.ALL -> {
-                val doubleHookText = " ${DARK_GRAY}| ${GRAY}DH: ${WHITE}${totalInfo.allDoubleHookAmountFormatted} ${GRAY}${totalInfo.allDoubleHookPercentFormatted}"
-                val cocoonedText = if (showCocooned) " ${DARK_GRAY}| ${GRAY}BS: ${WHITE}${totalInfo.allCocoonedAmountFormatted} ${GRAY}${totalInfo.allCocoonedPercentFormatted}" else ""
-                return "${AQUA}Total: ${WHITE}${totalInfo.allTotalAmountFormatted}${doubleHookText}${cocoonedText}"
-            }
-            SeaCreaturesTrackerDisplayMode.ONLY_RARE -> {
-                val doubleHookText = " ${DARK_GRAY}| ${GRAY}DH: ${WHITE}${totalInfo.rareDoubleHookAmountFormatted} ${GRAY}${totalInfo.rareDoubleHookPercentFormatted}"
-                val cocoonedText = if (showCocooned) " ${DARK_GRAY}| ${GRAY}BS: ${WHITE}${totalInfo.rareCocoonedAmountFormatted} ${GRAY}${totalInfo.rareCocoonedPercentFormatted}" else ""
-                return "${AQUA}Total: ${WHITE}${totalInfo.rareTotalAmountFormatted} ${GRAY}rare out of ${WHITE}${totalInfo.allTotalAmountFormatted}${doubleHookText}${cocoonedText}"
-            }
-        }
-    }
-
     private fun getTotalLineTooltip(totalInfo: TotalTrackerEntry): List<Component> {
         val lines = listOfNotNull(
             "${AQUA}Total",

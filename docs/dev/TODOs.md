@@ -24,6 +24,7 @@ Newly released - https://hypixel.net/threads/hypixel-skyblock-0-24-5-assorted-qo
 ## Current issues & feedback
 
 - 1.21.10 gonna be removed
+- Overlays alignment for DH, BS, profit coins
 - ea Creature Tracker where it says "Total" could you change that to "Total Sea Creatures"
 - Empty bait name in no bait alert. Got treasure bait from quest
 - Add treasure dye pity rng meter (millerzz)

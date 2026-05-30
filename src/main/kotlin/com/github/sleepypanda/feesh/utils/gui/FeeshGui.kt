@@ -47,8 +47,22 @@ data class LineAction(
     val onClick: () -> Unit
 )
 
-data class LineInfo(
+/** 
+ * A segment of a line used to display column-based text with columns alignment.
+ * @param text The text to display in the segment.
+ * @param xOffset The x offset of the segment.
+ * @param columnWidth The width of the segment.
+ */
+data class LineSegment(
     val text: String,
+    val xOffset: Int = 0,
+    val columnWidth: Int = 0,
+)
+
+data class LineInfo(
+    val text: String = "",
+    val segments: List<LineSegment>? = null, // Text is not needed if Segments defined
+    val segmentTableWidth: Int? = null,
     val tooltip: List<Component>? = null,
     val actions: List<LineAction> = emptyList()
 )
@@ -279,7 +293,32 @@ class FeeshGui {
      */
     private fun getAllDisplayLines(): List<String> {
         val buttonLines = buttons.sortedBy { it.lineIndex }.map { it.text }
-        return buttonLines + lines.map { it.text }
+        return buttonLines + lines.map { getLineDisplayText(it) }
+    }
+
+    private fun getLineDisplayText(lineInfo: LineInfo): String {
+        if (!lineInfo.segments.isNullOrEmpty()) {
+            return lineInfo.segments.joinToString("") { it.text }
+        }
+        return lineInfo.text
+    }
+
+    private fun getLineWidth(textRenderer: Font, lineInfo: LineInfo): Int {
+        if (lineInfo.segmentTableWidth != null) return lineInfo.segmentTableWidth
+        if (!lineInfo.segments.isNullOrEmpty()) {
+            return lineInfo.segments.maxOf { it.xOffset + textRenderer.width(Component.literal(it.text)) }
+        }
+        return textRenderer.width(Component.literal(lineInfo.text))
+    }
+
+    private fun getOverlayMaxWidth(
+        textRenderer: Font,
+        lineInfos: List<LineInfo>,
+        buttonLineTexts: List<String>,
+    ): Int {
+        val widths = lineInfos.map { getLineWidth(textRenderer, it) } +
+            buttonLineTexts.map { textRenderer.width(Component.literal(it)) }
+        return widths.maxOrNull() ?: 0
     }
 
     /**
@@ -295,16 +334,18 @@ class FeeshGui {
      * Gets display lines for rendering. Buttons are included only when in inventory or chat.
      */
     private fun getDisplayLinesForRender(): List<String> {
-        return if (GuiUtils.isInInventoryOrChat()) getAllDisplayLines() else lines.map { it.text }
+        return if (GuiUtils.isInInventoryOrChat()) getAllDisplayLines() else lines.map { getLineDisplayText(it) }
     }
 
-    /**
-     * Gets the maximum width of the overlay for the given display lines.
-     */
-    private fun getMaxWidth(textRenderer: Font, displayLines: List<String>): Int {
-        return displayLines.maxOfOrNull { textRenderer.width(Component.literal(it)) } ?: 0
+    private fun getRenderLineInfos(): List<LineInfo> {
+        return if (GuiUtils.isInInventoryOrChat()) {
+            val buttonLineInfos = buttons.sortedBy { it.lineIndex }.map { LineInfo(text = it.text) }
+            buttonLineInfos + lines
+        } else {
+            lines
+        }
     }
-    
+
     /**
      * Gets the maximum width of the sample overlay.
      */
@@ -320,8 +361,12 @@ class FeeshGui {
      * Converts x coordinate (which represents different points based on alignment) to actual left edge.
      * Uses scaled width for CENTER/RIGHT so that the reference point stays correct after matrices.scale(scale).
      */
-    private fun getLeftEdge(textRenderer: Font, displayLines: List<String>): Int {
-        val maxWidth = getMaxWidth(textRenderer, displayLines)
+    private fun getLeftEdge(
+        textRenderer: Font,
+        lineInfos: List<LineInfo>,
+        buttonLineTexts: List<String>,
+    ): Int {
+        val maxWidth = getOverlayMaxWidth(textRenderer, lineInfos, buttonLineTexts)
         val renderedWidth = (maxWidth * scale).toInt()
         return when (alignment) {
             Alignment.LEFT -> x
@@ -352,6 +397,8 @@ class FeeshGui {
         if (mcClient.screen is MoveGuisScreen) return
 
         val allLines = getDisplayLinesForRender()
+        val renderLineInfos = getRenderLineInfos()
+        val buttonLineTexts = if (GuiUtils.isInInventoryOrChat()) buttons.sortedBy { it.lineIndex }.map { it.text } else emptyList()
         val scaledY = (y / scale).toInt()
         val fontHeight = textRenderer.lineHeight
         val lineHeightPx = fontHeight + 2
@@ -365,8 +412,8 @@ class FeeshGui {
         val hoveredActions = hoveredLineInfo?.actions?.takeIf { it.isNotEmpty() }
         val hoveredTooltip = hoveredLineInfo?.tooltip
 
-        val maxWidth = getMaxWidth(textRenderer, allLines)
-        val leftEdge = getLeftEdge(textRenderer, allLines)
+        val maxWidth = getOverlayMaxWidth(textRenderer, lines, buttonLineTexts)
+        val leftEdge = getLeftEdge(textRenderer, lines, buttonLineTexts)
         val scaledLeftEdge = (leftEdge / scale).toInt()
         val height = (allLines.size * lineHeightPx)
         var currentY = scaledY
@@ -383,47 +430,81 @@ class FeeshGui {
         drawContext.pose().scale(scale, scale)
 
         for ((index, line) in allLines.withIndex()) {
+            val lineInfo = renderLineInfos.getOrNull(index)
             val actions = if (index == hoveredLineIndex) hoveredActions else null
             if (!actions.isNullOrEmpty()) {
                 val buttonsStr = actions.joinToString("") { it.text }
                 val buttonsWidth = textRenderer.width(Component.literal(buttonsStr))
                 val spaceWidth = textRenderer.width(Component.literal(" "))
                 val reservedWidth = buttonsWidth + spaceWidth
+                val usesSegmentColumns = lineInfo.usesSegmentColumns()
                 val lineAvailableWidth = (maxWidth - reservedWidth).coerceAtLeast(0)
-                val clippedLine = trimTextToWidth(textRenderer, line, lineAvailableWidth)
-                val clippedLineWidth = textRenderer.width(Component.literal(clippedLine))
+                val clippedLine = if (usesSegmentColumns) {
+                    line
+                } else {
+                    trimTextToWidth(textRenderer, line, lineAvailableWidth)
+                }
+                val clippedLineWidth = if (usesSegmentColumns) {
+                    lineInfo?.segmentTableWidth ?: lineInfo?.let { getLineWidth(textRenderer, it) }
+                        ?: textRenderer.width(Component.literal(clippedLine))
+                } else {
+                    textRenderer.width(Component.literal(clippedLine))
+                }
 
                 when (alignment) {
                     Alignment.LEFT -> {
                         val buttonsX = scaledLeftEdge
-                        val lineX = scaledLeftEdge + buttonsWidth + spaceWidth
+                        val lineX = scaledLeftEdge + reservedWidth
                         drawStringCompat(drawContext, textRenderer, Component.literal(buttonsStr), buttonsX, currentY, color, true)
-                        drawStringCompat(drawContext, textRenderer, Component.literal(clippedLine), lineX, currentY, color, true)
+                        drawLineContent(drawContext, textRenderer, lineInfo, clippedLine, lineX, lineAvailableWidth, currentY)
                     }
                     Alignment.RIGHT -> {
-                        val lineX = scaledLeftEdge + maxWidth - reservedWidth - clippedLineWidth
+                        val lineX = if (usesSegmentColumns) {
+                            scaledLeftEdge
+                        } else {
+                            scaledLeftEdge + lineAvailableWidth - clippedLineWidth
+                        }
                         val buttonsX = scaledLeftEdge + maxWidth - buttonsWidth
-                        drawStringCompat(drawContext, textRenderer, Component.literal(clippedLine), lineX, currentY, color, true)
+                        drawLineContent(drawContext, textRenderer, lineInfo, clippedLine, lineX, lineAvailableWidth, currentY)
                         drawStringCompat(drawContext, textRenderer, Component.literal(buttonsStr), buttonsX, currentY, color, true)
                     }
                     Alignment.CENTER -> {
-                        val contentWidth = reservedWidth + clippedLineWidth
-                        val contentLeft = scaledLeftEdge + (maxWidth - contentWidth) / 2
+                        val tableWidth = if (usesSegmentColumns) {
+                            lineInfo?.segmentTableWidth ?: clippedLineWidth
+                        } else {
+                            clippedLineWidth
+                        }
+                        val textWidth = minOf(tableWidth, lineAvailableWidth)
+                        val blockWidth = reservedWidth + textWidth
+                        val contentLeft = scaledLeftEdge + (maxWidth - blockWidth) / 2
                         val buttonsX = contentLeft
-                        val lineX = contentLeft + buttonsWidth + spaceWidth
+                        val lineX = contentLeft + reservedWidth
                         drawStringCompat(drawContext, textRenderer, Component.literal(buttonsStr), buttonsX, currentY, color, true)
-                        drawStringCompat(drawContext, textRenderer, Component.literal(clippedLine), lineX, currentY, color, true)
+                        drawLineContent(drawContext, textRenderer, lineInfo, clippedLine, lineX, lineAvailableWidth, currentY)
                     }
                 }
             } else {
-                val text = Component.literal(line)
-                val textWidth = textRenderer.width(text)
+                val textWidth = lineInfo?.let { getLineWidth(textRenderer, it) }
+                    ?: textRenderer.width(Component.literal(line))
+                val tableWidth = lineInfo?.segmentTableWidth
                 val actualX = when (alignment) {
                     Alignment.LEFT -> scaledLeftEdge
-                    Alignment.RIGHT -> scaledLeftEdge + maxWidth - textWidth
-                    Alignment.CENTER -> scaledLeftEdge + (maxWidth - textWidth) / 2
+                    Alignment.RIGHT -> if (lineInfo.usesSegmentColumns()) {
+                        scaledLeftEdge
+                    } else {
+                        scaledLeftEdge + maxWidth - textWidth
+                    }
+                    Alignment.CENTER -> if (lineInfo.usesSegmentColumns() && tableWidth != null) {
+                        scaledLeftEdge + (maxWidth - tableWidth) / 2
+                    } else {
+                        scaledLeftEdge + (maxWidth - textWidth) / 2
+                    }
                 }
-                drawStringCompat(drawContext, textRenderer, text, actualX, currentY, color, true)
+                val contentWidth = when (alignment) {
+                    Alignment.RIGHT -> maxWidth
+                    else -> tableWidth ?: maxWidth
+                }
+                drawLineContent(drawContext, textRenderer, lineInfo, line, actualX, contentWidth, currentY)
             }
             currentY += lineHeightPx
         }
@@ -432,6 +513,53 @@ class FeeshGui {
 
         if (!hoveredTooltip.isNullOrEmpty() && mouseX != null && mouseY != null) {
             drawContext.setComponentTooltipForNextFrame(textRenderer, hoveredTooltip, mouseX, mouseY)
+        }
+    }
+
+    private fun LineInfo?.usesSegmentColumns(): Boolean = this != null && !this.segments.isNullOrEmpty()
+
+    private fun drawLineContent(
+        drawContext: GuiGraphics,
+        textRenderer: Font,
+        lineInfo: LineInfo?,
+        fallbackText: String,
+        lineStartX: Int,
+        contentWidth: Int,
+        currentY: Int,
+    ) {
+        if (lineInfo != null && !lineInfo.segments.isNullOrEmpty()) {
+            val tableWidth = lineInfo.segmentTableWidth
+                ?: lineInfo.segments.maxOf { it.xOffset + textRenderer.width(Component.literal(it.text)) }
+            val segmentOriginX = when (alignment) {
+                Alignment.RIGHT -> lineStartX + contentWidth - tableWidth
+                else -> lineStartX
+            }
+            val contentRight = lineStartX + contentWidth
+            for (segment in lineInfo.segments) {
+                val segmentText = Component.literal(segment.text)
+                val segmentTextWidth = textRenderer.width(segmentText)
+                val columnWidth = segment.columnWidth.takeIf { it > 0 } ?: segmentTextWidth
+                val segmentX = when (alignment) {
+                    Alignment.RIGHT -> segmentOriginX + segment.xOffset + columnWidth - segmentTextWidth
+                    else -> segmentOriginX + segment.xOffset
+                }
+                if (segmentX >= contentRight) continue
+                val availableWidth = (contentRight - segmentX).coerceAtLeast(0)
+                val displayText = trimTextToWidth(textRenderer, segment.text, availableWidth)
+                if (displayText.isEmpty()) continue
+                drawStringCompat(
+                    drawContext,
+                    textRenderer,
+                    Component.literal(displayText),
+                    segmentX,
+                    currentY,
+                    color,
+                    true,
+                )
+            }
+        } else {
+            val displayText = trimTextToWidth(textRenderer, fallbackText, contentWidth)
+            drawStringCompat(drawContext, textRenderer, Component.literal(displayText), lineStartX, currentY, color, true)
         }
     }
 
@@ -527,8 +655,9 @@ class FeeshGui {
     }
 
     private fun getHoveredLineIndex(textRenderer: Font, displayLines: List<String>, mouseX: Double, mouseY: Double): Int? {
-        val maxWidth = getMaxWidth(textRenderer, displayLines) * scale
-        val leftEdge = getLeftEdge(textRenderer, displayLines).toFloat()
+        val buttonLineTexts = if (GuiUtils.isInInventoryOrChat()) buttons.sortedBy { it.lineIndex }.map { it.text } else emptyList()
+        val maxWidth = getOverlayMaxWidth(textRenderer, lines, buttonLineTexts) * scale
+        val leftEdge = getLeftEdge(textRenderer, lines, buttonLineTexts).toFloat()
         val fontHeight = textRenderer.lineHeight
         val lineHeightPx = (fontHeight + 2) * scale
 
@@ -626,24 +755,28 @@ class FeeshGui {
         if (lines.none { it.actions.isNotEmpty() }) return null
 
         val allLines = getDisplayLinesForRender()
+        val buttonLineTexts = if (GuiUtils.isInInventoryOrChat()) buttons.sortedBy { it.lineIndex }.map { it.text } else emptyList()
         val hoveredLineIndex = getHoveredLineIndex(textRenderer, allLines, mouseX, mouseY) ?: return null
         val lineInfo = getLineInfoByDisplayIndex(hoveredLineIndex) ?: return null
         val actions = lineInfo.actions
         if (actions.isEmpty()) return null
 
         val scaleDouble = scale.toDouble()
-        val lineStr = lineInfo.text
         val buttonsStr = actions.joinToString("") { it.text }
         val buttonsWidth = textRenderer.width(Component.literal(buttonsStr))
         val spaceWidth = textRenderer.width(Component.literal(" "))
         val reservedWidth = buttonsWidth + spaceWidth
-        val maxWidth = getMaxWidth(textRenderer, allLines)
+        val maxWidth = getOverlayMaxWidth(textRenderer, lines, buttonLineTexts)
+        val lineWidth = getLineWidth(textRenderer, lineInfo)
         val lineAvailableWidth = (maxWidth - reservedWidth).coerceAtLeast(0)
-        val clippedLine = trimTextToWidth(textRenderer, lineStr, lineAvailableWidth)
-        val clippedLineWidth = textRenderer.width(Component.literal(clippedLine))
+        val clippedLineWidth = if (lineInfo.usesSegmentColumns()) {
+            minOf(lineInfo.segmentTableWidth ?: lineWidth, lineAvailableWidth)
+        } else {
+            minOf(lineWidth, lineAvailableWidth)
+        }
 
         val maxWidthScreen = maxWidth * scaleDouble
-        val leftEdge = getLeftEdge(textRenderer, allLines).toDouble()
+        val leftEdge = getLeftEdge(textRenderer, lines, buttonLineTexts).toDouble()
         val fontHeight = textRenderer.lineHeight
         val lineHeightPx = (fontHeight + 2) * scale
         val lineTop = y + hoveredLineIndex * lineHeightPx
@@ -656,8 +789,14 @@ class FeeshGui {
             Alignment.LEFT -> leftEdge
             Alignment.RIGHT -> leftEdge + maxWidthScreen - buttonsWidthScreen
             Alignment.CENTER -> {
-                val contentWidth = reservedWidth + clippedLineWidth
-                val contentWidthScreen = contentWidth * scaleDouble
+                val tableWidth = if (lineInfo.usesSegmentColumns()) {
+                    lineInfo.segmentTableWidth ?: clippedLineWidth
+                } else {
+                    clippedLineWidth
+                }
+                val textWidth = minOf(tableWidth, lineAvailableWidth)
+                val blockWidth = reservedWidth + textWidth
+                val contentWidthScreen = blockWidth * scaleDouble
                 leftEdge + (maxWidthScreen - contentWidthScreen) / 2
             }
         }
@@ -681,8 +820,9 @@ class FeeshGui {
         if (lines.isEmpty() || buttons.isEmpty()) return null
 
         val displayLines = getAllDisplayLines()
-        val maxWidth = getMaxWidth(textRenderer, displayLines) * scale
-        val leftEdge = getLeftEdge(textRenderer, displayLines).toFloat()
+        val buttonLineTexts = if (GuiUtils.isInInventoryOrChat()) buttons.sortedBy { it.lineIndex }.map { it.text } else emptyList()
+        val maxWidth = getOverlayMaxWidth(textRenderer, lines, buttonLineTexts) * scale
+        val leftEdge = getLeftEdge(textRenderer, lines, buttonLineTexts).toFloat()
 
         if (mouseX < leftEdge - 2 || mouseX > leftEdge + maxWidth + 2) return null
 
