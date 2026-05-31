@@ -530,23 +530,41 @@ class FeeshGui {
         if (lineInfo != null && !lineInfo.segments.isNullOrEmpty()) {
             val tableWidth = lineInfo.segmentTableWidth
                 ?: lineInfo.segments.maxOf { it.xOffset + textRenderer.width(Component.literal(it.text)) }
+            val clipLeft = lineStartX
+            val clipRight = lineStartX + contentWidth
             val segmentOriginX = when (alignment) {
                 Alignment.RIGHT -> lineStartX + contentWidth - tableWidth
                 else -> lineStartX
             }
-            val contentRight = lineStartX + contentWidth
             for (segment in lineInfo.segments) {
-                val segmentText = Component.literal(segment.text)
-                val segmentTextWidth = textRenderer.width(segmentText)
+                val segmentTextWidth = textRenderer.width(Component.literal(segment.text))
                 val columnWidth = segment.columnWidth.takeIf { it > 0 } ?: segmentTextWidth
-                val segmentX = when (alignment) {
-                    Alignment.RIGHT -> segmentOriginX + segment.xOffset + columnWidth - segmentTextWidth
-                    else -> segmentOriginX + segment.xOffset
+                val columnStart = segmentOriginX + segment.xOffset
+                val columnEnd = columnStart + columnWidth
+                if (columnEnd <= clipLeft || columnStart >= clipRight) continue
+
+                val drawLeft = maxOf(columnStart, clipLeft)
+                val drawRight = minOf(columnEnd, clipRight)
+                val drawWidth = drawRight - drawLeft
+                if (drawWidth <= 0) continue
+
+                var segmentText = segment.text
+                val leadingSkip = drawLeft - columnStart
+                if (leadingSkip > 0) {
+                    segmentText = trimFormattedTextLeading(textRenderer, segmentText, leadingSkip)
                 }
-                if (segmentX >= contentRight) continue
-                val availableWidth = (contentRight - segmentX).coerceAtLeast(0)
-                val displayText = trimTextToWidth(textRenderer, segment.text, availableWidth)
+                if (segmentText.isEmpty()) continue
+
+                val displayText = trimTextToWidth(textRenderer, segmentText, drawWidth)
                 if (displayText.isEmpty()) continue
+                val displayTextWidth = textRenderer.width(Component.literal(displayText))
+
+                val segmentX = when (alignment) {
+                    Alignment.RIGHT -> drawRight - displayTextWidth
+                    Alignment.CENTER -> drawLeft + (drawWidth - displayTextWidth) / 2
+                    else -> drawLeft
+                }
+
                 drawStringCompat(
                     drawContext,
                     textRenderer,
@@ -593,6 +611,20 @@ class FeeshGui {
         }
 
         return result.toString()
+    }
+
+    private fun trimFormattedTextLeading(textRenderer: Font, text: String, skipWidth: Int): String {
+        if (skipWidth <= 0 || text.isEmpty()) return text
+
+        var index = 0
+        var removedWidth = 0
+        while (index < text.length && removedWidth < skipWidth) {
+            val nextIndex = if (text[index] == '§' && index + 1 < text.length) index + 2 else index + 1
+            removedWidth = textRenderer.width(Component.literal(text.substring(0, nextIndex)))
+            index = nextIndex
+        }
+
+        return text.substring(index)
     }
 
     private data class OverlayBackgroundCoords(val left: Int, val top: Int, val right: Int, val bottom: Int)

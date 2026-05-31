@@ -70,11 +70,24 @@ object SeaCreaturesTracker {
         .setCoordsDataKey("seaCreaturesTracker")
         .setClickable(true)
         .setSampleLines(listOf(
-            baseTitle,
-            "${GRAY}- ${GOLD}Yeti: ${WHITE}10 ${GRAY}1% ${DARK_GRAY}| ${GRAY}DH: ${WHITE}1 ${GRAY}20%",
-            "${GRAY}- ${LIGHT_PURPLE}Reindrake: ${WHITE}1 ${GRAY}0.1% ${DARK_GRAY}| ${GRAY}DH: ${WHITE}0 ${GRAY}0%",
+            "$baseTitle ${GRAY}[${GREEN}Session${GRAY}]",
+            "${GRAY}- ${LIGHT_PURPLE}${BOLD}Titanoboa${GRAY}: ${WHITE}1 ${GRAY}0.06% ${DARK_GRAY}| ${WHITE}0 ${GRAY}0%",
+            "${GRAY}- ${LIGHT_PURPLE}${BOLD}Wiki Tiki${GRAY}: ${WHITE}1 ${GRAY}0.06% ${DARK_GRAY}| ${WHITE}0 ${GRAY}0%",
+            "${GRAY}- ${GOLD}${BOLD}Great White Shark${GRAY}: ${WHITE}24 ${GRAY}1.53% ${DARK_GRAY}| ${WHITE}7 ${GRAY}46.67%",
+            "${GRAY}- ${GOLD}${BOLD}Alligator${GRAY}: ${WHITE}3 ${GRAY}0.19% ${DARK_GRAY}| ${WHITE}0 ${GRAY}0%",
+            "${GRAY}- ${DARK_PURPLE}Tiger Shark${GRAY}: ${WHITE}84 ${GRAY}5.36% ${DARK_GRAY}| ${WHITE}17 ${GRAY}25.76%",
+            "${GRAY}- ${DARK_PURPLE}Bayou Sludge${GRAY}: ${WHITE}26 ${GRAY}1.66% ${DARK_GRAY}| ${WHITE}8 ${GRAY}44.44%",
+            "${GRAY}- ${DARK_PURPLE}Manta Ray${GRAY}: ${WHITE}3 ${GRAY}0.19% ${DARK_GRAY}| ${WHITE}0 ${GRAY}0%",
+            "${GRAY}- ${BLUE}Blue Shark${GRAY}: ${WHITE}289 ${GRAY}18.45% ${DARK_GRAY}| ${WHITE}64 ${GRAY}29.49%",
+            "${GRAY}- ${BLUE}Banshee${GRAY}: ${WHITE}84 ${GRAY}5.36% ${DARK_GRAY}| ${WHITE}14 ${GRAY}21.54%",
+            "${GRAY}- ${BLUE}Snapping Turtle${GRAY}: ${WHITE}9 ${GRAY}0.57% ${DARK_GRAY}| ${WHITE}2 ${GRAY}28.57%",
+            "${GRAY}- ${GREEN}Nurse Shark${GRAY}: ${WHITE}518 ${GRAY}33.08% ${DARK_GRAY}| ${WHITE}105 ${GRAY}26.32%",
+            "${GRAY}- ${GREEN}Dumpster Diver${GRAY}: ${WHITE}150 ${GRAY}9.58% ${DARK_GRAY}| ${WHITE}29 ${GRAY}25.44%",
+            "${GRAY}- ${GREEN}Inkling${GRAY}: ${WHITE}26 ${GRAY}1.66% ${DARK_GRAY}| ${WHITE}7 ${GRAY}36.84%",
+            "${GRAY}- ${WHITE}Trash Gobbler${GRAY}: ${WHITE}285 ${GRAY}18.2% ${DARK_GRAY}| ${WHITE}49 ${GRAY}20.94%",
+            "${GRAY}- ${WHITE}Frog Man${GRAY}: ${WHITE}63 ${GRAY}4.02% ${DARK_GRAY}| ${WHITE}14 ${GRAY}30.43%",
             "",
-            "${AQUA}Total: ${WHITE}11 ${GRAY}rare out of ${WHITE}1000 ${DARK_GRAY}| ${GRAY}DH: ${WHITE}1 ${GRAY}20% ${DARK_GRAY}| ${GRAY}BS: ${WHITE}1 ${GRAY}10%",
+            "${AQUA}Total: ${WHITE}1 566 ${DARK_GRAY}| ${GRAY}DH: ${WHITE}316 ${GRAY}26.16% ${DARK_GRAY}| ${GRAY}BS: ${WHITE}42 ${GRAY}2.68%",
         ))
         .setSettingsKey { Overlays.seaCreaturesTrackerOverlay }
         .setApplyCustomStyleKey { Overlays.seaCreaturesTrackerCustomStyle }
@@ -571,9 +584,21 @@ object SeaCreaturesTracker {
             val lines = mutableListOf<LineInfo>()
             lines.add(LineInfo("$baseTitle $viewModeText"))
 
+            val columnHeaders = getColumnHeaders()
             val columnRows = entriesToShow.map { getSeaCreatureLineColumns(it) }
-            val columnLayout = getColumnLayout(FeeshMod.mc.font, columnRows)
+            val rowsForLayout = if (columnHeaders != null) listOf(columnHeaders) + columnRows else columnRows
+            val columnLayout = getColumnLayout(FeeshMod.mc.font, rowsForLayout)
             val segmentTableWidth = getTableLayoutWidth(columnLayout)
+
+            if (columnHeaders != null) {
+                lines.add(
+                    LineInfo(
+                        text = "",
+                        segments = columnsToLineSegments(columnHeaders, columnLayout),
+                        segmentTableWidth = segmentTableWidth,
+                    )
+                )
+            }
 
             entriesToShow.forEach { entry ->
                 val columns = getSeaCreatureLineColumns(entry)
@@ -635,9 +660,24 @@ object SeaCreaturesTracker {
         val mainWidth: Int,
         val dhWidth: Int,
         val bsWidth: Int,
+        val columnsSeparatorWidth: Int,
         val dhX: Int,
         val bsX: Int,
     )
+
+    private fun getColumnsSeparator(): String = " ${DARK_GRAY}| "
+
+    private fun getColumnHeaders(): TrackerLineColumns? {
+        val showDoubleHook = Overlays.showSeaCreaturesDoubleHookStatistics
+        val showCocooned = Overlays.showCocoonedStatistics
+        if (!showDoubleHook && !showCocooned) return null
+
+        return TrackerLineColumns(
+            main = "",
+            dh = if (showDoubleHook) "${GRAY}DH" else "",
+            bs = if (showCocooned) "${GRAY}BS" else "",
+        )
+    }
 
     private fun getSeaCreatureLineColumns(entry: SeaCreatureTrackerEntry): TrackerLineColumns {
         val showPercentage = Overlays.showSeaCreaturesPercentage
@@ -650,11 +690,11 @@ object SeaCreaturesTracker {
         val main = "${GRAY}- $seaCreatureText${GRAY}: $countText$percentText"
 
         val dh = if (showDoubleHook && entry.seaCreatureInfo.canBeDoubleHooked) {
-            "${GRAY}DH: ${WHITE}${entry.doubleHookAmountFormatted} ${GRAY}${entry.doubleHookPercentFormatted}"
+            "${WHITE}${entry.doubleHookAmountFormatted} ${GRAY}${entry.doubleHookPercentFormatted}"
         } else ""
 
         val bs = if (showCocooned) {
-            "${GRAY}BS: ${WHITE}${entry.cocoonedAmountFormatted} ${GRAY}${entry.cocoonedPercentFormatted}"
+            "${WHITE}${entry.cocoonedAmountFormatted} ${GRAY}${entry.cocoonedPercentFormatted}"
         } else ""
 
         return TrackerLineColumns(main, dh, bs)
@@ -681,7 +721,8 @@ object SeaCreaturesTracker {
     }
 
     private fun getColumnLayout(font: Font, rows: List<TrackerLineColumns>): TrackerColumnLayout {
-        val columnsSeparatorWidth = font.width(Component.literal(" "))
+        val columnsSeparator = getColumnsSeparator()
+        val columnsSeparatorWidth = font.width(Component.literal(columnsSeparator))
         val mainWidth = rows.maxOf { font.width(Component.literal(it.main)) }
         val dhWidth = rows.maxOf { font.width(Component.literal(it.dh)) }
         val bsWidth = rows.maxOf { font.width(Component.literal(it.bs)) }
@@ -691,7 +732,7 @@ object SeaCreaturesTracker {
             if (dhWidth > 0) dhX + dhWidth + columnsSeparatorWidth else mainWidth + columnsSeparatorWidth
         } else -1
 
-        return TrackerColumnLayout(mainWidth, dhWidth, bsWidth, dhX, bsX)
+        return TrackerColumnLayout(mainWidth, dhWidth, bsWidth, columnsSeparatorWidth, dhX, bsX)
     }
 
     private fun getTableLayoutWidth(layout: TrackerColumnLayout): Int {
@@ -703,13 +744,24 @@ object SeaCreaturesTracker {
     }
 
     private fun columnsToLineSegments(columns: TrackerLineColumns, layout: TrackerColumnLayout): List<LineSegment> {
+        val separator = getColumnsSeparator()
         val segments = mutableListOf(LineSegment(columns.main, 0, layout.mainWidth))
-        if (columns.dh.isNotEmpty() && layout.dhX >= 0) {
-            segments.add(LineSegment(columns.dh, layout.dhX, layout.dhWidth))
+
+        if (layout.dhX >= 0) {
+            segments.add(LineSegment(separator, layout.mainWidth, layout.columnsSeparatorWidth))
+            if (columns.dh.isNotEmpty()) {
+                segments.add(LineSegment(columns.dh, layout.dhX, layout.dhWidth))
+            }
         }
-        if (columns.bs.isNotEmpty() && layout.bsX >= 0) {
-            segments.add(LineSegment(columns.bs, layout.bsX, layout.bsWidth))
+
+        if (layout.bsX >= 0) {
+            val bsSeparatorX = if (layout.dhX >= 0) layout.dhX + layout.dhWidth else layout.mainWidth
+            segments.add(LineSegment(separator, bsSeparatorX, layout.columnsSeparatorWidth))
+            if (columns.bs.isNotEmpty()) {
+                segments.add(LineSegment(columns.bs, layout.bsX, layout.bsWidth))
+            }
         }
+
         return segments
     }
 
