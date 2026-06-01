@@ -74,7 +74,7 @@ object CrimsonIsleTracker {
         .setSettingsKey { Overlays.crimsonIsleTrackerOverlay }
         .setApplyCustomStyleKey { Overlays.crimsonIsleTrackerCustomStyle }
         .setCondition {
-            WorldUtils.getWorldName() == WorldUtils.CRIMSON_ISLE && FishingHookUtils.wasFishingHookActiveMinutesAgo(5)
+            WorldUtils.getWorldName() == WorldUtils.CRIMSON_ISLE && FishingHookUtils.wasFishingHookSubmergedMinutesAgo(5)
         }
 
     fun init() {
@@ -232,7 +232,7 @@ object CrimsonIsleTracker {
     private fun updateGuiLines() {
         gui.clearLines()
 
-        if (!Overlays.crimsonIsleTrackerOverlay || !WorldUtils.isInSkyblock() || !FishingHookUtils.wasFishingHookActiveMinutesAgo(5) || WorldUtils.getWorldName() != WorldUtils.CRIMSON_ISLE) return
+        if (!Overlays.crimsonIsleTrackerOverlay || !WorldUtils.isInSkyblock() || !FishingHookUtils.wasFishingHookSubmergedMinutesAgo(5) || WorldUtils.getWorldName() != WorldUtils.CRIMSON_ISLE) return
         if (!hasData()) return
 
         val isInHotspot = isFishingInHotspot()
@@ -321,7 +321,7 @@ object CrimsonIsleTracker {
 
     private fun isFishingInHotspot(): Boolean {
         if (WorldUtils.getWorldName() != WorldUtils.CRIMSON_ISLE) return false
-        return FishingHookUtils.wasFishingHookActiveInHotspotSecondsAgo(15)
+        return FishingHookUtils.wasFishingHookSubmergedInHotspotSecondsAgo(15)
     }
 
     private fun isInPlhlegblastPool(): Boolean {

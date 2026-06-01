@@ -50,7 +50,7 @@ object GalateaWaterTracker {
         .setApplyCustomStyleKey { Overlays.galateaWaterTrackerCustomStyle }
         .setCondition {
             WorldUtils.getWorldName() == WorldUtils.GALATEA &&
-                FishingHookUtils.wasFishingHookActiveMinutesAgo(5)
+                FishingHookUtils.wasFishingHookSubmergedMinutesAgo(5)
         }
 
     fun init() {
@@ -115,7 +115,7 @@ object GalateaWaterTracker {
         gui.clearLines()
 
         if (!hasData()) return
-        if (!Overlays.galateaWaterTrackerOverlay || !WorldUtils.isInSkyblock() || WorldUtils.getWorldName() != WorldUtils.GALATEA || !FishingHookUtils.wasFishingHookActiveMinutesAgo(5)) return
+        if (!Overlays.galateaWaterTrackerOverlay || !WorldUtils.isInSkyblock() || WorldUtils.getWorldName() != WorldUtils.GALATEA || !FishingHookUtils.wasFishingHookSubmergedMinutesAgo(5)) return
 
         val lines = mutableListOf<LineInfo>()
         lines.add(LineInfo(baseTitle))

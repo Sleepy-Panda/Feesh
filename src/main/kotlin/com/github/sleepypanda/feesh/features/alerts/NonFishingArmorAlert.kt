@@ -53,7 +53,7 @@ object NonFishingArmorAlert {
                 if (diffMillis < 10_000) return
             }
 
-            val isHookActive = FishingHookUtils.isFishingHookActive()
+            val isHookActive = FishingHookUtils.isFishingHookSubmerged()
             if (!isHookActive) return
 
             lastHookDetectedAt = Date()

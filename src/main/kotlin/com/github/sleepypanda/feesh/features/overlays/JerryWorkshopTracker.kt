@@ -52,7 +52,7 @@ object JerryWorkshopTracker {
         .setApplyCustomStyleKey { Overlays.jerryWorkshopTrackerCustomStyle }
         .setCondition {
             WorldUtils.getWorldName() == WorldUtils.JERRY_WORKSHOP &&
-            FishingHookUtils.wasFishingHookActiveMinutesAgo(5)
+            FishingHookUtils.wasFishingHookSubmergedMinutesAgo(5)
         }
 
     fun init() {
@@ -116,7 +116,7 @@ object JerryWorkshopTracker {
         gui.clearLines()
 
         if (!hasData()) return
-        if (!Overlays.jerryWorkshopTrackerOverlay || !WorldUtils.isInSkyblock() || WorldUtils.getWorldName() != WorldUtils.JERRY_WORKSHOP || !FishingHookUtils.wasFishingHookActiveMinutesAgo(5)) return
+        if (!Overlays.jerryWorkshopTrackerOverlay || !WorldUtils.isInSkyblock() || WorldUtils.getWorldName() != WorldUtils.JERRY_WORKSHOP || !FishingHookUtils.wasFishingHookSubmergedMinutesAgo(5)) return
 
         val lines = mutableListOf<LineInfo>()
         lines.add(LineInfo(baseTitle))

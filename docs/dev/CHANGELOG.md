@@ -5,6 +5,7 @@ Released on: ???
 ## Features
 
 - Added option to use Ctrl+Click instead of Click to interact with overlay buttons. This might help to avoid undesired overlays interactions when in Chat/Inventory.
+- Added option to set delay before players get unhidden for "Hide players near bobber" feature, to avoid players flickering on rod re-cast.
 
 ## Bugfixes
 

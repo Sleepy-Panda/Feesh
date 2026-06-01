@@ -132,7 +132,7 @@ object FishingFestivalTracker {
             WorldUtils.isInSkyblock() &&
             WorldUtils.isInFishingWorld() && 
             hasSharkData() &&
-            FishingHookUtils.wasFishingHookActiveMinutesAgo(5)
+            FishingHookUtils.wasFishingHookSubmergedMinutesAgo(5)
     }
 
     private fun hasSharkData(): Boolean {

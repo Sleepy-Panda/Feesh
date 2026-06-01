@@ -82,7 +82,7 @@ object FishingBagDisabledAlert {
                 if (title.contains(FISHING_BAG_TITLE_CONTAINS)) return
             }
 
-            val isHookActive = FishingHookUtils.isFishingHookActive()
+            val isHookActive = FishingHookUtils.isFishingHookSubmerged()
             if (!isHookActive) return
 
             CommonUtils.showTitle("${RED}Enable fishing bag!")

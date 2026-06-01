@@ -78,7 +78,7 @@ object SeaCreaturesTracker {
         .setApplyCustomStyleKey { Overlays.seaCreaturesTrackerCustomStyle }
         .setCondition {
             WorldUtils.isInFishingWorld() &&
-            FishingHookUtils.wasFishingHookActiveMinutesAgo(5)
+            FishingHookUtils.wasFishingHookSubmergedMinutesAgo(5)
         }
 
     fun init() {
@@ -114,7 +114,7 @@ object SeaCreaturesTracker {
         val valueToAdd = if (isDoubleHook) 2 else 1
 
         // Do not track Vanquishers if not fishing
-        if (seaCreatureName == "Vanquisher" && !FishingHookUtils.wasFishingHookActiveMinutesAgo(5)) return
+        if (seaCreatureName == "Vanquisher" && !FishingHookUtils.wasFishingHookSubmergedMinutesAgo(5)) return
 
         trackSeaCreatureCatch(data.session, seaCreatureName, valueToAdd, isDoubleHook)
         trackSeaCreatureCatch(data.total, seaCreatureName, valueToAdd, isDoubleHook)
@@ -129,7 +129,7 @@ object SeaCreaturesTracker {
 
         val seaCreatureName = event.seaCreatureName
 
-        if (seaCreatureName == "Vanquisher" && !FishingHookUtils.wasFishingHookActiveMinutesAgo(5)) return
+        if (seaCreatureName == "Vanquisher" && !FishingHookUtils.wasFishingHookSubmergedMinutesAgo(5)) return
 
         trackSeaCreatureCocoon(data.session, seaCreatureName)
         trackSeaCreatureCocoon(data.total, seaCreatureName)
@@ -507,7 +507,7 @@ object SeaCreaturesTracker {
         CommonUtils.runWithCatching("Failed to update GUI lines in Sea creatures tracker") {
             gui.clearLines()
 
-            if (!Overlays.seaCreaturesTrackerOverlay || !WorldUtils.isInSkyblock() || !WorldUtils.isInFishingWorld() || !FishingHookUtils.wasFishingHookActiveMinutesAgo(5)) return
+            if (!Overlays.seaCreaturesTrackerOverlay || !WorldUtils.isInSkyblock() || !WorldUtils.isInFishingWorld() || !FishingHookUtils.wasFishingHookSubmergedMinutesAgo(5)) return
 
             val viewMode = getCurrentViewMode()
             val sourceObj = getSourceObject(viewMode)

@@ -207,7 +207,7 @@ object MagmaCoreFishingTracker {
 
     private fun isTrackerVisible(): Boolean {
         if (!Overlays.magmaCoreFishingTrackerOverlay || !WorldUtils.isInSkyblock() || WorldUtils.getWorldName() != WorldUtils.CRYSTAL_HOLLOWS) return false
-        if (!FishingHookUtils.wasFishingHookActiveMinutesAgo(HIDE_OVERLAY_MINUTES)) return false
+        if (!FishingHookUtils.wasFishingHookSubmergedMinutesAgo(HIDE_OVERLAY_MINUTES)) return false
         if (lastSeaCreatureCaughtAt == null) return false
 
         val elapsedSinceCatch = (Date().time - lastSeaCreatureCaughtAt!!.time) / 1000
