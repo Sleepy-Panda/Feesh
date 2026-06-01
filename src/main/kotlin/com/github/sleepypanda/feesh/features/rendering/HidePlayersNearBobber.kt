@@ -24,7 +24,8 @@ object HidePlayersNearBobber {
         if (!(entity.uuid.version() == 4 || entity.uuid.version() == 1)) return false // Exclude NPCs
 
         val hook = FishingHookUtils.getFishingHook() ?: return false
-        val distanceBlocks = EntityUtils.getDistance(hook.x, hook.y, hook.z, entity.x, entity.y, entity.z)
-        return distanceBlocks <= WorldRendering.hidePlayersNearBobberDistance
+        val maxDistanceSqr = WorldRendering.hidePlayersNearBobberDistance * WorldRendering.hidePlayersNearBobberDistance
+        val actualDistanceSqr = EntityUtils.getDistanceSqr(hook.x, hook.y, hook.z, entity.x, entity.y, entity.z)
+        return actualDistanceSqr <= maxDistanceSqr
     }
 }
