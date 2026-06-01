@@ -41,7 +41,7 @@ object DoubleHookPersonalBest {
 
     private fun checkAndAnnouncePersonalBest(currentStreak: Int) {
         CommonUtils.runWithCatching("Failed to check and announce double hook PB") {
-            if (currentStreak <= 1) return
+            if (currentStreak == 0) return
 
             val personalBestEntry = PersistentDataManager.feeshData.personalBest.doubleHookStreak
             val previousBest = personalBestEntry.amount
