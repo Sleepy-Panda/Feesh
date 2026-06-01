@@ -50,8 +50,8 @@ data class LineAction(
 /** 
  * A segment of a line used to display column-based text with columns alignment.
  * @param text The text to display in the segment.
- * @param xOffset The x offset of the segment.
- * @param columnWidth The width of the segment.
+ * @param xOffset The x offset within the segment table — set by [SegmentTable.layout].
+ * @param columnWidth The width of the segment column — set by [SegmentTable.layout].
  */
 data class LineSegment(
     val text: String,
@@ -62,10 +62,100 @@ data class LineSegment(
 data class LineInfo(
     val text: String = "",
     val segments: List<LineSegment>? = null, // Text is not needed if Segments defined
-    val segmentTableWidth: Int? = null,
+    internal val layoutTableWidth: Int? = null,
     val tooltip: List<Component>? = null,
-    val actions: List<LineAction> = emptyList()
-)
+    val actions: List<LineAction> = emptyList(),
+) {
+    /** Full table width; from [SegmentTable.layout] or max segment extent. */
+    val segmentTableWidth: Int?
+        get() {
+            layoutTableWidth?.let { return it }
+            val segs = segments ?: return null
+            if (segs.isEmpty()) return null
+            return segs.maxOf { segment ->
+                segment.xOffset + (segment.columnWidth.takeIf { it > 0 } ?: 0)
+            }
+        }
+
+    companion object {
+        fun withSegments(
+            segments: List<LineSegment>,
+            tableWidth: Int,
+            text: String = "",
+            tooltip: List<Component>? = null,
+            actions: List<LineAction> = emptyList(),
+        ): LineInfo = LineInfo(
+            text = text,
+            segments = segments,
+            layoutTableWidth = tableWidth,
+            tooltip = tooltip,
+            actions = actions,
+        )
+    }
+}
+
+object SegmentTable {
+    data class LayoutResult(
+        val tableWidth: Int,
+        val rows: List<List<LineSegment>>,
+    )
+
+    /**
+     * Lays out columnar rows with shared column widths and x offsets.
+     * @param rows Each row has the same number of cells; empty string skips cell content but keeps column slots.
+     * @param separator Text drawn between enabled columns (column max width > 0).
+     */
+    fun layout(font: Font, rows: List<List<String>>, separator: String): LayoutResult {
+        if (rows.isEmpty()) return LayoutResult(0, emptyList())
+
+        val columnCount = rows.maxOf { it.size }
+        val normalizedRows = rows.map { row ->
+            if (row.size >= columnCount) row else row + List(columnCount - row.size) { "" }
+        }
+
+        val separatorWidth = font.width(Component.literal(separator))
+        val columnWidths = (0 until columnCount).map { col ->
+            normalizedRows.maxOf { font.width(Component.literal(it[col])) }
+        }
+        val enabled = columnWidths.map { it > 0 }
+
+        val columnX = IntArray(columnCount) { -1 }
+        val separatorX = mutableListOf<Int>()
+        var x = 0
+        var firstColumn = true
+        for (col in 0 until columnCount) {
+            if (!enabled[col]) continue
+            if (!firstColumn) {
+                separatorX.add(x)
+                x += separatorWidth
+            }
+            columnX[col] = x
+            x += columnWidths[col]
+            firstColumn = false
+        }
+
+        val tableWidth = x
+        val builtRows = normalizedRows.map { row ->
+            val segments = mutableListOf<LineSegment>()
+            var separatorIndex = 0
+            var firstColumnInRow = true
+            for (col in 0 until columnCount) {
+                if (!enabled[col]) continue
+                if (!firstColumnInRow) {
+                    val sepX = separatorX[separatorIndex++]
+                    segments.add(LineSegment(separator, sepX, separatorWidth))
+                }
+                if (row[col].isNotEmpty()) {
+                    segments.add(LineSegment(row[col], columnX[col], columnWidths[col]))
+                }
+                firstColumnInRow = false
+            }
+            segments
+        }
+
+        return LayoutResult(tableWidth, builtRows)
+    }
+}
 
 /**
  * A class that represents a GUI for the Feesh mod. GUI is shown when in Skyblock and the condition is met.
@@ -304,10 +394,7 @@ class FeeshGui {
     }
 
     private fun getLineWidth(textRenderer: Font, lineInfo: LineInfo): Int {
-        if (lineInfo.segmentTableWidth != null) return lineInfo.segmentTableWidth
-        if (!lineInfo.segments.isNullOrEmpty()) {
-            return lineInfo.segments.maxOf { it.xOffset + textRenderer.width(Component.literal(it.text)) }
-        }
+        lineInfo.segmentTableWidth?.let { return it }
         return textRenderer.width(Component.literal(lineInfo.text))
     }
 
@@ -459,13 +546,22 @@ class FeeshGui {
                         drawLineContent(drawContext, textRenderer, lineInfo, clippedLine, lineX, lineAvailableWidth, currentY)
                     }
                     Alignment.RIGHT -> {
-                        val lineX = if (usesSegmentColumns) {
-                            scaledLeftEdge
-                        } else {
-                            scaledLeftEdge + lineAvailableWidth - clippedLineWidth
-                        }
                         val buttonsX = scaledLeftEdge + maxWidth - buttonsWidth
-                        drawLineContent(drawContext, textRenderer, lineInfo, clippedLine, lineX, lineAvailableWidth, currentY)
+                        if (usesSegmentColumns) {
+                            drawLineContent(
+                                drawContext,
+                                textRenderer,
+                                lineInfo,
+                                clippedLine,
+                                scaledLeftEdge,
+                                maxWidth,
+                                currentY,
+                                clipRightOverride = scaledLeftEdge + lineAvailableWidth,
+                            )
+                        } else {
+                            val lineX = scaledLeftEdge + lineAvailableWidth - clippedLineWidth
+                            drawLineContent(drawContext, textRenderer, lineInfo, clippedLine, lineX, lineAvailableWidth, currentY)
+                        }
                         drawStringCompat(drawContext, textRenderer, Component.literal(buttonsStr), buttonsX, currentY, color, true)
                     }
                     Alignment.CENTER -> {
@@ -526,12 +622,14 @@ class FeeshGui {
         lineStartX: Int,
         contentWidth: Int,
         currentY: Int,
+        clipLeftOverride: Int? = null,
+        clipRightOverride: Int? = null,
     ) {
         if (lineInfo != null && !lineInfo.segments.isNullOrEmpty()) {
             val tableWidth = lineInfo.segmentTableWidth
                 ?: lineInfo.segments.maxOf { it.xOffset + textRenderer.width(Component.literal(it.text)) }
-            val clipLeft = lineStartX
-            val clipRight = lineStartX + contentWidth
+            val clipLeft = clipLeftOverride ?: lineStartX
+            val clipRight = clipRightOverride ?: (lineStartX + contentWidth)
             val segmentOriginX = when (alignment) {
                 Alignment.RIGHT -> lineStartX + contentWidth - tableWidth
                 else -> lineStartX

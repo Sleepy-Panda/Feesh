@@ -4,6 +4,7 @@ Released on: ???
 
 ## Features
 
+- Changed visual representation of data in Sea creatures tracker, to align columns for DH and BS.
 - Added option to use Ctrl+Click instead of Click to interact with overlay buttons. This might help to avoid undesired overlays interactions when in Chat/Inventory.
 
 ## Bugfixes

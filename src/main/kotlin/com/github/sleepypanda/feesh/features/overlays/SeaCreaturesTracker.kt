@@ -18,13 +18,12 @@ import com.github.sleepypanda.feesh.utils.gui.FeeshGui
 import com.github.sleepypanda.feesh.utils.gui.GuiButton
 import com.github.sleepypanda.feesh.utils.gui.LineAction
 import com.github.sleepypanda.feesh.utils.gui.LineInfo
-import com.github.sleepypanda.feesh.utils.gui.LineSegment
+import com.github.sleepypanda.feesh.utils.gui.SegmentTable
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
 import com.github.sleepypanda.feesh.utils.FishingHookUtils
 import com.github.sleepypanda.feesh.utils.data.PersistentDataManager
 import net.minecraft.network.chat.Component
-import net.minecraft.client.gui.Font
 import java.text.DecimalFormat
 
 object SeaCreaturesTracker {
@@ -585,32 +584,33 @@ object SeaCreaturesTracker {
             lines.add(LineInfo("$baseTitle $viewModeText"))
 
             val columnHeaders = getColumnHeaders()
-            val columnRows = entriesToShow.map { getSeaCreatureLineColumns(it) }
-            val rowsForLayout = if (columnHeaders != null) listOf(columnHeaders) + columnRows else columnRows
-            val columnLayout = getColumnLayout(FeeshMod.mc.font, rowsForLayout)
-            val segmentTableWidth = getTableLayoutWidth(columnLayout)
+            val columnRows = entriesToShow.map { getSeaCreatureLineColumns(it).toCells() }
+            val rowsForLayout = if (columnHeaders != null) {
+                listOf(columnHeaders.toCells()) + columnRows
+            } else {
+                columnRows
+            }
+            val segmentTable = SegmentTable.layout(FeeshMod.mc.font, rowsForLayout, getColumnsSeparator())
+            var segmentRowIndex = 0
 
             if (columnHeaders != null) {
                 lines.add(
-                    LineInfo(
-                        text = "",
-                        segments = columnsToLineSegments(columnHeaders, columnLayout),
-                        segmentTableWidth = segmentTableWidth,
+                    LineInfo.withSegments(
+                        segments = segmentTable.rows[segmentRowIndex++],
+                        tableWidth = segmentTable.tableWidth,
                     )
                 )
             }
 
             entriesToShow.forEach { entry ->
-                val columns = getSeaCreatureLineColumns(entry)
                 lines.add(
-                    LineInfo(
-                        text = "",
-                        segments = columnsToLineSegments(columns, columnLayout),
-                        segmentTableWidth = segmentTableWidth,
+                    LineInfo.withSegments(
+                        segments = segmentTable.rows[segmentRowIndex++],
+                        tableWidth = segmentTable.tableWidth,
                         tooltip = getSeaCreatureLineTooltip(entry),
                         actions = listOf(
                             LineAction("${GRAY}[${RED}x${GRAY}]") { onDeleteSeaCreatureInline(entry.seaCreature) }
-                        )
+                        ),
                     )
                 )
             }
@@ -654,16 +654,9 @@ object SeaCreaturesTracker {
         return sorted
     }
 
-    private data class TrackerLineColumns(val main: String, val dh: String, val bs: String)
-
-    private data class TrackerColumnLayout(
-        val mainWidth: Int,
-        val dhWidth: Int,
-        val bsWidth: Int,
-        val columnsSeparatorWidth: Int,
-        val dhX: Int,
-        val bsX: Int,
-    )
+    private data class TrackerLineColumns(val main: String, val dh: String, val bs: String) {
+        fun toCells(): List<String> = listOf(main, dh, bs)
+    }
 
     private fun getColumnsSeparator(): String = " ${DARK_GRAY}| "
 
@@ -718,51 +711,6 @@ object SeaCreaturesTracker {
                 "${AQUA}Total: ${WHITE}${totalInfo.rareTotalAmountFormatted} ${GRAY}rare out of ${WHITE}${totalInfo.allTotalAmountFormatted}$doubleHookText$cocoonedText"
             }
         }
-    }
-
-    private fun getColumnLayout(font: Font, rows: List<TrackerLineColumns>): TrackerColumnLayout {
-        val columnsSeparator = getColumnsSeparator()
-        val columnsSeparatorWidth = font.width(Component.literal(columnsSeparator))
-        val mainWidth = rows.maxOf { font.width(Component.literal(it.main)) }
-        val dhWidth = rows.maxOf { font.width(Component.literal(it.dh)) }
-        val bsWidth = rows.maxOf { font.width(Component.literal(it.bs)) }
-
-        val dhX = if (dhWidth > 0) mainWidth + columnsSeparatorWidth else -1
-        val bsX = if (bsWidth > 0) {
-            if (dhWidth > 0) dhX + dhWidth + columnsSeparatorWidth else mainWidth + columnsSeparatorWidth
-        } else -1
-
-        return TrackerColumnLayout(mainWidth, dhWidth, bsWidth, columnsSeparatorWidth, dhX, bsX)
-    }
-
-    private fun getTableLayoutWidth(layout: TrackerColumnLayout): Int {
-        return when {
-            layout.bsX >= 0 -> layout.bsX + layout.bsWidth
-            layout.dhX >= 0 -> layout.dhX + layout.dhWidth
-            else -> layout.mainWidth
-        }
-    }
-
-    private fun columnsToLineSegments(columns: TrackerLineColumns, layout: TrackerColumnLayout): List<LineSegment> {
-        val separator = getColumnsSeparator()
-        val segments = mutableListOf(LineSegment(columns.main, 0, layout.mainWidth))
-
-        if (layout.dhX >= 0) {
-            segments.add(LineSegment(separator, layout.mainWidth, layout.columnsSeparatorWidth))
-            if (columns.dh.isNotEmpty()) {
-                segments.add(LineSegment(columns.dh, layout.dhX, layout.dhWidth))
-            }
-        }
-
-        if (layout.bsX >= 0) {
-            val bsSeparatorX = if (layout.dhX >= 0) layout.dhX + layout.dhWidth else layout.mainWidth
-            segments.add(LineSegment(separator, bsSeparatorX, layout.columnsSeparatorWidth))
-            if (columns.bs.isNotEmpty()) {
-                segments.add(LineSegment(columns.bs, layout.bsX, layout.bsWidth))
-            }
-        }
-
-        return segments
     }
 
     private fun getSeaCreatureLineTooltip(entry: SeaCreatureTrackerEntry): List<Component> {

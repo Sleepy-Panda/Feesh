@@ -161,6 +161,80 @@ object Overlays : CategoryKt("Overlays") {
 
     init {
         separator {
+            this.title = "${AQUA}${BOLD}Sea creatures"
+        }
+    }
+
+    var seaCreaturesTrackerOverlay by boolean(false) {
+        this.name = Translated("Sea creatures tracker")
+        this.description = Translated("""
+${GRAY}Shows an overlay with the overview of the sea creatures caught, and different related statistics. This overlay has [Session] and [Total] view mode.
+${GRAY}To view details: Hover over a line while in Inventory screen.
+${GRAY}To reset [Session]: ${WHITE}/${SeaCreaturesTracker.RESET_SESSION}
+${GRAY}To reset [Total]: ${WHITE}/${SeaCreaturesTracker.RESET_TOTAL}
+""".trimIndent())
+    }
+
+    var seaCreaturesTrackerMode by enum(SeaCreaturesTrackerDisplayMode.ALL) {
+        this.name = Translated("Sea creatures tracker display mode")
+        this.description = Translated("Setups whether to hide regular sea creatures in the overlay, showing just rare ones. All sea creatures are tracked regardless this setting.")
+    }
+
+    var countCocoonedSeaCreatures by boolean(true) {
+        this.name = Translated("Count cocooned sea creatures")
+        this.description = Translated("Include sea creatures cocooned by your Bloodshot reforge in the Sea creatures tracker, as SB treats them as your own.")
+    }
+
+    var showSeaCreaturesPercentage by boolean(true) {
+        this.name = Translated("Show percentage")
+        this.description = Translated("Show percentage for each sea creature out of total amount of sea creatures. If disabled, the statistics will be still visible in the tooltip.")
+    }
+
+    var showSeaCreaturesDoubleHookStatistics by boolean(true) {
+        this.name = Translated("Show double hook statistics")
+        this.description = Translated("Show statistics for each sea creature how often it was double hooked (shown as 'DH' in the overlay). If disabled, the statistics will be still visible in the tooltip.")
+    }
+
+    var showCocoonedStatistics by boolean(false) {
+        this.name = Translated("Show cocooned statistics")
+        this.description = Translated("Show statistics for each sea creature how often it was cocooned by your Bloodshot reforge (shown as 'BS' in the overlay). If disabled, the statistics will be still visible in the tooltip.")
+    }
+
+    var seaCreaturesTrackerSorting by enum(SeaCreaturesTrackerSorting.RARITY_DESC) {
+        this.name = Translated("Sea creatures sorting")
+        this.description = Translated("Setups sorting order for the sea creatures list.")
+    }
+
+    var seaCreaturesTrackerShowTop by int(50) {
+        this.name = Translated("Maximum lines count")
+        this.description = Translated("Show top N lines for sea creatures in Session/Total views. Remaining entries will be grouped under 'Other sea creatures'.")
+        this.range = 1..100
+        this.slider = true
+    }
+
+    var resetSeaCreaturesTrackerSessionOnGameClosed by boolean(true) {
+        this.name = Translated("Autoreset [Session] on closing game")
+        this.description = Translated("Automatically reset the Sea creatures tracker [Session] when you close Minecraft.")
+    }
+
+    init {
+        button {
+            title = "Editing Sea creatures tracker guide"
+            description = "Opens a guide on how to adjust sea creature counts and statistics in Sea creatures tracker [Session] and [Total]."
+            text = "Click to open"
+            onClick {
+                Util.getPlatform().openUri("https://github.com/Sleepy-Panda/Feesh/blob/develop/docs/Editing%20sea%20creatures%20tracker.md")
+            }
+        }
+    }
+
+    var seaCreaturesTrackerCustomStyle by boolean(true) {
+        this.name = Translated("Apply custom style")
+        this.description = Translated(getCustomStyleDescription("Sea creatures tracker"))
+    }
+
+    init {
+        separator {
             this.title = "${AQUA}${BOLD}Nearby entities"
         }
     }
@@ -287,80 +361,6 @@ Hidden if you have no fishing rod in your hotbar!""".trimIndent())
     var seaCreaturesHpCustomStyle by boolean(true) {
         this.name = Translated("Apply custom style")
         this.description = Translated(getCustomStyleDescription("Sea creatures HP"))
-    }
-
-    init {
-        separator {
-            this.title = "${AQUA}${BOLD}Sea creatures caught"
-        }
-    }
-
-    var seaCreaturesTrackerOverlay by boolean(false) {
-        this.name = Translated("Sea creatures tracker")
-        this.description = Translated("""
-${GRAY}Shows an overlay with the overview of the sea creatures caught, and different related statistics. This overlay has [Session] and [Total] view mode.
-${GRAY}To view details: Hover over a line while in Inventory screen.
-${GRAY}To reset [Session]: ${WHITE}/${SeaCreaturesTracker.RESET_SESSION}
-${GRAY}To reset [Total]: ${WHITE}/${SeaCreaturesTracker.RESET_TOTAL}
-""".trimIndent())
-    }
-
-    var seaCreaturesTrackerMode by enum(SeaCreaturesTrackerDisplayMode.ALL) {
-        this.name = Translated("Sea creatures tracker display mode")
-        this.description = Translated("Setups whether to hide regular sea creatures in the overlay, showing just rare ones. All sea creatures are tracked regardless this setting.")
-    }
-
-    var countCocoonedSeaCreatures by boolean(true) {
-        this.name = Translated("Count cocooned sea creatures")
-        this.description = Translated("Include sea creatures cocooned by your Bloodshot reforge in the Sea creatures tracker, as SB treats them as your own.")
-    }
-
-    var showSeaCreaturesPercentage by boolean(true) {
-        this.name = Translated("Show percentage")
-        this.description = Translated("Show percentage for each sea creature out of total amount of sea creatures. If disabled, the statistics will be still visible in the tooltip.")
-    }
-
-    var showSeaCreaturesDoubleHookStatistics by boolean(true) {
-        this.name = Translated("Show double hook statistics")
-        this.description = Translated("Show statistics for each sea creature how often it was double hooked (shown as 'DH' in the overlay). If disabled, the statistics will be still visible in the tooltip.")
-    }
-
-    var showCocoonedStatistics by boolean(false) {
-        this.name = Translated("Show cocooned statistics")
-        this.description = Translated("Show statistics for each sea creature how often it was cocooned by your Bloodshot reforge (shown as 'BS' in the overlay). If disabled, the statistics will be still visible in the tooltip.")
-    }
-
-    var seaCreaturesTrackerSorting by enum(SeaCreaturesTrackerSorting.RARITY_DESC) {
-        this.name = Translated("Sea creatures sorting")
-        this.description = Translated("Setups sorting order for the sea creatures list.")
-    }
-
-    var seaCreaturesTrackerShowTop by int(50) {
-        this.name = Translated("Maximum lines count")
-        this.description = Translated("Show top N lines for sea creatures in Session/Total views. Remaining entries will be grouped under 'Other sea creatures'.")
-        this.range = 1..100
-        this.slider = true
-    }
-
-    var resetSeaCreaturesTrackerSessionOnGameClosed by boolean(true) {
-        this.name = Translated("Autoreset [Session] on closing game")
-        this.description = Translated("Automatically reset the Sea creatures tracker [Session] when you close Minecraft.")
-    }
-
-    init {
-        button {
-            title = "Editing Sea creatures tracker guide"
-            description = "Opens a guide on how to adjust sea creature counts and statistics in Sea creatures tracker [Session] and [Total]."
-            text = "Click to open"
-            onClick {
-                Util.getPlatform().openUri("https://github.com/Sleepy-Panda/Feesh/blob/develop/docs/Editing%20sea%20creatures%20tracker.md")
-            }
-        }
-    }
-
-    var seaCreaturesTrackerCustomStyle by boolean(true) {
-        this.name = Translated("Apply custom style")
-        this.description = Translated(getCustomStyleDescription("Sea creatures tracker"))
     }
 
     init {
