@@ -59,7 +59,7 @@ object LotusAtollTracker {
         .setApplyCustomStyleKey { Overlays.lotusAtollTrackerCustomStyle }
         .setCondition {
             WorldUtils.getWorldName() == WorldUtils.LOTUS_ATOLL &&
-                FishingHookUtils.wasFishingHookActiveMinutesAgo(5)
+                FishingHookUtils.wasFishingHookSubmergedMinutesAgo(5)
         }
 
     fun init() {
@@ -138,7 +138,7 @@ object LotusAtollTracker {
 
         if (!hasData()) return
         if (!Overlays.lotusAtollTrackerOverlay || !WorldUtils.isInSkyblock() || WorldUtils.getWorldName() != WorldUtils.LOTUS_ATOLL) return
-        if (!FishingHookUtils.wasFishingHookActiveMinutesAgo(5)) return
+        if (!FishingHookUtils.wasFishingHookSubmergedMinutesAgo(5)) return
 
         val lines = mutableListOf<LineInfo>()
         lines.add(LineInfo(baseTitle))

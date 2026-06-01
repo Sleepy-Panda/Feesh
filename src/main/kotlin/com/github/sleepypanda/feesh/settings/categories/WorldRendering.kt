@@ -62,13 +62,20 @@ object WorldRendering : CategoryKt("World Rendering") {
 
     var hidePlayersNearBobber by boolean(false) {
         this.name = Translated("Hide players near bobber")
-        this.description = Translated("Hides other players when your fishing rod is cast, if they are within the configured distance from your fishing hook.")
+        this.description = Translated("Hides other players when your fishing rod is casted, if they are within the configured distance from your fishing hook.")
     }
 
     var hidePlayersNearBobberDistance by int(5) {
         this.name = Translated("Distance from bobber")
-        this.description = Translated("Maximum distance (blocks) from your fishing hook within which other players are hidden. Only applies when fishing rod is casted.")
+        this.description = Translated("Maximum distance (blocks) from your fishing hook within which other players are hidden.")
         this.range = 1..10
+        this.slider = true
+    }
+
+    var hidePlayersNearBobberUnhideDelay by int(0) {
+        this.name = Translated("Unhide delay")
+        this.description = Translated("Delay in seconds to keep players hidden after your bobber disappears.")
+        this.range = 0..5
         this.slider = true
     }
 

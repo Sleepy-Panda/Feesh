@@ -8,9 +8,9 @@ import java.util.Date
 import net.minecraft.world.phys.Vec3
 
 /** 
- * Information about the casted fishing hook. It can be casted into any blocks, air or fluid.
+ * Information about the active fishing hook. It can be casted into any blocks, air or fluid.
  */
-data class FishingHookInfo(
+data class ActiveFishingHookInfo(
     var x: Double = 0.0,
     var y: Double = 0.0,
     var z: Double = 0.0,
@@ -30,7 +30,10 @@ data class SubmergedFishingHookInfo(
 )
 
 object FishingHookUtils {
-    private var fishingHook: FishingHookInfo? = null
+    private var activeFishingHook: ActiveFishingHookInfo? = null
+    private var activeFishingHookSeenAt: Date? = null
+    private var lastActiveFishingHook: ActiveFishingHookInfo? = null // Used to store the last known fishing hook even if it is not present anymore
+
     private var submergedFishingHook: SubmergedFishingHookInfo? = null
     private var submergedFishingHookSeenAt: Date? = null
     private var submergedFishingHookInHotspotSeenAt: Date? = null
@@ -41,10 +44,35 @@ object FishingHookUtils {
     }
 
     /**
-     * Check if the player's fishing hook is active (submerged into water/lava, or casted into the ground for dirt rod).
+     * Get the information about the casted fishing hook, even if it is not submerged in a water/lava.
+     * @returns The information about the casted fishing hook.
+     */
+    fun getActiveFishingHook(): ActiveFishingHookInfo? {
+        return activeFishingHook
+    }
+
+    fun getLastActiveFishingHook(): ActiveFishingHookInfo? {
+        return activeFishingHook ?: lastActiveFishingHook
+    }
+
+    fun lastActiveFishingHookSeenAt(): Date? {
+        return activeFishingHookSeenAt
+    }
+
+    /**
+     * Checks if the casted fishing hook (not necessarily submerged) was present during the last given seconds.
+     */
+    fun wasFishingHookActiveSecondsAgo(seconds: Int): Boolean {
+        val lastSeen = activeFishingHookSeenAt ?: return false
+        val now = Date()
+        return now.time - lastSeen.time <= seconds * 1000
+    }
+
+    /**
+     * Check if the player's fishing hook is submerged (into water/lava, or casted into the ground for dirt rod).
      * @returns True if the player's fishing hook is active.
      */
-    fun isFishingHookActive(): Boolean {
+    fun isFishingHookSubmerged(): Boolean {
         return submergedFishingHook != null
     }
 
@@ -52,45 +80,34 @@ object FishingHookUtils {
      * Get the information about the active fishing hook casted into a water/lava.
      * @returns The information about the active fishing hook.
      */
-    fun getActiveFishingHook(): SubmergedFishingHookInfo? {
+    fun getSubmergedFishingHook(): SubmergedFishingHookInfo? {
         return submergedFishingHook
     }
 
-    /**
-     * Get the information about the fishing hook, even if it is not in a water/lava.
-     * @returns The information about the casted fishing hook.
-     */
-    fun getFishingHook(): FishingHookInfo? {
-        return fishingHook
-    }
-
-    fun lastActiveFishingHookSeenAt(): Date? {
+    fun lastSubmergedFishingHookSeenAt(): Date? {
         return submergedFishingHookSeenAt
     }
 
-    fun lastActiveFishingHookInHotspotSeenAt(): Date? {
+    fun lastSubmergedFishingHookInHotspotSeenAt(): Date? {
         return submergedFishingHookInHotspotSeenAt
     }
 
-    fun wasFishingHookActiveMinutesAgo(minutes: Int): Boolean {
-        val lastFishingHookSeenAt = lastActiveFishingHookSeenAt() ?: return false
+    fun wasFishingHookSubmergedMinutesAgo(minutes: Int): Boolean {
+        val lastSeen = lastSubmergedFishingHookSeenAt() ?: return false
         val now = Date()
-
-        return now.time - lastFishingHookSeenAt.time <= minutes * 60 * 1000
+        return now.time - lastSeen.time <= minutes * 60 * 1000
     }
 
-    fun wasFishingHookActiveSecondsAgo(seconds: Int): Boolean {
-        val lastFishingHookSeenAt = lastActiveFishingHookSeenAt() ?: return false
+    fun wasFishingHookSubmergedSecondsAgo(seconds: Int): Boolean {
+        val lastSeen = lastSubmergedFishingHookSeenAt() ?: return false
         val now = Date()
-
-        return now.time - lastFishingHookSeenAt.time <= seconds * 1000
+        return now.time - lastSeen.time <= seconds * 1000
     }
 
-    fun wasFishingHookActiveInHotspotSecondsAgo(seconds: Int): Boolean {
-        val lastFishingHookSeenAt = lastActiveFishingHookInHotspotSeenAt() ?: return false
+    fun wasFishingHookSubmergedInHotspotSecondsAgo(seconds: Int): Boolean {
+        val lastSeen = lastSubmergedFishingHookInHotspotSeenAt() ?: return false
         val now = Date()
-
-        return now.time - lastFishingHookSeenAt.time <= seconds * 1000
+        return now.time - lastSeen.time <= seconds * 1000
     }
 
     private fun onClientTick(@Suppress("UNUSED_PARAMETER") event: ClientTickEvent) {
@@ -98,28 +115,31 @@ object FishingHookUtils {
             !WorldUtils.isInFishingWorld() ||
             !PlayerUtils.hasFishingRodInHotbar()
         ) {
-            fishingHook = null
+            activeFishingHook = null
+            lastActiveFishingHook = null
             submergedFishingHook = null
             return
         }
 
         val fishingHookEntity = EntityUtils.getPlayersFishingHookEntity() ?: run {
-            fishingHook = null
+            activeFishingHook = null
             submergedFishingHook = null
             return@onClientTick
         }
 
-        fishingHook = FishingHookInfo(
+        activeFishingHook = ActiveFishingHookInfo(
             x = fishingHookEntity.x,
             y = fishingHookEntity.y,
             z = fishingHookEntity.z,
             age = fishingHookEntity.tickCount,
         )
+        lastActiveFishingHook = activeFishingHook
+        activeFishingHookSeenAt = Date()
 
-        if (isOwnFishingHookActive()) {
+        if (isOwnFishingHookSubmerged()) {
             submergedFishingHookSeenAt = Date()
 
-            val closestHotspot = if (WorldUtils.isInHotspotFishingWorld()) HotspotUtils.findClosestHotspotInRange(Vec3(fishingHook!!.x, fishingHook!!.y, fishingHook!!.z), 5.0) else null
+            val closestHotspot = if (WorldUtils.isInHotspotFishingWorld()) HotspotUtils.findClosestHotspotInRange(Vec3(activeFishingHook!!.x, activeFishingHook!!.y, activeFishingHook!!.z), 5.0) else null
             if (closestHotspot != null) submergedFishingHookInHotspotSeenAt = Date()
 
             submergedFishingHook = SubmergedFishingHookInfo(
@@ -135,13 +155,15 @@ object FishingHookUtils {
     }
 
     private fun onWorldChanged(@Suppress("UNUSED_PARAMETER") event: WorldChangedEvent) {
-        fishingHook = null
+        activeFishingHook = null
+        activeFishingHookSeenAt = null
+        lastActiveFishingHook = null
         submergedFishingHook = null
         submergedFishingHookSeenAt = null
         submergedFishingHookInHotspotSeenAt = null
     }
 
-    private fun isOwnFishingHookActive(): Boolean {
+    private fun isOwnFishingHookSubmerged(): Boolean {
         if (!WorldUtils.isInSkyblock()) return false
         val player = FeeshMod.mc.player ?: return false
 

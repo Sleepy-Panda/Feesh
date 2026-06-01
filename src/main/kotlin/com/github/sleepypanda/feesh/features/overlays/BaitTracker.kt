@@ -26,7 +26,7 @@ object BaitTracker {
         .setApplyCustomStyleKey { Overlays.baitTrackerCustomStyle }
         .setCondition {
             WorldUtils.isInFishingWorld() &&
-                FishingHookUtils.wasFishingHookActiveMinutesAgo(5)
+                FishingHookUtils.wasFishingHookSubmergedMinutesAgo(5)
         }
 
     fun init() {
@@ -51,7 +51,7 @@ object BaitTracker {
             if (!Overlays.baitTrackerOverlay ||
                 !WorldUtils.isInSkyblock() ||
                 !WorldUtils.isInFishingWorld() ||
-                !FishingHookUtils.wasFishingHookActiveMinutesAgo(5)
+                !FishingHookUtils.wasFishingHookSubmergedMinutesAgo(5)
             ) {
                 gui.clearLines()
                 return

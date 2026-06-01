@@ -266,7 +266,7 @@ object FishingProfitTracker {
 
     private fun isTrackerVisible(): Boolean {
         if (!Overlays.fishingProfitTrackerOverlay || !WorldUtils.isInSkyblock() || !WorldUtils.isInFishingWorld()) return false
-        if (!FishingHookUtils.wasFishingHookActiveMinutesAgo(HIDE_OVERLAY_AFTER_HOOK_MINUTES)) return false
+        if (!FishingHookUtils.wasFishingHookSubmergedMinutesAgo(HIDE_OVERLAY_AFTER_HOOK_MINUTES)) return false
 
         val viewMode = getCurrentViewMode()
         val session = data.session
@@ -537,7 +537,7 @@ object FishingProfitTracker {
         }
 
         val prevIsActive = isSessionActive
-        val isHookActive = FishingHookUtils.isFishingHookActive()
+        val isHookActive = FishingHookUtils.isFishingHookSubmerged()
 
         // Start fishing timer after pause or when tracker was empty
         if (isHookActive) {
@@ -553,7 +553,7 @@ object FishingProfitTracker {
         }
 
         if (!isSessionActive || !isTrackerVisible()) return
-        val lastHookSeenAt = FishingHookUtils.lastActiveFishingHookSeenAt() ?: return
+        val lastHookSeenAt = FishingHookUtils.lastSubmergedFishingHookSeenAt() ?: return
         val elapsedSinceHook = (Date().time - lastHookSeenAt.time) / 1000
         if (elapsedSinceHook < Overlays.trackersAutoPauseSeconds) {
             data.session.elapsedSeconds += 1

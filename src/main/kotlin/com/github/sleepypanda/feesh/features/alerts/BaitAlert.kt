@@ -30,7 +30,7 @@ object BaitAlert {
     private fun onBaitChanged(event: BaitChangedEvent) {
         CommonUtils.runWithCatching("Failed to alert on bait change") {
             if (!Alerts.alertOnBaitChanged || !WorldUtils.isInSkyblock() || !WorldUtils.isInFishingWorld()) return
-            if (!FishingHookUtils.wasFishingHookActiveMinutesAgo(5)) return
+            if (!FishingHookUtils.wasFishingHookSubmergedMinutesAgo(5)) return
             if (isInFishingBag()) return
 
             ChatUtils.sendLocalChat("${WHITE}Bait changed from ${event.oldBaitDisplayName} ${WHITE}to ${event.newBaitDisplayName}${WHITE}.", true)
@@ -42,7 +42,7 @@ object BaitAlert {
     private fun onBaitRunningOut(event: BaitRunningOutEvent) {
         CommonUtils.runWithCatching("Failed to alert on bait running out") {
             if (!Alerts.alertOnBaitRunningOut || !WorldUtils.isInSkyblock() || !WorldUtils.isInFishingWorld()) return
-            if (!FishingHookUtils.wasFishingHookActiveMinutesAgo(5)) return
+            if (!FishingHookUtils.wasFishingHookSubmergedMinutesAgo(5)) return
             if (isInFishingBag()) return
             if (event.baitName.isBlank()) return
 

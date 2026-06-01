@@ -44,7 +44,7 @@ object SeaCreaturesPerHourTracker {
         .setApplyCustomStyleKey { Overlays.seaCreaturesPerHourTrackerCustomStyle }
         .setCondition {
             WorldUtils.isInFishingWorld() &&
-            FishingHookUtils.wasFishingHookActiveMinutesAgo(HIDE_OVERLAY_MINUTES)
+            FishingHookUtils.wasFishingHookSubmergedMinutesAgo(HIDE_OVERLAY_MINUTES)
         }
 
     fun init() {
@@ -130,7 +130,7 @@ object SeaCreaturesPerHourTracker {
             !WorldUtils.isInSkyblock() ||
             !WorldUtils.isInFishingWorld() ||
             (totalSeaCreaturesCaughtCount == 0) ||
-            !FishingHookUtils.wasFishingHookActiveMinutesAgo(HIDE_OVERLAY_MINUTES)
+            !FishingHookUtils.wasFishingHookSubmergedMinutesAgo(HIDE_OVERLAY_MINUTES)
         ) return
 
         val elapsedHours = elapsedSeconds / 3600.0

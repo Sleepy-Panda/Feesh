@@ -54,7 +54,7 @@ object BayouTracker {
         .setApplyCustomStyleKey { Overlays.bayouTrackerCustomStyle }
         .setCondition {
             WorldUtils.getWorldName() == WorldUtils.BACKWATER_BAYOU &&
-                FishingHookUtils.wasFishingHookActiveMinutesAgo(5)
+                FishingHookUtils.wasFishingHookSubmergedMinutesAgo(5)
         }
 
     fun init() {
@@ -119,7 +119,7 @@ object BayouTracker {
 
         if (!hasData()) return
         if (!Overlays.bayouTrackerOverlay || !WorldUtils.isInSkyblock() ||
-            !FishingHookUtils.wasFishingHookActiveMinutesAgo(5)
+            !FishingHookUtils.wasFishingHookSubmergedMinutesAgo(5)
         ) return
         if (WorldUtils.getWorldName() != WorldUtils.BACKWATER_BAYOU) return
 
