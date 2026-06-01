@@ -10,6 +10,7 @@ Released on: ???
 
 - Fixed Condensed Lily Pad and Stridersurfer Shard not being tracked by Fishing profit tracker.
 - Fixed blank bait name in "Out of bait soon" chat message.
+- Removed RARE DROP! chat alerts for the items that now have RARE DROP! chat message from SB.
 
 # 1.7.1
 
