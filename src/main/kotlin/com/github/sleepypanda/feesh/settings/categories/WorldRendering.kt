@@ -2,6 +2,7 @@ package com.github.sleepypanda.feesh.settings.categories
 
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
+import com.github.sleepypanda.feesh.features.rendering.HidePlayersNearBobber
 import com.github.sleepypanda.feesh.features.rendering.RareMobHighlight
 import com.github.sleepypanda.feesh.settings.models.HighlightableSeaCreatureTypes
 import com.teamresourceful.resourcefulconfig.api.types.options.TranslatableValue
@@ -72,11 +73,15 @@ object WorldRendering : CategoryKt("World Rendering") {
         this.slider = true
     }
 
-    var hidePlayersNearBobberUnhideDelay by int(0) {
+    var hidePlayersNearBobberUnhideDelay by ObservableEntry(int(0) {
         this.name = Translated("Unhide delay")
         this.description = Translated("Delay in seconds to keep players hidden after your bobber disappears.")
         this.range = 0..5
         this.slider = true
+    }) { prev, new ->
+        if (prev != new) {
+            HidePlayersNearBobber.onUnhideDelayChanged()
+        }
     }
 
     init {
