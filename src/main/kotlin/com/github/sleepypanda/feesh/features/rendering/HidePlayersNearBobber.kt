@@ -13,9 +13,7 @@ import java.util.UUID
 import kotlin.math.pow
 
 object HidePlayersNearBobber {
-    private const val IN_RANGE_NO_DELAY = Long.MAX_VALUE
-
-    private val hiddenPlayers = mutableMapOf<UUID, Long>() // player ID -> timestamp (ms) when they may be shown again
+    private val hiddenPlayers = mutableMapOf<UUID, Long>() // hidden player ID -> timestamp (ms) when they may be shown again
 
     fun init() {
         EventBus.subscribe(ClientTickEvent::class, ::onClientTick)
@@ -36,8 +34,6 @@ object HidePlayersNearBobber {
         if (!isPlayer(entity)) return false
 
         val unhideAt = hiddenPlayers[entity.uuid] ?: return false
-        if (unhideAt == IN_RANGE_NO_DELAY) return true
-
         val now = System.currentTimeMillis()
         if (now < unhideAt) return true
 
@@ -70,9 +66,9 @@ object HidePlayersNearBobber {
 
     private fun refreshHiddenPlayers() {
         val now = System.currentTimeMillis()
-        val unhideDelay = WorldRendering.hidePlayersNearBobberUnhideDelay.coerceAtLeast(0)
+        val unhideDelaySeconds = WorldRendering.hidePlayersNearBobberUnhideDelay.coerceAtLeast(0)
 
-        if (unhideDelay == 0) {
+        if (unhideDelaySeconds == 0) {
             hiddenPlayers.clear()
         }
 
@@ -86,27 +82,27 @@ object HidePlayersNearBobber {
 
         val maxDistanceSqr = WorldRendering.hidePlayersNearBobberDistance.toDouble().pow(2)
 
-        for (player in world.players()) {
-            if (player == localPlayer || !isPlayer(player)) continue
-
+        for (player in world.players().filter { it != localPlayer && isPlayer(it) }) {
             val distanceSqr = EntityUtils.getDistanceSqr(
                 hook.x, hook.y, hook.z,
                 player.x, player.y, player.z,
             )
             if (distanceSqr > maxDistanceSqr) continue
 
-            hiddenPlayers[player.uuid] = if (unhideDelay > 0) {
-                now + unhideDelay * 1000L
-            } else {
-                IN_RANGE_NO_DELAY
-            }
+            hiddenPlayers[player.uuid] = unhideAt(now, unhideDelaySeconds)
+        }
+    }
+
+    private fun unhideAt(now: Long, unhideDelaySeconds: Int): Long {
+        return now + if (unhideDelaySeconds > 0) {
+            unhideDelaySeconds * 1000L
+        } else {
+            100L // Some time to keep player hidden until next tick
         }
     }
 
     private fun pruneExpiredHiddenPlayers(now: Long = System.currentTimeMillis()) {
-        hiddenPlayers.entries.removeIf { (_, unhideAt) ->
-            unhideAt != IN_RANGE_NO_DELAY && now >= unhideAt
-        }
+        hiddenPlayers.entries.removeIf { (_, unhideAt) -> now >= unhideAt }
     }
 
     private fun clearHiddenPlayers() {
