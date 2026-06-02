@@ -76,7 +76,7 @@ object FishingHookTimer {
             return
         }
 
-        val fishingHook = FishingHookUtils.getFishingHook() ?: run {
+        val fishingHook = FishingHookUtils.getActiveFishingHook() ?: run {
             fishingHookTimer = null
             gui.clearLines()
             return

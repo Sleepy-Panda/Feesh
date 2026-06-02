@@ -86,7 +86,7 @@ object NessieDestinationAlert {
     private fun onArmorStandLoaded(event: ArmorStandDetailsLoadedEvent) {
         if (!Alerts.alertOnNessieDestination || !WorldUtils.isInSkyblock() || WorldUtils.getWorldName() != WorldUtils.GALATEA) return
         if (!event.customNameUnformatted.contains(NESSIE_NAME)) return
-        if (!FishingHookUtils.wasFishingHookActiveMinutesAgo(5)) return
+        if (!FishingHookUtils.wasFishingHookSubmergedMinutesAgo(5)) return
 
         EntityUtils.parseSeaCreatureNametag(event.entity, listOf(NESSIE_NAME)) ?: return
 

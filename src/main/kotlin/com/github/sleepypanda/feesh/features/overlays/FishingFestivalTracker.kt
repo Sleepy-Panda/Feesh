@@ -132,7 +132,7 @@ object FishingFestivalTracker {
             WorldUtils.isInSkyblock() &&
             WorldUtils.isInFishingWorld() && 
             hasSharkData() &&
-            FishingHookUtils.wasFishingHookActiveMinutesAgo(5)
+            FishingHookUtils.wasFishingHookSubmergedMinutesAgo(5)
     }
 
     private fun hasSharkData(): Boolean {
@@ -222,24 +222,26 @@ object FishingFestivalTracker {
 
         var isNewTotalPb = false
         var isNewGwPb = false
+        val previousTotalPb = personalBest.sharksCaught.amount
+        val previousGwPb = personalBest.greatWhiteSharksCaught.amount
 
-        if (total > personalBest.sharksCaught.amount) {
+        if (total > previousTotalPb) {
             personalBest.sharksCaught.amount = total
             personalBest.sharksCaught.at = Date()
             isNewTotalPb = true
             ChatUtils.sendLocalChat(
-                "${LIGHT_PURPLE}${BOLD}PERSONAL BEST!${RESET} You caught ${GREEN}${BOLD}$total${RESET} sharks during the Fishing Festival!",
+                "${LIGHT_PURPLE}${BOLD}PERSONAL BEST!${RESET} You caught ${WHITE}${BOLD}${previousTotalPb} ${GRAY}-> ${GREEN}${BOLD}$total${RESET} sharks during the Fishing Festival!",
                 true
             )
             CommonUtils.showTitle("${LIGHT_PURPLE}${BOLD}PERSONAL BEST!", "Sharks: ${GREEN}$total")
         }
 
-        if (greatWhiteCount > personalBest.greatWhiteSharksCaught.amount) {
+        if (greatWhiteCount > previousGwPb) {
             personalBest.greatWhiteSharksCaught.amount = greatWhiteCount
             personalBest.greatWhiteSharksCaught.at = Date()
             isNewGwPb = true
             ChatUtils.sendLocalChat(
-                "${LIGHT_PURPLE}${BOLD}PERSONAL BEST!${RESET} You caught ${GREEN}${BOLD}$greatWhiteCount${RESET} Great White Sharks during the Fishing Festival!",
+                "${LIGHT_PURPLE}${BOLD}PERSONAL BEST!${RESET} You caught ${WHITE}${BOLD}${previousGwPb} ${GRAY}-> ${GREEN}${BOLD}$greatWhiteCount${RESET} Great White Sharks during the Fishing Festival!",
                 true
             )
             CommonUtils.showTitle("${LIGHT_PURPLE}${BOLD}PERSONAL BEST!", "Great White Sharks: ${GREEN}$greatWhiteCount")

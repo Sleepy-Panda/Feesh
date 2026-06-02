@@ -76,10 +76,10 @@ object HotspotGoneAlert {
         CommonUtils.runWithCatching("Failed to track latest Hotspot") {
             if (!Alerts.alertOnHotspotGone || !WorldUtils.isInSkyblock() || !WorldUtils.isInHotspotFishingWorld() || !PlayerUtils.hasFishingRodInHotbar()) return
 
-            val isHookActive = FishingHookUtils.isFishingHookActive()
+            val isHookActive = FishingHookUtils.isFishingHookSubmerged()
             if (!isHookActive) return
 
-            val playerHook = FishingHookUtils.getActiveFishingHook() ?: return
+            val playerHook = FishingHookUtils.getSubmergedFishingHook() ?: return
             val closestHotspot = HotspotUtils.findClosestHotspotInRange(Vec3(playerHook.x, playerHook.y, playerHook.z), NEAREST_HOTSPOT_RANGE_FROM_HOOK) ?: return
 
             lastClosestHotspot = closestHotspot

@@ -1042,7 +1042,6 @@ class FishingProfitDrops {
                 itemAlternateNames = listOf("Enchanted Book (Blessing 6)"),
                 itemDisplayName = "${RARE}Blessing VI ${WHITE}Book",
                 npcPrice = null,
-                shouldAnnounceRareDrop = true,
             ),
             FishingProfitDropInfo(
                 itemId = "CARROT_ITEM",
@@ -1204,7 +1203,6 @@ class FishingProfitDrops {
                 itemName = "Broken Radar",
                 itemDisplayName = "${RARE}Broken Radar",
                 npcPrice = 25_000.0,
-                shouldAnnounceRareDrop = true,
             ),
             FishingProfitDropInfo(
                 itemId = "EDIBLE_SEAWEED",
