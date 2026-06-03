@@ -18,7 +18,7 @@ import com.github.sleepypanda.feesh.utils.gui.FeeshGui
 import com.github.sleepypanda.feesh.utils.gui.GuiButton
 import com.github.sleepypanda.feesh.utils.gui.LineAction
 import com.github.sleepypanda.feesh.utils.gui.LineInfo
-import com.github.sleepypanda.feesh.utils.gui.SegmentTable
+import com.github.sleepypanda.feesh.utils.gui.SegmentsTable
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
 import com.github.sleepypanda.feesh.utils.FishingHookUtils
@@ -590,14 +590,14 @@ object SeaCreaturesTracker {
             } else {
                 columnRows
             }
-            val segmentTable = SegmentTable.layout(FeeshMod.mc.font, rowsForLayout, getColumnsSeparator())
-            var segmentRowIndex = 0
+            val segmentsTable = SegmentsTable.layout(FeeshMod.mc.font, rowsForLayout, getColumnsSeparator())
+            var segmentsRowIndex = 0
 
             if (columnHeaders != null) {
                 lines.add(
                     LineInfo.withSegments(
-                        segments = segmentTable.rows[segmentRowIndex++],
-                        tableWidth = segmentTable.tableWidth,
+                        segments = segmentsTable.rows[segmentsRowIndex++],
+                        tableWidth = segmentsTable.tableWidth,
                     )
                 )
             }
@@ -605,8 +605,8 @@ object SeaCreaturesTracker {
             entriesToShow.forEach { entry ->
                 lines.add(
                     LineInfo.withSegments(
-                        segments = segmentTable.rows[segmentRowIndex++],
-                        tableWidth = segmentTable.tableWidth,
+                        segments = segmentsTable.rows[segmentsRowIndex++],
+                        tableWidth = segmentsTable.tableWidth,
                         tooltip = getSeaCreatureLineTooltip(entry),
                         actions = listOf(
                             LineAction("${GRAY}[${RED}x${GRAY}]") { onDeleteSeaCreatureInline(entry.seaCreature) }

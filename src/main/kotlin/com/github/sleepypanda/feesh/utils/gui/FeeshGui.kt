@@ -50,8 +50,8 @@ data class LineAction(
 /** 
  * A segment of a line used to display column-based text with columns alignment.
  * @param text The text to display in the segment.
- * @param xOffset The x offset within the segment table — set by [SegmentTable.layout].
- * @param columnWidth The width of the segment column — set by [SegmentTable.layout].
+ * @param xOffset The x offset within the segment table - set by [SegmentsTable.layout].
+ * @param columnWidth The width of the segment column - set by [SegmentsTable.layout].
  */
 data class LineSegment(
     val text: String,
@@ -66,8 +66,7 @@ data class LineInfo(
     val tooltip: List<Component>? = null,
     val actions: List<LineAction> = emptyList(),
 ) {
-    /** Full table width; from [SegmentTable.layout] or max segment extent. */
-    val segmentTableWidth: Int?
+    val segmentsTableWidth: Int?
         get() {
             layoutTableWidth?.let { return it }
             val segs = segments ?: return null
@@ -94,7 +93,7 @@ data class LineInfo(
     }
 }
 
-object SegmentTable {
+object SegmentsTable {
     data class LayoutResult(
         val tableWidth: Int,
         val rows: List<List<LineSegment>>,
@@ -394,7 +393,7 @@ class FeeshGui {
     }
 
     private fun getLineWidth(textRenderer: Font, lineInfo: LineInfo): Int {
-        lineInfo.segmentTableWidth?.let { return it }
+        lineInfo.segmentsTableWidth?.let { return it }
         return textRenderer.width(Component.literal(lineInfo.text))
     }
 
@@ -532,7 +531,7 @@ class FeeshGui {
                     trimTextToWidth(textRenderer, line, lineAvailableWidth)
                 }
                 val clippedLineWidth = if (usesSegmentColumns) {
-                    lineInfo?.segmentTableWidth ?: lineInfo?.let { getLineWidth(textRenderer, it) }
+                    lineInfo?.segmentsTableWidth ?: lineInfo?.let { getLineWidth(textRenderer, it) }
                         ?: textRenderer.width(Component.literal(clippedLine))
                 } else {
                     textRenderer.width(Component.literal(clippedLine))
@@ -566,7 +565,7 @@ class FeeshGui {
                     }
                     Alignment.CENTER -> {
                         val tableWidth = if (usesSegmentColumns) {
-                            lineInfo?.segmentTableWidth ?: clippedLineWidth
+                            lineInfo?.segmentsTableWidth ?: clippedLineWidth
                         } else {
                             clippedLineWidth
                         }
@@ -582,7 +581,7 @@ class FeeshGui {
             } else {
                 val textWidth = lineInfo?.let { getLineWidth(textRenderer, it) }
                     ?: textRenderer.width(Component.literal(line))
-                val tableWidth = lineInfo?.segmentTableWidth
+                val tableWidth = lineInfo?.segmentsTableWidth
                 val actualX = when (alignment) {
                     Alignment.LEFT -> scaledLeftEdge
                     Alignment.RIGHT -> if (lineInfo.usesSegmentColumns()) {
@@ -626,7 +625,7 @@ class FeeshGui {
         clipRightOverride: Int? = null,
     ) {
         if (lineInfo != null && !lineInfo.segments.isNullOrEmpty()) {
-            val tableWidth = lineInfo.segmentTableWidth
+            val tableWidth = lineInfo.segmentsTableWidth
                 ?: lineInfo.segments.maxOf { it.xOffset + textRenderer.width(Component.literal(it.text)) }
             val clipLeft = clipLeftOverride ?: lineStartX
             val clipRight = clipRightOverride ?: (lineStartX + contentWidth)
@@ -900,7 +899,7 @@ class FeeshGui {
         val lineWidth = getLineWidth(textRenderer, lineInfo)
         val lineAvailableWidth = (maxWidth - reservedWidth).coerceAtLeast(0)
         val clippedLineWidth = if (lineInfo.usesSegmentColumns()) {
-            minOf(lineInfo.segmentTableWidth ?: lineWidth, lineAvailableWidth)
+            minOf(lineInfo.segmentsTableWidth ?: lineWidth, lineAvailableWidth)
         } else {
             minOf(lineWidth, lineAvailableWidth)
         }
@@ -920,7 +919,7 @@ class FeeshGui {
             Alignment.RIGHT -> leftEdge + maxWidthScreen - buttonsWidthScreen
             Alignment.CENTER -> {
                 val tableWidth = if (lineInfo.usesSegmentColumns()) {
-                    lineInfo.segmentTableWidth ?: clippedLineWidth
+                    lineInfo.segmentsTableWidth ?: clippedLineWidth
                 } else {
                     clippedLineWidth
                 }
