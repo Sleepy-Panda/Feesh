@@ -481,98 +481,25 @@ class FeeshGui {
         val overlayBackgroundCoords = getOverlayBackgroundCoords(scaledLeftEdge, scaledY, maxWidth, height)
         if (useCustomStyle) {
             val overlayScreenCoords = toScreenCoords(overlayBackgroundCoords)
-            drawOverlayBackgroundScreenSpace(drawContext, overlayScreenCoords)
-            drawOverlayBorderScreenSpace(drawContext, overlayScreenCoords) // I had to draw it before scaling, so the border is not scaled, and aligned with background.
+            drawOverlayBackground(drawContext, overlayScreenCoords)
+            drawOverlayBorder(drawContext, overlayScreenCoords) // I had to draw it before scaling, so the border is not scaled, and aligned with background.
         }
 
         drawContext.pose().pushMatrix()
         drawContext.pose().scale(scale, scale)
 
+        val lineRenderContext = LineRenderContext(
+            drawContext = drawContext,
+            textRenderer = textRenderer,
+            scaledLeftEdge = scaledLeftEdge,
+            maxWidth = maxWidth,
+            color = color,
+        )
+
         for ((index, line) in allLines.withIndex()) {
             val lineInfo = renderLineInfos.getOrNull(index)
             val actions = if (index == hoveredLineIndex) hoveredActions else null
-            if (!actions.isNullOrEmpty()) {
-                val buttonsStr = actions.joinToString("") { it.text }
-                val buttonsWidth = textRenderer.width(Component.literal(buttonsStr))
-                val spaceWidth = textRenderer.width(Component.literal(" "))
-                val reservedWidth = buttonsWidth + spaceWidth
-                val isLineUsingCells = lineInfo.usesCells()
-                val lineAvailableWidth = (maxWidth - reservedWidth).coerceAtLeast(0)
-                val clippedLine = if (isLineUsingCells) { // Clipped text is used when inline buttons are prepended, to not exceed overlay width
-                    line
-                } else {
-                    trimTextToWidth(textRenderer, line, lineAvailableWidth)
-                }
-                val clippedLineWidth = if (isLineUsingCells) {
-                    lineInfo?.tableWidth ?: lineInfo?.let { getLineWidth(textRenderer, it) }
-                        ?: textRenderer.width(Component.literal(clippedLine))
-                } else {
-                    textRenderer.width(Component.literal(clippedLine))
-                }
-
-                when (alignment) {
-                    Alignment.LEFT -> {
-                        val buttonsX = scaledLeftEdge
-                        val lineX = scaledLeftEdge + reservedWidth
-                        drawStringCompat(drawContext, textRenderer, Component.literal(buttonsStr), buttonsX, currentY, color, true)
-                        drawLineContent(drawContext, textRenderer, lineInfo, clippedLine, lineX, lineAvailableWidth, currentY)
-                    }
-                    Alignment.RIGHT -> {
-                        val buttonsX = scaledLeftEdge + maxWidth - buttonsWidth
-                        if (isLineUsingCells) {
-                            drawLineContent(
-                                drawContext,
-                                textRenderer,
-                                lineInfo,
-                                clippedLine,
-                                scaledLeftEdge,
-                                maxWidth,
-                                currentY,
-                                clipRightOverride = scaledLeftEdge + lineAvailableWidth,
-                            )
-                        } else {
-                            val lineX = scaledLeftEdge + lineAvailableWidth - clippedLineWidth
-                            drawLineContent(drawContext, textRenderer, lineInfo, clippedLine, lineX, lineAvailableWidth, currentY)
-                        }
-                        drawStringCompat(drawContext, textRenderer, Component.literal(buttonsStr), buttonsX, currentY, color, true)
-                    }
-                    Alignment.CENTER -> {
-                        val tableWidth = if (isLineUsingCells) {
-                            lineInfo?.tableWidth ?: clippedLineWidth
-                        } else {
-                            clippedLineWidth
-                        }
-                        val textWidth = minOf(tableWidth, lineAvailableWidth)
-                        val blockWidth = reservedWidth + textWidth
-                        val contentLeft = scaledLeftEdge + (maxWidth - blockWidth) / 2
-                        val buttonsX = contentLeft
-                        val lineX = contentLeft + reservedWidth
-                        drawStringCompat(drawContext, textRenderer, Component.literal(buttonsStr), buttonsX, currentY, color, true)
-                        drawLineContent(drawContext, textRenderer, lineInfo, clippedLine, lineX, lineAvailableWidth, currentY)
-                    }
-                }
-            } else {
-                val textWidth = lineInfo?.let { getLineWidth(textRenderer, it) } ?: textRenderer.width(Component.literal(line))
-                val tableWidth = lineInfo?.tableWidth
-                val actualX = when (alignment) {
-                    Alignment.LEFT -> scaledLeftEdge
-                    Alignment.RIGHT -> if (lineInfo.usesCells()) {
-                        scaledLeftEdge
-                    } else {
-                        scaledLeftEdge + maxWidth - textWidth
-                    }
-                    Alignment.CENTER -> if (lineInfo.usesCells() && tableWidth != null) {
-                        scaledLeftEdge + (maxWidth - tableWidth) / 2
-                    } else {
-                        scaledLeftEdge + (maxWidth - textWidth) / 2
-                    }
-                }
-                val contentWidth = when (alignment) {
-                    Alignment.RIGHT -> maxWidth
-                    else -> tableWidth ?: maxWidth
-                }
-                drawLineContent(drawContext, textRenderer, lineInfo, line, actualX, contentWidth, currentY)
-            }
+            drawOverlayLine(lineRenderContext, lineInfo, line, currentY, actions)
             currentY += lineHeightPx
         }
 
@@ -585,64 +512,307 @@ class FeeshGui {
 
     private fun LineInfo?.usesCells(): Boolean = this != null && !this.cells.isNullOrEmpty()
 
-    private fun drawLineContent(
-        drawContext: GuiGraphics,
-        textRenderer: Font,
+    private data class LineRenderContext(
+        val drawContext: GuiGraphics,
+        val textRenderer: Font,
+        val scaledLeftEdge: Int,
+        val maxWidth: Int,
+        val color: Int,
+    )
+
+    private data class HoveredLineMetrics(
+        val buttonsStr: String,
+        val buttonsWidth: Int,
+        val reservedWidth: Int,
+        val lineAvailableWidth: Int,
+        val clippedLine: String,
+        val clippedLineWidth: Int,
+        val usesCells: Boolean,
+    )
+
+    private fun drawOverlayLine(
+        ctx: LineRenderContext,
         lineInfo: LineInfo?,
-        fallbackText: String,
+        line: String,
+        currentY: Int,
+        actions: List<LineAction>?,
+    ) {
+        
+        fun getHoveredLineMetrics(
+            textRenderer: Font,
+            lineInfo: LineInfo?,
+            line: String,
+            maxWidth: Int,
+            actions: List<LineAction>,
+        ): HoveredLineMetrics {
+            val buttonsStr = actions.joinToString("") { it.text }
+            val buttonsWidth = textRenderer.width(Component.literal(buttonsStr))
+            val spaceWidth = textRenderer.width(Component.literal(" "))
+            val reservedWidth = buttonsWidth + spaceWidth
+            val usesCells = lineInfo.usesCells()
+            val lineAvailableWidth = (maxWidth - reservedWidth).coerceAtLeast(0)
+            val clippedLine = if (usesCells) {
+                line
+            } else {
+                trimTextEndingToMaxWidth(textRenderer, line, lineAvailableWidth)
+            }
+            val clippedLineWidth = if (usesCells) {
+                lineInfo?.tableWidth ?: lineInfo?.let { getLineWidth(textRenderer, it) }
+                    ?: textRenderer.width(Component.literal(clippedLine))
+            } else {
+                textRenderer.width(Component.literal(clippedLine))
+            }
+            return HoveredLineMetrics(
+                buttonsStr = buttonsStr,
+                buttonsWidth = buttonsWidth,
+                reservedWidth = reservedWidth,
+                lineAvailableWidth = lineAvailableWidth,
+                clippedLine = clippedLine,
+                clippedLineWidth = clippedLineWidth,
+                usesCells = usesCells,
+            )
+        }
+
+        if (!actions.isNullOrEmpty()) {
+            val metrics = getHoveredLineMetrics(ctx.textRenderer, lineInfo, line, ctx.maxWidth, actions)
+            drawHoveredOverlayLine(ctx, lineInfo, metrics, currentY)
+        } else {
+            drawUnhoveredOverlayLine(ctx, lineInfo, line, currentY)
+        }
+    }
+
+    private fun drawHoveredOverlayLine(
+        ctx: LineRenderContext,
+        lineInfo: LineInfo?,
+        metrics: HoveredLineMetrics,
+        currentY: Int,
+    ) {
+        val buttonsComponent = Component.literal(metrics.buttonsStr)
+
+        fun drawInlineButtons(buttonsX: Int) {
+            drawStringCompat(ctx.drawContext, ctx.textRenderer, buttonsComponent, buttonsX, currentY, ctx.color, true)
+        }
+
+        fun drawHoveredCellsLine(
+            lineStartX: Int,
+            contentWidth: Int,
+            clipRightOverride: Int? = null,
+            firstColumnDrawLeftOverride: Int? = null,
+        ) {
+            drawCellsLine(
+                ctx = ctx,
+                lineInfo = lineInfo!!,
+                lineStartX = lineStartX,
+                contentWidth = contentWidth,
+                currentY = currentY,
+                clipRightOverride = clipRightOverride,
+                firstColumnDrawLeftOverride = firstColumnDrawLeftOverride,
+            )
+        }
+
+        fun drawHoveredTextLine(lineStartX: Int, contentWidth: Int) {
+            drawTextLine(ctx, metrics.clippedLine, lineStartX, contentWidth, currentY)
+        }
+
+        when (alignment) {
+            Alignment.LEFT -> {
+                drawInlineButtons(ctx.scaledLeftEdge)
+                if (metrics.usesCells) {
+                    drawHoveredCellsLine(
+                        lineStartX = ctx.scaledLeftEdge,
+                        contentWidth = ctx.maxWidth,
+                        firstColumnDrawLeftOverride = ctx.scaledLeftEdge + metrics.reservedWidth,
+                    )
+                } else {
+                    drawHoveredTextLine(
+                        lineStartX = ctx.scaledLeftEdge + metrics.reservedWidth,
+                        contentWidth = metrics.lineAvailableWidth,
+                    )
+                }
+            }
+            Alignment.RIGHT -> {
+                val buttonsX = ctx.scaledLeftEdge + ctx.maxWidth - metrics.buttonsWidth
+                if (metrics.usesCells) {
+                    drawHoveredCellsLine(
+                        lineStartX = ctx.scaledLeftEdge,
+                        contentWidth = ctx.maxWidth,
+                        clipRightOverride = ctx.scaledLeftEdge + metrics.lineAvailableWidth,
+                    )
+                } else {
+                    drawHoveredTextLine(
+                        lineStartX = ctx.scaledLeftEdge + metrics.lineAvailableWidth - metrics.clippedLineWidth,
+                        contentWidth = metrics.lineAvailableWidth,
+                    )
+                }
+                drawInlineButtons(buttonsX)
+            }
+            Alignment.CENTER -> {
+                if (metrics.usesCells) {
+                    val tableWidth = lineInfo?.tableWidth ?: metrics.clippedLineWidth
+                    val contentLeft = ctx.scaledLeftEdge + (ctx.maxWidth - tableWidth) / 2
+                    drawInlineButtons(contentLeft)
+                    drawHoveredCellsLine(
+                        lineStartX = contentLeft,
+                        contentWidth = tableWidth,
+                        firstColumnDrawLeftOverride = contentLeft + metrics.reservedWidth,
+                    )
+                } else {
+                    val textWidth = minOf(lineInfo?.tableWidth ?: metrics.clippedLineWidth, metrics.lineAvailableWidth)
+                    val blockWidth = metrics.reservedWidth + textWidth
+                    val contentLeft = ctx.scaledLeftEdge + (ctx.maxWidth - blockWidth) / 2
+                    drawInlineButtons(contentLeft)
+                    drawHoveredTextLine(
+                        lineStartX = contentLeft + metrics.reservedWidth,
+                        contentWidth = metrics.lineAvailableWidth,
+                    )
+                }
+            }
+        }
+    }
+
+    private fun drawUnhoveredOverlayLine(
+        ctx: LineRenderContext,
+        lineInfo: LineInfo?,
+        line: String,
+        currentY: Int,
+    ) {
+        val textWidth = lineInfo?.let { getLineWidth(ctx.textRenderer, it) }
+            ?: ctx.textRenderer.width(Component.literal(line))
+        val tableWidth = lineInfo?.tableWidth
+
+        val lineStartX = when (alignment) {
+            Alignment.LEFT -> ctx.scaledLeftEdge
+            Alignment.RIGHT -> if (lineInfo.usesCells()) {
+                ctx.scaledLeftEdge
+            } else {
+                ctx.scaledLeftEdge + ctx.maxWidth - textWidth
+            }
+            Alignment.CENTER -> if (lineInfo.usesCells() && tableWidth != null) {
+                ctx.scaledLeftEdge + (ctx.maxWidth - tableWidth) / 2
+            } else {
+                ctx.scaledLeftEdge + (ctx.maxWidth - textWidth) / 2
+            }
+        }
+        val contentWidth = when (alignment) {
+            Alignment.RIGHT -> ctx.maxWidth
+            else -> tableWidth ?: ctx.maxWidth
+        }
+
+        if (lineInfo.usesCells()) {
+            drawCellsLine(ctx, lineInfo!!, lineStartX, contentWidth, currentY)
+        } else {
+            drawTextLine(ctx, line, lineStartX, contentWidth, currentY)
+        }
+    }
+
+    private fun drawTextLine(
+        ctx: LineRenderContext,
+        text: String,
+        lineStartX: Int,
+        contentWidth: Int,
+        currentY: Int,
+    ) {
+        val displayText = trimTextEndingToMaxWidth(ctx.textRenderer, text, contentWidth)
+        drawStringCompat(ctx.drawContext, ctx.textRenderer, Component.literal(displayText), lineStartX, currentY, ctx.color, true)
+    }
+
+    private fun drawCellsLine(
+        ctx: LineRenderContext,
+        lineInfo: LineInfo,
         lineStartX: Int,
         contentWidth: Int,
         currentY: Int,
         clipLeftOverride: Int? = null,
         clipRightOverride: Int? = null,
+        firstColumnDrawLeftOverride: Int? = null,
     ) {
-        if (lineInfo == null) return
-
-        if (!lineInfo.usesCells()) {
-            val displayText = trimTextToWidth(textRenderer, fallbackText, contentWidth)
-            drawStringCompat(drawContext, textRenderer, Component.literal(displayText), lineStartX, currentY, color, true)
-            return
-        }
-
+        val textRenderer = ctx.textRenderer
         val tableWidth = lineInfo.tableWidth
             ?: lineInfo.cells!!.maxOf { it.xOffset + textRenderer.width(Component.literal(it.text)) }
-        val clipLeft = clipLeftOverride ?: lineStartX
+        val defaultClipLeft = clipLeftOverride ?: lineStartX
         val clipRight = clipRightOverride ?: (lineStartX + contentWidth)
         val cellOriginX = when (alignment) {
             Alignment.RIGHT -> lineStartX + contentWidth - tableWidth
             else -> lineStartX
         }
-        for (cell in lineInfo.cells!!) {
-            val segmentTextWidth = textRenderer.width(Component.literal(cell.text))
-            val columnWidth = cell.columnWidth.takeIf { it > 0 } ?: segmentTextWidth
+        val firstColumnXOffset = lineInfo.cells!!.minOf { it.xOffset }
+
+        fun resolveCellDrawBounds(
+            cell: LineCell,
+            columnStart: Int,
+            columnEnd: Int,
+        ): Pair<Int, Int>? {
+            val isFirstColumnShifted = cell.xOffset == firstColumnXOffset && firstColumnDrawLeftOverride != null
+            if (isFirstColumnShifted) {
+                val drawLeft = firstColumnDrawLeftOverride!!
+                val drawRight = minOf(columnEnd, clipRight)
+                return if (drawRight <= drawLeft) null else drawLeft to drawRight
+            }
+
+            if (columnEnd <= defaultClipLeft || columnStart >= clipRight) return null
+            val drawLeft = maxOf(columnStart, defaultClipLeft)
+            val drawRight = minOf(columnEnd, clipRight)
+            return if (drawRight <= drawLeft) null else drawLeft to drawRight
+        }
+
+        fun getCellDisplayText(
+            cell: LineCell,
+            drawLeft: Int,
+            columnStart: Int,
+            isFirstColumnShifted: Boolean,
+            drawWidth: Int,
+        ): String? {
+            val cellText = if (isFirstColumnShifted) {
+                cell.text
+            } else {
+                var text = cell.text
+                val leadingSkip = drawLeft - columnStart
+                if (leadingSkip > 0) {
+                    text = trimTextLeading(textRenderer, text, leadingSkip)
+                }
+                text
+            }
+            if (cellText.isEmpty()) return null
+            val displayText = trimTextEndingToMaxWidth(textRenderer, cellText, drawWidth)
+            return displayText.takeIf { it.isNotEmpty() }
+        }
+
+        fun getCellDrawX(
+            drawLeft: Int,
+            drawRight: Int,
+            drawWidth: Int,
+            displayTextWidth: Int,
+            isFirstColumnShifted: Boolean,
+        ): Int = when {
+            isFirstColumnShifted -> drawLeft
+            alignment == Alignment.RIGHT -> drawRight - displayTextWidth
+            alignment == Alignment.CENTER -> drawLeft + (drawWidth - displayTextWidth) / 2
+            else -> drawLeft
+        }
+
+        for (cell in lineInfo.cells) {
+            val cellTextWidth = textRenderer.width(Component.literal(cell.text))
+            val columnWidth = cell.columnWidth.takeIf { it > 0 } ?: cellTextWidth
             val columnStart = cellOriginX + cell.xOffset
             val columnEnd = columnStart + columnWidth
-            if (columnEnd <= clipLeft || columnStart >= clipRight) continue
-            val drawLeft = maxOf(columnStart, clipLeft)
-            val drawRight = minOf(columnEnd, clipRight)
+            val isFirstColumnShifted = cell.xOffset == firstColumnXOffset && firstColumnDrawLeftOverride != null
+
+            val bounds = resolveCellDrawBounds(cell, columnStart, columnEnd) ?: continue
+            val (drawLeft, drawRight) = bounds
             val drawWidth = drawRight - drawLeft
-            if (drawWidth <= 0) continue
-            var segmentText = cell.text
-            val leadingSkip = drawLeft - columnStart
-            if (leadingSkip > 0) {
-                segmentText = trimFormattedTextLeading(textRenderer, segmentText, leadingSkip)
-            }
-            if (segmentText.isEmpty()) continue
-            val displayText = trimTextToWidth(textRenderer, segmentText, drawWidth)
-            if (displayText.isEmpty()) continue
+
+            val displayText = getCellDisplayText(cell, drawLeft, columnStart, isFirstColumnShifted, drawWidth)
+                ?: continue
             val displayTextWidth = textRenderer.width(Component.literal(displayText))
-            val segmentX = when (alignment) {
-                Alignment.RIGHT -> drawRight - displayTextWidth
-                Alignment.CENTER -> drawLeft + (drawWidth - displayTextWidth) / 2
-                else -> drawLeft
-            }
+            val cellX = getCellDrawX(drawLeft, drawRight, drawWidth, displayTextWidth, isFirstColumnShifted)
+
             drawStringCompat(
-                drawContext,
+                ctx.drawContext,
                 textRenderer,
                 Component.literal(displayText),
-                segmentX,
+                cellX,
                 currentY,
-                color,
+                ctx.color,
                 true,
             )
         }
@@ -656,7 +826,11 @@ class FeeshGui {
         //#endif
     }
 
-    private fun trimTextToWidth(textRenderer: Font, text: String, maxWidth: Int): String {
+    /**
+     * Trims the ending of the text to fit the maximum width, preserving formatting codes.
+     * Useful for trimming end of a cell/line to draw inline buttons on the very left.
+     */
+    private fun trimTextEndingToMaxWidth(textRenderer: Font, text: String, maxWidth: Int): String {
         if (maxWidth <= 0 || text.isEmpty()) return ""
         if (textRenderer.width(Component.literal(text)) <= maxWidth) return text
 
@@ -680,7 +854,11 @@ class FeeshGui {
         return result.toString()
     }
 
-    private fun trimFormattedTextLeading(textRenderer: Font, text: String, skipWidth: Int): String {
+    /** 
+     * Trims the leading characters of the text to skip the given width, preserving formatting codes.
+     * Useful for trimming start of a cell/line to draw inline buttons on the very right.
+     */
+    private fun trimTextLeading(textRenderer: Font, text: String, skipWidth: Int): String {
         if (skipWidth <= 0 || text.isEmpty()) return text
 
         var index = 0
@@ -719,7 +897,7 @@ class FeeshGui {
         )
     }
 
-    private fun drawOverlayBackgroundScreenSpace(drawContext: GuiGraphics, screenCoords: OverlayScreenCoords) {
+    private fun drawOverlayBackground(drawContext: GuiGraphics, screenCoords: OverlayScreenCoords) {
         if (!Overlays.overlaysBackground) return
 
         val backgroundTopColor = Color(Overlays.overlaysBackgroundColor1, true).rgb
@@ -735,7 +913,7 @@ class FeeshGui {
         )
     }
 
-    private fun drawOverlayBorderScreenSpace(drawContext: GuiGraphics, screenCoords: OverlayScreenCoords) {
+    private fun drawOverlayBorder(drawContext: GuiGraphics, screenCoords: OverlayScreenCoords) {
         if (!Overlays.overlaysBorder) return
 
         val borderColor = Color(Overlays.overlaysBorderColor, true).rgb
@@ -809,15 +987,16 @@ class FeeshGui {
             Alignment.LEFT -> leftEdge
             Alignment.RIGHT -> leftEdge + maxWidthScreen - buttonsWidthScreen
             Alignment.CENTER -> {
-                val tableWidth = if (lineInfo.usesCells()) {
-                    lineInfo.tableWidth ?: clippedLineWidth
+                if (lineInfo.usesCells()) {
+                    val tableWidth = lineInfo.tableWidth ?: clippedLineWidth
+                    leftEdge + (maxWidthScreen - tableWidth * scaleDouble) / 2
                 } else {
-                    clippedLineWidth
+                    val tableWidth = clippedLineWidth
+                    val textWidth = minOf(tableWidth, lineAvailableWidth)
+                    val blockWidth = reservedWidth + textWidth
+                    val contentWidthScreen = blockWidth * scaleDouble
+                    leftEdge + (maxWidthScreen - contentWidthScreen) / 2
                 }
-                val textWidth = minOf(tableWidth, lineAvailableWidth)
-                val blockWidth = reservedWidth + textWidth
-                val contentWidthScreen = blockWidth * scaleDouble
-                leftEdge + (maxWidthScreen - contentWidthScreen) / 2
             }
         }
 
