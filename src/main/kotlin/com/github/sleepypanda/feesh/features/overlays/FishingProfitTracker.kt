@@ -30,6 +30,7 @@ import com.github.sleepypanda.feesh.utils.gui.FeeshGui
 import com.github.sleepypanda.feesh.utils.gui.GuiButton
 import com.github.sleepypanda.feesh.utils.gui.LineAction
 import com.github.sleepypanda.feesh.utils.gui.LineInfo
+import com.github.sleepypanda.feesh.utils.gui.Table
 import com.github.sleepypanda.feesh.utils.data.PersistentDataManager
 import com.github.sleepypanda.feesh.utils.enums.PricingModeWithNpc
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
@@ -1081,9 +1082,24 @@ object FishingProfitTracker {
             val lines = mutableListOf<LineInfo>()
             lines.add(LineInfo("$baseTitle $viewModeText"))
 
+            val cheapItemsRow = if (displayData.entriesToHide.isNotEmpty()) {
+                val profitStr = CommonUtils.toShortNumber(displayData.totalCheapItemsProfit) ?: "0"
+                val countStr = CommonUtils.formatNumberWithSpaces(displayData.totalCheapItemsCount)
+                val typesStr = CommonUtils.formatNumberWithSpaces(displayData.totalCheapItemsTypesCount)
+                TrackerLineColumns(
+                    item = "${GRAY}- ${WHITE}${countStr}${GRAY}x Cheap items of ${WHITE}${typesStr} ${GRAY}types",
+                    price = "${GOLD}$profitStr",
+                ).toCells()
+            } else {
+                null
+            }
+
+            val columnRows = displayData.entriesToShow.map { getProfitTrackerLineColumns(it).toCells() } +
+                listOfNotNull(cheapItemsRow)
+            val tableLayout = Table.layout(FeeshMod.mc.font, columnRows, getColumnsSeparator())
+            var tableRowIndex = 0
+
             for (entry in displayData.entriesToShow) {
-                val countStr = CommonUtils.formatNumberWithSpaces(entry.amount)
-                val profitStr = CommonUtils.toShortNumber(entry.profit) ?: "0"
                 val itemId = entry.itemId
                 val actions = if (itemId == FISHED_COINS_ITEM_ID) {
                     listOf(LineAction("${GRAY}[${RED}x${GRAY}]") { onLineItemDelete(itemId) })
@@ -1094,14 +1110,22 @@ object FishingProfitTracker {
                         LineAction("${GRAY}[${RED}x${GRAY}]") { onLineItemDelete(itemId) }
                     )
                 }
-                lines.add(LineInfo("${GRAY}- ${WHITE}${countStr}${GRAY}x ${entry.item}${GRAY}: ${GOLD}$profitStr", actions = actions))
+                lines.add(
+                    LineInfo.withCells(
+                        cells = tableLayout.rows[tableRowIndex++],
+                        tableWidth = tableLayout.tableWidth,
+                        actions = actions,
+                    )
+                )
             }
 
-            if (displayData.entriesToHide.isNotEmpty()) {
-                val profitStr = CommonUtils.toShortNumber(displayData.totalCheapItemsProfit) ?: "0"
-                val countStr = CommonUtils.formatNumberWithSpaces(displayData.totalCheapItemsCount)
-                val typesStr = CommonUtils.formatNumberWithSpaces(displayData.totalCheapItemsTypesCount)
-                lines.add(LineInfo("${GRAY}- ${WHITE}${countStr}${GRAY}x Cheap items of ${WHITE}${typesStr} ${GRAY}types: ${GOLD}$profitStr"))
+            if (cheapItemsRow != null) {
+                lines.add(
+                    LineInfo.withCells(
+                        cells = tableLayout.rows[tableRowIndex++],
+                        tableWidth = tableLayout.tableWidth,
+                    )
+                )
             }
 
             val totalStr = CommonUtils.toShortNumber(displayData.totalProfit) ?: "0"
@@ -1145,6 +1169,21 @@ object FishingProfitTracker {
     )
 
     private data class EntryDisplay(val itemId: String, val item: String, val amount: Int, val profit: Double)
+
+    private data class TrackerLineColumns(val item: String, val price: String) {
+        fun toCells(): List<String> = listOf(item, price)
+    }
+
+    private fun getColumnsSeparator(): String = "  "
+
+    private fun getProfitTrackerLineColumns(entry: EntryDisplay): TrackerLineColumns {
+        val countStr = CommonUtils.formatNumberWithSpaces(entry.amount)
+        val profitStr = CommonUtils.toShortNumber(entry.profit) ?: "0"
+        return TrackerLineColumns(
+            item = "${GRAY}- ${WHITE}${countStr}${GRAY}x ${entry.item}",
+            price = "${GOLD}$profitStr",
+        )
+    }
 
     private fun getDisplayNameForGui(itemId: String, itemName: String): String {
         return when {
