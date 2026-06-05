@@ -106,6 +106,7 @@ class FeeshMod : ClientModInitializer {
         WormTheFishCaughtAlert.init()
         NessieDestinationAlert.init()
         TrophyFrogDiscoveredAlert.init()
+        PuddleJumperCaughtSoonAlert.init()
 
         // Chat
         RareCatchMessage.init()
