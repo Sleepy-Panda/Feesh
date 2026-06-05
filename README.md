@@ -74,6 +74,7 @@ This mod requires [Fabric API](https://modrinth.com/mod/fabric-api) and [Fabric 
 - **Rain/Thunder/Blizzard ends soon** — Alerts when Rain/Thunder/Blizzard ends soon while in relevant areas.
 - **Nessie destination alert** — Alerts destination when a Nessie decides into which cave to swim - to Jade Dragon or to Driptoad Delve.
 - **Trophy Frog discovered alert** — Alerts when a new Trophy Frog is discovered.
+- **Trophy Fish discovered alert** — Alerts when a new Trophy Fish is discovered.
 
 ### Chat
 
@@ -85,6 +86,7 @@ This mod requires [Fabric API](https://modrinth.com/mod/fabric-api) and [Fabric 
 - **Hotspot sharing** — Clickable message to share found hotspot location to PARTY or ALL chat. Optional autoshare.
 - **Lootshare message** — Sends to PARTY chat when it's time to lootshare. Available via Keybind.
 - **Share Trophy Frog discovered** — Sends to PARTY chat when a new Trophy Frog is discovered.
+- **Share Trophy Fish discovered** — Sends to PARTY chat when a new Trophy Fish is discovered.
 
 ### Overlays
 

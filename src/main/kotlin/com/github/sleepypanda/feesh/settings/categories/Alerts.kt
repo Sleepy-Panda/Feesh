@@ -117,13 +117,18 @@ object Alerts : CategoryKt("Alerts") {
 
     init {
         separator {
-            this.title = "${AQUA}${BOLD}Trophy Frogs"
+            this.title = "${AQUA}${BOLD}Trophy"
         }
     }
 
     var alertOnTrophyFrogDiscovered by boolean(true) {
         this.name = Translated("Alert on new Trophy Frog discovered")
         this.description = Translated("Shows a title and plays a sound when you discover a new Trophy Frog on Lotus Atoll.")
+    }
+
+    var alertOnTrophyFishDiscovered by boolean(true) {
+        this.name = Translated("Alert on new Trophy Fish discovered")
+        this.description = Translated("Shows a title and plays a sound when you discover a new Trophy Fish on Crimson Isle.")
     }
 
     init {
