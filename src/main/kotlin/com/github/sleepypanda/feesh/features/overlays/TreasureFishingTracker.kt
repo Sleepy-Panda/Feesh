@@ -19,6 +19,7 @@ import com.github.sleepypanda.feesh.utils.gui.GuiButton
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
 import com.github.sleepypanda.feesh.utils.data.PersistentDataManager
+import net.minecraft.network.chat.Component
 import java.util.Date
 
 object TreasureFishingTracker {
@@ -33,6 +34,9 @@ object TreasureFishingTracker {
         var outstanding: Int = 0
     ) {
         fun totalCatches(): Int = good + great + outstanding
+
+        fun rngMeterPercent(): Double =
+            (outstanding / 10_000.0 + great / 100_000.0 + good / 1_000_000.0) * 100.0
     }
 
     data class TreasureFishingSessionData(
@@ -41,8 +45,12 @@ object TreasureFishingTracker {
 
     data class TreasureFishingTotalData(
         var catches: TreasureCatchesData = TreasureCatchesData(),
-        var treasureDyes: DropCounterData = DropCounterData()
+        var treasureDyes: TreasureDyesData = TreasureDyesData()
     )
+
+    data class TreasureDyesData(
+        var catchesBreakdown: TreasureCatchesData = TreasureCatchesData(),
+    ) : DropCounterData()
 
     data class TreasureFishingData(
         var session: TreasureFishingSessionData = TreasureFishingSessionData(),
@@ -75,7 +83,8 @@ object TreasureFishingTracker {
             "",
             "${GOLD}Treasure Dyes${GRAY}: ${WHITE}2",
             "${GRAY}Last on: ${WHITE}7h 15m ago",
-            "${GRAY}Last on: ${WHITE}5 000 ${GRAY}Treasures ago"
+            "${GRAY}Last on: ${WHITE}5 000 ${GRAY}Treasures ago",
+            "${GRAY}RNG meter: ${WHITE}15.67%"
         ))
         .setSettingsKey { Overlays.treasureFishingTrackerOverlay }
         .setApplyCustomStyleKey { Overlays.treasureFishingTrackerCustomStyle }
@@ -90,6 +99,32 @@ object TreasureFishingTracker {
         EventBus.subscribe(WorldChangedEvent::class, ::onWorldChanged)
         EventBus.subscribe(RareDropEvent::class, ::onRareDrop)
         EventBus.subscribe(GameClosedEvent::class, ::onGameClosed)
+    }
+    
+    // TODO: Remove migration code in a while
+    fun migrateCatchesSinceLastDye() {
+        CommonUtils.runWithCatching("Failed to migrate good/great/outstanding catches since last Treasure Dye") {
+            val treasureFishing = PersistentDataManager.feeshData.treasureFishing
+            treasureFishing.total.treasureDyes.catchesBreakdown = getCatchesSinceLastDyeFromTracker(treasureFishing)
+            saveData()
+        }
+    }
+
+    private fun getCatchesSinceLastDyeFromTracker(treasureFishing: TreasureFishingData): TreasureCatchesData {
+        val catchesSinceLast = treasureFishing.total.treasureDyes.catchesSinceLast
+        return when (catchesSinceLast) {
+            treasureFishing.total.catches.totalCatches() -> TreasureCatchesData(
+                good = treasureFishing.total.catches.good,
+                great = treasureFishing.total.catches.great,
+                outstanding = treasureFishing.total.catches.outstanding
+            )
+            treasureFishing.session.catches.totalCatches() -> TreasureCatchesData(
+                good = treasureFishing.session.catches.good,
+                great = treasureFishing.session.catches.great,
+                outstanding = treasureFishing.session.catches.outstanding
+            )
+            else -> TreasureCatchesData(good = catchesSinceLast, great = 0, outstanding = 0)
+        }
     }
 
     private fun registerCommands() {
@@ -146,12 +181,12 @@ object TreasureFishingTracker {
         CommonUtils.runWithCatching(
             message = "Failed to set Treasure Dyes.",
             onError = {
-                ChatUtils.sendLocalChat("${RED}Failed to set Treasure Dyes.", true)
+                ChatUtils.sendLocalChat("${RED}Failed to set Treasure Dyes for the Treasure fishing tracker.", true)
             }
         ) {
             if (!WorldUtils.isInSkyblock()) return
             
-            data.total.treasureDyes.initDropCount(count, lastOn)         
+            data.total.treasureDyes.initDropCount(count, lastOn)
             saveData()
             ChatUtils.sendLocalChat("${GRAY}Successfully changed Treasure Dyes count to ${count} for the Treasure fishing tracker.", true)
         }
@@ -233,14 +268,17 @@ object TreasureFishingTracker {
                 "good", "good junk" -> {
                     data.total.catches.good++
                     data.session.catches.good++
+                    data.total.treasureDyes.catchesBreakdown.good++
                 }
                 "great", "great junk" -> {
                     data.total.catches.great++
                     data.session.catches.great++
+                    data.total.treasureDyes.catchesBreakdown.great++
                 }
                 "outstanding", "outstanding junk" -> {
                     data.total.catches.outstanding++
                     data.session.catches.outstanding++
+                    data.total.treasureDyes.catchesBreakdown.outstanding++
                 }
             }
             data.total.treasureDyes.updateAfterCatch(false)
@@ -253,7 +291,10 @@ object TreasureFishingTracker {
         CommonUtils.runWithCatching("Failed to track Treasure Dye drop") {
             if (!Overlays.treasureFishingTrackerOverlay || !WorldUtils.isInSkyblock() || !WorldUtils.isInFishingWorld()) return
 
+            val catchesSinceLastDye = data.total.treasureDyes.catchesBreakdown
             data.total.treasureDyes.updateAfterDrop(treasureDye.boldDisplayName, "treasure", null)
+            ChatUtils.sendLocalChat("${GRAY}RNG meter dropped at: ${formatRngMeterPercent(catchesSinceLastDye)}%", true)
+            data.total.treasureDyes.catchesBreakdown = TreasureCatchesData()
             updateGuiLines()
             saveData()
         }
@@ -292,12 +333,54 @@ object TreasureFishingTracker {
         lines.add(LineInfo("${GRAY}Total Treasures: ${WHITE}${CommonUtils.formatNumberWithSpaces(catches.totalCatches())}"))
         lines.add(LineInfo(""))
         lines.addAll(data.total.treasureDyes.getOverlayLines(treasureDye.displayName, "treasure"))
+        val catchesSinceLastDye = data.total.treasureDyes.catchesBreakdown
+        lines.add(LineInfo(
+            "${GRAY}RNG meter: ${formatRngMeterPercent(catchesSinceLastDye)}%",
+            tooltip = getRngMeterTooltip(catchesSinceLastDye)
+        ))
 
         gui.setLines(lines)
         gui.setButtons(listOf(
             GuiButton(0, "${GRAY}[Click to show $nextModeText${GRAY}]", { toggleViewMode() }),
             GuiButton(1, "${GRAY}[${RED}Click to reset${GRAY}]", { resetTreasureFishingTracker(false, getCurrentViewMode()) })
         ))
+    }
+
+    private fun getRngMeterTooltip(catches: TreasureCatchesData): List<Component> {
+        val lines = listOf(
+            "${AQUA}RNG meter",
+            "${GRAY}Progress towards next Treasure Dye drop.",
+            "",
+            "${GRAY}Each treasure catch adds pity:",
+            "  ${LIGHT_PURPLE}Outstanding${GRAY}: 1 in 10,000 (${WHITE}0.01%${GRAY})",
+            "  ${GOLD}Great${GRAY}: 1 in 100,000 (${WHITE}0.001%${GRAY})",
+            "  ${DARK_PURPLE}Good${GRAY}: 1 in 1,000,000 (${WHITE}0.0001%${GRAY})",
+            "",
+            "${GRAY}Progress:",
+            "  ${LIGHT_PURPLE}Outstanding${GRAY}: ${WHITE}${CommonUtils.formatNumberWithSpaces(catches.outstanding)} ${GRAY}-> ${WHITE}${formatTooltipPercent(catches.outstanding / 10_000.0 * 100.0)}",
+            "  ${GOLD}Great${GRAY}: ${WHITE}${CommonUtils.formatNumberWithSpaces(catches.great)} ${GRAY}-> ${WHITE}${formatTooltipPercent(catches.great / 100_000.0 * 100.0)}",
+            "  ${DARK_PURPLE}Good${GRAY}: ${WHITE}${CommonUtils.formatNumberWithSpaces(catches.good)} ${GRAY}-> ${WHITE}${formatTooltipPercent(catches.good / 1_000_000.0 * 100.0)}",
+        )
+        return lines.map { Component.literal(it) }
+    }
+
+    private fun formatTooltipPercent(percent: Double): String {
+        return when {
+            percent >= 0.01 -> "${String.format("%.2f", percent)}%"
+            percent > 0 -> "${String.format("%.4f", percent)}%"
+            else -> "0%"
+        }
+    }
+
+    private fun formatRngMeterPercent(catches: TreasureCatchesData): String {
+        val percent = catches.rngMeterPercent()
+        return when {
+            percent >= 90 -> "${RED}${String.format("%.2f", percent)}"
+            percent >= 50 -> "${YELLOW}${String.format("%.2f", percent)}"
+            percent >= 0.01 -> "${WHITE}${String.format("%.2f", percent)}"
+            percent > 0 -> "${WHITE}${String.format("%.4f", percent)}"
+            else -> "${WHITE}0"
+        }
     }
 
     private fun saveData(force: Boolean = false) {

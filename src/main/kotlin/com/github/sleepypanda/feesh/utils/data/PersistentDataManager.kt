@@ -7,8 +7,10 @@ import com.github.sleepypanda.feesh.utils.CommonUtils
 import com.github.sleepypanda.feesh.utils.FileUtils
 import com.github.sleepypanda.feesh.utils.gui.FeeshGui
 import com.github.sleepypanda.feesh.utils.enums.Alignment
+import com.github.sleepypanda.feesh.features.overlays.TreasureFishingTracker
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
+import com.google.gson.JsonParser
 import com.google.gson.reflect.TypeToken
 import net.fabricmc.loader.api.FabricLoader
 import java.io.File
@@ -159,8 +161,29 @@ object PersistentDataManager {
         val type = object : TypeToken<FeeshData>() {}.type
         val loaded: FeeshData? = FileUtils.loadJsonFromFile(feeshDataFile, type, gson, "Feesh data")
         feeshData = loaded ?: FeeshData()
+        if (loaded != null) { // TODO: Remove migration code
+            val feeshDataFileContent = feeshDataFile.readText()
+            if (jsonHasNestedKey(feeshDataFileContent, "treasureFishing") &&
+                !jsonHasNestedKey(feeshDataFileContent, "treasureFishing", "total", "treasureDyes", "catchesBreakdown")) {
+                TreasureFishingTracker.migrateCatchesSinceLastDye()
+                FeeshMod.LOGGER.info("[Feesh] Successfully migrated catches since last Treasure Dye")
+            }
+        }
         if (loaded != null) {
             FeeshMod.LOGGER.info("[Feesh] Successfully loaded Feesh data entries")
+        }
+    }
+
+    private fun jsonHasNestedKey(content: String, vararg path: String): Boolean {
+        return try {
+            var obj = JsonParser.parseString(content).asJsonObject
+            for (i in 0 until path.size - 1) {
+                if (!obj.has(path[i]) || !obj.get(path[i]).isJsonObject) return false
+                obj = obj.getAsJsonObject(path[i])
+            }
+            obj.has(path.last())
+        } catch (_: Exception) {
+            false
         }
     }
 
