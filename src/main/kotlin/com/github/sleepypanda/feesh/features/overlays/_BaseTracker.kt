@@ -81,7 +81,7 @@ data class DropsHistoryEntry(
     val magicFind: Int? // Magic find associated with the drop
 )
 
-data class DropCounterData(
+open class DropCounterData(
     var count: Int = 0, // Total count of times the item was dropped
     var catchesSinceLast: Int = 0, // Number of sea creature catches since last drop
     var lastDropTime: Date? = null, // DateTime of the last drop

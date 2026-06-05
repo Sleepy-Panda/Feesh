@@ -161,6 +161,167 @@ object Overlays : CategoryKt("Overlays") {
 
     init {
         separator {
+            this.title = "${AQUA}${BOLD}Sea creatures"
+        }
+    }
+
+    var seaCreaturesTrackerOverlay by boolean(false) {
+        this.name = Translated("Sea creatures tracker")
+        this.description = Translated("""
+${GRAY}Shows an overlay with the overview of the sea creatures caught, and different related statistics. This overlay has [Session] and [Total] view mode.
+${GRAY}To view details: Hover over a line while in Inventory screen.
+${GRAY}To reset [Session]: ${WHITE}/${SeaCreaturesTracker.RESET_SESSION}
+${GRAY}To reset [Total]: ${WHITE}/${SeaCreaturesTracker.RESET_TOTAL}
+""".trimIndent())
+    }
+
+    var seaCreaturesTrackerMode by enum(SeaCreaturesTrackerDisplayMode.ALL) {
+        this.name = Translated("Sea creatures tracker display mode")
+        this.description = Translated("Setups whether to hide regular sea creatures in the overlay, showing just rare ones. All sea creatures are tracked regardless this setting.")
+    }
+
+    var countCocoonedSeaCreatures by boolean(true) {
+        this.name = Translated("Count cocooned sea creatures")
+        this.description = Translated("Include sea creatures cocooned by your Bloodshot reforge in the Sea creatures tracker, as SB treats them as your own.")
+    }
+
+    var showSeaCreaturesPercentage by boolean(true) {
+        this.name = Translated("Show percentage")
+        this.description = Translated("Show percentage for each sea creature out of total amount of sea creatures. If disabled, the statistics will be still visible in the tooltip.")
+    }
+
+    var showSeaCreaturesDoubleHookStatistics by boolean(true) {
+        this.name = Translated("Show double hook statistics")
+        this.description = Translated("Show statistics for each sea creature how often it was double hooked (shown as 'DH' in the overlay). If disabled, the statistics will be still visible in the tooltip.")
+    }
+
+    var showCocoonedStatistics by boolean(false) {
+        this.name = Translated("Show cocooned statistics")
+        this.description = Translated("Show statistics for each sea creature how often it was cocooned by your Bloodshot reforge (shown as 'BS' in the overlay). If disabled, the statistics will be still visible in the tooltip.")
+    }
+
+    var seaCreaturesTrackerSorting by enum(SeaCreaturesTrackerSorting.RARITY_DESC) {
+        this.name = Translated("Sea creatures sorting")
+        this.description = Translated("Setups sorting order for the sea creatures list.")
+    }
+
+    var seaCreaturesTrackerShowTop by int(50) {
+        this.name = Translated("Maximum lines count")
+        this.description = Translated("Show top N lines for sea creatures in Session/Total views. Remaining entries will be grouped under 'Other sea creatures'.")
+        this.range = 1..100
+        this.slider = true
+    }
+
+    var resetSeaCreaturesTrackerSessionOnGameClosed by boolean(true) {
+        this.name = Translated("Autoreset [Session] on closing game")
+        this.description = Translated("Automatically reset the Sea creatures tracker [Session] when you close Minecraft.")
+    }
+
+    init {
+        button {
+            title = "Editing Sea creatures tracker guide"
+            description = "Opens a guide on how to adjust sea creature counts and statistics in Sea creatures tracker [Session] and [Total]."
+            text = "Click to open"
+            onClick {
+                Util.getPlatform().openUri("https://github.com/Sleepy-Panda/Feesh/blob/develop/docs/Editing%20sea%20creatures%20tracker.md")
+            }
+        }
+    }
+
+    var seaCreaturesTrackerCustomStyle by boolean(true) {
+        this.name = Translated("Apply custom style")
+        this.description = Translated(getCustomStyleDescription("Sea creatures tracker"))
+    }
+
+    init {
+        separator {
+            this.title = "${AQUA}${BOLD}Fishing profit"
+        }
+    }
+
+    var fishingProfitTrackerOverlay by boolean(false) {
+        this.name = Translated("Fishing profit tracker")
+        this.description = Translated("""
+${GRAY}Shows an overlay with your profits you gained while fishing. This overlay has [Session] and [Total] view mode.
+${GRAY}To count items added to your sacks, make sure to enable ${YELLOW}Skyblock Settings -> Personal -> Chat Feedback -> Sack Notifications
+${GRAY}To reset [Session]: ${WHITE}/${FishingProfitTracker.RESET_COMMAND}
+${GRAY}To reset [Total]: ${WHITE}/${FishingProfitTracker.RESET_TOTAL_COMMAND}
+${GRAY}To pause: ${WHITE}/${FishingProfitTracker.PAUSE_COMMAND}
+        """.trimIndent())
+    }
+
+    var fishingProfitTrackerPriceMode by ObservableEntry(
+        enum(PricingModeWithNpc.SELL_OFFER) {
+            this.name = Translated("Price mode")
+            this.description = Translated("How to calculate prices for the dropped items in the Fishing profit tracker.")
+        }
+    ) { prev, new ->
+        if (prev != new) {
+            FishingProfitTracker.refreshTotalItemsProfits()
+        }
+    }
+    
+    var priceModeForCrimsonIsleTrashGearDrops by ObservableEntry(
+        enum(CrimsonIsleTrashGearDropsPriceMode.NPC_PRICE) {
+            this.name = Translated("Price mode for Crimson Isle trash gear drops")
+            this.description = Translated("How to calculate prices for Crimson Isle fishing drops: Slug Boots, Moogma Leggings, Flaming Chestplate, Blade of the Volcano, Staff of the Volcano.")
+        }
+    ) { prev, new ->
+        if (prev != new) {
+            FishingProfitTracker.refreshTotalItemsProfits()
+        }
+    }
+
+    var fishingProfitTrackerHideCheaperThan by int(1_000_000) {
+        this.name = Translated("Hide cheap items [Session]")
+        this.description = Translated("Items which are cheaper than the specified threshold in coins will be hidden in the fishing profit tracker [Session]. They will be grouped under 'Cheap items' section. Set to 0 to show all items.")
+    }
+
+    var fishingProfitTrackerHideCheaperThanTotal by int(1_000_000) {
+        this.name = Translated("Hide cheap items [Total]")
+        this.description = Translated("Items which are cheaper than the specified threshold in coins will be hidden in the fishing profit tracker [Total]. They will be grouped under 'Cheap items' section. Set to 0 to show all items.")
+    }
+
+    var fishingProfitTrackerShowTop by int(15) {
+        this.name = Translated("Maximum lines count")
+        this.description = Translated("Show top N lines for the most expensive items. Other cheaper items will be grouped under 'Cheap items' section. This works on top of 'Hide cheap items' setting.")
+        this.range = 1..50
+        this.slider = true
+    }
+
+    var shouldAnnounceRareDropsWhenPickup by boolean(true) {
+        this.name = Translated("Announce rare drops")
+        this.description = Translated("Send RARE DROP! message to player's chat when a rare item is added to the fishing profit tracker (for relatively rare items that have no RARE DROP! message from Hypixel by default).")
+    }
+
+    var shouldHideTimerInTotal by boolean(false) {
+        this.name = Translated("Hide timer and coins/h in [Total] view")
+        this.description = Translated("Hide timer and coins/h in the fishing profit tracker [Total] view. Useful if you want to add past drops to the tracker but do not know the elapsed time.")
+    }
+
+    var resetFishingProfitTrackerOnGameClosed by boolean(true) {
+        this.name = Translated("Autoreset [Session] on closing game")
+        this.description = Translated("Automatically reset the fishing profit tracker [Session] when you close Minecraft.")
+    }
+ 
+    init {
+        button {
+            title = "Editing Fishing profit tracker guide"
+            description = "Opens a guide on how to adjust item counts and elapsed time in the Fishing profit tracker [Session] and [Total]."
+            text = "Click to open"
+            onClick {
+                Util.getPlatform().openUri("https://github.com/Sleepy-Panda/Feesh/blob/develop/docs/Editing%20profit%20tracker.md")
+            }
+        }
+    }
+
+    var fishingProfitTrackerCustomStyle by boolean(true) {
+        this.name = Translated("Apply custom style")
+        this.description = Translated(getCustomStyleDescription("Fishing profit tracker"))
+    }
+
+    init {
+        separator {
             this.title = "${AQUA}${BOLD}Nearby entities"
         }
     }
@@ -287,80 +448,6 @@ Hidden if you have no fishing rod in your hotbar!""".trimIndent())
     var seaCreaturesHpCustomStyle by boolean(true) {
         this.name = Translated("Apply custom style")
         this.description = Translated(getCustomStyleDescription("Sea creatures HP"))
-    }
-
-    init {
-        separator {
-            this.title = "${AQUA}${BOLD}Sea creatures caught"
-        }
-    }
-
-    var seaCreaturesTrackerOverlay by boolean(false) {
-        this.name = Translated("Sea creatures tracker")
-        this.description = Translated("""
-${GRAY}Shows an overlay with the overview of the sea creatures caught, and different related statistics. This overlay has [Session] and [Total] view mode.
-${GRAY}To view details: Hover over a line while in Inventory screen.
-${GRAY}To reset [Session]: ${WHITE}/${SeaCreaturesTracker.RESET_SESSION}
-${GRAY}To reset [Total]: ${WHITE}/${SeaCreaturesTracker.RESET_TOTAL}
-""".trimIndent())
-    }
-
-    var seaCreaturesTrackerMode by enum(SeaCreaturesTrackerDisplayMode.ALL) {
-        this.name = Translated("Sea creatures tracker display mode")
-        this.description = Translated("Setups whether to hide regular sea creatures in the overlay, showing just rare ones. All sea creatures are tracked regardless this setting.")
-    }
-
-    var countCocoonedSeaCreatures by boolean(true) {
-        this.name = Translated("Count cocooned sea creatures")
-        this.description = Translated("Include sea creatures cocooned by your Bloodshot reforge in the Sea creatures tracker, as SB treats them as your own.")
-    }
-
-    var showSeaCreaturesPercentage by boolean(true) {
-        this.name = Translated("Show percentage")
-        this.description = Translated("Show percentage for each sea creature out of total amount of sea creatures. If disabled, the statistics will be still visible in the tooltip.")
-    }
-
-    var showSeaCreaturesDoubleHookStatistics by boolean(true) {
-        this.name = Translated("Show double hook statistics")
-        this.description = Translated("Show statistics for each sea creature how often it was double hooked (shown as 'DH' in the overlay). If disabled, the statistics will be still visible in the tooltip.")
-    }
-
-    var showCocoonedStatistics by boolean(false) {
-        this.name = Translated("Show cocooned statistics")
-        this.description = Translated("Show statistics for each sea creature how often it was cocooned by your Bloodshot reforge (shown as 'BS' in the overlay). If disabled, the statistics will be still visible in the tooltip.")
-    }
-
-    var seaCreaturesTrackerSorting by enum(SeaCreaturesTrackerSorting.RARITY_DESC) {
-        this.name = Translated("Sea creatures sorting")
-        this.description = Translated("Setups sorting order for the sea creatures list.")
-    }
-
-    var seaCreaturesTrackerShowTop by int(50) {
-        this.name = Translated("Maximum lines count")
-        this.description = Translated("Show top N lines for sea creatures in Session/Total views. Remaining entries will be grouped under 'Other sea creatures'.")
-        this.range = 1..100
-        this.slider = true
-    }
-
-    var resetSeaCreaturesTrackerSessionOnGameClosed by boolean(true) {
-        this.name = Translated("Autoreset [Session] on closing game")
-        this.description = Translated("Automatically reset the Sea creatures tracker [Session] when you close Minecraft.")
-    }
-
-    init {
-        button {
-            title = "Editing Sea creatures tracker guide"
-            description = "Opens a guide on how to adjust sea creature counts and statistics in Sea creatures tracker [Session] and [Total]."
-            text = "Click to open"
-            onClick {
-                Util.getPlatform().openUri("https://github.com/Sleepy-Panda/Feesh/blob/develop/docs/Editing%20sea%20creatures%20tracker.md")
-            }
-        }
-    }
-
-    var seaCreaturesTrackerCustomStyle by boolean(true) {
-        this.name = Translated("Apply custom style")
-        this.description = Translated(getCustomStyleDescription("Sea creatures tracker"))
     }
 
     init {
@@ -790,92 +877,5 @@ ${GRAY}To reset [Total]: ${WHITE}/${ArchfiendDiceProfitTracker.RESET_TOTAL_COMMA
     var archfiendDiceProfitTrackerCustomStyle by boolean(true) {
         this.name = Translated("Apply custom style")
         this.description = Translated(getCustomStyleDescription("Archfiend Dice profit tracker"))
-    }
-
-    init {
-        separator {
-            this.title = "${AQUA}${BOLD}Fishing profit"
-        }
-    }
-
-    var fishingProfitTrackerOverlay by boolean(false) {
-        this.name = Translated("Fishing profit tracker")
-        this.description = Translated("""
-${GRAY}Shows an overlay with your profits you gained while fishing. This overlay has [Session] and [Total] view mode.
-${GRAY}To count items added to your sacks, make sure to enable ${YELLOW}Skyblock Settings -> Personal -> Chat Feedback -> Sack Notifications
-${GRAY}To reset [Session]: ${WHITE}/${FishingProfitTracker.RESET_COMMAND}
-${GRAY}To reset [Total]: ${WHITE}/${FishingProfitTracker.RESET_TOTAL_COMMAND}
-${GRAY}To pause: ${WHITE}/${FishingProfitTracker.PAUSE_COMMAND}
-        """.trimIndent())
-    }
-
-    var fishingProfitTrackerPriceMode by ObservableEntry(
-        enum(PricingModeWithNpc.SELL_OFFER) {
-            this.name = Translated("Price mode")
-            this.description = Translated("How to calculate prices for the dropped items in the Fishing profit tracker.")
-        }
-    ) { prev, new ->
-        if (prev != new) {
-            FishingProfitTracker.refreshTotalItemsProfits()
-        }
-    }
-    
-    var priceModeForCrimsonIsleTrashGearDrops by ObservableEntry(
-        enum(CrimsonIsleTrashGearDropsPriceMode.NPC_PRICE) {
-            this.name = Translated("Price mode for Crimson Isle trash gear drops")
-            this.description = Translated("How to calculate prices for Crimson Isle fishing drops: Slug Boots, Moogma Leggings, Flaming Chestplate, Blade of the Volcano, Staff of the Volcano.")
-        }
-    ) { prev, new ->
-        if (prev != new) {
-            FishingProfitTracker.refreshTotalItemsProfits()
-        }
-    }
-
-    var fishingProfitTrackerHideCheaperThan by int(1_000_000) {
-        this.name = Translated("Hide cheap items [Session]")
-        this.description = Translated("Items which are cheaper than the specified threshold in coins will be hidden in the fishing profit tracker [Session]. They will be grouped under 'Cheap items' section. Set to 0 to show all items.")
-    }
-
-    var fishingProfitTrackerHideCheaperThanTotal by int(1_000_000) {
-        this.name = Translated("Hide cheap items [Total]")
-        this.description = Translated("Items which are cheaper than the specified threshold in coins will be hidden in the fishing profit tracker [Total]. They will be grouped under 'Cheap items' section. Set to 0 to show all items.")
-    }
-
-    var fishingProfitTrackerShowTop by int(15) {
-        this.name = Translated("Maximum lines count")
-        this.description = Translated("Show top N lines for the most expensive items. Other cheaper items will be grouped under 'Cheap items' section. This works on top of 'Hide cheap items' setting.")
-        this.range = 1..50
-        this.slider = true
-    }
-
-    var shouldAnnounceRareDropsWhenPickup by boolean(true) {
-        this.name = Translated("Announce rare drops")
-        this.description = Translated("Send RARE DROP! message to player's chat when a rare item is added to the fishing profit tracker (for relatively rare items that have no RARE DROP! message from Hypixel by default).")
-    }
-
-    var shouldHideTimerInTotal by boolean(false) {
-        this.name = Translated("Hide timer and coins/h in [Total] view")
-        this.description = Translated("Hide timer and coins/h in the fishing profit tracker [Total] view. Useful if you want to add past drops to the tracker but do not know the elapsed time.")
-    }
-
-    var resetFishingProfitTrackerOnGameClosed by boolean(true) {
-        this.name = Translated("Autoreset [Session] on closing game")
-        this.description = Translated("Automatically reset the fishing profit tracker [Session] when you close Minecraft.")
-    }
- 
-    init {
-        button {
-            title = "Editing Fishing profit tracker guide"
-            description = "Opens a guide on how to adjust item counts and elapsed time in the Fishing profit tracker [Session] and [Total]."
-            text = "Click to open"
-            onClick {
-                Util.getPlatform().openUri("https://github.com/Sleepy-Panda/Feesh/blob/develop/docs/Editing%20profit%20tracker.md")
-            }
-        }
-    }
-
-    var fishingProfitTrackerCustomStyle by boolean(true) {
-        this.name = Translated("Apply custom style")
-        this.description = Translated(getCustomStyleDescription("Fishing profit tracker"))
     }
 }

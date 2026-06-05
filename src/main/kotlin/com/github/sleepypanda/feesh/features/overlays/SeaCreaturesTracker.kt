@@ -18,6 +18,7 @@ import com.github.sleepypanda.feesh.utils.gui.FeeshGui
 import com.github.sleepypanda.feesh.utils.gui.GuiButton
 import com.github.sleepypanda.feesh.utils.gui.LineAction
 import com.github.sleepypanda.feesh.utils.gui.LineInfo
+import com.github.sleepypanda.feesh.utils.gui.Table
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
 import com.github.sleepypanda.feesh.utils.FishingHookUtils
@@ -68,11 +69,24 @@ object SeaCreaturesTracker {
         .setCoordsDataKey("seaCreaturesTracker")
         .setClickable(true)
         .setSampleLines(listOf(
-            baseTitle,
-            "${GRAY}- ${GOLD}Yeti: ${WHITE}10 ${GRAY}1% ${DARK_GRAY}| ${GRAY}DH: ${WHITE}1 ${GRAY}20%",
-            "${GRAY}- ${LIGHT_PURPLE}Reindrake: ${WHITE}1 ${GRAY}0.1% ${DARK_GRAY}| ${GRAY}DH: ${WHITE}0 ${GRAY}0%",
+            "$baseTitle ${GRAY}[${GREEN}Session${GRAY}]",
+            "${GRAY}- ${LIGHT_PURPLE}${BOLD}Titanoboa${GRAY}: ${WHITE}1 ${GRAY}0.06% ${DARK_GRAY}| ${WHITE}0 ${GRAY}0%",
+            "${GRAY}- ${LIGHT_PURPLE}${BOLD}Wiki Tiki${GRAY}: ${WHITE}1 ${GRAY}0.06% ${DARK_GRAY}| ${WHITE}0 ${GRAY}0%",
+            "${GRAY}- ${GOLD}${BOLD}Great White Shark${GRAY}: ${WHITE}24 ${GRAY}1.53% ${DARK_GRAY}| ${WHITE}7 ${GRAY}46.67%",
+            "${GRAY}- ${GOLD}${BOLD}Alligator${GRAY}: ${WHITE}3 ${GRAY}0.19% ${DARK_GRAY}| ${WHITE}0 ${GRAY}0%",
+            "${GRAY}- ${DARK_PURPLE}Tiger Shark${GRAY}: ${WHITE}84 ${GRAY}5.36% ${DARK_GRAY}| ${WHITE}17 ${GRAY}25.76%",
+            "${GRAY}- ${DARK_PURPLE}Bayou Sludge${GRAY}: ${WHITE}26 ${GRAY}1.66% ${DARK_GRAY}| ${WHITE}8 ${GRAY}44.44%",
+            "${GRAY}- ${DARK_PURPLE}Manta Ray${GRAY}: ${WHITE}3 ${GRAY}0.19% ${DARK_GRAY}| ${WHITE}0 ${GRAY}0%",
+            "${GRAY}- ${BLUE}Blue Shark${GRAY}: ${WHITE}289 ${GRAY}18.45% ${DARK_GRAY}| ${WHITE}64 ${GRAY}29.49%",
+            "${GRAY}- ${BLUE}Banshee${GRAY}: ${WHITE}84 ${GRAY}5.36% ${DARK_GRAY}| ${WHITE}14 ${GRAY}21.54%",
+            "${GRAY}- ${BLUE}Snapping Turtle${GRAY}: ${WHITE}9 ${GRAY}0.57% ${DARK_GRAY}| ${WHITE}2 ${GRAY}28.57%",
+            "${GRAY}- ${GREEN}Nurse Shark${GRAY}: ${WHITE}518 ${GRAY}33.08% ${DARK_GRAY}| ${WHITE}105 ${GRAY}26.32%",
+            "${GRAY}- ${GREEN}Dumpster Diver${GRAY}: ${WHITE}150 ${GRAY}9.58% ${DARK_GRAY}| ${WHITE}29 ${GRAY}25.44%",
+            "${GRAY}- ${GREEN}Inkling${GRAY}: ${WHITE}26 ${GRAY}1.66% ${DARK_GRAY}| ${WHITE}7 ${GRAY}36.84%",
+            "${GRAY}- ${WHITE}Trash Gobbler${GRAY}: ${WHITE}285 ${GRAY}18.2% ${DARK_GRAY}| ${WHITE}49 ${GRAY}20.94%",
+            "${GRAY}- ${WHITE}Frog Man${GRAY}: ${WHITE}63 ${GRAY}4.02% ${DARK_GRAY}| ${WHITE}14 ${GRAY}30.43%",
             "",
-            "${AQUA}Total: ${WHITE}11 ${GRAY}rare out of ${WHITE}1000 ${DARK_GRAY}| ${GRAY}DH: ${WHITE}1 ${GRAY}20% ${DARK_GRAY}| ${GRAY}BS: ${WHITE}1 ${GRAY}10%",
+            "${AQUA}Total: ${WHITE}1 566 ${DARK_GRAY}| ${GRAY}DH: ${WHITE}316 ${GRAY}26.16% ${DARK_GRAY}| ${GRAY}BS: ${WHITE}42 ${GRAY}2.68%",
         ))
         .setSettingsKey { Overlays.seaCreaturesTrackerOverlay }
         .setApplyCustomStyleKey { Overlays.seaCreaturesTrackerCustomStyle }
@@ -569,15 +583,34 @@ object SeaCreaturesTracker {
             val lines = mutableListOf<LineInfo>()
             lines.add(LineInfo("$baseTitle $viewModeText"))
 
-            entriesToShow.forEach { entry ->
-                val seaCreatureText = getSeaCreatureLineText(entry, displayMode)
+            val columnHeaders = getColumnHeaders()
+            val columnRows = entriesToShow.map { getSeaCreatureLineColumns(it).toCells() }
+            val rowsForLayout = if (columnHeaders != null) {
+                listOf(columnHeaders.toCells()) + columnRows
+            } else {
+                columnRows
+            }
+            val tableLayout = Table.layout(FeeshMod.mc.font, rowsForLayout, getColumnsSeparator())
+            var tableRowIndex = 0
+
+            if (columnHeaders != null) {
                 lines.add(
-                    LineInfo(
-                        text = seaCreatureText,
+                    LineInfo.withCells(
+                        cells = tableLayout.rows[tableRowIndex++],
+                        tableWidth = tableLayout.tableWidth,
+                    )
+                )
+            }
+
+            entriesToShow.forEach { entry ->
+                lines.add(
+                    LineInfo.withCells(
+                        cells = tableLayout.rows[tableRowIndex++],
+                        tableWidth = tableLayout.tableWidth,
                         tooltip = getSeaCreatureLineTooltip(entry),
                         actions = listOf(
                             LineAction("${GRAY}[${RED}x${GRAY}]") { onDeleteSeaCreatureInline(entry.seaCreature) }
-                        )
+                        ),
                     )
                 )
             }
@@ -621,7 +654,25 @@ object SeaCreaturesTracker {
         return sorted
     }
 
-    private fun getSeaCreatureLineText(entry: SeaCreatureTrackerEntry, displayMode: SeaCreaturesTrackerDisplayMode): String {
+    private data class TrackerLineColumns(val main: String, val dh: String, val bs: String) {
+        fun toCells(): List<String> = listOf(main, dh, bs)
+    }
+
+    private fun getColumnsSeparator(): String = " ${DARK_GRAY}| "
+
+    private fun getColumnHeaders(): TrackerLineColumns? {
+        val showDoubleHook = Overlays.showSeaCreaturesDoubleHookStatistics
+        val showCocooned = Overlays.showCocoonedStatistics
+        if (!showDoubleHook && !showCocooned) return null
+
+        return TrackerLineColumns(
+            main = "",
+            dh = if (showDoubleHook) "${GRAY}DH" else "",
+            bs = if (showCocooned) "${GRAY}BS" else "",
+        )
+    }
+
+    private fun getSeaCreatureLineColumns(entry: SeaCreatureTrackerEntry): TrackerLineColumns {
         val showPercentage = Overlays.showSeaCreaturesPercentage
         val showDoubleHook = Overlays.showSeaCreaturesDoubleHookStatistics
         val showCocooned = Overlays.showCocoonedStatistics
@@ -629,15 +680,37 @@ object SeaCreaturesTracker {
         val seaCreatureText = if (entry.seaCreatureInfo.isRare) entry.seaCreatureInfo.boldDisplayName else entry.seaCreatureInfo.displayName
         val countText = "${WHITE}${entry.totalAmountFormatted}"
         val percentText = if (showPercentage) " ${GRAY}${entry.percentFormatted}" else ""
-            
-        val doubleHookText = if (showDoubleHook && entry.seaCreatureInfo.canBeDoubleHooked) {
-            " ${DARK_GRAY}| ${GRAY}DH: ${WHITE}${entry.doubleHookAmountFormatted} ${GRAY}${entry.doubleHookPercentFormatted}"
-        } else ""
-        val cocoonedText = if (showCocooned) {
-            " ${DARK_GRAY}| ${GRAY}BS: ${WHITE}${entry.cocoonedAmountFormatted} ${GRAY}${entry.cocoonedPercentFormatted}"
+        val main = "${GRAY}- $seaCreatureText${GRAY}: $countText$percentText"
+
+        val dh = if (showDoubleHook && entry.seaCreatureInfo.canBeDoubleHooked) {
+            "${WHITE}${entry.doubleHookAmountFormatted} ${GRAY}${entry.doubleHookPercentFormatted}"
         } else ""
 
-        return "${GRAY}- $seaCreatureText${GRAY}: $countText$percentText$doubleHookText$cocoonedText"
+        val bs = if (showCocooned) {
+            "${WHITE}${entry.cocoonedAmountFormatted} ${GRAY}${entry.cocoonedPercentFormatted}"
+        } else ""
+
+        return TrackerLineColumns(main, dh, bs)
+    }
+
+    private fun getTotalLineText(displayMode: SeaCreaturesTrackerDisplayMode, totalInfo: TotalTrackerEntry): String {
+        val showCocooned = Overlays.countCocoonedSeaCreatures
+        return when (displayMode) {
+            SeaCreaturesTrackerDisplayMode.ALL -> {
+                val doubleHookText = " ${DARK_GRAY}| ${GRAY}DH: ${WHITE}${totalInfo.allDoubleHookAmountFormatted} ${GRAY}${totalInfo.allDoubleHookPercentFormatted}"
+                val cocoonedText = if (showCocooned) {
+                    " ${DARK_GRAY}| ${GRAY}BS: ${WHITE}${totalInfo.allCocoonedAmountFormatted} ${GRAY}${totalInfo.allCocoonedPercentFormatted}"
+                } else ""
+                "${AQUA}Total: ${WHITE}${totalInfo.allTotalAmountFormatted}$doubleHookText$cocoonedText"
+            }
+            SeaCreaturesTrackerDisplayMode.ONLY_RARE -> {
+                val doubleHookText = " ${DARK_GRAY}| ${GRAY}DH: ${WHITE}${totalInfo.rareDoubleHookAmountFormatted} ${GRAY}${totalInfo.rareDoubleHookPercentFormatted}"
+                val cocoonedText = if (showCocooned) {
+                    " ${DARK_GRAY}| ${GRAY}BS: ${WHITE}${totalInfo.rareCocoonedAmountFormatted} ${GRAY}${totalInfo.rareCocoonedPercentFormatted}"
+                } else ""
+                "${AQUA}Total: ${WHITE}${totalInfo.rareTotalAmountFormatted} ${GRAY}rare out of ${WHITE}${totalInfo.allTotalAmountFormatted}$doubleHookText$cocoonedText"
+            }
+        }
     }
 
     private fun getSeaCreatureLineTooltip(entry: SeaCreatureTrackerEntry): List<Component> {
@@ -735,22 +808,6 @@ object SeaCreaturesTracker {
         )
     }
     
-    private fun getTotalLineText(displayMode: SeaCreaturesTrackerDisplayMode, totalInfo: TotalTrackerEntry): String {
-        val showCocooned = Overlays.countCocoonedSeaCreatures
-        when (displayMode) {
-            SeaCreaturesTrackerDisplayMode.ALL -> {
-                val doubleHookText = " ${DARK_GRAY}| ${GRAY}DH: ${WHITE}${totalInfo.allDoubleHookAmountFormatted} ${GRAY}${totalInfo.allDoubleHookPercentFormatted}"
-                val cocoonedText = if (showCocooned) " ${DARK_GRAY}| ${GRAY}BS: ${WHITE}${totalInfo.allCocoonedAmountFormatted} ${GRAY}${totalInfo.allCocoonedPercentFormatted}" else ""
-                return "${AQUA}Total: ${WHITE}${totalInfo.allTotalAmountFormatted}${doubleHookText}${cocoonedText}"
-            }
-            SeaCreaturesTrackerDisplayMode.ONLY_RARE -> {
-                val doubleHookText = " ${DARK_GRAY}| ${GRAY}DH: ${WHITE}${totalInfo.rareDoubleHookAmountFormatted} ${GRAY}${totalInfo.rareDoubleHookPercentFormatted}"
-                val cocoonedText = if (showCocooned) " ${DARK_GRAY}| ${GRAY}BS: ${WHITE}${totalInfo.rareCocoonedAmountFormatted} ${GRAY}${totalInfo.rareCocoonedPercentFormatted}" else ""
-                return "${AQUA}Total: ${WHITE}${totalInfo.rareTotalAmountFormatted} ${GRAY}rare out of ${WHITE}${totalInfo.allTotalAmountFormatted}${doubleHookText}${cocoonedText}"
-            }
-        }
-    }
-
     private fun getTotalLineTooltip(totalInfo: TotalTrackerEntry): List<Component> {
         val lines = listOfNotNull(
             "${AQUA}Total",

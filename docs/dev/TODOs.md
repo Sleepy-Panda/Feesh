@@ -24,9 +24,11 @@ Newly released - https://hypixel.net/threads/hypixel-skyblock-0-24-5-assorted-qo
 ## Current issues & feedback
 
 - 1.21.10 gonna be removed
-- ea Creature Tracker where it says "Total" could you change that to "Total Sea Creatures"
+- party chat message and title for new dia trophy fish
+- Chain - has RARE DRP
+- Puddle Jumper caught alert
+- Sea Creature Tracker where it says "Total" could you change that to "Total Sea Creatures"
 - Empty bait name in no bait alert. Got treasure bait from quest
-- Add treasure dye pity rng meter (millerzz)
 - Some legion counting radius logic reported
 - Catches/h for treasures
 - Improve link to changelog in settings, and update announcement
