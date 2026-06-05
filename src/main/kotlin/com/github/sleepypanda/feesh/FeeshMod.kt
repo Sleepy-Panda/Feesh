@@ -75,7 +75,7 @@ class FeeshMod : ClientModInitializer {
         SeaCreaturesCocoonPublisher.init()
         RareDropsPublisher.init()
         PartyChatPublisher.init()
-        TrophyFrogDiscoveredPublisher.init()
+        TrophyDiscoveredPublisher.init()
         PetLevelUpPublisher.init()
         SacksItemPickupPublisher.init()
         IceEssenceStatusBarPublisher.init()
@@ -106,6 +106,7 @@ class FeeshMod : ClientModInitializer {
         WormTheFishCaughtAlert.init()
         NessieDestinationAlert.init()
         TrophyFrogDiscoveredAlert.init()
+        TrophyFishDiscoveredAlert.init()
 
         // Chat
         RareCatchMessage.init()
@@ -116,6 +117,7 @@ class FeeshMod : ClientModInitializer {
         HotspotFoundMessage.init()
         LootshareMessage.init()
         TrophyFrogDiscoveredMessage.init()
+        TrophyFishDiscoveredMessage.init()
         DoubleHookPersonalBest.init()
 
         // Overlays

@@ -159,12 +159,17 @@ object Chat : CategoryKt("Chat") {
 
     init {
         separator {
-            this.title = "${AQUA}${BOLD}Trophy Frogs"
+            this.title = "${AQUA}${BOLD}Trophy"
         }
     }
 
     var shareTrophyFrogDiscovered by boolean(true) {
         this.name = Translated("Share Trophy Frog discovery to the PARTY chat")
         this.description = Translated("Sends a PARTY chat message when you discovered a new Trophy Frog.")
+    }
+
+    var shareTrophyFishDiscovered by boolean(true) {
+        this.name = Translated("Share Trophy Fish discovery to the PARTY chat")
+        this.description = Translated("Sends a PARTY chat message when you discovered a new Trophy Fish.")
     }
 }
