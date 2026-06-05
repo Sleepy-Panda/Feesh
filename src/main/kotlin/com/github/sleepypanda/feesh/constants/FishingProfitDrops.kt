@@ -1586,7 +1586,6 @@ class FishingProfitDrops {
                 itemName = "Chain of the End Times",
                 itemDisplayName = "${LEGENDARY}Chain of the End Times",
                 npcPrice = 1_000_000.0,
-                shouldAnnounceRareDrop = true,
             ),
             FishingProfitDropInfo(
                 itemId = "LUMP_OF_MAGMA",
@@ -2719,7 +2718,7 @@ class FishingProfitDrops {
                 itemName = "Leap Frog DIAMOND",
                 itemDisplayName = "${COMMON}Leap Frog ${AQUA}${BOLD}DIAMOND",
                 npcPrice = null,
-                amountOfLotus = 128, // ???
+                amountOfLotus = 128,
             ),
             FishingProfitDropInfo(
                 itemId = "WETLANDS_FROG_BRONZE",
@@ -2775,7 +2774,7 @@ class FishingProfitDrops {
                 itemName = "Reality Hopper DIAMOND",
                 itemDisplayName = "${UNCOMMON}Reality Hopper ${AQUA}${BOLD}DIAMOND",
                 npcPrice = null,
-                amountOfLotus = 160, // ???
+                amountOfLotus = 160,
             ),
             FishingProfitDropInfo(
                 itemId = "EXPLODING_FROG_BRONZE",
@@ -2803,7 +2802,7 @@ class FishingProfitDrops {
                 itemName = "Exploding Frog DIAMOND",
                 itemDisplayName = "${UNCOMMON}Exploding Frog ${AQUA}${BOLD}DIAMOND",
                 npcPrice = null,
-                amountOfLotus = 96, // ???
+                amountOfLotus = 96,
             ),
             FishingProfitDropInfo(
                 itemId = "BLESSED_FROG_BRONZE",
@@ -2859,7 +2858,7 @@ class FishingProfitDrops {
                 itemName = "Sea Frog DIAMOND",
                 itemDisplayName = "${RARE}Sea Frog ${AQUA}${BOLD}DIAMOND",
                 npcPrice = null,
-                amountOfLotus = 320, // ???
+                amountOfLotus = 320,
             ),
             FishingProfitDropInfo(
                 itemId = "BULLFROG_BRONZE",
@@ -2887,7 +2886,7 @@ class FishingProfitDrops {
                 itemName = "Bullfrog DIAMOND",
                 itemDisplayName = "${RARE}Bullfrog ${AQUA}${BOLD}DIAMOND",
                 npcPrice = null,
-                amountOfLotus = 320, // ???
+                amountOfLotus = 320,
             ),
             FishingProfitDropInfo(
                 itemId = "TREE_FROG_BRONZE",
@@ -2915,7 +2914,7 @@ class FishingProfitDrops {
                 itemName = "Tree Frog DIAMOND",
                 itemDisplayName = "${EPIC}Tree Frog ${AQUA}${BOLD}DIAMOND",
                 npcPrice = null,
-                amountOfLotus = 640, // ???
+                amountOfLotus = 640,
             ),
             FishingProfitDropInfo(
                 itemId = "CAVE_FROG_BRONZE",
@@ -2936,14 +2935,14 @@ class FishingProfitDrops {
                 itemName = "Cave Frog GOLD",
                 itemDisplayName = "${EPIC}Cave Frog ${GOLD}${BOLD}GOLD",
                 npcPrice = null,
-                amountOfLotus = 320, // ???
+                amountOfLotus = 320,
             ),
             FishingProfitDropInfo(
                 itemId = "CAVE_FROG_DIAMOND",
                 itemName = "Cave Frog DIAMOND",
                 itemDisplayName = "${EPIC}Cave Frog ${AQUA}${BOLD}DIAMOND",
                 npcPrice = null,
-                amountOfLotus = 640, // ???
+                amountOfLotus = 640,
             ),
             FishingProfitDropInfo(
                 itemId = "HIGHLANDS_FROG_BRONZE",
@@ -2999,7 +2998,7 @@ class FishingProfitDrops {
                 itemName = "Puddle Jumper DIAMOND",
                 itemDisplayName = "${LEGENDARY}Puddle Jumper ${AQUA}${BOLD}DIAMOND",
                 npcPrice = null,
-                amountOfLotus = 320, // ???
+                amountOfLotus = 320,
             ),
 
             // Dirt
