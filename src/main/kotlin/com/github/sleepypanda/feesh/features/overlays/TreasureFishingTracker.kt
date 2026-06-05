@@ -33,6 +33,9 @@ object TreasureFishingTracker {
         var outstanding: Int = 0
     ) {
         fun totalCatches(): Int = good + great + outstanding
+
+        fun rngMeterPercent(): Double =
+            (outstanding / 10_000.0 + great / 100_000.0 + good / 1_000_000.0) * 100.0
     }
 
     data class TreasureFishingSessionData(
@@ -75,7 +78,8 @@ object TreasureFishingTracker {
             "",
             "${GOLD}Treasure Dyes${GRAY}: ${WHITE}2",
             "${GRAY}Last on: ${WHITE}7h 15m ago",
-            "${GRAY}Last on: ${WHITE}5 000 ${GRAY}Treasures ago"
+            "${GRAY}Last on: ${WHITE}5 000 ${GRAY}Treasures ago",
+            "${GRAY}RNG meter: ${WHITE}15.67%"
         ))
         .setSettingsKey { Overlays.treasureFishingTrackerOverlay }
         .setApplyCustomStyleKey { Overlays.treasureFishingTrackerCustomStyle }
@@ -151,7 +155,7 @@ object TreasureFishingTracker {
         ) {
             if (!WorldUtils.isInSkyblock()) return
             
-            data.total.treasureDyes.initDropCount(count, lastOn)         
+            data.total.treasureDyes.initDropCount(count, lastOn)
             saveData()
             ChatUtils.sendLocalChat("${GRAY}Successfully changed Treasure Dyes count to ${count} for the Treasure fishing tracker.", true)
         }
@@ -292,12 +296,24 @@ object TreasureFishingTracker {
         lines.add(LineInfo("${GRAY}Total Treasures: ${WHITE}${CommonUtils.formatNumberWithSpaces(catches.totalCatches())}"))
         lines.add(LineInfo(""))
         lines.addAll(data.total.treasureDyes.getOverlayLines(treasureDye.displayName, "treasure"))
+        lines.add(LineInfo("${GRAY}RNG meter: ${formatRngMeterPercent(data.total.catches)}%"))
 
         gui.setLines(lines)
         gui.setButtons(listOf(
             GuiButton(0, "${GRAY}[Click to show $nextModeText${GRAY}]", { toggleViewMode() }),
             GuiButton(1, "${GRAY}[${RED}Click to reset${GRAY}]", { resetTreasureFishingTracker(false, getCurrentViewMode()) })
         ))
+    }
+
+    private fun formatRngMeterPercent(catches: TreasureCatchesData): String {
+        val percent = catches.rngMeterPercent().coerceAtMost(100.0)
+        return when {
+            percent >= 90 -> "${RED}${String.format("%.2f", percent)}"
+            percent >= 50 -> "${YELLOW}${String.format("%.2f", percent)}"
+            percent >= 0.01 -> "${WHITE}${String.format("%.2f", percent)}"
+            percent > 0 -> "${WHITE}${String.format("%.4f", percent)}"
+            else -> "${WHITE}0"
+        }
     }
 
     private fun saveData(force: Boolean = false) {
