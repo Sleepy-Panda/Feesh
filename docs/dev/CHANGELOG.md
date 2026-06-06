@@ -11,6 +11,8 @@ Released on: ???
 - Added alert & pchat message when dropping a **Magmarizer VI** book.
   - **Make sure to select them in the settings dropdowns if you need!**
 - Added "RNG meter" for Treasure fishing tracker, to track progress towards pity.
+- Added timer and alert when your Puddle Jumper is about to arrive to its destination.
+  - Can be used to swap your gear before Puddle Jumper finishes its jumping and gives the loot.
 
 ## Bugfixes
 

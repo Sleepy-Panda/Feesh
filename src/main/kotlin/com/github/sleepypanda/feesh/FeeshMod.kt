@@ -105,6 +105,7 @@ class FeeshMod : ClientModInitializer {
         BaitAlert.init()
         WormTheFishCaughtAlert.init()
         NessieDestinationAlert.init()
+        PuddleJumperTimerAlert.init()
         TrophyFrogDiscoveredAlert.init()
         TrophyFishDiscoveredAlert.init()
 
