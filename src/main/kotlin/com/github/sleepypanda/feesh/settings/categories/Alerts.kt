@@ -117,6 +117,24 @@ object Alerts : CategoryKt("Alerts") {
 
     init {
         separator {
+            this.title = "${AQUA}${BOLD}Puddle Jumper"
+        }
+    }
+
+    var alertOnPuddleJumperTimer by boolean(false) {
+        this.name = Translated("Alert on Puddle Jumper timer")
+        this.description = Translated("Shows a title and sends a local chat message when your Puddle Jumper is about to arrive to its destination.\nCan be used to swap your gear before Puddle Jumper finishes its jumping and gives the loot.")
+    }
+
+    var puddleJumperTimerSeconds by int(40) {
+        this.name = Translated("Puddle Jumper timer (seconds)")
+        this.description = Translated("Seconds elapsed after catching a Puddle Jumper to show the alert. Ignored if the Puddle Jumper timer alert is disabled.\n Usually, Puddle Jumper randomly takes 43-55 seconds to finish its jumping and give the loot, so adjust the timer to be alerted before it reaches the destination.")
+        this.range = 30..50
+        this.slider = true
+    }
+
+    init {
+        separator {
             this.title = "${AQUA}${BOLD}Trophy"
         }
     }
