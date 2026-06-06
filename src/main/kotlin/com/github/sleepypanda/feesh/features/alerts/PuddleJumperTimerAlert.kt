@@ -35,7 +35,7 @@ object PuddleJumperTimerAlert {
 
     private fun onOwnSeaCreatureCaught(event: OwnSeaCreatureCaughtEvent) {
         CommonUtils.runWithCatching("Failed to start Puddle Jumper timer") {
-            if (!WorldUtils.isInSkyblock() || !Alerts.alertOnPuddleJumperTimer) return
+            if (!WorldUtils.isInSkyblock() || WorldUtils.getWorldName() != WorldUtils.LOTUS_ATOLL || !Alerts.alertOnPuddleJumperTimer) return
             if (event.seaCreatureName != SeaCreatureNames.PUDDLE_JUMPER) return
     
             val timerId = nextTimerId.incrementAndGet()
@@ -52,7 +52,7 @@ object PuddleJumperTimerAlert {
     }
 
     private fun onPuddleJumperTimerFinished() {
-        if (!WorldUtils.isInSkyblock() || !Alerts.alertOnPuddleJumperTimer) return
+        if (!WorldUtils.isInSkyblock() || WorldUtils.getWorldName() != WorldUtils.LOTUS_ATOLL || !Alerts.alertOnPuddleJumperTimer) return
 
         CommonUtils.showTitle("${GOLD}Puddle Jumper ${WHITE}arrives soon!")
         ChatUtils.sendLocalChat("Your ${GOLD}Puddle Jumper ${WHITE}arrives soon.", true)
