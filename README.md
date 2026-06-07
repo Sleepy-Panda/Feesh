@@ -73,6 +73,7 @@ This mod requires [Fabric API](https://modrinth.com/mod/fabric-api) and [Fabric 
 - **Fishing Festival** — Alerts when the Fishing Festival ends, and posts amounts of sharks caught in chat. Also has option to track personal best per festival.
 - **Rain/Thunder/Blizzard ends soon** — Alerts when Rain/Thunder/Blizzard ends soon while in relevant areas.
 - **Nessie destination alert** — Alerts destination when a Nessie decides into which cave to swim - to Jade Dragon or to Driptoad Delve.
+- **Puddle Jumper timer alert** — Alerts when your Puddle Jumper is about to arrive to its destination.
 - **Trophy Frog discovered alert** — Alerts when a new Trophy Frog is discovered.
 - **Trophy Fish discovered alert** — Alerts when a new Trophy Fish is discovered.
 
