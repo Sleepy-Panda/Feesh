@@ -64,6 +64,7 @@ class FeeshMod : ClientModInitializer {
         WorldUtils.init()
         PlayerUtils.init()
         FishingHookUtils.init()
+        HotspotUtils.init()
         BaitUtils.init()
         ChatUtils.init()
         GuiUtils.init()
