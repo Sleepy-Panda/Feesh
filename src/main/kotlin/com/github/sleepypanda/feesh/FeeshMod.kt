@@ -6,6 +6,7 @@ import com.github.sleepypanda.feesh.features.commands.*
 import com.github.sleepypanda.feesh.features.help.*
 import com.github.sleepypanda.feesh.features.items.background.*
 import com.github.sleepypanda.feesh.features.items.slottext.*
+import com.github.sleepypanda.feesh.features.items.tooltip.*
 import com.github.sleepypanda.feesh.features.overlays.*
 import com.github.sleepypanda.feesh.features.personalbests.*
 import com.github.sleepypanda.feesh.features.rendering.*
@@ -156,6 +157,8 @@ class FeeshMod : ClientModInitializer {
         MobyDuckProgress.init()
         AutoRecombFlag.init()
         SlotTextRendererManager.init() // After all slot text renderers are initialized and registered
+
+        ExpertiseTooltip.init()
 
         // Commands
         PersonalBestCommand.init()

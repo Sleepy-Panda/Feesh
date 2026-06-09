@@ -240,6 +240,28 @@ object CommonUtils {
         return "x: ${Math.round(x)}, y: ${Math.round(y)}, z: ${Math.round(z)}"
     }
 
+    /**
+     * Appends a line to a tooltip line list (e.g. from Fabric [ItemTooltipCallback]).
+     * Does not mutate the underlying item — use [appendLoreLine] only when the stack itself should change.
+     *
+     * @param tooltip Mutable tooltip lines (index 0 is the item display name).
+     * @param line Formatted text to append.
+     */
+    fun appendTooltipLine(tooltip: MutableList<Component>, line: String) {
+        if (line.isEmpty()) return
+        tooltip.add(Component.literal(line))
+    }
+
+    /**
+     * Appends a line to a tooltip line list (e.g. from Fabric [ItemTooltipCallback]).
+     *
+     * @param tooltip Mutable tooltip lines (index 0 is the item display name).
+     * @param line Component to append.
+     */
+    fun appendTooltipLine(tooltip: MutableList<Component>, line: Component) {
+        tooltip.add(line)
+    }
+
     /*
      * Runs a block of code with catching exceptions and logging them.
      * @param message The message to log together with the exception.

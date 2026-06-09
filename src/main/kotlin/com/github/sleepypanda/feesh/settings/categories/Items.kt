@@ -59,4 +59,15 @@ object Items : CategoryKt("Items") {
         this.name = Translated("Auto-recomb flag")
         this.description = Translated("Renders recomb upgrade flag (R) for auto-recombobulated fishing drops in the item slot.")
     }
+
+    init {
+        separator {
+            this.title = "${AQUA}${BOLD}Tooltip"
+        }
+    }
+
+    var showExpertiseKillsTooltip by boolean(false) {
+        this.name = Translated("Expertise kills counter")
+        this.description = Translated("Shows full expertise kill count on fishing rods.")
+    }
 }
