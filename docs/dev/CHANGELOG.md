@@ -6,6 +6,10 @@ Released on: ???
 
 - 
 
+## Bugfixes
+
+- Fixed slot number that enables Fishing Bag, after SB moved it.
+
 # 1.8.0
 
 Released on: 2026-06-07

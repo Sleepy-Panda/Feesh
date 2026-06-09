@@ -29,7 +29,7 @@ object FishingBagDisabledAlert {
     private val USE_BAITS_FROM_FISHING_BAG_DISABLED_PATTERN = Regex("^Use Baits From Bag is now disabled\\!$")
     private val USE_BAITS_FROM_FISHING_BAG_ENABLED_PATTERN = Regex("^Use Baits From Bag is now enabled\\!$")
     private const val FISHING_BAG_TITLE_CONTAINS = "Fishing Bag"
-    private const val TOGGLE_SLOT_NUMBER = 47
+    private const val TOGGLE_SLOT_NUMBER = 49
     private const val USE_BAITS_FROM_BAG_ITEM_NAME = "Use Baits From Bag"
     private const val CLICK_TO_DISABLE_TEXT = "Click to disable!"
 

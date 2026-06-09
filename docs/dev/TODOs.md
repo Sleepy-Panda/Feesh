@@ -24,7 +24,8 @@ Newly released - https://hypixel.net/threads/hypixel-skyblock-0-24-5-assorted-qo
 ## Current issues & feedback
 
 - 1.21.10 gonna be removed
-- party chat message and title for new dia trophy fish
+- One click to reset multiple widgets
+- Full expertise counter in lore + shorten rod parts list (no descriptions)
 - Chain - has RARE DRP
 - Puddle Jumper caught alert
 - Sea Creature Tracker where it says "Total" could you change that to "Total Sea Creatures"
