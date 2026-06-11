@@ -159,6 +159,7 @@ class FeeshMod : ClientModInitializer {
         SlotTextRendererManager.init() // After all slot text renderers are initialized and registered
 
         ExpertiseTooltip.init()
+        TooltipManager.init() // After all tooltip features are initialized and registered
 
         // Commands
         PersonalBestCommand.init()

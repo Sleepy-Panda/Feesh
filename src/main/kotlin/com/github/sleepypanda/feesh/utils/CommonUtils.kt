@@ -241,10 +241,8 @@ object CommonUtils {
     }
 
     /**
-     * Appends a line to a tooltip line list (e.g. from Fabric [ItemTooltipCallback]).
-     * Does not mutate the underlying item — use [appendLoreLine] only when the stack itself should change.
-     *
-     * @param tooltip Mutable tooltip lines (index 0 is the item display name).
+     * Appends a line to a tooltip line list.
+     * @param tooltip Mutable tooltip lines.
      * @param line Formatted text to append.
      */
     fun appendTooltipLine(tooltip: MutableList<Component>, line: String) {
@@ -253,9 +251,8 @@ object CommonUtils {
     }
 
     /**
-     * Appends a line to a tooltip line list (e.g. from Fabric [ItemTooltipCallback]).
-     *
-     * @param tooltip Mutable tooltip lines (index 0 is the item display name).
+     * Appends a line to a tooltip line list.
+     * @param tooltip Mutable tooltip lines.
      * @param line Component to append.
      */
     fun appendTooltipLine(tooltip: MutableList<Component>, line: Component) {

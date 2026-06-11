@@ -1,6 +1,7 @@
 package com.github.sleepypanda.feesh.settings.categories
 
 import com.github.sleepypanda.feesh.features.items.background.TrashBooksHighlighter
+import com.github.sleepypanda.feesh.features.items.tooltip.TooltipManager
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
 import com.teamresourceful.resourcefulconfigkt.api.CategoryKt
@@ -66,8 +67,12 @@ object Items : CategoryKt("Items") {
         }
     }
 
-    var showExpertiseKillsTooltip by boolean(false) {
+    var showExpertiseKillsTooltip by ObservableEntry(boolean(false) {
         this.name = Translated("Expertise kills counter")
-        this.description = Translated("Shows full expertise kill count on fishing rods.")
+        this.description = Translated("Shows exact expertise kills counter on the fishing rods.")
+    }) { prev, new ->
+        if (prev != new) {
+            TooltipManager.refreshEnabledAdders()
+        }
     }
 }

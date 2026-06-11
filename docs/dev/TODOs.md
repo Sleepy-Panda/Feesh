@@ -23,11 +23,13 @@ Newly released - https://hypixel.net/threads/hypixel-skyblock-0-24-5-assorted-qo
 
 ## Current issues & feedback
 
-- 1.21.10 gonna be removed
+- With the release of Minecraft version 26.2 on June 16th, we'll be dropping support for 1.21.9 and 1.21.10. A few weeks after that, we'll drop support for 1.21.11.
+- "Applicable on: Fishing Rod" passes isFishingRod check?
+- Personal blacklist + party sharing
+- Flash drop does not trigger pchat msg?
+- Pickups from trade menu
 - One click to reset multiple widgets
-- Full expertise counter in lore + shorten rod parts list (no descriptions)
-- Chain - has RARE DRP
-- Puddle Jumper caught alert
+- Shorten rod parts list (no descriptions)
 - Sea Creature Tracker where it says "Total" could you change that to "Total Sea Creatures"
 - Empty bait name in no bait alert. Got treasure bait from quest
 - Some legion counting radius logic reported
@@ -36,7 +38,6 @@ Newly released - https://hypixel.net/threads/hypixel-skyblock-0-24-5-assorted-qo
 - Work on various events sounds to make them more unique
 - Deployable in mineshaft
 - 1.21 Fishing Hook armorstand
-- Sometimes current world&zone is detected wrongly
 - Ragnarok immunity timer
 - Manual "set tracker drops" command does not reset "sc since last" for that drop.
 - Fished coins to add via the command.
