@@ -4,7 +4,7 @@ Released on: ???
 
 ## Features
 
-- 
+- Added Expertise kills counter to the Items settings section, showing exact expertise counter on fishing rods [disabled by default].
 
 ## Bugfixes
 

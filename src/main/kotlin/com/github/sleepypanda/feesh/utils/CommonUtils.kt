@@ -240,6 +240,25 @@ object CommonUtils {
         return "x: ${Math.round(x)}, y: ${Math.round(y)}, z: ${Math.round(z)}"
     }
 
+    /**
+     * Appends a line to a tooltip line list.
+     * @param tooltip Mutable tooltip lines.
+     * @param line Formatted text to append.
+     */
+    fun appendTooltipLine(tooltip: MutableList<Component>, line: String) {
+        if (line.isEmpty()) return
+        tooltip.add(Component.literal(line))
+    }
+
+    /**
+     * Appends a line to a tooltip line list.
+     * @param tooltip Mutable tooltip lines.
+     * @param line Component to append.
+     */
+    fun appendTooltipLine(tooltip: MutableList<Component>, line: Component) {
+        tooltip.add(line)
+    }
+
     /*
      * Runs a block of code with catching exceptions and logging them.
      * @param message The message to log together with the exception.

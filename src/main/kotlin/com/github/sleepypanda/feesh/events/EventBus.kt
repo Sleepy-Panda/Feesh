@@ -13,6 +13,7 @@ import com.github.sleepypanda.feesh.events.models.ArmorStandDespawnedEvent
 import com.github.sleepypanda.feesh.events.models.ItemEntityLoadedEvent
 import com.github.sleepypanda.feesh.events.models.ArmorStandLoadedEvent
 import com.github.sleepypanda.feesh.events.models.WorldChangedEvent
+import com.github.sleepypanda.feesh.events.models.ItemTooltipRenderedEvent
 import com.github.sleepypanda.feesh.events.models.ScreenBeforeInitEvent
 import com.github.sleepypanda.feesh.utils.ChatUtils.getFormattedString
 import com.github.sleepypanda.feesh.utils.ChatUtils.removeFormatting
@@ -31,6 +32,7 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientEntityEvents
 //#else
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientWorldEvents
 //#endif
+import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback
 import net.fabricmc.fabric.api.client.screen.v1.ScreenMouseEvents
 import net.minecraft.world.entity.item.ItemEntity
 import net.minecraft.world.entity.decoration.ArmorStand
@@ -66,6 +68,10 @@ object EventBus {
                 publish(event)
                 !event.isCancelled
             }
+        }
+
+        ItemTooltipCallback.EVENT.register { stack, _, _, lines ->
+            publish(ItemTooltipRenderedEvent(stack, lines))
         }
 
         ScreenEvents.BEFORE_INIT.register { _, screen, _, _ ->
