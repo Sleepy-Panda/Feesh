@@ -8,6 +8,7 @@ import net.minecraft.core.component.DataComponents
 import net.minecraft.world.item.component.CustomData
 import net.minecraft.world.item.ItemStack
 import net.minecraft.nbt.NbtOps
+import net.minecraft.world.item.FishingRodItem
 
 object ItemUtils {
     /**
@@ -76,16 +77,17 @@ object ItemUtils {
 
     /*
      * Checks if the item is a Skyblock fishing rod.
-     * @param item The item to check.
+     * @param item The item stack to check.
      * @returns {Boolean} True if the item is a fishing rod, false otherwise.
      */
-    fun isFishingRod(item: ItemStack?): Boolean {
-        if (item == null || item.isEmpty) return false
+    fun isFishingRod(itemStack: ItemStack?): Boolean {
+        if (itemStack == null || itemStack.isEmpty) return false        
+        if (itemStack.item == null || itemStack.item !is FishingRodItem) return false
 
-        val name = item.hoverName.string
+        val name = itemStack.hoverName?.string ?: return false
         if (name.contains("Carnival Rod")) return false
 
-        val loreLines = item.get(DataComponents.LORE)?.lines()?.map { it.string } ?: listOf()
+        val loreLines = itemStack.get(DataComponents.LORE)?.lines()?.map { it.string } ?: listOf()
         return loreLines.any { it.contains("FISHING ROD", ignoreCase = true) || it.contains("FISHING WEAPON", ignoreCase = true) }
     }
 

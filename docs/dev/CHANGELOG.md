@@ -9,6 +9,7 @@ Released on: ???
 ## Bugfixes
 
 - Fixed slot number that enables Fishing Bag, after SB moved it.
+- Fixed outdated "is fishing rod" item check.
 
 # 1.8.0
 
