@@ -24,7 +24,6 @@ Newly released - https://hypixel.net/threads/hypixel-skyblock-0-24-5-assorted-qo
 ## Current issues & feedback
 
 - With the release of Minecraft version 26.2 on June 16th, we'll be dropping support for 1.21.9 and 1.21.10. A few weeks after that, we'll drop support for 1.21.11.
-- "Applicable on: Fishing Rod" passes isFishingRod check?
 - Personal blacklist + party sharing
 - Flash drop does not trigger pchat msg?
 - Pickups from trade menu
