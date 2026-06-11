@@ -1,6 +1,8 @@
 package com.github.sleepypanda.feesh.settings.categories
 
+import com.github.sleepypanda.feesh.features.items.background.BackgroundHighlighterManager
 import com.github.sleepypanda.feesh.features.items.background.TrashBooksHighlighter
+import com.github.sleepypanda.feesh.features.items.slottext.SlotTextRendererManager
 import com.github.sleepypanda.feesh.features.items.tooltip.TooltipManager
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
@@ -15,11 +17,15 @@ object Items : CategoryKt("Items") {
         }
     }
 
-    var trashBooksHighlighter by boolean(false) {
+    var trashBooksHighlighter by ObservableEntry(boolean(false) {
         this.name = Translated("Trash enchanted books")
         this.description = Translated(
             "Highlights slots containing trash enchanted books flooding your inventory while fishing. You can use it to quickly find books to throw away or insta sell."
         )
+    }) { prev, new ->
+        if (prev != new) {
+            BackgroundHighlighterManager.refreshEnabledHighlighters()
+        }
     }
 
     var trashBooksHighlighterNames by ObservableEntry(
@@ -33,11 +39,15 @@ object Items : CategoryKt("Items") {
         }
     }
    
-    var katWrongPetsHighlighter by boolean(false) {
+    var katWrongPetsHighlighter by ObservableEntry(boolean(false) {
         this.name = Translated("Wrong pets offered to Kat")
         this.description = Translated(
             "${GRAY}Highlights Kat's GUI slot when you offer Kat some pets (Epic Megalodon) potentially by mistake. ${DARK_GRAY}For those who regularly gets scammed by Kat, giving her Megalodons instead of George (that's me)."
         )
+    }) { prev, new ->
+        if (prev != new) {
+            BackgroundHighlighterManager.refreshEnabledHighlighters()
+        }
     }
 
     init {
@@ -46,19 +56,31 @@ object Items : CategoryKt("Items") {
         }
     }
 
-    var showThunderBottleProgress by boolean(false) {
+    var showThunderBottleProgress by ObservableEntry(boolean(false) {
         this.name = Translated("Thunder Bottle charge progress")
         this.description = Translated("Renders percentage of Thunder / Storm / Hurricane Bottle charge progress in the item slot.")
+    }) { prev, new ->
+        if (prev != new) {
+            SlotTextRendererManager.refreshEnabledRenderers()
+        }
     }
 
-    var showMobyDuckProgress by boolean(false) {
+    var showMobyDuckProgress by ObservableEntry(boolean(false) {
         this.name = Translated("Moby-Duck progress")
         this.description = Translated("Renders percentage of Moby-Duck evolving progress in the item slot.")
+    }) { prev, new ->
+        if (prev != new) {
+            SlotTextRendererManager.refreshEnabledRenderers()
+        }
     }
 
-    var showAutoRecombFlag by boolean(false) {
+    var showAutoRecombFlag by ObservableEntry(boolean(false) {
         this.name = Translated("Auto-recomb flag")
         this.description = Translated("Renders recomb upgrade flag (R) for auto-recombobulated fishing drops in the item slot.")
+    }) { prev, new ->
+        if (prev != new) {
+            SlotTextRendererManager.refreshEnabledRenderers()
+        }
     }
 
     init {

@@ -4,7 +4,6 @@ import com.github.sleepypanda.feesh.settings.categories.Items
 import com.github.sleepypanda.feesh.utils.ChatUtils.getFormattedString
 import com.github.sleepypanda.feesh.utils.ChatUtils.removeFormatting
 import com.github.sleepypanda.feesh.utils.ItemUtils
-import com.github.sleepypanda.feesh.utils.WorldUtils
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.inventory.Slot
@@ -18,9 +17,7 @@ object AutoRecombFlag : BaseSlotTextRenderer() {
         // Calling this ensures the object is initialized, and registered in base class.
     }
 
-    override fun isEnabled(): Boolean {
-        return WorldUtils.isInSkyblock() && Items.showAutoRecombFlag
-    }
+    override fun isEnabled(): Boolean = Items.showAutoRecombFlag
 
     override fun getItemStackSlotText(stack: ItemStack, screen: AbstractContainerScreen<*>, slot: Slot): String? {
         if (stack.isEmpty) return null
