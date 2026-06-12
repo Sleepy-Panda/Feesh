@@ -11,6 +11,10 @@ Released on: ???
 - Fixed slot number that enables Fishing Bag, after SB moved it.
 - Fixed outdated "is fishing rod" item check.
 
+## Other
+
+- Refactored way to detect enabled features in slot text / slot background category.
+
 # 1.8.0
 
 Released on: 2026-06-07

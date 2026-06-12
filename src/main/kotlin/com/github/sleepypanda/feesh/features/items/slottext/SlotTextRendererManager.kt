@@ -4,6 +4,7 @@ import com.github.sleepypanda.feesh.FeeshMod
 import com.github.sleepypanda.feesh.events.EventBus
 import com.github.sleepypanda.feesh.events.models.ScreenBeforeInitEvent
 import com.github.sleepypanda.feesh.events.models.AfterSlotRenderedEvent
+import com.github.sleepypanda.feesh.utils.WorldUtils
 import net.minecraft.client.gui.Font
 //#if MC >= 26.1
 //$$ import net.minecraft.client.gui.GuiGraphicsExtractor as GuiGraphics
@@ -17,6 +18,7 @@ import net.minecraft.world.inventory.Slot
  * Coordinates all [BaseSlotTextRenderer] instances:
  * - subscribes to AfterSlotRenderedEvent and ScreenBeforeInitEvent;
  * - keeps all registered renderers;
+ * - tracks enabled renderers (refreshed on init and settings change);
  * - clears per-screen caches;
  * - draws slot text;
  */
@@ -26,6 +28,7 @@ object SlotTextRendererManager {
     private const val SLOT_TEXT_SCALE = 0.7f
 
     private val renderers: MutableList<BaseSlotTextRenderer> = mutableListOf()
+    private val enabledRenderers: MutableList<BaseSlotTextRenderer> = mutableListOf()
 
     private fun drawStringCompat(context: GuiGraphics, textRenderer: Font, text: String, x: Int, y: Int, color: Int, shadow: Boolean) {
         //#if MC >= 26.1
@@ -38,10 +41,16 @@ object SlotTextRendererManager {
     fun init() {
         EventBus.subscribe(AfterSlotRenderedEvent::class, ::onSlotRendered)
         EventBus.subscribe(ScreenBeforeInitEvent::class, ::onScreenBeforeInit)
+        refreshEnabledRenderers()
     }
 
     fun register(renderer: BaseSlotTextRenderer) {
         renderers.add(renderer)
+    }
+
+    fun refreshEnabledRenderers() {
+        enabledRenderers.clear()
+        enabledRenderers.addAll(renderers.filter { it.isEnabled() })
     }
 
     private fun onScreenBeforeInit(@Suppress("UNUSED_PARAMETER") event: ScreenBeforeInitEvent) {
@@ -49,9 +58,7 @@ object SlotTextRendererManager {
     }
 
     private fun onSlotRendered(event: AfterSlotRenderedEvent) {
-        if (renderers.isEmpty()) return
-
-        val enabledRenderers = renderers.filter { it.isEnabled() }
+        if (!WorldUtils.isInSkyblock()) return
         if (enabledRenderers.isEmpty()) return
 
         val textRenderer = FeeshMod.mc.font

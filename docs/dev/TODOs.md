@@ -49,7 +49,6 @@ Newly released - https://hypixel.net/threads/hypixel-skyblock-0-24-5-assorted-qo
 - Go through TODOs in the code
 - Rework ticks counters across all overlays
 - Version check to correctly detect newer version on Modrinth (e.g. 1.1.0 and 1.1.0-beta)
-- Enabled highlighters / slot renderers to update dynamically instead of check every render event.
 
 ## Settings
 

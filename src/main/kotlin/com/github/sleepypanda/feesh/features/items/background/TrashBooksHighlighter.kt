@@ -2,7 +2,6 @@ package com.github.sleepypanda.feesh.features.items.background
 
 import com.github.sleepypanda.feesh.utils.ChatUtils.removeFormatting
 import com.github.sleepypanda.feesh.utils.ItemUtils
-import com.github.sleepypanda.feesh.utils.WorldUtils
 import com.github.sleepypanda.feesh.settings.categories.Items
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen
 import net.minecraft.world.item.ItemStack
@@ -19,9 +18,7 @@ object TrashBooksHighlighter : BaseBackgroundHighlighter() {
         setSearchBookNames()
     }
 
-    override fun isEnabled(): Boolean {
-        return WorldUtils.isInSkyblock() && Items.trashBooksHighlighter
-    }
+    override fun isEnabled(): Boolean = Items.trashBooksHighlighter
 
     override fun getItemStackBackgroundColor(stack: ItemStack, screen: AbstractContainerScreen<*>, slot: Slot): Int? {
         if (trashBookNames.isEmpty()) return null
