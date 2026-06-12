@@ -27,13 +27,13 @@ object ArmorStandPublisher {
 
     private fun onArmorStandLoaded(event: ArmorStandLoadedEvent) {
         if (!event.entity.isAlive) return
-        if (!WorldUtils.isInSkyblock() || !WorldUtils.isInFishingWorld()) return
+        if (!WorldUtils.isInSkyblock()) return
 
         loadedThisTick.add(event.entity)
     }
 
     private fun onClientTick(@Suppress("UNUSED_PARAMETER") event: ClientTickEvent) {
-        if (!WorldUtils.isInSkyblock() || !WorldUtils.isInFishingWorld()) return
+        if (!WorldUtils.isInSkyblock()) return
         if (queueForNextClientTick.isEmpty() && loadedThisTick.isEmpty()) return
 
         val toProcess = queueForNextClientTick

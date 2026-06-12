@@ -9,6 +9,7 @@ Released on: ???
 ## Bugfixes
 
 - Fixed slot number that enables Fishing Bag, after SB moved it.
+- Made deployables overlay working everywhere in Skyblock if your deployable is placed.
 - Fixed outdated "is fishing rod" item check.
 
 ## Other
