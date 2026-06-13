@@ -94,6 +94,50 @@ object MagmaCoreFishingTracker {
         updateGuiLines()
     }
 
+    fun hasSessionDataForBulkReset(): Boolean = hasData()
+
+    fun bulkResetSession() {
+        pause()
+        resetSession()
+        updateGuiLines()
+    }
+
+    fun pauseMagmaCoreFishingTracker() {
+        CommonUtils.runWithCatching("Failed to pause $TRACKER_NAME") {
+            if (!isSessionActive || !isTrackerVisible()) return
+
+            pause()
+            updateGuiLines()
+            ChatUtils.sendLocalChat("${WHITE}$TRACKER_NAME is paused. Continue fishing to resume it.", true)
+        }
+    }
+
+    fun resetMagmaCoreFishingTracker(isConfirmed: Boolean, resetViewMode: ViewMode) {
+        CommonUtils.runWithCatching("Failed to reset $TRACKER_NAME") {
+            val viewModeText = getViewModeDisplayText(resetViewMode)
+            if (!isConfirmed) {
+                val resetAction = when (resetViewMode) {
+                    ViewMode.SESSION -> "$RESET_COMMAND noconfirm"
+                    ViewMode.TOTAL -> "$RESET_TOTAL_COMMAND noconfirm"
+                }
+                ChatUtils.sendLocalChatWithCommand(
+                    "${WHITE}Do you want to reset $TRACKER_NAME ${viewModeText}${WHITE}? ${RED}${BOLD}[Click to confirm]",
+                    resetAction,
+                    true
+                )
+                return
+            }
+
+            pause()
+            when (resetViewMode) {
+                ViewMode.SESSION -> resetSession()
+                ViewMode.TOTAL -> resetTotal()
+            }
+            updateGuiLines()
+            ChatUtils.sendLocalChat("${WHITE}$TRACKER_NAME ${viewModeText} ${WHITE}was reset.", true)
+        }
+    }
+
     private fun registerCommands() {
         RegisterUtils.command(RESET_COMMAND) { args ->
             val isConfirmed = args.isNotEmpty() && args[0] == "noconfirm"
@@ -134,8 +178,7 @@ object MagmaCoreFishingTracker {
     private fun onGameClosed(@Suppress("UNUSED_PARAMETER") event: GameClosedEvent) {
         if (!Overlays.resetMagmaCoreFishingTrackerSessionOnGameClosed) return
 
-        val session = data.session
-        if (session.magmaCoresCount > 0 || session.seaCreaturesCaughtCount > 0 || session.elapsedSeconds > 0) {
+        if (hasData()) {
             resetSession(force = true)
             FeeshMod.LOGGER.info("[Feesh] Automatically reset $TRACKER_NAME [Session] on game closed.")
         }
@@ -221,42 +264,6 @@ object MagmaCoreFishingTracker {
         isSessionActive = false
     }
 
-    fun pauseMagmaCoreFishingTracker() {
-        CommonUtils.runWithCatching("Failed to pause $TRACKER_NAME") {
-            if (!isSessionActive || !isTrackerVisible()) return
-
-            pause()
-            updateGuiLines()
-            ChatUtils.sendLocalChat("${WHITE}$TRACKER_NAME is paused. Continue fishing to resume it.", true)
-        }
-    }
-
-    fun resetMagmaCoreFishingTracker(isConfirmed: Boolean, resetViewMode: ViewMode) {
-        CommonUtils.runWithCatching("Failed to reset $TRACKER_NAME") {
-            val viewModeText = getViewModeDisplayText(resetViewMode)
-            if (!isConfirmed) {
-                val resetAction = when (resetViewMode) {
-                    ViewMode.SESSION -> "$RESET_COMMAND noconfirm"
-                    ViewMode.TOTAL -> "$RESET_TOTAL_COMMAND noconfirm"
-                }
-                ChatUtils.sendLocalChatWithCommand(
-                    "${WHITE}Do you want to reset $TRACKER_NAME ${viewModeText}${WHITE}? ${RED}${BOLD}[Click to confirm]",
-                    resetAction,
-                    true
-                )
-                return
-            }
-
-            pause()
-            when (resetViewMode) {
-                ViewMode.SESSION -> resetSession()
-                ViewMode.TOTAL -> resetTotal()
-            }
-            updateGuiLines()
-            ChatUtils.sendLocalChat("${WHITE}$TRACKER_NAME ${viewModeText} ${WHITE}was reset.", true)
-        }
-    }
-
     private fun activateTimerInMode(viewMode: ViewMode) {
         val sourceObj = getSourceObject(viewMode)
         if (sourceObj.elapsedSeconds == 0) {
@@ -291,6 +298,11 @@ object MagmaCoreFishingTracker {
             ViewMode.SESSION -> "${GRAY}[${GREEN}Session${GRAY}]"
             ViewMode.TOTAL -> "${GRAY}[${GREEN}Total${GRAY}]"
         }
+    }
+
+    private fun hasData(): Boolean {
+        val session = data.session
+        return session.magmaCoresCount > 0 || session.seaCreaturesCaughtCount > 0 || session.elapsedSeconds > 0 
     }
 
     private fun resetSession(force: Boolean = false) {

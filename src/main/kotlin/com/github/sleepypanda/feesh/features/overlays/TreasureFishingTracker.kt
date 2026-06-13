@@ -110,6 +110,13 @@ object TreasureFishingTracker {
         }
     }
 
+    fun hasSessionDataForBulkReset(): Boolean = hasSessionData()
+
+    fun bulkResetSession() {
+        resetSession()
+        updateGuiLines()
+    }
+
     private fun getCatchesSinceLastDyeFromTracker(treasureFishing: TreasureFishingData): TreasureCatchesData {
         val catchesSinceLast = treasureFishing.total.treasureDyes.catchesSinceLast
         return when (catchesSinceLast) {
@@ -163,8 +170,7 @@ object TreasureFishingTracker {
     }
 
     private fun onGameClosed(@Suppress("UNUSED_PARAMETER") event: GameClosedEvent) {
-        if (Overlays.resetTreasureFishingTrackerSessionOnGameClosed &&
-            data.session.catches.totalCatches() > 0) {
+        if (Overlays.resetTreasureFishingTrackerSessionOnGameClosed && hasSessionData()) {
             resetSession(force = true)
             FeeshMod.LOGGER.info("[Feesh] Automatically reset Treasure fishing tracker [Session] on game closed.")
         }
@@ -300,8 +306,12 @@ object TreasureFishingTracker {
         }
     }
 
+    private fun hasSessionData(): Boolean {
+        return data.session.catches.totalCatches() > 0
+    }
+
     private fun hasAnyData(): Boolean {
-        return data.session.catches.totalCatches() > 0 ||
+        return hasSessionData() ||
             data.total.catches.totalCatches() > 0 ||
             data.total.treasureDyes.hasData()
     }

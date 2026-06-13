@@ -44,7 +44,6 @@ object CrimsonIsleTracker {
     private var tickCounter = 0
     private val baseTitle = "${AQUA}${BOLD}Crimson Isle tracker"
 
-
     private val thunder = SeaCreatures.allSeaCreatures.find { it.name == "Thunder" }!!
     private val lordJawbus = SeaCreatures.allSeaCreatures.find { it.name == "Lord Jawbus" }!!
     private val fieryScuttler = SeaCreatures.allSeaCreatures.find { it.name == "Fiery Scuttler" }!!
@@ -84,7 +83,14 @@ object CrimsonIsleTracker {
         EventBus.subscribe(RareDropEvent::class, ::onRareDrop)
         EventBus.subscribe(GameClosedEvent::class, ::onGameClosed)
     }
-    
+
+    fun hasDataForBulkReset(): Boolean = hasData()
+
+    fun bulkReset() {
+        reset()
+        updateGuiLines()
+    }
+
     private fun registerCommands() {
         RegisterUtils.command(RESET_COMMAND) { args ->
             val isConfirmed = args.isNotEmpty() && args[0] == "noconfirm"

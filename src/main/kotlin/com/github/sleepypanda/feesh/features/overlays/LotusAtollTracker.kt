@@ -70,6 +70,13 @@ object LotusAtollTracker {
         EventBus.subscribe(GameClosedEvent::class, ::onGameClosed)
     }
 
+    fun hasDataForBulkReset(): Boolean = hasData()
+
+    fun bulkReset() {
+        reset()
+        updateGuiLines()
+    }
+
     private fun registerCommands() {
         RegisterUtils.command(RESET_COMMAND) { args ->
             val isConfirmed = args.isNotEmpty() && args[0] == "noconfirm"
