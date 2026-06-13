@@ -25,8 +25,9 @@ object TrackerResetUtils {
      * @param tracker The tracker to reset.
      * @param errorContext The error message to use if the reset fails.
      * @param isConfirmed Whether to confirm the reset.
+     * @param needsChatFeedback Whether to send a chat message when the reset is successful.
      */
-    fun resetWithConfirmation(tracker: IResettableTracker, isConfirmed: Boolean = false) {
+    fun resetWithConfirmation(tracker: IResettableTracker, isConfirmed: Boolean = false, needsChatFeedback: Boolean = true) {
         CommonUtils.runWithCatching("Failed to reset ${tracker.trackerName}") {
             if (!isConfirmed) {
                 ChatUtils.sendLocalChatWithCommand(
@@ -39,7 +40,7 @@ object TrackerResetUtils {
 
             tracker.resetData()
             tracker.refreshGui()
-            ChatUtils.sendLocalChat("${WHITE}${tracker.trackerName} was reset.", true)
+            if (needsChatFeedback) ChatUtils.sendLocalChat("${WHITE}${tracker.trackerName} was reset.", true)
         }
     }
 
@@ -48,7 +49,47 @@ object TrackerResetUtils {
      * @param onClick The action to perform when the button is clicked.
      * @return The GUI button.
      */
-    fun getResetGuiButton(onClick: () -> Unit): GuiButton {
-        return GuiButton(0, "${GRAY}[${RED}Click to reset${GRAY}]", onClick)
+    fun getResetGuiButton(buttonIndex: Int = 0, onClick: () -> Unit): GuiButton {
+        return GuiButton(buttonIndex, "${GRAY}[${RED}Click to reset${GRAY}]", onClick)
+    }
+
+    fun registerViewModeResetCommands(tracker: IResettableViewModeTracker) {
+        RegisterUtils.command(tracker.resetSessionCommand) { args ->
+            val isConfirmed = args.isNotEmpty() && args[0] == "noconfirm"
+            resetViewModeWithConfirmation(tracker, TrackerViewMode.SESSION, isConfirmed)
+        }
+        RegisterUtils.command(tracker.resetTotalCommand) { args ->
+            val isConfirmed = args.isNotEmpty() && args[0] == "noconfirm"
+            resetViewModeWithConfirmation(tracker, TrackerViewMode.TOTAL, isConfirmed)
+        }
+    }
+
+    fun resetViewModeWithConfirmation(
+        tracker: IResettableViewModeTracker,
+        viewMode: TrackerViewMode,
+        isConfirmed: Boolean = false,
+        needsChatFeedback: Boolean = true,
+    ) {
+        CommonUtils.runWithCatching("Failed to reset ${tracker.trackerName}") {
+            val viewModeText = tracker.getViewModeDisplayText(viewMode)
+            if (!isConfirmed) {
+                ChatUtils.sendLocalChatWithCommand(
+                    "${WHITE}Do you want to reset ${tracker.trackerName} $viewModeText${WHITE}?\n${RED}${BOLD}[Click to confirm]",
+                    "${tracker.getResetCommand(viewMode)} noconfirm",
+                    true
+                )
+                return
+            }
+
+            tracker.onBeforeReset()
+            when (viewMode) {
+                TrackerViewMode.SESSION -> tracker.resetSessionData()
+                TrackerViewMode.TOTAL -> tracker.resetTotalData()
+            }
+            tracker.refreshGui()
+            if (needsChatFeedback) {
+                ChatUtils.sendLocalChat("${WHITE}${tracker.trackerName} $viewModeText ${WHITE}was reset.", true)
+            }
+        }
     }
 }

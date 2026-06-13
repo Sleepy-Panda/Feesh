@@ -23,6 +23,7 @@ Newly released - https://hypixel.net/threads/hypixel-skyblock-0-24-5-assorted-qo
 
 ## Current issues & feedback
 
+- Barn fishing timer keybind prints chat feedback
 - With the release of Minecraft version 26.2 on June 16th, we'll be dropping support for 1.21.9 and 1.21.10. A few weeks after that, we'll drop support for 1.21.11.
 - Personal blacklist + party sharing
 - profit tracker to not count when you have trophy hunter armor equipped

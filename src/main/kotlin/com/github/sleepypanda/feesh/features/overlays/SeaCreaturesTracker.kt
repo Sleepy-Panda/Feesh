@@ -23,14 +23,13 @@ import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
 import com.github.sleepypanda.feesh.utils.FishingHookUtils
 import com.github.sleepypanda.feesh.utils.data.PersistentDataManager
+import com.github.sleepypanda.feesh.features.overlays.base.IResettableViewModeTracker
+import com.github.sleepypanda.feesh.features.overlays.base.TrackerResetUtils
+import com.github.sleepypanda.feesh.features.overlays.base.TrackerViewMode
 import net.minecraft.network.chat.Component
 import java.text.DecimalFormat
 
-object SeaCreaturesTracker {
-    enum class ViewMode {
-        SESSION,
-        TOTAL
-    }
+object SeaCreaturesTracker : IResettableViewModeTracker {
     
     data class SeaCreatureCatchData(
         var amount: Int = 0, // Caught amount
@@ -47,12 +46,16 @@ object SeaCreaturesTracker {
     data class SeaCreaturesTrackerData(
         var session: SeaCreaturesData = SeaCreaturesData(),
         var total: SeaCreaturesData = SeaCreaturesData(),
-        var viewMode: String = ViewMode.SESSION.name
+        var viewMode: String = TrackerViewMode.SESSION.name
     )
     
-    const val RESET_SESSION = "feeshResetSeaCreatures"
-    const val RESET_TOTAL = "feeshResetSeaCreaturesTotal"
-    const val TOGGLE_VIEW_MODE = "feeshToggleSeaCreaturesViewMode"
+    override val trackerName = "Sea creatures tracker"
+
+    const val RESET_SESSION = "feeshResetSeaCreaturesTracker"
+    override val resetSessionCommand = RESET_SESSION
+    const val RESET_TOTAL = "feeshResetSeaCreaturesTrackerTotal"
+    override val resetTotalCommand = RESET_TOTAL
+    const val TOGGLE_VIEW_MODE = "feeshToggleSeaCreaturesTrackerViewMode"
     const val SET_SEA_CREATURE_COUNT_COMMAND = "feeshSetSeaCreatureCount"
     const val SET_SEA_CREATURE_COUNT_TOTAL_COMMAND = "feeshSetSeaCreatureCountTotal"
     const val DELETE_SEA_CREATURE_COMMAND = "feeshDeleteSeaCreature"
@@ -96,6 +99,7 @@ object SeaCreaturesTracker {
         }
 
     fun init() {
+        TrackerResetUtils.registerViewModeResetCommands(this)
         registerCommands()
 
         EventBus.subscribe(OwnSeaCreatureCaughtEvent::class, ::onSeaCreatureCaught)
@@ -104,10 +108,33 @@ object SeaCreaturesTracker {
         EventBus.subscribe(GameClosedEvent::class, ::onGameClosed)
     }
 
-    fun hasSessionDataForBulkReset(): Boolean = hasSessionData()
+    override fun getCurrentViewMode(): TrackerViewMode {
+        return try {
+            TrackerViewMode.valueOf(data.viewMode)
+        } catch (_: Exception) {
+            TrackerViewMode.SESSION
+        }
+    }
 
-    fun bulkResetSession() {
-        resetSession()
+    override fun hasSessionData(): Boolean {
+        return data.session.totalCount > 0 || data.session.totalCocoonedCount > 0
+    }
+
+    override fun hasTotalData(): Boolean {
+        return data.total.totalCount > 0 || data.total.totalCocoonedCount > 0
+    }
+
+    override fun resetSessionData(force: Boolean) {
+        data.session = SeaCreaturesData()
+        saveData(force)
+    }
+
+    override fun resetTotalData(force: Boolean) {
+        data.total = SeaCreaturesData()
+        saveData(force)
+    }
+
+    override fun refreshGui() {
         updateGuiLines()
     }
 
@@ -176,117 +203,50 @@ object SeaCreaturesTracker {
         recalculateTotalCocoonedCount(sourceObj)
     }
 
-    private fun getCurrentViewMode(): ViewMode {
-        return try {
-            ViewMode.valueOf(data.viewMode)
-        } catch (e: Exception) {
-            ViewMode.SESSION
-        }
-    }
-
     private fun toggleViewMode() {
         val currentMode = getCurrentViewMode()
-        val newMode = if (currentMode == ViewMode.SESSION) ViewMode.TOTAL else ViewMode.SESSION
+        val newMode = if (currentMode == TrackerViewMode.SESSION) TrackerViewMode.TOTAL else TrackerViewMode.SESSION
         data.viewMode = newMode.name
         updateGuiLines()
         saveData()
     }
 
-    private fun getSourceObject(viewMode: ViewMode): SeaCreaturesData {
+    private fun getSourceObject(viewMode: TrackerViewMode): SeaCreaturesData {
         return when (viewMode) {
-            ViewMode.SESSION -> data.session
-            ViewMode.TOTAL -> data.total
-        }
-    }
-
-    private fun getViewModeDisplayText(viewMode: ViewMode): String {
-        return when (viewMode) {
-            ViewMode.SESSION -> "${GRAY}[${GREEN}Session${GRAY}]"
-            ViewMode.TOTAL -> "${GRAY}[${GREEN}Total${GRAY}]"
+            TrackerViewMode.SESSION -> data.session
+            TrackerViewMode.TOTAL -> data.total
         }
     }
 
     private fun onGameClosed(@Suppress("UNUSED_PARAMETER") event: GameClosedEvent) {
-        if (Overlays.resetSeaCreaturesTrackerSessionOnGameClosed && hasSessionData()) {
-            resetSession(force = true)
-            FeeshMod.LOGGER.info("[Feesh] Automatically reset Sea creatures tracker [Session] on game closed.")
-        }
-    }
-
-    private fun hasSessionData(): Boolean {
-        return data.session.totalCount > 0 || data.session.totalCocoonedCount > 0
-    }
-
-    private fun resetSession(force: Boolean = false) {
-        data.session = SeaCreaturesData()
-        saveData(force)
-    }
-
-    private fun resetTotal() {
-        data.total = SeaCreaturesData()
-        saveData()
-    }
-
-    private fun resetSeaCreaturesTracker(isConfirmed: Boolean, resetViewMode: ViewMode) {
-        CommonUtils.runWithCatching("Failed to reset Sea creatures tracker") {
-            val viewModeText = getViewModeDisplayText(resetViewMode)
-
-            if (!isConfirmed) {
-                val resetAction = when (resetViewMode) {
-                    ViewMode.SESSION -> "$RESET_SESSION noconfirm"
-                    ViewMode.TOTAL -> "$RESET_TOTAL noconfirm"
-                }
-                ChatUtils.sendLocalChatWithCommand(
-                    "${WHITE}Do you want to reset Sea creatures tracker ${viewModeText}${WHITE}? ${RED}${BOLD}[Click to confirm]",
-                    resetAction,
-                    true
-                )
-                return
-            }
-
-            when (resetViewMode) {
-                ViewMode.SESSION -> resetSession()
-                ViewMode.TOTAL -> resetTotal()
-            }
-
-            updateGuiLines()
-            ChatUtils.sendLocalChat("${WHITE}Sea creatures tracker ${viewModeText} ${WHITE}was reset.", true)
+        if (Overlays.resetSeaCreaturesTrackerSessionOnGameClosed) {
+            resetOnGameClosed()
         }
     }
 
     private fun registerCommands() {
-        RegisterUtils.command(RESET_SESSION) { args ->
-            val isConfirmed = args.isNotEmpty() && args[0] == "noconfirm"
-            resetSeaCreaturesTracker(isConfirmed, ViewMode.SESSION)
-        }
-
-        RegisterUtils.command(RESET_TOTAL) { args ->
-            val isConfirmed = args.isNotEmpty() && args[0] == "noconfirm"
-            resetSeaCreaturesTracker(isConfirmed, ViewMode.TOTAL)
-        }
-
         RegisterUtils.command(TOGGLE_VIEW_MODE) {
             toggleViewMode()
         }
 
         RegisterUtils.command(SET_SEA_CREATURE_COUNT_COMMAND) { args ->
-            onSetSeaCreatureCountCommand(args, ViewMode.SESSION)
+            onSetSeaCreatureCountCommand(args, TrackerViewMode.SESSION)
         }
 
         RegisterUtils.command(SET_SEA_CREATURE_COUNT_TOTAL_COMMAND) { args ->
-            onSetSeaCreatureCountCommand(args, ViewMode.TOTAL)
+            onSetSeaCreatureCountCommand(args, TrackerViewMode.TOTAL)
         }
 
         RegisterUtils.command(DELETE_SEA_CREATURE_COMMAND) { args ->
-            onDeleteSeaCreatureCommand(args, ViewMode.SESSION)
+            onDeleteSeaCreatureCommand(args, TrackerViewMode.SESSION)
         }
 
         RegisterUtils.command(DELETE_SEA_CREATURE_TOTAL_COMMAND) { args ->
-            onDeleteSeaCreatureCommand(args, ViewMode.TOTAL)
+            onDeleteSeaCreatureCommand(args, TrackerViewMode.TOTAL)
         }
     }
 
-    private fun onSetSeaCreatureCountCommand(args: Array<String>, viewMode: ViewMode) {
+    private fun onSetSeaCreatureCountCommand(args: Array<String>, viewMode: TrackerViewMode) {
 
         fun isArgValidCount(value: String): Boolean {
             val trimmed = value.trim()
@@ -326,8 +286,8 @@ object SeaCreaturesTracker {
 
         CommonUtils.runWithCatching("Failed to change sea creature count in Sea creatures tracker") {
             val commandName = when (viewMode) {
-                ViewMode.SESSION -> SET_SEA_CREATURE_COUNT_COMMAND
-                ViewMode.TOTAL -> SET_SEA_CREATURE_COUNT_TOTAL_COMMAND
+                TrackerViewMode.SESSION -> SET_SEA_CREATURE_COUNT_COMMAND
+                TrackerViewMode.TOTAL -> SET_SEA_CREATURE_COUNT_TOTAL_COMMAND
             }
 
             if (args.isEmpty()) {
@@ -462,7 +422,7 @@ object SeaCreaturesTracker {
         }
     }
 
-    private fun onDeleteSeaCreatureCommand(args: Array<String>, viewMode: ViewMode) {
+    private fun onDeleteSeaCreatureCommand(args: Array<String>, viewMode: TrackerViewMode) {
         CommonUtils.runWithCatching("Failed to delete sea creature from Sea creatures tracker") {
             if (args.isEmpty()) {
                 ChatUtils.sendLocalChat("${RED}Usage: /$DELETE_SEA_CREATURE_COMMAND <SEA_CREATURE_NAME>", true)
@@ -491,8 +451,8 @@ object SeaCreaturesTracker {
             val viewModeText = getViewModeDisplayText(viewMode)
             if (!isConfirmed) {
                 val command = when (viewMode) {
-                    ViewMode.SESSION -> "$DELETE_SEA_CREATURE_COMMAND ${seaCreatureInfo?.name ?: key} noconfirm"
-                    ViewMode.TOTAL -> "$DELETE_SEA_CREATURE_TOTAL_COMMAND ${seaCreatureInfo?.name ?: key} noconfirm"
+                    TrackerViewMode.SESSION -> "$DELETE_SEA_CREATURE_COMMAND ${seaCreatureInfo?.name ?: key} noconfirm"
+                    TrackerViewMode.TOTAL -> "$DELETE_SEA_CREATURE_TOTAL_COMMAND ${seaCreatureInfo?.name ?: key} noconfirm"
                 }
                 ChatUtils.sendLocalChatWithCommand(
                     "${WHITE}Do you want to delete ${displayName}${WHITE} from Sea creatures tracker ${viewModeText}${WHITE}? ${RED}${BOLD}[Click to confirm]",
@@ -586,7 +546,7 @@ object SeaCreaturesTracker {
             val entriesToShow = sortedEntries.take(maxLines)
             val hiddenEntries = sortedEntries.drop(maxLines)
 
-            val nextMode = if (viewMode == ViewMode.SESSION) ViewMode.TOTAL else ViewMode.SESSION
+            val nextMode = if (viewMode == TrackerViewMode.SESSION) TrackerViewMode.TOTAL else TrackerViewMode.SESSION
             val nextModeText = getViewModeDisplayText(nextMode)
 
             val viewModeText = getViewModeDisplayText(viewMode)
@@ -641,7 +601,7 @@ object SeaCreaturesTracker {
 
             gui.setButtons(listOf(
                 GuiButton(0, "${GRAY}[Click to show ${nextModeText}${GRAY}]", { toggleViewMode() }),
-                GuiButton(1, "${GRAY}[${RED}Click to reset${GRAY}]", { resetSeaCreaturesTracker(false, getCurrentViewMode()) })
+                TrackerResetUtils.getResetGuiButton(1) { requestReset() }
             ))
         }
     }

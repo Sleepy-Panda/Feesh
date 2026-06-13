@@ -1,10 +1,7 @@
 package com.github.sleepypanda.feesh.features.commands
 
-import com.github.sleepypanda.feesh.features.overlays.FishingProfitTracker
 import com.github.sleepypanda.feesh.features.overlays.MagmaCoreFishingTracker
-import com.github.sleepypanda.feesh.features.overlays.SeaCreaturesTracker
 import com.github.sleepypanda.feesh.features.overlays.TreasureFishingTracker
-import com.github.sleepypanda.feesh.features.overlays.WaterHotspotsTracker
 import com.github.sleepypanda.feesh.settings.categories.Overlays
 import com.github.sleepypanda.feesh.settings.models.BulkResettableTrackerTypes
 import com.github.sleepypanda.feesh.utils.ChatUtils
@@ -72,22 +69,22 @@ object BulkResetTrackersCommand {
     }
 
     private fun hasData(tracker: BulkResettableTrackerTypes): Boolean {
+        tracker.resettableViewModeTracker?.let { return it.hasSessionData() }
         return tracker.resettableTracker?.hasData() ?: when (tracker) {
-            BulkResettableTrackerTypes.SEA_CREATURES_TRACKER -> SeaCreaturesTracker.hasSessionDataForBulkReset()
-            BulkResettableTrackerTypes.FISHING_PROFIT_TRACKER -> FishingProfitTracker.hasSessionDataForBulkReset()
-            BulkResettableTrackerTypes.SEA_CREATURES_PER_HOUR_TRACKER -> false
-            BulkResettableTrackerTypes.JERRY_WORKSHOP_TRACKER -> false
-            BulkResettableTrackerTypes.BAYOU_TRACKER -> false
-            BulkResettableTrackerTypes.WATER_HOTSPOTS_TRACKER -> WaterHotspotsTracker.hasDataForBulkReset()
-            BulkResettableTrackerTypes.CRIMSON_ISLE_TRACKER -> false
-            BulkResettableTrackerTypes.GALATEA_WATER_TRACKER -> false
-            BulkResettableTrackerTypes.LOTUS_ATOLL_TRACKER -> false
             BulkResettableTrackerTypes.TREASURE_FISHING_TRACKER -> TreasureFishingTracker.hasSessionDataForBulkReset()
             BulkResettableTrackerTypes.MAGMA_CORE_FISHING_TRACKER -> MagmaCoreFishingTracker.hasSessionDataForBulkReset()
+            else -> false
         }
     }
 
     private fun resetTracker(tracker: BulkResettableTrackerTypes) {
+        tracker.resettableViewModeTracker?.let { viewModeTracker ->
+            CommonUtils.runWithCatching("Failed to reset $tracker on keybind") {
+                viewModeTracker.bulkResetSession()
+            }
+            return
+        }
+
         tracker.resettableTracker?.let { resettableTracker ->
             CommonUtils.runWithCatching("Failed to reset $tracker on keybind") {
                 resettableTracker.bulkReset()
@@ -97,17 +94,9 @@ object BulkResetTrackersCommand {
 
         CommonUtils.runWithCatching("Failed to reset $tracker on keybind") {
             when (tracker) {
-                BulkResettableTrackerTypes.SEA_CREATURES_TRACKER -> SeaCreaturesTracker.bulkResetSession()
-                BulkResettableTrackerTypes.FISHING_PROFIT_TRACKER -> FishingProfitTracker.bulkResetSession()
-                BulkResettableTrackerTypes.SEA_CREATURES_PER_HOUR_TRACKER -> Unit
-                BulkResettableTrackerTypes.JERRY_WORKSHOP_TRACKER -> Unit
-                BulkResettableTrackerTypes.BAYOU_TRACKER -> Unit
-                BulkResettableTrackerTypes.WATER_HOTSPOTS_TRACKER -> WaterHotspotsTracker.bulkReset()
-                BulkResettableTrackerTypes.CRIMSON_ISLE_TRACKER -> Unit
-                BulkResettableTrackerTypes.GALATEA_WATER_TRACKER -> Unit
-                BulkResettableTrackerTypes.LOTUS_ATOLL_TRACKER -> Unit
                 BulkResettableTrackerTypes.TREASURE_FISHING_TRACKER -> TreasureFishingTracker.bulkResetSession()
                 BulkResettableTrackerTypes.MAGMA_CORE_FISHING_TRACKER -> MagmaCoreFishingTracker.bulkResetSession()
+                else -> Unit
             }
         }
     }

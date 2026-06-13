@@ -174,7 +174,7 @@ object SeaCreaturesPerHourTracker : IResettableTracker {
         gui.setLines(lines.map { LineInfo(it) })
         gui.setButtons(listOf(
             GuiButton(0, "${GRAY}[${YELLOW}Click to pause${GRAY}]", { pause() }),
-            GuiButton(1, "${GRAY}[${RED}Click to reset${GRAY}]", { requestReset(false) })
+            TrackerResetUtils.getResetGuiButton(1) { requestReset() }
         ))
     }
 }

@@ -24,7 +24,7 @@ interface IResettableTracker : ITracker {
         FeeshMod.LOGGER.info("[Feesh] Automatically reset $trackerName on game closed.")
     }
 
-    fun requestReset(isConfirmed: Boolean = false) {
-        TrackerResetUtils.resetWithConfirmation(this, isConfirmed)
+    fun requestReset(isConfirmed: Boolean = false, needsChatFeedback: Boolean = true) {
+        TrackerResetUtils.resetWithConfirmation(this, isConfirmed, needsChatFeedback)
     }
 }

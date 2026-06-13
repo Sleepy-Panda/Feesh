@@ -1,9 +1,7 @@
 package com.github.sleepypanda.feesh.features.overlays
 
-import com.github.sleepypanda.feesh.FeeshMod
 import com.github.sleepypanda.feesh.constants.SeaCreatures
 import com.github.sleepypanda.feesh.constants.RareDrops
-import com.github.sleepypanda.feesh.utils.RegisterUtils
 import com.github.sleepypanda.feesh.utils.WorldUtils
 import com.github.sleepypanda.feesh.utils.ChatUtils
 import com.github.sleepypanda.feesh.utils.CommonUtils
@@ -17,24 +15,28 @@ import com.github.sleepypanda.feesh.events.models.OwnSeaCreatureCaughtEvent
 import com.github.sleepypanda.feesh.events.models.RareDropEvent
 import com.github.sleepypanda.feesh.utils.gui.FeeshGui
 import com.github.sleepypanda.feesh.utils.gui.LineInfo
-import com.github.sleepypanda.feesh.utils.gui.GuiButton
 import com.github.sleepypanda.feesh.settings.categories.Overlays
 import com.github.sleepypanda.feesh.utils.data.PersistentDataManager
+import com.github.sleepypanda.feesh.features.overlays.base.IResettableTracker
+import com.github.sleepypanda.feesh.features.overlays.base.TrackerResetUtils
 import java.util.Date
 
-object WaterHotspotsTracker {
+object WaterHotspotsTracker : IResettableTracker {
     data class WaterHotspotsTrackerData(
         val wikiTiki: CatchCounterData = CatchCounterData(),
         val tikiMasks: DropCounterData = DropCounterData()
     )
 
-    const val RESET_COMMAND = "feeshResetWaterHotspots"
+    const val RESET_COMMAND = "feeshResetWaterHotspotsTracker"
+
+    override val trackerName = "Water Hotspots tracker"
+    override val resetCommand = RESET_COMMAND
 
     private const val TICKS_PER_UPDATE = 20
 
     private var data = PersistentDataManager.feeshData.waterHotspotsTracker
     private var tickCounter = 0
-    private val baseTitle = "${AQUA}${BOLD}Water Hotspots tracker"
+    private val baseTitle = "${AQUA}${BOLD}${trackerName}"
 
     private val wikiTiki = SeaCreatures.allSeaCreatures.find { it.name == "Wiki Tiki" }!!
     private val tikiMask = RareDrops.rareDrops.find { it.itemName == "Tiki Mask" }!!
@@ -58,25 +60,25 @@ object WaterHotspotsTracker {
         }
 
     fun init() {
-        registerCommands()
+        TrackerResetUtils.registerResetCommand(this)
         EventBus.subscribe(OwnSeaCreatureCaughtEvent::class, ::onSeaCreature)
         EventBus.subscribe(ClientTickEvent::class, ::onClientTick)
         EventBus.subscribe(RareDropEvent::class, ::onRareDrop)
         EventBus.subscribe(GameClosedEvent::class, ::onGameClosed)
     }
 
-    fun hasDataForBulkReset(): Boolean = hasData()
-
-    fun bulkReset() {
-        reset()
-        updateGuiLines()
+    override fun hasData(): Boolean {
+        return data.wikiTiki.hasData() || data.tikiMasks.hasData()
     }
 
-    private fun registerCommands() {
-        RegisterUtils.command(RESET_COMMAND) { args ->
-            val isConfirmed = args.isNotEmpty() && args[0] == "noconfirm"
-            resetWaterHotspotsTracker(isConfirmed)
-        }
+    override fun resetData(force: Boolean) {
+        data.wikiTiki.reset()
+        data.tikiMasks.reset()
+        saveData(force)
+    }
+
+    override fun refreshGui() {
+        updateGuiLines()
     }
 
     private fun onSeaCreature(event: OwnSeaCreatureCaughtEvent) {
@@ -134,42 +136,12 @@ object WaterHotspotsTracker {
         lines.addAll(data.wikiTiki.getOverlayLines(wikiTiki.displayName))
         lines.addAll(data.tikiMasks.getOverlayLines(tikiMask.displayName, wikiTiki.displayName))
         gui.setLines(lines)
-        gui.setButtons(listOf(GuiButton(0, "${GRAY}[${RED}Click to reset${GRAY}]", { resetWaterHotspotsTracker(false) })))
-    }
-
-    private fun hasData(): Boolean {
-        return data.wikiTiki.hasData() || data.tikiMasks.hasData()
+        gui.setButtons(listOf(TrackerResetUtils.getResetGuiButton { requestReset(false) }))
     }
 
     private fun onGameClosed(@Suppress("UNUSED_PARAMETER") event: GameClosedEvent) {
-        if (Overlays.resetWaterHotspotsTrackerOnGameClosed &&
-            hasData()
-        ) {
-            reset(force = true)
-            FeeshMod.LOGGER.info("[Feesh] Automatically reset Water Hotspots tracker on game closed.")
-        }
-    }
-
-    private fun reset(force: Boolean = false) {
-        data.wikiTiki.reset()
-        data.tikiMasks.reset()
-        saveData(force)
-    }
-
-    private fun resetWaterHotspotsTracker(isConfirmed: Boolean) {
-        CommonUtils.runWithCatching("Failed to reset Water Hotspots tracker.") {
-            if (!isConfirmed) {
-                ChatUtils.sendLocalChatWithCommand(
-                    "${WHITE}Do you want to reset Water Hotspots tracker? ${RED}${BOLD}[Click to confirm]",
-                    "${RESET_COMMAND} noconfirm",
-                    true
-                )
-                return
-            }
-
-            reset()
-            updateGuiLines()
-            ChatUtils.sendLocalChat("${WHITE}Water Hotspots tracker was reset.", true)
+        if (Overlays.resetWaterHotspotsTrackerOnGameClosed) {
+            resetOnGameClosed()
         }
     }
 
@@ -197,7 +169,7 @@ object WaterHotspotsTracker {
 
             data.tikiMasks.initDropCount(count, lastOn)
             saveData()
-            ChatUtils.sendLocalChat("${GRAY}Successfully changed Tiki Masks count to ${count} for the Water Hotspots tracker.", true)
+            ChatUtils.sendLocalChat("${GRAY}Successfully changed Tiki Masks count to $count for the Water Hotspots tracker.", true)
         }
     }
 }
