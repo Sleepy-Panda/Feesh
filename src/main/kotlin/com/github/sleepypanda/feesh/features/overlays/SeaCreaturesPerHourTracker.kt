@@ -54,6 +54,44 @@ object SeaCreaturesPerHourTracker {
         EventBus.subscribe(WorldChangedEvent::class, ::onWorldChanged)
     }
 
+    fun hasDataForBulkReset(): Boolean {
+        return totalSeaCreaturesCaughtCount > 0 || elapsedSeconds > 0
+    }
+
+    fun bulkReset() {
+        reset()
+        updateGuiLines()
+    }
+    
+    private fun reset(isConfirmed: Boolean) {
+        CommonUtils.runWithCatching("Failed to reset Sea creatures per hour tracker") {
+            if (!isConfirmed) {
+                ChatUtils.sendLocalChatWithCommand(
+                    "${WHITE}Do you want to reset Sea creatures per hour tracker? ${RED}${BOLD}[Click to confirm]",
+                    "$RESET_COMMAND noconfirm",
+                    true
+                )
+                return
+            }
+
+            reset()
+            updateGuiLines()
+            ChatUtils.sendLocalChat("${WHITE}Sea creatures per hour tracker was reset.", true)
+        }
+    }
+
+    fun pause() {
+        CommonUtils.runWithCatching("Failed to pause Sea creatures per hour tracker") {
+            if (!Overlays.seaCreaturesPerHourTrackerOverlay || 
+                !WorldUtils.isInSkyblock() || 
+                !isSessionActive) return
+
+            isSessionActive = false
+            updateGuiLines()
+            ChatUtils.sendLocalChat("${WHITE}Sea creatures per hour tracker is paused. Continue fishing to resume it.", true)
+        }
+    }
+
     private fun registerCommands() {
         RegisterUtils.command(RESET_COMMAND) { args ->
             val isConfirmed = args.isNotEmpty() && args[0] == "noconfirm"
@@ -107,6 +145,13 @@ object SeaCreaturesPerHourTracker {
         }
     }
 
+    private fun reset() {
+        totalSeaCreaturesCaughtCount = 0
+        lastSeaCreatureCaughtAt = null
+        isSessionActive = false
+        elapsedSeconds = 0  
+    }
+
     private fun onSeaCreatureCaught(event: OwnSeaCreatureCaughtEvent) {
         CommonUtils.runWithCatching("Failed to track sea creature catch") {
             if (!Overlays.seaCreaturesPerHourTrackerOverlay || !WorldUtils.isInSkyblock() || !WorldUtils.isInFishingWorld()) return
@@ -152,38 +197,5 @@ object SeaCreaturesPerHourTracker {
             GuiButton(0, "${GRAY}[${YELLOW}Click to pause${GRAY}]", { pause() }),
             GuiButton(1, "${GRAY}[${RED}Click to reset${GRAY}]", { reset(false) })
         ))
-    }
-
-    private fun reset(isConfirmed: Boolean) {
-        CommonUtils.runWithCatching("Failed to reset Sea creatures per hour tracker") {
-            if (!isConfirmed) {
-                ChatUtils.sendLocalChatWithCommand(
-                    "${WHITE}Do you want to reset Sea creatures per hour tracker? ${RED}${BOLD}[Click to confirm]",
-                    "$RESET_COMMAND noconfirm",
-                    true
-                )
-                return
-            }
-
-            totalSeaCreaturesCaughtCount = 0
-            lastSeaCreatureCaughtAt = null
-            isSessionActive = false
-            elapsedSeconds = 0
-
-            updateGuiLines()
-            ChatUtils.sendLocalChat("${WHITE}Sea creatures per hour tracker was reset.", true)
-        }
-    }
-
-    fun pause() {
-        CommonUtils.runWithCatching("Failed to pause Sea creatures per hour tracker") {
-            if (!Overlays.seaCreaturesPerHourTrackerOverlay || 
-                !WorldUtils.isInSkyblock() || 
-                !isSessionActive) return
-
-            isSessionActive = false
-            updateGuiLines()
-            ChatUtils.sendLocalChat("${WHITE}Sea creatures per hour tracker is paused. Continue fishing to resume it.", true)
-        }
     }
 }

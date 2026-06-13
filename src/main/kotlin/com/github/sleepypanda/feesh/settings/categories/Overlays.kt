@@ -9,6 +9,8 @@ import com.github.sleepypanda.feesh.utils.ChatUtils
 import com.teamresourceful.resourcefulconfigkt.api.ObservableEntry
 import com.teamresourceful.resourcefulconfigkt.api.CategoryKt
 import com.github.sleepypanda.feesh.features.commands.PauseAllTrackersCommand
+import com.github.sleepypanda.feesh.features.commands.BulkResetTrackersCommand
+import com.github.sleepypanda.feesh.settings.models.BulkResettableTrackerTypes
 import com.github.sleepypanda.feesh.features.commands.SetTrackerDropsCommand
 import com.github.sleepypanda.feesh.features.overlays.ArchfiendDiceProfitTracker
 import com.github.sleepypanda.feesh.features.overlays.BarnFishingTimer
@@ -115,6 +117,29 @@ object Overlays : CategoryKt("Overlays") {
         this.description = Translated("Pauses elapsed timers on various widgets when you stop fishing for this long (in seconds).\n${YELLOW}Make sure to choose enough time to kill any fishing mob and get loot from it, so it gets counted by the trackers before pause!")
         this.range = 10..300
         this.slider = true
+    }
+
+    init {
+        button {
+            title = "Bulk reset trackers keybind"
+            description = "Set a keybind in Minecraft's Controls menu to reset multiple trackers on button pressed (with confirmation). Resets [Session] only for trackers with Session/Total view modes.\nExecutes ${WHITE}/${BulkResetTrackersCommand.COMMAND_NAME}"
+            text = "Click to open"
+            onClick {
+                val mc = FeeshMod.mc
+                mc.schedule {
+                    val currentScreen = mc.screen ?: return@schedule
+                    mc.setScreen(KeyBindsScreen(currentScreen, mc.options))
+                }
+            }
+        }
+    }
+
+    var bulkResetTrackersList by select(
+        *BulkResettableTrackerTypes.values().filter { it.isEnabledByDefault }.toTypedArray()
+    ) {
+        this.name = Translated("Trackers to bulk reset on keybind")
+        this.description = Translated("Select which trackers' data to bulk reset when the keybind is pressed.")
+        this.searchTerms = BulkResettableTrackerTypes.values().map { it.displayName }.toList()
     }
 
     init {

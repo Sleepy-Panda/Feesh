@@ -5,6 +5,7 @@ import com.github.sleepypanda.feesh.events.models.ClientTickEvent
 import com.github.sleepypanda.feesh.features.chat.HotspotFoundMessage
 import com.github.sleepypanda.feesh.features.chat.LootshareMessage
 import com.github.sleepypanda.feesh.features.commands.PauseAllTrackersCommand
+import com.github.sleepypanda.feesh.features.commands.BulkResetTrackersCommand
 import com.github.sleepypanda.feesh.features.overlays.BarnFishingTimer
 import net.minecraft.client.KeyMapping
 import com.mojang.blaze3d.platform.InputConstants
@@ -51,6 +52,9 @@ object KeybindUtils {
         }
         registerKeybind("key.feesh.pauseAllTrackers", GLFW.GLFW_KEY_PAUSE) {
             PauseAllTrackersCommand.triggerPauseAllTrackers()
+        }
+        registerKeybind("key.feesh.bulkResetTrackers", GLFW.GLFW_KEY_UNKNOWN) {
+            BulkResetTrackersCommand.triggerBulkResetSelectedTrackers()
         }
 
         keybindsRegistered = true

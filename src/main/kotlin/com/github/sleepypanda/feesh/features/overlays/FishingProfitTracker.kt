@@ -141,6 +141,43 @@ object FishingProfitTracker {
         EventBus.subscribe(PricesUpdatedEvent::class, ::onPricesUpdated)
     }
 
+    fun hasSessionDataForBulkReset(): Boolean {
+        return hasSessionData()
+    }
+
+    fun bulkResetSession() {
+        previousInventory = null
+        isSessionActive = false
+        resetSession()
+        updateGuiLines()
+    }
+
+    fun resetFishingProfitTracker(isConfirmed: Boolean, resetViewMode: ViewMode) {
+        CommonUtils.runWithCatching("Failed to reset Fishing profit tracker") {
+            val viewModeText = getViewModeDisplayText(resetViewMode)
+            if (!isConfirmed) {
+                val resetAction = when (resetViewMode) {
+                    ViewMode.SESSION -> "$RESET_COMMAND noconfirm"
+                    ViewMode.TOTAL -> "$RESET_TOTAL_COMMAND noconfirm"
+                }
+                ChatUtils.sendLocalChatWithCommand(
+                    "${WHITE}Do you want to reset Fishing profit tracker $viewModeText${WHITE}? ${RED}${BOLD}[Click to confirm]",
+                    resetAction,
+                    true
+                )
+                return
+            }
+            previousInventory = null
+            isSessionActive = false
+            when (resetViewMode) {
+                ViewMode.SESSION -> resetSession()
+                ViewMode.TOTAL -> resetTotal()
+            }
+            updateGuiLines()
+            ChatUtils.sendLocalChat("${WHITE}Fishing profit tracker $viewModeText ${WHITE}was reset.", true)
+        }
+    }
+
     private fun registerCommands() {
         RegisterUtils.command(RESET_COMMAND) { args ->
             val isConfirmed = args.isNotEmpty() && args[0] == "noconfirm"
@@ -270,44 +307,23 @@ object FishingProfitTracker {
         if (!FishingHookUtils.wasFishingHookSubmergedMinutesAgo(HIDE_OVERLAY_AFTER_HOOK_MINUTES)) return false
 
         val viewMode = getCurrentViewMode()
-        val session = data.session
-        val total = data.total
-        val hasSessionData = session.totalProfit > 0.0 || session.profitTrackerItems.isNotEmpty() || session.elapsedSeconds > 0
-        val hasTotalData = total.totalProfit > 0.0 || total.profitTrackerItems.isNotEmpty() || total.elapsedSeconds > 0
-        val hasData = if (viewMode == ViewMode.SESSION) hasSessionData else hasTotalData
-
+        val hasData = if (viewMode == ViewMode.SESSION) hasSessionData() else hasTotalData()
         return hasData
+    }
+
+    private fun hasSessionData(): Boolean {
+        val session = data.session
+        return session.totalProfit > 0.0 || session.profitTrackerItems.isNotEmpty() || session.elapsedSeconds > 0
+    }
+
+    private fun hasTotalData(): Boolean {
+        val total = data.total
+        return total.totalProfit > 0.0 || total.profitTrackerItems.isNotEmpty() || total.elapsedSeconds > 0
     }
 
     private fun pause() {
         previousInventory = null
         isSessionActive = false
-    }
-
-    fun resetFishingProfitTracker(isConfirmed: Boolean, resetViewMode: ViewMode) {
-        CommonUtils.runWithCatching("Failed to reset Fishing profit tracker") {
-            val viewModeText = getViewModeDisplayText(resetViewMode)
-            if (!isConfirmed) {
-                val resetAction = when (resetViewMode) {
-                    ViewMode.SESSION -> "$RESET_COMMAND noconfirm"
-                    ViewMode.TOTAL -> "$RESET_TOTAL_COMMAND noconfirm"
-                }
-                ChatUtils.sendLocalChatWithCommand(
-                    "${WHITE}Do you want to reset Fishing profit tracker $viewModeText${WHITE}? ${RED}${BOLD}[Click to confirm]",
-                    resetAction,
-                    true
-                )
-                return
-            }
-            previousInventory = null
-            isSessionActive = false
-            when (resetViewMode) {
-                ViewMode.SESSION -> resetSession()
-                ViewMode.TOTAL -> resetTotal()
-            }
-            updateGuiLines()
-            ChatUtils.sendLocalChat("${WHITE}Fishing profit tracker $viewModeText ${WHITE}was reset.", true)
-        }
     }
 
     private fun onSetItemCountCommand(args: Array<String>, viewMode: ViewMode) {
