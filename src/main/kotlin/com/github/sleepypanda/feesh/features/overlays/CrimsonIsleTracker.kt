@@ -1,9 +1,7 @@
 package com.github.sleepypanda.feesh.features.overlays
 
-import com.github.sleepypanda.feesh.FeeshMod
 import com.github.sleepypanda.feesh.constants.SeaCreatures
 import com.github.sleepypanda.feesh.constants.RareDrops
-import com.github.sleepypanda.feesh.utils.RegisterUtils
 import com.github.sleepypanda.feesh.utils.WorldUtils
 import com.github.sleepypanda.feesh.utils.ChatUtils
 import com.github.sleepypanda.feesh.utils.CommonUtils
@@ -21,12 +19,14 @@ import com.github.sleepypanda.feesh.events.models.OwnSeaCreatureCaughtEvent
 import com.github.sleepypanda.feesh.events.models.RareDropEvent
 import com.github.sleepypanda.feesh.utils.gui.FeeshGui
 import com.github.sleepypanda.feesh.utils.gui.LineInfo
-import com.github.sleepypanda.feesh.utils.gui.GuiButton
 import com.github.sleepypanda.feesh.settings.categories.Overlays
 import com.github.sleepypanda.feesh.utils.data.PersistentDataManager
+import com.github.sleepypanda.feesh.features.overlays.base.IResettableTracker
+import com.github.sleepypanda.feesh.features.overlays.base.TrackerResetUtils
 import java.util.Date
 
-object CrimsonIsleTracker {
+object CrimsonIsleTracker : IResettableTracker {
+
     data class CrimsonIsleTrackerData(
         val thunder: CatchCounterData = CatchCounterData(),
         val lordJawbus: CatchCounterData = CatchCounterData(),
@@ -36,13 +36,16 @@ object CrimsonIsleTracker {
         val radioactiveVials: DropCounterData = DropCounterData()
     )
 
-    const val RESET_COMMAND = "feeshResetCrimsonIsle"
+    const val RESET_COMMAND = "feeshResetCrimsonIsleTracker"
+
+    override val trackerName = "Crimson Isle tracker"
+    override val resetCommand = RESET_COMMAND
 
     private const val TICKS_PER_UPDATE = 20
 
     private var data = PersistentDataManager.feeshData.crimsonIsle
     private var tickCounter = 0
-    private val baseTitle = "${AQUA}${BOLD}Crimson Isle tracker"
+    private val baseTitle = "${AQUA}${BOLD}${trackerName}"
 
     private val thunder = SeaCreatures.allSeaCreatures.find { it.name == "Thunder" }!!
     private val lordJawbus = SeaCreatures.allSeaCreatures.find { it.name == "Lord Jawbus" }!!
@@ -77,25 +80,29 @@ object CrimsonIsleTracker {
         }
 
     fun init() {
-        registerCommands()
+        TrackerResetUtils.registerResetCommand(this)
         EventBus.subscribe(OwnSeaCreatureCaughtEvent::class, ::onSeaCreature)
         EventBus.subscribe(ClientTickEvent::class, ::onClientTick)
         EventBus.subscribe(RareDropEvent::class, ::onRareDrop)
         EventBus.subscribe(GameClosedEvent::class, ::onGameClosed)
     }
 
-    fun hasDataForBulkReset(): Boolean = hasData()
-
-    fun bulkReset() {
-        reset()
-        updateGuiLines()
+    override fun hasData(): Boolean {
+        return data.thunder.hasData() || data.lordJawbus.hasData() || data.fieryScuttler.hasData() || data.ragnarok.hasData() || data.plhlegblast.hasData() || data.radioactiveVials.hasData()
     }
 
-    private fun registerCommands() {
-        RegisterUtils.command(RESET_COMMAND) { args ->
-            val isConfirmed = args.isNotEmpty() && args[0] == "noconfirm"
-            resetCrimsonIsleTracker(isConfirmed)
-        }
+    override fun resetData(force: Boolean) {
+        data.thunder.reset()
+        data.lordJawbus.reset()
+        data.fieryScuttler.reset()
+        data.ragnarok.reset()
+        data.plhlegblast.reset()
+        data.radioactiveVials.reset()
+        saveData(force)
+    }
+
+    override fun refreshGui() {
+        updateGuiLines()
     }
 
     private fun onSeaCreature(event: OwnSeaCreatureCaughtEvent) {
@@ -260,45 +267,12 @@ object CrimsonIsleTracker {
         lines.addAll(data.radioactiveVials.getOverlayLines(radioactiveVial.displayName, lordJawbus.displayName))
 
         gui.setLines(lines)
-        gui.setButtons(listOf(GuiButton(0, "${GRAY}[${RED}Click to reset${GRAY}]", { resetCrimsonIsleTracker(false) })))
-    }
-
-    private fun hasData(): Boolean {
-        return data.thunder.hasData() || data.lordJawbus.hasData() || data.fieryScuttler.hasData() || data.ragnarok.hasData() || data.plhlegblast.hasData() || data.radioactiveVials.hasData()
+        gui.setButtons(listOf(TrackerResetUtils.getResetGuiButton { requestReset(false) }))
     }
 
     private fun onGameClosed(@Suppress("UNUSED_PARAMETER") event: GameClosedEvent) {
-        if (Overlays.resetCrimsonIsleTrackerOnGameClosed &&
-            hasData()) {
-            reset(force = true)
-            FeeshMod.LOGGER.info("[Feesh] Automatically reset Crimson Isle tracker on game closed.")
-        }
-    }
-
-    private fun reset(force: Boolean = false) {
-        data.thunder.reset()
-        data.lordJawbus.reset()
-        data.fieryScuttler.reset()
-        data.ragnarok.reset()
-        data.plhlegblast.reset()
-        data.radioactiveVials.reset()
-        saveData(force)
-    }
-
-    private fun resetCrimsonIsleTracker(isConfirmed: Boolean) {
-        CommonUtils.runWithCatching("Failed to reset Crimson Isle tracker") {
-            if (!isConfirmed) {
-                ChatUtils.sendLocalChatWithCommand(
-                    "${WHITE}Do you want to reset Crimson Isle tracker? ${RED}${BOLD}[Click to confirm]",
-                    "${RESET_COMMAND} noconfirm",
-                    true
-                )
-                return
-            }
-
-            reset()
-            updateGuiLines()
-            ChatUtils.sendLocalChat("${WHITE}Crimson Isle tracker was reset.", true)
+        if (Overlays.resetCrimsonIsleTrackerOnGameClosed) {
+            resetOnGameClosed()
         }
     }
 
@@ -321,7 +295,7 @@ object CrimsonIsleTracker {
             
             data.radioactiveVials.initDropCount(count, lastOn)         
             saveData()
-            ChatUtils.sendLocalChat("${GRAY}Successfully changed Radioactive Vials count to ${count} in the Crimson Isle tracker.", true)
+            ChatUtils.sendLocalChat("${GRAY}Successfully changed Radioactive Vials count to $count in the Crimson Isle tracker.", true)
         }
     }
 
