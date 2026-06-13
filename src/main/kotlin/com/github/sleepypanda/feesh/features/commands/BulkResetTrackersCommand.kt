@@ -51,7 +51,8 @@ object BulkResetTrackersCommand {
             return
         }
 
-        val trackersText = toReset.joinToString("\n-", prefix = "\n") { getResetDisplayName(it) }
+        val linePrefix = "\n${GRAY}- ${WHITE}"
+        val trackersText = toReset.joinToString(linePrefix, prefix = linePrefix) { getResetDisplayName(it) }
 
         if (!isConfirmed) {
             ChatUtils.sendLocalChatWithCommand(

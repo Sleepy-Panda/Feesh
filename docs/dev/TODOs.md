@@ -29,7 +29,6 @@ Newly released - https://hypixel.net/threads/hypixel-skyblock-0-24-5-assorted-qo
 - Runic sea creatures - alert or highlight
 - Flash drop does not trigger pchat msg?
 - Pickups from trade menu
-- One click to reset multiple widgets
 - Shorten rod parts list (no descriptions)
 - Sea Creature Tracker where it says "Total" could you change that to "Total Sea Creatures"
 - Empty bait name in no bait alert. Got treasure bait from quest
