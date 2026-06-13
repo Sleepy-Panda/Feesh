@@ -1,7 +1,8 @@
 package com.github.sleepypanda.feesh.features.overlays
 
-import com.github.sleepypanda.feesh.FeeshMod
 import com.github.sleepypanda.feesh.constants.RareDrops
+import com.github.sleepypanda.feesh.features.overlays.base.IResettableViewModeTracker
+import com.github.sleepypanda.feesh.features.overlays.base.TrackerViewMode
 import com.github.sleepypanda.feesh.events.EventBus
 import com.github.sleepypanda.feesh.events.models.ChatEvent
 import com.github.sleepypanda.feesh.events.models.ClientTickEvent
@@ -22,12 +23,7 @@ import com.github.sleepypanda.feesh.utils.data.PersistentDataManager
 import net.minecraft.network.chat.Component
 import java.util.Date
 
-object TreasureFishingTracker {
-    enum class ViewMode {
-        SESSION,
-        TOTAL
-    }
-
+object TreasureFishingTracker : IResettableViewModeTracker {
     data class TreasureCatchesData(
         var good: Int = 0,
         var great: Int = 0,
@@ -55,16 +51,21 @@ object TreasureFishingTracker {
     data class TreasureFishingData(
         var session: TreasureFishingSessionData = TreasureFishingSessionData(),
         var total: TreasureFishingTotalData = TreasureFishingTotalData(),
-        var viewMode: String = ViewMode.SESSION.name
+        var viewMode: String = TrackerViewMode.SESSION.name
     )
 
-    const val RESET_SESSION_COMMAND = "feeshResetTreasureFishing"
-    const val RESET_TOTAL_COMMAND = "feeshResetTreasureFishingTotal"
-    private const val TOGGLE_VIEW_MODE_COMMAND = "feeshToggleTreasureFishingViewMode"
+    override val trackerName = "Treasure fishing tracker"
+
+    const val RESET_SESSION_COMMAND = "feeshResetTreasureFishingTracker"
+    override val resetSessionCommand = RESET_SESSION_COMMAND
+    const val RESET_TOTAL_COMMAND = "feeshResetTreasureFishingTrackerTotal"
+    override val resetTotalCommand = RESET_TOTAL_COMMAND
+    private const val TOGGLE_VIEW_MODE_COMMAND = "feeshToggleTreasureFishingTrackerViewMode"
 
     private val PATTERN_TREASURE_CATCH = Regex("^⛃ (GOOD|GOOD JUNK|GREAT|GREAT JUNK|OUTSTANDING|OUTSTANDING JUNK) CATCH!")
 
-    private var data = PersistentDataManager.feeshData.treasureFishing
+    private val data: TreasureFishingData
+        get() = PersistentDataManager.feeshData.treasureFishing
     private var lastTreasureCaughtAt: Date? = null
     private var tickCounter = 0
     private const val TICKS_PER_UPDATE = 20
@@ -93,6 +94,7 @@ object TreasureFishingTracker {
         }
 
     fun init() {
+        registerViewModeResetCommands()
         registerCommands()
         EventBus.subscribe(ChatEvent::class, ::onChat)
         EventBus.subscribe(ClientTickEvent::class, ::onClientTick)
@@ -110,10 +112,33 @@ object TreasureFishingTracker {
         }
     }
 
-    fun hasSessionDataForBulkReset(): Boolean = hasSessionData()
+    override fun getCurrentViewMode(): TrackerViewMode {
+        return try {
+            TrackerViewMode.valueOf(data.viewMode)
+        } catch (e: Exception) {
+            TrackerViewMode.SESSION
+        }
+    }
 
-    fun bulkResetSession() {
-        resetSession()
+    override fun hasSessionData(): Boolean {
+        return data.session.catches.totalCatches() > 0
+    }
+
+    override fun hasTotalData(): Boolean {
+        return data.total.catches.totalCatches() > 0 || data.total.treasureDyes.hasData()
+    }
+
+    override fun resetSessionData(force: Boolean) {
+        data.session = TreasureFishingSessionData()
+        saveData(force)
+    }
+
+    override fun resetTotalData(force: Boolean) {
+        data.total = TreasureFishingTotalData()
+        saveData(force)
+    }
+
+    override fun refreshGui() {
         updateGuiLines()
     }
 
@@ -135,14 +160,6 @@ object TreasureFishingTracker {
     }
 
     private fun registerCommands() {
-        RegisterUtils.command(RESET_SESSION_COMMAND) { args ->
-            val isConfirmed = args.isNotEmpty() && args[0] == "noconfirm"
-            resetTreasureFishingTracker(isConfirmed, ViewMode.SESSION)
-        }
-        RegisterUtils.command(RESET_TOTAL_COMMAND) { args ->
-            val isConfirmed = args.isNotEmpty() && args[0] == "noconfirm"
-            resetTreasureFishingTracker(isConfirmed, ViewMode.TOTAL)
-        }
         RegisterUtils.command(TOGGLE_VIEW_MODE_COMMAND) {
             toggleViewMode()
         }
@@ -170,9 +187,8 @@ object TreasureFishingTracker {
     }
 
     private fun onGameClosed(@Suppress("UNUSED_PARAMETER") event: GameClosedEvent) {
-        if (Overlays.resetTreasureFishingTrackerSessionOnGameClosed && hasSessionData()) {
-            resetSession(force = true)
-            FeeshMod.LOGGER.info("[Feesh] Automatically reset Treasure fishing tracker [Session] on game closed.")
+        if (Overlays.resetTreasureFishingTrackerSessionOnGameClosed) {
+            resetOnGameClosed()
         }
     }
 
@@ -198,70 +214,18 @@ object TreasureFishingTracker {
         }
     }
 
-    private fun getCurrentViewMode(): ViewMode {
-        return try {
-            ViewMode.valueOf(data.viewMode)
-        } catch (e: Exception) {
-            ViewMode.SESSION
-        }
-    }
-
     private fun toggleViewMode() {
         val currentMode = getCurrentViewMode()
-        val newMode = if (currentMode == ViewMode.SESSION) ViewMode.TOTAL else ViewMode.SESSION
+        val newMode = if (currentMode == TrackerViewMode.SESSION) TrackerViewMode.TOTAL else TrackerViewMode.SESSION
         data.viewMode = newMode.name
         updateGuiLines()
         saveData()
     }
 
-    private fun getSourceCatches(viewMode: ViewMode): TreasureCatchesData {
+    private fun getSourceCatches(viewMode: TrackerViewMode): TreasureCatchesData {
         return when (viewMode) {
-            ViewMode.SESSION -> data.session.catches
-            ViewMode.TOTAL -> data.total.catches
-        }
-    }
-
-    private fun getViewModeDisplayText(viewMode: ViewMode): String {
-        return when (viewMode) {
-            ViewMode.SESSION -> "${GRAY}[${GREEN}Session${GRAY}]"
-            ViewMode.TOTAL -> "${GRAY}[${GREEN}Total${GRAY}]"
-        }
-    }
-
-    private fun resetSession(force: Boolean = false) {
-        data.session = TreasureFishingSessionData()
-        saveData(force)
-    }
-
-    private fun resetTotal() {
-        data.total = TreasureFishingTotalData()
-        saveData()
-    }
-
-    private fun resetTreasureFishingTracker(isConfirmed: Boolean, resetViewMode: ViewMode) {
-        CommonUtils.runWithCatching("Failed to reset Treasure fishing tracker") {
-            val viewModeText = getViewModeDisplayText(resetViewMode)
-
-            if (!isConfirmed) {
-                val resetCommand = when (resetViewMode) {
-                    ViewMode.SESSION -> "$RESET_SESSION_COMMAND noconfirm"
-                    ViewMode.TOTAL -> "$RESET_TOTAL_COMMAND noconfirm"
-                }
-                ChatUtils.sendLocalChatWithCommand(
-                    "${WHITE}Do you want to reset Treasure fishing tracker ${viewModeText}${WHITE}? ${RED}${BOLD}[Click to confirm]",
-                    resetCommand,
-                    true
-                )
-                return
-            }
-
-            when (resetViewMode) {
-                ViewMode.SESSION -> resetSession()
-                ViewMode.TOTAL -> resetTotal()
-            }
-
-            updateGuiLines()
-            ChatUtils.sendLocalChat("${WHITE}Treasure fishing tracker ${viewModeText} ${WHITE}was reset.", true)
+            TrackerViewMode.SESSION -> data.session.catches
+            TrackerViewMode.TOTAL -> data.total.catches
         }
     }
 
@@ -306,16 +270,6 @@ object TreasureFishingTracker {
         }
     }
 
-    private fun hasSessionData(): Boolean {
-        return data.session.catches.totalCatches() > 0
-    }
-
-    private fun hasAnyData(): Boolean {
-        return hasSessionData() ||
-            data.total.catches.totalCatches() > 0 ||
-            data.total.treasureDyes.hasData()
-    }
-
     private fun updateGuiLines() {
         gui.clearLines()
 
@@ -332,7 +286,7 @@ object TreasureFishingTracker {
         if (catches.totalCatches() == 0) return
         
         val viewModeText = getViewModeDisplayText(viewMode)
-        val nextMode = if (viewMode == ViewMode.SESSION) ViewMode.TOTAL else ViewMode.SESSION
+        val nextMode = if (viewMode == TrackerViewMode.SESSION) TrackerViewMode.TOTAL else TrackerViewMode.SESSION
         val nextModeText = getViewModeDisplayText(nextMode)
 
         val lines = mutableListOf<LineInfo>()
@@ -352,7 +306,7 @@ object TreasureFishingTracker {
         gui.setLines(lines)
         gui.setButtons(listOf(
             GuiButton(0, "${GRAY}[Click to show $nextModeText${GRAY}]", { toggleViewMode() }),
-            GuiButton(1, "${GRAY}[${RED}Click to reset${GRAY}]", { resetTreasureFishingTracker(false, getCurrentViewMode()) })
+            getResetGuiButton(1) { requestReset() }
         ))
     }
 

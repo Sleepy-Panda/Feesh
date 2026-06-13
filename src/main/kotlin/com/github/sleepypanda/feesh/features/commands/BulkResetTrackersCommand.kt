@@ -1,7 +1,5 @@
 package com.github.sleepypanda.feesh.features.commands
 
-import com.github.sleepypanda.feesh.features.overlays.MagmaCoreFishingTracker
-import com.github.sleepypanda.feesh.features.overlays.TreasureFishingTracker
 import com.github.sleepypanda.feesh.settings.categories.Overlays
 import com.github.sleepypanda.feesh.settings.models.BulkResettableTrackerTypes
 import com.github.sleepypanda.feesh.utils.ChatUtils
@@ -70,16 +68,12 @@ object BulkResetTrackersCommand {
 
     private fun hasData(tracker: BulkResettableTrackerTypes): Boolean {
         tracker.resettableViewModeTracker?.let { return it.hasSessionData() }
-        return tracker.resettableTracker?.hasData() ?: when (tracker) {
-            BulkResettableTrackerTypes.TREASURE_FISHING_TRACKER -> TreasureFishingTracker.hasSessionDataForBulkReset()
-            BulkResettableTrackerTypes.MAGMA_CORE_FISHING_TRACKER -> MagmaCoreFishingTracker.hasSessionDataForBulkReset()
-            else -> false
-        }
+        return tracker.resettableTracker?.hasData() ?: false
     }
 
     private fun resetTracker(tracker: BulkResettableTrackerTypes) {
         tracker.resettableViewModeTracker?.let { viewModeTracker ->
-            CommonUtils.runWithCatching("Failed to reset $tracker on keybind") {
+            CommonUtils.runWithCatching("Failed to reset $tracker (Session) on keybind") {
                 viewModeTracker.bulkResetSession()
             }
             return
@@ -88,15 +82,6 @@ object BulkResetTrackersCommand {
         tracker.resettableTracker?.let { resettableTracker ->
             CommonUtils.runWithCatching("Failed to reset $tracker on keybind") {
                 resettableTracker.bulkReset()
-            }
-            return
-        }
-
-        CommonUtils.runWithCatching("Failed to reset $tracker on keybind") {
-            when (tracker) {
-                BulkResettableTrackerTypes.TREASURE_FISHING_TRACKER -> TreasureFishingTracker.bulkResetSession()
-                BulkResettableTrackerTypes.MAGMA_CORE_FISHING_TRACKER -> MagmaCoreFishingTracker.bulkResetSession()
-                else -> Unit
             }
         }
     }

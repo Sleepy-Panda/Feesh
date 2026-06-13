@@ -23,7 +23,6 @@ import com.github.sleepypanda.feesh.utils.FishingHookUtils
 import com.github.sleepypanda.feesh.utils.gui.FeeshGui
 import com.github.sleepypanda.feesh.utils.gui.LineInfo
 import com.github.sleepypanda.feesh.features.overlays.base.IResettableTracker
-import com.github.sleepypanda.feesh.features.overlays.base.TrackerResetUtils
 import java.util.Date
 import net.minecraft.sounds.SoundEvents
 
@@ -73,7 +72,7 @@ object FishingFestivalTracker : IResettableTracker {
         }
 
     fun init() {
-        TrackerResetUtils.registerResetCommand(this)
+        registerResetCommand()
         EventBus.subscribe(ChatEvent::class, ::onChat)
         EventBus.subscribe(OwnSeaCreatureCaughtEvent::class, ::onSeaCreatureCaught)
         EventBus.subscribe(ClientTickEvent::class, ::onClientTick)
@@ -167,7 +166,7 @@ object FishingFestivalTracker : IResettableTracker {
 
         val sharksLine = "${AQUA}${BOLD}Sharks: ${WHITE}$total ${GRAY}($countsText${GRAY})"
         gui.setLines(listOf(LineInfo(sharksLine)))
-        gui.setButtons(listOf(TrackerResetUtils.getResetGuiButton { requestReset(false) }))
+        gui.setButtons(listOf(getResetGuiButton { requestReset(false) }))
     }
 
     private fun alertOnFestivalResults() {

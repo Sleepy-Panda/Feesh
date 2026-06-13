@@ -24,7 +24,6 @@ import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
 import com.github.sleepypanda.feesh.utils.FishingHookUtils
 import com.github.sleepypanda.feesh.utils.data.PersistentDataManager
 import com.github.sleepypanda.feesh.features.overlays.base.IResettableViewModeTracker
-import com.github.sleepypanda.feesh.features.overlays.base.TrackerResetUtils
 import com.github.sleepypanda.feesh.features.overlays.base.TrackerViewMode
 import net.minecraft.network.chat.Component
 import java.text.DecimalFormat
@@ -63,7 +62,8 @@ object SeaCreaturesTracker : IResettableViewModeTracker {
 
     private const val TICKS_PER_UPDATE = 20
 
-    private var data = PersistentDataManager.feeshData.seaCreatures
+    private val data: SeaCreaturesTrackerData
+        get() = PersistentDataManager.feeshData.seaCreatures
     private val decimalFormat = DecimalFormat("#.##")
     private var tickCounter = 0
     private val baseTitle = "${AQUA}${BOLD}Sea creatures tracker"
@@ -99,7 +99,7 @@ object SeaCreaturesTracker : IResettableViewModeTracker {
         }
 
     fun init() {
-        TrackerResetUtils.registerViewModeResetCommands(this)
+        registerViewModeResetCommands()
         registerCommands()
 
         EventBus.subscribe(OwnSeaCreatureCaughtEvent::class, ::onSeaCreatureCaught)
@@ -601,7 +601,7 @@ object SeaCreaturesTracker : IResettableViewModeTracker {
 
             gui.setButtons(listOf(
                 GuiButton(0, "${GRAY}[Click to show ${nextModeText}${GRAY}]", { toggleViewMode() }),
-                TrackerResetUtils.getResetGuiButton(1) { requestReset() }
+                getResetGuiButton(1) { requestReset() }
             ))
         }
     }

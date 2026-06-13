@@ -14,6 +14,7 @@ import com.github.sleepypanda.feesh.utils.ChatUtils.removeFormatting
 import com.github.sleepypanda.feesh.utils.gui.FeeshGui
 import com.github.sleepypanda.feesh.utils.gui.LineInfo
 import com.github.sleepypanda.feesh.utils.CommonUtils
+import com.github.sleepypanda.feesh.utils.RegisterUtils
 import com.github.sleepypanda.feesh.utils.SoundUtils
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.constants.SeaCreatures
@@ -21,7 +22,6 @@ import com.github.sleepypanda.feesh.constants.Sounds
 import com.github.sleepypanda.feesh.settings.categories.General
 import com.github.sleepypanda.feesh.settings.categories.SoundMode
 import com.github.sleepypanda.feesh.features.overlays.base.IResettableTracker
-import com.github.sleepypanda.feesh.features.overlays.base.TrackerResetUtils
 import net.minecraft.world.entity.decoration.ArmorStand
 import java.util.Date
 
@@ -62,10 +62,16 @@ object BarnFishingTimer : IResettableTracker {
         }
 
     fun init() {
-        TrackerResetUtils.registerResetCommand(this)
+        registerResetCommand()
         EventBus.subscribe(ChatEvent::class, ::onChat)
         EventBus.subscribe(ClientTickEvent::class, ::onClientTick)
         EventBus.subscribe(WorldChangedEvent::class, ::onWorldChanged)
+    }
+
+    override fun registerResetCommand() {
+        RegisterUtils.command(resetCommand) {
+            requestReset(isConfirmed = true, needsChatFeedback = false)
+        }
     }
 
     override fun hasData(): Boolean {
@@ -84,7 +90,7 @@ object BarnFishingTimer : IResettableTracker {
     }
 
     fun triggerResetKeybind() {
-        requestReset(false)
+        requestReset(isConfirmed = true, needsChatFeedback = false)
     }
 
     private fun onChat(event: ChatEvent) {
@@ -234,7 +240,7 @@ object BarnFishingTimer : IResettableTracker {
         val overlayText = "${seaCreaturesColor}${mobsCount} ${GRAY}${seaCreaturesText} ${DARK_GRAY}(${timerColor}${timerText}${DARK_GRAY})"
 
         gui.setLines(listOf(LineInfo(overlayText)))
-        gui.setButtons(listOf(TrackerResetUtils.getResetGuiButton { requestReset(isConfirmed = true, needsChatFeedback = false) }))
+        gui.setButtons(listOf(getResetGuiButton { requestReset(isConfirmed = true, needsChatFeedback = false) }))
     }
 
     private fun getSeaCreaturesCountThreshold(): Int {

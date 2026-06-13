@@ -8,8 +8,10 @@ import com.github.sleepypanda.feesh.features.overlays.FishingProfitTracker
 import com.github.sleepypanda.feesh.features.overlays.GalateaWaterTracker
 import com.github.sleepypanda.feesh.features.overlays.JerryWorkshopTracker
 import com.github.sleepypanda.feesh.features.overlays.LotusAtollTracker
+import com.github.sleepypanda.feesh.features.overlays.MagmaCoreFishingTracker
 import com.github.sleepypanda.feesh.features.overlays.SeaCreaturesPerHourTracker
 import com.github.sleepypanda.feesh.features.overlays.SeaCreaturesTracker
+import com.github.sleepypanda.feesh.features.overlays.TreasureFishingTracker
 import com.github.sleepypanda.feesh.features.overlays.WaterHotspotsTracker
 
 enum class BulkResettableTrackerTypes(
@@ -28,8 +30,8 @@ enum class BulkResettableTrackerTypes(
     CRIMSON_ISLE_TRACKER("Crimson Isle tracker", resettableTracker = CrimsonIsleTracker),
     GALATEA_WATER_TRACKER("Galatea water tracker", resettableTracker = GalateaWaterTracker),
     LOTUS_ATOLL_TRACKER("Lotus Atoll tracker", resettableTracker = LotusAtollTracker),
-    TREASURE_FISHING_TRACKER("Treasure fishing tracker", hasSessionMode = true),
-    MAGMA_CORE_FISHING_TRACKER("Magma Core fishing tracker", hasSessionMode = true);
+    TREASURE_FISHING_TRACKER("Treasure fishing tracker", hasSessionMode = true, resettableViewModeTracker = TreasureFishingTracker),
+    MAGMA_CORE_FISHING_TRACKER("Magma Core fishing tracker", hasSessionMode = true, resettableViewModeTracker = MagmaCoreFishingTracker);
 
     override fun toString(): String = displayName
 }

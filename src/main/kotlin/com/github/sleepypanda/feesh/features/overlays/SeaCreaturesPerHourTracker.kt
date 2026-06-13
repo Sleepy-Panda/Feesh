@@ -16,7 +16,6 @@ import com.github.sleepypanda.feesh.utils.gui.GuiButton
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
 import com.github.sleepypanda.feesh.features.overlays.base.IResettableTracker
-import com.github.sleepypanda.feesh.features.overlays.base.TrackerResetUtils
 import java.util.Date
 
 object SeaCreaturesPerHourTracker : IResettableTracker {
@@ -53,7 +52,7 @@ object SeaCreaturesPerHourTracker : IResettableTracker {
         }
 
     fun init() {
-        TrackerResetUtils.registerResetCommand(this)
+        registerResetCommand()
         RegisterUtils.command(PAUSE_COMMAND) {
             pause()
         }
@@ -174,7 +173,7 @@ object SeaCreaturesPerHourTracker : IResettableTracker {
         gui.setLines(lines.map { LineInfo(it) })
         gui.setButtons(listOf(
             GuiButton(0, "${GRAY}[${YELLOW}Click to pause${GRAY}]", { pause() }),
-            TrackerResetUtils.getResetGuiButton(1) { requestReset() }
+            getResetGuiButton(1) { requestReset() }
         ))
     }
 }

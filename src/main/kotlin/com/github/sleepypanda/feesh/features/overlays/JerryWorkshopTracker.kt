@@ -15,7 +15,6 @@ import com.github.sleepypanda.feesh.utils.gui.LineInfo
 import com.github.sleepypanda.feesh.settings.categories.Overlays
 import com.github.sleepypanda.feesh.utils.data.PersistentDataManager
 import com.github.sleepypanda.feesh.features.overlays.base.IResettableTracker
-import com.github.sleepypanda.feesh.features.overlays.base.TrackerResetUtils
 
 object JerryWorkshopTracker : IResettableTracker {
 
@@ -31,7 +30,8 @@ object JerryWorkshopTracker : IResettableTracker {
 
     private const val TICKS_PER_UPDATE = 20
 
-    private var data = PersistentDataManager.feeshData.jerryWorkshop
+    private val data: JerryWorkshopTrackerData
+        get() = PersistentDataManager.feeshData.jerryWorkshop
     private var tickCounter = 0
 
     private val baseTitle = "${AQUA}${BOLD}${trackerName}"
@@ -57,7 +57,7 @@ object JerryWorkshopTracker : IResettableTracker {
         }
 
     fun init() {
-        TrackerResetUtils.registerResetCommand(this)
+        registerResetCommand()
         EventBus.subscribe(OwnSeaCreatureCaughtEvent::class, ::onSeaCreature)
         EventBus.subscribe(ClientTickEvent::class, ::onClientTick)
         EventBus.subscribe(GameClosedEvent::class, ::onGameClosed)
@@ -143,7 +143,7 @@ object JerryWorkshopTracker : IResettableTracker {
         }
 
         gui.setLines(lines)
-        gui.setButtons(listOf(TrackerResetUtils.getResetGuiButton { requestReset(false) }))
+        gui.setButtons(listOf(getResetGuiButton { requestReset(false) }))
     }
 
     private fun onGameClosed(@Suppress("UNUSED_PARAMETER") event: GameClosedEvent) {

@@ -40,7 +40,6 @@ import com.github.sleepypanda.feesh.utils.ChatUtils.removeFormatting
 import com.github.sleepypanda.feesh.utils.ChatUtils.getFormattedString
 import com.github.sleepypanda.feesh.utils.ItemUtils
 import com.github.sleepypanda.feesh.features.overlays.base.IResettableViewModeTracker
-import com.github.sleepypanda.feesh.features.overlays.base.TrackerResetUtils
 import com.github.sleepypanda.feesh.features.overlays.base.TrackerViewMode
 import com.google.gson.JsonParser
 import net.minecraft.core.component.DataComponents
@@ -50,6 +49,7 @@ import java.util.Date
 // TODO Rely on chat message for some Rare Drops instead of pickup event?
 
 object FishingProfitTracker : IResettableViewModeTracker {
+    
     data class ProfitTrackerItemEntry(
         var itemName: String = "",
         var itemId: String = "",
@@ -131,7 +131,7 @@ object FishingProfitTracker : IResettableViewModeTracker {
         }
 
     fun init() {
-        TrackerResetUtils.registerViewModeResetCommands(this)
+        registerViewModeResetCommands()
         registerCommands()
         EventBus.subscribe(ChatEvent::class, ::onChat)
         EventBus.subscribe(ClientTickEvent::class, ::onClientTick)
@@ -1127,7 +1127,7 @@ object FishingProfitTracker : IResettableViewModeTracker {
             gui.setButtons(listOf(
                 GuiButton(0, "${GRAY}[Click to show $nextText${GRAY}]", { toggleViewMode() }),
                 GuiButton(1, "${GRAY}[${YELLOW}Click to pause${GRAY}]", { pauseFishingProfitTracker() }),
-                TrackerResetUtils.getResetGuiButton(2) { requestReset() }
+                getResetGuiButton(2) { requestReset() }
             ))
         }
     }

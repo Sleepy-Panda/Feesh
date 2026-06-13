@@ -18,7 +18,6 @@ import com.github.sleepypanda.feesh.utils.gui.LineInfo
 import com.github.sleepypanda.feesh.settings.categories.Overlays
 import com.github.sleepypanda.feesh.utils.data.PersistentDataManager
 import com.github.sleepypanda.feesh.features.overlays.base.IResettableTracker
-import com.github.sleepypanda.feesh.features.overlays.base.TrackerResetUtils
 import java.util.Date
 
 object WaterHotspotsTracker : IResettableTracker {
@@ -34,7 +33,8 @@ object WaterHotspotsTracker : IResettableTracker {
 
     private const val TICKS_PER_UPDATE = 20
 
-    private var data = PersistentDataManager.feeshData.waterHotspotsTracker
+    private val data: WaterHotspotsTrackerData
+        get() = PersistentDataManager.feeshData.waterHotspotsTracker
     private var tickCounter = 0
     private val baseTitle = "${AQUA}${BOLD}${trackerName}"
 
@@ -60,7 +60,7 @@ object WaterHotspotsTracker : IResettableTracker {
         }
 
     fun init() {
-        TrackerResetUtils.registerResetCommand(this)
+        registerResetCommand()
         EventBus.subscribe(OwnSeaCreatureCaughtEvent::class, ::onSeaCreature)
         EventBus.subscribe(ClientTickEvent::class, ::onClientTick)
         EventBus.subscribe(RareDropEvent::class, ::onRareDrop)
@@ -136,7 +136,7 @@ object WaterHotspotsTracker : IResettableTracker {
         lines.addAll(data.wikiTiki.getOverlayLines(wikiTiki.displayName))
         lines.addAll(data.tikiMasks.getOverlayLines(tikiMask.displayName, wikiTiki.displayName))
         gui.setLines(lines)
-        gui.setButtons(listOf(TrackerResetUtils.getResetGuiButton { requestReset(false) }))
+        gui.setButtons(listOf(getResetGuiButton { requestReset(false) }))
     }
 
     private fun onGameClosed(@Suppress("UNUSED_PARAMETER") event: GameClosedEvent) {
