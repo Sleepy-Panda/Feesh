@@ -11,8 +11,11 @@ import com.github.sleepypanda.feesh.utils.WorldUtils
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.utils.gui.FeeshGui
 import com.github.sleepypanda.feesh.utils.gui.LineInfo
+import com.github.sleepypanda.feesh.features.overlays.base.ITracker
 
-object BaitTracker {
+object BaitTracker : ITracker {
+    override val trackerName = "Bait tracker"
+
     private const val TICKS_PER_UPDATE = 20
     private var tickCounter = 0
 
@@ -47,7 +50,7 @@ object BaitTracker {
     }
 
     private fun updateGuiLines() {
-        CommonUtils.runWithCatching("Failed to update Bait Tracker GUI lines") {
+        CommonUtils.runWithCatching("Failed to update $trackerName GUI lines") {
             if (!Overlays.baitTrackerOverlay ||
                 !WorldUtils.isInSkyblock() ||
                 !WorldUtils.isInFishingWorld() ||

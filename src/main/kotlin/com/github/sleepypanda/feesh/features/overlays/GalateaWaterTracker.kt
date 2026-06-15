@@ -1,11 +1,7 @@
 package com.github.sleepypanda.feesh.features.overlays
 
-import com.github.sleepypanda.feesh.FeeshMod
 import com.github.sleepypanda.feesh.constants.SeaCreatures
-import com.github.sleepypanda.feesh.utils.RegisterUtils
 import com.github.sleepypanda.feesh.utils.WorldUtils
-import com.github.sleepypanda.feesh.utils.ChatUtils
-import com.github.sleepypanda.feesh.utils.CommonUtils
 import com.github.sleepypanda.feesh.utils.FishingHookUtils
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
@@ -15,24 +11,28 @@ import com.github.sleepypanda.feesh.events.models.GameClosedEvent
 import com.github.sleepypanda.feesh.events.models.OwnSeaCreatureCaughtEvent
 import com.github.sleepypanda.feesh.utils.gui.FeeshGui
 import com.github.sleepypanda.feesh.utils.gui.LineInfo
-import com.github.sleepypanda.feesh.utils.gui.GuiButton
 import com.github.sleepypanda.feesh.settings.categories.Overlays
 import com.github.sleepypanda.feesh.utils.data.PersistentDataManager
+import com.github.sleepypanda.feesh.features.overlays.base.IResettableTracker
 
-object GalateaWaterTracker {
+object GalateaWaterTracker : IResettableTracker {
     data class GalateaWaterTrackerData(
         val lochEmperor: CatchCounterData = CatchCounterData(),
         val nessie: CatchCounterData = CatchCounterData()
     )
 
-    const val RESET_COMMAND = "feeshResetGalateaWater"
+    const val RESET_COMMAND = "feeshResetGalateaWaterTracker"
+
+    override val trackerName = "Galatea water tracker"
+    override val resetCommand = RESET_COMMAND
 
     private const val TICKS_PER_UPDATE = 20
 
-    private var data = PersistentDataManager.feeshData.galateaWater
+    private val data: GalateaWaterTrackerData
+        get() = PersistentDataManager.feeshData.galateaWater
     private var tickCounter = 0
 
-    private val baseTitle = "${AQUA}${BOLD}Galatea water tracker"
+    private val baseTitle = "${AQUA}${BOLD}${trackerName}"
     private val lochEmperor = SeaCreatures.allSeaCreatures.find { it.name == "The Loch Emperor" }!!
     private val nessie = SeaCreatures.allSeaCreatures.find { it.name == "Nessie" }!!
 
@@ -54,24 +54,24 @@ object GalateaWaterTracker {
         }
 
     fun init() {
-        registerCommands()
+        registerResetCommand()
         EventBus.subscribe(OwnSeaCreatureCaughtEvent::class, ::onSeaCreature)
         EventBus.subscribe(ClientTickEvent::class, ::onClientTick)
         EventBus.subscribe(GameClosedEvent::class, ::onGameClosed)
     }
 
-    fun hasDataForBulkReset(): Boolean = hasData()
-
-    fun bulkReset() {
-        reset()
-        updateGuiLines()
+    override fun hasData(): Boolean {
+        return data.lochEmperor.hasData() || data.nessie.hasData()
     }
 
-    private fun registerCommands() {
-        RegisterUtils.command(RESET_COMMAND) { args ->
-            val isConfirmed = args.isNotEmpty() && args[0] == "noconfirm"
-            resetGalateaWaterTracker(isConfirmed)
-        }
+    override fun resetData(force: Boolean) {
+        data.lochEmperor.reset()
+        data.nessie.reset()
+        saveData(force)
+    }
+
+    override fun refreshGui() {
+        updateGuiLines()
     }
 
     private fun onSeaCreature(event: OwnSeaCreatureCaughtEvent) {
@@ -130,42 +130,12 @@ object GalateaWaterTracker {
         lines.addAll(data.nessie.getOverlayLines(nessie.displayName))
 
         gui.setLines(lines)
-        gui.setButtons(listOf(GuiButton(0, "${GRAY}[${RED}Click to reset${GRAY}]", { resetGalateaWaterTracker(false) })))
-    }
-
-    private fun hasData(): Boolean {
-        return data.lochEmperor.hasData() || data.nessie.hasData()
+        gui.setButtons(listOf(getResetGuiButton { requestReset(false) }))
     }
 
     private fun onGameClosed(@Suppress("UNUSED_PARAMETER") event: GameClosedEvent) {
-        if (Overlays.resetGalateaWaterTrackerOnGameClosed &&
-            hasData()
-        ) {
-            reset(force = true)
-            FeeshMod.LOGGER.info("[Feesh] Automatically reset Galatea water tracker on game closed.")
-        }
-    }
-
-    private fun reset(force: Boolean = false) {
-        data.lochEmperor.reset()
-        data.nessie.reset()
-        saveData(force)
-    }
-
-    private fun resetGalateaWaterTracker(isConfirmed: Boolean) {
-        CommonUtils.runWithCatching("Failed to reset Galatea water tracker.") {
-            if (!isConfirmed) {
-                ChatUtils.sendLocalChatWithCommand(
-                    "${WHITE}Do you want to reset Galatea water tracker? ${RED}${BOLD}[Click to confirm]",
-                    "${RESET_COMMAND} noconfirm",
-                    true
-                )
-                return
-            }
-
-            reset()
-            updateGuiLines()
-            ChatUtils.sendLocalChat("${WHITE}Galatea water tracker was reset.", true)
+        if (Overlays.resetGalateaWaterTrackerOnGameClosed) {
+            resetOnGameClosed()
         }
     }
 

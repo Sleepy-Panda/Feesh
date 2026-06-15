@@ -1,9 +1,7 @@
 package com.github.sleepypanda.feesh.features.overlays
 
-import com.github.sleepypanda.feesh.FeeshMod
 import com.github.sleepypanda.feesh.constants.SeaCreatures
 import com.github.sleepypanda.feesh.constants.RareDrops
-import com.github.sleepypanda.feesh.utils.RegisterUtils
 import com.github.sleepypanda.feesh.utils.WorldUtils
 import com.github.sleepypanda.feesh.utils.ChatUtils
 import com.github.sleepypanda.feesh.utils.CommonUtils
@@ -17,24 +15,29 @@ import com.github.sleepypanda.feesh.events.models.OwnSeaCreatureCaughtEvent
 import com.github.sleepypanda.feesh.events.models.RareDropEvent
 import com.github.sleepypanda.feesh.utils.gui.FeeshGui
 import com.github.sleepypanda.feesh.utils.gui.LineInfo
-import com.github.sleepypanda.feesh.utils.gui.GuiButton
 import com.github.sleepypanda.feesh.settings.categories.Overlays
 import com.github.sleepypanda.feesh.utils.data.PersistentDataManager
+import com.github.sleepypanda.feesh.features.overlays.base.IResettableTracker
 import java.util.Date
 
-object BayouTracker {
+object BayouTracker : IResettableTracker {
+
     data class BayouTrackerData(
         val titanoboa: CatchCounterData = CatchCounterData(),
         val titanoboaSheds: DropCounterData = DropCounterData()
     )
 
-    const val RESET_COMMAND = "feeshResetBayou"
+    const val RESET_COMMAND = "feeshResetBayouTracker"
+
+    override val trackerName = "Bayou tracker"
+    override val resetCommand = RESET_COMMAND
 
     private const val TICKS_PER_UPDATE = 20
 
-    private var data = PersistentDataManager.feeshData.bayouTracker
+    private val data: BayouTrackerData
+        get() = PersistentDataManager.feeshData.bayouTracker
     private var tickCounter = 0
-    private val baseTitle = "${AQUA}${BOLD}Bayou tracker"
+    private val baseTitle = "${AQUA}${BOLD}${trackerName}"
 
     private val titanoboa = SeaCreatures.allSeaCreatures.find { it.name == "Titanoboa" }!!
     private val titanoboaShed = RareDrops.rareDrops.find { it.itemName == "Titanoboa Shed" }!!
@@ -58,25 +61,25 @@ object BayouTracker {
         }
 
     fun init() {
-        registerCommands()
+        registerResetCommand()
         EventBus.subscribe(OwnSeaCreatureCaughtEvent::class, ::onSeaCreature)
         EventBus.subscribe(ClientTickEvent::class, ::onClientTick)
         EventBus.subscribe(RareDropEvent::class, ::onRareDrop)
         EventBus.subscribe(GameClosedEvent::class, ::onGameClosed)
     }
 
-    fun hasDataForBulkReset(): Boolean = hasData()
-
-    fun bulkReset() {
-        reset()
-        updateGuiLines()
+    override fun hasData(): Boolean {
+        return data.titanoboa.hasData() || data.titanoboaSheds.hasData()
     }
 
-    private fun registerCommands() {
-        RegisterUtils.command(RESET_COMMAND) { args ->
-            val isConfirmed = args.isNotEmpty() && args[0] == "noconfirm"
-            resetBayouTracker(isConfirmed)
-        }
+    override fun resetData(force: Boolean) {
+        data.titanoboa.reset()
+        data.titanoboaSheds.reset()
+        saveData(force)
+    }
+
+    override fun refreshGui() {
+        updateGuiLines()
     }
 
     private fun onSeaCreature(event: OwnSeaCreatureCaughtEvent) {
@@ -135,42 +138,12 @@ object BayouTracker {
         lines.addAll(data.titanoboa.getOverlayLines(titanoboa.displayName))
         lines.addAll(data.titanoboaSheds.getOverlayLines(titanoboaShed.displayName, titanoboa.displayName))
         gui.setLines(lines)
-        gui.setButtons(listOf(GuiButton(0, "${GRAY}[${RED}Click to reset${GRAY}]", { resetBayouTracker(false) })))
-    }
-
-    private fun hasData(): Boolean {
-        return data.titanoboa.hasData() || data.titanoboaSheds.hasData()
+        gui.setButtons(listOf(getResetGuiButton { requestReset(false) }))
     }
 
     private fun onGameClosed(@Suppress("UNUSED_PARAMETER") event: GameClosedEvent) {
-        if (Overlays.resetBayouTrackerOnGameClosed &&
-            hasData()
-        ) {
-            reset(force = true)
-            FeeshMod.LOGGER.info("[Feesh] Automatically reset Bayou tracker on game closed.")
-        }
-    }
-
-    private fun reset(force: Boolean = false) {
-        data.titanoboa.reset()
-        data.titanoboaSheds.reset()
-        saveData(force)
-    }
-
-    private fun resetBayouTracker(isConfirmed: Boolean) {
-        CommonUtils.runWithCatching("Failed to reset Bayou tracker.") {
-            if (!isConfirmed) {
-                ChatUtils.sendLocalChatWithCommand(
-                    "${WHITE}Do you want to reset Bayou tracker? ${RED}${BOLD}[Click to confirm]",
-                    "${RESET_COMMAND} noconfirm",
-                    true
-                )
-                return
-            }
-
-            reset()
-            updateGuiLines()
-            ChatUtils.sendLocalChat("${WHITE}Bayou tracker was reset.", true)
+        if (Overlays.resetBayouTrackerOnGameClosed) {
+            resetOnGameClosed()
         }
     }
 
@@ -193,7 +166,7 @@ object BayouTracker {
 
             data.titanoboaSheds.initDropCount(count, lastOn)
             saveData()
-            ChatUtils.sendLocalChat("${GRAY}Successfully changed Titanoboa Sheds count to ${count} for the Bayou tracker.", true)
+            ChatUtils.sendLocalChat("${GRAY}Successfully changed Titanoboa Sheds count to $count for the Bayou tracker.", true)
         }
     }
 }

@@ -39,6 +39,8 @@ import com.github.sleepypanda.feesh.utils.SoundUtils
 import com.github.sleepypanda.feesh.utils.ChatUtils.removeFormatting
 import com.github.sleepypanda.feesh.utils.ChatUtils.getFormattedString
 import com.github.sleepypanda.feesh.utils.ItemUtils
+import com.github.sleepypanda.feesh.features.overlays.base.IResettableViewModeTracker
+import com.github.sleepypanda.feesh.features.overlays.base.TrackerViewMode
 import com.google.gson.JsonParser
 import net.minecraft.core.component.DataComponents
 import java.util.Date
@@ -46,12 +48,8 @@ import java.util.Date
 // TODO Drops counter for Rare Drop chat message
 // TODO Rely on chat message for some Rare Drops instead of pickup event?
 
-object FishingProfitTracker {
-    enum class ViewMode {
-        SESSION,
-        TOTAL
-    }
-
+object FishingProfitTracker : IResettableViewModeTracker {
+    
     data class ProfitTrackerItemEntry(
         var itemName: String = "",
         var itemId: String = "",
@@ -68,14 +66,18 @@ object FishingProfitTracker {
     data class FishingProfitData(
         var session: FishingProfitSourceData = FishingProfitSourceData(),
         var total: FishingProfitSourceData = FishingProfitSourceData(),
-        var viewMode: String = ViewMode.SESSION.name
+        var viewMode: String = TrackerViewMode.SESSION.name
     )
 
-    const val RESET_COMMAND = "feeshResetFishingProfit"
-    const val RESET_TOTAL_COMMAND = "feeshResetFishingProfitTotal"
-    const val PAUSE_COMMAND = "feeshPauseFishingProfit"
+    override val trackerName = "Fishing profit tracker"
 
-    const val TOGGLE_VIEW_MODE_COMMAND = "feeshToggleFishingProfitViewMode"
+    const val RESET_COMMAND = "feeshResetFishingProfitTracker"
+    override val resetSessionCommand = RESET_COMMAND
+    const val RESET_TOTAL_COMMAND = "feeshResetFishingProfitTrackerTotal"
+    override val resetTotalCommand = RESET_TOTAL_COMMAND
+    const val PAUSE_COMMAND = "feeshPauseFishingProfitTracker"
+
+    const val TOGGLE_VIEW_MODE_COMMAND = "feeshToggleFishingProfitTrackerViewMode"
     const val SET_ITEM_COUNT_COMMAND = "feeshSetItemCountFishingProfit"
     const val SET_ITEM_COUNT_TOTAL_COMMAND = "feeshSetItemCountFishingProfitTotal"
     const val DELETE_ITEM_COMMAND = "feeshDeleteItemFishingProfit"
@@ -129,6 +131,7 @@ object FishingProfitTracker {
         }
 
     fun init() {
+        registerViewModeResetCommands()
         registerCommands()
         EventBus.subscribe(ChatEvent::class, ::onChat)
         EventBus.subscribe(ClientTickEvent::class, ::onClientTick)
@@ -141,52 +144,45 @@ object FishingProfitTracker {
         EventBus.subscribe(PricesUpdatedEvent::class, ::onPricesUpdated)
     }
 
-    fun hasSessionDataForBulkReset(): Boolean {
-        return hasSessionData()
-    }
-
-    fun bulkResetSession() {
+    override fun onBeforeReset() {
         previousInventory = null
         isSessionActive = false
-        resetSession()
+    }
+
+    override fun getCurrentViewMode(): TrackerViewMode {
+        return try {
+            TrackerViewMode.valueOf(data.viewMode)
+        } catch (_: Exception) {
+            TrackerViewMode.SESSION
+        }
+    }
+
+    override fun hasSessionData(): Boolean {
+        val session = data.session
+        return session.totalProfit > 0.0 || session.profitTrackerItems.isNotEmpty() || session.elapsedSeconds > 0
+    }
+
+    override fun hasTotalData(): Boolean {
+        val total = data.total
+        return total.totalProfit > 0.0 || total.profitTrackerItems.isNotEmpty() || total.elapsedSeconds > 0
+    }
+
+    override fun resetSessionData(force: Boolean) {
+        data.session = FishingProfitSourceData()
+        saveData(force)
+        RareDropMessage.reset(force) // TODO Make them not dependent
+    }
+
+    override fun resetTotalData(force: Boolean) {
+        data.total = FishingProfitSourceData()
+        saveData(force)
+    }
+
+    override fun refreshGui() {
         updateGuiLines()
     }
 
-    fun resetFishingProfitTracker(isConfirmed: Boolean, resetViewMode: ViewMode) {
-        CommonUtils.runWithCatching("Failed to reset Fishing profit tracker") {
-            val viewModeText = getViewModeDisplayText(resetViewMode)
-            if (!isConfirmed) {
-                val resetAction = when (resetViewMode) {
-                    ViewMode.SESSION -> "$RESET_COMMAND noconfirm"
-                    ViewMode.TOTAL -> "$RESET_TOTAL_COMMAND noconfirm"
-                }
-                ChatUtils.sendLocalChatWithCommand(
-                    "${WHITE}Do you want to reset Fishing profit tracker $viewModeText${WHITE}? ${RED}${BOLD}[Click to confirm]",
-                    resetAction,
-                    true
-                )
-                return
-            }
-            previousInventory = null
-            isSessionActive = false
-            when (resetViewMode) {
-                ViewMode.SESSION -> resetSession()
-                ViewMode.TOTAL -> resetTotal()
-            }
-            updateGuiLines()
-            ChatUtils.sendLocalChat("${WHITE}Fishing profit tracker $viewModeText ${WHITE}was reset.", true)
-        }
-    }
-
     private fun registerCommands() {
-        RegisterUtils.command(RESET_COMMAND) { args ->
-            val isConfirmed = args.isNotEmpty() && args[0] == "noconfirm"
-            resetFishingProfitTracker(isConfirmed, getCurrentViewMode())
-        }
-        RegisterUtils.command(RESET_TOTAL_COMMAND) { args ->
-            val isConfirmed = args.isNotEmpty() && args[0] == "noconfirm"
-            resetFishingProfitTracker(isConfirmed, ViewMode.TOTAL)
-        }
         RegisterUtils.command(TOGGLE_VIEW_MODE_COMMAND) {
             toggleViewMode()
         }
@@ -194,22 +190,22 @@ object FishingProfitTracker {
             pauseFishingProfitTracker()
         }
         RegisterUtils.command(SET_ITEM_COUNT_COMMAND) { args ->
-            onSetItemCountCommand(args, ViewMode.SESSION)
+            onSetItemCountCommand(args, TrackerViewMode.SESSION)
         }
         RegisterUtils.command(SET_ITEM_COUNT_TOTAL_COMMAND) { args ->
-            onSetItemCountCommand(args, ViewMode.TOTAL)
+            onSetItemCountCommand(args, TrackerViewMode.TOTAL)
         }
         RegisterUtils.command(DELETE_ITEM_COMMAND) { args ->
-            onDeleteItemCommand(args, ViewMode.SESSION)
+            onDeleteItemCommand(args, TrackerViewMode.SESSION)
         }
         RegisterUtils.command(DELETE_ITEM_TOTAL_COMMAND) { args ->
-            onDeleteItemCommand(args, ViewMode.TOTAL)
+            onDeleteItemCommand(args, TrackerViewMode.TOTAL)
         }
         RegisterUtils.command(SET_TIME_COMMAND) { args ->
-            onSetElapsedTimeCommand(args, ViewMode.SESSION)
+            onSetElapsedTimeCommand(args, TrackerViewMode.SESSION)
         }
         RegisterUtils.command(SET_TIME_TOTAL_COMMAND) { args ->
-            onSetElapsedTimeCommand(args, ViewMode.TOTAL)
+            onSetElapsedTimeCommand(args, TrackerViewMode.TOTAL)
         }
     }
 
@@ -307,18 +303,8 @@ object FishingProfitTracker {
         if (!FishingHookUtils.wasFishingHookSubmergedMinutesAgo(HIDE_OVERLAY_AFTER_HOOK_MINUTES)) return false
 
         val viewMode = getCurrentViewMode()
-        val hasData = if (viewMode == ViewMode.SESSION) hasSessionData() else hasTotalData()
+        val hasData = if (viewMode == TrackerViewMode.SESSION) hasSessionData() else hasTotalData()
         return hasData
-    }
-
-    private fun hasSessionData(): Boolean {
-        val session = data.session
-        return session.totalProfit > 0.0 || session.profitTrackerItems.isNotEmpty() || session.elapsedSeconds > 0
-    }
-
-    private fun hasTotalData(): Boolean {
-        val total = data.total
-        return total.totalProfit > 0.0 || total.profitTrackerItems.isNotEmpty() || total.elapsedSeconds > 0
     }
 
     private fun pause() {
@@ -326,7 +312,7 @@ object FishingProfitTracker {
         isSessionActive = false
     }
 
-    private fun onSetItemCountCommand(args: Array<String>, viewMode: ViewMode) {
+    private fun onSetItemCountCommand(args: Array<String>, viewMode: TrackerViewMode) {
         
         fun getNewCount(value: String, currentCount: Int): Int? {
             val trimmed = value.trim()
@@ -353,8 +339,8 @@ object FishingProfitTracker {
         CommonUtils.runWithCatching("Failed to change item count in Fishing profit tracker") {
             if (args.size < 2) {
                 val commandName = when (viewMode) {
-                    ViewMode.SESSION -> SET_ITEM_COUNT_COMMAND
-                    ViewMode.TOTAL -> SET_ITEM_COUNT_TOTAL_COMMAND
+                    TrackerViewMode.SESSION -> SET_ITEM_COUNT_COMMAND
+                    TrackerViewMode.TOTAL -> SET_ITEM_COUNT_TOTAL_COMMAND
                 }
                 ChatUtils.sendLocalChat(
                     "${RED}Usage: /$commandName <itemID> <count> ${GRAY}(e.g. 64, +1, -1)",
@@ -415,7 +401,7 @@ object FishingProfitTracker {
         }
     }
 
-    private fun onDeleteItemCommand(args: Array<String>, viewMode: ViewMode) {
+    private fun onDeleteItemCommand(args: Array<String>, viewMode: TrackerViewMode) {
         CommonUtils.runWithCatching("Failed to delete item from Fishing profit tracker") {
             if (args.isEmpty()) {
                 ChatUtils.sendLocalChat("${RED}Usage: /$DELETE_ITEM_COMMAND <itemID>", true)
@@ -448,8 +434,8 @@ object FishingProfitTracker {
 
             if (!isConfirmed) {
                 val deleteCommand = when (viewMode) {
-                    ViewMode.SESSION -> "$DELETE_ITEM_COMMAND $itemId noconfirm"
-                    ViewMode.TOTAL -> "$DELETE_ITEM_TOTAL_COMMAND $itemId noconfirm"
+                    TrackerViewMode.SESSION -> "$DELETE_ITEM_COMMAND $itemId noconfirm"
+                    TrackerViewMode.TOTAL -> "$DELETE_ITEM_TOTAL_COMMAND $itemId noconfirm"
                 }
                 ChatUtils.sendLocalChatWithCommand(
                     "${WHITE}Do you want to delete ${WHITE}${entry.amount}x ${displayName}${WHITE} from the Fishing profit tracker ${viewModeText}${WHITE}? ${RED}${BOLD}[Click to confirm]",
@@ -467,7 +453,7 @@ object FishingProfitTracker {
         }
     }
 
-    private fun onSetElapsedTimeCommand(args: Array<String>, viewMode: ViewMode) {
+    private fun onSetElapsedTimeCommand(args: Array<String>, viewMode: TrackerViewMode) {
         
         fun getNewElapsedSeconds(value: String, currentElapsedSeconds: Int): Int? {
             val trimmed = value.trim()
@@ -494,8 +480,8 @@ object FishingProfitTracker {
         CommonUtils.runWithCatching("Failed to change elapsed time in Fishing profit tracker") {
             if (args.isEmpty()) {
                 val commandName = when (viewMode) {
-                    ViewMode.SESSION -> SET_TIME_COMMAND
-                    ViewMode.TOTAL -> SET_TIME_TOTAL_COMMAND
+                    TrackerViewMode.SESSION -> SET_TIME_COMMAND
+                    TrackerViewMode.TOTAL -> SET_TIME_TOTAL_COMMAND
                 }
                 ChatUtils.sendLocalChat(
                     "${RED}Usage: /$commandName <seconds> ${GRAY}(e.g. 10000, +500, -500)",
@@ -540,7 +526,7 @@ object FishingProfitTracker {
         }
     }
 
-    private fun activateTimerInMode(viewMode: ViewMode) {
+    private fun activateTimerInMode(viewMode: TrackerViewMode) {
         val sourceObj = getSourceObject(viewMode)
         if (sourceObj.elapsedSeconds == 0) {
             sourceObj.elapsedSeconds = 1
@@ -559,8 +545,8 @@ object FishingProfitTracker {
         // Start fishing timer after pause or when tracker was empty
         if (isHookActive) {
             isSessionActive = true
-            activateTimerInMode(ViewMode.SESSION)
-            activateTimerInMode(ViewMode.TOTAL)
+            activateTimerInMode(TrackerViewMode.SESSION)
+            activateTimerInMode(TrackerViewMode.TOTAL)
             saveData()
 
             if (!prevIsActive) {
@@ -583,13 +569,13 @@ object FishingProfitTracker {
 
     fun refreshTotalItemsProfits() {
         if (!isTrackerVisible()) return
-        refreshTotalItemsProfitsInMode(ViewMode.SESSION)
-        refreshTotalItemsProfitsInMode(ViewMode.TOTAL)
+        refreshTotalItemsProfitsInMode(TrackerViewMode.SESSION)
+        refreshTotalItemsProfitsInMode(TrackerViewMode.TOTAL)
         saveData()
         updateGuiLines()
     }
 
-    private fun refreshTotalItemsProfitsInMode(viewMode: ViewMode) {
+    private fun refreshTotalItemsProfitsInMode(viewMode: TrackerViewMode) {
         val sourceObj = getSourceObject(viewMode)
         val priceMode = Overlays.fishingProfitTrackerPriceMode
         sourceObj.profitTrackerItems.forEach { (key, value) ->
@@ -803,13 +789,13 @@ object FishingProfitTracker {
         coinsToAdd: Double?,
         isBulk: Boolean = false
     ) {
-        addProfitTrackerItemInMode(ViewMode.SESSION, itemId, itemName, amountToAdd, coinsToAdd)
-        addProfitTrackerItemInMode(ViewMode.TOTAL, itemId, itemName, amountToAdd, coinsToAdd)
+        addProfitTrackerItemInMode(TrackerViewMode.SESSION, itemId, itemName, amountToAdd, coinsToAdd)
+        addProfitTrackerItemInMode(TrackerViewMode.TOTAL, itemId, itemName, amountToAdd, coinsToAdd)
         if (!isBulk) refreshTotalItemsProfits()
     }
 
     private fun addProfitTrackerItemInMode(
-        viewMode: ViewMode,
+        viewMode: TrackerViewMode,
         itemId: String,
         itemName: String,
         amountToAdd: Int,
@@ -982,32 +968,17 @@ object FishingProfitTracker {
         return !cursor.isEmpty
     }
 
-    private fun getCurrentViewMode(): ViewMode {
-        return try {
-            ViewMode.valueOf(data.viewMode)
-        } catch (_: Exception) {
-            ViewMode.SESSION
-        }
-    }
-
     private fun toggleViewMode() {
-        val newMode = if (getCurrentViewMode() == ViewMode.SESSION) ViewMode.TOTAL else ViewMode.SESSION
+        val newMode = if (getCurrentViewMode() == TrackerViewMode.SESSION) TrackerViewMode.TOTAL else TrackerViewMode.SESSION
         data.viewMode = newMode.name
         saveData()
         updateGuiLines()
     }
 
-    private fun getSourceObject(viewMode: ViewMode): FishingProfitSourceData {
+    private fun getSourceObject(viewMode: TrackerViewMode): FishingProfitSourceData {
         return when (viewMode) {
-            ViewMode.SESSION -> data.session
-            ViewMode.TOTAL -> data.total
-        }
-    }
-
-    private fun getViewModeDisplayText(viewMode: ViewMode): String {
-        return when (viewMode) {
-            ViewMode.SESSION -> "${GRAY}[${GREEN}Session${GRAY}]"
-            ViewMode.TOTAL -> "${GRAY}[${GREEN}Total${GRAY}]"
+            TrackerViewMode.SESSION -> data.session
+            TrackerViewMode.TOTAL -> data.total
         }
     }
 
@@ -1067,18 +1038,6 @@ object FishingProfitTracker {
         }
     }
 
-    private fun resetSession(force: Boolean = false) {
-        data.session = FishingProfitSourceData()        
-        saveData(force)
-
-        RareDropMessage.reset(force) // TODO Make them not dependent
-    }
-
-    private fun resetTotal() {
-        data.total = FishingProfitSourceData()
-        saveData()
-    }
-
     private fun updateGuiLines() {
         CommonUtils.runWithCatching("Failed to update Fishing profit tracker GUI lines") {
             gui.clearLines()
@@ -1090,7 +1049,7 @@ object FishingProfitTracker {
 
             val viewMode = getCurrentViewMode()
             val viewModeText = getViewModeDisplayText(viewMode)
-            val nextMode = if (viewMode == ViewMode.SESSION) ViewMode.TOTAL else ViewMode.SESSION
+            val nextMode = if (viewMode == TrackerViewMode.SESSION) TrackerViewMode.TOTAL else TrackerViewMode.SESSION
             val nextText = getViewModeDisplayText(nextMode)
 
             val displayData = getDisplayTrackerData(viewMode)
@@ -1152,7 +1111,7 @@ object FishingProfitTracker {
             }
             lines.add(LineInfo(""))
 
-            if (Overlays.shouldHideTimerInTotal && viewMode == ViewMode.TOTAL) {
+            if (Overlays.shouldHideTimerInTotal && viewMode == TrackerViewMode.TOTAL) {
                 lines.add(LineInfo("${AQUA}Total: ${GOLD}${BOLD}$totalStr $priceModeStr"))
             } else {
                 val perHourStr = CommonUtils.toShortNumber(displayData.profitPerHour) ?: "0"
@@ -1168,7 +1127,7 @@ object FishingProfitTracker {
             gui.setButtons(listOf(
                 GuiButton(0, "${GRAY}[Click to show $nextText${GRAY}]", { toggleViewMode() }),
                 GuiButton(1, "${GRAY}[${YELLOW}Click to pause${GRAY}]", { pauseFishingProfitTracker() }),
-                GuiButton(2, "${GRAY}[${RED}Click to reset${GRAY}]", { resetFishingProfitTracker(false, getCurrentViewMode()) })
+                getResetGuiButton(2) { requestReset() }
             ))
         }
     }
@@ -1209,9 +1168,9 @@ object FishingProfitTracker {
         }
     }
 
-    private fun getDisplayTrackerData(viewMode: ViewMode): DisplayTrackerData {
+    private fun getDisplayTrackerData(viewMode: TrackerViewMode): DisplayTrackerData {
         val sourceObj = getSourceObject(viewMode)
-        val minPrice = if (viewMode == ViewMode.SESSION) Overlays.fishingProfitTrackerHideCheaperThan.toDouble() else Overlays.fishingProfitTrackerHideCheaperThanTotal.toDouble()
+        val minPrice = if (viewMode == TrackerViewMode.SESSION) Overlays.fishingProfitTrackerHideCheaperThan.toDouble() else Overlays.fishingProfitTrackerHideCheaperThanTotal.toDouble()
         val topN = Overlays.fishingProfitTrackerShowTop.coerceIn(1, 50)
         val entries = sourceObj.profitTrackerItems.values.map { v ->
             EntryDisplay(v.itemId, getDisplayNameForGui(v.itemId, v.itemName), v.amount, v.totalItemProfit)
@@ -1236,11 +1195,8 @@ object FishingProfitTracker {
     }
 
     private fun onGameClosed(@Suppress("UNUSED_PARAMETER") event: GameClosedEvent) {
-        if (!Overlays.resetFishingProfitTrackerOnGameClosed) return
-        val session = data.session
-        if (session.profitTrackerItems.isNotEmpty() || session.elapsedSeconds > 0 || session.totalProfit != 0.0) {
-            resetSession(force = true)
-            FeeshMod.LOGGER.info("[Feesh] Automatically reset Fishing profit tracker [Session] on game closed.")
+        if (Overlays.resetFishingProfitTrackerOnGameClosed) {
+            resetOnGameClosed()
         }
     }
 

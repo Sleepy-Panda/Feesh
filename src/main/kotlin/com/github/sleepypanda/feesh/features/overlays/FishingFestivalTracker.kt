@@ -13,7 +13,6 @@ import com.github.sleepypanda.feesh.settings.categories.Alerts
 import com.github.sleepypanda.feesh.settings.categories.SoundMode
 import com.github.sleepypanda.feesh.utils.ChatUtils
 import com.github.sleepypanda.feesh.utils.CommonUtils
-import com.github.sleepypanda.feesh.utils.RegisterUtils
 import com.github.sleepypanda.feesh.utils.SoundUtils
 import com.github.sleepypanda.feesh.utils.WorldUtils
 import com.github.sleepypanda.feesh.utils.data.PersonalBestData
@@ -22,18 +21,21 @@ import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
 import com.github.sleepypanda.feesh.utils.FishingHookUtils
 import com.github.sleepypanda.feesh.utils.gui.FeeshGui
-import com.github.sleepypanda.feesh.utils.gui.GuiButton
 import com.github.sleepypanda.feesh.utils.gui.LineInfo
+import com.github.sleepypanda.feesh.features.overlays.base.IResettableTracker
 import java.util.Date
 import net.minecraft.sounds.SoundEvents
 
-object FishingFestivalTracker {
+object FishingFestivalTracker : IResettableTracker {
     private const val FESTIVAL_DURATION_MS = 61 * 60 * 1000L // 1 hour 1 minute - how long festival usually lasts, + some extra time to be safe
     private const val TICKS_PER_UPDATE = 20
 
     private val FESTIVAL_ENDED_PATTERN = Regex("^FISHING FESTIVAL The festival has concluded! Time to dry off and repair your rods!$")
 
-    const val RESET_COMMAND = "feeshResetFishingFestival"
+    const val RESET_COMMAND = "feeshResetFishingFestivalTracker"
+
+    override val trackerName = "Fishing Festival tracker"
+    override val resetCommand = RESET_COMMAND
 
     private val sharkInfos = run {
         val byMessage = SeaCreatures.allSeaCreatures.associateBy { it.pattern.pattern }
@@ -70,18 +72,24 @@ object FishingFestivalTracker {
         }
 
     fun init() {
-        registerCommands()
+        registerResetCommand()
         EventBus.subscribe(ChatEvent::class, ::onChat)
         EventBus.subscribe(OwnSeaCreatureCaughtEvent::class, ::onSeaCreatureCaught)
         EventBus.subscribe(ClientTickEvent::class, ::onClientTick)
         EventBus.subscribe(WorldChangedEvent::class, ::onWorldChanged)
     }
 
-    private fun registerCommands() {
-        RegisterUtils.command(RESET_COMMAND) { args ->
-            val isConfirmed = args.isNotEmpty() && args[0] == "noconfirm"
-            resetFishingFestivalTracker(isConfirmed)
-        }
+    override fun hasData(): Boolean {
+        return sharksCaught.values.any { it > 0 }
+    }
+
+    override fun resetData(force: Boolean) {
+        SHARK_NAMES.forEach { sharksCaught[it] = 0 }
+        festivalStartedAt = null
+    }
+
+    override fun refreshGui() {
+        updateGuiLines()
     }
 
     private fun onChat(event: ChatEvent) {
@@ -90,12 +98,12 @@ object FishingFestivalTracker {
 
         alertOnFestivalResults()
         announcePersonalBest()
-        resetTracker()
+        resetData()
     }
 
     private fun onWorldChanged(@Suppress("UNUSED_PARAMETER") event: WorldChangedEvent) {
         if (isInPast()) {
-            resetTracker()
+            resetData()
         }
     }
 
@@ -103,7 +111,7 @@ object FishingFestivalTracker {
         if (!shouldTrackCatch(event.seaCreatureName)) return
 
         if (festivalStartedAt == null || isInPast()) {
-            resetTracker()
+            resetData()
             festivalStartedAt = System.currentTimeMillis()
         }
 
@@ -131,39 +139,13 @@ object FishingFestivalTracker {
         return Overlays.fishingFestivalTrackerOverlay && 
             WorldUtils.isInSkyblock() &&
             WorldUtils.isInFishingWorld() && 
-            hasSharkData() &&
+            hasData() &&
             FishingHookUtils.wasFishingHookSubmergedMinutesAgo(5)
-    }
-
-    private fun hasSharkData(): Boolean {
-        return sharksCaught.values.any { it > 0 }
     }
 
     private fun isInPast(): Boolean {
         val started = festivalStartedAt ?: return false
         return System.currentTimeMillis() - started > FESTIVAL_DURATION_MS
-    }
-
-    private fun resetTracker() {
-        SHARK_NAMES.forEach { sharksCaught[it] = 0 }
-        festivalStartedAt = null
-    }
-
-    private fun resetFishingFestivalTracker(isConfirmed: Boolean) {
-        CommonUtils.runWithCatching("Failed to reset Fishing Festival tracker") {
-            if (!isConfirmed) {
-                ChatUtils.sendLocalChatWithCommand(
-                    "${WHITE}Do you want to reset Fishing Festival tracker? ${RED}${BOLD}[Click to confirm]",
-                    "$RESET_COMMAND noconfirm",
-                    true
-                )
-                return
-            }
-
-            resetTracker()
-            updateGuiLines()
-            ChatUtils.sendLocalChat("${WHITE}Fishing Festival tracker was reset.", true)
-        }
     }
 
     private fun getTotalSharks(): Int = sharksCaught.values.sum()
@@ -184,7 +166,7 @@ object FishingFestivalTracker {
 
         val sharksLine = "${AQUA}${BOLD}Sharks: ${WHITE}$total ${GRAY}($countsText${GRAY})"
         gui.setLines(listOf(LineInfo(sharksLine)))
-        gui.setButtons(listOf(GuiButton(0, "${GRAY}[${RED}Click to reset${GRAY}]", { resetFishingFestivalTracker(false) })))
+        gui.setButtons(listOf(getResetGuiButton { requestReset(false) }))
     }
 
     private fun alertOnFestivalResults() {

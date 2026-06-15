@@ -16,6 +16,7 @@ Released on: ???
 ## Other
 
 - Refactored way to detect enabled features in slot text / slot background category.
+- Reused code for resetting various overlays.
 
 # 1.8.0
 

@@ -13,23 +13,26 @@ import com.github.sleepypanda.feesh.utils.ChatUtils.getFormattedString
 import com.github.sleepypanda.feesh.utils.ChatUtils.removeFormatting
 import com.github.sleepypanda.feesh.utils.gui.FeeshGui
 import com.github.sleepypanda.feesh.utils.gui.LineInfo
-import com.github.sleepypanda.feesh.utils.gui.GuiButton
 import com.github.sleepypanda.feesh.utils.CommonUtils
-import com.github.sleepypanda.feesh.utils.SoundUtils
 import com.github.sleepypanda.feesh.utils.RegisterUtils
+import com.github.sleepypanda.feesh.utils.SoundUtils
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.constants.SeaCreatures
 import com.github.sleepypanda.feesh.constants.Sounds
 import com.github.sleepypanda.feesh.settings.categories.General
 import com.github.sleepypanda.feesh.settings.categories.SoundMode
+import com.github.sleepypanda.feesh.features.overlays.base.IResettableTracker
 import net.minecraft.world.entity.decoration.ArmorStand
 import java.util.Date
 
-object BarnFishingTimer {
+object BarnFishingTimer : IResettableTracker {
     private const val TIMER_THRESHOLD_IN_MINUTES = 5
     private const val TICKS_PER_CHECK = 10
     const val RESET_COMMAND = "feeshResetBarnFishingTimer"
     private val PERSONAL_CAP_PATTERN = Regex("^There is not enough space for another Sea Creature! Kill some to make space for new ones!$")
+
+    override val trackerName = "Barn fishing timer"
+    override val resetCommand = RESET_COMMAND
 
     private var mobsCount = 0
     private var startTime: Long? = null
@@ -59,20 +62,35 @@ object BarnFishingTimer {
         }
 
     fun init() {
+        registerResetCommand()
         EventBus.subscribe(ChatEvent::class, ::onChat)
         EventBus.subscribe(ClientTickEvent::class, ::onClientTick)
         EventBus.subscribe(WorldChangedEvent::class, ::onWorldChanged)
-        registerCommands()
     }
 
-    private fun registerCommands() {
-        RegisterUtils.command(RESET_COMMAND) {
-            resetSeaCreaturesCountAndTimer()
+    override fun registerResetCommand() {
+        RegisterUtils.command(resetCommand) {
+            requestReset(isConfirmed = true, needsChatFeedback = false)
         }
     }
 
+    override fun hasData(): Boolean {
+        return mobsCount > 0 || startTime != null
+    }
+
+    override fun resetData(force: Boolean) {
+        startTime = null
+        mobsCount = 0
+        countNotificationShownAt = null
+        timerNotificationShownAt = null
+    }
+
+    override fun refreshGui() {
+        updateGuiLines()
+    }
+
     fun triggerResetKeybind() {
-        resetSeaCreaturesCountAndTimer()
+        requestReset(isConfirmed = true, needsChatFeedback = false)
     }
 
     private fun onChat(event: ChatEvent) {
@@ -88,7 +106,8 @@ object BarnFishingTimer {
     }
 
     private fun onWorldChanged(@Suppress("UNUSED_PARAMETER") event: WorldChangedEvent) {
-        resetSeaCreaturesCountAndTimer()
+        resetData()
+        gui.clearLines()
     }
 
     private fun onClientTick(@Suppress("UNUSED_PARAMETER") event: ClientTickEvent) {
@@ -108,14 +127,6 @@ object BarnFishingTimer {
         updateGuiLines()
     }
 
-    private fun resetSeaCreaturesCountAndTimer() {
-        startTime = null
-        mobsCount = 0
-        countNotificationShownAt = null
-        timerNotificationShownAt = null
-        gui.clearLines()
-    }
-
     private fun trackSeaCreaturesCount() {
         if (!WorldUtils.isInSkyblock() || !WorldUtils.isInFishingWorld()) return
 
@@ -130,7 +141,7 @@ object BarnFishingTimer {
             // Mobs / corrupted mobs have prefix like [Lv100]
             // This check is needed to exclude Necromancy souls and pets
             val hasLevelPrefix = plainName.contains("[Lv") && plainName.contains("❤")
-            
+
             if ((hasLevelPrefix && allSeaCreaturesNames.any { sc -> plainName.contains(sc) })) {
                 if (plainName.contains("Rider of the Deep")) {
                     newMobsCount += 2
@@ -221,7 +232,7 @@ object BarnFishingTimer {
             if (minutes > 0) append("${minutes}m ")
             if (seconds > 0 || minutes > 0) append("${seconds}s")
         }
-        
+
         val timerColor = if (minutes >= TIMER_THRESHOLD_IN_MINUTES) RED else WHITE
         val seaCreaturesText = if (mobsCount > 1) "sea creatures" else "sea creature"
         val seaCreaturesColor = if (mobsCount >= getSeaCreaturesCountThreshold()) RED else WHITE
@@ -229,7 +240,7 @@ object BarnFishingTimer {
         val overlayText = "${seaCreaturesColor}${mobsCount} ${GRAY}${seaCreaturesText} ${DARK_GRAY}(${timerColor}${timerText}${DARK_GRAY})"
 
         gui.setLines(listOf(LineInfo(overlayText)))
-        gui.setButtons(listOf(GuiButton(0, "${GRAY}[${RED}Click to reset${GRAY}]", { resetSeaCreaturesCountAndTimer() })))
+        gui.setButtons(listOf(getResetGuiButton { requestReset(isConfirmed = true, needsChatFeedback = false) }))
     }
 
     private fun getSeaCreaturesCountThreshold(): Int {
