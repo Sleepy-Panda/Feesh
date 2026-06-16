@@ -319,6 +319,11 @@ ${GRAY}To pause: ${WHITE}/${FishingProfitTracker.PAUSE_COMMAND}
         this.description = Translated("Send RARE DROP! message to player's chat when a rare item is added to the fishing profit tracker (for relatively rare items that have no RARE DROP! message from Hypixel by default).")
     }
 
+    var shouldBeInactiveWhenInTrophyArmor by boolean(false) {
+        this.name = Translated("Do not activate when wearing Trophy armor")
+        this.description = Translated("Fishing profit tracker will be hidden and not counting any drops when wearing the Trophy armor.")
+    }
+
     var shouldHideTimerInTotal by boolean(false) {
         this.name = Translated("Hide timer and coins/h in [Total] view")
         this.description = Translated("Hide timer and coins/h in the fishing profit tracker [Total] view. Useful if you want to add past drops to the tracker but do not know the elapsed time.")

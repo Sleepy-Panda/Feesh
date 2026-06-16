@@ -3,6 +3,7 @@ package com.github.sleepypanda.feesh.features.overlays
 import com.github.sleepypanda.feesh.constants.SeaCreatures
 import com.github.sleepypanda.feesh.constants.RareDrops
 import com.github.sleepypanda.feesh.utils.WorldUtils
+import com.github.sleepypanda.feesh.utils.PlayerUtils
 import com.github.sleepypanda.feesh.utils.ChatUtils
 import com.github.sleepypanda.feesh.utils.CommonUtils
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
@@ -56,8 +57,7 @@ object BayouTracker : IResettableTracker {
         .setSettingsKey { Overlays.bayouTrackerOverlay }
         .setApplyCustomStyleKey { Overlays.bayouTrackerCustomStyle }
         .setCondition {
-            WorldUtils.getWorldName() == WorldUtils.BACKWATER_BAYOU &&
-                FishingHookUtils.wasFishingHookSubmergedMinutesAgo(5)
+            !isTrackerDisabled()
         }
 
     fun init() {
@@ -124,14 +124,17 @@ object BayouTracker : IResettableTracker {
         updateGuiLines()
     }
 
+    private fun isTrackerDisabled(): Boolean {
+        if (!Overlays.bayouTrackerOverlay || !WorldUtils.isInSkyblock() || WorldUtils.getWorldName() != WorldUtils.BACKWATER_BAYOU) return true
+        if (!FishingHookUtils.wasFishingHookSubmergedMinutesAgo(5)) return true
+        if (PlayerUtils.isInTrophyArmor()) return true
+        return false
+    }
+
     private fun updateGuiLines() {
         gui.clearLines()
 
-        if (!hasData()) return
-        if (!Overlays.bayouTrackerOverlay || !WorldUtils.isInSkyblock() ||
-            !FishingHookUtils.wasFishingHookSubmergedMinutesAgo(5)
-        ) return
-        if (WorldUtils.getWorldName() != WorldUtils.BACKWATER_BAYOU) return
+        if (isTrackerDisabled() || !hasData()) return
 
         val lines = mutableListOf<LineInfo>()
         lines.add(LineInfo(baseTitle))

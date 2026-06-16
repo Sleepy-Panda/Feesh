@@ -4,6 +4,7 @@ import com.github.sleepypanda.feesh.constants.RareDrops
 import com.github.sleepypanda.feesh.constants.SeaCreatureNames
 import com.github.sleepypanda.feesh.constants.SeaCreatures
 import com.github.sleepypanda.feesh.utils.WorldUtils
+import com.github.sleepypanda.feesh.utils.PlayerUtils
 import com.github.sleepypanda.feesh.utils.ChatUtils
 import com.github.sleepypanda.feesh.utils.CommonUtils
 import com.github.sleepypanda.feesh.utils.FishingHookUtils
@@ -60,8 +61,7 @@ object LotusAtollTracker : IResettableTracker {
         .setSettingsKey { Overlays.lotusAtollTrackerOverlay }
         .setApplyCustomStyleKey { Overlays.lotusAtollTrackerCustomStyle }
         .setCondition {
-            WorldUtils.getWorldName() == WorldUtils.LOTUS_ATOLL &&
-                FishingHookUtils.wasFishingHookSubmergedMinutesAgo(5)
+            !isTrackerDisabled()
         }
 
     fun init() {
@@ -132,6 +132,13 @@ object LotusAtollTracker : IResettableTracker {
         }
     }
 
+    private fun isTrackerDisabled(): Boolean {
+        if (!Overlays.lotusAtollTrackerOverlay || !WorldUtils.isInSkyblock() || WorldUtils.getWorldName() != WorldUtils.LOTUS_ATOLL) return true
+        if (!FishingHookUtils.wasFishingHookSubmergedMinutesAgo(5)) return true
+        if (PlayerUtils.isInTrophyArmor()) return true
+        return false
+    }
+
     private fun onRareDrop(event: RareDropEvent) {
         CommonUtils.runWithCatching("Failed to track rare drop for Lotus Atoll tracker.") {
             if (!Overlays.lotusAtollTrackerOverlay || !WorldUtils.isInSkyblock() || WorldUtils.getWorldName() != WorldUtils.LOTUS_ATOLL) return
@@ -146,9 +153,7 @@ object LotusAtollTracker : IResettableTracker {
     private fun updateGuiLines() {
         gui.clearLines()
 
-        if (!hasData()) return
-        if (!Overlays.lotusAtollTrackerOverlay || !WorldUtils.isInSkyblock() || WorldUtils.getWorldName() != WorldUtils.LOTUS_ATOLL) return
-        if (!FishingHookUtils.wasFishingHookSubmergedMinutesAgo(5)) return
+        if (isTrackerDisabled() || !hasData()) return
 
         val lines = mutableListOf<LineInfo>()
         lines.add(LineInfo(baseTitle))

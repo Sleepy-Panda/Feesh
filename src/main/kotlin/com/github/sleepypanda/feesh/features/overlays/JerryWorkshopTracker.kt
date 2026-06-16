@@ -2,6 +2,7 @@ package com.github.sleepypanda.feesh.features.overlays
 
 import com.github.sleepypanda.feesh.constants.SeaCreatures
 import com.github.sleepypanda.feesh.utils.WorldUtils
+import com.github.sleepypanda.feesh.utils.PlayerUtils
 import com.github.sleepypanda.feesh.utils.FishingHookUtils
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
@@ -52,8 +53,7 @@ object JerryWorkshopTracker : IResettableTracker {
         .setSettingsKey { Overlays.jerryWorkshopTrackerOverlay }
         .setApplyCustomStyleKey { Overlays.jerryWorkshopTrackerCustomStyle }
         .setCondition {
-            WorldUtils.getWorldName() == WorldUtils.JERRY_WORKSHOP &&
-            FishingHookUtils.wasFishingHookSubmergedMinutesAgo(5)
+            !isTrackerDisabled()
         }
 
     fun init() {
@@ -120,11 +120,17 @@ object JerryWorkshopTracker : IResettableTracker {
         updateGuiLines()
     }
 
+    private fun isTrackerDisabled(): Boolean {
+        if (!Overlays.jerryWorkshopTrackerOverlay || !WorldUtils.isInSkyblock() || WorldUtils.getWorldName() != WorldUtils.JERRY_WORKSHOP) return true
+        if (!FishingHookUtils.wasFishingHookSubmergedMinutesAgo(5)) return true
+        if (PlayerUtils.isInTrophyArmor()) return true
+        return false
+    }
+
     private fun updateGuiLines() {
         gui.clearLines()
 
-        if (!hasData()) return
-        if (!Overlays.jerryWorkshopTrackerOverlay || !WorldUtils.isInSkyblock() || WorldUtils.getWorldName() != WorldUtils.JERRY_WORKSHOP || !FishingHookUtils.wasFishingHookSubmergedMinutesAgo(5)) return
+        if (isTrackerDisabled() || !hasData()) return
 
         val lines = mutableListOf<LineInfo>()
         lines.add(LineInfo(baseTitle))

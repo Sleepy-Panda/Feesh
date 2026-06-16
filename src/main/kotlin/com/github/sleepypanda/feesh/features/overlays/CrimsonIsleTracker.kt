@@ -3,6 +3,7 @@ package com.github.sleepypanda.feesh.features.overlays
 import com.github.sleepypanda.feesh.constants.SeaCreatures
 import com.github.sleepypanda.feesh.constants.RareDrops
 import com.github.sleepypanda.feesh.utils.WorldUtils
+import com.github.sleepypanda.feesh.utils.PlayerUtils
 import com.github.sleepypanda.feesh.utils.ChatUtils
 import com.github.sleepypanda.feesh.utils.CommonUtils
 import com.github.sleepypanda.feesh.utils.SoundUtils
@@ -76,7 +77,7 @@ object CrimsonIsleTracker : IResettableTracker {
         .setSettingsKey { Overlays.crimsonIsleTrackerOverlay }
         .setApplyCustomStyleKey { Overlays.crimsonIsleTrackerCustomStyle }
         .setCondition {
-            WorldUtils.getWorldName() == WorldUtils.CRIMSON_ISLE && FishingHookUtils.wasFishingHookSubmergedMinutesAgo(5)
+            !isTrackerDisabled()
         }
 
     fun init() {
@@ -242,11 +243,17 @@ object CrimsonIsleTracker : IResettableTracker {
         updateGuiLines()
     }
 
+    private fun isTrackerDisabled(): Boolean {
+        if (!Overlays.crimsonIsleTrackerOverlay || !WorldUtils.isInSkyblock() || WorldUtils.getWorldName() != WorldUtils.CRIMSON_ISLE) return true
+        if (!FishingHookUtils.wasFishingHookSubmergedMinutesAgo(5)) return true
+        if (PlayerUtils.isInTrophyArmor()) return true
+        return false
+    }
+
     private fun updateGuiLines() {
         gui.clearLines()
 
-        if (!Overlays.crimsonIsleTrackerOverlay || !WorldUtils.isInSkyblock() || !FishingHookUtils.wasFishingHookSubmergedMinutesAgo(5) || WorldUtils.getWorldName() != WorldUtils.CRIMSON_ISLE) return
-        if (!hasData()) return
+        if (isTrackerDisabled() || !hasData()) return
 
         val isInHotspot = isFishingInHotspot()
         val isInPlhlegblastPool = isInPlhlegblastPool()

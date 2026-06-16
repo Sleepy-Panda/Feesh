@@ -3,6 +3,7 @@ package com.github.sleepypanda.feesh.features.overlays
 import com.github.sleepypanda.feesh.constants.SeaCreatures
 import com.github.sleepypanda.feesh.constants.RareDrops
 import com.github.sleepypanda.feesh.utils.WorldUtils
+import com.github.sleepypanda.feesh.utils.PlayerUtils
 import com.github.sleepypanda.feesh.utils.ChatUtils
 import com.github.sleepypanda.feesh.utils.CommonUtils
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
@@ -55,8 +56,7 @@ object WaterHotspotsTracker : IResettableTracker {
         .setSettingsKey { Overlays.waterHotspotsTrackerOverlay }
         .setApplyCustomStyleKey { Overlays.waterHotspotsTrackerCustomStyle }
         .setCondition {
-            WorldUtils.isInWaterHotspotFishingWorld() &&
-                FishingHookUtils.wasFishingHookSubmergedInHotspotSecondsAgo(300)
+            !isTrackerDisabled()
         }
 
     fun init() {
@@ -123,13 +123,17 @@ object WaterHotspotsTracker : IResettableTracker {
         updateGuiLines()
     }
 
+    private fun isTrackerDisabled(): Boolean {
+        if (!Overlays.waterHotspotsTrackerOverlay || !WorldUtils.isInSkyblock() || !WorldUtils.isInWaterHotspotFishingWorld()) return true
+        if (!FishingHookUtils.wasFishingHookSubmergedInHotspotSecondsAgo(300)) return true
+        if (PlayerUtils.isInTrophyArmor()) return true
+        return false
+    }
+
     private fun updateGuiLines() {
         gui.clearLines()
 
-        if (!hasData()) return
-        if (!Overlays.waterHotspotsTrackerOverlay || !WorldUtils.isInSkyblock() || !WorldUtils.isInWaterHotspotFishingWorld() ||
-            !FishingHookUtils.wasFishingHookSubmergedInHotspotSecondsAgo(300)
-        ) return
+        if (isTrackerDisabled() || !hasData()) return
 
         val lines = mutableListOf<LineInfo>()
         lines.add(LineInfo(baseTitle))
