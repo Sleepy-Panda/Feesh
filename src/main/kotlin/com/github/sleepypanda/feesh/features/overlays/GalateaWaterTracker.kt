@@ -2,6 +2,7 @@ package com.github.sleepypanda.feesh.features.overlays
 
 import com.github.sleepypanda.feesh.constants.SeaCreatures
 import com.github.sleepypanda.feesh.utils.WorldUtils
+import com.github.sleepypanda.feesh.utils.PlayerUtils
 import com.github.sleepypanda.feesh.utils.FishingHookUtils
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
@@ -49,8 +50,7 @@ object GalateaWaterTracker : IResettableTracker {
         .setSettingsKey { Overlays.galateaWaterTrackerOverlay }
         .setApplyCustomStyleKey { Overlays.galateaWaterTrackerCustomStyle }
         .setCondition {
-            WorldUtils.getWorldName() == WorldUtils.GALATEA &&
-                FishingHookUtils.wasFishingHookSubmergedMinutesAgo(5)
+            !isTrackerDisabled()
         }
 
     fun init() {
@@ -118,11 +118,17 @@ object GalateaWaterTracker : IResettableTracker {
         updateGuiLines()
     }
 
+    private fun isTrackerDisabled(): Boolean {
+        if (!Overlays.galateaWaterTrackerOverlay || !WorldUtils.isInSkyblock() || WorldUtils.getWorldName() != WorldUtils.GALATEA) return true
+        if (!FishingHookUtils.wasFishingHookSubmergedMinutesAgo(5)) return true
+        if (PlayerUtils.isInTrophyArmor()) return true
+        return false
+    }
+
     private fun updateGuiLines() {
         gui.clearLines()
 
-        if (!hasData()) return
-        if (!Overlays.galateaWaterTrackerOverlay || !WorldUtils.isInSkyblock() || WorldUtils.getWorldName() != WorldUtils.GALATEA || !FishingHookUtils.wasFishingHookSubmergedMinutesAgo(5)) return
+        if (isTrackerDisabled() || !hasData()) return
 
         val lines = mutableListOf<LineInfo>()
         lines.add(LineInfo(baseTitle))

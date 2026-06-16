@@ -18,6 +18,7 @@ import com.github.sleepypanda.feesh.utils.FishingHookUtils
 import com.github.sleepypanda.feesh.utils.PriceUtils
 import com.github.sleepypanda.feesh.utils.RegisterUtils
 import com.github.sleepypanda.feesh.utils.WorldUtils
+import com.github.sleepypanda.feesh.utils.PlayerUtils
 import com.github.sleepypanda.feesh.utils.data.PersistentDataManager
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
@@ -155,7 +156,7 @@ object MagmaCoreFishingTracker : IResettableViewModeTracker {
         if (tickCounter < TICKS_PER_UPDATE) return
         tickCounter = 0
 
-        if (!Overlays.magmaCoreFishingTrackerOverlay || !WorldUtils.isInSkyblock() || WorldUtils.getWorldName() != WorldUtils.CRYSTAL_HOLLOWS) {
+        if (!Overlays.magmaCoreFishingTrackerOverlay || !WorldUtils.isInSkyblock() || WorldUtils.getWorldName() != WorldUtils.CRYSTAL_HOLLOWS || PlayerUtils.isInTrophyArmor()) {
             pause()
             return
         }
@@ -243,6 +244,7 @@ object MagmaCoreFishingTracker : IResettableViewModeTracker {
     private fun isTrackerVisible(): Boolean {
         if (!Overlays.magmaCoreFishingTrackerOverlay || !WorldUtils.isInSkyblock() || WorldUtils.getWorldName() != WorldUtils.CRYSTAL_HOLLOWS) return false
         if (!FishingHookUtils.wasFishingHookSubmergedMinutesAgo(HIDE_OVERLAY_MINUTES)) return false
+        if (PlayerUtils.isInTrophyArmor()) return false
         if (lastSeaCreatureCaughtAt == null) return false
 
         val elapsedSinceCatch = (Date().time - lastSeaCreatureCaughtAt!!.time) / 1000
@@ -280,6 +282,7 @@ object MagmaCoreFishingTracker : IResettableViewModeTracker {
     private fun updateGuiLines() {
         CommonUtils.runWithCatching("Failed to update $trackerName GUI lines") {
             gui.clearLines()
+            
             if (!isTrackerVisible()) {
                 pause()
                 return

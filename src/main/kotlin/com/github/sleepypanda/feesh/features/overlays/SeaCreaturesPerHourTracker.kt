@@ -7,6 +7,7 @@ import com.github.sleepypanda.feesh.events.models.WorldChangedEvent
 import com.github.sleepypanda.feesh.settings.categories.Overlays
 import com.github.sleepypanda.feesh.utils.CommonUtils
 import com.github.sleepypanda.feesh.utils.WorldUtils
+import com.github.sleepypanda.feesh.utils.PlayerUtils
 import com.github.sleepypanda.feesh.utils.FishingHookUtils
 import com.github.sleepypanda.feesh.utils.ChatUtils
 import com.github.sleepypanda.feesh.utils.RegisterUtils
@@ -48,7 +49,8 @@ object SeaCreaturesPerHourTracker : IResettableTracker {
         .setApplyCustomStyleKey { Overlays.seaCreaturesPerHourTrackerCustomStyle }
         .setCondition {
             WorldUtils.isInFishingWorld() &&
-            FishingHookUtils.wasFishingHookSubmergedMinutesAgo(HIDE_OVERLAY_MINUTES)
+            FishingHookUtils.wasFishingHookSubmergedMinutesAgo(HIDE_OVERLAY_MINUTES) &&
+            !PlayerUtils.isInTrophyArmor()
         }
 
     fun init() {
@@ -107,7 +109,9 @@ object SeaCreaturesPerHourTracker : IResettableTracker {
             if (!isSessionActive ||
                 !Overlays.seaCreaturesPerHourTrackerOverlay ||
                 !WorldUtils.isInSkyblock() ||
-                !WorldUtils.isInFishingWorld()) {
+                !WorldUtils.isInFishingWorld() ||
+                PlayerUtils.isInTrophyArmor()
+            ) {
                 isSessionActive = false
                 return
             }
@@ -153,7 +157,8 @@ object SeaCreaturesPerHourTracker : IResettableTracker {
             !WorldUtils.isInSkyblock() ||
             !WorldUtils.isInFishingWorld() ||
             (totalSeaCreaturesCaughtCount == 0) ||
-            !FishingHookUtils.wasFishingHookSubmergedMinutesAgo(HIDE_OVERLAY_MINUTES)
+            !FishingHookUtils.wasFishingHookSubmergedMinutesAgo(HIDE_OVERLAY_MINUTES) ||
+            PlayerUtils.isInTrophyArmor()
         ) return
 
         val elapsedHours = elapsedSeconds / 3600.0

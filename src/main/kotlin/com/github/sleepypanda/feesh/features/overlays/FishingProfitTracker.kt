@@ -24,6 +24,7 @@ import com.github.sleepypanda.feesh.utils.CommonUtils
 import com.github.sleepypanda.feesh.utils.PriceUtils
 import com.github.sleepypanda.feesh.utils.RegisterUtils
 import com.github.sleepypanda.feesh.utils.WorldUtils
+import com.github.sleepypanda.feesh.utils.PlayerUtils
 import com.github.sleepypanda.feesh.utils.FishingHookUtils
 import com.github.sleepypanda.feesh.utils.GuiUtils
 import com.github.sleepypanda.feesh.utils.gui.FeeshGui
@@ -282,7 +283,6 @@ object FishingProfitTracker : IResettableViewModeTracker {
     }
 
     private fun onClientTick(@Suppress("UNUSED_PARAMETER") event: ClientTickEvent) {
-        if (!Overlays.fishingProfitTrackerOverlay || !WorldUtils.isInSkyblock() || !WorldUtils.isInFishingWorld()) return
         tickCounter++
 
         if (tickCounter % TICKS_TIMER_ELAPSED_TIME == 0) {
@@ -298,9 +298,15 @@ object FishingProfitTracker : IResettableViewModeTracker {
         refreshTotalItemsProfits()
     }
 
+    private fun isTrackerDisabled(): Boolean {
+        if (!Overlays.fishingProfitTrackerOverlay || !WorldUtils.isInSkyblock() || !WorldUtils.isInFishingWorld()) return true
+        if (!FishingHookUtils.wasFishingHookSubmergedMinutesAgo(HIDE_OVERLAY_AFTER_HOOK_MINUTES)) return true
+        if (Overlays.shouldBeInactiveWhenInTrophyArmor && PlayerUtils.isInTrophyArmor()) return true
+        return false
+    }
+
     private fun isTrackerVisible(): Boolean {
-        if (!Overlays.fishingProfitTrackerOverlay || !WorldUtils.isInSkyblock() || !WorldUtils.isInFishingWorld()) return false
-        if (!FishingHookUtils.wasFishingHookSubmergedMinutesAgo(HIDE_OVERLAY_AFTER_HOOK_MINUTES)) return false
+        if (isTrackerDisabled()) return false
 
         val viewMode = getCurrentViewMode()
         val hasData = if (viewMode == TrackerViewMode.SESSION) hasSessionData() else hasTotalData()
@@ -534,7 +540,7 @@ object FishingProfitTracker : IResettableViewModeTracker {
     }
 
     private fun refreshElapsedTime() {
-        if (!Overlays.fishingProfitTrackerOverlay || !WorldUtils.isInSkyblock() || !WorldUtils.isInFishingWorld()) {
+        if (isTrackerDisabled()) {
             pause()
             return
         }
@@ -1043,7 +1049,6 @@ object FishingProfitTracker : IResettableViewModeTracker {
             gui.clearLines()
 
             if (!isTrackerVisible()) {
-                pause()
                 return
             }
 

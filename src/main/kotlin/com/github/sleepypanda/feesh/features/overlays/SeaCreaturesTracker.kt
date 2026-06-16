@@ -12,6 +12,7 @@ import com.github.sleepypanda.feesh.settings.categories.SeaCreaturesTrackerDispl
 import com.github.sleepypanda.feesh.settings.categories.SeaCreaturesTrackerSorting
 import com.github.sleepypanda.feesh.utils.CommonUtils
 import com.github.sleepypanda.feesh.utils.WorldUtils
+import com.github.sleepypanda.feesh.utils.PlayerUtils
 import com.github.sleepypanda.feesh.utils.ChatUtils
 import com.github.sleepypanda.feesh.utils.RegisterUtils
 import com.github.sleepypanda.feesh.utils.gui.FeeshGui
@@ -95,7 +96,8 @@ object SeaCreaturesTracker : IResettableViewModeTracker {
         .setApplyCustomStyleKey { Overlays.seaCreaturesTrackerCustomStyle }
         .setCondition {
             WorldUtils.isInFishingWorld() &&
-            FishingHookUtils.wasFishingHookSubmergedMinutesAgo(5)
+            FishingHookUtils.wasFishingHookSubmergedMinutesAgo(5) &&
+            !PlayerUtils.isInTrophyArmor()
         }
 
     fun init() {
@@ -491,7 +493,10 @@ object SeaCreaturesTracker : IResettableViewModeTracker {
         CommonUtils.runWithCatching("Failed to update GUI lines in Sea creatures tracker") {
             gui.clearLines()
 
-            if (!Overlays.seaCreaturesTrackerOverlay || !WorldUtils.isInSkyblock() || !WorldUtils.isInFishingWorld() || !FishingHookUtils.wasFishingHookSubmergedMinutesAgo(5)) return
+            if (!Overlays.seaCreaturesTrackerOverlay || !WorldUtils.isInSkyblock() || !WorldUtils.isInFishingWorld() ||
+                !FishingHookUtils.wasFishingHookSubmergedMinutesAgo(5) ||
+                PlayerUtils.isInTrophyArmor()
+            ) return
 
             val viewMode = getCurrentViewMode()
             val sourceObj = getSourceObject(viewMode)
