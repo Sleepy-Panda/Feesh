@@ -7,7 +7,6 @@ import com.github.sleepypanda.feesh.utils.CommonUtils
 import com.github.sleepypanda.feesh.utils.FileUtils
 import com.github.sleepypanda.feesh.utils.gui.FeeshGui
 import com.github.sleepypanda.feesh.utils.enums.Alignment
-import com.github.sleepypanda.feesh.features.overlays.BayouTracker
 import com.github.sleepypanda.feesh.features.overlays.TreasureFishingTracker
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
@@ -168,11 +167,6 @@ object PersistentDataManager {
                 !jsonHasNestedKey(feeshDataFileContent, "treasureFishing", "total", "treasureDyes", "catchesBreakdown")) {
                 TreasureFishingTracker.migrateCatchesSinceLastDye()
                 FeeshMod.LOGGER.info("[Feesh] Successfully migrated catches since last Treasure Dye")
-            }
-            if (jsonHasNestedKey(feeshDataFileContent, "bayouTracker") &&
-                !jsonHasNestedKey(feeshDataFileContent, "bayouTracker", "snakeEyes")) {
-                BayouTracker.initSnakeEyes()
-                FeeshMod.LOGGER.info("[Feesh] Successfully initialized Snake Eyes counter in Bayou tracker")
             }
         }
         if (loaded != null) {

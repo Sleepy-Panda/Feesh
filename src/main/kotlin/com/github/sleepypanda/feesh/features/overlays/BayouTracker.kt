@@ -26,7 +26,7 @@ object BayouTracker : IResettableTracker {
     data class BayouTrackerData(
         val titanoboa: CatchCounterData = CatchCounterData(),
         val titanoboaSheds: DropCounterData = DropCounterData(),
-        var snakeEyes: DropCounterData = DropCounterData(),
+        val snakeEyes: DropCounterData = DropCounterData(),
     )
 
     const val RESET_COMMAND = "feeshResetBayouTracker"
@@ -73,15 +73,6 @@ object BayouTracker : IResettableTracker {
         EventBus.subscribe(GameClosedEvent::class, ::onGameClosed)
     }
 
-    // TODO: Remove migration code in a while
-    // This object was added later than other counters, so we need to init it manually.
-    fun initSnakeEyes() {
-        CommonUtils.runWithCatching("Failed to initialize Snake Eyes counter in Bayou tracker") {
-            PersistentDataManager.feeshData.bayouTracker.snakeEyes = DropCounterData()
-            saveData()
-        }
-    }
-
     override fun hasData(): Boolean {
         return data.titanoboa.hasData() || data.titanoboaSheds.hasData() || data.snakeEyes.hasData()
     }
@@ -126,16 +117,18 @@ object BayouTracker : IResettableTracker {
         if (!Overlays.bayouTrackerOverlay || !WorldUtils.isInSkyblock()) return
         if (WorldUtils.getWorldName() != WorldUtils.BACKWATER_BAYOU) return
 
-        when (event.itemName) {
-            titanoboaShed.itemName -> {
-                data.titanoboaSheds.updateAfterDrop(titanoboaShed.boldDisplayName, titanoboa.displayName, event.magicFind)
-                saveData()
-                updateGuiLines()
-            }
-            snakeEyes.itemName -> {
-                data.snakeEyes.updateAfterDrop(snakeEyes.boldDisplayName, titanoboa.displayName, event.magicFind)
-                saveData()
-                updateGuiLines()
+        CommonUtils.runWithCatching("Failed to handle rare drop for ${trackerName}.") {
+            when (event.itemName) {
+                titanoboaShed.itemName -> {
+                    data.titanoboaSheds.updateAfterDrop(titanoboaShed.boldDisplayName, titanoboa.displayName, event.magicFind)
+                    saveData()
+                    updateGuiLines()
+                }
+                snakeEyes.itemName -> {
+                    data.snakeEyes.updateAfterDrop(snakeEyes.boldDisplayName, titanoboa.displayName, event.magicFind)
+                    saveData()
+                    updateGuiLines()
+                }
             }
         }
     }
@@ -144,6 +137,7 @@ object BayouTracker : IResettableTracker {
         tickCounter++
         if (tickCounter < TICKS_PER_UPDATE) return
         tickCounter = 0
+        
         updateGuiLines()
     }
 
@@ -193,7 +187,7 @@ object BayouTracker : IResettableTracker {
 
             data.titanoboaSheds.initDropCount(count, lastOn)
             saveData()
-            ChatUtils.sendLocalChat("${GRAY}Successfully changed Titanoboa Sheds count to $count for the Bayou tracker.", true)
+            ChatUtils.sendLocalChat("${GRAY}Successfully changed Titanoboa Sheds count to $count for the ${trackerName}.", true)
         }
     }
 
@@ -208,7 +202,7 @@ object BayouTracker : IResettableTracker {
 
             data.snakeEyes.initDropCount(count, lastOn)
             saveData()
-            ChatUtils.sendLocalChat("${GRAY}Successfully changed Snake Eyes count to $count for the Bayou tracker.", true)
+            ChatUtils.sendLocalChat("${GRAY}Successfully changed Snake Eyes count to $count for the ${trackerName}.", true)
         }
     }
 }
