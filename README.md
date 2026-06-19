@@ -105,7 +105,7 @@ This mod requires [Fabric API](https://modrinth.com/mod/fabric-api) and [Fabric 
 - **Sea creatures per hour tracker** — Shows sea creatures per hour and total caught per session.
 - **Fishing Festival tracker** — Shows Great White, Tiger, Blue and Nurse shark counts caught during the Fishing Festival.
 - **Jerry's Workshop tracker** — Yeti/Reindrake catch statistics in Jerry Workshop.
-- **Bayou tracker tracker** — Titanoboa catch and Titanoboa Shed drop statistics for Backwater Bayou.
+- **Bayou tracker** — Titanoboa catch and Titanoboa Shed / Snake Eyes drop statistics for Backwater Bayou.
 - **Water hotspots tracker** — Wiki Tiki catch and Tiki Mask drop statistics for Water Hotspots.
 - **Crimson Isle tracker** — Fiery Scuttler, Ragnarok, Plhlegblast, Thunder, Lord Jawbus catch and Radioactive Vial drop statistics.
 - **Galatea water tracker** — The Loch Emperor/Nessie catch statistics in Galatea.
@@ -143,7 +143,7 @@ This mod requires [Fabric API](https://modrinth.com/mod/fabric-api) and [Fabric 
 - **/feeshFearMongererShopPrices** — Calculates profits for selling items from Fear Mongerer NPC shop.
 - **/feeshJunkerJoelShopPrices** — Calculates profits for selling items from Junker Joel NPC shop.
 - **/feeshSpiderDenRainSchedule** — Displays nearest Spider's Den Rain/Thunderstorm events.
-- **/feeshSetTrackerDrops** — Initialize drop history (Titanoboa Shed, Tiki Mask, Radioactive Vial, Treasure Dye).
+- **/feeshSetTrackerDrops** — Initialize drop history (Titanoboa Shed, Snake Eyes, Tiki Mask, Radioactive Vial, Prince's Crown Jewel, Treasure Dye).
 
 Also, each overlay has individual commands to reset or pause.
 

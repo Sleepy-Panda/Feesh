@@ -24,9 +24,10 @@ Newly released - https://hypixel.net/threads/hypixel-skyblock-0-24-5-assorted-qo
 ## Current issues & feedback
 
 - With the release of Minecraft version 26.2 on June 16th, we'll be dropping support for 1.21.9 and 1.21.10. A few weeks after that, we'll drop support for 1.21.11.
+- Case sensitive commands
+- Snake eyes
 - Personal blacklist + party sharing
 - Runic sea creatures - alert or highlight
-- Flash drop does not trigger pchat msg?
 - Pickups from trade menu
 - Shorten rod parts list (no descriptions)
 - Sea Creature Tracker where it says "Total" could you change that to "Total Sea Creatures"
