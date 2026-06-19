@@ -25,7 +25,8 @@ object BayouTracker : IResettableTracker {
 
     data class BayouTrackerData(
         val titanoboa: CatchCounterData = CatchCounterData(),
-        val titanoboaSheds: DropCounterData = DropCounterData()
+        val titanoboaSheds: DropCounterData = DropCounterData(),
+        val snakeEyes: DropCounterData = DropCounterData(),
     )
 
     const val RESET_COMMAND = "feeshResetBayouTracker"
@@ -42,6 +43,7 @@ object BayouTracker : IResettableTracker {
 
     private val titanoboa = SeaCreatures.allSeaCreatures.find { it.name == "Titanoboa" }!!
     private val titanoboaShed = RareDrops.rareDrops.find { it.itemName == "Titanoboa Shed" }!!
+    private val snakeEyes = RareDrops.rareDrops.find { it.itemName == "Snake Eyes" }!!
 
     private val gui = FeeshGui()
         .setCoordsDataKey("bayouTracker")
@@ -51,8 +53,11 @@ object BayouTracker : IResettableTracker {
             "${titanoboa.displayName}${GRAY}: ${WHITE}10 ${GRAY}catches ago ${DARK_GRAY}(${GRAY}avg: ${WHITE}500${DARK_GRAY})",
             "${GRAY}Last on: ${WHITE}1h 30m ago",
             "${titanoboaShed.displayName}s${GRAY}: ${WHITE}5",
-            "${GRAY}Last on: ${WHITE}2h 15m ago",
-            "${GRAY}Last on: ${WHITE}1 234 ${GRAY}Titanoboas ago"
+            "${GRAY}Last on: ${WHITE}20d 2h 15m ago",
+            "${GRAY}Last on: ${WHITE}223 ${GRAY}Titanoboas ago",
+            "${snakeEyes.displayName}${GRAY}: ${WHITE}10",
+            "${GRAY}Last on: ${WHITE}3h 45m ago",
+            "${GRAY}Last on: ${WHITE}10 ${GRAY}Titanoboas ago"
         ))
         .setSettingsKey { Overlays.bayouTrackerOverlay }
         .setApplyCustomStyleKey { Overlays.bayouTrackerCustomStyle }
@@ -69,12 +74,13 @@ object BayouTracker : IResettableTracker {
     }
 
     override fun hasData(): Boolean {
-        return data.titanoboa.hasData() || data.titanoboaSheds.hasData()
+        return data.titanoboa.hasData() || data.titanoboaSheds.hasData() || data.snakeEyes.hasData()
     }
 
     override fun resetData(force: Boolean) {
         data.titanoboa.reset()
         data.titanoboaSheds.reset()
+        data.snakeEyes.reset()
         saveData(force)
     }
 
@@ -102,6 +108,7 @@ object BayouTracker : IResettableTracker {
     private fun onTitanoboa(isDoubleHook: Boolean) {
         data.titanoboa.updateAfterCatch(titanoboa.boldDisplayName)
         data.titanoboaSheds.updateAfterCatch(isDoubleHook)
+        data.snakeEyes.updateAfterCatch(isDoubleHook)
         saveData()
         updateGuiLines()
     }
@@ -110,10 +117,19 @@ object BayouTracker : IResettableTracker {
         if (!Overlays.bayouTrackerOverlay || !WorldUtils.isInSkyblock()) return
         if (WorldUtils.getWorldName() != WorldUtils.BACKWATER_BAYOU) return
 
-        if (event.itemName == titanoboaShed.itemName) {
-            data.titanoboaSheds.updateAfterDrop(titanoboaShed.boldDisplayName, titanoboa.displayName, event.magicFind)
-            saveData()
-            updateGuiLines()
+        CommonUtils.runWithCatching("Failed to handle rare drop for ${trackerName}.") {
+            when (event.itemName) {
+                titanoboaShed.itemName -> {
+                    data.titanoboaSheds.updateAfterDrop(titanoboaShed.boldDisplayName, titanoboa.displayName, event.magicFind)
+                    saveData()
+                    updateGuiLines()
+                }
+                snakeEyes.itemName -> {
+                    data.snakeEyes.updateAfterDrop(snakeEyes.boldDisplayName, titanoboa.displayName, event.magicFind)
+                    saveData()
+                    updateGuiLines()
+                }
+            }
         }
     }
 
@@ -121,6 +137,7 @@ object BayouTracker : IResettableTracker {
         tickCounter++
         if (tickCounter < TICKS_PER_UPDATE) return
         tickCounter = 0
+        
         updateGuiLines()
     }
 
@@ -140,6 +157,7 @@ object BayouTracker : IResettableTracker {
         lines.add(LineInfo(baseTitle))
         lines.addAll(data.titanoboa.getOverlayLines(titanoboa.displayName))
         lines.addAll(data.titanoboaSheds.getOverlayLines(titanoboaShed.displayName, titanoboa.displayName))
+        lines.addAll(data.snakeEyes.getOverlayLines(snakeEyes.displayName, titanoboa.displayName))
         gui.setLines(lines)
         gui.setButtons(listOf(getResetGuiButton { requestReset(false) }))
     }
@@ -169,7 +187,22 @@ object BayouTracker : IResettableTracker {
 
             data.titanoboaSheds.initDropCount(count, lastOn)
             saveData()
-            ChatUtils.sendLocalChat("${GRAY}Successfully changed Titanoboa Sheds count to $count for the Bayou tracker.", true)
+            ChatUtils.sendLocalChat("${GRAY}Successfully changed Titanoboa Sheds count to $count for the ${trackerName}.", true)
+        }
+    }
+
+    fun setSnakeEyes(count: Int, lastOn: Date?) {
+        CommonUtils.runWithCatching(
+            message = "Failed to set Snake Eyes.",
+            onError = {
+                ChatUtils.sendLocalChat("${RED}Failed to set Snake Eyes.", true)
+            }
+        ) {
+            if (!WorldUtils.isInSkyblock()) return
+
+            data.snakeEyes.initDropCount(count, lastOn)
+            saveData()
+            ChatUtils.sendLocalChat("${GRAY}Successfully changed Snake Eyes count to $count for the ${trackerName}.", true)
         }
     }
 }

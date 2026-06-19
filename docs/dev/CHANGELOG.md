@@ -5,8 +5,12 @@ Released on: ???
 ## Features
 
 - Added Expertise kills counter to the Items settings section, showing exact expertise counter on fishing rods [disabled by default].
-- Added option to set a keybind for bulk resetting multiple trackers' data, to quickly reset current fishing session. You can also choose what trackers to include.
+- Added option to set a keybind for bulk resetting multiple trackers' data, to quickly reset current fishing session.
+  - You can also choose what trackers to include. By default, it's set to Fishing profit tracker, Sea creatures tracker, Sc/h tracker.
 - Added option "Do not activate when wearing Trophy armor" for Fishing profit tracker [disabled by default].
+- Added **Snake Eyes** drop statistics to the Bayou tracker.
+  - To init your drop count: `/feeshSetTrackerDrops SNAKE_EYES <count> [last on YYYY-MM-DD hh:mm:ss]`
+  - Example: `/feeshSetTrackerDrops SNAKE_EYES 5 2026-06-10 23:00:00`
 
 ## Bugfixes
 

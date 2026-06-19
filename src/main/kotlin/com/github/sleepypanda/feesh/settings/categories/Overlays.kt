@@ -631,7 +631,7 @@ ${GRAY}To reset: ${WHITE}/${JerryWorkshopTracker.RESET_COMMAND}
     var bayouTrackerOverlay by boolean(false) {
         this.name = Translated("Bayou tracker")
         this.description = Translated("""
-${GRAY}Shows Titanoboa catch statistics and Titanoboa Shed drop statistics while fishing in Backwater Bayou.
+${GRAY}Shows Titanoboa catch statistics, Titanoboa Shed and Snake Eyes drop statistics while fishing in Backwater Bayou.
 ${GRAY}To reset: ${WHITE}/${BayouTracker.RESET_COMMAND}
         """.trimIndent())
     }
@@ -653,6 +653,19 @@ ${GRAY}To reset: ${WHITE}/${BayouTracker.RESET_COMMAND}
                 ChatUtils.sendLocalChat("${DARK_AQUA}<COUNT>: ${GRAY}how many drops you got")
                 ChatUtils.sendLocalChat("${DARK_AQUA}[LAST_ON_DATE]: ${GRAY}optional, YYYY-MM-DD hh:mm:ss, cannot be future")
                 ChatUtils.sendLocalChat("${GREEN}Example: ${WHITE}/${SetTrackerDropsCommand.COMMAND_NAME} TITANOBOA_SHED 5 2025-05-30 23:59:00")
+            }
+        }
+        button {
+            title = "Set Snake Eyes count"
+            description = "Explains in your chat how to init Snake Eyes count and last drop date for the Bayou tracker."
+            text = "Click for help"
+            onClick {
+                ChatUtils.sendLocalChat("${AQUA}${BOLD}Snake Eyes setup${RESET}", true)
+                ChatUtils.sendLocalChat("${YELLOW}Command: ${WHITE}/${SetTrackerDropsCommand.COMMAND_NAME}${GOLD} <ITEM_ID> <COUNT> [LAST_ON_DATE]")
+                ChatUtils.sendLocalChat("${DARK_AQUA}<ITEM_ID>: ${GRAY}must be SNAKE_EYES")
+                ChatUtils.sendLocalChat("${DARK_AQUA}<COUNT>: ${GRAY}how many drops you got")
+                ChatUtils.sendLocalChat("${DARK_AQUA}[LAST_ON_DATE]: ${GRAY}optional, YYYY-MM-DD hh:mm:ss, cannot be future")
+                ChatUtils.sendLocalChat("${GREEN}Example: ${WHITE}/${SetTrackerDropsCommand.COMMAND_NAME} SNAKE_EYES 2 2025-05-30 23:59:00")
             }
         }
     }

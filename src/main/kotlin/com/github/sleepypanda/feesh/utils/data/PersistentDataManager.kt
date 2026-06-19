@@ -187,7 +187,6 @@ object PersistentDataManager {
         }
     }
 
-    
     private fun saveOverlayCoordsDataToFileAsync() {
         FileUtils.saveJsonToFileAsync(overlayCoordsFile, overlayCoordsData, gson, executor, saveLock, "Overlay coords")
     }

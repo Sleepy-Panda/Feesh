@@ -47,6 +47,7 @@ object SetTrackerDropsCommand {
             
             when (dropId) {
                 "TITANOBOA_SHED" -> BayouTracker.setTitanoboaSheds(count, lastOn)
+                "SNAKE_EYES" -> BayouTracker.setSnakeEyes(count, lastOn)
                 "TIKI_MASK" -> WaterHotspotsTracker.setTikiMasks(count, lastOn)
                 "RADIOACTIVE_VIAL" -> CrimsonIsleTracker.setRadioactiveVials(count, lastOn)
                 "PRINCE_CROWN_JEWEL" -> LotusAtollTracker.setPrincesCrownJewels(count, lastOn)

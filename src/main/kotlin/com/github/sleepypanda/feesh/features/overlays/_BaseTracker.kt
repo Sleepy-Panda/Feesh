@@ -157,6 +157,9 @@ open class DropCounterData(
     }
 
     private fun pluralize(word: String): String {
+        val plain = word.removeFormatting()
+        if (plain.endsWith(" Eyes", ignoreCase = true)) return word // Snake Eyes
+
         // This is a simplified version sufficient for my use case
         return when {
             word.endsWith("s", ignoreCase = true) || word.endsWith("x", ignoreCase = true) || 
