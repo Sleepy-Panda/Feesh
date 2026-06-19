@@ -1,21 +1,30 @@
-import dev.deftu.gradle.utils.version.MinecraftVersions
-import org.gradle.api.attributes.java.TargetJvmVersion
+import net.fabricmc.loom.task.RemapJarTask
+import org.gradle.api.tasks.Copy
 import org.gradle.api.tasks.compile.JavaCompile
 import org.gradle.jvm.tasks.Jar
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
+import java.lang.module.ModuleDescriptor.Version
 
 plugins {
     java
     kotlin("jvm")
     kotlin("plugin.serialization") version "2.3.0"
-
-    // https://github.com/Deftu/Gradle-Toolkit
-    id("dev.deftu.gradle.multiversion") // Applies preprocessing for multiple versions of Minecraft and/or multiple mod loaders.
-    id("dev.deftu.gradle.tools") // Applies several configurations to things such as the Java version, project name/version, etc.
-    id("dev.deftu.gradle.tools.resources") // Applies resource processing so that we can replace tokens, such as our mod name/version, in our resources.
-    id("dev.deftu.gradle.tools.bloom") // Applies the Bloom plugin, which allows us to replace tokens in our source files, such as being able to use `@MOD_VERSION` in our source files.
-    id("dev.deftu.gradle.tools.shadow") // Applies the Shadow plugin, which allows us to shade our dependencies into our mod JAR. This is NOT recommended for Fabric mods, but we have an *additional* configuration for those!
-    id("dev.deftu.gradle.tools.minecraft.loom") // Applies the Loom plugin, which automagically configures Essential's Architectury Loom plugin for you.
+    id("net.fabricmc.fabric-loom-remap") version "1.17.11"
+    id("dev.deftu.gradle.multiversion")
+    id("dev.deftu.gradle.tools.bloom")
 }
+
+private val mcProject: String = project.name
+private val mcVersion: String = mcProject.removeSuffix("-fabric")
+
+private fun versionedProperty(name: String): String {
+    return project.findProperty("${name}.${mcVersion}")?.toString()
+        ?: throw AssertionError("build.gradle.kts needs updating for $mcProject — missing ${name}.${mcVersion}")
+}
+
+private fun isUnobfuscatedMCVersion(): Boolean =
+    Version.parse(mcVersion) >= Version.parse("26.1")
 
 configurations.all {
     resolutionStrategy {
@@ -28,39 +37,15 @@ repositories {
     maven("https://maven.teamresourceful.com/repository/maven-public/")
 }
 
-toolkitMultiversion {
-    moveBuildsToRootProject.set(true)
-}
+val jarName = project.property("mod.name").toString() + "-" + project.property("mod.version").toString() + "+" + mcProject
 
-if (mcData.version == MinecraftVersions.VERSION_26_1) {
-    java {
-        toolchain {
-            languageVersion.set(JavaLanguageVersion.of(25))
-        }
-        sourceCompatibility = JavaVersion.VERSION_25
-        targetCompatibility = JavaVersion.VERSION_25
-    }
-    kotlin {
-        jvmToolchain(25)
-    }
-    tasks.withType<JavaCompile>().configureEach {
-        options.release.set(25)
-    }
-    configurations.configureEach {
-        attributes.attribute(TargetJvmVersion.TARGET_JVM_VERSION_ATTRIBUTE, 25)
-    }
-
-    // TODO: Ugly code
-    // I had to do this because dependencies .jars are not copied to META-INF/jars and not registered in fabric.mod.json with my deftu setup,
-    // I did not manage to find a way to fix that normally so copying jar files manually for now
-    // Resolvable companion of the non-resolvable "include()" declaration config
+if (isUnobfuscatedMCVersion()) {
     val nestedJars = configurations.create("nestedJars") {
         isCanBeResolved = true
         isCanBeConsumed = false
         extendsFrom(configurations.getByName("include"))
     }
 
-    // Pack nested mod jars under META-INF/jars.
     tasks.named<Jar>("jar").configure {
         from(nestedJars) {
             into("META-INF/jars")
@@ -69,13 +54,10 @@ if (mcData.version == MinecraftVersions.VERSION_26_1) {
         }
     }
 
-    // Register nested mod jars in fabric.mod.json as "jars".
     tasks.named<Copy>("processResources").configure {
         doLast {
             val fmj = destinationDir.resolve("fabric.mod.json")
-            if (!fmj.exists()) return@doLast
-            val original = fmj.readText()
-            if (original.contains("\"jars\":")) return@doLast
+            if (!fmj.exists() || fmj.readText().contains("\"jars\":")) return@doLast
 
             val nestedFiles = nestedJars.resolve()
                 .filter { it.name.startsWith("resourcefulconfig-") || it.name.startsWith("resourcefulconfigkt-") }
@@ -93,40 +75,102 @@ if (mcData.version == MinecraftVersions.VERSION_26_1) {
                 append("\t],\n")
             }
 
+            val original = fmj.readText()
             val anchor = "\t\"depends\":"
-            val modified = if (original.contains(anchor)) {
-                original.replace(anchor, jarsBlock + anchor)
-            } else {
-                original.replaceFirst(Regex("(?m)^\\s*\"depends\":"), jarsBlock + "\t\"depends\":")
-            }
-            fmj.writeText(modified)
+            fmj.writeText(
+                if (original.contains(anchor)) original.replace(anchor, jarsBlock + anchor)
+                else original.replaceFirst(Regex("(?m)^\\s*\"depends\":"), jarsBlock + "\t\"depends\":")
+            )
         }
     }
 }
 
+afterEvaluate {
+    val outputDir = rootProject.layout.buildDirectory.asFile.get().resolve("versions")
+
+    tasks.named<Jar>("jar").configure {
+        destinationDirectory.set(outputDir)
+        archiveBaseName.set(jarName)
+    }
+
+    if (!isUnobfuscatedMCVersion()) {
+        tasks.named<RemapJarTask>("remapJar").configure {
+            destinationDirectory.set(outputDir)
+            archiveBaseName.set(jarName)
+        }
+    }
+}
+
+tasks.withType<JavaCompile>().configureEach {
+    options.release.set(versionedProperty("java.version").toInt())
+}
+
+tasks.withType<KotlinJvmCompile>().configureEach {
+    compilerOptions.jvmTarget.set(JvmTarget.fromTarget(versionedProperty("java.version")))
+}
+
+tasks.named<Copy>("processResources") {
+    val expandedFiles = listOf("fabric.mod.json", "feesh.mixins.json")
+
+    val modName = project.property("mod.name")
+    val modId = project.property("mod.id")
+    val modVersion = project.property("mod.version")
+    val javaVersion = versionedProperty("java.version")
+
+    inputs.property("mod_name", modName)
+    inputs.property("mod_id", modId)
+    inputs.property("mod_version", modVersion)
+    inputs.property("minor_mc_version", mcVersion)
+    inputs.property("java_version", javaVersion)
+
+    filesMatching(expandedFiles) {
+        expand(
+            mapOf(
+                "mod_name" to modName,
+                "mod_id" to modId,
+                "mod_version" to modVersion,
+                "minor_mc_version" to mcVersion,
+                "java_version" to javaVersion,
+            )
+        )
+    }
+}
+
 dependencies {
-    when (mcData.version) {
-        MinecraftVersions.VERSION_1_21_10 -> {
-            maybeModImplementation("net.fabricmc:fabric-language-kotlin:${mcData.dependencies.fabric.fabricLanguageKotlinVersion}")
-            maybeModImplementation("net.fabricmc.fabric-api:fabric-api:${property("fabric-api.version.1.21.10")}")
+    minecraft("com.mojang:minecraft:$mcVersion")
+
+    configurations.findByName("mappings")?.let { mappingsConfig ->
+        add(mappingsConfig.name, loom.officialMojangMappings())
+    }
+
+    val modImplementationConfig = configurations.findByName("modImplementation")
+
+    fun org.gradle.api.artifacts.dsl.DependencyHandler.maybeModImplementation(dependencyNotation: Any) {
+        if (modImplementationConfig != null) {
+            add(modImplementationConfig.name, dependencyNotation)
+        } else {
+            implementation(dependencyNotation)
+        }
+    }
+
+    maybeModImplementation("net.fabricmc:fabric-loader:${property("fabricloader.version")}")
+    maybeModImplementation("net.fabricmc.fabric-api:fabric-api:${versionedProperty("fabric-api.version")}")
+    implementation("net.fabricmc:fabric-language-kotlin:${property("fabriclanguagekotlin.version")}")
+
+    when (mcProject) {
+        "1.21.10-fabric" -> {
             maybeModImplementation(include("com.teamresourceful.resourcefulconfigkt:resourcefulconfigkt-fabric-1.21.5:${property("resourcefulconfig-kt.version.1.21.10")}")!!)
             maybeModImplementation(include("com.teamresourceful.resourcefulconfig:resourcefulconfig-fabric-1.21.9:${property("resourcefulconfig.version.1.21.10")}")!!)
         }
-        MinecraftVersions.VERSION_1_21_11 -> {
-            maybeModImplementation("net.fabricmc:fabric-language-kotlin:${mcData.dependencies.fabric.fabricLanguageKotlinVersion}")
-            maybeModImplementation("net.fabricmc.fabric-api:fabric-api:${property("fabric-api.version.1.21.11")}")
+        "1.21.11-fabric" -> {
             maybeModImplementation(include("com.teamresourceful.resourcefulconfigkt:resourcefulconfigkt-fabric-1.21.5:${property("resourcefulconfig-kt.version.1.21.11")}")!!)
             maybeModImplementation(include("com.teamresourceful.resourcefulconfig:resourcefulconfig-fabric-1.21.11:${property("resourcefulconfig.version.1.21.11")}")!!)
         }
-        MinecraftVersions.VERSION_26_1 -> {
+        "26.1-fabric" -> {
             implementation("net.fabricmc:sponge-mixin:0.17.0+mixin.0.8.7")
-            implementation("net.fabricmc:fabric-language-kotlin:${mcData.dependencies.fabric.fabricLanguageKotlinVersion}")
-            implementation("net.fabricmc.fabric-api:fabric-api:${property("fabric-api.version.26.1")}")
-            implementation("com.teamresourceful.resourcefulconfig:resourcefulconfig-fabric-26.1:${property("resourcefulconfig.version.26.1")}")
-            implementation("com.teamresourceful.resourcefulconfigkt:resourcefulconfigkt-26.1-rc-1:${property("resourcefulconfig-kt.version.26.1-rc-1")}")
-            include("com.teamresourceful.resourcefulconfig:resourcefulconfig-fabric-26.1:${property("resourcefulconfig.version.26.1")}")
-            include("com.teamresourceful.resourcefulconfigkt:resourcefulconfigkt-26.1-rc-1:${property("resourcefulconfig-kt.version.26.1-rc-1")}")
+            implementation(include("com.teamresourceful.resourcefulconfig:resourcefulconfig-fabric-26.1:${property("resourcefulconfig.version.26.1")}")!!)
+            implementation(include("com.teamresourceful.resourcefulconfigkt:resourcefulconfigkt-26.1-rc-1:${property("resourcefulconfig-kt.version.26.1-rc-1")}")!!)
         }
-        else -> {}
+        else -> throw AssertionError("build.gradle.kts needs updating for $mcProject")
     }
 }
