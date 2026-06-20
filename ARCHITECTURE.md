@@ -102,5 +102,6 @@ When bumping Gradle version, it's necessary to follow the flow to update Gradle 
 https://docs.gradle.org/current/userguide/gradle_wrapper.html#sec:upgrading_wrapper
 
 ```cmd
-./gradlew.bat wrapper --gradle-version 9.4.1
+.\gradlew.bat :wrapper --gradle-version 9.6.0
+.\gradlew :wrapper
 ```
