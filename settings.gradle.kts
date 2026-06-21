@@ -18,7 +18,8 @@ pluginManagement {
 
     plugins {
         kotlin("jvm") version("2.3.0")
-        id("dev.deftu.gradle.multiversion-root") version("2.73.0")
+        // https://github.com/Deftu/Gradle-Toolkit
+        id("dev.deftu.gradle.multiversion-root") version("2.73.0") // Applies preprocessing for multiple versions of Minecraft and/or multiple mod loaders.
         id("net.fabricmc.fabric-loom") version("1.17.11")
         id("net.fabricmc.fabric-loom-remap") version("1.17.11")
     }

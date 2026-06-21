@@ -3,8 +3,8 @@ plugins {
     kotlin("jvm")
     kotlin("plugin.serialization") version "2.3.0"
     id("net.fabricmc.fabric-loom-remap") version "1.17.11"
-    id("dev.deftu.gradle.multiversion")
-    id("dev.deftu.gradle.tools.bloom")
+    id("dev.deftu.gradle.multiversion") // Applies preprocessing for multiple versions of Minecraft and/or multiple mod loaders.
+    id("dev.deftu.gradle.tools.bloom") // Applies the Bloom plugin, which allows us to replace tokens in our source files, such as being able to use `@MOD_VERSION` in our source files.
 }
 
 apply(from = rootProject.file("build.common.gradle"))

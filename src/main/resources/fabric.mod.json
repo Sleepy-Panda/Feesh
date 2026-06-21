@@ -3,7 +3,7 @@
 	"id": "${mod_id}",
 	"version": "${mod_version}",
 	"name": "${mod_name}",
-	"description": "QOL fishing mod for Hypixel Skyblock. Introduces a bit of fun for fishing parties :3",
+	"description": "${mod_description}",
 	"authors": ["MoonTheSadFisher"],
 	"contact": {
 	  "homepage": "https://github.com/Sleepy-Panda/Feesh",
@@ -19,7 +19,7 @@
 	"depends": {
 		"fabricloader": ">=0.18.1",
 		"minecraft": "~${minor_mc_version}",
-		"java": ">=21",
+		"java": ">=${mod_java_version}",
 		"fabric-api": "*",
 		"fabric-language-kotlin": "*"
 	},

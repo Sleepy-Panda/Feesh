@@ -43,22 +43,28 @@ tasks.named("processResources", Copy).configure {
     def modName = project.property("mod.name")
     def modId = project.property("mod.id")
     def modVersion = project.property("mod.version")
+    def modDescription = project.property("mod.description")
     def javaVersion = versionedProperty("java.version")
     def mixinCompatibilityLevel = "JAVA_${javaVersion}"
+    def modJavaVersion = "${javaVersion}"
 
     inputs.property("mod_name", modName)
     inputs.property("mod_id", modId)
     inputs.property("mod_version", modVersion)
+    inputs.property("mod_description", modDescription)
     inputs.property("minor_mc_version", mcVersion)
     inputs.property("java_version", mixinCompatibilityLevel)
+    inputs.property("mod_java_version", modJavaVersion)
 
     filesMatching(expandedFiles) {
         expand(
             mod_name: modName,
             mod_id: modId,
             mod_version: modVersion,
+            mod_description: modDescription,
             minor_mc_version: mcVersion,
             java_version: mixinCompatibilityLevel,
+            mod_java_version: modJavaVersion,
         )
     }
 }
