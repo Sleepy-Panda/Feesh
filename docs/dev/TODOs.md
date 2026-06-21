@@ -2,7 +2,7 @@
 
 ## Reminders
 
-- Test each release in 1.21.* and 26.1
+- Test each release in 1.21.* and 26.x
 
 ## Alpha Lotus Atoll
 
@@ -21,7 +21,7 @@ Newly released - https://hypixel.net/threads/hypixel-skyblock-0-24-5-assorted-qo
 - Added the Personal Sea Creature Cap - 10 mobs (probably except Isle, there might be 5)
   - I need to write better "own" sea creature detection to alert before personal cap actually happens.
 
-## Current issues & feedback
+## Latest issues & feedback
 
 - With the release of Minecraft version 26.2 on June 16th, we'll be dropping support for 1.21.9 and 1.21.10. A few weeks after that, we'll drop support for 1.21.11.
 - Adjust commands to set catches count since drop

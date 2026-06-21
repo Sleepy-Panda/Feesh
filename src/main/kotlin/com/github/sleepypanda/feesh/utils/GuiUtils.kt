@@ -2,6 +2,7 @@ package com.github.sleepypanda.feesh.utils
 
 import com.github.sleepypanda.feesh.utils.ChatUtils.removeFormatting
 import com.github.sleepypanda.feesh.FeeshMod
+import com.github.sleepypanda.feesh.utils.getScreenCompat
 import com.github.sleepypanda.feesh.events.EventBus
 import com.github.sleepypanda.feesh.events.models.ChatEvent
 import com.github.sleepypanda.feesh.events.models.GuiClosedEvent
@@ -123,7 +124,7 @@ object GuiUtils {
     private fun readIsInInventoryOrChat(): Boolean {
         if (!WorldUtils.isInSkyblock()) return false
 
-        val screen = FeeshMod.mc.screen ?: return false
+        val screen = FeeshMod.mc.getScreenCompat() ?: return false
         return screen is InventoryScreen || screen is ChatScreen
     }
 
@@ -137,12 +138,12 @@ object GuiUtils {
     }
 
     fun isInChest(): Boolean {
-        val screen = FeeshMod.mc.screen ?: return false
+        val screen = FeeshMod.mc.getScreenCompat() ?: return false
         return (screen is AbstractContainerScreen<*> && screen !is InventoryScreen)
     }
 
     fun getCurrentChestName(): String? {
-        val screen = FeeshMod.mc.screen ?: return null
+        val screen = FeeshMod.mc.getScreenCompat() ?: return null
         if (screen !is AbstractContainerScreen<*>) return null
         return screen.title.string.removeFormatting()
     }

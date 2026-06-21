@@ -7,6 +7,8 @@ import com.github.sleepypanda.feesh.constants.RareDropTypes
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
 import com.github.sleepypanda.feesh.features.chat.CompactCatchMessages
+import com.github.sleepypanda.feesh.utils.getScreenCompat
+import com.github.sleepypanda.feesh.utils.setScreenCompat
 import com.teamresourceful.resourcefulconfigkt.api.CategoryKt
 import com.teamresourceful.resourcefulconfig.api.types.options.TranslatableValue
 import net.minecraft.client.gui.screens.options.controls.KeyBindsScreen
@@ -140,8 +142,8 @@ object Chat : CategoryKt("Chat") {
             onClick {
                 val mc = FeeshMod.mc
                 mc.schedule {
-                    val currentScreen = mc.screen ?: return@schedule
-                    mc.setScreen(KeyBindsScreen(currentScreen, mc.options))
+                    val currentScreen = mc.getScreenCompat() ?: return@schedule
+                    mc.setScreenCompat(KeyBindsScreen(currentScreen, mc.options))
                 }
             }
         }

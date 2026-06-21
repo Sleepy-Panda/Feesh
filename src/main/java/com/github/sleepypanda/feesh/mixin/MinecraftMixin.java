@@ -34,7 +34,11 @@ public abstract class MinecraftMixin {
         }
     }
 
+    //#if MC >= 26.2
+    //$$ @Inject(method = "setScreenAndShow", at = @At("HEAD"))
+    //#else
     @Inject(method = "setScreen", at = @At("HEAD"))
+    //#endif
     private void feesh$onScreenOpened(Screen screen, CallbackInfo ci) {
         if (screen != null) {
             EventBus.INSTANCE.publish(new GuiOpenedEvent(screen));

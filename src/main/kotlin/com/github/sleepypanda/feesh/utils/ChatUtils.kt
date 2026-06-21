@@ -74,11 +74,7 @@ object ChatUtils {
     }
    
     private fun addLocalChatMessage(message: Component) {
-        //#if MC >= 26.1
-        //$$ FeeshMod.mc.gui.chat.addClientSystemMessage(message)
-        //#else
-        FeeshMod.mc.gui.chat.addMessage(message)
-        //#endif
+        FeeshMod.mc.addClientChatMessageCompat(message)
     }
 
     /**
@@ -197,9 +193,34 @@ object ChatUtils {
     }
 
     private fun getColorChar(color: TextColor): Char? {
-        val formatting = colorToChar[color]
-        return formatting?.char
+        val formatting = colorToChar[color] ?: return null
+        //#if MC >= 26.2
+        //$$ return legacyFormattingChars[formatting]
+        //#else
+        return formatting.char
+        //#endif
     }
+
+    //#if MC >= 26.2
+    //$$ private val legacyFormattingChars = mapOf(
+    //$$     ChatFormatting.BLACK to '0',
+    //$$     ChatFormatting.DARK_BLUE to '1',
+    //$$     ChatFormatting.DARK_GREEN to '2',
+    //$$     ChatFormatting.DARK_AQUA to '3',
+    //$$     ChatFormatting.DARK_RED to '4',
+    //$$     ChatFormatting.DARK_PURPLE to '5',
+    //$$     ChatFormatting.GOLD to '6',
+    //$$     ChatFormatting.GRAY to '7',
+    //$$     ChatFormatting.DARK_GRAY to '8',
+    //$$     ChatFormatting.BLUE to '9',
+    //$$     ChatFormatting.GREEN to 'a',
+    //$$     ChatFormatting.AQUA to 'b',
+    //$$     ChatFormatting.RED to 'c',
+    //$$     ChatFormatting.LIGHT_PURPLE to 'd',
+    //$$     ChatFormatting.YELLOW to 'e',
+    //$$     ChatFormatting.WHITE to 'f',
+    //$$ )
+    //#endif
 
     private val colorToChar: Map<TextColor, ChatFormatting> = ChatFormatting.entries.mapNotNull { format ->
         TextColor.fromLegacyFormat(format)?.let { it to format }

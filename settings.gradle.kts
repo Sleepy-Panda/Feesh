@@ -34,11 +34,17 @@ listOf(
     include(":$version")
     project(":$version").apply {
         projectDir = file("versions/$version")
-        buildFileName = "../../build.remap.gradle.kts"
+        buildFileName = "../../build.remap-1.21.x.gradle.kts"
     }
 }
 
-include(":26.1-fabric")
-project(":26.1-fabric").apply {
-    projectDir = file("versions/26.1-fabric")
+listOf(
+    "26.1-fabric",
+    "26.2-fabric",
+).forEach { version ->
+    include(":$version")
+    project(":$version").apply {
+        projectDir = file("versions/$version")
+        buildFileName = "../../build.unobfuscated-26.x.gradle.kts"
+    }
 }

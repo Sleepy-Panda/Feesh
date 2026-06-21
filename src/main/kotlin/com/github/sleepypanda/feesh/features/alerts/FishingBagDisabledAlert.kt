@@ -6,6 +6,7 @@ import com.github.sleepypanda.feesh.events.models.ChatEvent
 import com.github.sleepypanda.feesh.settings.categories.Alerts
 import com.github.sleepypanda.feesh.utils.CommonUtils
 import com.github.sleepypanda.feesh.utils.SoundUtils
+import com.github.sleepypanda.feesh.utils.getScreenCompat
 import com.github.sleepypanda.feesh.utils.PlayerUtils
 import com.github.sleepypanda.feesh.utils.WorldUtils
 import com.github.sleepypanda.feesh.utils.FishingHookUtils
@@ -74,7 +75,7 @@ object FishingBagDisabledAlert {
                 !WorldUtils.isInFishingWorld()
             ) return
 
-            val currentScreen = FeeshMod.mc.screen
+            val currentScreen = FeeshMod.mc.getScreenCompat()
             if (currentScreen is AbstractContainerScreen<*>) {
                 val title = currentScreen.title.string
 
