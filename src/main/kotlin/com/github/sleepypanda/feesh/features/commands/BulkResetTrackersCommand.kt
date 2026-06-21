@@ -44,10 +44,11 @@ object BulkResetTrackersCommand {
         val trackersText = toReset.joinToString(linePrefix, prefix = linePrefix) { getResetDisplayName(it) }
 
         if (!isConfirmed) {
+            ChatUtils.sendLocalChat("${WHITE}Do you want to reset the following trackers?$trackersText", true)
             ChatUtils.sendLocalChatWithCommand(
-                "${WHITE}Do you want to reset the following trackers?$trackersText\n${RED}${BOLD}[Click to confirm]",
+                "${RED}${BOLD}[Click to confirm]",
                 "$COMMAND_NAME noconfirm",
-                true
+                false
             )
             return
         }
