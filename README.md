@@ -26,12 +26,14 @@ If you want early access to the pre-releases, Github automatically builds every 
 ### 1.21.10
 
 Required Minecraft version is **1.21.10** (Fabric loader 0.18.1+).
+Required Java version is 21+.
 
 This mod requires [Fabric API](https://modrinth.com/mod/fabric-api) and [Fabric Language Kotlin](https://modrinth.com/mod/fabric-language-kotlin) mods for 1.21.10.
 
 ### 1.21.11
 
 Required Minecraft version is **1.21.11** (Fabric loader 0.18.4+).
+Required Java version is 21+.
 
 This mod requires [Fabric API](https://modrinth.com/mod/fabric-api) and [Fabric Language Kotlin](https://modrinth.com/mod/fabric-language-kotlin) mods for 1.21.11.
 
@@ -40,6 +42,7 @@ This mod requires [Fabric API](https://modrinth.com/mod/fabric-api) and [Fabric 
 Required Minecraft version is **26.1.x** (Fabric loader 0.19.2+).
 
 This mod requires [Fabric API](https://modrinth.com/mod/fabric-api) and [Fabric Language Kotlin](https://modrinth.com/mod/fabric-language-kotlin) mods for 26.1.x.
+Required Java version is 25+.
 
 ## Features
 

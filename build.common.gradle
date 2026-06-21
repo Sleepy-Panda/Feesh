@@ -1,0 +1,110 @@
+import org.gradle.api.tasks.Copy
+import org.gradle.api.tasks.compile.JavaCompile
+import org.gradle.jvm.tasks.Jar
+
+def mcProject = project.name
+def mcVersion = mcProject - "-fabric"
+
+// Get a property by MC version from gradle.properties
+// E.g. getPropertyByMcVersion("fabric-api.version") in scope of 1.21.10 gets fabric-api.version.1.21.10
+def getPropertyByMcVersion = { String name ->
+    def value = project.findProperty("${name}.${mcVersion}")?.toString()
+    if (value == null) {
+        throw new AssertionError("Missing property ${name}.${mcVersion} in build.common.gradle for ${mcProject}")
+    }
+    return value
+}
+
+configurations.configureEach {
+    resolutionStrategy {
+        force("org.jetbrains.kotlin:kotlin-stdlib:2.3.0")
+    }
+}
+
+repositories {
+    maven { url = "https://repo.essential.gg/repository/maven-public" }
+    maven { url = "https://maven.teamresourceful.com/repository/maven-public/" }
+}
+
+def jarName = "${project.property("mod.name")}-${project.property("mod.version")}+${mcProject}"
+
+afterEvaluate {
+    def outputDir = rootProject.layout.buildDirectory.dir("versions").get().asFile
+    tasks.named("jar", Jar).configure {
+        destinationDirectory.set(outputDir)
+        archiveBaseName.set(jarName)
+    }
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.release.set(getPropertyByMcVersion("java.version").toInteger())
+}
+
+tasks.named("processResources", Copy).configure {
+    def expandedFiles = ["fabric.mod.json", "feesh.mixins.json"]
+    def modName = project.property("mod.name")
+    def modId = project.property("mod.id")
+    def modVersion = project.property("mod.version")
+    def modDescription = project.property("mod.description")
+    def javaVersion = getPropertyByMcVersion("java.version")
+    def mixinCompatibilityLevel = "JAVA_${javaVersion}"
+    def modJavaVersion = "${javaVersion}"
+
+    inputs.property("mod_name", modName)
+    inputs.property("mod_id", modId)
+    inputs.property("mod_version", modVersion)
+    inputs.property("mod_description", modDescription)
+    inputs.property("minor_mc_version", mcVersion)
+    inputs.property("java_version", mixinCompatibilityLevel)
+    inputs.property("mod_java_version", modJavaVersion)
+
+    filesMatching(expandedFiles) {
+        expand(
+            mod_name: modName,
+            mod_id: modId,
+            mod_version: modVersion,
+            mod_description: modDescription,
+            minor_mc_version: mcVersion,
+            java_version: mixinCompatibilityLevel,
+            mod_java_version: modJavaVersion,
+        )
+    }
+}
+
+ext.includeDependency = { String notation, String targetConfiguration ->
+    dependencies.add("include", notation)
+    dependencies.add(targetConfiguration, notation)
+}
+
+dependencies {
+    add("minecraft", "com.mojang:minecraft:${mcVersion}")
+
+    def modImplementationConfig = configurations.findByName("modImplementation")
+    def modTargetConfiguration = modImplementationConfig != null ? modImplementationConfig.name : "implementation"
+
+    def includeModDependency = { String notation ->
+        includeDependency(notation, modTargetConfiguration)
+    }
+
+    add(modTargetConfiguration, "net.fabricmc:fabric-loader:${property("fabricloader.version")}")
+    add(modTargetConfiguration, "net.fabricmc.fabric-api:fabric-api:${getPropertyByMcVersion("fabric-api.version")}")
+    add("implementation", "net.fabricmc:fabric-language-kotlin:${property("fabriclanguagekotlin.version")}")
+
+    switch (mcProject) {
+        case "1.21.10-fabric":
+            includeModDependency("com.teamresourceful.resourcefulconfigkt:resourcefulconfigkt-fabric-1.21.5:${property("resourcefulconfig-kt.version.1.21.10")}")
+            includeModDependency("com.teamresourceful.resourcefulconfig:resourcefulconfig-fabric-1.21.9:${property("resourcefulconfig.version.1.21.10")}")
+            break
+        case "1.21.11-fabric":
+            includeModDependency("com.teamresourceful.resourcefulconfigkt:resourcefulconfigkt-fabric-1.21.5:${property("resourcefulconfig-kt.version.1.21.11")}")
+            includeModDependency("com.teamresourceful.resourcefulconfig:resourcefulconfig-fabric-1.21.11:${property("resourcefulconfig.version.1.21.11")}")
+            break
+        case "26.1-fabric":
+            add("implementation", "net.fabricmc:sponge-mixin:0.17.0+mixin.0.8.7")
+            includeDependency("com.teamresourceful.resourcefulconfig:resourcefulconfig-fabric-26.1:${property("resourcefulconfig.version.26.1")}", "implementation")
+            includeDependency("com.teamresourceful.resourcefulconfigkt:resourcefulconfigkt-26.1-rc-1:${property("resourcefulconfig-kt.version.26.1-rc-1")}", "implementation")
+            break
+        default:
+            throw new AssertionError("build.common.gradle has no support for ${mcProject}")
+    }
+}
