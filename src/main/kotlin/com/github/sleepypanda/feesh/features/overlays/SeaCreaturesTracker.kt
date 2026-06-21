@@ -456,10 +456,11 @@ object SeaCreaturesTracker : IResettableViewModeTracker {
                     TrackerViewMode.SESSION -> "$DELETE_SEA_CREATURE_COMMAND ${seaCreatureInfo?.name ?: key} noconfirm"
                     TrackerViewMode.TOTAL -> "$DELETE_SEA_CREATURE_TOTAL_COMMAND ${seaCreatureInfo?.name ?: key} noconfirm"
                 }
+                ChatUtils.sendLocalChat("${WHITE}Do you want to delete ${displayName}${WHITE} from Sea creatures tracker ${viewModeText}${WHITE}?", true)
                 ChatUtils.sendLocalChatWithCommand(
-                    "${WHITE}Do you want to delete ${displayName}${WHITE} from Sea creatures tracker ${viewModeText}${WHITE}? ${RED}${BOLD}[Click to confirm]",
+                    "${RED}${BOLD}[Click to confirm]",
                     command,
-                    true
+                    false
                 )
                 return
             }

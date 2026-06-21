@@ -443,10 +443,11 @@ object FishingProfitTracker : IResettableViewModeTracker {
                     TrackerViewMode.SESSION -> "$DELETE_ITEM_COMMAND $itemId noconfirm"
                     TrackerViewMode.TOTAL -> "$DELETE_ITEM_TOTAL_COMMAND $itemId noconfirm"
                 }
+                ChatUtils.sendLocalChat("${WHITE}Do you want to delete ${WHITE}${entry.amount}x ${displayName}${WHITE} from the Fishing profit tracker ${viewModeText}${WHITE}?", true)
                 ChatUtils.sendLocalChatWithCommand(
-                    "${WHITE}Do you want to delete ${WHITE}${entry.amount}x ${displayName}${WHITE} from the Fishing profit tracker ${viewModeText}${WHITE}? ${RED}${BOLD}[Click to confirm]",
+                    "${RED}${BOLD}[Click to confirm]",
                     deleteCommand,
-                    true
+                    false
                 )
                 return
             }
