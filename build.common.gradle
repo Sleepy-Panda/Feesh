@@ -5,10 +5,12 @@ import org.gradle.jvm.tasks.Jar
 def mcProject = project.name
 def mcVersion = mcProject - "-fabric"
 
-def versionedProperty = { String name ->
+// Get a property by MC version from gradle.properties
+// E.g. getPropertyByMcVersion("fabric-api.version") in scope of 1.21.10 gets fabric-api.version.1.21.10
+def getPropertyByMcVersion = { String name ->
     def value = project.findProperty("${name}.${mcVersion}")?.toString()
     if (value == null) {
-        throw new AssertionError("build.common.gradle needs updating for ${mcProject} — missing ${name}.${mcVersion}")
+        throw new AssertionError("Missing property ${name}.${mcVersion} in build.common.gradle for ${mcProject}")
     }
     return value
 }
@@ -35,7 +37,7 @@ afterEvaluate {
 }
 
 tasks.withType(JavaCompile).configureEach {
-    options.release.set(versionedProperty("java.version").toInteger())
+    options.release.set(getPropertyByMcVersion("java.version").toInteger())
 }
 
 tasks.named("processResources", Copy).configure {
@@ -44,7 +46,7 @@ tasks.named("processResources", Copy).configure {
     def modId = project.property("mod.id")
     def modVersion = project.property("mod.version")
     def modDescription = project.property("mod.description")
-    def javaVersion = versionedProperty("java.version")
+    def javaVersion = getPropertyByMcVersion("java.version")
     def mixinCompatibilityLevel = "JAVA_${javaVersion}"
     def modJavaVersion = "${javaVersion}"
 
@@ -85,7 +87,7 @@ dependencies {
     }
 
     add(modTargetConfiguration, "net.fabricmc:fabric-loader:${property("fabricloader.version")}")
-    add(modTargetConfiguration, "net.fabricmc.fabric-api:fabric-api:${versionedProperty("fabric-api.version")}")
+    add(modTargetConfiguration, "net.fabricmc.fabric-api:fabric-api:${getPropertyByMcVersion("fabric-api.version")}")
     add("implementation", "net.fabricmc:fabric-language-kotlin:${property("fabriclanguagekotlin.version")}")
 
     switch (mcProject) {
@@ -103,6 +105,6 @@ dependencies {
             includeDependency("com.teamresourceful.resourcefulconfigkt:resourcefulconfigkt-26.1-rc-1:${property("resourcefulconfig-kt.version.26.1-rc-1")}", "implementation")
             break
         default:
-            throw new AssertionError("build.common.gradle needs updating for ${mcProject}")
+            throw new AssertionError("build.common.gradle has no support for ${mcProject}")
     }
 }
