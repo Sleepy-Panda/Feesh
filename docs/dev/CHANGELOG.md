@@ -4,6 +4,8 @@ Released on: ???
 
 ## Features
 
+- Added support for Minecraft 26.2 (Fabric).
+  - A lot of related adjustments done! They might affect existing MC versions, or something may not work on the new version. **Please let me know if you face any issues!**
 - Added Expertise kills counter to the Items settings section, showing exact expertise counter on fishing rods [disabled by default].
 - Added option to set a keybind for bulk resetting multiple trackers' data, to quickly reset current fishing session.
   - You can also choose what trackers to include. By default, it's set to Fishing profit tracker, Sea creatures tracker, Sc/h tracker.
