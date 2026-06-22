@@ -1,5 +1,6 @@
 package com.github.sleepypanda.feesh.features.items.tooltip
 
+import com.github.sleepypanda.feesh.utils.ChatUtils.getUnformattedString
 import com.github.sleepypanda.feesh.utils.ItemUtils
 import net.minecraft.network.chat.Component
 import net.minecraft.world.item.ItemStack
@@ -44,7 +45,7 @@ abstract class BaseTooltip {
     }
 
     protected fun getStackIdentifier(stack: ItemStack): String {
-        return (stack.hoverName?.string ?: "") + System.identityHashCode(stack)
+        return (stack.hoverName.getUnformattedString()) + System.identityHashCode(stack)
     }
 
     protected fun getCustomDataHash(stack: ItemStack): Int {

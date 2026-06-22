@@ -54,9 +54,10 @@ object RareCatchAlert {
     private fun onPartyChatSeaCreature(event: PartyChatEvent) {
         if (!WorldUtils.isInSkyblock() || !Alerts.alertOnRareSeaCreatures || Alerts.alertOnRareSeaCreaturesSource != AlertSource.OWN_AND_PARTY) return
 
-        val me = PlayerUtils.getName() ?: return
+        val me = PlayerUtils.getUnformattedName()
+        if (me.isNullOrEmpty()) return
         val playerName = PlayerUtils.getFormattedPlayerNameFromPartyChat(event.rankAndPlayer) ?: return
-        if (!playerName.isNullOrEmpty() && !me.isNullOrEmpty() && playerName.removeFormatting().contains(me)) return
+        if (!playerName.isNullOrEmpty() && playerName.removeFormatting().contains(me)) return
 
         val message = event.messagePayload.removeFormatting()
         

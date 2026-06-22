@@ -6,9 +6,8 @@ import com.github.sleepypanda.feesh.events.models.BaitChangedEvent
 import com.github.sleepypanda.feesh.events.models.BaitRunningOutEvent
 import com.github.sleepypanda.feesh.events.models.ClientTickEvent
 import com.github.sleepypanda.feesh.events.models.WorldChangedEvent
-import com.github.sleepypanda.feesh.utils.ChatUtils.removeFormatting
 import com.github.sleepypanda.feesh.utils.ChatUtils.getFormattedString
-import net.minecraft.core.component.DataComponents
+import com.github.sleepypanda.feesh.utils.ChatUtils.getUnformattedString
 
 object BaitUtils {
     private const val BAIT_RUNNING_OUT_THRESHOLD = 16
@@ -57,11 +56,11 @@ object BaitUtils {
         // Fishing bag has preview in slot #9 in hotbar
         // It appears with some delay when holding a fishing rod
         val lastSlotItem = FeeshMod.mc.player?.inventory?.getItem(8) ?: return
-        val currentBaitName = lastSlotItem.hoverName?.string?.removeFormatting()?.takeIf { it.isNotBlank() } ?: return
+        val currentBaitName = lastSlotItem.hoverName?.getUnformattedString()?.takeIf { it.isNotBlank() } ?: return
         if (!currentBaitName.contains("Bait") && !currentBaitName.contains("Obfuscated")) return
 
         val currentBaitDisplayName = lastSlotItem.hoverName.getFormattedString()
-        val lore = lastSlotItem.get(DataComponents.LORE)?.lines()?.map { it?.string?.removeFormatting() ?: "" } ?: return
+        val lore = ItemUtils.getUnformattedLoreLines(lastSlotItem)
         val baitRemainingLine = lore.find { it.contains("Bait Remaining:") } ?: return
         val currentBaitRemaining = baitRemainingLine.substringAfter(":").trim().replace(",", "").toIntOrNull() ?: return
         if (currentBaitRemaining <= 0) return

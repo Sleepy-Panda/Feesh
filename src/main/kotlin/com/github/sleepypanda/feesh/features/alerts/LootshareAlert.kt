@@ -10,7 +10,6 @@ import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
 import com.github.sleepypanda.feesh.events.EventBus
 import com.github.sleepypanda.feesh.events.models.PartyChatEvent
 import com.github.sleepypanda.feesh.utils.ChatUtils.removeFormatting
-import com.github.sleepypanda.feesh.FeeshMod
 import com.github.sleepypanda.feesh.constants.Sounds
 import com.github.sleepypanda.feesh.settings.categories.General
 import com.github.sleepypanda.feesh.settings.categories.SoundMode
@@ -25,7 +24,7 @@ object LootshareAlert {
         if (!Alerts.alertOnLootshareMessage || !WorldUtils.isInSkyblock()) return
         if (!event.messagePayload.equals(LootshareMessage.LOOTSHARE_MESSAGE, ignoreCase = true)) return
 
-        val playerName = PlayerUtils.getName()
+        val playerName = PlayerUtils.getUnformattedName()
         if (!playerName.isNullOrEmpty() && event.rankAndPlayer.removeFormatting().contains(playerName)) return
 
         CommonUtils.showTitle("${GREEN}${BOLD}Lootshare!")

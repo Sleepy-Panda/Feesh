@@ -10,8 +10,6 @@ import net.minecraft.client.gui.components.ChatComponent
 import net.minecraft.network.chat.Style
 import net.minecraft.network.chat.TextColor
 import net.minecraft.network.chat.Component
-import net.minecraft.network.chat.ClickEvent
-import net.minecraft.network.chat.HoverEvent
 import net.minecraft.network.chat.ClickEvent.OpenUrl
 import net.minecraft.network.chat.ClickEvent.RunCommand
 import net.minecraft.network.chat.HoverEvent.ShowText
@@ -155,16 +153,27 @@ object ChatUtils {
         addLocalChatMessage(finalText)
     }
 
-    fun String.removeFormatting(): String {
+    fun String?.removeFormatting(): String {
         if (this.isNullOrEmpty()) return ""
         return this.replace(Regex("§."), "")
+    }
+ 
+    /** 
+     * Get a string without color and formatting codes.
+     * @return The unformatted string.
+     */
+    fun Component?.getUnformattedString(): String {
+        if (this == null) return ""
+        return this.string?.removeFormatting() ?: ""
     }
 
     /**
      * Get a string with color and formatting codes.
      * Credits to SkyblockOverhaul
      */
-    fun Component.getFormattedString(): String {
+    fun Component?.getFormattedString(): String {
+        if (this == null) return ""
+
         val builder = StringBuilder()
 
         this.visit(

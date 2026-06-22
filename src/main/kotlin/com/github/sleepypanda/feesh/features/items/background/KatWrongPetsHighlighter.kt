@@ -1,9 +1,9 @@
 package com.github.sleepypanda.feesh.features.items.background
 
-import com.github.sleepypanda.feesh.utils.ChatUtils.removeFormatting
 import com.github.sleepypanda.feesh.utils.ChatUtils.getFormattedString
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.settings.categories.Items
+import com.github.sleepypanda.feesh.utils.ChatUtils.getUnformattedString
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen
 import net.minecraft.core.component.DataComponents as DataComponentTypes
 import net.minecraft.world.item.ItemStack
@@ -26,7 +26,7 @@ object KatWrongPetsHighlighter : BaseBackgroundHighlighter() {
     override fun isEnabled(): Boolean = Items.katWrongPetsHighlighter
 
     override fun getItemStackBackgroundColor(stack: ItemStack, screen: AbstractContainerScreen<*>, slot: Slot): Int? {
-        val title = screen.title.string.removeFormatting().trim()
+        val title = screen.title.getUnformattedString().trim()
         if (title != KAT_GUI_TITLE) return null
 
         if (slot.index != PET_SLOT_INDEX && slot.index != CONFIRM_SLOT_INDEX) return null

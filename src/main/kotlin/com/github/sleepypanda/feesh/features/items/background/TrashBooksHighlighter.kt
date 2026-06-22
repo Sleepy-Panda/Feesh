@@ -1,8 +1,8 @@
 package com.github.sleepypanda.feesh.features.items.background
 
-import com.github.sleepypanda.feesh.utils.ChatUtils.removeFormatting
 import com.github.sleepypanda.feesh.utils.ItemUtils
 import com.github.sleepypanda.feesh.settings.categories.Items
+import com.github.sleepypanda.feesh.utils.ChatUtils.getUnformattedString
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.inventory.Slot
@@ -23,7 +23,7 @@ object TrashBooksHighlighter : BaseBackgroundHighlighter() {
     override fun getItemStackBackgroundColor(stack: ItemStack, screen: AbstractContainerScreen<*>, slot: Slot): Int? {
         if (trashBookNames.isEmpty()) return null
 
-        val itemName = stack.hoverName.string.removeFormatting()
+        val itemName = stack.hoverName.getUnformattedString()
         if (itemName != "Enchanted Book") return null
 
         val bookName = ItemUtils.getEnchantedBookName(stack) ?: return null

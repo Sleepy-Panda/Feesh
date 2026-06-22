@@ -1,10 +1,10 @@
 package com.github.sleepypanda.feesh.utils
 
 import com.github.sleepypanda.feesh.FeeshMod
-import com.github.sleepypanda.feesh.utils.ChatUtils.removeFormatting
 import com.github.sleepypanda.feesh.events.EventBus
 import com.github.sleepypanda.feesh.events.models.ClientTickEvent
 import com.github.sleepypanda.feesh.events.models.WorldChangedEvent
+import com.github.sleepypanda.feesh.utils.ChatUtils.getUnformattedString
 import net.minecraft.world.scores.DisplaySlot
 import net.minecraft.world.scores.PlayerTeam
 
@@ -133,7 +133,7 @@ object WorldUtils {
             .filter { entry -> !entry.isHidden }
             .map { entry ->
                 val team = scoreboard.getPlayersTeam(entry.owner)
-                PlayerTeam.formatNameForTeam(team, entry.ownerName()).string.removeFormatting()
+                PlayerTeam.formatNameForTeam(team, entry.ownerName()).getUnformattedString()
             }
             .find { line -> line.contains("⏣") || line.contains("ф") }
         if (zoneLine.isNullOrEmpty()) return null
@@ -174,7 +174,7 @@ object WorldUtils {
 
         val scoreboard = FeeshMod.mc.level?.scoreboard ?: return false
         val objective = scoreboard.getDisplayObjective(DisplaySlot.SIDEBAR) ?: return false
-        val title = objective.displayName.string
+        val title = objective.displayName.getUnformattedString()
         return title.contains("skyblock", ignoreCase = true)
     }
 

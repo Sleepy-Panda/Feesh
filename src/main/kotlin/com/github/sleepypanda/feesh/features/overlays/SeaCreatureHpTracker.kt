@@ -7,6 +7,7 @@ import com.github.sleepypanda.feesh.events.models.ClientTickEvent
 import com.github.sleepypanda.feesh.events.models.WorldChangedEvent
 import com.github.sleepypanda.feesh.settings.categories.Overlays
 import com.github.sleepypanda.feesh.settings.models.HpTrackableSeaCreatureTypes
+import com.github.sleepypanda.feesh.utils.ChatUtils.getUnformattedString
 import com.github.sleepypanda.feesh.utils.CommonUtils
 import com.github.sleepypanda.feesh.utils.WorldUtils
 import com.github.sleepypanda.feesh.utils.EntityUtils
@@ -249,7 +250,7 @@ object SeaCreatureHpTracker {
 
         return entities
             .filter { entity ->
-                EntityUtils.getDistance(player, entity) <= distance || entity.customName?.string?.contains("Reindrake") == true
+                EntityUtils.getDistance(player, entity) <= distance || entity.customName.getUnformattedString().contains("Reindrake")
             }
             .mapNotNull { entity ->
                 EntityUtils.parseSeaCreatureNametag(entity, includedSeaCreatureNames)
