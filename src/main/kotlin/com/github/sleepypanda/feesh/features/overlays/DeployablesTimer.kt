@@ -15,6 +15,7 @@ import com.github.sleepypanda.feesh.utils.PlayerUtils
 import com.github.sleepypanda.feesh.utils.EntityUtils
 import com.github.sleepypanda.feesh.utils.ChatUtils
 import com.github.sleepypanda.feesh.utils.ChatUtils.getFormattedString
+import com.github.sleepypanda.feesh.utils.ChatUtils.getUnformattedString
 import com.github.sleepypanda.feesh.utils.gui.FeeshGui
 import com.github.sleepypanda.feesh.utils.gui.LineInfo
 import com.github.sleepypanda.feesh.utils.CommonUtils
@@ -136,7 +137,7 @@ object DeployablesTimer {
             val heldItem = FeeshMod.mc.player?.mainHandItem
             if (heldItem == null || heldItem.isEmpty) return
 
-            val heldItemName = heldItem.hoverName.string
+            val heldItemName = heldItem.hoverName.getUnformattedString()
             val heldItemDisplayName = heldItem.hoverName.getFormattedString()
             
             if (isUmberellaTrackingEnabled() && heldItemName == "Umberella") {
@@ -313,11 +314,11 @@ object DeployablesTimer {
                 return
             }
 
-            val playerName = PlayerUtils.getName()
+            val playerName = PlayerUtils.getUnformattedName()
             if (playerName.isNullOrEmpty()) return
 
             val ownerArmorStand = entities.find { entity ->
-                val name = entity.customName?.string ?: return@find false
+                val name = entity.customName.getUnformattedString()
                 name.contains("Owner:") && name.contains(playerName)
             }
 
@@ -330,7 +331,7 @@ object DeployablesTimer {
             val totemArmorStand = entities.find { it.id == ownerArmorStandId - 2 }
             if (totemArmorStand == null) return
 
-            val totemArmorStandName = totemArmorStand.customName?.string ?: ""
+            val totemArmorStandName = totemArmorStand.customName.getUnformattedString()
             if (totemArmorStandName != "Totem of Corruption") {
                 resetTotem()
                 return
@@ -339,7 +340,7 @@ object DeployablesTimer {
             val remainingArmorStand = entities.find { it.id == ownerArmorStandId - 1 }
             if (remainingArmorStand == null) return
 
-            val remainingArmorStandName = remainingArmorStand.customName?.string ?: ""
+            val remainingArmorStandName = remainingArmorStand.customName.getUnformattedString()
             if (!remainingArmorStandName.contains("Remaining: ")) {
                 resetTotem()
                 return
@@ -364,11 +365,11 @@ object DeployablesTimer {
                 return
             }
 
-            val playerName = PlayerUtils.getName()
+            val playerName = PlayerUtils.getUnformattedName()
             if (playerName.isNullOrEmpty()) return
 
             val ownerArmorStand = entities.find { entity ->
-                val name = entity.customName?.string ?: ""
+                val name = entity.customName.getUnformattedString()
                 name.contains("Spawned by:") && name.contains(playerName)
             }
 
@@ -381,7 +382,7 @@ object DeployablesTimer {
             val blackHoleArmorStand = entities.find { it.id == ownerArmorStandId + 1 }
             if (blackHoleArmorStand == null) return
 
-            val blackHoleArmorStandName = blackHoleArmorStand.customName?.string ?: ""
+            val blackHoleArmorStandName = blackHoleArmorStand.customName.getUnformattedString()
             if (!blackHoleArmorStandName.startsWith("Black Hole")) {
                 resetBlackHole()
                 return
@@ -412,7 +413,7 @@ object DeployablesTimer {
             }
 
             val umberellaArmorStand = entities.find { entity ->
-                entity.customName?.string?.startsWith("Umberella ") == true &&
+                entity.customName.getUnformattedString().startsWith("Umberella ") &&
                 entity.id == umberellaData.id
             }
 
@@ -421,7 +422,7 @@ object DeployablesTimer {
                 return
             }
 
-            val name = umberellaArmorStand.customName?.string ?: ""
+            val name = umberellaArmorStand.customName.getUnformattedString()
             val seconds = name.split("Umberella ").lastOrNull()?.replace("s", "")?.toIntOrNull() ?: return
             umberellaData.remainingTime = fromSecondsToTimeString(seconds)
 
@@ -446,7 +447,7 @@ object DeployablesTimer {
             }
 
             val lanternArmorStand = entities.find { entity ->
-                entity.customName?.string?.let { isDwarvenLanternArmorStandName(it) } == true &&
+                entity.customName.getUnformattedString().let { isDwarvenLanternArmorStandName(it) } &&
                 entity.id == dwarvenLanternData.id
             }
 
@@ -455,7 +456,7 @@ object DeployablesTimer {
                 return
             }
 
-            val name = lanternArmorStand.customName?.string ?: ""
+            val name = lanternArmorStand.customName.getUnformattedString()
             val seconds = name.split(" ").lastOrNull()?.replace("s", "")?.toIntOrNull() ?: return
             dwarvenLanternData.remainingTime = fromSecondsToTimeString(seconds)
 

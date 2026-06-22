@@ -6,6 +6,7 @@ import com.github.sleepypanda.feesh.events.models.BaitChangedEvent
 import com.github.sleepypanda.feesh.events.models.BaitRunningOutEvent
 import com.github.sleepypanda.feesh.settings.categories.Alerts
 import com.github.sleepypanda.feesh.utils.ChatUtils
+import com.github.sleepypanda.feesh.utils.ChatUtils.getUnformattedString
 import com.github.sleepypanda.feesh.utils.WorldUtils
 import com.github.sleepypanda.feesh.utils.CommonUtils
 import com.github.sleepypanda.feesh.utils.FishingHookUtils
@@ -74,7 +75,7 @@ object BaitAlert {
     }
 
     private fun isInFishingBag(): Boolean {
-        val screen = FeeshMod.mc.getScreenCompat() ?: return false
-        return screen is AbstractContainerScreen<*> && screen.title?.string?.contains("Fishing Bag") == true
+        val screen = FeeshMod.mc.screen ?: return false
+        return screen is AbstractContainerScreen<*> && screen.title.getUnformattedString().contains("Fishing Bag")
     }
 }

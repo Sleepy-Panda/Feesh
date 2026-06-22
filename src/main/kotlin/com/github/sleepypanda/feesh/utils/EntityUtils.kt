@@ -5,6 +5,7 @@ import net.minecraft.world.entity.Entity
 import net.minecraft.world.entity.decoration.ArmorStand
 import net.minecraft.world.entity.projectile.FishingHook
 import com.github.sleepypanda.feesh.utils.ChatUtils.getFormattedString
+import com.github.sleepypanda.feesh.utils.ChatUtils.getUnformattedString
 import com.github.sleepypanda.feesh.utils.ChatUtils.removeFormatting
 import net.minecraft.world.phys.Vec3
 import kotlin.math.sqrt
@@ -107,9 +108,9 @@ object EntityUtils {
         val armorStands = getArmorStandsInRange(entityPosition, distance)
             .filter { asEntity ->
                 if (allowContains) {
-                    asEntity.customName?.string?.contains(name) == true
+                    asEntity.customName.getUnformattedString().contains(name)
                 } else {
-                    asEntity.customName?.string == name
+                    asEntity.customName.getUnformattedString() == name
                 }
             }
 
@@ -151,7 +152,7 @@ object EntityUtils {
      */
     fun parseSeaCreatureNametag(entity: ArmorStand, includedSeaCreatureNames: List<String>? = null): SeaCreatureParsedNametagInfo? {
         val customName = entity.customName ?: return null
-        val plainName = customName.string.removeFormatting()
+        val plainName = customName.getUnformattedString()
 
         if (plainName.isEmpty() ||
             !plainName.contains("[Lv") ||

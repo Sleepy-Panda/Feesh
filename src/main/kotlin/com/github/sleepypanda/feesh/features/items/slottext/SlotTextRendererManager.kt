@@ -4,6 +4,7 @@ import com.github.sleepypanda.feesh.FeeshMod
 import com.github.sleepypanda.feesh.events.EventBus
 import com.github.sleepypanda.feesh.events.models.ScreenBeforeInitEvent
 import com.github.sleepypanda.feesh.events.models.AfterSlotRenderedEvent
+import com.github.sleepypanda.feesh.utils.ChatUtils.getUnformattedString
 import com.github.sleepypanda.feesh.utils.WorldUtils
 import net.minecraft.client.gui.Font
 //#if MC >= 26.1
@@ -117,6 +118,6 @@ object SlotTextRendererManager {
     }
 
     private fun getStackIdentifier(stack: ItemStack): String {
-        return stack.hoverName.string + System.identityHashCode(stack)
+        return stack.hoverName.getUnformattedString() + System.identityHashCode(stack)
     }
 }

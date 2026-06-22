@@ -1,5 +1,6 @@
 package com.github.sleepypanda.feesh.utils
 
+import com.github.sleepypanda.feesh.utils.ChatUtils.getUnformattedString
 import com.github.sleepypanda.feesh.utils.ChatUtils.removeFormatting
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.GRAY
 import com.google.gson.JsonObject
@@ -11,6 +12,19 @@ import net.minecraft.nbt.NbtOps
 import net.minecraft.world.item.FishingRodItem
 
 object ItemUtils {
+
+    /*
+     * Gets the unformatted lore lines from the item stack.
+     * Null lines are returned as empty strings.
+     * @param stack The item stack to get the lore lines from.
+     * @returns {List<String>} The lore lines without formatting.
+     */
+    fun getUnformattedLoreLines(stack: ItemStack): List<String> {
+        if (stack.isEmpty) return emptyList()
+        val loreLines = stack.get(DataComponents.LORE)?.lines()?.map { it?.getUnformattedString() ?: "" } ?: emptyList()
+        return loreLines
+    }
+
     /**
      * Returns the item's custom data component (CUSTOM_DATA), or null if absent.
      */
@@ -72,7 +86,7 @@ object ItemUtils {
      */
     fun isDirtRod(item: ItemStack?): Boolean {
         if (item == null || item.isEmpty) return false
-        return item.hoverName.string.contains("Dirt Rod")
+        return item.hoverName.getUnformattedString().contains("Dirt Rod")
     }
 
     /*
@@ -84,10 +98,10 @@ object ItemUtils {
         if (itemStack == null || itemStack.isEmpty) return false        
         if (itemStack.item == null || itemStack.item !is FishingRodItem) return false
 
-        val name = itemStack.hoverName?.string ?: return false
+        val name = itemStack.hoverName.getUnformattedString()
         if (name.contains("Carnival Rod")) return false
 
-        val loreLines = itemStack.get(DataComponents.LORE)?.lines()?.map { it?.string?.removeFormatting() ?: "" } ?: listOf()
+        val loreLines = getUnformattedLoreLines(itemStack)
         return loreLines.any { it.contains("FISHING ROD", ignoreCase = true) || it.contains("FISHING WEAPON", ignoreCase = true) }
     }
 
@@ -170,7 +184,7 @@ object ItemUtils {
      * @returns {String} The name of the enchanted book, or null if the stack is not an enchanted book.
      */
     fun getEnchantedBookName(stack: ItemStack): String? {
-        val lore = stack.get(DataComponents.LORE)?.lines()?.map { it?.string?.removeFormatting() ?: "" } ?: emptyList()
+        val lore = getUnformattedLoreLines(stack)
         val filteredLore = lore.filter { it.isNotBlank() && !it.contains("Combinable in Anvil") }
         val bookName = filteredLore.firstOrNull()?.trim() ?: return null
         if (bookName.isEmpty()) return null

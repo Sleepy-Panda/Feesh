@@ -2,6 +2,7 @@ package com.github.sleepypanda.feesh.features.alerts
 
 import com.github.sleepypanda.feesh.FeeshMod
 import com.github.sleepypanda.feesh.settings.categories.Alerts
+import com.github.sleepypanda.feesh.utils.ChatUtils.getUnformattedString
 import com.github.sleepypanda.feesh.utils.CommonUtils
 import com.github.sleepypanda.feesh.utils.SoundUtils
 import com.github.sleepypanda.feesh.utils.PlayerUtils
@@ -52,7 +53,7 @@ object HotspotGoneAlert {
         if (!Alerts.alertOnHotspotGone || !WorldUtils.isInSkyblock() || !WorldUtils.isInHotspotFishingWorld() || !PlayerUtils.hasFishingRodInHotbar()) return
         val hotspot = lastClosestHotspot ?: return
         if (hotspot.entity.uuid != event.armorStand.uuid) return
-        if (event.armorStand.customName?.string != "HOTSPOT") return
+        if (event.armorStand.customName.getUnformattedString() != "HOTSPOT") return
 
         val player = FeeshMod.mc.player ?: return
         val distance = EntityUtils.getDistance(player, hotspot.entity)

@@ -2,18 +2,18 @@ package com.github.sleepypanda.feesh.features.alerts
 
 import com.github.sleepypanda.feesh.FeeshMod
 import com.github.sleepypanda.feesh.settings.categories.Alerts
+import com.github.sleepypanda.feesh.utils.ChatUtils.getUnformattedString
 import com.github.sleepypanda.feesh.utils.CommonUtils
 import com.github.sleepypanda.feesh.utils.SoundUtils
 import com.github.sleepypanda.feesh.utils.PlayerUtils
 import com.github.sleepypanda.feesh.utils.WorldUtils
 import com.github.sleepypanda.feesh.utils.FishingHookUtils
-import com.github.sleepypanda.feesh.utils.ChatUtils.removeFormatting
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.events.EventBus
 import com.github.sleepypanda.feesh.events.models.ClientTickEvent
 import com.github.sleepypanda.feesh.events.models.WorldChangedEvent
+import com.github.sleepypanda.feesh.utils.ItemUtils
 import net.minecraft.world.item.ItemStack
-import net.minecraft.core.component.DataComponents
 import net.minecraft.world.entity.EquipmentSlot
 import java.util.Date
 
@@ -80,8 +80,8 @@ object NonFishingArmorAlert {
     private fun isFishingArmor(item: ItemStack?): Boolean {
         if (item == null || item.isEmpty) return false
 
-        val itemName = item.hoverName.string
-        val loreLines = item.get(DataComponents.LORE)?.lines()?.map { it?.string?.removeFormatting() ?: "" } ?: listOf()
+        val itemName = item.hoverName.getUnformattedString()
+        val loreLines = ItemUtils.getUnformattedLoreLines(item)
         
         if (itemName.isEmpty() || loreLines.isEmpty()) return false
 

@@ -3,6 +3,7 @@ package com.github.sleepypanda.feesh.features.items.background
 import com.github.sleepypanda.feesh.events.EventBus
 import com.github.sleepypanda.feesh.events.models.ScreenBeforeInitEvent
 import com.github.sleepypanda.feesh.events.models.BeforeSlotRenderedEvent
+import com.github.sleepypanda.feesh.utils.ChatUtils.getUnformattedString
 import com.github.sleepypanda.feesh.utils.WorldUtils
 //#if MC >= 26.1
 //$$ import net.minecraft.client.gui.GuiGraphicsExtractor as GuiGraphics
@@ -80,6 +81,6 @@ object BackgroundHighlighterManager {
      * Calculates an item stack identifier used for caching.
      */
     private fun getStackIdentifier(stack: ItemStack): String {
-        return stack.hoverName.string + System.identityHashCode(stack)
+        return (stack.hoverName.getUnformattedString()) + System.identityHashCode(stack)
     }
 }

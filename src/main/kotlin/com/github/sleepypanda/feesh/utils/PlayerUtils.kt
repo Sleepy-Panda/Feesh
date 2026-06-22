@@ -1,9 +1,8 @@
 package com.github.sleepypanda.feesh.utils
 
 import com.github.sleepypanda.feesh.FeeshMod
-import com.github.sleepypanda.feesh.utils.CommonUtils
 import com.github.sleepypanda.feesh.utils.ChatUtils.getFormattedString
-import com.github.sleepypanda.feesh.utils.ChatUtils.removeFormatting
+import com.github.sleepypanda.feesh.utils.ChatUtils.getUnformattedString
 import com.github.sleepypanda.feesh.events.EventBus
 import com.github.sleepypanda.feesh.events.models.WorldChangedEvent
 import java.util.Timer
@@ -45,9 +44,10 @@ object PlayerUtils {
      * Get the player's name without formatting and prefixes, e.g. MoonTheSadFisher.
      * @returns {String} The player's name.
      */
-    fun getName() : String? {      
+    fun getUnformattedName() : String? {
         val mc = FeeshMod.mc
-        val nameText = mc.player?.name?.string?.removeFormatting() ?: return null
+        val nameText = mc.player?.name?.getUnformattedString()
+        if (nameText.isNullOrEmpty()) return null
         return nameText
     }
 
@@ -130,7 +130,7 @@ object PlayerUtils {
         val armorPieces = listOf(helmet, chestplate, leggings, boots)
         cachedIsInTrophyArmor = armorPieces.all { armorPiece ->
             if (armorPiece == null || armorPiece.isEmpty) return@all false
-            val itemName = armorPiece.hoverName?.string ?: return@all false
+            val itemName = armorPiece.hoverName?.getUnformattedString() ?: return@all false
             return@all itemName.contains("Hunter", ignoreCase = true) || 
                 itemName.contains("Froggles", ignoreCase = true) || 
                 itemName.contains("Red Sweater", ignoreCase = true)

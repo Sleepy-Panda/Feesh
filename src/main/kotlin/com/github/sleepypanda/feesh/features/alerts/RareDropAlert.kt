@@ -49,9 +49,10 @@ object RareDropAlert {
             val match = FEESH_PCHAT_PATTERN.matchEntire(message) ?: return@onPartyChatDrop
             val itemName = match.groups.get("itemName")?.value ?: return@onPartyChatDrop
     
-            val me = PlayerUtils.getName() ?: return@onPartyChatDrop
+            val me = PlayerUtils.getUnformattedName()
+            if (me.isNullOrEmpty()) return@onPartyChatDrop
             val playerName = PlayerUtils.getFormattedPlayerNameFromPartyChat(event.rankAndPlayer) ?: return@onPartyChatDrop
-            if (!playerName.isEmpty() && !me.isEmpty() && playerName.removeFormatting().contains(me)) return@onPartyChatDrop
+            if (!playerName.isEmpty() && playerName.removeFormatting().contains(me)) return@onPartyChatDrop
     
             showAlert(itemName, playerName, isOwnDrop = false)
         }

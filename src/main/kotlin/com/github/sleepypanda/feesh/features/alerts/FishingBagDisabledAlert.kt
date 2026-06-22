@@ -11,14 +11,14 @@ import com.github.sleepypanda.feesh.utils.PlayerUtils
 import com.github.sleepypanda.feesh.utils.WorldUtils
 import com.github.sleepypanda.feesh.utils.FishingHookUtils
 import com.github.sleepypanda.feesh.utils.ChatUtils
-import com.github.sleepypanda.feesh.utils.ChatUtils.removeFormatting
 import com.github.sleepypanda.feesh.utils.data.PersistentDataManager
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.events.models.ClientTickEvent
 import com.github.sleepypanda.feesh.events.models.GuiOpenedEvent
 import com.github.sleepypanda.feesh.events.models.WorldChangedEvent
+import com.github.sleepypanda.feesh.utils.ChatUtils.getUnformattedString
+import com.github.sleepypanda.feesh.utils.ItemUtils
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen
-import net.minecraft.core.component.DataComponents
 import java.util.Timer
 import kotlin.concurrent.timerTask
 
@@ -77,7 +77,7 @@ object FishingBagDisabledAlert {
 
             val currentScreen = FeeshMod.mc.getScreenCompat()
             if (currentScreen is AbstractContainerScreen<*>) {
-                val title = currentScreen.title.string
+                val title = currentScreen.title.getUnformattedString()
 
                 // When player opens disabled fishing bag, avoid receiving alert again while it's disabled
                 if (title.contains(FISHING_BAG_TITLE_CONTAINS)) return
@@ -108,16 +108,16 @@ object FishingBagDisabledAlert {
                 val currentScreen = event.screen
                 if (currentScreen !is AbstractContainerScreen<*>) return@timerTask
 
-                val title = currentScreen.title.string
+                val title = currentScreen.title.getUnformattedString()
                 if (!title.contains(FISHING_BAG_TITLE_CONTAINS)) return@timerTask
 
                 val handler = currentScreen.menu
                 val item = handler.getSlot(TOGGLE_SLOT_NUMBER).item
                 
-                val itemName = item.hoverName.string.removeFormatting()
+                val itemName = item.hoverName.getUnformattedString()
                 if (itemName != USE_BAITS_FROM_BAG_ITEM_NAME) return@timerTask
 
-                val lore = item.get(DataComponents.LORE)?.lines()?.map { it?.string?.removeFormatting() ?: "" } ?: return@timerTask
+                val lore = ItemUtils.getUnformattedLoreLines(item)
                 val isEnabled = lore.any { line -> line.contains(CLICK_TO_DISABLE_TEXT) }
                 setFishingBagState(isEnabled)
             }

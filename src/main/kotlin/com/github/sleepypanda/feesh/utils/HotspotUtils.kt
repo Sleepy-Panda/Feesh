@@ -1,9 +1,9 @@
 package com.github.sleepypanda.feesh.utils
 
-import com.github.sleepypanda.feesh.FeeshMod
 import net.minecraft.world.entity.decoration.ArmorStand
 import net.minecraft.world.entity.Entity
 import com.github.sleepypanda.feesh.utils.ChatUtils.getFormattedString
+import com.github.sleepypanda.feesh.utils.ChatUtils.getUnformattedString
 import net.minecraft.world.phys.Vec3
 
 object HotspotUtils {
@@ -41,7 +41,7 @@ object HotspotUtils {
         if (armorStands.isEmpty()) return null
 
         val closestHotspotArmorStand = armorStands
-            .filter { it.customName?.string == "HOTSPOT" }
+            .filter { it.customName.getUnformattedString() == "HOTSPOT" }
             .minByOrNull { EntityUtils.getDistance(it, entityPosition.x, entityPosition.y, entityPosition.z) }
 
         if (closestHotspotArmorStand == null) return null
@@ -71,7 +71,7 @@ object HotspotUtils {
     fun findHotspotsInRange(entity: Entity, distance: Double): List<HotspotData> {
         val armorStands = EntityUtils.getArmorStandsInRange(Vec3(entity.x, entity.y, entity.z), distance)
         val closeHotspotArmorStands = armorStands
-            .filter { it.customName?.string == "HOTSPOT" }
+            .filter { it.customName.getUnformattedString() == "HOTSPOT" }
             .sortedBy { EntityUtils.getDistance(entity, it) }
             .map { asEntity ->
                 // Find the perk armor stand (same X and Z, Y is below the HOTSPOT, within 1 block)

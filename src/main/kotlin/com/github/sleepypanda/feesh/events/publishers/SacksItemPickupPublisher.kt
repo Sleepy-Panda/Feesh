@@ -3,6 +3,7 @@ package com.github.sleepypanda.feesh.events.publishers
 import com.github.sleepypanda.feesh.events.EventBus
 import com.github.sleepypanda.feesh.events.models.ChatCancellableEvent
 import com.github.sleepypanda.feesh.events.models.SacksItemsPickupEvent
+import com.github.sleepypanda.feesh.utils.ChatUtils.getUnformattedString
 import com.github.sleepypanda.feesh.utils.ChatUtils.removeFormatting
 import com.github.sleepypanda.feesh.utils.CommonUtils
 import com.github.sleepypanda.feesh.utils.WorldUtils
@@ -42,12 +43,12 @@ object SacksItemPickupPublisher {
     private fun parseItemsFromSacksMessage(message: Component): List<Triple<String, Int, String>> {
         val items = mutableListOf<Triple<String, Int, String>>()
         message.siblings.forEach { part ->
-            if (!part.string.contains(" item")) return@forEach
+            if (!part.getUnformattedString().contains(" item")) return@forEach
 
             val hover = part.style?.hoverEvent ?: return@forEach
 
             if (hover is HoverEvent.ShowText) {
-                val line = hover.value.string
+                val line = hover.value.getUnformattedString()
                 if (!line.contains("Added items:")) return@forEach
 
                 ITEM_LINE_REGEX.findAll(line).forEach { match ->

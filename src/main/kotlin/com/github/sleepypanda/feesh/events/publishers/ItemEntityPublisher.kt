@@ -6,7 +6,7 @@ import com.github.sleepypanda.feesh.events.models.ItemEntityDetailsLoadedEvent
 import com.github.sleepypanda.feesh.events.models.ItemEntityLoadedEvent
 import com.github.sleepypanda.feesh.events.models.WorldChangedEvent
 import com.github.sleepypanda.feesh.utils.ChatUtils.getFormattedString
-import com.github.sleepypanda.feesh.utils.ChatUtils.removeFormatting
+import com.github.sleepypanda.feesh.utils.ChatUtils.getUnformattedString
 import com.github.sleepypanda.feesh.utils.CommonUtils
 import com.github.sleepypanda.feesh.utils.WorldUtils
 import net.minecraft.world.entity.item.ItemEntity
@@ -34,7 +34,7 @@ object ItemEntityPublisher {
                 if (stack.isEmpty) return@runWithCatching
                 val nameText = stack.customName ?: stack.hoverName
                 val formatted = nameText.getFormattedString()
-                val unformatted = nameText.string.removeFormatting()
+                val unformatted = nameText.getUnformattedString()
                 EventBus.publish(ItemEntityDetailsLoadedEvent(itemEntity, itemEntity.id, formatted, unformatted))
             }
         }
