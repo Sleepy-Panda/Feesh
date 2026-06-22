@@ -75,7 +75,7 @@ object BaitAlert {
     }
 
     private fun isInFishingBag(): Boolean {
-        val screen = FeeshMod.mc.screen ?: return false
+        val screen = FeeshMod.mc.getScreenCompat() ?: return false
         return screen is AbstractContainerScreen<*> && screen.title.getUnformattedString().contains("Fishing Bag")
     }
 }
