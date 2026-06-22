@@ -4,6 +4,7 @@ import com.github.sleepypanda.feesh.FeeshMod
 import com.github.sleepypanda.feesh.events.EventBus
 import com.github.sleepypanda.feesh.events.models.ClientTickEvent
 import com.github.sleepypanda.feesh.events.models.WorldChangedEvent
+import com.github.sleepypanda.feesh.utils.ChatUtils.getUnformattedString
 import java.util.Date
 import net.minecraft.world.phys.Vec3
 
@@ -173,7 +174,7 @@ object FishingHookUtils {
         val fishingHook = EntityUtils.getPlayersFishingHookEntity() ?: return false
         if (fishingHook.isInLava || fishingHook.isInWater) return true
 
-        val isDirtRod = heldItem.hoverName.string.contains("Dirt Rod")
+        val isDirtRod = heldItem.hoverName.getUnformattedString().contains("Dirt Rod")
         if (isDirtRod) return true // For dirt rod, the player's hook can be in dirt
 
         return false

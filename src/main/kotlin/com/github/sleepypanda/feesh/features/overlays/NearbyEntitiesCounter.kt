@@ -6,6 +6,7 @@ import com.github.sleepypanda.feesh.events.models.ClientTickEvent
 import com.github.sleepypanda.feesh.events.models.WorldChangedEvent
 import com.github.sleepypanda.feesh.settings.categories.NearbyEntitiesCounterTypes
 import com.github.sleepypanda.feesh.settings.categories.Overlays
+import com.github.sleepypanda.feesh.utils.ChatUtils.getUnformattedString
 import com.github.sleepypanda.feesh.utils.WorldUtils
 import com.github.sleepypanda.feesh.utils.PlayerUtils
 import com.github.sleepypanda.feesh.utils.EntityUtils
@@ -119,7 +120,7 @@ object NearbyEntitiesCounter {
                 val owner = hook.owner
                 if (owner == null) return@filter true
 
-                val ownerName = owner.name.string ?: ""
+                val ownerName = owner.name.getUnformattedString()
                 return@filter !ownerName.contains("Phantom Fisher", ignoreCase = true)
             }
 

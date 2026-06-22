@@ -16,7 +16,7 @@ import com.github.sleepypanda.feesh.events.models.WorldChangedEvent
 import com.github.sleepypanda.feesh.events.models.ItemTooltipRenderedEvent
 import com.github.sleepypanda.feesh.events.models.ScreenBeforeInitEvent
 import com.github.sleepypanda.feesh.utils.ChatUtils.getFormattedString
-import com.github.sleepypanda.feesh.utils.ChatUtils.removeFormatting
+import com.github.sleepypanda.feesh.utils.ChatUtils.getUnformattedString
 import com.github.sleepypanda.feesh.utils.InputUtils
 import kotlin.reflect.KClass
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents
@@ -52,19 +52,19 @@ object EventBus {
     fun init() {
         ClientReceiveMessageEvents.GAME.register { message, isOverlay ->
             if (isOverlay) {
-                publish(ActionBarEvent(message, message.getFormattedString(), message.string?.removeFormatting() ?: ""))
+                publish(ActionBarEvent(message, message.getFormattedString(), message.getUnformattedString()))
             } else {
-                publish(ChatEvent(message, message.getFormattedString(), message.string?.removeFormatting() ?: ""))
+                publish(ChatEvent(message, message.getFormattedString(), message.getUnformattedString()))
             }
         }
 
         ClientReceiveMessageEvents.ALLOW_GAME.register { message, isOverlay ->
             if (isOverlay) {
-                var event = ActionBarCancellableEvent(message, message.getFormattedString(), message.string?.removeFormatting() ?: "", false)
+                val event = ActionBarCancellableEvent(message, message.getFormattedString(), message.getUnformattedString(), false)
                 publish(event)
                 !event.isCancelled
             } else {
-                var event = ChatCancellableEvent(message, message.getFormattedString(), message.string?.removeFormatting() ?: "", false)
+                val event = ChatCancellableEvent(message, message.getFormattedString(), message.getUnformattedString(), false)
                 publish(event)
                 !event.isCancelled
             }
@@ -83,7 +83,7 @@ object EventBus {
                 val guiName = when (screen) {
                     is ChatScreen -> "Chat"
                     is InventoryScreen -> "Inventory"
-                    is AbstractContainerScreen<*> -> screen.title.string
+                    is AbstractContainerScreen<*> -> screen.title.getUnformattedString()
                     else -> screen.javaClass.getSimpleName()
                 }
                 publish(GuiClosedEvent(guiName))

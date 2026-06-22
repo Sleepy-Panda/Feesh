@@ -7,7 +7,7 @@ import com.github.sleepypanda.feesh.events.models.ArmorStandLoadedEvent
 import com.github.sleepypanda.feesh.events.models.ClientTickEvent
 import com.github.sleepypanda.feesh.events.models.WorldChangedEvent
 import com.github.sleepypanda.feesh.utils.ChatUtils.getFormattedString
-import com.github.sleepypanda.feesh.utils.ChatUtils.removeFormatting
+import com.github.sleepypanda.feesh.utils.ChatUtils.getUnformattedString
 import com.github.sleepypanda.feesh.utils.CommonUtils
 import net.minecraft.world.entity.decoration.ArmorStand
 
@@ -47,7 +47,7 @@ object ArmorStandPublisher {
                 val name = armorStand.customName
                 if (name != null) {
                     val formatted = name.getFormattedString()
-                    val unformatted = name.string.removeFormatting()
+                    val unformatted = name.getUnformattedString()
                     EventBus.publish(ArmorStandDetailsLoadedEvent(armorStand, armorStand.id, formatted, unformatted))
                     return@runWithCatching
                 }

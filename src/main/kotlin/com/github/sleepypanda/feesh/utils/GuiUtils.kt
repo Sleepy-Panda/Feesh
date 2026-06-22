@@ -5,6 +5,7 @@ import com.github.sleepypanda.feesh.FeeshMod
 import com.github.sleepypanda.feesh.events.EventBus
 import com.github.sleepypanda.feesh.events.models.ChatEvent
 import com.github.sleepypanda.feesh.events.models.GuiClosedEvent
+import com.github.sleepypanda.feesh.utils.ChatUtils.getUnformattedString
 import net.minecraft.client.gui.screens.ChatScreen
 import net.minecraft.client.gui.screens.inventory.InventoryScreen
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen
@@ -144,7 +145,7 @@ object GuiUtils {
     fun getCurrentChestName(): String? {
         val screen = FeeshMod.mc.screen ?: return null
         if (screen !is AbstractContainerScreen<*>) return null
-        return screen.title.string.removeFormatting()
+        return screen.title.getUnformattedString()
     }
 
     /*

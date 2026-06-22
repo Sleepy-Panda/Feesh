@@ -39,9 +39,10 @@ object PlayerDeathAlert {
         if (!Alerts.alertOnPlayerDeath || !WorldUtils.isInSkyblock()) return
         if (!Regex(PARTY_MEMBER_DIED_PATTERN).containsMatchIn(event.messagePayload)) return
 
-        val me = PlayerUtils.getName() ?: return
+        val me = PlayerUtils.getUnformattedName()
+        if (me.isNullOrEmpty()) return
         val playerName = PlayerUtils.getFormattedPlayerNameFromPartyChat(event.rankAndPlayer) ?: return
-        if (!playerName.isNullOrEmpty() && !me.isNullOrEmpty() && playerName.removeFormatting().contains(me)) return
+        if (!playerName.isNullOrEmpty() && playerName.removeFormatting().contains(me)) return
 
         val title = "${playerName} ${RED}was killed ☠";
 		CommonUtils.showTitle(title, "Wait for them to come back");

@@ -47,7 +47,8 @@ object RareDropsPublisher {
         if (!WorldUtils.isInSkyblock()) return
         
         CommonUtils.runWithCatching("Failed to handle rare drop in publisher.") {
-            val playerName = PlayerUtils.getName() ?: return@onChat
+            val playerName = PlayerUtils.getUnformattedName()
+            if (playerName.isNullOrEmpty()) return@onChat
             
             val rareDropBookMatch = RARE_DROP_BOOK_PATTERN.matchEntire(event.formattedText)
             if (rareDropBookMatch != null) {

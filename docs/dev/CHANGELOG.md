@@ -20,6 +20,7 @@ Released on: ???
 
 ## Other
 
+- Refactored way of reading text from items / lore.
 - Refactored way to detect enabled features in slot text / slot background category.
 - Reused code for resetting various overlays.
 
