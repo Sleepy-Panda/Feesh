@@ -61,7 +61,7 @@ object HotspotGoneAlert {
         val perk = hotspot.perk
         val hotspotUuid: UUID = event.armorStand.uuid
 
-        Timer().schedule(timerTask {
+        Timer(true).schedule(timerTask {
             FeeshMod.mc.execute {
                 if (FeeshMod.mc.level == null) return@execute // Leaving the world or game
                 if (lastClosestHotspot == null) return@execute

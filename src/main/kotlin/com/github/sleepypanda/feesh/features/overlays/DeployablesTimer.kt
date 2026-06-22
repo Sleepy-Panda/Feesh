@@ -148,7 +148,7 @@ object DeployablesTimer {
                 if (flareData.lastPlacedAt != null && Date().time - flareData.lastPlacedAt!!.time < 500) return
 
                 // Give time for a firework rocket to appear after click
-                Timer().schedule(object : TimerTask() {
+                Timer(true).schedule(object : TimerTask() {
                     override fun run() {
                         trackFlareRocketNearby(heldItemDisplayName)
                     }

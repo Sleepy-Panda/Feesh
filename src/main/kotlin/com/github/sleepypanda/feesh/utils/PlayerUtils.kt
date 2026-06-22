@@ -23,7 +23,7 @@ object PlayerUtils {
 
     private fun startTimer() {
         timer?.cancel()
-        timer = Timer()
+        timer = Timer("Feesh-PlayerUtils", true)
         
         val task = timerTask {
             CommonUtils.runWithCatching("Failed to update player utils cache") {

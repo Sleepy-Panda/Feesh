@@ -103,7 +103,7 @@ object FishingBagDisabledAlert {
 
     private fun onFishingBagOpened(event: GuiOpenedEvent) {
         // Schedule task to check after GUI is fully loaded (~2 ticks delay)
-        Timer().schedule(timerTask {
+        Timer(true).schedule(timerTask {
             CommonUtils.runWithCatching("Failed to check fishing bag state on GUI opened") {
                 val currentScreen = event.screen
                 if (currentScreen !is AbstractContainerScreen<*>) return@timerTask

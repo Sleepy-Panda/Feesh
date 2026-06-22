@@ -23,7 +23,9 @@ Newly released - https://hypixel.net/threads/hypixel-skyblock-0-24-5-assorted-qo
 
 ## Latest issues & feedback
 
+- Crash in BaitUtils after visiting garden
 - With the release of Minecraft version 26.2 on June 16th, we'll be dropping support for 1.21.9 and 1.21.10. A few weeks after that, we'll drop support for 1.21.11.
+- Werewolf nor highlighted
 - Adjust commands to set catches count since drop
 - Personal blacklist + party sharing
 - Runic sea creatures - alert or highlight
@@ -35,7 +37,7 @@ Newly released - https://hypixel.net/threads/hypixel-skyblock-0-24-5-assorted-qo
 - Catches/h for treasures
 - Improve link to changelog in settings, and update announcement
 - Work on various events sounds to make them more unique
-- 1.21 Fishing Hook armorstand
+- 1.21 Fishing Hook armorstand flickering
 - Ragnarok immunity timer
 - Manual "set tracker drops" command does not reset "sc since last" for that drop.
 - Fished coins to add via the command.

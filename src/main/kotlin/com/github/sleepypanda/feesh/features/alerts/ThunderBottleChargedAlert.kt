@@ -59,6 +59,6 @@ object ThunderBottleChargedAlert {
 
     private fun resetTimer() {
         timer?.cancel()
-        timer = Timer()
+        timer = Timer("Feesh-ThunderBottleChargedAlert", true)
     }
 }

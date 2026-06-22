@@ -107,7 +107,7 @@ object GuiUtils {
 
     private fun startTimer() {
         timer?.cancel()
-        timer = Timer()
+        timer = Timer("Feesh-GuiUtils", true)
 
         val task = timerTask {
             CommonUtils.runWithCatching("Failed to update Gui utils cache") {
