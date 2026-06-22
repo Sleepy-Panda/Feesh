@@ -116,7 +116,7 @@ object FishingBagDisabledAlert {
                 val itemName = item.hoverName.string.removeFormatting()
                 if (itemName != USE_BAITS_FROM_BAG_ITEM_NAME) return@timerTask
 
-                val lore = item.get(DataComponents.LORE)?.lines()?.map { it.string } ?: return@timerTask
+                val lore = item.get(DataComponents.LORE)?.lines()?.map { it?.string?.removeFormatting() ?: "" } ?: return@timerTask
                 val isEnabled = lore.any { line -> line.contains(CLICK_TO_DISABLE_TEXT) }
                 setFishingBagState(isEnabled)
             }

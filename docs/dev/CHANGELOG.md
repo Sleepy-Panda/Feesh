@@ -23,6 +23,15 @@ Released on: ???
 - Refactored way to detect enabled features in slot text / slot background category.
 - Reused code for resetting various overlays.
 
+# 1.8.1
+
+Released on: 2026-06-22
+
+## Bugfixes
+
+- (I hope) fixed various crashes and bugs appearing in lore-related functionalities.
+  - It seems something was done with formatting codes in items' lore on SB side. Please report if more issues arise!
+
 # 1.8.0
 
 Released on: 2026-06-07
