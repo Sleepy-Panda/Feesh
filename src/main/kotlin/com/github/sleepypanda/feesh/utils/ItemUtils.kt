@@ -85,7 +85,7 @@ object ItemUtils {
         val name = item.hoverName.string
         if (name.contains("Carnival Rod")) return false
 
-        val loreLines = item.get(DataComponents.LORE)?.lines()?.map { it.string } ?: listOf()
+        val loreLines = item.get(DataComponents.LORE)?.lines()?.map { it?.string?.removeFormatting() ?: "" } ?: listOf()
         return loreLines.any { it.contains("FISHING ROD", ignoreCase = true) || it.contains("FISHING WEAPON", ignoreCase = true) }
     }
 
@@ -168,7 +168,7 @@ object ItemUtils {
      * @returns {String} The name of the enchanted book, or null if the stack is not an enchanted book.
      */
     fun getEnchantedBookName(stack: ItemStack): String? {
-        val lore = stack.get(DataComponents.LORE)?.lines()?.map { it.string.removeFormatting() } ?: emptyList()
+        val lore = stack.get(DataComponents.LORE)?.lines()?.map { it?.string?.removeFormatting() ?: "" } ?: emptyList()
         val filteredLore = lore.filter { it.isNotBlank() && !it.contains("Combinable in Anvil") }
         val bookName = filteredLore.firstOrNull()?.trim() ?: return null
         if (bookName.isEmpty()) return null

@@ -40,7 +40,7 @@ object KatWrongPetsHighlighter : BaseBackgroundHighlighter() {
             return null
         } else if (slot.index == CONFIRM_SLOT_INDEX) {
             if (itemColorCache.isEmpty()) return null
-            val itemLore = stack.get(DataComponentTypes.LORE)?.lines()?.map { it.getFormattedString() } ?: emptyList()
+            val itemLore = stack.get(DataComponentTypes.LORE)?.lines()?.map { it?.getFormattedString() ?: "" } ?: emptyList()
             if (itemLore.any { it.contains(MEGALODON_ITEM_NAME) }) return highlightColor
             return null
         }

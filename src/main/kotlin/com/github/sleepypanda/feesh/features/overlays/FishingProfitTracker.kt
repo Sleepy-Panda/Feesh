@@ -866,7 +866,7 @@ object FishingProfitTracker {
             }
 
             if (slotItemName.endsWith("Exp Boost")) {
-                val loreLines = stack.get(DataComponents.LORE)?.lines()?.map { it.string } ?: emptyList()
+                val loreLines = stack.get(DataComponents.LORE)?.lines()?.map { it?.string?.removeFormatting() ?: "" } ?: emptyList()
                 val petItemLine = loreLines.find { it.endsWith("PET ITEM") }
                 if (petItemLine != null) {
                     val description = petItemLine.split(" ").firstOrNull() ?: ""

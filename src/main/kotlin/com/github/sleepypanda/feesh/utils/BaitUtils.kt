@@ -57,13 +57,13 @@ object BaitUtils {
         // Fishing bag has preview in slot #9 in hotbar
         // It appears with some delay when holding a fishing rod
         val lastSlotItem = FeeshMod.mc.player?.inventory?.getItem(8) ?: return
-        val currentBaitName = lastSlotItem.hoverName?.string?.removeFormatting() ?: return
+        val currentBaitName = lastSlotItem.hoverName?.string?.removeFormatting()?.takeIf { it.isNotBlank() } ?: return
         if (!currentBaitName.contains("Bait") && !currentBaitName.contains("Obfuscated")) return
 
         val currentBaitDisplayName = lastSlotItem.hoverName.getFormattedString()
-        val lore = lastSlotItem.get(DataComponents.LORE)?.lines()?.map { it.string } ?: return
+        val lore = lastSlotItem.get(DataComponents.LORE)?.lines()?.map { it?.string?.removeFormatting() ?: "" } ?: return
         val baitRemainingLine = lore.find { it.contains("Bait Remaining:") } ?: return
-        val currentBaitRemaining = baitRemainingLine.split(":")[1].trim().replace(",", "").toInt()
+        val currentBaitRemaining = baitRemainingLine.substringAfter(":").trim().replace(",", "").toIntOrNull() ?: return
         if (currentBaitRemaining <= 0) return
 
         if (currentBaitName == lastBaitName && lastBaitRemaining != null && currentBaitRemaining == lastBaitRemaining!! + 1) return // SB does some kind of "+1 bait refund" when not spending a bait
@@ -76,7 +76,7 @@ object BaitUtils {
         }
 
         if (currentBaitRemaining <= BAIT_RUNNING_OUT_THRESHOLD && shouldPublishBaitRunningOut(currentBaitName)) {
-            EventBus.publish(BaitRunningOutEvent(lastBaitName, lastBaitDisplayName))
+            EventBus.publish(BaitRunningOutEvent(currentBaitName, currentBaitDisplayName))
         }
 
         lastBaitName = currentBaitName
