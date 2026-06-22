@@ -269,9 +269,9 @@ object CommonUtils {
             block()
         } catch (e: Exception) {
             val shortDetails = e.stackTrace.firstOrNull()?.let { stackTrace ->
-                val file = stackTrace.fileName.ifBlank { "Unknown File" }
+                val file = stackTrace.fileName?.takeIf { it.isNotBlank() } ?: "Unknown File"
                 val line = stackTrace.lineNumber.toString()
-                val method = stackTrace.methodName.ifBlank { "Unknown Method" }
+                val method = stackTrace.methodName?.takeIf { it.isNotBlank() } ?: "Unknown Method"
                 "Error occurred in $file:$line in method $method"
             } ?: ""
 

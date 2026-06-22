@@ -45,7 +45,7 @@ object BaitAlert {
             if (!Alerts.alertOnBaitRunningOut || !WorldUtils.isInSkyblock() || !WorldUtils.isInFishingWorld()) return
             if (!FishingHookUtils.wasFishingHookSubmergedMinutesAgo(5)) return
             if (isInFishingBag()) return
-            if (event.baitName.isBlank()) return
+            if (event.baitName.isNullOrBlank()) return
 
             ChatUtils.sendLocalChat("You are almost out of ${event.baitDisplayName}${WHITE}.", true)
 
