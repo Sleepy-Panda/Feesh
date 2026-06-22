@@ -23,6 +23,7 @@ Newly released - https://hypixel.net/threads/hypixel-skyblock-0-24-5-assorted-qo
 
 ## Current issues & feedback
 
+- lastBaitName - test the change for bait running out
 - With the release of Minecraft version 26.2 on June 16th, we'll be dropping support for 1.21.9 and 1.21.10. A few weeks after that, we'll drop support for 1.21.11.
 - Adjust commands to set catches count since drop
 - Personal blacklist + party sharing
@@ -30,7 +31,6 @@ Newly released - https://hypixel.net/threads/hypixel-skyblock-0-24-5-assorted-qo
 - Pickups from trade menu
 - Shorten rod parts list (no descriptions)
 - Sea Creature Tracker where it says "Total" could you change that to "Total Sea Creatures"
-- Empty bait name in no bait alert. Got treasure bait from quest
 - Some legion counting radius logic reported
 - Catches/h for treasures
 - Improve link to changelog in settings, and update announcement
