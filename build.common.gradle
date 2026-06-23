@@ -104,6 +104,11 @@ dependencies {
             includeDependency("com.teamresourceful.resourcefulconfig:resourcefulconfig-fabric-26.1:${property("resourcefulconfig.version.26.1")}", "implementation")
             includeDependency("com.teamresourceful.resourcefulconfigkt:resourcefulconfigkt-26.1-rc-1:${property("resourcefulconfig-kt.version.26.1-rc-1")}", "implementation")
             break
+        case "26.2-fabric":
+            add("implementation", "net.fabricmc:sponge-mixin:0.17.0+mixin.0.8.7")
+            includeDependency("com.teamresourceful.resourcefulconfig:resourcefulconfig-fabric-26.2:${property("resourcefulconfig.version.26.2")}", "implementation")
+            includeDependency("com.teamresourceful.resourcefulconfigkt:resourcefulconfigkt-26.1-rc-1:${property("resourcefulconfig-kt.version.26.2-rc-1")}", "implementation")
+            break
         default:
             throw new AssertionError("build.common.gradle has no support for ${mcProject}")
     }

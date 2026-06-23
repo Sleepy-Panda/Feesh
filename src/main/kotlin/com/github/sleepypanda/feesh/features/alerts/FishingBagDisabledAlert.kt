@@ -6,6 +6,7 @@ import com.github.sleepypanda.feesh.events.models.ChatEvent
 import com.github.sleepypanda.feesh.settings.categories.Alerts
 import com.github.sleepypanda.feesh.utils.CommonUtils
 import com.github.sleepypanda.feesh.utils.SoundUtils
+import com.github.sleepypanda.feesh.utils.getScreenCompat
 import com.github.sleepypanda.feesh.utils.PlayerUtils
 import com.github.sleepypanda.feesh.utils.WorldUtils
 import com.github.sleepypanda.feesh.utils.FishingHookUtils
@@ -74,7 +75,7 @@ object FishingBagDisabledAlert {
                 !WorldUtils.isInFishingWorld()
             ) return
 
-            val currentScreen = FeeshMod.mc.screen
+            val currentScreen = FeeshMod.mc.getScreenCompat()
             if (currentScreen is AbstractContainerScreen<*>) {
                 val title = currentScreen.title.getUnformattedString()
 
@@ -102,7 +103,7 @@ object FishingBagDisabledAlert {
 
     private fun onFishingBagOpened(event: GuiOpenedEvent) {
         // Schedule task to check after GUI is fully loaded (~2 ticks delay)
-        Timer().schedule(timerTask {
+        Timer(true).schedule(timerTask {
             CommonUtils.runWithCatching("Failed to check fishing bag state on GUI opened") {
                 val currentScreen = event.screen
                 if (currentScreen !is AbstractContainerScreen<*>) return@timerTask

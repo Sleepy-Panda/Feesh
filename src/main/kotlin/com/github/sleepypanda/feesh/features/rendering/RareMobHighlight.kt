@@ -15,9 +15,14 @@ import kotlin.jvm.JvmField
 import net.minecraft.world.entity.Entity
 import net.minecraft.world.entity.LivingEntity
 import net.minecraft.world.entity.Display.ItemDisplay
+//#if MC >= 26.2
+//$$ import net.minecraft.world.entity.monster.cubemob.MagmaCube
+//$$ import net.minecraft.world.entity.monster.cubemob.Slime
+//#else
 import net.minecraft.world.entity.monster.MagmaCube
-import net.minecraft.world.entity.player.Player
 import net.minecraft.world.entity.monster.Slime
+//#endif
+import net.minecraft.world.entity.player.Player
 
 object RareMobHighlight {
     @JvmField

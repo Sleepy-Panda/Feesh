@@ -275,11 +275,4 @@ object PriceUtils {
             }
         }, executor)
     }
-    
-    fun shutdown() {
-        scheduler?.shutdown()
-        scheduler = null
-        httpExecutor?.shutdown()
-        httpExecutor = null
-    }
 }

@@ -73,11 +73,11 @@ object PersistentDataManager {
     }
 
     private fun onGameClosed(@Suppress("UNUSED_PARAMETER") event: GameClosedEvent) {
-        saveAndBackupData()
+        saveAndBackupDataSync()
     }
 
-    private fun saveAndBackupData() {
-        executor.execute {
+    private fun saveAndBackupDataSync() {
+        CommonUtils.runWithCatching("Failed to save and backup data on game close") {
             val startNanos = System.nanoTime()
 
             FileUtils.saveJsonToFileSync(overlayCoordsFile, overlayCoordsData, gson, saveLock, "Overlay coords")
@@ -89,7 +89,7 @@ object PersistentDataManager {
             FeeshMod.LOGGER.info("[Feesh] Save and backup data finished in ${elapsedMs}ms (${elapsedSec}s).")
         }
     }
-    
+
     private fun backupFiles() {
         val filesToBackup = backupFileNames.map { File(feeshConfigDir, it) }
         val missing = filesToBackup.filter { !it.exists() }

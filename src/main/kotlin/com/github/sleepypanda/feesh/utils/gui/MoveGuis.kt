@@ -5,6 +5,7 @@ import com.github.sleepypanda.feesh.events.EventBus
 import com.github.sleepypanda.feesh.utils.RegisterUtils
 import com.github.sleepypanda.feesh.utils.ChatUtils
 import com.github.sleepypanda.feesh.utils.WorldUtils
+import com.github.sleepypanda.feesh.utils.setScreenCompat
 import com.github.sleepypanda.feesh.utils.data.PersistentDataManager
 import com.github.sleepypanda.feesh.utils.enums.Alignment
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
@@ -46,7 +47,7 @@ object MoveGuis {
 
         val mc = FeeshMod.mc
         FeeshMod.mc.schedule {
-            mc.setScreen(MoveGuisScreen())
+            mc.setScreenCompat(MoveGuisScreen())
         }
     }
 
@@ -190,7 +191,7 @@ class MoveGuisScreen : Screen(Component.literal("Feesh Move Guis")) {
         val mc = minecraft ?: return super.keyPressed(keyEvent)
         val keyCode = keyEvent.key()
         if (keyCode == 256) { // ESC
-            mc.setScreen(null)
+            mc.setScreenCompat(null)
             return true
         }
         

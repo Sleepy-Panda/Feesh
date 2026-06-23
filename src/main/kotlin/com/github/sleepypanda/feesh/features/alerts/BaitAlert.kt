@@ -11,6 +11,7 @@ import com.github.sleepypanda.feesh.utils.WorldUtils
 import com.github.sleepypanda.feesh.utils.CommonUtils
 import com.github.sleepypanda.feesh.utils.FishingHookUtils
 import com.github.sleepypanda.feesh.utils.SoundUtils
+import com.github.sleepypanda.feesh.utils.getScreenCompat
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
 import net.minecraft.network.chat.Component
@@ -74,7 +75,7 @@ object BaitAlert {
     }
 
     private fun isInFishingBag(): Boolean {
-        val screen = FeeshMod.mc.screen ?: return false
+        val screen = FeeshMod.mc.getScreenCompat() ?: return false
         return screen is AbstractContainerScreen<*> && screen.title.getUnformattedString().contains("Fishing Bag")
     }
 }

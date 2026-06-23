@@ -52,6 +52,6 @@ object SpiritMaskAlert {
 
     private fun resetTimer() {
         timer?.cancel()
-        timer = Timer()
+        timer = Timer("Feesh-SpiritMaskAlert", true)
     }
 }

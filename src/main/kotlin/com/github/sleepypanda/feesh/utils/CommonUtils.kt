@@ -10,12 +10,7 @@ import net.minecraft.network.chat.Component
 object CommonUtils {
     fun showTitle(title: String, subtitle: String? = null, fadeIn: Int = 0, stay: Int = 40, fadeOut: Int = 10) {      
         val mc = FeeshMod.mc
-
-        mc.gui.apply {
-            setTimes(fadeIn, stay, fadeOut)
-            setTitle(Component.literal(title))
-            setSubtitle(Component.literal(subtitle ?: " "))
-        }
+        mc.showTitleCompat(Component.literal(title), Component.literal(subtitle ?: " "), fadeIn, stay, fadeOut)
     }
 
     fun formatNumberWithSpaces(number: Int): String {

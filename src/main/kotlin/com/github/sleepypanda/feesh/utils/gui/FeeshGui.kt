@@ -7,6 +7,7 @@ import com.github.sleepypanda.feesh.events.EventBus
 import com.github.sleepypanda.feesh.settings.categories.Overlays
 import com.github.sleepypanda.feesh.utils.GuiUtils
 import com.github.sleepypanda.feesh.utils.WorldUtils
+import com.github.sleepypanda.feesh.utils.getScreenCompat
 import com.github.sleepypanda.feesh.utils.enums.Alignment
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.utils.data.PersistentDataManager
@@ -303,7 +304,7 @@ class FeeshGui {
     }
 
     private fun onDraw(drawContext: GuiGraphics, textRenderer: Font, mcClient: Minecraft) {
-        if (mcClient.screen is InventoryScreen && isClickable) return
+        if (mcClient.getScreenCompat() is InventoryScreen && isClickable) return
         draw(drawContext, textRenderer, mcClient)
     }
 
@@ -453,7 +454,7 @@ class FeeshGui {
         if (!WorldUtils.isInSkyblock()) return
         if (settingsKey != null && !settingsKey!!()) return
         if (!condition()) return
-        if (mcClient.screen is MoveGuisScreen) return
+        if (mcClient.getScreenCompat() is MoveGuisScreen) return
 
         val allLines = getDisplayLinesForRender()
         val renderLineInfos = getRenderLineInfos()
@@ -1049,7 +1050,7 @@ class FeeshGui {
     fun drawSample(drawContext: GuiGraphics, textRenderer: Font, mcClient: Minecraft) {
         if (sampleLines.isEmpty()) return
         if (!WorldUtils.isInSkyblock()) return
-        if (mcClient.screen !is MoveGuisScreen) return
+        if (mcClient.getScreenCompat() !is MoveGuisScreen) return
 
         drawContext.pose().pushMatrix()
         drawContext.pose().scale(scale, scale)
