@@ -291,7 +291,7 @@ object CrimsonIsleTracker : IResettableTracker {
         }
     }
     
-    fun setRadioactiveVials(count: Int, lastOn: Date?) {
+    fun setRadioactiveVials(count: Int, catchesSinceLast: Int, lastOn: Date?) {
         CommonUtils.runWithCatching(
             message = "Failed to set Radioactive Vials.",
             onError = {
@@ -299,10 +299,10 @@ object CrimsonIsleTracker : IResettableTracker {
             }
         ) {
             if (!WorldUtils.isInSkyblock()) return
-            
-            data.radioactiveVials.initDropCount(count, lastOn)         
+
+            data.radioactiveVials.initDropCount(count, lastOn, catchesSinceLast)
             saveData()
-            ChatUtils.sendLocalChat("${GRAY}Successfully changed Radioactive Vials count to $count in the Crimson Isle tracker.", true)
+            ChatUtils.sendLocalChat("Successfully changed Radioactive Vials for the Crimson Isle tracker.\nCount = ${count}, Lord Jawbuses since last = ${catchesSinceLast}, last on = ${lastOn}.", true)
         }
     }
 

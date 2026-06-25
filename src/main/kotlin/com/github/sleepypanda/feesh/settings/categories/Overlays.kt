@@ -645,29 +645,11 @@ ${GRAY}To reset: ${WHITE}/${BayouTracker.RESET_COMMAND}
 
     init {
         button {
-            title = "Set Titanoboa Sheds count"
-            description = "Explains in your chat how to init Titanoboa Sheds count and last drop date for the Bayou tracker."
-            text = "Click for help"
+            title = "Editing tracker drops guide"
+            description = "Opens a guide on how to initialize drop statistics for the Bayou tracker."
+            text = "Click to open"
             onClick {
-                ChatUtils.sendLocalChat("${AQUA}${BOLD}Titanoboa Sheds setup${RESET}", true)
-                ChatUtils.sendLocalChat("${YELLOW}Command: ${WHITE}/${SetTrackerDropsCommand.COMMAND_NAME}${GOLD} <ITEM_ID> <COUNT> [LAST_ON_DATE]")
-                ChatUtils.sendLocalChat("${DARK_AQUA}<ITEM_ID>: ${GRAY}must be TITANOBOA_SHED")
-                ChatUtils.sendLocalChat("${DARK_AQUA}<COUNT>: ${GRAY}how many drops you got")
-                ChatUtils.sendLocalChat("${DARK_AQUA}[LAST_ON_DATE]: ${GRAY}optional, YYYY-MM-DD hh:mm:ss, cannot be future")
-                ChatUtils.sendLocalChat("${GREEN}Example: ${WHITE}/${SetTrackerDropsCommand.COMMAND_NAME} TITANOBOA_SHED 5 2025-05-30 23:59:00")
-            }
-        }
-        button {
-            title = "Set Snake Eyes count"
-            description = "Explains in your chat how to init Snake Eyes count and last drop date for the Bayou tracker."
-            text = "Click for help"
-            onClick {
-                ChatUtils.sendLocalChat("${AQUA}${BOLD}Snake Eyes setup${RESET}", true)
-                ChatUtils.sendLocalChat("${YELLOW}Command: ${WHITE}/${SetTrackerDropsCommand.COMMAND_NAME}${GOLD} <ITEM_ID> <COUNT> [LAST_ON_DATE]")
-                ChatUtils.sendLocalChat("${DARK_AQUA}<ITEM_ID>: ${GRAY}must be SNAKE_EYES")
-                ChatUtils.sendLocalChat("${DARK_AQUA}<COUNT>: ${GRAY}how many drops you got")
-                ChatUtils.sendLocalChat("${DARK_AQUA}[LAST_ON_DATE]: ${GRAY}optional, YYYY-MM-DD hh:mm:ss, cannot be future")
-                ChatUtils.sendLocalChat("${GREEN}Example: ${WHITE}/${SetTrackerDropsCommand.COMMAND_NAME} SNAKE_EYES 2 2025-05-30 23:59:00")
+                Util.getPlatform().openUri(SetTrackerDropsCommand.GUIDE_URL)
             }
         }
     }
@@ -698,16 +680,11 @@ ${GRAY}To reset: ${WHITE}/${WaterHotspotsTracker.RESET_COMMAND}
 
     init {
         button {
-            title = "Set Tiki Masks count"
-            description = "Explains in your chat how to init Tiki Masks count and last drop date for the Water Hotspots tracker."
-            text = "Click for help"
+            title = "Editing tracker drops guide"
+            description = "Opens a guide on how to initialize drop statistics for the Water Hotspots tracker."
+            text = "Click to open"
             onClick {
-                ChatUtils.sendLocalChat("${AQUA}${BOLD}Tiki Masks setup${RESET}", true)
-                ChatUtils.sendLocalChat("${YELLOW}Command: ${WHITE}/${SetTrackerDropsCommand.COMMAND_NAME}${GOLD} <ITEM_ID> <COUNT> [LAST_ON_DATE]")
-                ChatUtils.sendLocalChat("${DARK_AQUA}<ITEM_ID>: ${GRAY}must be TIKI_MASK")
-                ChatUtils.sendLocalChat("${DARK_AQUA}<COUNT>: ${GRAY}how many drops you got")
-                ChatUtils.sendLocalChat("${DARK_AQUA}[LAST_ON_DATE]: ${GRAY}optional, YYYY-MM-DD hh:mm:ss, cannot be future")
-                ChatUtils.sendLocalChat("${GREEN}Example: ${WHITE}/${SetTrackerDropsCommand.COMMAND_NAME} TIKI_MASK 5 2025-05-30 23:59:00")
+                Util.getPlatform().openUri(SetTrackerDropsCommand.GUIDE_URL)
             }
         }
     }
@@ -738,16 +715,11 @@ ${GRAY}To reset: ${WHITE}/${CrimsonIsleTracker.RESET_COMMAND}
 
     init {
         button {
-            title = "Set Radioactive Vials count"
-            description = "Explains in your chat how to init Radioactive Vials count and last drop date."
-            text = "Click for help"
+            title = "Editing tracker drops guide"
+            description = "Opens a guide on how to initialize drop statistics for the Crimson Isle tracker."
+            text = "Click to open"
             onClick {
-                ChatUtils.sendLocalChat("${AQUA}${BOLD}Radioactive Vials setup${RESET}", true)
-                ChatUtils.sendLocalChat("${YELLOW}Command: ${WHITE}/${SetTrackerDropsCommand.COMMAND_NAME}${GOLD} <ITEM_ID> <COUNT> [LAST_ON_DATE]")
-                ChatUtils.sendLocalChat("${DARK_AQUA}<ITEM_ID>: ${GRAY}must be RADIOACTIVE_VIAL")
-                ChatUtils.sendLocalChat("${DARK_AQUA}<COUNT>: ${GRAY}how many drops you got")
-                ChatUtils.sendLocalChat("${DARK_AQUA}[LAST_ON_DATE]: ${GRAY}optional, YYYY-MM-DD hh:mm:ss, cannot be future")
-                ChatUtils.sendLocalChat("${GREEN}Example: ${WHITE}/${SetTrackerDropsCommand.COMMAND_NAME} RADIOACTIVE_VIAL 2 2025-05-30 23:59:00")
+                Util.getPlatform().openUri(SetTrackerDropsCommand.GUIDE_URL)
             }
         }
     }
@@ -802,16 +774,11 @@ ${GRAY}To reset: ${WHITE}/${LotusAtollTracker.RESET_COMMAND}
 
     init {
         button {
-            title = "Set Prince's Crown Jewels count"
-            description = "Explains in your chat how to init Prince's Crown Jewels count and last drop date for the Lotus Atoll tracker."
-            text = "Click for help"
+            title = "Editing tracker drops guide"
+            description = "Opens a guide on how to initialize drop statistics for the Lotus Atoll tracker."
+            text = "Click to open"
             onClick {
-                ChatUtils.sendLocalChat("${AQUA}${BOLD}Prince's Crown Jewels setup${RESET}", true)
-                ChatUtils.sendLocalChat("${YELLOW}Command: ${WHITE}/${SetTrackerDropsCommand.COMMAND_NAME}${GOLD} <ITEM_ID> <COUNT> [LAST_ON_DATE]")
-                ChatUtils.sendLocalChat("${DARK_AQUA}<ITEM_ID>: ${GRAY}must be PRINCE_CROWN_JEWEL")
-                ChatUtils.sendLocalChat("${DARK_AQUA}<COUNT>: ${GRAY}how many drops you got")
-                ChatUtils.sendLocalChat("${DARK_AQUA}[LAST_ON_DATE]: ${GRAY}optional, YYYY-MM-DD hh:mm:ss, cannot be future")
-                ChatUtils.sendLocalChat("${GREEN}Example: ${WHITE}/${SetTrackerDropsCommand.COMMAND_NAME} PRINCE_CROWN_JEWEL 2 2025-05-30 23:59:00")
+                Util.getPlatform().openUri(SetTrackerDropsCommand.GUIDE_URL)
             }
         }
     }
@@ -843,16 +810,11 @@ ${GRAY}Reset total: ${WHITE}/${TreasureFishingTracker.RESET_TOTAL_COMMAND}
 
     init {
         button {
-            title = "Set Treasure Dyes count"
-            description = "Explains in your chat how to setup Treasure Dyes count and last drop date."
-            text = "Click for help"
+            title = "Editing tracker drops guide"
+            description = "Opens a guide on how to initialize Treasure Dye drop statistics for the Treasure fishing tracker."
+            text = "Click to open"
             onClick {
-                ChatUtils.sendLocalChat("${AQUA}${BOLD}Treasure Dyes setup${RESET}", true)
-                ChatUtils.sendLocalChat("${YELLOW}Command: ${WHITE}/${SetTrackerDropsCommand.COMMAND_NAME}${GOLD} <ITEM_ID> <COUNT> [LAST_ON_DATE]")
-                ChatUtils.sendLocalChat("${DARK_AQUA}<ITEM_ID>: ${GRAY}must be DYE_TREASURE")
-                ChatUtils.sendLocalChat("${DARK_AQUA}<COUNT>: ${GRAY}how many drops you got")
-                ChatUtils.sendLocalChat("${DARK_AQUA}[LAST_ON_DATE]: ${GRAY}optional, YYYY-MM-DD hh:mm:ss, cannot be future")
-                ChatUtils.sendLocalChat("${GREEN}Example: ${WHITE}/${SetTrackerDropsCommand.COMMAND_NAME} DYE_TREASURE 2 2025-05-30 23:59:00")
+                Util.getPlatform().openUri(SetTrackerDropsCommand.GUIDE_URL)
             }
         }
     }

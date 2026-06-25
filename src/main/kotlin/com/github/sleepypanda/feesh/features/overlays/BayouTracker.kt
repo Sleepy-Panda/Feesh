@@ -176,7 +176,7 @@ object BayouTracker : IResettableTracker {
         }
     }
 
-    fun setTitanoboaSheds(count: Int, lastOn: Date?) {
+    fun setTitanoboaSheds(count: Int, catchesSinceLast: Int, lastOn: Date?) {
         CommonUtils.runWithCatching(
             message = "Failed to set Titanoboa Sheds.",
             onError = {
@@ -185,13 +185,13 @@ object BayouTracker : IResettableTracker {
         ) {
             if (!WorldUtils.isInSkyblock()) return
 
-            data.titanoboaSheds.initDropCount(count, lastOn)
+            data.titanoboaSheds.initDropCount(count, lastOn, catchesSinceLast)
             saveData()
-            ChatUtils.sendLocalChat("${GRAY}Successfully changed Titanoboa Sheds count to $count for the ${trackerName}.", true)
+            ChatUtils.sendLocalChat("Successfully changed Titanoboa Sheds for the Bayou tracker.\nCount = ${count}, Titanoboas since last = ${catchesSinceLast}, last on = ${lastOn}.", true)
         }
     }
 
-    fun setSnakeEyes(count: Int, lastOn: Date?) {
+    fun setSnakeEyes(count: Int, catchesSinceLast: Int, lastOn: Date?) {
         CommonUtils.runWithCatching(
             message = "Failed to set Snake Eyes.",
             onError = {
@@ -200,9 +200,9 @@ object BayouTracker : IResettableTracker {
         ) {
             if (!WorldUtils.isInSkyblock()) return
 
-            data.snakeEyes.initDropCount(count, lastOn)
+            data.snakeEyes.initDropCount(count, lastOn, catchesSinceLast)
             saveData()
-            ChatUtils.sendLocalChat("${GRAY}Successfully changed Snake Eyes count to $count for the ${trackerName}.", true)
+            ChatUtils.sendLocalChat("${GRAY}Successfully changed Snake Eyes for the ${trackerName}: count=${count}, sea creatures since last=${catchesSinceLast}.", true)
         }
     }
 }

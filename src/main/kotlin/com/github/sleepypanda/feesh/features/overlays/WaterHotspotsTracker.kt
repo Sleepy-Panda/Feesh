@@ -162,7 +162,7 @@ object WaterHotspotsTracker : IResettableTracker {
         return FishingHookUtils.wasFishingHookSubmergedInHotspotSecondsAgo(15)
     }
 
-    fun setTikiMasks(count: Int, lastOn: Date?) {
+    fun setTikiMasks(count: Int, catchesSinceLast: Int, lastOn: Date?) {
         CommonUtils.runWithCatching(
             message = "Failed to set Tiki Masks.",
             onError = {
@@ -171,9 +171,9 @@ object WaterHotspotsTracker : IResettableTracker {
         ) {
             if (!WorldUtils.isInSkyblock()) return
 
-            data.tikiMasks.initDropCount(count, lastOn)
+            data.tikiMasks.initDropCount(count, lastOn, catchesSinceLast)
             saveData()
-            ChatUtils.sendLocalChat("${GRAY}Successfully changed Tiki Masks count to $count for the Water Hotspots tracker.", true)
+            ChatUtils.sendLocalChat("Successfully changed Tiki Masks for the Water Hotspots tracker.\nCount = ${count}, Wiki Tikis since last = ${catchesSinceLast}, last on = ${lastOn}.", true)
         }
     }
 }

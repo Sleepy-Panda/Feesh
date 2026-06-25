@@ -199,7 +199,7 @@ object TreasureFishingTracker : IResettableViewModeTracker {
         }
     }
 
-    fun setTreasureDyes(count: Int, lastOn: Date?) {
+    fun setTreasureDyes(count: Int, catchesBreakdown: TreasureCatchesData, lastOn: Date?) {
         CommonUtils.runWithCatching(
             message = "Failed to set Treasure Dyes.",
             onError = {
@@ -207,10 +207,12 @@ object TreasureFishingTracker : IResettableViewModeTracker {
             }
         ) {
             if (!WorldUtils.isInSkyblock()) return
-            
-            data.total.treasureDyes.initDropCount(count, lastOn)
+
+            val treasuresSinceLast = catchesBreakdown.totalCatches()
+            data.total.treasureDyes.initDropCount(count, lastOn, treasuresSinceLast)
+            data.total.treasureDyes.catchesBreakdown = catchesBreakdown
             saveData()
-            ChatUtils.sendLocalChat("${GRAY}Successfully changed Treasure Dyes count to ${count} for the Treasure fishing tracker.", true)
+            ChatUtils.sendLocalChat("Successfully changed Treasure Dyes for the Treasure fishing tracker.\nCount = ${count}, treasures since last = ${treasuresSinceLast} (${catchesBreakdown.good} good/${catchesBreakdown.great} great/${catchesBreakdown.outstanding} outstanding), last on = ${lastOn}.", true)
         }
     }
 
