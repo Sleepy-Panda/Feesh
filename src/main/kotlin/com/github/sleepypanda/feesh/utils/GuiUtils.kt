@@ -150,24 +150,28 @@ object GuiUtils {
     }
 
     /*
-     * Check if the player is a GUI which is non-storage (you can't take items from it).
+     * Check if the player is a GUI which is non-storage (you can't take fishing profit items from it).
      * This is used to check if to ignore inventory changes when in some GUI.
      * @returns {Boolean}
      */
     fun isInNonStorageGui(): Boolean {
         val guiName = getCurrentChestName() ?: return false
-        return guiName.startsWith("Wardrobe") || 
-            guiName.startsWith("Your Equipment") || 
+        return guiName.startsWith("Wardrobe") || guiName.startsWith("Your Equipment") || // TODO will be outdated after Loadouts update
+            guiName.contains("Loadouts") || guiName.contains("Equipment Sets") || guiName.contains("Armor Sets") || 
+            guiName.contains("Collections") || 
+            guiName.contains("Skill") || // Your Skills, Fishing Skill, etc.
             guiName.startsWith("Abiphone") || 
             guiName.startsWith("Chocolate") ||
             guiName.startsWith("Hoppity") || 
             guiName == "Slayer" || 
             guiName == "Accessory Bag Thaumaturgy" ||
+            guiName == "Select Power Stone" ||
             guiName == "Stats Tuning" ||
+            guiName == "Stat Tuning Template" ||
             guiName == "SkyBlock Menu" ||
             guiName == "Your Stats Breakdown" ||
-            guiName == "Your Skills" ||
-            guiName == "Calendar and Events"
+            guiName == "Calendar and Events" ||
+            guiName == "Fast Travel"
     }
 
     fun isInSacksGui(): Boolean {
