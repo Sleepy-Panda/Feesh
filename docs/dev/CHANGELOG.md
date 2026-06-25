@@ -4,15 +4,15 @@ Released on: ???
 
 ## Features
 
-- Added support for Minecraft 26.2 (Fabric).
-  - A lot of related adjustments done! They might affect existing MC versions, or something may not work on the new version. **Please let me know if you face any issues!**
-- Added Expertise kills counter to the Items settings section, showing exact expertise counter on fishing rods [disabled by default].
+- Added support for Minecraft 26.2 (Fabric). Please let me know if you face any issues!
+- Added Expertise kills counter to the Items settings section, showing exact Expertise counter on the fishing rods [disabled by default].
 - Added option to set a keybind for bulk resetting multiple trackers' data, to quickly reset current fishing session.
   - You can also choose what trackers to include. By default, it's set to Fishing profit tracker, Sea creatures tracker, Sc/h tracker.
 - Added option "Do not activate when wearing Trophy armor" for Fishing profit tracker [disabled by default].
 - Added **Snake Eyes** drop statistics to the Bayou tracker.
-  - To init your drop count: `/feeshSetTrackerDrops SNAKE_EYES <count> [last on YYYY-MM-DD hh:mm:ss]`
-  - Example: `/feeshSetTrackerDrops SNAKE_EYES 5 2026-06-10 23:00:00`
+  - To init your drop count: `/feeshSetTrackerDrops SNAKE_EYES <count> <titanoboas-since-last> [YYYY-MM-DD hh:mm:ss]`
+  - Example: `/feeshSetTrackerDrops SNAKE_EYES 5 20 2026-06-10 23:00:00` means 5 Snake Eyes drops in total, last drop was 20 Titanoboas ago, on 2026-06-10 23:00:00.
+- Reworked `/feeshSetTrackerDrops` command to accept <sc_count_since_last> parameter, added [guide](https://github.com/Sleepy-Panda/Feesh/blob/develop/docs/Editing%20tracker%20drops.md).
 
 ## Bugfixes
 
@@ -25,6 +25,7 @@ Released on: ???
 - Refactored way of reading text from items / lore.
 - Refactored way to detect enabled features in slot text / slot background category.
 - Reused code for resetting various overlays.
+- A lot of refactorings to add 26.2 support.
 
 # 1.8.1
 
