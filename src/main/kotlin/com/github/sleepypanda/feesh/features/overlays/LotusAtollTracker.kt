@@ -171,7 +171,7 @@ object LotusAtollTracker : IResettableTracker {
         }
     }
 
-    fun setPrincesCrownJewels(count: Int, lastOn: Date?) {
+    fun setPrincesCrownJewels(count: Int, catchesSinceLast: Int, lastOn: Date?) {
         CommonUtils.runWithCatching(
             message = "Failed to set Prince's Crown Jewels.",
             onError = {
@@ -180,9 +180,9 @@ object LotusAtollTracker : IResettableTracker {
         ) {
             if (!WorldUtils.isInSkyblock()) return
 
-            data.princesCrownJewels.initDropCount(count, lastOn)
+            data.princesCrownJewels.initDropCount(count, lastOn, catchesSinceLast)
             saveData()
-            ChatUtils.sendLocalChat("${GRAY}Successfully changed Prince's Crown Jewels count to $count in the Lotus Atoll tracker.", true)
+            ChatUtils.sendLocalChat("Successfully changed Prince's Crown Jewels for the Lotus Atoll tracker.\nCount = ${count}, Frog Princes since last = ${catchesSinceLast}, last on = ${lastOn}.", true)
         }
     }
 

@@ -7,7 +7,6 @@ import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
 import com.github.sleepypanda.feesh.utils.gui.LineInfo
 import com.github.sleepypanda.feesh.utils.ChatUtils.removeFormatting
 import net.minecraft.network.chat.Component
-import java.text.SimpleDateFormat
 import java.util.Date
 
 data class CatchCounterData(
@@ -141,15 +140,17 @@ open class DropCounterData(
         )
     }
 
-    fun initDropCount(dropCount: Int, dropLastOn: Date?) {
+    fun initDropCount(dropCount: Int, dropLastOn: Date?, catchesSinceLastDrop: Int) {
         count = dropCount
         lastDropTime = dropLastOn
+        catchesSinceLast = catchesSinceLastDrop
 
         if (dropLastOn != null) {
             val history = dropsHistory.toMutableList()
-            if (history.isNotEmpty()) {
-                history[0] = history[0].copy(time = dropLastOn)
-            } else {
+            if (history.isEmpty()) {
+                history.add(0, DropsHistoryEntry(catches = 0, time = dropLastOn, magicFind = null))
+            } else if (!history.any { it.time == dropLastOn }) {
+                // I did not figure out how to better manage historical records if user executes command to change last drop stats
                 history.add(0, DropsHistoryEntry(catches = 0, time = dropLastOn, magicFind = null))
             }
             dropsHistory = history
