@@ -1155,7 +1155,7 @@ object FishingProfitTracker : IResettableViewModeTracker {
         fun toCells(): List<String> = listOf(item, price)
     }
 
-    private fun getColumnsSeparator(): String = "  "
+    private fun getColumnsSeparator(): String = " "
 
     private fun getProfitTrackerLineColumns(entry: EntryDisplay): TrackerLineColumns {
         val countStr = CommonUtils.formatNumberWithSpaces(entry.amount)
