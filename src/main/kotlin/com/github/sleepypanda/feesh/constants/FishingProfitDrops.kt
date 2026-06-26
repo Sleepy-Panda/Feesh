@@ -1539,7 +1539,6 @@ class FishingProfitDrops {
                 itemName = "Singed Powder",
                 itemDisplayName = "${UNCOMMON}Singed Powder",
                 npcPrice = 1_000.0,
-                shouldAnnounceRareDrop = true,
             ),
             FishingProfitDropInfo(
                 itemId = "ENCHANTMENT_FIRE_PROTECTION_6",
