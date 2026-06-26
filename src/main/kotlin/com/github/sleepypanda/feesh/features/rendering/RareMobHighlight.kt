@@ -55,7 +55,6 @@ object RareMobHighlight {
 
     private fun onArmorStandDetailsLoaded(event: ArmorStandDetailsLoadedEvent) {
         if (!WorldRendering.highlightSeaCreatures || !WorldUtils.isInSkyblock() || !WorldUtils.isInFishingWorld()) return
-
         val entity = event.entity
         val cleanName = EntityUtils.parseSeaCreatureNametag(entity, enabledMobTypes)?.baseMobName ?: return
         if (!enabledMobTypes.contains(cleanName)) return
@@ -63,6 +62,7 @@ object RareMobHighlight {
         val scInfo = SeaCreatures.allSeaCreatures.find { it.name == cleanName }
 
         val mobEntityShift = when (cleanName) {
+            HighlightableSeaCreatureTypes.WEREWOLF.displayName -> 2 // Player entity shifted from its armor stand
             HighlightableSeaCreatureTypes.FIRE_EEL.displayName -> 11 // Find head instead of tail
             HighlightableSeaCreatureTypes.DROWNED_CAPTAIN.displayName -> 6 // Drowned entity shifted from its armor stand
             HighlightableSeaCreatureTypes.PUDDLE_JUMPER.displayName -> 2 // Frog entity shifted from its armor stand
