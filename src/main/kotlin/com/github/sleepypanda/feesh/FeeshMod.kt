@@ -142,7 +142,7 @@ class FeeshMod : ClientModInitializer {
         FishingFestivalTracker.init()
         FishingProfitTracker.init()
         MagmaCoreFishingTracker.init()
-        SeaCreaturesPerHourTracker.init()
+        EfficiencyTracker.init()
         RainTimer.init()
         MuteReindrakeGifts.init()
 

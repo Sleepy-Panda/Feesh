@@ -99,6 +99,12 @@ object FishingHookUtils {
         return now.time - lastSeen.time <= minutes * 60 * 1000
     }
 
+    fun wasFishingHookSubmergedMillisecondsAgo(milliseconds: Int): Boolean {
+        val lastSeen = lastSubmergedFishingHookSeenAt() ?: return false
+        val now = Date()
+        return now.time - lastSeen.time <= milliseconds
+    }
+
     fun wasFishingHookSubmergedSecondsAgo(seconds: Int): Boolean {
         val lastSeen = lastSubmergedFishingHookSeenAt() ?: return false
         val now = Date()

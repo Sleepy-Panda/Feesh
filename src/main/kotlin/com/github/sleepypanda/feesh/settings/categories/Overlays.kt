@@ -21,7 +21,7 @@ import com.github.sleepypanda.feesh.features.overlays.CrimsonIsleTracker
 import com.github.sleepypanda.feesh.features.overlays.FishingFestivalTracker
 import com.github.sleepypanda.feesh.features.overlays.JerryWorkshopTracker
 import com.github.sleepypanda.feesh.features.overlays.MagmaCoreFishingTracker
-import com.github.sleepypanda.feesh.features.overlays.SeaCreaturesPerHourTracker
+import com.github.sleepypanda.feesh.features.overlays.EfficiencyTracker
 import com.github.sleepypanda.feesh.features.overlays.SeaCreaturesTracker
 import com.github.sleepypanda.feesh.features.overlays.TreasureFishingTracker
 import com.github.sleepypanda.feesh.features.overlays.BayouTracker
@@ -30,6 +30,7 @@ import com.github.sleepypanda.feesh.features.overlays.GalateaWaterTracker
 import com.github.sleepypanda.feesh.features.overlays.LotusAtollTracker
 import com.github.sleepypanda.feesh.features.overlays.SeaCreatureHpTracker
 import com.github.sleepypanda.feesh.settings.models.HpTrackableSeaCreatureTypes
+import com.github.sleepypanda.feesh.settings.models.EfficiencyStatTypes
 import com.github.sleepypanda.feesh.utils.gui.MoveGuis
 import net.minecraft.client.gui.screens.options.controls.KeyBindsScreen
 import net.minecraft.Util
@@ -542,27 +543,37 @@ Hidden if you have no fishing rod in your hotbar!""".trimIndent())
     
     init {
         separator {
-            this.title = "${AQUA}${BOLD}Sea creatures per hour"
+            this.title = "${AQUA}${BOLD}Efficiency"
         }
     }
 
-    var seaCreaturesPerHourTrackerOverlay by boolean(false) {
-        this.name = Translated("Sea creatures per hour tracker")
+    var efficiencyTrackerOverlay by boolean(false) {
+        this.name = Translated("Efficiency tracker")
         this.description = Translated("""
-${GRAY}Shows an overlay with the sea creatures caught per hour, and total sea creatures caught per session. Not persistent - resets on MC restart.
-${GRAY}To reset: ${WHITE}/${SeaCreaturesPerHourTracker.RESET_COMMAND}
-${GRAY}To pause: ${WHITE}/${SeaCreaturesPerHourTracker.PAUSE_COMMAND}
+${GRAY}Shows an overlay with various efficiency statistics of your fishing session. Not persistent - resets on MC restart.
+${GRAY}To reset: ${WHITE}/${EfficiencyTracker.RESET_COMMAND}
+${GRAY}To pause: ${WHITE}/${EfficiencyTracker.PAUSE_COMMAND}
 """.trimIndent())
     }
 
-    var seaCreaturesPerHourCountDoubleHookAsTwo by boolean(true) {
-        this.name = Translated("Count double hook as 2")
-        this.description = Translated("When enabled, a double hook catch counts as 2 sea creatures. When disabled, it counts as 1.")
+    var efficiencyTrackerStats by select(
+        EfficiencyStatTypes.SC_CATCHES_PER_HOUR,
+        EfficiencyStatTypes.SC_PER_HOUR_WITH_DH,
+    ) {
+        this.name = Translated("Efficiency statistics to display")
+        this.description = Translated("""
+${GRAY}Select which per-hour and total counters to show:
+${WHITE}- Casts/hour${GRAY} - fishing rod cast/reel in count per hour.
+${WHITE}- SC catches/hour${GRAY} - sea creature catches per hour, each catch counts as 1.
+${WHITE}- SC/hour (+ DH)${GRAY} - sea creatures per hour, double hook counts as 2.
+${WHITE}- SC/hour (+ DH and BS)${GRAY} - same as SC/hour (includes DH), plus sea creatures you cocooned with Bloodshot (BS).
+""".trimIndent())
+        this.searchTerms = EfficiencyStatTypes.values().map { it.displayName }.toList()
     }
 
-    var seaCreaturesPerHourTrackerCustomStyle by boolean(true) {
+    var efficiencyTrackerCustomStyle by boolean(true) {
         this.name = Translated("Apply custom style")
-        this.description = Translated(getCustomStyleDescription("Sea creatures per hour tracker"))
+        this.description = Translated(getCustomStyleDescription("Efficiency tracker"))
     }
 
     init {
