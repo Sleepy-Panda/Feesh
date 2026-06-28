@@ -142,12 +142,15 @@ Required Java version is 25+.
 - **Mute Jade Dragon** — Mutes Jade dragon sounds while you are in dragon's cave.
 - **Mute Reindrake gifts** — Mutes loud 'totem used' sounds while picking up gifts from a Reindrake.
 
+### Personal Best
+
+- **/feeshPersonalBests** — Displays all your personal best records tracked by the mod.
+
 ### Commands
 
 - **/feesh** — Opens mod settings.
 - **/feeshMoveAllGuis** — Move and resize all enabled overlay GUIs.
 - **/feeshPauseAllTrackers** — Pause all active trackers which have a timer (also available as Keybind).
-- **/feeshPersonalBest** — Displays all your personal best records tracked by the mod.
 - **/feeshPetLevelUpPrices** — Calculates profits for leveling fishing pets from 1 to 100.
 - **/feeshGearCraftPrices** — Calculates profits for crafting gear from fishing drops.
 - **/feeshFearMongererShopPrices** — Calculates profits for selling items from Fear Mongerer NPC shop.

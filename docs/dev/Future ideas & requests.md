@@ -98,6 +98,7 @@ Session: 10x Baby Yeti (Epic), 5x Baby Yeti (Legendary), 1x Level 100
 
 - RARE DROP! Troubled Bubble (+406 ✯ Magic Find) - with no mf also possible
 - RARE DROP! Octopus Tendril (+190 ✯ Magic Find)
+- Player who was dead returned back
 - Alert which soul has dropped for Summoning Ring.
 - Alert on Hotspot fishing without Tiki Mask
 - Reminder if user is fishing with wrong hook/sinker during events or in hotspots.
@@ -151,6 +152,8 @@ It might be not 100% correct due to how Hypixel API works, the person who reques
 
 ## Other
 
+- Hide fire around Ragnarok
+- Hide damage nametags from Flay
 - Separate data tracking/settings for Alpha and Live server? Probably for Bingo too?
 - Way to disable all module features with one toggle.
 - Golden fish timer
@@ -160,11 +163,17 @@ It might be not 100% correct due to how Hypixel API works, the person who reques
   Thunder sparkes gained in session: 1m 
   Profit for session: 80m
 
+## Personal best / personal worst
+
+- Catches to get leg/mythic creatures
+- Spooky mobs?
+
 ## Achievements
 
 - The main blocker here is how to draw custom GUI which displays readonly list of achievements with sorting/filtering/sections. Current library used for settings does not let to draw dynamic readonly content.
 - Do not count on Alpha
-- 1s timeout after the main event
+- 1s timeout after the main event to not override
+- Achievement rarities? Common, Uncommon, Rare, etc.
 
 Unlocked: X/Total (%)
 Sort by: rarity, locked/unlocked
@@ -186,8 +195,10 @@ Sort by: rarity, locked/unlocked
   - No jawbus for 1000 catches (check that in magma lord)
   - No jawbus for 3000 catches (check that in magma lord)
   - Kill Jawbus with no death
+  - LS frag
 - Crimson Hotspots
 - Jerry
+  - Start Blizzard
   - No yeti for 1000 catches (requires tracker to be enabled)
   - No reindrake for 3000 catches (requires tracker to be enabled)
   - Lootshare a baby yeti
@@ -197,10 +208,7 @@ Sort by: rarity, locked/unlocked
   - Smth with tons of nutcrackers (requires tracker to be enabled)
   - Fish the entire event (spend ~9 hours)
 - Spooky
-  - 2 orbs in 10 seconds
 - Ink
-  - Squid / night squid leaderboard
-  - Ink sack collection leaderboard?
 - CH lava
   - Get N magma cores in 10 seconds
 - CH water
@@ -209,8 +217,12 @@ Sort by: rarity, locked/unlocked
   - Full oasis bestiary (It was so much fun... Sigh / Useless grind)
 - Bayou
 - Galatea
+- Atoll
+  - Donate 4 coins
+  - Finish Puddle Jumper ride
 - Marina
-  - Get 400+ sharks per festival
+  - Get 1000+ sharks per festival
+  - Get 1500+ sharks per festival
 - Trophy
   - Gold hunter
   - Diamond hunter

@@ -24,6 +24,9 @@ Newly released - https://hypixel.net/threads/hypixel-skyblock-0-24-5-assorted-qo
 ## Latest issues & feedback
 
 - lastBaitName - test the change for bait running out
+- Xp/h
+- Add All option for drops list in settings
+- Share Nessie with coords to all chat?
 - With the release of Minecraft version 26.2 on June 16th, we'll be dropping support for 1.21.9 and 1.21.10. A few weeks after that, we'll drop support for 1.21.11.
 - Personal blacklist + party sharing
 - Runic sea creatures - alert or highlight
