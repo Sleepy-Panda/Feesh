@@ -4,7 +4,9 @@ Released on: ???
 
 ## Features
 
-- 
+- Personal Best adjustments:
+  - Added Total Moby-Ducks consumed and Total Blizzards started.
+  - Renamed `/feeshPersonalBest` to `/feeshPersonalBests`.
 
 ## Bugfixes
 
