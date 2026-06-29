@@ -81,12 +81,13 @@ object PetLevelUpPricesCommand {
             ChatUtils.sendLocalChat("${GRAY}Profits for leveling up the fishing pets from level 1 to level 100.")
 
             for (petInfo in prices) {
-                val diffStr = CommonUtils.toShortNumber(petInfo.diff) ?: "N/A"
+                val diffCount = CommonUtils.toShortNumber(petInfo.diff) ?: "N/A"
+                val diffColor = if (petInfo.diff != null && petInfo.diff < 0) RED else GREEN
+                val diffText = if (petInfo.diff != null && petInfo.diff > 0) "+$diffCount" else diffCount
                 val level1PriceStr = CommonUtils.toShortNumber(petInfo.level1Price) ?: "N/A"
                 val level100PriceStr = CommonUtils.toShortNumber(petInfo.level100Price) ?: "N/A"
                 val coinsPerXpStr = petInfo.coinsPerXp?.let { String.format("%.2f", it) } ?: "N/A"
-                
-                ChatUtils.sendLocalChat(" - ${petInfo.petDisplayName}${RESET}: ${GREEN}+$diffStr${RESET} (${GOLD}$level1PriceStr${RESET} -> ${GOLD}$level100PriceStr${RESET}) | ${GOLD}$coinsPerXpStr ${RESET}coins/XP")
+                ChatUtils.sendLocalChat(" - ${petInfo.petDisplayName}${RESET}: ${diffColor}${diffText}${RESET} (${GOLD}$level1PriceStr${RESET} -> ${GOLD}$level100PriceStr${RESET}) | ${GOLD}$coinsPerXpStr ${RESET}coins/XP")
             }
         }
     }

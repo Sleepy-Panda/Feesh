@@ -11,6 +11,7 @@ Released on: ???
 ## Bugfixes
 
 - Removed duplicated RARE DROP! chat alert for Singed Powder, as now there is same alert from SB.
+- Fixed text of negative pet level up profit in /feeshPetLevelUpProfit.
 
 # 1.9.0
 
