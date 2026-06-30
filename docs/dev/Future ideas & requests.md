@@ -249,3 +249,12 @@ Sort by: rarity, locked/unlocked
   - Drop a warden heart?
   - Be in party with me? :3
   - Do not fish for N days :c
+
+- fishtastic
+- oFISHial
+- just squidding, you gotta be squidding me
+- ink about it
+- selFISH
+- You're shrimply the best
+- Cod bless you
+- What the fish?
