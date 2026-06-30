@@ -823,7 +823,6 @@ class FishingProfitDrops {
                 itemName = "Bobbin' Scriptures",
                 itemDisplayName = "${RARE}Bobbin' Scriptures",
                 npcPrice = 250_000.0,
-                shouldAnnounceRareDrop = true,
             ),
             FishingProfitDropInfo(
                 itemId = "CHUM",
