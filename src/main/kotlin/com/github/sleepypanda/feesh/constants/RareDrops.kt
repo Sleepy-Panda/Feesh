@@ -16,7 +16,7 @@ enum class RareDropTypes(val displayName: String) {
     SCUTTLER_SHELL("Scuttler Shell"),
     BURNT_TEXTS("Burnt Texts"),
     FLASH_1("Flash 1"),
-    MAGMARIZER_6("Magmarizer 6"),
+    MAGMARIZER_6("Pyroclasm 6"),
     VIBRANT_CORAL("Vibrant Coral"),
     TRUE_ICE("True Ice"),
     PRINCES_CROWN_JEWEL("Prince's Crown Jewel"),
@@ -152,7 +152,7 @@ class RareDrops {
                 npcPrice = 0,
                 isExtremelyRare = false,
                 defaultSoundFileName = Sounds.FEESH_OH_MY_GOD,
-                alternateNames = listOf("Magmarizer VI")
+                alternateNames = listOf("Pyroclasm VI")
             ),
             RareDropInfo(
                 id = "VIBRANT_CORAL",
