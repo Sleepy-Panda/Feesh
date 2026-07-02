@@ -1769,9 +1769,9 @@ class FishingProfitDrops {
             ),
             FishingProfitDropInfo(
                 itemId = "ENCHANTMENT_MAGMARIZER_6",
-                itemName = "Enchanted Book (Magmarizer VI)",
-                itemAlternateNames = listOf("Enchanted Book (Magmarizer 6)"),
-                itemDisplayName = "${RARE}Magmarizer VI ${WHITE}Book",
+                itemName = "Enchanted Book (Pyroclasm VI)",
+                itemAlternateNames = listOf("Enchanted Book (Pyroclasm 6)"),
+                itemDisplayName = "${RARE}Pyroclasm VI ${WHITE}Book",
                 npcPrice = null,
             ),
             FishingProfitDropInfo(

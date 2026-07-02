@@ -7,6 +7,7 @@ Released on: ???
 - Personal Best adjustments:
   - Added Total Moby-Ducks consumed and Total Blizzards started.
   - Renamed `/feeshPersonalBest` to `/feeshPersonalBests`.
+- Fixed alerts not working for Pyroclasm VI book (SB renamed Magmarizer VI).
 
 ## Bugfixes
 
