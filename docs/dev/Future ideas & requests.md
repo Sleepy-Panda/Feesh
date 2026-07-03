@@ -249,6 +249,13 @@ Sort by: rarity, locked/unlocked
   - Drop a warden heart?
   - Be in party with me? :3
   - Do not fish for N days :c
+  - Hunt on atoll
+  - Full puddle jumper ride
+  - 10 star hellfire
+LOOT SHARE You received 2 Seashine Shards for assisting TheRealSeal007!
+LOOT SHARE You received 2 Flipflopper Shards for assisting TheRealSeal007!
+Flipflopper fainted!
+You caught x2 Flipflopper Shards!
 
 - fishtastic
 - oFISHial

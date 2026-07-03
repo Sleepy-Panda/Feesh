@@ -8,6 +8,7 @@ import com.github.sleepypanda.feesh.features.items.background.*
 import com.github.sleepypanda.feesh.features.items.slottext.*
 import com.github.sleepypanda.feesh.features.items.tooltip.*
 import com.github.sleepypanda.feesh.features.overlays.*
+import com.github.sleepypanda.feesh.features.achievements.*
 import com.github.sleepypanda.feesh.features.personalbests.*
 import com.github.sleepypanda.feesh.features.rendering.*
 import com.github.sleepypanda.feesh.features.sounds.*
@@ -122,6 +123,9 @@ class FeeshMod : ClientModInitializer {
         TrophyFrogDiscoveredMessage.init()
         TrophyFishDiscoveredMessage.init()
 
+        // Achievements
+        AchievementsManager.init()
+
         // PB
         DoubleHookPersonalBest.init()
         MobyDuckPersonalBest.init()
@@ -168,6 +172,7 @@ class FeeshMod : ClientModInitializer {
 
         // Commands
         PersonalBestsCommand.init()
+        AchievementsCommand.init()
         SpiderDenRainScheduleCommand.init()
         PetLevelUpPricesCommand.init()
         GearCraftPricesCommand.init()

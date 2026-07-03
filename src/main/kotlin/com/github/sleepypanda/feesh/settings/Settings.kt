@@ -3,6 +3,7 @@ package com.github.sleepypanda.feesh.settings
 import com.github.sleepypanda.feesh.FeeshMod
 import com.github.sleepypanda.feesh.settings.categories.General
 import com.github.sleepypanda.feesh.settings.categories.Alerts
+import com.github.sleepypanda.feesh.settings.categories.Achievements
 import com.github.sleepypanda.feesh.settings.categories.Chat
 import com.github.sleepypanda.feesh.settings.categories.Overlays
 import com.github.sleepypanda.feesh.settings.categories.Commands
@@ -103,6 +104,7 @@ object Settings : ConfigKt("${FeeshMod.MOD_ID}/config") {
         category(Items)
         category(WorldRendering)
         category(Commands)
+        category(Achievements)
     }
     
     fun save() = FeeshMod.INSTANCE.settings.save()

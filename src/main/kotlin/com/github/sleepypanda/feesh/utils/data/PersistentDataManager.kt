@@ -30,6 +30,7 @@ object PersistentDataManager {
     private val feeshConfigDir: File = File(configDir, "feesh")
 
     private const val DATA_FILE_NAME = "data.json"
+    private const val ACHIEVEMENTS_FILE_NAME = "achievementsData.json"
     private const val OVERLAY_COORDS_FILE_NAME = "overlayCoordsData.json"
     private const val CONFIG_FILE_NAME = "config.jsonc"
     private const val BACKUP_DIR_NAME = "backup"
@@ -37,6 +38,7 @@ object PersistentDataManager {
 
     private val backupFileNames = listOf(
         DATA_FILE_NAME,
+        ACHIEVEMENTS_FILE_NAME,
         CONFIG_FILE_NAME,
         OVERLAY_COORDS_FILE_NAME
     )
@@ -48,6 +50,9 @@ object PersistentDataManager {
 
     private var overlayCoordsData: MutableMap<String, OverlayCoordsData> = mutableMapOf()
     private val overlayCoordsFile: File = File(feeshConfigDir, OVERLAY_COORDS_FILE_NAME)
+
+    var achievementsData: AchievementsFileData = AchievementsFileData()
+    private val achievementsFile: File = File(feeshConfigDir, ACHIEVEMENTS_FILE_NAME)
 
     private val saveLock = Any()
     private val saveStateLock = Any() // For debouncing intensive file saves
@@ -69,6 +74,7 @@ object PersistentDataManager {
     fun init() {
         loadFeeshDataFromFile()
         loadOverlayCoordsDataFromFile()
+        loadAchievementsDataFromFile()
         EventBus.subscribe(GameClosedEvent::class, ::onGameClosed)
     }
 
@@ -82,6 +88,7 @@ object PersistentDataManager {
 
             FileUtils.saveJsonToFileSync(overlayCoordsFile, overlayCoordsData, gson, saveLock, "Overlay coords")
             forceSaveFeeshDataToFileSync()
+            forceSaveAchievementsDataToFileSync()
             backupFiles()
 
             val elapsedMs = (System.nanoTime() - startNanos) / 1_000_000
@@ -157,6 +164,23 @@ object PersistentDataManager {
         }
     }
     
+    private fun loadAchievementsDataFromFile() {
+        val type = object : TypeToken<AchievementsFileData>() {}.type
+        val loaded: AchievementsFileData? = FileUtils.loadJsonFromFile(achievementsFile, type, gson, "Achievements")
+        achievementsData = loaded ?: AchievementsFileData()
+        if (loaded != null) {
+            FeeshMod.LOGGER.info("[Feesh] Loaded ${achievementsData.overallAchievements.size} overall achievement entries")
+        }
+    }
+
+    fun saveAchievementsDataToFileAsync() {
+        FileUtils.saveJsonToFileAsync(achievementsFile, achievementsData, gson, executor, saveLock, "Achievements")
+    }
+
+    private fun forceSaveAchievementsDataToFileSync() {
+        FileUtils.saveJsonToFileSync(achievementsFile, achievementsData, gson, saveLock, "Achievements")
+    }
+
     private fun loadFeeshDataFromFile() {
         val type = object : TypeToken<FeeshData>() {}.type
         val loaded: FeeshData? = FileUtils.loadJsonFromFile(feeshDataFile, type, gson, "Feesh data")
