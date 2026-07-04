@@ -86,9 +86,9 @@ object FishingProfitTracker : IResettableViewModeTracker {
     const val SET_TIME_COMMAND = "feeshSetTimeFishingProfit"
     const val SET_TIME_TOTAL_COMMAND = "feeshSetTimeFishingProfitTotal"
 
-    private val COINS_CATCH_PATTERN = Regex("^⛃ (?:GOOD|GREAT|OUTSTANDING) CATCH! You caught ([\\d,]+) Coins.*")
-    private val ICE_ESSENCE_CATCH_PATTERN = Regex("^⛃ (?:GOOD|GREAT|OUTSTANDING) CATCH! You caught Ice Essence x([\\d,]+).*")
-    private val SHARD_CATCH_PATTERN = Regex("^⛃ (?:GOOD|GREAT|OUTSTANDING) CATCH! You caught (?:a|an) (.+) Shard.*")
+    private val COINS_CATCH_PATTERN = Regex("^. (?:GOOD|GREAT|OUTSTANDING) CATCH! You caught ([\\d,]+) Coins.*")
+    private val ICE_ESSENCE_CATCH_PATTERN = Regex("^. (?:GOOD|GREAT|OUTSTANDING) CATCH! You caught Ice Essence x([\\d,]+).*")
+    private val SHARD_CATCH_PATTERN = Regex("^. (?:GOOD|GREAT|OUTSTANDING) CATCH! You caught (?:a|an) (.+) Shard.*")
     private val SHARDS_BLACK_HOLE_PATTERN = Regex("^You caught (.+) Shard[s]?.*")
     private val SHARD_CHARMED_PATTERN = Regex("^(?:CHARM|NAGA|SALT) You charmed (?:a|an) (.+) and captured its Shard.*")
     private val SHARDS_CHARMED_PATTERN = Regex("^(?:CHARM|NAGA|SALT) You charmed (?:a|an) (.+) and captured ([\\d]+) Shards from it.*")

@@ -23,7 +23,8 @@ Newly released - https://hypixel.net/threads/hypixel-skyblock-0-24-5-assorted-qo
 
 ## Latest issues & feedback
 
-- lastBaitName - test the change for bait running out
+- Fix Gemstones icons
+- Toggle for PBs
 - Xp/h
 - SMILE! Polizei111 has sprinkled some joy your way! You feel a little happier. :)
 - Add All option for drops list in settings

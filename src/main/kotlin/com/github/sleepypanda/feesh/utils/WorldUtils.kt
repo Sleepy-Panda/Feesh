@@ -84,6 +84,9 @@ object WorldUtils {
     private const val TICKS_PER_UPDATE = 20
     private var tickCounter = 0
 
+    private val zonePrefixes = listOf("⏣", "ф", "", "")
+    private val zonePrefixesRegex = Regex(zonePrefixes.joinToString("|"))
+
     fun init() {
         EventBus.subscribe(ClientTickEvent::class, ::onClientTick)
         EventBus.subscribe(WorldChangedEvent::class, ::onWorldChanged)
@@ -135,13 +138,14 @@ object WorldUtils {
                 val team = scoreboard.getPlayersTeam(entry.owner)
                 PlayerTeam.formatNameForTeam(team, entry.ownerName()).getUnformattedString()
             }
-            .find { line -> line.contains("⏣") || line.contains("ф") }
+            .find { line -> zonePrefixes.any { line.contains(it) } }
         if (zoneLine.isNullOrEmpty()) return null
 
         // ⏣ Abandoned🐍 Quarry -> Abandoned Quarry
+        //  Crimson Isle -> Crimson Isle
+        //  Enigma's Crib -> Enigma's Crib
         var zoneName = zoneLine
-            .replace("⏣", "")
-            .replace("ф", "")
+            .replace(zonePrefixesRegex, "")
             .replace(Regex("[^\\u0000-\\u007F]"), "")
             .trim()
 

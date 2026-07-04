@@ -11,6 +11,7 @@ Released on: ???
 
 ## Bugfixes
 
+- Fixed functionalities being broken in the mod due to Hypixel changing various text symbols.
 - Removed duplicated RARE DROP! chat alert for Singed Powder and Bobbin' Scriptures, as now there is same alert from SB.
 - Fixed text of negative pet level up profit in /feeshPetLevelUpProfit.
 
