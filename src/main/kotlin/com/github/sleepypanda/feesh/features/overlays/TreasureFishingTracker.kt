@@ -62,7 +62,8 @@ object TreasureFishingTracker : IResettableViewModeTracker {
     override val resetTotalCommand = RESET_TOTAL_COMMAND
     private const val TOGGLE_VIEW_MODE_COMMAND = "feeshToggleTreasureFishingTrackerViewMode"
 
-    private val PATTERN_TREASURE_CATCH = Regex("^⛃ (GOOD|GOOD JUNK|GREAT|GREAT JUNK|OUTSTANDING|OUTSTANDING JUNK) CATCH!")
+    //  GOOD JUNK CATCH! You caught a Rusty Coin!
+    private val PATTERN_TREASURE_CATCH = Regex("^. (GOOD|GOOD JUNK|GREAT|GREAT JUNK|OUTSTANDING|OUTSTANDING JUNK) CATCH!")
 
     private val data: TreasureFishingData
         get() = PersistentDataManager.feeshData.treasureFishing
