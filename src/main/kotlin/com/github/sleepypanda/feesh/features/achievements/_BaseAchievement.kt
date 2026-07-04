@@ -13,9 +13,9 @@ import java.util.Date
 enum class AchievementDifficulty(val displayName: String, val color: ColorCodes, val sound: SoundEvent) {
     EASY("Easy", WHITE, SoundEvents.PLAYER_LEVELUP),
     MEDIUM("Medium", YELLOW, SoundEvents.PLAYER_LEVELUP),
-    HARD("Hard", RED, SoundEvents.UI_TOAST_CHALLENGE_COMPLETE),
+    HARD("Hard", RED, SoundEvents.PLAYER_LEVELUP),
     PROFICIENT("ProFISHient", DARK_RED, SoundEvents.UI_TOAST_CHALLENGE_COMPLETE),
-    IMPOSSIBLE("Impossible", BLACK, SoundEvents.UI_TOAST_CHALLENGE_COMPLETE),
+    IMPOSSIBLE("Impossible", DARK_RED, SoundEvents.UI_TOAST_CHALLENGE_COMPLETE),
 }
 
 enum class AchievementCategory(val displayName: String) {
@@ -68,8 +68,15 @@ abstract class BaseAchievement(
             // TODO: 2 seconds delay to avoid overlapping events
             if (!AchievementsManager.isEnabled() || !isAchieved()) return
     
-            ChatUtils.sendLocalChat("${GREEN}${BOLD}Achievement unlocked: ${WHITE}$displayName ${GRAY}[${difficulty.color}${difficulty.displayName}${GRAY}]", true)
+            val achievement = when (difficulty) {
+                AchievementDifficulty.PROFICIENT
+                AchievementDifficulty.IMPOSSIBLE -> "${DARK_RED}${OBFUSCATED}x ${AQUA}${displayName} ${DARK_RED}${OBFUSCATED}x"
+                else -> "${AQUA}${displayName}"
+            }
+
+            ChatUtils.sendLocalChat("${GREEN}${BOLD}Achievement unlocked: ${achievement} ${GRAY}[${difficulty.color}${difficulty.displayName}${GRAY}]", true)
             ChatUtils.sendLocalChat("${GRAY}$description", false)
+            
             CommonUtils.showTitle(displayName, "${GREEN}${BOLD}ACHIEVEMENT UNLOCKED!")
             SoundUtils.playSound(difficulty.sound)
         }

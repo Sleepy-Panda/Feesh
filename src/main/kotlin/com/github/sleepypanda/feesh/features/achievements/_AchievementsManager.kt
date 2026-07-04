@@ -2,6 +2,8 @@ package com.github.sleepypanda.feesh.features.achievements
 
 import com.github.sleepypanda.feesh.features.achievements.isle.*
 import com.github.sleepypanda.feesh.features.achievements.atoll.*
+import com.github.sleepypanda.feesh.features.achievements.jerry.*
+import com.github.sleepypanda.feesh.features.achievements.water.*
 import com.github.sleepypanda.feesh.settings.categories.Achievements
 import com.github.sleepypanda.feesh.utils.data.AchievementProgress
 import com.github.sleepypanda.feesh.utils.data.PersistentDataManager
@@ -13,9 +15,26 @@ object AchievementsManager {
     val persistentData get() = PersistentDataManager.achievementsData.overallAchievements
 
     fun init() {
+        // Isle
+        register(ConsumeMobyDuckAchievement)
         register(CatchLordJawbusAchievement)
+        register(CatchRagnarokAchievement)
+        register(CatchPlhlegblastAchievement)
+        register(DoubleHookLordJawbusAchievement)
+        register(DropRadioactiveVialAchievement)
+
+        // Atoll
         register(FullRideOnPuddleJumperAchievement)
         register(TewtilFeederAchievement)
+
+        // Jerry Workshop
+        register(CatchReindrakeAchievement)
+        register(StartBlizzardAchievement)
+
+        // Water
+        register(CatchCarrotKingAchievement)
+        register(CatchBloatedMithrilGrubberAchievement)
+
         getIncompleteAchievements().forEach { it.init() }
     }
 

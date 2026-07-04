@@ -198,9 +198,8 @@ Sort by: rarity, locked/unlocked
   - LS frag
 - Crimson Hotspots
 - Jerry
-  - Start Blizzard
-  - No yeti for 1000 catches (requires tracker to be enabled)
-  - No reindrake for 3000 catches (requires tracker to be enabled)
+  - No yeti for 500 catches (requires tracker to be enabled)
+  - No reindrake for 1000 catches (requires tracker to be enabled)
   - Lootshare a baby yeti
   - B2b yeti (requires tracker to be enabled)
   - B2B2B yeti (requires tracker to be enabled)
@@ -234,6 +233,7 @@ Sort by: rarity, locked/unlocked
   - Obtain aquamarine / iceberg / etc dye
 - Setup
   - Giant rod
+  - 10 star hellfire
 - Dirt fishing
   - Catch worm the fish
 - Skill xp / Bestiary
@@ -250,8 +250,7 @@ Sort by: rarity, locked/unlocked
   - Be in party with me? :3
   - Do not fish for N days :c
   - Hunt on atoll
-  - Full puddle jumper ride
-  - 10 star hellfire
+Your Auto Recombobulator recombobulated Squid Boots!
 LOOT SHARE You received 2 Seashine Shards for assisting TheRealSeal007!
 LOOT SHARE You received 2 Flipflopper Shards for assisting TheRealSeal007!
 Flipflopper fainted!

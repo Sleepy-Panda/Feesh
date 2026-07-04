@@ -10,12 +10,12 @@ import com.github.sleepypanda.feesh.features.achievements.BaseAchievement
 import com.github.sleepypanda.feesh.utils.CommonUtils
 import com.github.sleepypanda.feesh.utils.WorldUtils
 
-object CatchLordJawbusAchievement : BaseAchievement(
-    id = "catch_lord_jawbus",
-    displayName = "Lord Jawbus catcher",
-    description = "Fish up a Lord Jawbus for the first time.",
+object CatchReindrakeAchievement : BaseAchievement(
+    id = "catch_reindrake",
+    displayName = "Gifts for everyone!",
+    description = "Fish up a Reindrake for the first time.",
     difficulty = AchievementDifficulty.MEDIUM,
-    categories = listOf(AchievementCategory.CRIMSON_ISLE, AchievementCategory.LAVA),
+    categories = listOf(AchievementCategory.JERRY_WORKSHOP, AchievementCategory.WATER),
 ) {
     override fun init() {
         EventBus.subscribe(OwnSeaCreatureCaughtEvent::class, ::onSeaCreatureCaught)
@@ -24,8 +24,8 @@ object CatchLordJawbusAchievement : BaseAchievement(
     private fun onSeaCreatureCaught(event: OwnSeaCreatureCaughtEvent) {
         CommonUtils.runWithCatching("Failed to check and handle achievement $id") {
             if (!AchievementsManager.isEnabled() || isAchieved()) return@runWithCatching
-            if (!WorldUtils.isInSkyblock() || WorldUtils.getWorldName() != WorldUtils.CRIMSON_ISLE) return@runWithCatching
-            if (!event.seaCreatureName.equals(SeaCreatureNames.LORD_JAWBUS, ignoreCase = true)) return@runWithCatching
+            if (!WorldUtils.isInSkyblock() || WorldUtils.getWorldName() != WorldUtils.JERRY_WORKSHOP) return@runWithCatching
+            if (!event.seaCreatureName.equals(SeaCreatureNames.REINDRAKE, ignoreCase = true)) return@runWithCatching
     
             completeAndAnnounce()
         }

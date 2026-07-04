@@ -10,10 +10,10 @@ import com.github.sleepypanda.feesh.features.achievements.BaseAchievement
 import com.github.sleepypanda.feesh.utils.CommonUtils
 import com.github.sleepypanda.feesh.utils.WorldUtils
 
-object CatchLordJawbusAchievement : BaseAchievement(
-    id = "catch_lord_jawbus",
-    displayName = "Lord Jawbus catcher",
-    description = "Fish up a Lord Jawbus for the first time.",
+object CatchPlhlegblastAchievement : BaseAchievement(
+    id = "catch_plhlegblast",
+    displayName = "Plhlegblast catcher",
+    description = "Fish up a Plhlegblast for the first time.",
     difficulty = AchievementDifficulty.MEDIUM,
     categories = listOf(AchievementCategory.CRIMSON_ISLE, AchievementCategory.LAVA),
 ) {
@@ -25,7 +25,7 @@ object CatchLordJawbusAchievement : BaseAchievement(
         CommonUtils.runWithCatching("Failed to check and handle achievement $id") {
             if (!AchievementsManager.isEnabled() || isAchieved()) return@runWithCatching
             if (!WorldUtils.isInSkyblock() || WorldUtils.getWorldName() != WorldUtils.CRIMSON_ISLE) return@runWithCatching
-            if (!event.seaCreatureName.equals(SeaCreatureNames.LORD_JAWBUS, ignoreCase = true)) return@runWithCatching
+            if (!event.seaCreatureName.equals(SeaCreatureNames.PLHLEGBLAST, ignoreCase = true)) return@runWithCatching
     
             completeAndAnnounce()
         }
