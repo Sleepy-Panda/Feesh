@@ -13,7 +13,7 @@ import com.github.sleepypanda.feesh.utils.WorldUtils
 object DoubleHookLordJawbusAchievement : BaseAchievement(
     id = "double_hook_lord_jawbus",
     displayName = "Double Lord Jawbus",
-    description = "Double hook a Lord Jawbus for the first time.",
+    description = "Double hook a Lord Jawbus.",
     difficulty = AchievementDifficulty.HARD,
     categories = listOf(AchievementCategory.CRIMSON_ISLE, AchievementCategory.LAVA),
 ) {

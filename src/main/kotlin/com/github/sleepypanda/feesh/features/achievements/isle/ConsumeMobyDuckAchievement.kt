@@ -12,7 +12,7 @@ import com.github.sleepypanda.feesh.utils.WorldUtils
 object ConsumeMobyDuckAchievement : BaseAchievement(
     id = "consume_moby_duck",
     displayName = "Wise choice",
-    description = "Consume a Moby Duck for the first time to buff your Fishing Wisdom.",
+    description = "Consume a Moby Duck to buff your Fishing Wisdom.",
     difficulty = AchievementDifficulty.EASY,
     categories = listOf(AchievementCategory.CRIMSON_ISLE, AchievementCategory.LAVA),
 ) {

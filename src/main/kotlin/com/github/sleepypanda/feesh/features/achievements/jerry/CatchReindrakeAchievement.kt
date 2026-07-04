@@ -13,7 +13,7 @@ import com.github.sleepypanda.feesh.utils.WorldUtils
 object CatchReindrakeAchievement : BaseAchievement(
     id = "catch_reindrake",
     displayName = "Gifts for everyone!",
-    description = "Fish up a Reindrake for the first time.",
+    description = "Fish up a Reindrake.",
     difficulty = AchievementDifficulty.MEDIUM,
     categories = listOf(AchievementCategory.JERRY_WORKSHOP, AchievementCategory.WATER),
 ) {

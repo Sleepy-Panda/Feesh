@@ -13,7 +13,7 @@ import com.github.sleepypanda.feesh.events.models.RareDropEvent
 object DropRadioactiveVialAchievement : BaseAchievement(
     id = "drop_radioactive_vial",
     displayName = "I'm radioactive",
-    description = "Drop a Radioactive Vial for the first time.",
+    description = "Drop a Radioactive Vial.",
     difficulty = AchievementDifficulty.HARD,
     categories = listOf(AchievementCategory.CRIMSON_ISLE, AchievementCategory.LAVA),
 ) {

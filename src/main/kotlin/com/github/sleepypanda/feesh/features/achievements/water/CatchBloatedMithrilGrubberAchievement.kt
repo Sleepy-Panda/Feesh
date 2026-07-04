@@ -13,7 +13,7 @@ import com.github.sleepypanda.feesh.utils.WorldUtils
 object CatchBloatedMithrilGrubberAchievement : BaseAchievement(
     id = "catch_bloated_mithril_grubber",
     displayName = "Mithril Powder grind",
-    description = "Catch a Bloated Mithril Grubber for the first time.",
+    description = "Catch a Bloated Mithril Grubber.",
     difficulty = AchievementDifficulty.MEDIUM,
     categories = listOf(AchievementCategory.WATER),
 ) {

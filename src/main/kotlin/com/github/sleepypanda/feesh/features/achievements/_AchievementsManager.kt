@@ -2,6 +2,7 @@ package com.github.sleepypanda.feesh.features.achievements
 
 import com.github.sleepypanda.feesh.features.achievements.isle.*
 import com.github.sleepypanda.feesh.features.achievements.atoll.*
+import com.github.sleepypanda.feesh.features.achievements.general.*
 import com.github.sleepypanda.feesh.features.achievements.jerry.*
 import com.github.sleepypanda.feesh.features.achievements.water.*
 import com.github.sleepypanda.feesh.settings.categories.Achievements
@@ -22,10 +23,12 @@ object AchievementsManager {
         register(CatchPlhlegblastAchievement)
         register(DoubleHookLordJawbusAchievement)
         register(DropRadioactiveVialAchievement)
-
+        register(ChargeHurricaneBottleAchievement)
+        
         // Atoll
         register(FullRideOnPuddleJumperAchievement)
         register(TewtilFeederAchievement)
+        register(DonateFrogcoinAchievement)
 
         // Jerry Workshop
         register(CatchReindrakeAchievement)
@@ -34,6 +37,11 @@ object AchievementsManager {
         // Water
         register(CatchCarrotKingAchievement)
         register(CatchBloatedMithrilGrubberAchievement)
+
+        // General
+        register(OwnGiantRodAchievement)
+        register(OwnDirtRodAchievement)
+        register(AutorecombFishingDropAchievement)
 
         getIncompleteAchievements().forEach { it.init() }
     }

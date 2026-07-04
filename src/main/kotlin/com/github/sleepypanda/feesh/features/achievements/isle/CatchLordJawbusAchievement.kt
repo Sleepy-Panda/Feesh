@@ -13,7 +13,7 @@ import com.github.sleepypanda.feesh.utils.WorldUtils
 object CatchLordJawbusAchievement : BaseAchievement(
     id = "catch_lord_jawbus",
     displayName = "Lord Jawbus catcher",
-    description = "Fish up a Lord Jawbus for the first time.",
+    description = "Fish up a Lord Jawbus.",
     difficulty = AchievementDifficulty.MEDIUM,
     categories = listOf(AchievementCategory.CRIMSON_ISLE, AchievementCategory.LAVA),
 ) {

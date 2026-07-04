@@ -180,8 +180,7 @@ Sort by: rarity, locked/unlocked
 
 - Crimson Isle
   - Catch your first Thunder
-  - Catch your first Jawbus
-  - Get your first vial
+  - Cocoon a mythic
   - Lootshare a vial
   - 400+ MF on vial (or 450?)
   - < 150 MF on vial. A non killed it, I swear!
@@ -232,7 +231,6 @@ Sort by: rarity, locked/unlocked
 - Dye
   - Obtain aquamarine / iceberg / etc dye
 - Setup
-  - Giant rod
   - 10 star hellfire
 - Dirt fishing
   - Catch worm the fish
@@ -247,14 +245,20 @@ Sort by: rarity, locked/unlocked
   - Have the zombie slayer quest active while fishing
   - Have a inferno demonlord quest active
   - Drop a warden heart?
-  - Be in party with me? :3
+  - Be in party/island with creator?
   - Do not fish for N days :c
   - Hunt on atoll
-Your Auto Recombobulator recombobulated Squid Boots!
+  - Equip bt5 shark scale
+  - Participate in fishing festival
+  - Craft BT3 book
+  - Craft Quick Bite book
+  - All bestiaries
+  - Special contest
 LOOT SHARE You received 2 Seashine Shards for assisting TheRealSeal007!
 LOOT SHARE You received 2 Flipflopper Shards for assisting TheRealSeal007!
 Flipflopper fainted!
 You caught x2 Flipflopper Shards!
+
 
 - fishtastic
 - oFISHial

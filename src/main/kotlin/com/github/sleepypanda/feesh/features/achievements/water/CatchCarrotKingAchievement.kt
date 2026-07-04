@@ -13,7 +13,7 @@ import com.github.sleepypanda.feesh.utils.WorldUtils
 object CatchCarrotKingAchievement : BaseAchievement(
     id = "catch_carrot_king",
     displayName = "Carrot eater",
-    description = "Catch a Carrot King for the first time.",
+    description = "Catch a Carrot King.",
     difficulty = AchievementDifficulty.EASY,
     categories = listOf(AchievementCategory.WATER),
 ) {

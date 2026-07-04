@@ -80,7 +80,7 @@ Required Java version is 25+.
 - **Moby-Duck expires soon** — Alerts when a Moby-Duck is about to expire.
 - **Salt expired** — Alerts when a Salt has expired.
 - **Worm the Fish** — Alerts when Worm the Fish is caught (Dirt Rod fishing).
-- **Fishing Festival** — Alerts when the Fishing Festival ends, and posts amounts of sharks caught in chat. Also has option to track personal best per festival.
+- **Fishing Festival** — Alerts when the Fishing Festival ends, and posts amounts of sharks caught in chat.
 - **Rain/Thunder/Blizzard ends soon** — Alerts when Rain/Thunder/Blizzard ends soon while in relevant areas.
 - **Nessie destination alert** — Alerts destination when a Nessie decides into which cave to swim - to Jade Dragon or to Driptoad Delve.
 - **Puddle Jumper timer alert** — Alerts when your Puddle Jumper is about to arrive to its destination.
@@ -142,8 +142,9 @@ Required Java version is 25+.
 - **Mute Jade Dragon** — Mutes Jade dragon sounds while you are in dragon's cave.
 - **Mute Reindrake gifts** — Mutes loud 'totem used' sounds while picking up gifts from a Reindrake.
 
-### Personal Best
+### Achievements / Personal Bests
 
+- **/feeshAchievements** — Displays all your achievements tracked by the mod.
 - **/feeshPersonalBests** — Displays all your personal best records tracked by the mod.
 
 ### Commands

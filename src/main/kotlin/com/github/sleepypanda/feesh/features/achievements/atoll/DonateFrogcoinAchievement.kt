@@ -12,7 +12,7 @@ import com.github.sleepypanda.feesh.utils.WorldUtils
 object DonateFrogcoinAchievement : BaseAchievement(
     id = "donate_frogcoin",
     displayName = "Blessed",
-    description = "Donate a Frogcoin in the Lotus Eater's Cave for the first time.",
+    description = "Donate a Frogcoin in the Lotus Eater's Cave.",
     difficulty = AchievementDifficulty.EASY,
     categories = listOf(AchievementCategory.LOTUS_ATOLL, AchievementCategory.WATER),
 ) {

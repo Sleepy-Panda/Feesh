@@ -12,7 +12,7 @@ import com.github.sleepypanda.feesh.utils.WorldUtils
 object StartBlizzardAchievement : BaseAchievement(
     id = "start_blizzard",
     displayName = "Philanthropist",
-    description = "Start a Blizzard for the first time.",
+    description = "Open Blizzard in a Bottle to start a Blizzard in your lobby.",
     difficulty = AchievementDifficulty.EASY,
     categories = listOf(AchievementCategory.JERRY_WORKSHOP, AchievementCategory.WATER),
 ) {

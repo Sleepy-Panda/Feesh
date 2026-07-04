@@ -10,11 +10,11 @@ import com.github.sleepypanda.feesh.utils.CommonUtils
 import com.github.sleepypanda.feesh.utils.PlayerUtils
 import com.github.sleepypanda.feesh.utils.WorldUtils
 
-object OwnGiantRodAchievement : BaseAchievement(
-    id = "own_giant_rod",
-    displayName = "Water fishing addict",
-    description = "Have a Giant Fishing Rod in your inventory.",
-    difficulty = AchievementDifficulty.PROFICIENT,
+object OwnDirtRodAchievement : BaseAchievement(
+    id = "own_dirt_rod",
+    displayName = "Dirty business",
+    description = "Have a Dirt Rod in your inventory.",
+    difficulty = AchievementDifficulty.MEDIUM,
     categories = listOf(AchievementCategory.GENERAL),
 ) {
     private var tickCounter = 0
@@ -34,7 +34,7 @@ object OwnGiantRodAchievement : BaseAchievement(
             tickCounter = 0
 
             val rodName = PlayerUtils.getFishingRodInHand()?.itemNameUnformatted ?: return@runWithCatching
-            if (!rodName.contains("Giant Fishing Rod", ignoreCase = true)) return@runWithCatching
+            if (!rodName.contains("Dirt Rod", ignoreCase = true)) return@runWithCatching
 
             completeAndAnnounce()
         }

@@ -68,16 +68,16 @@ abstract class BaseAchievement(
             // TODO: 2 seconds delay to avoid overlapping events
             if (!AchievementsManager.isEnabled() || !isAchieved()) return
     
-            val achievement = when (difficulty) {
-                AchievementDifficulty.PROFICIENT
-                AchievementDifficulty.IMPOSSIBLE -> "${DARK_RED}${OBFUSCATED}x ${AQUA}${displayName} ${DARK_RED}${OBFUSCATED}x"
+            val achievementTitle = when (difficulty) {
+                AchievementDifficulty.PROFICIENT,
+                AchievementDifficulty.IMPOSSIBLE -> "${BLUE}${OBFUSCATED}x ${AQUA}${displayName} ${BLUE}${OBFUSCATED}x"
                 else -> "${AQUA}${displayName}"
             }
 
-            ChatUtils.sendLocalChat("${GREEN}${BOLD}Achievement unlocked: ${achievement} ${GRAY}[${difficulty.color}${difficulty.displayName}${GRAY}]", true)
+            ChatUtils.sendLocalChat("${LIGHT_PURPLE}${BOLD}ACHIEVEMENT! ${achievementTitle} ${GRAY}[${difficulty.color}${difficulty.displayName}${GRAY}]", true)
             ChatUtils.sendLocalChat("${GRAY}$description", false)
             
-            CommonUtils.showTitle(displayName, "${GREEN}${BOLD}ACHIEVEMENT UNLOCKED!")
+            CommonUtils.showTitle(achievementTitle, "${LIGHT_PURPLE}${BOLD}ACHIEVEMENT!")
             SoundUtils.playSound(difficulty.sound)
         }
     }

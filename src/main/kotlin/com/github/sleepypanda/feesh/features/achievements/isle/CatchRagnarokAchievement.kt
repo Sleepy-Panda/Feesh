@@ -13,7 +13,7 @@ import com.github.sleepypanda.feesh.utils.WorldUtils
 object CatchRagnarokAchievement : BaseAchievement(
     id = "catch_ragnarok",
     displayName = "Ragnarok catcher",
-    description = "Fish up a Ragnarok for the first time.",
+    description = "Fish up a Ragnarok.",
     difficulty = AchievementDifficulty.MEDIUM,
     categories = listOf(AchievementCategory.CRIMSON_ISLE, AchievementCategory.LAVA),
 ) {
