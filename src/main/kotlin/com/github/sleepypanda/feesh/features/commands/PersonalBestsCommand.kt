@@ -18,6 +18,8 @@ object PersonalBestsCommand {
     }
 
     private fun showPersonalBest() {
+        if (!WorldUtils.isInSkyblock()) return
+        
         val pb: PersonalBestData = PersistentDataManager.feeshData.personalBest
         val chatBreak = "${GRAY}${ChatUtils.getChatBreak("-")}"
 

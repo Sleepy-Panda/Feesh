@@ -8,7 +8,7 @@ import java.text.SimpleDateFormat
 import net.minecraft.network.chat.Component
 
 object CommonUtils {
-    fun showTitle(title: String, subtitle: String? = null, fadeIn: Int = 0, stay: Int = 40, fadeOut: Int = 10) {      
+    fun showTitle(title: String, subtitle: String? = null, fadeIn: Int = 0, stay: Int = 50, fadeOut: Int = 10) {      
         val mc = FeeshMod.mc
         mc.showTitleCompat(Component.literal(title), Component.literal(subtitle ?: " "), fadeIn, stay, fadeOut)
     }

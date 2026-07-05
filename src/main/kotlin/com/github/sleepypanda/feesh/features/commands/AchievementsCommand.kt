@@ -22,6 +22,7 @@ object AchievementsCommand {
     }
 
     private fun showAchievements() {
+        if (!WorldUtils.isInSkyblock()) return
         val chatBreak = "${GRAY}${ChatUtils.getChatBreak("-")}"
         val allAchievements = AchievementsManager.getAllAchievements()
         val completed = AchievementsManager.getCompletedCount()
