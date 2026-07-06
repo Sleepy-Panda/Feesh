@@ -42,6 +42,7 @@ object AchievementsManager {
         register(OwnGiantRodAchievement)
         register(OwnDirtRodAchievement)
         register(AutorecombFishingDropAchievement)
+        register(MaxFishingBestiaryAchievement)
 
         getIncompleteAchievements().forEach { it.init() }
     }

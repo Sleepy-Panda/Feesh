@@ -98,6 +98,7 @@ Session: 10x Baby Yeti (Epic), 5x Baby Yeti (Legendary), 1x Level 100
 
 - RARE DROP! Troubled Bubble (+406 ✯ Magic Find) - with no mf also possible
 - RARE DROP! Octopus Tendril (+190 ✯ Magic Find)
+- RARE DROP! Severed Pincer (+449 ✯ Magic Find)
 - Player who was dead returned back
 - Alert which soul has dropped for Summoning Ring.
 - Alert on Hotspot fishing without Tiki Mask
@@ -171,12 +172,15 @@ It might be not 100% correct due to how Hypixel API works, the person who reques
 ## Achievements
 
 - The main blocker here is how to draw custom GUI which displays readonly list of achievements with sorting/filtering/sections. Current library used for settings does not let to draw dynamic readonly content.
-- Do not count on Alpha
+- Do not count on Alpha (alpha.hypixel.net)
 - 1s timeout after the main event to not override
-- Achievement rarities? Common, Uncommon, Rare, etc.
+- Command to manually set or reset
+- Show ID in the description
+- Some secret achievements
+- 3 bottle types
 
 Unlocked: X/Total (%)
-Sort by: rarity, locked/unlocked
+Sort by: difficulty, locked/unlocked
 
 - Crimson Isle
   - Catch your first Thunder
@@ -258,6 +262,7 @@ LOOT SHARE You received 2 Seashine Shards for assisting TheRealSeal007!
 LOOT SHARE You received 2 Flipflopper Shards for assisting TheRealSeal007!
 Flipflopper fainted!
 You caught x2 Flipflopper Shards!
+CHARM You charmed a Titanoboa and captured 2 Shards from it.
 
 
 - fishtastic
