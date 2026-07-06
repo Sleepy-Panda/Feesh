@@ -11,7 +11,8 @@ Released on: ???
 
 ## Bugfixes
 
-- Fixed functionalities being broken in the mod due to Hypixel changing various text symbols.
+- **Fixed rare drop-related functionalities being broken due to Hypixel changing various text symbols (such as Magic Find icon).**
+  - For now this update is on Hypixel Alpha, but they might move it to Live server soon, so old Feesh versions will be broken.
 - Removed duplicated RARE DROP! chat alert for Singed Powder and Bobbin' Scriptures, as now there is same alert from SB.
 - Fixed text of negative pet level up profit in /feeshPetLevelUpProfit.
 

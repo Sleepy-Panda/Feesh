@@ -9,6 +9,7 @@
 https://hypixel.net/threads/may-6th-lotus-atoll-alpha-testing.6094444/
 https://hypixel.net/threads/may-14th-lotus-atoll-alpha-testing-2.6097759/
 
+WISE! You've been granted +1 Treasure Chance for 30m while on the Lotus Atoll!
 WISE! You've been granted +2.5α Sea Creature Chance for 30m while on the Lotus Atoll! - 4 perks
 WISE! You've been granted +10☂ Fishing Speed for 30m while on the Lotus Atoll!
 WISE! You've been granted +1⛃ Treasure Chance for 30m while on the Lotus Atoll!
@@ -23,8 +24,8 @@ Newly released - https://hypixel.net/threads/hypixel-skyblock-0-24-5-assorted-qo
 
 ## Latest issues & feedback
 
-- Fix Gemstones icons
-- Toggle for PBs
+- Toggle for PBs, rework trackPersonalBestFishingFestival
+- Max MF PB
 - Xp/h
 - SMILE! Polizei111 has sprinkled some joy your way! You feel a little happier. :)
 - Add All option for drops list in settings
