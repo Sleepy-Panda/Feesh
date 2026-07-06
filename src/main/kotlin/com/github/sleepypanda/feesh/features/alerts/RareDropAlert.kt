@@ -60,9 +60,9 @@ object RareDropAlert {
 
     private fun showAlert(itemName: String, playerName: String, isOwnDrop: Boolean) {
         val dropInfo = RareDrops.rareDrops.find { it.itemName == itemName || it.alternateNames.contains(itemName) } ?: return
-        val type = RareDropTypes.values().find { it.displayName == dropInfo.itemName } ?: return
-
-        if (!Alerts.alertOnRareDropTypes.contains(type)) return
+        val type = RareDropTypes.values().find { it.displayName == dropInfo.itemName } ?: return // Rare drop not supported by the mod
+    
+        if (!Alerts.alertOnRareDropTypes.contains(RareDropTypes.ALL) && !Alerts.alertOnRareDropTypes.contains(type)) return
 
         val showPrice = when (Alerts.rareDropAlertShowPriceFor) {
             RareDropPriceScope.OWN -> isOwnDrop
