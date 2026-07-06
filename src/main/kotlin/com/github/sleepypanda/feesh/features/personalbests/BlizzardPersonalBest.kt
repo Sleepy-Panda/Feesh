@@ -15,6 +15,7 @@ object BlizzardPersonalBest {
 
     private fun onBlizzardStarted(@Suppress("UNUSED_PARAMETER") event: BlizzardInABottleConsumedEvent) {
         if (!WorldUtils.isInSkyblock()) return
+        if (WorldUtils.isOnAlpha()) return
 
         updatePersonalBest()
     }

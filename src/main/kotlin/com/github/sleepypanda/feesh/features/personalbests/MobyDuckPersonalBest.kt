@@ -15,6 +15,7 @@ object MobyDuckPersonalBest {
 
     private fun onMobyDuckConsumed(@Suppress("UNUSED_PARAMETER") event: MobyDuckConsumedEvent) {
         if (!WorldUtils.isInSkyblock()) return
+        if (WorldUtils.isOnAlpha()) return
 
         updatePersonalBest()
     }
