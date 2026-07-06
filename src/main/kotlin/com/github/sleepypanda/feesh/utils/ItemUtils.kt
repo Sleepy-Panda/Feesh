@@ -72,11 +72,21 @@ object ItemUtils {
      */
     fun getCleanItemName(itemName: String): String {
         if (itemName.isBlank()) return ""
-        var s = itemName
-        if (Regex(".+ §8x\\d+$").matches(s)) { // Booster cookie menu or NPCs append the amount to the item name - e.g. §9Fish Affinity Talisman §8x1
-            s = s.split(" ").dropLast(1).joinToString(" ")
+        var cleanedItemName = itemName
+
+        // Booster cookie menu or NPCs append the amount to the item name - e.g. §9Fish Affinity Talisman §8x1
+        if (Regex(".+ §8x\\d+$").matches(cleanedItemName)) {
+            cleanedItemName = cleanedItemName.split(" ").dropLast(1).joinToString(" ")
         }
-        return s.removeFormatting()
+
+        cleanedItemName = cleanedItemName.removeFormatting()
+
+        // ☘ Rough Jade Gemstone -> Rough Jade Gemstone
+        if (cleanedItemName.endsWith(" Gemstone")) {
+            cleanedItemName = cleanedItemName.replace(Regex("[^a-zA-Z0-9 ]"), "").trim()
+        }
+
+        return cleanedItemName
     }
 
     /*

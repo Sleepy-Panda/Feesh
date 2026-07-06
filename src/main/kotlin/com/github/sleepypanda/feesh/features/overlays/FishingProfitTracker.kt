@@ -675,7 +675,7 @@ object FishingProfitTracker : IResettableViewModeTracker {
         var added = false
         for (item in event.items) {
             if (item.amount <= 0 || item.itemName.isBlank()) continue
-            val itemName = item.itemName.removeFormatting()
+            val itemName = ItemUtils.getCleanItemName(item.itemName)
             val dropInfo = getFishingProfitItemByName(itemName) ?: continue
             if (dropInfo.ignoreFromInventory) continue
 
