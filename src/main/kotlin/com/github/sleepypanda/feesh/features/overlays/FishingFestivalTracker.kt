@@ -194,6 +194,7 @@ object FishingFestivalTracker : IResettableTracker {
     private fun announcePersonalBest() {
         if (!Alerts.trackPersonalBestFishingFestival ||
             !WorldUtils.isInSkyblock() ||
+            WorldUtils.isOnAlpha() ||
             !WorldUtils.isInFishingWorld()) return
 
         val total = getTotalSharks()
