@@ -6,6 +6,8 @@ import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
 // Enum used to list selectable items in Alerts/Chat settings
 // This should be aligned with rareDrops.itemName and with itemName published from RareDropsPublisher
 enum class RareDropTypes(val displayName: String) {
+    ALL("ALL"), // Equivalent of selecting all items in the list below
+
     LUCKY_CLOVER_CORE("Lucky Clover Core"),
     DEEP_SEA_ORB("Deep Sea Orb"),
     RADIOACTIVE_VIAL("Radioactive Vial"),

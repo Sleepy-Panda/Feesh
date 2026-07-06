@@ -108,8 +108,9 @@ object Chat : CategoryKt("Chat") {
         this.description = Translated("Sends a PARTY chat message when a rare item has dropped.")
     }
 
-    var messageOnRareDropTypes by select(RareDropTypes.LUCKY_CLOVER_CORE, *RareDropTypes.values()) {
+    var messageOnRareDropTypes by select(RareDropTypes.ALL, *RareDropTypes.values()) {
         this.name = Translated("Select rare drops to share to the PARTY chat")
+        this.description = Translated("ALL is equivalent of selecting all items in the list below - you can select it once, to enable all existing and future items in the list.")
         this.searchTerms = RareDropTypes.values().map { it.displayName }.toList()
     }
 
