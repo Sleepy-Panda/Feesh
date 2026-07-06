@@ -37,10 +37,10 @@ object RareDropMessage {
             if (!WorldUtils.isInSkyblock() || !Chat.messageOnRareDrops) return
 
             val dropInfo = RareDrops.rareDrops.find { it.itemName == event.itemName || it.alternateNames.contains(event.itemName) } ?: return
-            val type = RareDropTypes.values().find { it.displayName == dropInfo.itemName } ?: return
+            val type = RareDropTypes.values().find { it.displayName == dropInfo.itemName } ?: return // Rare drop not supported by the mod
     
-            if (!Chat.messageOnRareDropTypes.contains(type)) return
-    
+            if (!Chat.messageOnRareDropTypes.contains(RareDropTypes.ALL) && !Chat.messageOnRareDropTypes.contains(type)) return
+
             var metadata = listOf<String>()
             val dropNumber = getDropNumber(dropInfo.itemName)
             if (dropNumber != null) {

@@ -78,6 +78,7 @@ object WorldUtils {
     )
 
     private var cachedIsInSkyblock: Boolean = false
+    private var cachedIsOnAlpha: Boolean = false
     private var cachedWorldName: String? = null
     private var cachedZoneName: String? = null
 
@@ -103,6 +104,7 @@ object WorldUtils {
     private fun onWorldChanged(@Suppress("UNUSED_PARAMETER") event: WorldChangedEvent) {
         tickCounter = TICKS_PER_UPDATE
         cachedIsInSkyblock = false
+        cachedIsOnAlpha = false
         cachedWorldName = null
         cachedZoneName = null
 
@@ -112,6 +114,9 @@ object WorldUtils {
     private fun updateCache() {
         CommonUtils.runWithCatching("Failed to update world utils cache") {
             cachedIsInSkyblock = readIsInSkyblock()
+            cachedIsOnAlpha = if (cachedIsInSkyblock) {
+                readIsOnAlpha()
+            } else false
 
             cachedWorldName = if (cachedIsInSkyblock) {
                 readWorldName()
@@ -129,16 +134,7 @@ object WorldUtils {
     }
 
     private fun readZoneName(): String? {
-        val scoreboard = FeeshMod.mc.level?.scoreboard ?: return null
-        val objective = scoreboard.getDisplayObjective(DisplaySlot.SIDEBAR) ?: return null
-
-        val zoneLine = scoreboard.listPlayerScores(objective)
-            .filter { entry -> !entry.isHidden }
-            .map { entry ->
-                val team = scoreboard.getPlayersTeam(entry.owner)
-                PlayerTeam.formatNameForTeam(team, entry.ownerName()).getUnformattedString()
-            }
-            .find { line -> zonePrefixes.any { line.contains(it) } }
+        val zoneLine = getUnformattedScoreboardLines().find { line -> zonePrefixes.any { line.contains(it) } }
         if (zoneLine.isNullOrEmpty()) return null
 
         // ⏣ Abandoned🐍 Quarry -> Abandoned Quarry
@@ -171,6 +167,20 @@ object WorldUtils {
         return value >= num1 && value <= num2
     }
 
+    private fun getUnformattedScoreboardLines(): List<String> {
+        val scoreboard = FeeshMod.mc.level?.scoreboard ?: return emptyList()
+        val objective = scoreboard.getDisplayObjective(DisplaySlot.SIDEBAR) ?: return emptyList()
+
+        val zoneLines = scoreboard.listPlayerScores(objective)
+            .filter { entry -> !entry.isHidden }
+            .map { entry ->
+                val team = scoreboard.getPlayersTeam(entry.owner)
+                PlayerTeam.formatNameForTeam(team, entry.ownerName()).getUnformattedString()
+            }
+
+        return zoneLines
+    }
+
     private fun readIsInSkyblock(): Boolean {
         //val serverAddress = FeeshMod.mc.currentServerEntry?.address ?: return false
         //if (!serverAddress.contains("hypixel", ignoreCase = true)) return false
@@ -182,8 +192,18 @@ object WorldUtils {
         return title.contains("skyblock", ignoreCase = true)
     }
 
+    private fun readIsOnAlpha(): Boolean {
+        val zoneLines = getUnformattedScoreboardLines()
+        return zoneLines.any { line -> line.contains("alpha.hypixel.net", ignoreCase = true) }
+    }
+
     fun isInSkyblock(): Boolean {
         return cachedIsInSkyblock
+    }
+
+    fun isOnAlpha(): Boolean {
+        if (!isInSkyblock()) return false
+        return cachedIsOnAlpha
     }
 
     /**
