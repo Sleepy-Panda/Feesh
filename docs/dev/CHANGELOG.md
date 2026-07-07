@@ -1,6 +1,14 @@
-# 1.10.0
+# 1.11.0
 
 Released on: ???
+
+## Features
+
+## Bugfixes
+
+# 1.10.0
+
+Released on: 2026-07-07
 
 ## Features
 
@@ -15,8 +23,9 @@ Released on: ???
 
 - **Fixed rare drop-related functionalities being broken due to Hypixel changing various text symbols (such as Magic Find icon).**
   - For now this update is on Hypixel Alpha, but they might move it to Live server soon, so old Feesh versions will be broken.
-- Fixed alerts not working for Pyroclasm VI book (SB renamed Magmarizer VI).
-- Removed duplicated RARE DROP! chat alert for Singed Powder and Bobbin' Scriptures, as now there is same alert from SB.
+  - [[July 3] 0.26 Release Candidate](https://hypixel.net/threads/july-3-0-26-release-candidate.6118706/)
+- Fixed alerts not working for Pyroclasm VI book (renamed Magmarizer VI).
+- Removed duplicated RARE DROP! chat alert for Singed Powder and Bobbin' Scriptures, as now there is same alert from Hypixel.
 - Fixed text of negative pet level up profit in /feeshPetLevelUpProfit.
 
 # 1.9.0
@@ -240,7 +249,7 @@ Released on: 2026-04-16
 
 ## Special thanks
 
-To the [Casters discord](https://discord.gg/79E7Rhv8) and personally `jessbre` for supporting the mod!
+To the Casters discord and personally `jessbre` for supporting the mod!
 
 Take the fish:
 
