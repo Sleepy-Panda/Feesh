@@ -27,7 +27,7 @@ object OwnDirtRodAchievement : BaseAchievement(
     private fun onClientTick(@Suppress("UNUSED_PARAMETER") event: ClientTickEvent) {
         CommonUtils.runWithCatching("Failed to check and handle achievement $id") {
             if (!AchievementsManager.isEnabled() || isAchieved()) return@runWithCatching
-            if (!WorldUtils.isInSkyblock()) return@runWithCatching
+            if (!WorldUtils.isInSkyblock() || WorldUtils.isOnAlpha()) return@runWithCatching
 
             tickCounter++
             if (tickCounter < TICKS_PER_CHECK) return@runWithCatching

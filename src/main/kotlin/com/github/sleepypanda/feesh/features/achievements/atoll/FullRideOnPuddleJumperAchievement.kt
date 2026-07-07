@@ -25,7 +25,7 @@ object FullRideOnPuddleJumperAchievement : BaseAchievement(
     private fun onChat(event: ChatEvent) {
         CommonUtils.runWithCatching("Failed to check and handle achievement $id") {
             if (!AchievementsManager.isEnabled() || isAchieved()) return@runWithCatching
-            if (!WorldUtils.isInSkyblock() || WorldUtils.getWorldName() != WorldUtils.LOTUS_ATOLL) return@runWithCatching
+            if (!WorldUtils.isInSkyblock() || WorldUtils.isOnAlpha() || WorldUtils.getWorldName() != WorldUtils.LOTUS_ATOLL) return@runWithCatching
             if (!event.unformattedText.contains(MESSAGE_TO_CHECK)) return@runWithCatching
 
             completeAndAnnounce()

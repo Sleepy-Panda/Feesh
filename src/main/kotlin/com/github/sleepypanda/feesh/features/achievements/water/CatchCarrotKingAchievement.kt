@@ -24,7 +24,7 @@ object CatchCarrotKingAchievement : BaseAchievement(
     private fun onSeaCreatureCaught(event: OwnSeaCreatureCaughtEvent) {
         CommonUtils.runWithCatching("Failed to check and handle achievement $id") {
             if (!AchievementsManager.isEnabled() || isAchieved()) return@runWithCatching
-            if (!WorldUtils.isInSkyblock()) return@runWithCatching
+            if (!WorldUtils.isInSkyblock() || WorldUtils.isOnAlpha()) return@runWithCatching
             if (!event.seaCreatureName.equals(SeaCreatureNames.CARROT_KING, ignoreCase = true)) return@runWithCatching
     
             completeAndAnnounce()

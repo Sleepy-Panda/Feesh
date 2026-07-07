@@ -25,7 +25,7 @@ object DonateFrogcoinAchievement : BaseAchievement(
     private fun onChat(event: ChatEvent) {
         CommonUtils.runWithCatching("Failed to check and handle achievement $id") {
             if (!AchievementsManager.isEnabled() || isAchieved()) return@runWithCatching
-            if (!WorldUtils.isInSkyblock()) return@runWithCatching
+            if (!WorldUtils.isInSkyblock() || WorldUtils.isOnAlpha()) return@runWithCatching
             if (!MESSAGE_REGEX.matches(event.unformattedText)) return@runWithCatching
     
             completeAndAnnounce()

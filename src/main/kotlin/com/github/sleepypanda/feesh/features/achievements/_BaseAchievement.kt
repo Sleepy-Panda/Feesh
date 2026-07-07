@@ -77,7 +77,7 @@ abstract class BaseAchievement(
             ChatUtils.sendLocalChat("${LIGHT_PURPLE}${BOLD}ACHIEVEMENT! ${achievementTitle} ${GRAY}[${difficulty.color}${difficulty.displayName}${GRAY}]", true)
             ChatUtils.sendLocalChat("${GRAY}$description", false)
             
-            CommonUtils.showTitle(achievementTitle, "${LIGHT_PURPLE}${BOLD}ACHIEVEMENT!")
+            CommonUtils.showTitle("${LIGHT_PURPLE}${BOLD}ACHIEVEMENT!", achievementTitle)
             SoundUtils.playSound(difficulty.sound)
         }
     }

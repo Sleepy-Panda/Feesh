@@ -24,7 +24,7 @@ object CatchPlhlegblastAchievement : BaseAchievement(
     private fun onSeaCreatureCaught(event: OwnSeaCreatureCaughtEvent) {
         CommonUtils.runWithCatching("Failed to check and handle achievement $id") {
             if (!AchievementsManager.isEnabled() || isAchieved()) return@runWithCatching
-            if (!WorldUtils.isInSkyblock() || WorldUtils.getWorldName() != WorldUtils.CRIMSON_ISLE) return@runWithCatching
+            if (!WorldUtils.isInSkyblock() || WorldUtils.isOnAlpha() || WorldUtils.getWorldName() != WorldUtils.CRIMSON_ISLE) return@runWithCatching
             if (!event.seaCreatureName.equals(SeaCreatureNames.PLHLEGBLAST, ignoreCase = true)) return@runWithCatching
     
             completeAndAnnounce()

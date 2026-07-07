@@ -34,7 +34,7 @@ object MaxFishingBestiaryAchievement : BaseAchievement(
     private fun onGuiOpened(event: GuiOpenedEvent) {
         CommonUtils.runWithCatching("Failed to check and handle achievement $id") {
             if (!AchievementsManager.isEnabled() || isAchieved()) return@runWithCatching
-            if (!WorldUtils.isInSkyblock()) return@runWithCatching
+            if (!WorldUtils.isInSkyblock() || WorldUtils.isOnAlpha()) return@runWithCatching
 
             val screen = event.screen
             if (screen !is AbstractContainerScreen<*>) return@runWithCatching
@@ -46,7 +46,7 @@ object MaxFishingBestiaryAchievement : BaseAchievement(
     private fun handleGuiOpened() {
         Timer(true).schedule(timerTask {
             CommonUtils.runWithCatching("Failed to handle GUI opened for achievement $id") {
-                if (!AchievementsManager.isEnabled() || isAchieved() || !WorldUtils.isInSkyblock()) return@timerTask
+                if (!AchievementsManager.isEnabled() || isAchieved() || !WorldUtils.isInSkyblock() || WorldUtils.isOnAlpha()) return@timerTask
 
                 val currentScreen = FeeshMod.mc.getScreenCompat()
                 if (currentScreen !is AbstractContainerScreen<*>) return@timerTask

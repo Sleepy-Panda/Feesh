@@ -26,7 +26,7 @@ object DropRadioactiveVialAchievement : BaseAchievement(
     private fun onRareDrop(event: RareDropEvent) {
         CommonUtils.runWithCatching("Failed to check and handle achievement $id") {
             if (!AchievementsManager.isEnabled() || isAchieved()) return@runWithCatching
-            if (!WorldUtils.isInSkyblock() || WorldUtils.getWorldName() != WorldUtils.CRIMSON_ISLE) return@runWithCatching
+            if (!WorldUtils.isInSkyblock() || WorldUtils.isOnAlpha() || WorldUtils.getWorldName() != WorldUtils.CRIMSON_ISLE) return@runWithCatching
             if (!event.itemName.equals(radioactiveVial.itemName, ignoreCase = true)) return@runWithCatching
     
             completeAndAnnounce()

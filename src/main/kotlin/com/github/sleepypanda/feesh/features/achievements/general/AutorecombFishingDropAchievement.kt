@@ -45,7 +45,7 @@ object AutorecombFishingDropAchievement : BaseAchievement(
     private fun onChat(event: ChatEvent) {
         CommonUtils.runWithCatching("Failed to check and handle achievement $id") {
             if (!AchievementsManager.isEnabled() || isAchieved()) return@runWithCatching
-            if (!WorldUtils.isInSkyblock()) return@runWithCatching
+            if (!WorldUtils.isInSkyblock() || WorldUtils.isOnAlpha()) return@runWithCatching
 
             val match = MESSAGE_REGEX.matchEntire(event.unformattedText) ?: return@runWithCatching
             val drop = match.groups["itemName"]?.value ?: return@runWithCatching

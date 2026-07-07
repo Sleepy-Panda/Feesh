@@ -23,7 +23,7 @@ object StartBlizzardAchievement : BaseAchievement(
     private fun onBlizzardStarted(event: BlizzardInABottleConsumedEvent) {
         CommonUtils.runWithCatching("Failed to check and handle achievement $id") {
             if (!AchievementsManager.isEnabled() || isAchieved()) return@runWithCatching
-            if (!WorldUtils.isInSkyblock()) return@runWithCatching
+            if (!WorldUtils.isInSkyblock() || WorldUtils.isOnAlpha()) return@runWithCatching
     
             completeAndAnnounce()
         }
