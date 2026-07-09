@@ -4,6 +4,8 @@ Released on: ???
 
 ## Features
 
+- Removed support of 1.21.10. RIP
+
 ## Bugfixes
 
 # 1.10.0
