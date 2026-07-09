@@ -1,6 +1,6 @@
 # Feesh Mod
 
-`Feesh` is a Fabric 1.21.10 / 1.21.11 / 26.1 / 26.2 mod for Hypixel Skyblock. It introduces many fishing-related QOL features. Do `/feesh`, set up the mod, and enjoy fishing! <3
+`Feesh` is a Fabric 1.21.11 / 26.1 / 26.2 mod for Hypixel Skyblock. It introduces many fishing-related QOL features. Do `/feesh`, set up the mod, and enjoy fishing! <3
 
 This mod is an evolution of [FeeshNotifier ChatTriggers module](https://chattriggers.com/modules/v/FeeshNotifier) made for earlier MC versions.
 
@@ -22,13 +22,6 @@ This mod is an evolution of [FeeshNotifier ChatTriggers module](https://chattrig
 If you want early access to the pre-releases, Github automatically builds every version pushed to `develop` branch. They can be found in Actions - (select latest action) - Artifacts - find attached `.zip` which contains `.jar` file(s). **THOSE MAY BE UNSTABLE** as they are features in active development, probably not tested enough.
 
 ## Dependencies
-
-### 1.21.10
-
-Required Minecraft version is **1.21.10** (Fabric loader 0.18.1+).
-Required Java version is 21+.
-
-This mod requires [Fabric API](https://modrinth.com/mod/fabric-api) and [Fabric Language Kotlin](https://modrinth.com/mod/fabric-language-kotlin) mods for 1.21.10.
 
 ### 1.21.11
 

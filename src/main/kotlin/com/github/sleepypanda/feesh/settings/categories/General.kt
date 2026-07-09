@@ -10,7 +10,7 @@ import com.teamresourceful.resourcefulconfig.api.annotations.ConfigEntry
 import com.teamresourceful.resourcefulconfig.api.types.options.EntryType
 import com.teamresourceful.resourcefulconfigkt.api.CategoryKt
 import com.teamresourceful.resourcefulconfigkt.api.ObservableEntry
-import net.minecraft.Util
+import net.minecraft.util.Util
 
 enum class AuctionPriceApiMode(val displayName: String) {
     ELITE_SKYBLOCK_NEU("Elite (lowest BIN)"),
