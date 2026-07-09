@@ -19,7 +19,7 @@ object ThunderBottleProgress : BaseSlotTextRenderer() {
         Bottle("Empty Hurricane Bottle", 5_000_000)
     )
 
-    private const val PROGRESS_COLOR = 0xFF55FFFF.toInt()
+    private const val PROGRESS_COLOR = 0xff54fcfc.toInt()
 
     fun init() {
         // Calling this ensures the object is initialized, and registered in base class.
