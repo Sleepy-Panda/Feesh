@@ -8,6 +8,8 @@ Released on: ???
 
 ## Bugfixes
 
+- Fixed rare mobs highlight colors not matching new SB colors.
+
 # 1.10.0
 
 Released on: 2026-07-07
