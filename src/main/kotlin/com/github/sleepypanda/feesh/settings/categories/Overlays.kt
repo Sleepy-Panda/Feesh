@@ -32,7 +32,7 @@ import com.github.sleepypanda.feesh.features.overlays.SeaCreatureHpTracker
 import com.github.sleepypanda.feesh.settings.models.HpTrackableSeaCreatureTypes
 import com.github.sleepypanda.feesh.utils.gui.MoveGuis
 import net.minecraft.client.gui.screens.options.controls.KeyBindsScreen
-import net.minecraft.Util
+import net.minecraft.util.Util
 import java.awt.Color
 
 enum class SeaCreaturesTrackerDisplayMode(val displayName: String) {
