@@ -263,6 +263,10 @@ LOOT SHARE You received 2 Flipflopper Shards for assisting TheRealSeal007!
 Flipflopper fainted!
 You caught x2 Flipflopper Shards!
 CHARM You charmed a Titanoboa and captured 2 Shards from it.
+Squid family - all squid colors
+Secret achievement to die N times
+Secret achievement to get first catch Leg or Mythic
+Level up 3 pets at once
 You cast 74 votes for Marina in the Year 501 Elections!
 CRAZY RARE DROP! (Scythe Blade) (+402% ✯ Magic Find)
   SLAYER QUEST COMPLETE!

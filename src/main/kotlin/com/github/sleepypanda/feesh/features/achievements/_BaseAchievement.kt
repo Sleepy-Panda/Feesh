@@ -1,5 +1,6 @@
 package com.github.sleepypanda.feesh.features.achievements
 
+import com.github.sleepypanda.feesh.FeeshMod
 import com.github.sleepypanda.feesh.utils.ChatUtils
 import com.github.sleepypanda.feesh.utils.CommonUtils
 import com.github.sleepypanda.feesh.utils.SoundUtils
@@ -9,6 +10,8 @@ import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
 import net.minecraft.sounds.SoundEvent
 import net.minecraft.sounds.SoundEvents
 import java.util.Date
+import java.util.Timer
+import kotlin.concurrent.timerTask
 
 enum class AchievementDifficulty(val displayName: String, val color: ColorCodes, val sound: SoundEvent) {
     EASY("Easy", WHITE, SoundEvents.PLAYER_LEVELUP),
@@ -39,6 +42,7 @@ abstract class BaseAchievement(
     val id: String,
     val displayName: String,
     val description: String,
+    val tip: String? = null,
     val difficulty: AchievementDifficulty,
     val categories: List<AchievementCategory> = emptyList(),
 ) {
@@ -64,21 +68,26 @@ abstract class BaseAchievement(
     }
 
     private fun announce() {
-        CommonUtils.runWithCatching("Failed to announce achievement $id") {
-            // TODO: 2 seconds delay to avoid overlapping events
-            if (!AchievementsManager.isEnabled() || !isAchieved()) return
-    
-            val achievementTitle = when (difficulty) {
-                AchievementDifficulty.PROFICIENT,
-                AchievementDifficulty.IMPOSSIBLE -> "${BLUE}${OBFUSCATED}x ${AQUA}${displayName} ${BLUE}${OBFUSCATED}x"
-                else -> "${AQUA}${displayName}"
-            }
+        if (!AchievementsManager.isEnabled() || !isAchieved()) return
 
-            ChatUtils.sendLocalChat("${LIGHT_PURPLE}${BOLD}ACHIEVEMENT! ${achievementTitle} ${GRAY}[${difficulty.color}${difficulty.displayName}${GRAY}]", true)
-            ChatUtils.sendLocalChat("${GRAY}$description", false)
-            
-            CommonUtils.showTitle("${LIGHT_PURPLE}${BOLD}ACHIEVEMENT!", achievementTitle)
-            SoundUtils.playSound(difficulty.sound)
-        }
+        Timer(true).schedule(timerTask {
+            FeeshMod.mc.execute {
+                CommonUtils.runWithCatching("Failed to announce achievement $id") {
+                    if (!AchievementsManager.isEnabled() || !isAchieved()) return@runWithCatching
+
+                    val achievementTitle = when (difficulty) {
+                        AchievementDifficulty.PROFICIENT,
+                        AchievementDifficulty.IMPOSSIBLE -> "${BLUE}${OBFUSCATED}x ${AQUA}${displayName} ${BLUE}${OBFUSCATED}x"
+                        else -> "${AQUA}${displayName}"
+                    }
+
+                    ChatUtils.sendLocalChat("${LIGHT_PURPLE}${BOLD}ACHIEVEMENT! ${achievementTitle} ${GRAY}[${difficulty.color}${difficulty.displayName}${GRAY}]", true)
+                    ChatUtils.sendLocalChat("${GRAY}$description", false)
+
+                    CommonUtils.showTitle("${LIGHT_PURPLE}${BOLD}ACHIEVEMENT!", achievementTitle)
+                    SoundUtils.playSound(difficulty.sound)
+                }
+            }
+        }, 2_000L)
     }
 }

@@ -13,7 +13,7 @@ import com.github.sleepypanda.feesh.utils.WorldUtils
 object OwnGiantRodAchievement : BaseAchievement(
     id = "own_giant_rod",
     displayName = "Water fishing addict",
-    description = "Have a Giant Fishing Rod in your inventory.",
+    description = "Have a Giant Fishing Rod in your hand.",
     difficulty = AchievementDifficulty.PROFICIENT,
     categories = listOf(AchievementCategory.GENERAL),
 ) {

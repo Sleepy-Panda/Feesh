@@ -19,13 +19,14 @@ import kotlin.concurrent.timerTask
 object MaxFishingBestiaryAchievement : BaseAchievement(
     id = "max_fishing_bestiary",
     displayName = "You're shrimply the best!",
-    description = "Max out all Fishing Bestiary families. Open /be to complete!",
+    description = "Max out all Fishing Bestiary families.",
+    tip = "Open /be to complete!",
     difficulty = AchievementDifficulty.PROFICIENT,
     categories = listOf(AchievementCategory.GENERAL),
 ) {
     private const val BESTIARY_GUI_TITLE = "Bestiary"
     private const val FISHING_SLOT_NAME = "Fishing"
-    private const val FAMILIES_COMPLETED_100 = "Families Found: 100%" // TODO - Completed
+    private const val FAMILIES_COMPLETED_100 = "Families Completed: 100%"
 
     override fun init() {
         EventBus.subscribe(GuiOpenedEvent::class, ::onGuiOpened)

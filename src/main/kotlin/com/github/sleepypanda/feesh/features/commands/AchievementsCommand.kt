@@ -12,6 +12,7 @@ import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
 import net.minecraft.network.chat.Component
 import net.minecraft.network.chat.HoverEvent.ShowText
 import net.minecraft.network.chat.Style
+import java.util.Date
 
 object AchievementsCommand {
     const val COMMAND_NAME = "feeshAchievements"
@@ -42,7 +43,7 @@ object AchievementsCommand {
                 val status = if (progress.isAchieved) "${GREEN}✔" else "${RED}✗"
                 val categories = achievement.categories.joinToString(", ") { it.displayName }
                 val categoriesPart = if (categories.isNotEmpty()) " ${DARK_GRAY}[${GRAY}$categories${DARK_GRAY}]" else ""
-                val hoverText = buildHoverText(achievement.description, progress.achievedAt)
+                val hoverText = buildHoverText(achievement.description, achievement.tip, progress.achievedAt)
 
                 val line = Component.literal("$status ${WHITE}${achievement.displayName}$categoriesPart")
                     .withStyle(Style.EMPTY.withHoverEvent(ShowText(Component.literal(hoverText))))
@@ -54,10 +55,13 @@ object AchievementsCommand {
         ChatUtils.sendLocalChat(chatBreak)
     }
 
-    private fun buildHoverText(description: String, achievedAt: java.util.Date?): String {
+    private fun buildHoverText(description: String, tip: String?, achievedAt: Date?): String {
+        val tipLine = if (!tip.isNullOrEmpty()) {
+            "\n${GRAY}Tip: ${WHITE}$tip"
+        } else ""
         val achievedLine = if (achievedAt != null) {
             "\n${GRAY}Completed: ${WHITE}${CommonUtils.formatDate(achievedAt)}"
         } else ""
-        return "${GRAY}$description$achievedLine"
+        return "${AQUA}$description$tipLine$achievedLine"
     }
 }

@@ -13,7 +13,7 @@ import com.github.sleepypanda.feesh.utils.WorldUtils
 object OwnDirtRodAchievement : BaseAchievement(
     id = "own_dirt_rod",
     displayName = "Dirty business",
-    description = "Have a Dirt Rod in your inventory.",
+    description = "Have a Dirt Rod in your hand.",
     difficulty = AchievementDifficulty.MEDIUM,
     categories = listOf(AchievementCategory.GENERAL),
 ) {

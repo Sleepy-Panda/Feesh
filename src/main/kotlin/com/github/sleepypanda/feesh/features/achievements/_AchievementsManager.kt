@@ -20,8 +20,11 @@ object AchievementsManager {
         register(ConsumeMobyDuckAchievement)
         register(CatchLordJawbusAchievement)
         register(CatchRagnarokAchievement)
+        register(DoubleHookRagnarokAchievement)
+        register(CocoonRagnarokAchievement)
         register(CatchPlhlegblastAchievement)
         register(DoubleHookLordJawbusAchievement)
+        register(CocoonLordJawbusAchievement)
         register(DropRadioactiveVialAchievement)
         register(ChargeHurricaneBottleAchievement)
         
@@ -32,6 +35,7 @@ object AchievementsManager {
 
         // Jerry Workshop
         register(CatchReindrakeAchievement)
+        register(DoubleHookReindrakeAchievement)
         register(StartBlizzardAchievement)
 
         // Water

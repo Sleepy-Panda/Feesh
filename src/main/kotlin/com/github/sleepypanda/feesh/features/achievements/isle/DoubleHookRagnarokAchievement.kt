@@ -1,34 +1,32 @@
 package com.github.sleepypanda.feesh.features.achievements.isle
 
+import com.github.sleepypanda.feesh.constants.SeaCreatureNames
 import com.github.sleepypanda.feesh.events.EventBus
+import com.github.sleepypanda.feesh.events.models.OwnSeaCreatureCaughtEvent
 import com.github.sleepypanda.feesh.features.achievements.AchievementCategory
 import com.github.sleepypanda.feesh.features.achievements.AchievementDifficulty
 import com.github.sleepypanda.feesh.features.achievements.AchievementsManager
 import com.github.sleepypanda.feesh.features.achievements.BaseAchievement
 import com.github.sleepypanda.feesh.utils.CommonUtils
 import com.github.sleepypanda.feesh.utils.WorldUtils
-import com.github.sleepypanda.feesh.constants.RareDrops
-import com.github.sleepypanda.feesh.events.models.RareDropEvent
 
-object DropRadioactiveVialAchievement : BaseAchievement(
-    id = "drop_radioactive_vial",
-    displayName = "Jaw-dropping",
-    description = "Drop a Radioactive Vial.",
+object DoubleHookRagnarokAchievement : BaseAchievement(
+    id = "double_hook_ragnarok",
+    displayName = "Ragnarok double trouble",
+    description = "Double hook a Ragnarok.",
     difficulty = AchievementDifficulty.HARD,
     categories = listOf(AchievementCategory.CRIMSON_ISLE, AchievementCategory.LAVA),
 ) {
-    private val radioactiveVial = RareDrops.rareDrops.find { it.itemName == "Radioactive Vial" }!!
-
     override fun init() {
-        EventBus.subscribe(RareDropEvent::class, ::onRareDrop)
+        EventBus.subscribe(OwnSeaCreatureCaughtEvent::class, ::onSeaCreatureCaught)
     }
 
-    private fun onRareDrop(event: RareDropEvent) {
+    private fun onSeaCreatureCaught(event: OwnSeaCreatureCaughtEvent) {
         CommonUtils.runWithCatching("Failed to check and handle achievement $id") {
             if (!AchievementsManager.isEnabled() || isAchieved()) return@runWithCatching
             if (!WorldUtils.isInSkyblock() || WorldUtils.isOnAlpha() || WorldUtils.getWorldName() != WorldUtils.CRIMSON_ISLE) return@runWithCatching
-            if (!event.itemName.equals(radioactiveVial.itemName, ignoreCase = true)) return@runWithCatching
-    
+            if (!event.seaCreatureName.equals(SeaCreatureNames.RAGNAROK, ignoreCase = true) || !event.isDoubleHook) return@runWithCatching
+
             completeAndAnnounce()
         }
     }
