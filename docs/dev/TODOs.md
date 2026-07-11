@@ -4,6 +4,17 @@
 
 - Test each release in 1.21.* and 26.x
 
+## Alpha Torrus Canyon
+
+ GREAT CATCH! You caught a Giant Water Bug!
+other name for Giant Water Bug Shard - recheck later and maybe add to profit tracker
+- All chat? Death message?
+- Contests to profit tracker?
+- Tracker for Leg/Mythic SC?
+- Giant Isopod acts like a Nessie, implement immunity?
+offer warp springs if not in Springs
+highlight is slightly off
+
 ## Alpha Lotus Atoll
 
 https://hypixel.net/threads/may-6th-lotus-atoll-alpha-testing.6094444/

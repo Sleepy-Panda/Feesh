@@ -29,6 +29,7 @@ object WorldUtils {
     const val RIFT = "Rift Dimension"
     const val GALATEA = "Galatea"
     const val LOTUS_ATOLL = "Lotus Atoll"
+    const val TORRHUS_CANYON = "Torrhus Canyon"
 
     // Zones
     const val PLHLEGBLAST_POOL = "Plhlegblast Pool"
@@ -56,6 +57,7 @@ object WorldUtils {
         FARMING_ISLANDS,
         GALATEA,
         LOTUS_ATOLL,
+        TORRHUS_CANYON,
     )
 
     val HOTSPOT_WORLDS = listOf(
@@ -65,7 +67,8 @@ object WorldUtils {
         JERRY_WORKSHOP,
         LOTUS_ATOLL,
         PARK,
-        CRIMSON_ISLE
+        CRIMSON_ISLE,
+        TORRHUS_CANYON,
     )
 
     val WATER_HOTSPOT_WORLDS = listOf(
@@ -75,6 +78,7 @@ object WorldUtils {
         JERRY_WORKSHOP,
         LOTUS_ATOLL,
         PARK,
+        TORRHUS_CANYON,
     )
 
     private var cachedIsInSkyblock: Boolean = false
