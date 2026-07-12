@@ -1068,7 +1068,7 @@ object FishingProfitTracker : IResettableViewModeTracker {
                 val countStr = CommonUtils.formatNumberWithSpaces(displayData.totalCheapItemsCount)
                 val typesStr = CommonUtils.formatNumberWithSpaces(displayData.totalCheapItemsTypesCount)
                 TrackerLineColumns(
-                    item = "${GRAY}- ${WHITE}${countStr}${GRAY}x Cheap items of ${WHITE}${typesStr} ${GRAY}types",
+                    item = "${GRAY}- ${WHITE}${countStr}${GRAY}x items of ${WHITE}${typesStr} ${GRAY}types",
                     price = "${GOLD}$profitStr",
                 ).toCells()
             } else {

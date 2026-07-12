@@ -658,8 +658,8 @@ object SeaCreaturesTracker : IResettableViewModeTracker {
         val percentText = if (showPercentage) " ${GRAY}${entry.percentFormatted}" else ""
         val main = "${GRAY}- $seaCreatureText${GRAY}: $countText$percentText"
 
-        val dh = if (showDoubleHook && entry.seaCreatureInfo.canBeDoubleHooked) {
-            "${WHITE}${entry.doubleHookAmountFormatted} ${GRAY}${entry.doubleHookPercentFormatted}"
+        val dh = if (showDoubleHook) {
+            if (entry.seaCreatureInfo.canBeDoubleHooked) "${WHITE}${entry.doubleHookAmountFormatted} ${GRAY}${entry.doubleHookPercentFormatted}" else "${GRAY}N/A"
         } else ""
 
         val bs = if (showCocooned) {
