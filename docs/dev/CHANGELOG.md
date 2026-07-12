@@ -5,6 +5,9 @@ Released on: ???
 ## Features
 
 - Removed support of 1.21.10. RIP
+- Torrhus Canyon:
+  - Added new sea creatures and drops.
+  - Enabled hotspot functionalities.
 
 ## Bugfixes
 

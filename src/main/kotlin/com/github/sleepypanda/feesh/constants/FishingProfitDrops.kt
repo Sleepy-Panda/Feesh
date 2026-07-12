@@ -808,6 +808,126 @@ class FishingProfitDrops {
                 itemDisplayName = "${UNCOMMON}Stridersurfer ${WHITE}Shard",
                 npcPrice = null,
             ),
+            FishingProfitDropInfo(
+                itemId = "SHARD_DUMPSTER_DIVER",
+                itemName = "Dumpster Diver Shard",
+                itemDisplayName = "${COMMON}Dumpster Diver ${WHITE}Shard",
+                npcPrice = null,
+            ),
+            FishingProfitDropInfo(
+                itemId = "SHARD_WETWING",
+                itemName = "Wetwing Shard",
+                itemDisplayName = "${UNCOMMON}Wetwing ${WHITE}Shard",
+                npcPrice = null,
+            ),
+            FishingProfitDropInfo(
+                itemId = "SHARD_SEA_WITCH",
+                itemName = "Sea Witch Shard",
+                itemDisplayName = "${UNCOMMON}Sea Witch ${WHITE}Shard",
+                npcPrice = null,
+            ),
+            FishingProfitDropInfo(
+                itemId = "SHARD_BAYOU_SLUDGE",
+                itemName = "Bayou Sludge Shard",
+                itemDisplayName = "${UNCOMMON}Bayou Sludge ${WHITE}Shard",
+                npcPrice = null,
+            ),
+            FishingProfitDropInfo(
+                itemId = "SHARD_WIKI_TIKI",
+                itemName = "Wiki Tiki Shard",
+                itemDisplayName = "${RARE}Wiki Tiki ${WHITE}Shard",
+                npcPrice = null,
+            ),
+            FishingProfitDropInfo(
+                itemId = "SHARD_LAVA_LEECH",
+                itemName = "Lava Leech Shard",
+                itemDisplayName = "${RARE}Lava Leech ${WHITE}Shard",
+                npcPrice = null,
+            ),
+            FishingProfitDropInfo(
+                itemId = "SHARD_THUNDER",
+                itemName = "Thunder Shard",
+                itemDisplayName = "${RARE}Thunder ${WHITE}Shard",
+                npcPrice = null,
+            ),
+            FishingProfitDropInfo(
+                itemId = "SHARD_ABYSSAL_MINER",
+                itemName = "Abyssal Miner Shard",
+                itemDisplayName = "${EPIC}Abyssal Miner ${WHITE}Shard",
+                npcPrice = null,
+            ),
+            FishingProfitDropInfo(
+                itemId = "SHARD_STINGRAY",
+                itemName = "Stingray Shard",
+                itemDisplayName = "${RARE}Stingray ${WHITE}Shard",
+                npcPrice = null,
+            ),
+            FishingProfitDropInfo(
+                itemId = "SHARD_WATER_SNAKE",
+                itemName = "Water Snake Shard",
+                itemDisplayName = "${UNCOMMON}Water Snake ${WHITE}Shard",
+                npcPrice = null,
+            ),
+            FishingProfitDropInfo(
+                itemId = "SHARD_EMBER",
+                itemName = "Ember Shard",
+                itemDisplayName = "${UNCOMMON}Ember ${WHITE}Shard",
+                npcPrice = null,
+            ),
+            FishingProfitDropInfo(
+                itemId = "SHARD_SOLAR",
+                itemName = "Solar Shard",
+                itemDisplayName = "${UNCOMMON}Solar ${WHITE}Shard",
+                npcPrice = null,
+            ),
+            FishingProfitDropInfo(
+                itemId = "SHARD_SEPIALOT",
+                itemName = "Sepialot Shard",
+                itemDisplayName = "${UNCOMMON}Sepialot ${WHITE}Shard",
+                npcPrice = null,
+            ),
+            FishingProfitDropInfo(
+                itemId = "SHARD_HAGGARD",
+                itemName = "Haggard Shard",
+                itemDisplayName = "${COMMON}Haggard ${WHITE}Shard",
+                npcPrice = null,
+            ),
+            FishingProfitDropInfo(
+                itemId = "SHARD_BRINELING",
+                itemName = "Brineling Shard",
+                itemDisplayName = "${COMMON}Brineling ${WHITE}Shard",
+                npcPrice = null,
+            ),
+            FishingProfitDropInfo(
+                itemId = "SHARD_SPRAWL",
+                itemName = "Sprawl Shard",
+                itemDisplayName = "${UNCOMMON}Sprawl ${WHITE}Shard",
+                npcPrice = null,
+            ),
+            FishingProfitDropInfo(
+                itemId = "SHARD_SILKBREEZE",
+                itemName = "Silkbreeze Shard",
+                itemDisplayName = "${EPIC}Silkbreeze ${WHITE}Shard",
+                npcPrice = null,
+            ),
+            FishingProfitDropInfo(
+                itemId = "SHARD_GIANT_ISOPOD",
+                itemName = "Giant Isopod Shard",
+                itemDisplayName = "${EPIC}Giant Isopod ${WHITE}Shard",
+                npcPrice = null,
+            ),
+            FishingProfitDropInfo(
+                itemId = "SHARD_TORRID",
+                itemName = "Torrid Shard",
+                itemDisplayName = "${RARE}Torrid ${WHITE}Shard",
+                npcPrice = null,
+            ),
+            FishingProfitDropInfo(
+                itemId = "SHARD_GIANT_WATER_BUG",
+                itemName = "Giant Water Bug Shard",
+                itemDisplayName = "${RARE}Giant Water Bug ${WHITE}Shard",
+                npcPrice = null,
+            ),
 
             // Water
 
@@ -1510,6 +1630,77 @@ class FishingProfitDrops {
                 itemName = "Prince's Crown Jewel",
                 itemDisplayName = "${LEGENDARY}Prince's Crown Jewel",
                 npcPrice = 1_000_000.0,
+            ),
+
+            // Torrhus Canyon
+            FishingProfitDropInfo(
+                itemId = "HELIX_LOG",
+                itemName = "Helix Log",
+                itemDisplayName = "${COMMON}Helix Log",
+                npcPrice = 9.0,
+            ),
+            FishingProfitDropInfo(
+                itemId = "ENCHANTED_HELIX_LOG",
+                itemName = "Enchanted Helix Log",
+                itemDisplayName = "${UNCOMMON}Enchanted Helix Log",
+                npcPrice = 1_440.0,
+            ),
+            FishingProfitDropInfo(
+                itemId = "RUBY_VEILSHROOM",
+                itemName = "Ruby Veilshroom",
+                itemDisplayName = "${COMMON}Ruby Veilshroom",
+                npcPrice = 5.0,
+            ),
+            FishingProfitDropInfo(
+                itemId = "ENCHANTED_RUBY_VEILSHROOM",
+                itemName = "Enchanted Ruby Veilshroom",
+                itemDisplayName = "${UNCOMMON}Enchanted Ruby Veilshroom",
+                npcPrice = 800.0,
+            ),
+            FishingProfitDropInfo(
+                itemId = "RUBBER_SNORKEL",
+                itemName = "Rubber Snorkel",
+                itemDisplayName = "${RARE}Rubber Snorkel",
+                npcPrice = 25_000.0,
+            ),
+            FishingProfitDropInfo(
+                itemId = "HELIXIS",
+                itemName = "Helixis",
+                itemDisplayName = "${RARE}Helixis",
+                npcPrice = 230_400.0,
+                shouldAnnounceRareDrop = true,
+            ),
+            FishingProfitDropInfo(
+                itemId = "WATER_HYACINTH",
+                itemName = "Water Hyacinth",
+                itemDisplayName = "${LEGENDARY}Water Hyacinth",
+                npcPrice = 1_000_000.0,
+            ),
+            FishingProfitDropInfo(
+                itemId = "SUBLIME_SILK",
+                itemName = "Sublime Silk",
+                itemDisplayName = "${EPIC}Sublime Silk",
+                npcPrice = 50_000.0,
+                shouldAnnounceRareDrop = true,
+            ),
+            FishingProfitDropInfo(
+                itemId = "DISTANT_ECHO",
+                itemName = "Distant Echo",
+                itemDisplayName = "${LEGENDARY}Distant Echo",
+                npcPrice = 1_000_000.0,
+            ),
+            FishingProfitDropInfo(
+                itemId = "ISOPOD_HUSK",
+                itemName = "Isopod Husk",
+                itemDisplayName = "${EPIC}Isopod Husk",
+                npcPrice = 1_000_000.0, // ?
+                shouldAnnounceRareDrop = true,
+            ),
+            FishingProfitDropInfo(
+                itemId = "REINFORCED_NETTING",
+                itemName = "Reinforced Netting",
+                itemDisplayName = "${LEGENDARY}Reinforced Netting",
+                npcPrice = 1_000_000.0, // ?
             ),
 
             // Crimson Isle

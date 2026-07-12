@@ -22,6 +22,9 @@ enum class RareDropTypes(val displayName: String) {
     VIBRANT_CORAL("Vibrant Coral"),
     TRUE_ICE("True Ice"),
     PRINCES_CROWN_JEWEL("Prince's Crown Jewel"),
+    DISTANT_ECHO("Distant Echo"),
+    REINFORCED_NETTING("Reinforced Netting"),
+    WATER_HYACINTH("Water Hyacinth"),
 
     MEGALODON_LEGENDARY("Megalodon (Legendary)"),
     MEGALODON_EPIC("Megalodon (Epic)"),
@@ -169,6 +172,30 @@ class RareDrops {
                 itemName = RareDropTypes.TRUE_ICE.displayName,
                 rarityColorCode = LEGENDARY.code,
                 npcPrice = null,
+                isExtremelyRare = false,
+                defaultSoundFileName = Sounds.FEESH_OH_MY_GOD
+            ),
+            RareDropInfo(
+                id = "WATER_HYACINTH",
+                itemName = RareDropTypes.WATER_HYACINTH.displayName,
+                rarityColorCode = LEGENDARY.code,
+                npcPrice = 1_000_000,
+                isExtremelyRare = false,
+                defaultSoundFileName = Sounds.FEESH_OH_MY_GOD
+            ),
+            RareDropInfo(
+                id = "DISTANT_ECHO",
+                itemName = RareDropTypes.DISTANT_ECHO.displayName,
+                rarityColorCode = LEGENDARY.code,
+                npcPrice = 1_000_000,
+                isExtremelyRare = false,
+                defaultSoundFileName = Sounds.FEESH_OH_MY_GOD
+            ),
+            RareDropInfo(
+                id = "REINFORCED_NETTING",
+                itemName = RareDropTypes.REINFORCED_NETTING.displayName,
+                rarityColorCode = LEGENDARY.code,
+                npcPrice = 1_000_000, // ?
                 isExtremelyRare = false,
                 defaultSoundFileName = Sounds.FEESH_OH_MY_GOD
             ),

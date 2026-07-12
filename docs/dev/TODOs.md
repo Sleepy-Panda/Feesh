@@ -4,6 +4,18 @@
 
 - Test each release in 1.21.* and 26.x
 
+## Alpha Torrus Canyon
+
+ GREAT CATCH! You caught a Giant Water Bug!
+other name for Giant Water Bug Shard - recheck later and maybe add to profit tracker
+- All chat? Death message?
+- Contests to profit tracker? [NPC] Miria: You reached the EPIC Bracket in my contest!
+[NPC] Miria: You reached the LEGENDARY Bracket in my contest!
+- Tracker for Leg/Mythic SC?
+- Giant Isopod acts like a Nessie, implement immunity?
+offer warp springs if not in Springs
+highlight is slightly off
+
 ## Alpha Lotus Atoll
 
 https://hypixel.net/threads/may-6th-lotus-atoll-alpha-testing.6094444/
@@ -23,6 +35,10 @@ Newly released - https://hypixel.net/threads/hypixel-skyblock-0-24-5-assorted-qo
   - I need to write better "own" sea creature detection to alert before personal cap actually happens.
 
 ## Latest issues & feedback
+
+ GOOD CATCH! You caught a Flexbone!
+ GOOD CATCH! You caught a Shinyfish Shard!
+
 - Toggle for PBs, rework trackPersonalBestFishingFestival
 - Max MF PB
 - Xp/h
