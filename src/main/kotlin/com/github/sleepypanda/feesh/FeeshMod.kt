@@ -82,6 +82,7 @@ class FeeshMod : ClientModInitializer {
         IceEssenceStatusBarPublisher.init()
         ArmorStandPublisher.init()
         ItemEntityPublisher.init()
+        ConsumablesPublishers.init()
 
         // Rendering
         RareMobHighlight.init()
@@ -120,7 +121,11 @@ class FeeshMod : ClientModInitializer {
         LootshareMessage.init()
         TrophyFrogDiscoveredMessage.init()
         TrophyFishDiscoveredMessage.init()
+
+        // PB
         DoubleHookPersonalBest.init()
+        MobyDuckPersonalBest.init()
+        BlizzardPersonalBest.init()
 
         // Overlays
         JerryWorkshopTracker.init()
@@ -159,10 +164,11 @@ class FeeshMod : ClientModInitializer {
         SlotTextRendererManager.init() // After all slot text renderers are initialized and registered
 
         ExpertiseTooltip.init()
+        CompactedRodPartTooltip.init()
         TooltipManager.init() // After all tooltip features are initialized and registered
 
         // Commands
-        PersonalBestCommand.init()
+        PersonalBestsCommand.init()
         SpiderDenRainScheduleCommand.init()
         PetLevelUpPricesCommand.init()
         GearCraftPricesCommand.init()

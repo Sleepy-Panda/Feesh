@@ -14,6 +14,7 @@ import com.github.sleepypanda.feesh.constants.Sounds
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.utils.gui.FeeshGui
 import com.github.sleepypanda.feesh.utils.gui.LineInfo
+import com.github.sleepypanda.feesh.events.models.MobyDuckConsumedEvent
 
 object ConsumablesTimer {
     private const val MOBY_DUCK_EFFECTIVE_SECONDS = 60 * 60
@@ -22,8 +23,6 @@ object ConsumablesTimer {
     private const val SECONDS_BEFORE_EXPIRATION = 10
     private const val TICKS_PER_CHECK = 20
 
-    // You consumed a Moby-Duck: Collector's Edition and gained +30☯ Fishing Wisdom for 60m!
-    private val MOBY_DUCK_CONSUMED_PATTERN = Regex("^You consumed a Moby-Duck: Collector's Edition and gained \\+30☯ Fishing Wisdom for 60m!$")
     // Moby-Duck expires in 10s
     // Repeated on 60s, 10s, 5s, etc
     private val MOBY_DUCK_EXPIRING_PATTERN = Regex("^Moby-Duck expires in (\\d+)s$")
@@ -55,6 +54,22 @@ object ConsumablesTimer {
     fun init() {
         EventBus.subscribe(ChatEvent::class, ::onChat)
         EventBus.subscribe(ClientTickEvent::class, ::onClientTick)
+        EventBus.subscribe(MobyDuckConsumedEvent::class, ::onMobyDuckConsumed)
+    }
+
+    private fun onMobyDuckConsumed(@Suppress("UNUSED_PARAMETER") event: MobyDuckConsumedEvent) {
+        CommonUtils.runWithCatching("Failed to handle Moby-Duck consumed event") {
+            if (!WorldUtils.isInSkyblock()) return
+            if (!isOverlayEnabled() && !isAlertEnabled()) return
+
+            mobyDuckData = MobyDuckData(
+                isActive = true,
+                elapsedTime = 0,
+                remainingTime = MOBY_DUCK_EFFECTIVE_SECONDS,
+                hasSeenExpiringMessage = false,
+                isAlerted = false
+            )
+        }
     }
 
     private fun onChat(event: ChatEvent) {
@@ -63,15 +78,6 @@ object ConsumablesTimer {
             if (!isOverlayEnabled() && !isAlertEnabled()) return
 
             when {
-                MOBY_DUCK_CONSUMED_PATTERN.matches(event.unformattedText) -> {
-                    mobyDuckData = MobyDuckData(
-                        isActive = true,
-                        elapsedTime = 0,
-                        remainingTime = MOBY_DUCK_EFFECTIVE_SECONDS,
-                        hasSeenExpiringMessage = false,
-                        isAlerted = false
-                    )
-                }
                 MOBY_DUCK_EXPIRED_PATTERN.containsMatchIn(event.unformattedText) -> {
                     resetMobyDuck()
                     gui.clearLines()

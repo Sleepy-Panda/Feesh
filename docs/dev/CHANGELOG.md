@@ -1,14 +1,40 @@
-# 1.10.0
+# 1.11.0
 
 Released on: ???
 
 ## Features
 
-- 
+- Removed support of 1.21.10. RIP
+- Torrhus Canyon:
+  - Added new sea creatures and drops.
+  - Enabled hotspot functionalities.
+- Added setting to compact rod parts in the tooltip [disabled by default] - it removes rod parts descriptions to have shorter tooltip.
 
 ## Bugfixes
 
-- Removed duplicated RARE DROP! chat alert for Singed Powder, as now there is same alert from SB.
+- Fixed rare mobs highlight colors not matching new SB colors.
+
+# 1.10.0
+
+Released on: 2026-07-07
+
+## Features
+
+- Added "ALL" option for Rare Drops (alert and party message).
+  - The idea is that you can select ALL once, so all existing and future drops in the list will be always enabled. By default, config library adds new list items as unselected, so you had to manually select new ones.
+- Personal Best adjustments:
+  - Added Total Moby-Ducks consumed and Total Blizzards started.
+  - Renamed `/feeshPersonalBest` to `/feeshPersonalBests`.
+  - Made PBs not counted on Alpha.
+
+## Bugfixes
+
+- **Fixed rare drop-related functionalities being broken due to Hypixel changing various text symbols (such as Magic Find icon).**
+  - For now this update is on Hypixel Alpha, but they might move it to Live server soon, so old Feesh versions will be broken.
+  - [[July 3] 0.26 Release Candidate](https://hypixel.net/threads/july-3-0-26-release-candidate.6118706/)
+- Fixed alerts not working for Pyroclasm VI book (renamed Magmarizer VI).
+- Removed duplicated RARE DROP! chat alert for Singed Powder and Bobbin' Scriptures, as now there is same alert from Hypixel.
+- Fixed text of negative pet level up profit in /feeshPetLevelUpProfit.
 
 # 1.9.0
 
@@ -231,7 +257,7 @@ Released on: 2026-04-16
 
 ## Special thanks
 
-To the [Casters discord](https://discord.gg/79E7Rhv8) and personally `jessbre` for supporting the mod!
+To the Casters discord and personally `jessbre` for supporting the mod!
 
 Take the fish:
 

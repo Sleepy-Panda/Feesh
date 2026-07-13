@@ -28,6 +28,7 @@ object DoubleHookPersonalBest {
 
     private fun onSeaCreatureCaught(event: OwnSeaCreatureCaughtEvent) {
         if (!WorldUtils.isInSkyblock()) return
+        if (WorldUtils.isOnAlpha()) return
         if (event.seaCreatureName == SeaCreatureNames.VANQUISHER) return
 
         if (event.isDoubleHook) {

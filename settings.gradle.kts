@@ -28,7 +28,6 @@ pluginManagement {
 rootProject.buildFileName = "root.gradle.kts"
 
 listOf(
-    "1.21.10-fabric",
     "1.21.11-fabric",
 ).forEach { version ->
     include(":$version")

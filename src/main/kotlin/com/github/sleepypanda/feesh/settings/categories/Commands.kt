@@ -3,7 +3,7 @@ package com.github.sleepypanda.feesh.settings.categories
 import com.github.sleepypanda.feesh.features.commands.FearMongererShopPricesCommand
 import com.github.sleepypanda.feesh.features.commands.GearCraftPricesCommand
 import com.github.sleepypanda.feesh.features.commands.JunkerJoelShopPricesCommand
-import com.github.sleepypanda.feesh.features.commands.PersonalBestCommand
+import com.github.sleepypanda.feesh.features.commands.PersonalBestsCommand
 import com.github.sleepypanda.feesh.features.commands.PetLevelUpPricesCommand
 import com.github.sleepypanda.feesh.features.commands.SpiderDenRainScheduleCommand
 import com.github.sleepypanda.feesh.features.commands.TerryShopPricesCommand
@@ -127,10 +127,10 @@ object Commands : CategoryKt("Commands") {
 
         button {
             title = "Personal Best"
-            description = "Displays your personal best records in the chat. Executes ${WHITE}/${PersonalBestCommand.COMMAND_NAME}"
+            description = "Displays your personal best records in the chat. Executes ${WHITE}/${PersonalBestsCommand.COMMAND_NAME}"
             text = "Click to execute"
             onClick {
-                ChatUtils.command(PersonalBestCommand.COMMAND_NAME)
+                ChatUtils.command(PersonalBestsCommand.COMMAND_NAME)
             }
         }
     }

@@ -12,7 +12,7 @@ import kotlin.math.truncate
 object MobyDuckProgress : BaseSlotTextRenderer() {
 
     private const val MAX_PROGRESS_SECONDS = 300 * 60 * 60
-    private const val PROGRESS_COLOR = 0xFF55FFFF.toInt()
+    private const val PROGRESS_COLOR = 0xff54fcfc.toInt()
 
     fun init() {
         // Calling this ensures the object is initialized, and registered in base class.

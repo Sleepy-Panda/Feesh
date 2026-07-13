@@ -65,7 +65,7 @@ object Alerts : CategoryKt("Alerts") {
 
     var alertOnPlayerDeath by boolean(true) {
         this.name = Translated("Alert when you or your party members are killed by a fishing boss")
-        this.description = Translated("Shows a title and plays a sound when you or your party members are killed by Thunder / Lord Jawbus / Ragnarok / Wiki Tiki / Titanoboa / Nessie.")
+        this.description = Translated("Shows a title and plays a sound when you or your party members are killed by a fishing boss.")
     }
 
     init {
@@ -79,8 +79,9 @@ object Alerts : CategoryKt("Alerts") {
         this.description = Translated("Shows a title and plays a sound when a rare item has dropped by you or your party members. Sound can be customized for each item from the list.")
     }
 
-    var alertOnRareDropTypes by select(RareDropTypes.LUCKY_CLOVER_CORE, *RareDropTypes.values()) {
+    var alertOnRareDropTypes by select(RareDropTypes.ALL, *RareDropTypes.values()) {
         this.name = Translated("Select rare drops to be alerted on")
+        this.description = Translated("ALL is equivalent of selecting all items in the list below - you can select it once, to enable all existing and future items in the list.")
         this.searchTerms = RareDropTypes.values().map { it.displayName }.toList()
     }
 

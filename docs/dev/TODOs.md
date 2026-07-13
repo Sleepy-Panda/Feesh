@@ -4,11 +4,24 @@
 
 - Test each release in 1.21.* and 26.x
 
+## Alpha Torrus Canyon
+
+ GREAT CATCH! You caught a Giant Water Bug!
+other name for Giant Water Bug Shard - recheck later and maybe add to profit tracker
+- All chat? Death message?
+- Contests to profit tracker? [NPC] Miria: You reached the EPIC Bracket in my contest!
+[NPC] Miria: You reached the LEGENDARY Bracket in my contest!
+- Tracker for Leg/Mythic SC?
+- Giant Isopod acts like a Nessie, implement immunity?
+offer warp springs if not in Springs
+highlight is slightly off
+
 ## Alpha Lotus Atoll
 
 https://hypixel.net/threads/may-6th-lotus-atoll-alpha-testing.6094444/
 https://hypixel.net/threads/may-14th-lotus-atoll-alpha-testing-2.6097759/
 
+WISE! You've been granted +1 Treasure Chance for 30m while on the Lotus Atoll!
 WISE! You've been granted +2.5α Sea Creature Chance for 30m while on the Lotus Atoll! - 4 perks
 WISE! You've been granted +10☂ Fishing Speed for 30m while on the Lotus Atoll!
 WISE! You've been granted +1⛃ Treasure Chance for 30m while on the Lotus Atoll!
@@ -23,12 +36,19 @@ Newly released - https://hypixel.net/threads/hypixel-skyblock-0-24-5-assorted-qo
 
 ## Latest issues & feedback
 
-- lastBaitName - test the change for bait running out
-- With the release of Minecraft version 26.2 on June 16th, we'll be dropping support for 1.21.9 and 1.21.10. A few weeks after that, we'll drop support for 1.21.11.
+ GOOD CATCH! You caught a Flexbone!
+ GOOD CATCH! You caught a Shinyfish Shard!
+
+- Toggle for PBs, rework trackPersonalBestFishingFestival
+- Max MF PB
+- Xp/h
+- SMILE! Polizei111 has sprinkled some joy your way! You feel a little happier. :)
+- Add All option for drops list in settings
+- Share Nessie with coords to all chat?
+- With the release of Minecraft version 26.2 on June 16th, we'll drop support for 1.21.11 in a few weeks.
 - Personal blacklist + party sharing
 - Runic sea creatures - alert or highlight
 - Pickups from trade menu
-- Shorten rod parts list (no descriptions)
 - Sea Creature Tracker where it says "Total" could you change that to "Total Sea Creatures"
 - Some legion counting radius logic reported
 - Catches/h for treasures

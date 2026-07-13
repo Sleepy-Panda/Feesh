@@ -88,15 +88,15 @@ object RareMobHighlight {
 
         val color = when {
             scInfo?.rarityColorCode == ColorCodes.COMMON.code -> 0xFFFFFF
-            scInfo?.rarityColorCode == ColorCodes.UNCOMMON.code -> 0x55FF55
-            scInfo?.rarityColorCode == ColorCodes.RARE.code -> 0x8AA1FF
-            scInfo?.rarityColorCode == ColorCodes.EPIC.code -> 0xAA00AA
-            scInfo?.rarityColorCode == ColorCodes.LEGENDARY.code -> 0xFFAA00
-            scInfo?.rarityColorCode == ColorCodes.MYTHIC.code -> 0xFF55FF
-            scInfo?.rarityColorCode == ColorCodes.DIVINE.code -> 0x55FFFF
-            scInfo?.rarityColorCode == ColorCodes.SPECIAL.code -> 0xFF5555
-            cleanName == HighlightableSeaCreatureTypes.FLIPFLOPPER.displayName || cleanName == HighlightableSeaCreatureTypes.SEASHINE.displayName -> 0x55FFFF
-            cleanName == HighlightableSeaCreatureTypes.JAWBUS_FOLLOWER.displayName || cleanName == HighlightableSeaCreatureTypes.WIKI_TIKI_LASER_TOTEM.displayName -> 0xF01616
+            scInfo?.rarityColorCode == ColorCodes.UNCOMMON.code -> 0x54fc54
+            scInfo?.rarityColorCode == ColorCodes.RARE.code -> 0x449afc
+            scInfo?.rarityColorCode == ColorCodes.EPIC.code -> 0xa234eb
+            scInfo?.rarityColorCode == ColorCodes.LEGENDARY.code -> 0xfc8f00
+            scInfo?.rarityColorCode == ColorCodes.MYTHIC.code -> 0xfc54fc
+            scInfo?.rarityColorCode == ColorCodes.DIVINE.code -> 0x54fcfc
+            scInfo?.rarityColorCode == ColorCodes.SPECIAL.code -> 0x54fcfc
+            cleanName == HighlightableSeaCreatureTypes.FLIPFLOPPER.displayName || cleanName == HighlightableSeaCreatureTypes.SEASHINE.displayName -> 0x54fcfc
+            cleanName == HighlightableSeaCreatureTypes.JAWBUS_FOLLOWER.displayName || cleanName == HighlightableSeaCreatureTypes.WIKI_TIKI_LASER_TOTEM.displayName -> 0xfc5454
             else -> 0x00FFFF
         }
 

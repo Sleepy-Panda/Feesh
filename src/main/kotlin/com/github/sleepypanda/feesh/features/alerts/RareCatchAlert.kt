@@ -101,6 +101,8 @@ object RareCatchAlert {
 
         if (seaCreatureInfo.name == SeaCreatureNames.NESSIE) {
             ChatUtils.sendLocalChatWithCommand("Click to warp to Murkwater Loch!", "warp murk", true)
+        } else if (seaCreatureInfo.name == SeaCreatureNames.GIANT_ISOPOD) {
+            ChatUtils.sendLocalChatWithCommand("Click to warp to Torrhus Springs!", "warp springs", true)
         }
     }
 

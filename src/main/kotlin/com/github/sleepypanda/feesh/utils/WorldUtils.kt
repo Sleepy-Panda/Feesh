@@ -29,6 +29,7 @@ object WorldUtils {
     const val RIFT = "Rift Dimension"
     const val GALATEA = "Galatea"
     const val LOTUS_ATOLL = "Lotus Atoll"
+    const val TORRHUS_CANYON = "Torrhus Canyon"
 
     // Zones
     const val PLHLEGBLAST_POOL = "Plhlegblast Pool"
@@ -56,6 +57,7 @@ object WorldUtils {
         FARMING_ISLANDS,
         GALATEA,
         LOTUS_ATOLL,
+        TORRHUS_CANYON,
     )
 
     val HOTSPOT_WORLDS = listOf(
@@ -65,7 +67,8 @@ object WorldUtils {
         JERRY_WORKSHOP,
         LOTUS_ATOLL,
         PARK,
-        CRIMSON_ISLE
+        CRIMSON_ISLE,
+        TORRHUS_CANYON,
     )
 
     val WATER_HOTSPOT_WORLDS = listOf(
@@ -75,14 +78,19 @@ object WorldUtils {
         JERRY_WORKSHOP,
         LOTUS_ATOLL,
         PARK,
+        TORRHUS_CANYON,
     )
 
     private var cachedIsInSkyblock: Boolean = false
+    private var cachedIsOnAlpha: Boolean = false
     private var cachedWorldName: String? = null
     private var cachedZoneName: String? = null
 
     private const val TICKS_PER_UPDATE = 20
     private var tickCounter = 0
+
+    private val zonePrefixes = listOf("⏣", "ф", "", "")
+    private val zonePrefixesRegex = Regex(zonePrefixes.joinToString("|"))
 
     fun init() {
         EventBus.subscribe(ClientTickEvent::class, ::onClientTick)
@@ -100,6 +108,7 @@ object WorldUtils {
     private fun onWorldChanged(@Suppress("UNUSED_PARAMETER") event: WorldChangedEvent) {
         tickCounter = TICKS_PER_UPDATE
         cachedIsInSkyblock = false
+        cachedIsOnAlpha = false
         cachedWorldName = null
         cachedZoneName = null
 
@@ -109,6 +118,9 @@ object WorldUtils {
     private fun updateCache() {
         CommonUtils.runWithCatching("Failed to update world utils cache") {
             cachedIsInSkyblock = readIsInSkyblock()
+            cachedIsOnAlpha = if (cachedIsInSkyblock) {
+                readIsOnAlpha()
+            } else false
 
             cachedWorldName = if (cachedIsInSkyblock) {
                 readWorldName()
@@ -126,22 +138,14 @@ object WorldUtils {
     }
 
     private fun readZoneName(): String? {
-        val scoreboard = FeeshMod.mc.level?.scoreboard ?: return null
-        val objective = scoreboard.getDisplayObjective(DisplaySlot.SIDEBAR) ?: return null
-
-        val zoneLine = scoreboard.listPlayerScores(objective)
-            .filter { entry -> !entry.isHidden }
-            .map { entry ->
-                val team = scoreboard.getPlayersTeam(entry.owner)
-                PlayerTeam.formatNameForTeam(team, entry.ownerName()).getUnformattedString()
-            }
-            .find { line -> line.contains("⏣") || line.contains("ф") }
+        val zoneLine = getUnformattedScoreboardLines().find { line -> zonePrefixes.any { line.contains(it) } }
         if (zoneLine.isNullOrEmpty()) return null
 
         // ⏣ Abandoned🐍 Quarry -> Abandoned Quarry
+        //  Crimson Isle -> Crimson Isle
+        //  Enigma's Crib -> Enigma's Crib
         var zoneName = zoneLine
-            .replace("⏣", "")
-            .replace("ф", "")
+            .replace(zonePrefixesRegex, "")
             .replace(Regex("[^\\u0000-\\u007F]"), "")
             .trim()
 
@@ -167,6 +171,20 @@ object WorldUtils {
         return value >= num1 && value <= num2
     }
 
+    private fun getUnformattedScoreboardLines(): List<String> {
+        val scoreboard = FeeshMod.mc.level?.scoreboard ?: return emptyList()
+        val objective = scoreboard.getDisplayObjective(DisplaySlot.SIDEBAR) ?: return emptyList()
+
+        val zoneLines = scoreboard.listPlayerScores(objective)
+            .filter { entry -> !entry.isHidden }
+            .map { entry ->
+                val team = scoreboard.getPlayersTeam(entry.owner)
+                PlayerTeam.formatNameForTeam(team, entry.ownerName()).getUnformattedString()
+            }
+
+        return zoneLines
+    }
+
     private fun readIsInSkyblock(): Boolean {
         //val serverAddress = FeeshMod.mc.currentServerEntry?.address ?: return false
         //if (!serverAddress.contains("hypixel", ignoreCase = true)) return false
@@ -178,8 +196,18 @@ object WorldUtils {
         return title.contains("skyblock", ignoreCase = true)
     }
 
+    private fun readIsOnAlpha(): Boolean {
+        val zoneLines = getUnformattedScoreboardLines()
+        return zoneLines.any { line -> line.contains("alpha.hypixel.net", ignoreCase = true) }
+    }
+
     fun isInSkyblock(): Boolean {
         return cachedIsInSkyblock
+    }
+
+    fun isOnAlpha(): Boolean {
+        if (!isInSkyblock()) return false
+        return cachedIsOnAlpha
     }
 
     /**

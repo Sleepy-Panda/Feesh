@@ -12,7 +12,7 @@ import com.github.sleepypanda.feesh.utils.setScreenCompat
 import com.teamresourceful.resourcefulconfigkt.api.CategoryKt
 import com.teamresourceful.resourcefulconfig.api.types.options.TranslatableValue
 import net.minecraft.client.gui.screens.options.controls.KeyBindsScreen
-import net.minecraft.Util
+import net.minecraft.util.Util
 
 enum class HotspotChatSource(val displayName: String) {
     PARTY_CHAT("Party Chat"),
@@ -94,7 +94,7 @@ object Chat : CategoryKt("Chat") {
 
     var messageOnPlayerDeath by boolean(true) {
         this.name = Translated("Send a party chat message when killed by a fishing boss")
-        this.description = Translated("Sends a message to the party chat when you are killed by Thunder / Lord Jawbus / Ragnarok / Wiki Tiki / Titanoboa / Nessie. It enables the alerts for your party members so they can wait for you or laugh at you 😈")
+        this.description = Translated("Sends a message to the party chat when you are killed by a fishing boss. It enables the alerts for your party members so they can wait for you or laugh at you 😈")
     }
 
     init {
@@ -108,14 +108,15 @@ object Chat : CategoryKt("Chat") {
         this.description = Translated("Sends a PARTY chat message when a rare item has dropped.")
     }
 
-    var messageOnRareDropTypes by select(RareDropTypes.LUCKY_CLOVER_CORE, *RareDropTypes.values()) {
+    var messageOnRareDropTypes by select(RareDropTypes.ALL, *RareDropTypes.values()) {
         this.name = Translated("Select rare drops to share to the PARTY chat")
+        this.description = Translated("ALL is equivalent of selecting all items in the list below - you can select it once, to enable all existing and future items in the list.")
         this.searchTerms = RareDropTypes.values().map { it.displayName }.toList()
     }
 
     var includeDropNumberIntoDropMessage by boolean(true) {
         this.name = Translated("Include drop number")
-        this.description = Translated("${GRAY}Send the drop's ordinal number for the current session in the party chat message..\n${RED}Requires Fishing Profit Tracker to be enabled! ${GRAY}Drop numbers are reset when Fishing Profit Tracker is reset.")
+        this.description = Translated("${GRAY}Send the drop's ordinal number for the current session in the party chat message.\n${RED}Requires Fishing Profit Tracker to be enabled! ${GRAY}Drop numbers are reset when Fishing Profit Tracker is reset.")
     }
 
     var includeMagicFindIntoRareDropMessage by boolean(true) {

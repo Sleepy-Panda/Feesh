@@ -9,7 +9,7 @@ import com.github.sleepypanda.feesh.features.commands.BulkResetTrackersCommand
 import com.github.sleepypanda.feesh.features.overlays.BarnFishingTimer
 import net.minecraft.client.KeyMapping
 import com.mojang.blaze3d.platform.InputConstants
-import net.minecraft.resources.ResourceLocation
+import net.minecraft.resources.Identifier
 //#if MC >= 26.1
 //$$ import net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper as KeyBindingHelper
 //#else
@@ -18,7 +18,7 @@ import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper
 import org.lwjgl.glfw.GLFW
 
 object KeybindUtils {
-    val FEESH_CATEGORY: KeyMapping.Category = KeyMapping.Category.register(ResourceLocation.fromNamespaceAndPath("feesh", "keybinds")) // Keys are localized in resources/assets/feesh/lang/en_us.json
+    val FEESH_CATEGORY: KeyMapping.Category = KeyMapping.Category.register(Identifier.fromNamespaceAndPath("feesh", "keybinds")) // Keys are localized in resources/assets/feesh/lang/en_us.json
     private val keybindCallbacks = mutableListOf<Pair<KeyMapping, () -> Unit>>()
     private var keybindsRegistered = false
 

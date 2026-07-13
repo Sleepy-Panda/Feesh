@@ -1,6 +1,6 @@
 # Feesh Mod
 
-`Feesh` is a Fabric 1.21.10 / 1.21.11 / 26.1 / 26.2 mod for Hypixel Skyblock. It introduces many fishing-related QOL features. Do `/feesh`, set up the mod, and enjoy fishing! <3
+`Feesh` is a Fabric 1.21.11 / 26.1 / 26.2 mod for Hypixel Skyblock. It introduces many fishing-related QOL features. Do `/feesh`, set up the mod, and enjoy fishing! <3
 
 This mod is an evolution of [FeeshNotifier ChatTriggers module](https://chattriggers.com/modules/v/FeeshNotifier) made for earlier MC versions.
 
@@ -22,13 +22,6 @@ This mod is an evolution of [FeeshNotifier ChatTriggers module](https://chattrig
 If you want early access to the pre-releases, Github automatically builds every version pushed to `develop` branch. They can be found in Actions - (select latest action) - Artifacts - find attached `.zip` which contains `.jar` file(s). **THOSE MAY BE UNSTABLE** as they are features in active development, probably not tested enough.
 
 ## Dependencies
-
-### 1.21.10
-
-Required Minecraft version is **1.21.10** (Fabric loader 0.18.1+).
-Required Java version is 21+.
-
-This mod requires [Fabric API](https://modrinth.com/mod/fabric-api) and [Fabric Language Kotlin](https://modrinth.com/mod/fabric-language-kotlin) mods for 1.21.10.
 
 ### 1.21.11
 
@@ -142,12 +135,15 @@ Required Java version is 25+.
 - **Mute Jade Dragon** — Mutes Jade dragon sounds while you are in dragon's cave.
 - **Mute Reindrake gifts** — Mutes loud 'totem used' sounds while picking up gifts from a Reindrake.
 
+### Personal Best
+
+- **/feeshPersonalBests** — Displays all your personal best records tracked by the mod.
+
 ### Commands
 
 - **/feesh** — Opens mod settings.
 - **/feeshMoveAllGuis** — Move and resize all enabled overlay GUIs.
 - **/feeshPauseAllTrackers** — Pause all active trackers which have a timer (also available as Keybind).
-- **/feeshPersonalBest** — Displays all your personal best records tracked by the mod.
 - **/feeshPetLevelUpPrices** — Calculates profits for leveling fishing pets from 1 to 100.
 - **/feeshGearCraftPrices** — Calculates profits for crafting gear from fishing drops.
 - **/feeshFearMongererShopPrices** — Calculates profits for selling items from Fear Mongerer NPC shop.

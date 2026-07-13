@@ -6,9 +6,9 @@ Feesh is a client-only Fabric mod for Minecraft. It is built with Gradle, using 
 
 The project supports multiple Minecraft versions through a multi-module Gradle setup:
 
-- `1.21.10-fabric`
 - `1.21.11-fabric`
 - `26.1-fabric`
+- `26.2-fabric`
 
 Each version module uses the same root build script and shares the same source tree.
 
@@ -92,7 +92,6 @@ As a result, `Feesh-<version>-fabric.jar` file appears in `/build/versions` fold
 
 ## Mappings
 
-- https://mappings.dev/1.21.10/
 - https://mappings.dev/1.21.11/
 
 ## Updating Gradle

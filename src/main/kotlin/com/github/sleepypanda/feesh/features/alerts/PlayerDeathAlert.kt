@@ -14,7 +14,7 @@ import com.github.sleepypanda.feesh.utils.ChatUtils.removeFormatting
 import net.minecraft.sounds.SoundEvents
 
 object PlayerDeathAlert {
-    val YOU_DIED_PATTERN = Regex("^ ☠ You were killed by (Ragnarok|Thunder|Lord Jawbus|Jawbus Follower|Wiki Tiki|Wiki Tiki Laser Totem|Titanoboa|Nessie)\\.$")
+    val YOU_DIED_PATTERN = Regex("^ ☠ You were killed by (Ragnarok|Thunder|Lord Jawbus|Jawbus Follower|Wiki Tiki|Wiki Tiki Laser Totem|Titanoboa|Nessie|Giant Isopod)\\.$")
     const val PARTY_MEMBER_DIED_PATTERN = "^--> I was killed, please wait for me until I come back <--$"
 
     fun init() {
