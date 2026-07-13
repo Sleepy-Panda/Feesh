@@ -12,7 +12,7 @@ import net.minecraft.world.item.ItemStack
 object CompactedRodPartTooltip : BaseTooltip() {
 
     private val ROD_PART_NAME_REGEX = Regex(
-        """^. (Hook NONE|Line NONE|Sinker NONE|.+ Hook|.+ Line|.+ Sinker)$"""
+        """^(ථ|ꨃ|࿉) (Hook NONE|Line NONE|Sinker NONE|.+ Hook|.+ Line|.+ Sinker)$"""
     )
 
     fun init() {
@@ -24,40 +24,42 @@ object CompactedRodPartTooltip : BaseTooltip() {
     override fun modifyTooltip(stack: ItemStack, lines: MutableList<Component>) {
         try {
             if (!ItemUtils.isFishingRod(stack)) return
-    
-            var index = 0
-            while (index < lines.size) {
-                val text = lines[index].getUnformattedString().trim()
-                if (!isRodPartName(text)) {
-                    index++
-                    continue
-                }
-
-                val nextIndex = index + 1
-    
-                if (!text.contains("NONE", ignoreCase = true)) {
-                    // Rod part description line(s)
-                    while (nextIndex < lines.size && isNotEmptyLine(lines[nextIndex].getUnformattedString())) {
-                        lines.removeAt(nextIndex)
-                    }
-                }
-                // Empty line between rod parts only
-                while (nextIndex < lines.size && isEmptyLine(lines[nextIndex].getUnformattedString())) {
-                    val nextNonEmptyText = lines.drop(nextIndex + 1)
-                        .firstOrNull { isNotEmptyLine(it.getUnformattedString()) }
-                        ?.getUnformattedString()
-                        ?.trim() ?: ""
-                    if (!isRodPartName(nextNonEmptyText)) break
-                    lines.removeAt(nextIndex)
-                }
-                index++
-            }
-        } catch (e: Exception) { }
+            compactRodPartLines(lines)
+        } catch (e: Exception) {}
     }
 
-    private fun isRodPartName(text: String): Boolean = ROD_PART_NAME_REGEX.matches(text)
+    private fun compactRodPartLines(lines: MutableList<Component>) {
+        if (lines.isEmpty()) return
+        val rodPartIndexes = lines.indices.filter { isRodPartName(lines[it]) }
+        if (rodPartIndexes.isEmpty()) return
 
-    private fun isEmptyLine(text: String): Boolean = text.trim().isEmpty()
+        val firstRodPartIndex = rodPartIndexes.first()
+        val lastRodPartIndex = rodPartIndexes.last()
+        val indexesToRemove = mutableSetOf<Int>()
 
-    private fun isNotEmptyLine(text: String): Boolean = text.trim().isNotEmpty()
+        for (index in firstRodPartIndex..lastRodPartIndex) {
+            if (!isRodPartName(lines[index])) {
+                indexesToRemove.add(index)
+            }
+        }
+
+        val firstLineIndexAfterLastRodPart = lines.indices.drop(lastRodPartIndex + 1).firstOrNull { index ->
+            lines[index].getUnformattedString().trim().isEmpty()
+        }
+
+        if (firstLineIndexAfterLastRodPart != null) {
+            for (index in (lastRodPartIndex + 1) until firstLineIndexAfterLastRodPart) {
+                indexesToRemove.add(index)
+            }
+        }
+
+        for (index in indexesToRemove.sortedDescending()) {
+            lines.removeAt(index)
+        }
+    }
+
+    private fun isRodPartName(text: Component): Boolean {
+        val cleanText = text.getUnformattedString().trim()
+        return !cleanText.isEmpty() && ROD_PART_NAME_REGEX.matches(cleanText)
+    }
 }
