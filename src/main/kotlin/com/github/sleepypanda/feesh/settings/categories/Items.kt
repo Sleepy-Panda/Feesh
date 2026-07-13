@@ -97,4 +97,13 @@ object Items : CategoryKt("Items") {
             TooltipManager.refreshEnabledAdders()
         }
     }
+
+    var compactRodPartTooltip by ObservableEntry(boolean(false) {
+        this.name = Translated("Compact rod parts")
+        this.description = Translated("Hides descriptions for fishing rod parts (Hook, Line, and Sinker), keeping only the part name.")
+    }) { prev, new ->
+        if (prev != new) {
+            TooltipManager.refreshEnabledAdders()
+        }
+    }
 }

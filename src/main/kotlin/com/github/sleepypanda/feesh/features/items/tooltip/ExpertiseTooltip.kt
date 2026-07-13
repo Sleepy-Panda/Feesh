@@ -18,14 +18,16 @@ object ExpertiseTooltip : BaseTooltip() {
     override fun isEnabled(): Boolean = Items.showExpertiseKillsTooltip
 
     override fun modifyTooltip(stack: ItemStack, lines: MutableList<Component>) {
-        if (!ItemUtils.isFishingRod(stack)) return
-
-        val kills = getCachedExpertiseKills(stack) ?: return
-        val killsFormatted = CommonUtils.formatNumberWithSpaces(kills)
-        val maxKillsFormatted = CommonUtils.formatNumberWithSpaces(MAX_EXPERTISE_KILLS)
-        val line = if (kills >= MAX_EXPERTISE_KILLS) "${GRAY}Expertise Kills: ${AQUA}${killsFormatted} ${DARK_GRAY}(Maxed)"
-            else "${GRAY}Expertise Kills: ${WHITE}${killsFormatted} ${GRAY}/ ${AQUA}${maxKillsFormatted}"
-        CommonUtils.appendTooltipLine(lines, line)
+        try {
+            if (!ItemUtils.isFishingRod(stack)) return
+    
+            val kills = getCachedExpertiseKills(stack) ?: return
+            val killsFormatted = CommonUtils.formatNumberWithSpaces(kills)
+            val maxKillsFormatted = CommonUtils.formatNumberWithSpaces(MAX_EXPERTISE_KILLS)
+            val line = if (kills >= MAX_EXPERTISE_KILLS) "${GRAY}Expertise Kills: ${AQUA}${killsFormatted} ${DARK_GRAY}(Maxed)"
+                else "${GRAY}Expertise Kills: ${WHITE}${killsFormatted} ${GRAY}/ ${AQUA}${maxKillsFormatted}"
+            CommonUtils.appendTooltipLine(lines, line)
+        } catch (e: Exception) { }
     }
 
     private fun getCachedExpertiseKills(stack: ItemStack): Int? {

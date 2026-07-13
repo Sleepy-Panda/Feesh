@@ -8,6 +8,7 @@ Released on: ???
 - Torrhus Canyon:
   - Added new sea creatures and drops.
   - Enabled hotspot functionalities.
+- Added setting to compact rod parts in the tooltip [disabled by default] - it removes rod parts descriptions to have shorter tooltip.
 
 ## Bugfixes
 
