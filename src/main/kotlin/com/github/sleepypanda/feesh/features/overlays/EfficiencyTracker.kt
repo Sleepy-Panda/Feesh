@@ -3,12 +3,15 @@ package com.github.sleepypanda.feesh.features.overlays
 import com.github.sleepypanda.feesh.FeeshMod
 import com.github.sleepypanda.feesh.events.EventBus
 import com.github.sleepypanda.feesh.events.models.ClientTickEvent
+import com.github.sleepypanda.feesh.events.models.InteractActionType
 import com.github.sleepypanda.feesh.events.models.OwnSeaCreatureCaughtEvent
+import com.github.sleepypanda.feesh.events.models.PlayerInteractEvent
 import com.github.sleepypanda.feesh.events.models.SeaCreatureCocoonedByYouEvent
 import com.github.sleepypanda.feesh.events.models.WorldChangedEvent
 import com.github.sleepypanda.feesh.settings.categories.Overlays
 import com.github.sleepypanda.feesh.settings.models.EfficiencyStatTypes
 import com.github.sleepypanda.feesh.utils.CommonUtils
+import com.github.sleepypanda.feesh.utils.ItemUtils
 import com.github.sleepypanda.feesh.utils.WorldUtils
 import com.github.sleepypanda.feesh.utils.PlayerUtils
 import com.github.sleepypanda.feesh.utils.FishingHookUtils
@@ -52,6 +55,7 @@ object EfficiencyTracker : IResettableTracker {
     private var isSessionActive = false
     private var elapsedSeconds = 0
     private var lastIsFishingHookSubmerged = false
+    private var lastRodRightClickedAt: Date? = null
     private var tickCounter = 0
     private val baseTitle = "${AQUA}${BOLD}Efficiency tracker"
 
@@ -81,6 +85,7 @@ object EfficiencyTracker : IResettableTracker {
         EventBus.subscribe(OwnSeaCreatureCaughtEvent::class, ::onSeaCreatureCaught)
         EventBus.subscribe(SeaCreatureCocoonedByYouEvent::class, ::onSeaCreatureCocooned)
         EventBus.subscribe(ClientTickEvent::class, ::onClientTick)
+        EventBus.subscribe(PlayerInteractEvent::class, ::onPlayerInteract)
         EventBus.subscribe(WorldChangedEvent::class, ::onWorldChanged)
     }
 
@@ -96,6 +101,7 @@ object EfficiencyTracker : IResettableTracker {
         isSessionActive = false
         elapsedSeconds = 0
         lastIsFishingHookSubmerged = false
+        lastRodRightClickedAt = null
     }
 
     override fun refreshGui() {
@@ -119,8 +125,16 @@ object EfficiencyTracker : IResettableTracker {
 
     private fun onClientTick(@Suppress("UNUSED_PARAMETER") event: ClientTickEvent) {
         val currentIsFishingHookSubmerged = FishingHookUtils.isFishingHookSubmerged()
-        val isHookNotExisting = FishingHookUtils.getActiveFishingHook() == null
-        if (lastIsFishingHookSubmerged && isHookNotExisting) onRodReeledIn()
+        //val isHookNotExisting = FishingHookUtils.getActiveFishingHook() == null
+        if (lastIsFishingHookSubmerged && !currentIsFishingHookSubmerged) {
+            //ChatUtils.sendLocalChat("${WHITE}Reeled in; last click ago: ${Date().time - (lastRodRightClickedAt?.time ?: 0)}ms", true)
+        }
+        // Was just right clicked
+        if (lastIsFishingHookSubmerged &&
+            !currentIsFishingHookSubmerged &&
+            //PlayerUtils.hasFishingRodInHandUncached() &&
+            lastRodRightClickedAt != null && Date().time - lastRodRightClickedAt!!.time < 150
+        ) onRodReeledIn()
         lastIsFishingHookSubmerged = currentIsFishingHookSubmerged
         
         tickCounter++
@@ -129,6 +143,20 @@ object EfficiencyTracker : IResettableTracker {
 
         refreshElapsedTimeOrPause() // Once per second!
         updateGuiLines()
+    }
+
+    private fun onPlayerInteract(event: PlayerInteractEvent) {
+        CommonUtils.runWithCatching("Failed to handle fishing rod interaction") {
+            if (!WorldUtils.isInSkyblock()) return
+            if (!event.isMainHand || (event.actionType != InteractActionType.USE_ITEM && event.actionType != InteractActionType.USE_BLOCK)) return
+
+            val heldItem = FeeshMod.mc.player?.mainHandItem
+            if (heldItem == null || heldItem.isEmpty) return
+            if (!ItemUtils.isFishingRod(heldItem)) return
+
+            lastRodRightClickedAt = Date()
+            //ChatUtils.sendLocalChat("${WHITE}Rod right clicked at ${Date().time}", true)
+        }
     }
 
     private fun isTrackerEnabledInWorld(): Boolean {

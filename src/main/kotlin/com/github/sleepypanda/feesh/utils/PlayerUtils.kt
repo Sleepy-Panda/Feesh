@@ -9,8 +9,14 @@ import java.util.Timer
 import kotlin.concurrent.timerTask
 import net.minecraft.world.entity.EquipmentSlot
 
+data class FishingRodInHandCache(
+    val itemNameUnformatted: String? = null,
+    val itemNameFormatted: String? = null,
+)
+
 object PlayerUtils {
     private var cachedHasFishingRodInHotbar: Boolean = false
+    private var fishingRodInHandCache = null as FishingRodInHandCache?
     private var cachedHasDirtRodInHand: Boolean = false
     private var cachedIsInTrophyArmor: Boolean = false
     private var timer: Timer? = null
@@ -27,15 +33,16 @@ object PlayerUtils {
         val task = timerTask {
             CommonUtils.runWithCatching("Failed to update player utils cache") {
                 setHasFishingRodInHotbar()
-                setHasDirtRodInHand()
+                setFishingRodInHand()
                 setIsInTrophyArmor()
             }
         }
-        timer?.scheduleAtFixedRate(task, 0, 500)
+        timer?.scheduleAtFixedRate(task, 0, 250)
     }
 
     private fun onWorldChanged(@Suppress("UNUSED_PARAMETER") event: WorldChangedEvent) {
         cachedHasFishingRodInHotbar = false
+        fishingRodInHandCache = null
         cachedHasDirtRodInHand = false
         cachedIsInTrophyArmor = false
     }
@@ -83,6 +90,23 @@ object PlayerUtils {
         return cachedHasFishingRodInHotbar
     }
 
+    fun hasFishingRodInHandUncached(): Boolean {
+        CommonUtils.runWithCatching("Failed to check if player is holding a fishing rod") {
+            val player = FeeshMod.mc.player ?: return false
+            val heldItem = player.mainHandItem ?: return false
+            return ItemUtils.isFishingRod(heldItem)
+        }
+        return false
+    }
+
+    fun hasFishingRodInHand(): Boolean {
+        return fishingRodInHandCache != null
+    }
+
+    fun getFishingRodInHand(): FishingRodInHandCache? {
+        return fishingRodInHandCache
+    }
+
     fun hasDirtRodInHand(): Boolean {
         return cachedHasDirtRodInHand
     }
@@ -107,13 +131,28 @@ object PlayerUtils {
         cachedHasFishingRodInHotbar = false
     }
 
-    private fun setHasDirtRodInHand() {
+    private fun setFishingRodInHand() {
         val player = FeeshMod.mc.player ?: run {
+            fishingRodInHandCache = null
             cachedHasDirtRodInHand = false
             return
         }
-        val heldItem = player.mainHandItem
-        cachedHasDirtRodInHand = ItemUtils.isDirtRod(heldItem)
+        val heldItem = player.mainHandItem ?: run {
+            fishingRodInHandCache = null
+            cachedHasDirtRodInHand = false
+            return
+        }
+
+        if (ItemUtils.isFishingRod(heldItem)) {
+            fishingRodInHandCache = FishingRodInHandCache(
+                itemNameUnformatted = heldItem.hoverName.getUnformattedString(),
+                itemNameFormatted = heldItem.hoverName.getFormattedString(),
+            )
+            cachedHasDirtRodInHand = ItemUtils.isDirtRod(heldItem)
+        } else {
+            fishingRodInHandCache = null
+            cachedHasDirtRodInHand = false
+        }
     }
 
     private fun setIsInTrophyArmor() {
