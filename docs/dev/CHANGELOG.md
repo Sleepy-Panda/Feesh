@@ -10,6 +10,7 @@ Released on: ???
   - Enabled hotspot functionalities.
 - Added setting to compact rod parts in the tooltip [disabled by default] - it removes rod parts descriptions to have shorter tooltip.
 - Added Plasma to the fishing profit tracker (new Mithril Grubber drop from Alpha server).
+- Added Octopus Tendril and Troubled Bubble rare drop alert & party chat message. Make sure to enable if you need it! (or use ALL)
 
 ## Bugfixes
 
