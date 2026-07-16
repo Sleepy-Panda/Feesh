@@ -2326,6 +2326,12 @@ class FishingProfitDrops {
                 npcPrice = 1_280.0,
             ),
             FishingProfitDropInfo(
+                itemId = "PLASMA",
+                itemName = "Plasma",
+                itemDisplayName = "${RARE}Plasma",
+                npcPrice = 20_000.0,
+            ),
+            FishingProfitDropInfo(
                 itemId = "SPECKLED_TEACUP",
                 itemName = "Speckled Teacup",
                 itemDisplayName = "${SPECIAL}Speckled Teacup",
