@@ -17,8 +17,9 @@ import net.minecraft.ChatFormatting
 import java.util.*
 
 object ChatUtils {
+    private val MOD_NAME_COLORS = intArrayOf(0x2C90C4, 0x31CCB0)
     private val MOD_PREFIX: Component = Component.literal("${GRAY}[")
-        .append(ColorUtils.createGradientText(" ${FeeshMod.MOD_NAME}", ColorUtils.MOD_NAME_COLOR1, ColorUtils.MOD_NAME_COLOR2))
+        .append(ColorUtils.buildGradientTextComponent(" ${FeeshMod.MOD_NAME}", MOD_NAME_COLORS))
         .append(Component.literal("${GRAY}]"))
 
     private enum class ChatType { ALL_CHAT, PARTY_CHAT }

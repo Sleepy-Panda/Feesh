@@ -65,7 +65,7 @@ object CompactCatchMessages {
 
         val hexColor = HexColorCodes.getHexColorForRarity(seaCreatureInfo.rarityColorCode)
         return if (hexColor != null) {
-            ColorUtils.createGradientText(seaCreatureInfo.name, hexColor.gradientColorCode1, hexColor.gradientColorCode2, bold = true)
+            ColorUtils.buildGradientTextComponent(seaCreatureInfo.name, hexColor.gradientColorCodes, bold = true)
         } else {
             Component.literal(seaCreatureInfo.boldDisplayName)
         }
