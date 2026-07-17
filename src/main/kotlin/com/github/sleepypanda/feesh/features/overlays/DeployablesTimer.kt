@@ -33,7 +33,6 @@ import java.util.Timer
 import java.util.TimerTask
 
 object DeployablesTimer {
-    private const val SECONDS_BEFORE_EXPIRATION = 10
     private const val TICKS_PER_CHECK = 20
 
     private val FLARE_DISAPPEARED_PATTERN = Regex("^Your flare disappeared because you were too far away\\!$")
@@ -350,7 +349,7 @@ object DeployablesTimer {
 
             if (Alerts.alertOnDeployableExpiresSoon &&
                 Alerts.alertOnDeployableTypes.contains(DeployableTypes.TOTEM_OF_CORRUPTION) &&
-                totemData.remainingTime == "${SECONDS_BEFORE_EXPIRATION}s" &&
+                fromTimeStringToSeconds(totemData.remainingTime!!) == Alerts.deployableExpiresSoonSeconds &&
                 (totemData.lastAlertAt == null || Date().time - totemData.lastAlertAt!!.time >= 5000)
             ) {
                 playAlert("${DARK_PURPLE}Totem of Corruption", totemData)
@@ -397,7 +396,7 @@ object DeployablesTimer {
 
             if (Alerts.alertOnDeployableExpiresSoon &&
                 Alerts.alertOnDeployableTypes.contains(DeployableTypes.BLACK_HOLE) &&
-                blackHoleData.remainingTime == "${SECONDS_BEFORE_EXPIRATION}s" &&
+                seconds == Alerts.deployableExpiresSoonSeconds &&
                 (blackHoleData.lastAlertAt == null || Date().time - blackHoleData.lastAlertAt!!.time >= 5000)
             ) {
                 playAlert("${DARK_PURPLE}Black Hole", blackHoleData)
@@ -428,7 +427,7 @@ object DeployablesTimer {
 
             if (Alerts.alertOnDeployableExpiresSoon &&
                 Alerts.alertOnDeployableTypes.contains(DeployableTypes.UMBERELLA) &&
-                umberellaData.remainingTime == "${SECONDS_BEFORE_EXPIRATION}s" &&
+                seconds == Alerts.deployableExpiresSoonSeconds &&
                 (umberellaData.lastAlertAt == null || Date().time - umberellaData.lastAlertAt!!.time >= 5000)
             ) {
                 playAlert("${BLUE}Umberella", umberellaData)
@@ -462,7 +461,7 @@ object DeployablesTimer {
 
             if (Alerts.alertOnDeployableExpiresSoon &&
                 Alerts.alertOnDeployableTypes.contains(DeployableTypes.DWARVEN_LANTERN) &&
-                dwarvenLanternData.remainingTime == "${SECONDS_BEFORE_EXPIRATION}s" &&
+                seconds == Alerts.deployableExpiresSoonSeconds &&
                 (dwarvenLanternData.lastAlertAt == null || Date().time - dwarvenLanternData.lastAlertAt!!.time >= 5000)
             ) {
                 playAlert(dwarvenLanternData.itemDisplayName!!, dwarvenLanternData)
@@ -488,7 +487,7 @@ object DeployablesTimer {
 
             if (Alerts.alertOnDeployableExpiresSoon &&
                 Alerts.alertOnDeployableTypes.contains(DeployableTypes.FLARE) &&
-                remainingSeconds == SECONDS_BEFORE_EXPIRATION &&
+                remainingSeconds == Alerts.deployableExpiresSoonSeconds &&
                 (flareData.lastAlertAt == null || Date().time - flareData.lastAlertAt!!.time >= 5000)
             ) {
                 playAlert(flareData.itemDisplayName ?: "Flare", flareData)
@@ -510,34 +509,35 @@ object DeployablesTimer {
         if (!Overlays.deployablesTimerOverlay || !WorldUtils.isInSkyblock()) return
 
         val lines = mutableListOf<String>()
+        val expiresSoonSeconds = Alerts.deployableExpiresSoonSeconds.coerceAtLeast(1)
 
         if (Overlays.deployablesOverlayTypes.contains(DeployableTypes.UMBERELLA) && !umberellaData.remainingTime.isNullOrEmpty() && umberellaData.remainingTime != "00s") {
-            val timerColor = fromTimeStringToSeconds(umberellaData.remainingTime!!) <= SECONDS_BEFORE_EXPIRATION
+            val timerColor = fromTimeStringToSeconds(umberellaData.remainingTime!!) <= expiresSoonSeconds
             val colorCode = if (timerColor) RED.code else WHITE.code
             lines.add("${BLUE.code}Umberella: $colorCode${umberellaData.remainingTime}")
         }
 
         if (Overlays.deployablesOverlayTypes.contains(DeployableTypes.FLARE) && !flareData.remainingTime.isNullOrEmpty() && flareData.remainingTime != "00s") {
-            val timerColor = (flareData.remainingSeconds ?: 0) <= SECONDS_BEFORE_EXPIRATION
+            val timerColor = (flareData.remainingSeconds ?: 0) <= expiresSoonSeconds
             val colorCode = if (timerColor) RED.code else WHITE.code
             lines.add("${flareData.itemDisplayName}: $colorCode${flareData.remainingTime}")
         }
 
         if (Overlays.deployablesOverlayTypes.contains(DeployableTypes.BLACK_HOLE) && !blackHoleData.remainingTime.isNullOrEmpty() && blackHoleData.remainingTime != "00s") {
-            val timerColor = fromTimeStringToSeconds(blackHoleData.remainingTime!!) <= SECONDS_BEFORE_EXPIRATION
+            val timerColor = fromTimeStringToSeconds(blackHoleData.remainingTime!!) <= expiresSoonSeconds
             val colorCode = if (timerColor) RED.code else WHITE.code
             lines.add("${DARK_PURPLE.code}Black Hole: $colorCode${blackHoleData.remainingTime}")
         }
 
         if (Overlays.deployablesOverlayTypes.contains(DeployableTypes.TOTEM_OF_CORRUPTION) && !totemData.remainingTime.isNullOrEmpty() && totemData.remainingTime != "00s") {
             val remainingSeconds = fromTimeStringToSeconds(totemData.remainingTime!!)
-            val timerColor = remainingSeconds > 0 && remainingSeconds <= SECONDS_BEFORE_EXPIRATION && !totemData.remainingTime!!.contains("m")
+            val timerColor = remainingSeconds > 0 && remainingSeconds <= expiresSoonSeconds && !totemData.remainingTime!!.contains("m")
             val colorCode = if (timerColor) RED.code else WHITE.code
             lines.add("${DARK_PURPLE.code}Totem of Corruption: $colorCode${totemData.remainingTime}")
         }
 
         if (Overlays.deployablesOverlayTypes.contains(DeployableTypes.DWARVEN_LANTERN) && !dwarvenLanternData.remainingTime.isNullOrEmpty() && dwarvenLanternData.remainingTime != "00s") {
-            val timerColor = fromTimeStringToSeconds(dwarvenLanternData.remainingTime!!) <= SECONDS_BEFORE_EXPIRATION
+            val timerColor = fromTimeStringToSeconds(dwarvenLanternData.remainingTime!!) <= expiresSoonSeconds
             val colorCode = if (timerColor) RED.code else WHITE.code
             lines.add("${dwarvenLanternData.itemDisplayName!!}: $colorCode${dwarvenLanternData.remainingTime}")
         }

@@ -230,7 +230,14 @@ object Alerts : CategoryKt("Alerts") {
 
     var alertOnDeployableExpiresSoon by boolean(true) {
         this.name = Translated("Alert when deployable item expires soon")
-        this.description = Translated("Shows a title and plays a sound when your deployable item expires in 10 seconds.")
+        this.description = Translated("Shows a title and plays a sound when your deployable item is about to expire.")
+    }
+
+    var deployableExpiresSoonSeconds by int(10) {
+        this.name = Translated("Seconds before deployable expiration")
+        this.description = Translated("Seconds remaining before deployable expiration to show the alert. Ignored if the deployable expiration alert is disabled.")
+        this.range = 1..60
+        this.slider = true
     }
 
     var alertOnDeployableTypes by select(DeployableTypes.TOTEM_OF_CORRUPTION, *DeployableTypes.values()) {
