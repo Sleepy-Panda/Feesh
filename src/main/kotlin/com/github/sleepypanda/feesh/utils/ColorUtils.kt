@@ -6,7 +6,6 @@ import com.github.sleepypanda.feesh.utils.ChatUtils.removeFormatting
 import net.minecraft.network.chat.Component
 import net.minecraft.network.chat.Style
 import net.minecraft.network.chat.TextColor
-import kotlin.math.roundToInt
 
 object ColorUtils {
     private data class GradientCacheKey(
@@ -27,8 +26,8 @@ object ColorUtils {
 
     /**
      * Creates text component with a linear RGB gradient across [colors] (0xRRGGBB). Supports 2+ color steps.
-     * If the text has fewer characters than colors, evenly picks a subset that always includes the first and last color
-     * (e.g. 2 chars amd 3 colors -> first & last only).
+     * When there are not enough characters for all colors, uses the first N colors in order.
+     * For short text, uses fewer steps than characters so middle letters are interpolated (e.g. 3 chars use 2 colors, not 3 solid letters).
      * Results are cached; cleared on world change. Returned components are copies so callers can append safely.
      * @param text The unformatted text to color (formatting codes are removed).
      */
@@ -46,7 +45,11 @@ object ColorUtils {
             return if (bold) style.withBold(true) else style
         }
 
-        val steps = selectColorSteps(colors, clean.length)
+        val maxSteps = when {
+            clean.length <= 2 -> clean.length.coerceAtMost(colors.size)
+            else -> (clean.length - 1).coerceAtMost(colors.size)
+        }
+        val steps = selectColorSteps(colors, maxSteps)
         if (clean.length == 1 || steps.size == 1) {
             return Component.literal(clean).setStyle(styleFor(steps[0]))
         }
@@ -60,14 +63,11 @@ object ColorUtils {
         return result
     }
 
-    /** Picks [count] colors evenly from [colors], always keeping first and last when shrinking. */
+    /** Takes the first [count] colors in order from [colors]. */
     private fun selectColorSteps(colors: IntArray, count: Int): IntArray {
         if (count >= colors.size) return colors
         if (count <= 1) return intArrayOf(colors.first())
-        return IntArray(count) { i ->
-            val index = (i.toFloat() * (colors.size - 1) / (count - 1)).roundToInt()
-            colors[index]
-        }
+        return colors.copyOf(count)
     }
 
     private fun interpolateAlongSteps(steps: IntArray, t: Float): Int {

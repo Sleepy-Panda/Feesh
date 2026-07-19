@@ -17,7 +17,7 @@ import net.minecraft.ChatFormatting
 import java.util.*
 
 object ChatUtils {
-    private val MOD_NAME_COLORS = intArrayOf(0x2C90C4, 0x31CCB0)
+    private val MOD_NAME_COLORS = intArrayOf(0x158AB7, 0x52CC9D)
     private val MOD_PREFIX: Component = Component.literal("${GRAY}[")
         .append(ColorUtils.buildGradientTextComponent(" ${FeeshMod.MOD_NAME}", MOD_NAME_COLORS))
         .append(Component.literal("${GRAY}]"))

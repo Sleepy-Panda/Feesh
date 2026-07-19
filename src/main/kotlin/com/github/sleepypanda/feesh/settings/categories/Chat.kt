@@ -65,7 +65,7 @@ object Chat : CategoryKt("Chat") {
 
         button {
             title = "Send test sea creature catch message"
-            description = "Sends a sample compact catch message to your chat using your current setting, so you can preview it."
+            description = "Sends a sample compact catch message to your chat using your current settings, so you can preview it."
             text = "Click to send"
             onClick {
                 CompactCatchMessages.sendTestChatMessage()

@@ -17,21 +17,30 @@ object CompactCatchMessages {
     const val DEFAULT_DOUBLE_HOOK_TEMPLATE = "§b§lDOUBLE HOOK!"
     const val DEFAULT_CATCH_TEMPLATE = "§7{Article} {sc} §7has spawned!"
 
-    private val SAMPLE_SEA_CREATURE = SeaCreatures.allSeaCreatures.find { it.name == SeaCreatureNames.LORD_JAWBUS }!!
+    private val SAMPLE_SEA_CREATURE_1 = SeaCreatures.allSeaCreatures.find { it.name == SeaCreatureNames.LORD_JAWBUS }!!
+    private val SAMPLE_SEA_CREATURE_2 = SeaCreatures.allSeaCreatures.find { it.name == SeaCreatureNames.THUNDER }!!
 
     fun init() {
         EventBus.subscribe(OwnSeaCreatureCaughtEvent::class, ::onSeaCreature)
     }
 
     fun sendTestChatMessage() {
-        ChatUtils.sendLocalChat(buildCatchMessage(SAMPLE_SEA_CREATURE, isDoubleHook = true))
+        if (!WorldUtils.isInSkyblock()) return
+
+        CommonUtils.runWithCatching("Failed to send sample compact sea creature catch message") {
+            val message1 = buildCatchMessage(SAMPLE_SEA_CREATURE_1, isDoubleHook = false)
+            ChatUtils.sendLocalChat(message1)
+            val message2 = buildCatchMessage(SAMPLE_SEA_CREATURE_2, isDoubleHook = true)
+            ChatUtils.sendLocalChat(message2)
+        }
     }
 
     private fun onSeaCreature(event: OwnSeaCreatureCaughtEvent) {
         if (!WorldUtils.isInSkyblock() || !ChatSettings.compactSeaCreaturesMessages) return
 
         CommonUtils.runWithCatching("Failed to send compact sea creature catch message") {
-            ChatUtils.sendLocalChat(buildCatchMessage(event.seaCreatureInfo, event.isDoubleHook))
+            val message = buildCatchMessage(event.seaCreatureInfo, event.isDoubleHook)
+            ChatUtils.sendLocalChat(message)
         }
     }
 
