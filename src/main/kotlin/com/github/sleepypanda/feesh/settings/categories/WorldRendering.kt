@@ -9,7 +9,6 @@ import com.github.sleepypanda.feesh.features.rendering.HidePlayersNearBobber
 import com.github.sleepypanda.feesh.features.rendering.RareMobHighlight
 import com.github.sleepypanda.feesh.settings.models.HighlightableSeaCreatureTypes
 import com.teamresourceful.resourcefulconfig.api.types.options.TranslatableValue
-import com.teamresourceful.resourcefulconfigkt.api.ObservableEntry
 import com.teamresourceful.resourcefulconfigkt.api.CategoryKt
 import com.teamresourceful.resourcefulconfigkt.api.ObservableEntry
 import java.awt.Color

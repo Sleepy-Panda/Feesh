@@ -1,13 +1,15 @@
 package com.github.sleepypanda.feesh.client.render.fluid;
 
+//#if MC < 26.1
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandler;
-import net.minecraft.block.BlockState;
-import net.minecraft.client.render.VertexConsumer;
-import net.minecraft.client.texture.Sprite;
-import net.minecraft.client.texture.SpriteAtlasTexture;
-import net.minecraft.fluid.FluidState;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.BlockRenderView;
+import net.minecraft.world.level.block.state.BlockState;
+import com.mojang.blaze3d.vertex.VertexConsumer;
+import net.minecraft.client.renderer.texture.TextureAtlas;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.world.level.material.FluidState;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.BlockAndTintGetter;
+import org.jspecify.annotations.NonNull;
 
 /**
  * Wraps a FluidRenderHandler (e.g. water) and overrides only getFluidColor.
@@ -26,22 +28,28 @@ public final class TintedLavaRenderHandler implements FluidRenderHandler {
     }
 
     @Override
-    public int getFluidColor(BlockRenderView view, BlockPos pos, FluidState state) {
+    public int getFluidColor(BlockAndTintGetter view, BlockPos pos, @NonNull FluidState state) {
         return tintColor;
     }
 
     @Override
-    public Sprite[] getFluidSprites(BlockRenderView view, BlockPos pos, FluidState state) {
+    public TextureAtlasSprite[] getFluidSprites(BlockAndTintGetter view, BlockPos pos, @NonNull FluidState state) {
         return delegate.getFluidSprites(view, pos, state);
     }
 
     @Override
-    public void reloadTextures(SpriteAtlasTexture textureAtlas) {
+    public void reloadTextures(@NonNull TextureAtlas textureAtlas) {
         delegate.reloadTextures(textureAtlas);
     }
 
     @Override
-    public void renderFluid(BlockPos pos, BlockRenderView world, VertexConsumer vertexConsumer, BlockState blockState, FluidState fluidState) {
+    public void renderFluid(@NonNull BlockPos pos, @NonNull BlockAndTintGetter world, @NonNull VertexConsumer vertexConsumer, @NonNull BlockState blockState, @NonNull FluidState fluidState) {
         delegate.renderFluid(pos, world, vertexConsumer, blockState, fluidState);
     }
 }
+//#else
+//$$ /** Stub: 26.x uses FluidModel swap in {@link com.github.sleepypanda.feesh.features.rendering.LavaRendering}. */
+//$$ public final class TintedLavaRenderHandler {
+//$$     private TintedLavaRenderHandler() {}
+//$$ }
+//#endif

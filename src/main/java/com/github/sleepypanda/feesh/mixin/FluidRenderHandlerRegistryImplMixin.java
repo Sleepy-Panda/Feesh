@@ -1,11 +1,12 @@
 package com.github.sleepypanda.feesh.mixin;
 
+//#if MC < 26.1
 import com.github.sleepypanda.feesh.client.render.fluid.TintedLavaRenderHandler;
 import com.github.sleepypanda.feesh.features.rendering.LavaRendering;
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandler;
 import net.fabricmc.fabric.impl.client.rendering.fluid.FluidRenderHandlerRegistryImpl;
-import net.minecraft.fluid.Fluid;
-import net.minecraft.fluid.Fluids;
+import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.level.material.Fluids;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -39,7 +40,9 @@ public class FluidRenderHandlerRegistryImplMixin {
                     cir.setReturnValue(new TintedLavaRenderHandler(waterHandler, lavaTint));
                 }
             }
-            return;
         }
     }
 }
+//#else
+//$$ public class FluidRenderHandlerRegistryImplMixin {}
+//#endif

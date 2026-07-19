@@ -49,6 +49,10 @@ tasks.named("processResources", Copy).configure {
     def javaVersion = getPropertyByMcVersion("java.version")
     def mixinCompatibilityLevel = "JAVA_${javaVersion}"
     def modJavaVersion = "${javaVersion}"
+    // 1.21.x: FluidRenderHandler registry swap. 26.x: FluidModel swap + opaque layer.
+    def fluidMixins = mcVersion.startsWith("26.")
+        ? '"FluidStateModelSetMixin",\n\t\t"FluidModelMixin"'
+        : '"FluidRenderHandlerRegistryImplMixin"'
 
     inputs.property("mod_name", modName)
     inputs.property("mod_id", modId)
@@ -57,6 +61,7 @@ tasks.named("processResources", Copy).configure {
     inputs.property("minor_mc_version", mcVersion)
     inputs.property("java_version", mixinCompatibilityLevel)
     inputs.property("mod_java_version", modJavaVersion)
+    inputs.property("fluid_mixins", fluidMixins)
 
     filesMatching(expandedFiles) {
         expand(
@@ -67,6 +72,7 @@ tasks.named("processResources", Copy).configure {
             minor_mc_version: mcVersion,
             java_version: mixinCompatibilityLevel,
             mod_java_version: modJavaVersion,
+            fluid_mixins: fluidMixins,
         )
     }
 }

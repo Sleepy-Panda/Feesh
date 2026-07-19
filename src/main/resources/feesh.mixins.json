@@ -10,7 +10,7 @@
 		"MinecraftMixin",
 		"EntityRendererMixin",
 		"SoundEngineMixin",
-		"FluidRenderHandlerRegistryImplMixin"
+		${fluid_mixins} // processed from build.common.gradle
 	],
 	"injectors": {
 		"defaultRequire": 1
