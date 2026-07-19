@@ -2,19 +2,17 @@ package com.github.sleepypanda.feesh.utils
 
 import com.github.sleepypanda.feesh.FeeshMod
 import com.github.sleepypanda.feesh.utils.ChatUtils.getFormattedString
-import com.github.sleepypanda.feesh.utils.ChatUtils.removeFormatting
+import com.github.sleepypanda.feesh.utils.ChatUtils.getUnformattedString
 import com.github.sleepypanda.feesh.events.EventBus
 import com.github.sleepypanda.feesh.events.models.WorldChangedEvent
-import net.minecraft.text.Text
-import java.util.Date
 import java.util.Timer
 import kotlin.concurrent.timerTask
+import net.minecraft.world.entity.EquipmentSlot
 
 object PlayerUtils {
-    private var cachedLastFishingHookSeenAt: Date? = null
-    private var cachedLastFishingHookInHotspotSeenAt: Date? = null
     private var cachedHasFishingRodInHotbar: Boolean = false
     private var cachedHasDirtRodInHand: Boolean = false
+    private var cachedIsInTrophyArmor: Boolean = false
     private var timer: Timer? = null
 
     fun init() {
@@ -24,34 +22,32 @@ object PlayerUtils {
 
     private fun startTimer() {
         timer?.cancel()
-        timer = Timer()
+        timer = Timer("Feesh-PlayerUtils", true)
         
         val task = timerTask {
-            try {
-                setLastFishingHookSeenAt()
+            CommonUtils.runWithCatching("Failed to update player utils cache") {
                 setHasFishingRodInHotbar()
                 setHasDirtRodInHand()
-            } catch (e: Exception) {
-                FeeshMod.LOGGER.error("[Feesh] Failed to update player utils cache.", e)
+                setIsInTrophyArmor()
             }
         }
         timer?.scheduleAtFixedRate(task, 0, 500)
     }
 
     private fun onWorldChanged(@Suppress("UNUSED_PARAMETER") event: WorldChangedEvent) {
-        cachedLastFishingHookSeenAt = null
-        cachedLastFishingHookInHotspotSeenAt = null
         cachedHasFishingRodInHotbar = false
         cachedHasDirtRodInHand = false
+        cachedIsInTrophyArmor = false
     }
 
     /*
      * Get the player's name without formatting and prefixes, e.g. MoonTheSadFisher.
      * @returns {String} The player's name.
      */
-    fun getName() : String? {      
+    fun getUnformattedName() : String? {
         val mc = FeeshMod.mc
-        val nameText = mc.player?.name?.string?.removeFormatting() ?: return null
+        val nameText = mc.player?.name?.getUnformattedString()
+        if (nameText.isNullOrEmpty()) return null
         return nameText
     }
 
@@ -91,13 +87,18 @@ object PlayerUtils {
         return cachedHasDirtRodInHand
     }
 
+    /** Whether the player is wearing the armor for trophy fishing / trophy frogging (Bronze/Silver/Gold/Diamond Hunter, Froggles, Red Sweater). */
+    fun isInTrophyArmor(): Boolean {
+        return cachedIsInTrophyArmor
+    }
+
     private fun setHasFishingRodInHotbar() {
         val player = FeeshMod.mc.player ?: run {
             cachedHasFishingRodInHotbar = false
             return
         }
         for (i in 0..8) {
-            val stack = player.inventory.getStack(i)
+            val stack = player.inventory.getItem(i)
             if (ItemUtils.isFishingRod(stack)) {
                 cachedHasFishingRodInHotbar = true
                 return
@@ -111,48 +112,28 @@ object PlayerUtils {
             cachedHasDirtRodInHand = false
             return
         }
-        val heldItem = player.mainHandStack ?: run {
-            cachedHasDirtRodInHand = false
-            return
-        }
+        val heldItem = player.mainHandItem
         cachedHasDirtRodInHand = ItemUtils.isDirtRod(heldItem)
     }
 
-    fun lastFishingHookSeenAt(): Date? {
-        return cachedLastFishingHookSeenAt
-    }
-
-    fun lastFishingHookInHotspotSeenAt(): Date? {
-        return cachedLastFishingHookInHotspotSeenAt
-    }
-
-    fun isFishingHookSeenMinutesAgo(minutes: Int): Boolean {
-        val now = Date()
-        val lastFishingHookSeenAt = lastFishingHookSeenAt()
-        if (lastFishingHookSeenAt == null) return false
-
-        return now.time - lastFishingHookSeenAt.time <= minutes * 60 * 1000
-    }
-
-    fun isFishingHookInHotspotSeenMinutesAgo(minutes: Int): Boolean {
-        val now = Date()
-        val lastFishingHookSeenAt = lastFishingHookInHotspotSeenAt()
-        if (lastFishingHookSeenAt == null) return false
-
-        return now.time - lastFishingHookSeenAt.time <= minutes * 60 * 1000
-    }
-
-    private fun setLastFishingHookSeenAt() {
-        if (!WorldUtils.isInSkyblock()) return
-        val player = FeeshMod.mc.player ?: return
-    
-        val isHookActive = EntityUtils.isFishingHookActive(player)
-        if (isHookActive) {
-            cachedLastFishingHookSeenAt = Date()
-
-            val playerHook = EntityUtils.getPlayersFishingHook() ?: return
-	        HotspotUtils.findClosestHotspotInRange(playerHook, 5.0) ?: return
-	        cachedLastFishingHookInHotspotSeenAt = Date()
+    private fun setIsInTrophyArmor() {
+        val player = FeeshMod.mc.player ?: run {
+            cachedIsInTrophyArmor = false
+            return
+        }
+        
+        val helmet = player.getItemBySlot(EquipmentSlot.HEAD)
+        val chestplate = player.getItemBySlot(EquipmentSlot.CHEST)
+        val leggings = player.getItemBySlot(EquipmentSlot.LEGS)
+        val boots = player.getItemBySlot(EquipmentSlot.FEET)
+        
+        val armorPieces = listOf(helmet, chestplate, leggings, boots)
+        cachedIsInTrophyArmor = armorPieces.all { armorPiece ->
+            if (armorPiece == null || armorPiece.isEmpty) return@all false
+            val itemName = armorPiece.hoverName?.getUnformattedString() ?: return@all false
+            return@all itemName.contains("Hunter", ignoreCase = true) || 
+                itemName.contains("Froggles", ignoreCase = true) || 
+                itemName.contains("Red Sweater", ignoreCase = true)
         }
     }
 }

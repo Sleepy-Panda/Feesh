@@ -1,6 +1,8 @@
 package com.github.sleepypanda.feesh.events
 
 import com.github.sleepypanda.feesh.events.models.AfterMouseClickEvent
+import com.github.sleepypanda.feesh.events.models.ActionBarEvent
+import com.github.sleepypanda.feesh.events.models.ActionBarCancellableEvent
 import com.github.sleepypanda.feesh.events.models.ChatCancellableEvent
 import com.github.sleepypanda.feesh.events.models.ChatEvent
 import com.github.sleepypanda.feesh.events.models.ClientTickEvent
@@ -8,24 +10,32 @@ import com.github.sleepypanda.feesh.events.models.GameClosedEvent
 import com.github.sleepypanda.feesh.events.models.GameStartedEvent
 import com.github.sleepypanda.feesh.events.models.GuiClosedEvent
 import com.github.sleepypanda.feesh.events.models.ArmorStandDespawnedEvent
-import com.github.sleepypanda.feesh.events.models.ItemEntitySpawnedEvent
+import com.github.sleepypanda.feesh.events.models.ItemEntityLoadedEvent
+import com.github.sleepypanda.feesh.events.models.ArmorStandLoadedEvent
 import com.github.sleepypanda.feesh.events.models.WorldChangedEvent
+import com.github.sleepypanda.feesh.events.models.ItemTooltipRenderedEvent
+import com.github.sleepypanda.feesh.events.models.ScreenBeforeInitEvent
+import com.github.sleepypanda.feesh.utils.ChatUtils.getFormattedString
+import com.github.sleepypanda.feesh.utils.ChatUtils.getUnformattedString
+import com.github.sleepypanda.feesh.utils.InputUtils
 import kotlin.reflect.KClass
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientWorldEvents
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents
-import net.minecraft.client.gui.screen.ingame.HandledScreen
-import net.minecraft.client.gui.screen.ChatScreen
-import net.minecraft.client.gui.screen.ingame.InventoryScreen
+import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen
+import net.minecraft.client.gui.screens.ChatScreen
+import net.minecraft.client.gui.screens.inventory.InventoryScreen
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientEntityEvents
+//#if MC >= 26.1
+//$$ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLevelEvents as ClientWorldEvents
+//#else
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientWorldEvents
+//#endif
+import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback
 import net.fabricmc.fabric.api.client.screen.v1.ScreenMouseEvents
-import net.minecraft.text.Text
-import net.minecraft.client.MinecraftClient
-import net.minecraft.world.World
-import net.minecraft.entity.ItemEntity
-import net.minecraft.entity.decoration.ArmorStandEntity
+import net.minecraft.world.entity.item.ItemEntity
+import net.minecraft.world.entity.decoration.ArmorStand
 
 object EventBus {
     private val subscribers = mutableMapOf<KClass<*>, MutableList<(Any) -> Unit>>()
@@ -40,18 +50,32 @@ object EventBus {
     }
 
     fun init() {
-        ClientWorldEvents.AFTER_CLIENT_WORLD_CHANGE.register { mc, world ->
-            publish(WorldChangedEvent(mc, world))
+        ClientReceiveMessageEvents.GAME.register { message, isOverlay ->
+            if (isOverlay) {
+                publish(ActionBarEvent(message, message.getFormattedString(), message.getUnformattedString()))
+            } else {
+                publish(ChatEvent(message, message.getFormattedString(), message.getUnformattedString()))
+            }
         }
 
-        ClientReceiveMessageEvents.GAME.register { message, _ ->
-            publish(ChatEvent(message))
+        ClientReceiveMessageEvents.ALLOW_GAME.register { message, isOverlay ->
+            if (isOverlay) {
+                val event = ActionBarCancellableEvent(message, message.getFormattedString(), message.getUnformattedString(), false)
+                publish(event)
+                !event.isCancelled
+            } else {
+                val event = ChatCancellableEvent(message, message.getFormattedString(), message.getUnformattedString(), false)
+                publish(event)
+                !event.isCancelled
+            }
         }
 
-        ClientReceiveMessageEvents.ALLOW_GAME.register { message, _ ->
-            var event = ChatCancellableEvent(message, false)
-            publish(event)
-            !event.isCancelled
+        ItemTooltipCallback.EVENT.register { stack, _, _, lines ->
+            publish(ItemTooltipRenderedEvent(stack, lines))
+        }
+
+        ScreenEvents.BEFORE_INIT.register { _, screen, _, _ ->
+            publish(ScreenBeforeInitEvent(screen))
         }
 
         ScreenEvents.AFTER_INIT.register { _, screen, _, _ ->
@@ -59,14 +83,14 @@ object EventBus {
                 val guiName = when (screen) {
                     is ChatScreen -> "Chat"
                     is InventoryScreen -> "Inventory"
-                    is HandledScreen<*> -> screen.getTitle().getString()
+                    is AbstractContainerScreen<*> -> screen.title.getUnformattedString()
                     else -> screen.javaClass.getSimpleName()
                 }
                 publish(GuiClosedEvent(guiName))
             }
 
             ScreenMouseEvents.afterMouseClick(screen).register { scr, click, consumed ->
-               publish(AfterMouseClickEvent(scr, click.x(), click.y(), click.buttonInfo().button))
+               publish(AfterMouseClickEvent(scr, click.x(), click.y(), click.buttonInfo().button, InputUtils.hasControlDown(click)))
                consumed
             }
         }
@@ -83,14 +107,24 @@ object EventBus {
             publish(GameStartedEvent())
         }
 
+        //#if MC >= 26.1
+        //$$ ClientWorldEvents.AFTER_CLIENT_LEVEL_CHANGE.register { mc, world ->
+        //#else
+        ClientWorldEvents.AFTER_CLIENT_WORLD_CHANGE.register { mc, world ->
+        //#endif
+            publish(WorldChangedEvent(mc, world))
+        }
+
         ClientEntityEvents.ENTITY_LOAD.register { entity, _ ->
-            if (entity is ItemEntity) {
-                publish(ItemEntitySpawnedEvent(entity))
+            when (entity) {
+                is ItemEntity -> publish(ItemEntityLoadedEvent(entity))
+                is ArmorStand -> if (entity.isAlive) publish(ArmorStandLoadedEvent(entity))
+                else -> { }
             }
         }
 
         ClientEntityEvents.ENTITY_UNLOAD.register { entity, _ ->
-            if (entity is ArmorStandEntity) {
+            if (entity is ArmorStand) {
                 publish(ArmorStandDespawnedEvent(entity))
             }
         }

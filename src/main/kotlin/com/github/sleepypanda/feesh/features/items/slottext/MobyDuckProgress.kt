@@ -1,0 +1,38 @@
+package com.github.sleepypanda.feesh.features.items.slottext
+
+import com.github.sleepypanda.feesh.settings.categories.Items
+import com.github.sleepypanda.feesh.utils.ChatUtils.removeFormatting
+import com.github.sleepypanda.feesh.utils.ChatUtils.getFormattedString
+import com.github.sleepypanda.feesh.utils.ItemUtils
+import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen
+import net.minecraft.world.item.ItemStack
+import net.minecraft.world.inventory.Slot
+import kotlin.math.truncate
+
+object MobyDuckProgress : BaseSlotTextRenderer() {
+
+    private const val MAX_PROGRESS_SECONDS = 300 * 60 * 60
+    private const val PROGRESS_COLOR = 0xff54fcfc.toInt()
+
+    fun init() {
+        // Calling this ensures the object is initialized, and registered in base class.
+    }
+
+    override fun isEnabled(): Boolean = Items.showMobyDuckProgress
+
+    override fun getItemStackSlotText(stack: ItemStack, screen: AbstractContainerScreen<*>, slot: Slot): String? {
+        if (stack.isEmpty) return null
+        val name = ItemUtils.getCleanItemName(stack.hoverName.getFormattedString())
+        if (name != "Moby-Duck") return null
+
+        val nbt = ItemUtils.getCustomData(stack) ?: return null
+        val obj = ItemUtils.customDataToJsonObject(nbt) ?: return null
+        val secondsHeld = obj.get("seconds_held")?.asInt ?: 0
+        val percent = truncate(secondsHeld.toDouble() / MAX_PROGRESS_SECONDS.toDouble() * 100.0).toInt()
+        val percentSafe = percent.coerceIn(0, 100)
+        val slotText = "${percentSafe}%"
+        return slotText
+    }
+
+    override fun getTextColor(): Int = PROGRESS_COLOR
+}

@@ -1,24 +1,26 @@
 package com.github.sleepypanda.feesh.utils
 
+import com.github.sleepypanda.feesh.FeeshMod
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
-import com.github.sleepypanda.feesh.FeeshMod
 import com.github.sleepypanda.feesh.events.EventBus
 import com.github.sleepypanda.feesh.events.models.ClientTickEvent
 import com.github.sleepypanda.feesh.events.models.WorldChangedEvent
-import net.minecraft.text.Style
-import net.minecraft.text.TextColor
-import net.minecraft.text.Text
-import net.minecraft.text.ClickEvent
-import net.minecraft.text.HoverEvent
-import net.minecraft.text.ClickEvent.OpenUrl
-import net.minecraft.text.ClickEvent.RunCommand
-import net.minecraft.text.HoverEvent.ShowText
-import net.minecraft.util.Formatting
+import net.minecraft.client.gui.components.ChatComponent
+import net.minecraft.network.chat.Style
+import net.minecraft.network.chat.TextColor
+import net.minecraft.network.chat.Component
+import net.minecraft.network.chat.ClickEvent.OpenUrl
+import net.minecraft.network.chat.ClickEvent.RunCommand
+import net.minecraft.network.chat.HoverEvent.ShowText
+import net.minecraft.ChatFormatting
 import java.util.*
 
 object ChatUtils {
-    val MOD_PREFIX = "${GRAY}[${AQUA}Feesh${GRAY}]"
+    private val MOD_NAME_COLORS = intArrayOf(0x158AB7, 0x52CC9D)
+    private val MOD_PREFIX: Component = Component.literal("${GRAY}[")
+        .append(ColorUtils.buildGradientTextComponent(" ${FeeshMod.MOD_NAME}", MOD_NAME_COLORS))
+        .append(Component.literal("${GRAY}]"))
 
     private enum class ChatType { ALL_CHAT, PARTY_CHAT }
 
@@ -64,12 +66,16 @@ object ChatUtils {
      */
     fun sendLocalChat(message: String, addModPrefix: Boolean = false) {
         if (message.isNullOrEmpty()) return
-        val formattedMessage = if (addModPrefix) "${MOD_PREFIX} ${RESET}${message}" else message
-        FeeshMod.mc.inGameHud.chatHud.addMessage(Text.literal(formattedMessage))
+        val text = Component.literal(if (addModPrefix) "${RESET}${message}" else message)
+        addLocalChatMessage(if (addModPrefix) withModPrefix(text) else text)
     }
 
-    fun sendLocalChat(message: Text) {
-        FeeshMod.mc.inGameHud.chatHud.addMessage(message)
+    fun sendLocalChat(message: Component) {
+        addLocalChatMessage(message)
+    }
+   
+    private fun addLocalChatMessage(message: Component) {
+        FeeshMod.mc.addClientChatMessageCompat(message)
     }
 
     /**
@@ -91,16 +97,16 @@ object ChatUtils {
     }
 
     private fun sendAllChatImmediate(message: String) {
-        FeeshMod.mc.player?.networkHandler?.sendChatCommand("ac $message")
+        FeeshMod.mc.player?.connection?.sendCommand("ac $message")
     }
 
     private fun sendPartyChatImmediate(message: String) {
-        FeeshMod.mc.player?.networkHandler?.sendChatCommand("pchat $message")
+        FeeshMod.mc.player?.connection?.sendCommand("pchat $message")
     }
 
     fun command(command: String) {
         if (command.isNullOrEmpty()) return
-        FeeshMod.mc.player?.networkHandler?.sendChatCommand(command)
+        FeeshMod.mc.player?.connection?.sendCommand(command)
     }
 
     /*
@@ -114,15 +120,10 @@ object ChatUtils {
         
         val style = Style.EMPTY
             .withClickEvent(RunCommand("/$command"))
-            .withHoverEvent(ShowText(Text.literal("Click to execute /$command")))
+            .withHoverEvent(ShowText(Component.literal("Click to execute /$command")))
         
-        val text = Text.literal(message).setStyle(style)
-        
-        val finalText = if (addModPrefix) {
-            Text.literal("${MOD_PREFIX} ${RESET}").append(text)
-        } else text
-        
-        FeeshMod.mc.inGameHud.chatHud.addMessage(finalText)
+        val text = Component.literal(message).setStyle(style)
+        addLocalChatMessage(if (addModPrefix) withModPrefix(text) else text)
     }
 
     /**
@@ -136,26 +137,40 @@ object ChatUtils {
 
         val linkStyle = Style.EMPTY
             .withClickEvent(OpenUrl(java.net.URI.create(url)))
-            .withHoverEvent(ShowText(Text.literal("Click to open $url")))
+            .withHoverEvent(ShowText(Component.literal("Click to open $url")))
 
-        val fullText = Text.literal(message).append(Text.literal("\n")).append(Text.literal(linkText).setStyle(linkStyle))
-        val finalText = if (addModPrefix) {
-            Text.literal("${MOD_PREFIX} ${RESET}").append(fullText)
-        } else fullText
-
-        FeeshMod.mc.inGameHud.chatHud.addMessage(finalText)
+        val fullText = Component.literal(message).append(Component.literal("\n")).append(Component.literal(linkText).setStyle(linkStyle))
+        addLocalChatMessage(if (addModPrefix) withModPrefix(fullText) else fullText)
     }
 
-    fun String.removeFormatting(): String {
+    private fun withModPrefix(message: Component): Component {
+        return Component.empty()
+            .append(MOD_PREFIX)
+            .append(Component.literal(" "))
+            .append(message)
+    }
+
+    fun String?.removeFormatting(): String {
         if (this.isNullOrEmpty()) return ""
         return this.replace(Regex("§."), "")
+    }
+ 
+    /** 
+     * Get a string without color and formatting codes.
+     * @return The unformatted string.
+     */
+    fun Component?.getUnformattedString(): String {
+        if (this == null) return ""
+        return this.string?.removeFormatting() ?: ""
     }
 
     /**
      * Get a string with color and formatting codes.
      * Credits to SkyblockOverhaul
      */
-    fun Text.getFormattedString(): String {
+    fun Component?.getFormattedString(): String {
+        if (this == null) return ""
+
         val builder = StringBuilder()
 
         this.visit(
@@ -177,23 +192,48 @@ object ChatUtils {
         if (color != null) append("§").append(getColorChar(color))
 
         val formatting = when {
-            this@getFormatting.isBold() -> BOLD.code
-            this@getFormatting.isItalic() -> ITALIC.code
-            this@getFormatting.isUnderlined() -> UNDERLINE.code
-            this@getFormatting.isStrikethrough() -> STRIKETHROUGH.code
-            this@getFormatting.isObfuscated() -> OBFUSCATED.code          
+            this@getFormatting.isBold -> BOLD.code
+            this@getFormatting.isItalic -> ITALIC.code
+            this@getFormatting.isUnderlined -> UNDERLINE.code
+            this@getFormatting.isStrikethrough -> STRIKETHROUGH.code
+            this@getFormatting.isObfuscated -> OBFUSCATED.code
             else -> ""
         }
         append(formatting)
     }
 
     private fun getColorChar(color: TextColor): Char? {
-        val formatting = colorToChar[color]
-        return formatting?.code
+        val formatting = colorToChar[color] ?: return null
+        //#if MC >= 26.2
+        //$$ return legacyFormattingChars[formatting]
+        //#else
+        return formatting.char
+        //#endif
     }
 
-    private val colorToChar: Map<TextColor, Formatting> = Formatting.entries.mapNotNull { format ->
-        TextColor.fromFormatting(format)?.let { it to format }
+    //#if MC >= 26.2
+    //$$ private val legacyFormattingChars = mapOf(
+    //$$     ChatFormatting.BLACK to '0',
+    //$$     ChatFormatting.DARK_BLUE to '1',
+    //$$     ChatFormatting.DARK_GREEN to '2',
+    //$$     ChatFormatting.DARK_AQUA to '3',
+    //$$     ChatFormatting.DARK_RED to '4',
+    //$$     ChatFormatting.DARK_PURPLE to '5',
+    //$$     ChatFormatting.GOLD to '6',
+    //$$     ChatFormatting.GRAY to '7',
+    //$$     ChatFormatting.DARK_GRAY to '8',
+    //$$     ChatFormatting.BLUE to '9',
+    //$$     ChatFormatting.GREEN to 'a',
+    //$$     ChatFormatting.AQUA to 'b',
+    //$$     ChatFormatting.RED to 'c',
+    //$$     ChatFormatting.LIGHT_PURPLE to 'd',
+    //$$     ChatFormatting.YELLOW to 'e',
+    //$$     ChatFormatting.WHITE to 'f',
+    //$$ )
+    //#endif
+
+    private val colorToChar: Map<TextColor, ChatFormatting> = ChatFormatting.entries.mapNotNull { format ->
+        TextColor.fromLegacyFormat(format)?.let { it to format }
     }.toMap()
 
     /**
@@ -206,10 +246,11 @@ object ChatUtils {
         if (character.isNullOrEmpty()) return ""
 
         val mc = FeeshMod.mc
-        val textRenderer = mc.textRenderer ?: return ""
+        val textRenderer = mc.font
 
-        val chatWidth = mc.inGameHud?.chatHud?.width ?: return ""
-        val characterWidth = textRenderer.getWidth(Text.literal(character))
+        val chatWidth = ChatComponent.getWidth(mc.options.chatWidth().get())
+
+        val characterWidth = textRenderer.width(Component.literal(character))
         val characterCount = if (characterWidth > 0) (chatWidth / characterWidth).coerceAtLeast(1).coerceAtMost(200) else 50
 
         return character.repeat(characterCount)

@@ -1,13 +1,15 @@
 {
 	"required": true,
 	"package": "com.github.sleepypanda.feesh.mixin",
-	"compatibilityLevel": "JAVA_21",
+	"compatibilityLevel": "${java_version}",
 	"client": [
 		"ScreenMixin",
-		"InGameHudMixin",
-		"ClientPlayerInteractionManagerMixin",
-		"MinecraftClientMixin",
+		"AbstractContainerScreenMixin",
+		"GuiMixin",
+		"MultiPlayerGameModeMixin",
+		"MinecraftMixin",
 		"EntityRendererMixin",
+		"SoundEngineMixin",
 		"FluidRenderHandlerRegistryImplMixin"
 	],
 	"injectors": {

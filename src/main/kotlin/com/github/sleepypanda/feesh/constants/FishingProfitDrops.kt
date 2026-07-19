@@ -11,11 +11,13 @@ data class SalvageableItemInfo(
 data class FishingProfitDropInfo(
     val itemId: String, // Item ID aligned with IDs in Bazaar/Auction APIs
     val itemName: String, // Unformatted item name
-    val itemAlternateNames: List<String> = listOf(), // Alternate names for the item, to support some popular renamings by mods
+    val itemAlternateNames: List<String> = listOf(), // Alternate names for the item, to support some popular item renamings by mods, or item renamings by SB
     val itemDisplayName: String, // Formatted item name
     val npcPrice: Double?,
+    val ignoreFromInventory: Boolean = false, // If the item should be ignored from inventory tracking
     val shouldAnnounceRareDrop: Boolean = false, // If the item should be announced as a rare drop in player's chat (for valuable drops which have no standart RARE DROP! message from Hypixel)
     val amountOfMagmaFish: Int? = null, // Amount of Magma Fish to exchange a Trophy Fish at Odger
+    val amountOfLotus: Int? = null, // Amount of Lotus to exchange a Trophy Frog
     val salvage: SalvageableItemInfo? = null, // Item to salvage into essence items
     val categories: List<String> = listOf(), // Categories the item belongs to
 )
@@ -23,6 +25,7 @@ data class FishingProfitDropInfo(
 class FishingProfitDrops {  
     companion object {
         const val PET_ITEM_CATEGORY = "Pet Item"
+        const val CRIMSON_ISLE_TRASH_GEAR_CATEGORY = "Crimson Isle trash gear"
 
         val items = listOf(
             // Dyes
@@ -101,6 +104,18 @@ class FishingProfitDrops {
                 itemName = "Giant Bouncy Beach Ball",
                 itemDisplayName = "${LEGENDARY}Giant Bouncy Beach Ball",
                 npcPrice = null,
+            ),
+            FishingProfitDropInfo(
+                itemId = "GOLDEN_BAIT",
+                itemName = "Golden Bait",
+                itemDisplayName = "${UNCOMMON}Golden Bait", // From Seal pet
+                npcPrice = 100.0,
+            ),
+            FishingProfitDropInfo(
+                itemId = "TREASURE_BAIT",
+                itemName = "Treasure Bait",
+                itemDisplayName = "${RARE}Treasure Bait", // From Seal pet
+                npcPrice = 500.0,
             ),
             FishingProfitDropInfo(
                 itemId = "WATER_ORB",
@@ -693,8 +708,8 @@ class FishingProfitDrops {
             ),
             FishingProfitDropInfo(
                 itemId = "SHARD_NIGHT_SQUID",
-                itemName = "Night Squid Shard",
-                itemDisplayName = "${COMMON}Night Squid ${WHITE}Shard",
+                itemName = "Inkling Shard",
+                itemDisplayName = "${COMMON}Inkling ${WHITE}Shard",
                 npcPrice = null,
             ),
             FishingProfitDropInfo(
@@ -763,6 +778,156 @@ class FishingProfitDrops {
                 itemDisplayName = "${LEGENDARY}Titanoboa ${WHITE}Shard",
                 npcPrice = null,
             ),
+            FishingProfitDropInfo(
+                itemId = "SHARD_ALLIGATOR",
+                itemName = "Alligator Shard",
+                itemDisplayName = "${EPIC}Alligator ${WHITE}Shard",
+                npcPrice = null,
+            ),
+            FishingProfitDropInfo(
+                itemId = "SHARD_NESSIE",
+                itemName = "Nessie Shard",
+                itemDisplayName = "${LEGENDARY}Nessie ${WHITE}Shard",
+                npcPrice = null,
+            ),
+            FishingProfitDropInfo(
+                itemId = "SHARD_SEA_SHINE",
+                itemName = "Seashine Shard",
+                itemDisplayName = "${RARE}Seashine ${WHITE}Shard",
+                npcPrice = null,
+            ),
+            FishingProfitDropInfo(
+                itemId = "SHARD_FLIP_FLOPPER",
+                itemName = "Flipflopper Shard",
+                itemDisplayName = "${UNCOMMON}Flipflopper ${WHITE}Shard",
+                npcPrice = null,
+            ),
+            FishingProfitDropInfo(
+                itemId = "SHARD_STRIDER_SURFER",
+                itemName = "Stridersurfer Shard",
+                itemDisplayName = "${UNCOMMON}Stridersurfer ${WHITE}Shard",
+                npcPrice = null,
+            ),
+            FishingProfitDropInfo(
+                itemId = "SHARD_DUMPSTER_DIVER",
+                itemName = "Dumpster Diver Shard",
+                itemDisplayName = "${COMMON}Dumpster Diver ${WHITE}Shard",
+                npcPrice = null,
+            ),
+            FishingProfitDropInfo(
+                itemId = "SHARD_WETWING",
+                itemName = "Wetwing Shard",
+                itemDisplayName = "${UNCOMMON}Wetwing ${WHITE}Shard",
+                npcPrice = null,
+            ),
+            FishingProfitDropInfo(
+                itemId = "SHARD_SEA_WITCH",
+                itemName = "Sea Witch Shard",
+                itemDisplayName = "${UNCOMMON}Sea Witch ${WHITE}Shard",
+                npcPrice = null,
+            ),
+            FishingProfitDropInfo(
+                itemId = "SHARD_BAYOU_SLUDGE",
+                itemName = "Bayou Sludge Shard",
+                itemDisplayName = "${UNCOMMON}Bayou Sludge ${WHITE}Shard",
+                npcPrice = null,
+            ),
+            FishingProfitDropInfo(
+                itemId = "SHARD_WIKI_TIKI",
+                itemName = "Wiki Tiki Shard",
+                itemDisplayName = "${RARE}Wiki Tiki ${WHITE}Shard",
+                npcPrice = null,
+            ),
+            FishingProfitDropInfo(
+                itemId = "SHARD_LAVA_LEECH",
+                itemName = "Lava Leech Shard",
+                itemDisplayName = "${RARE}Lava Leech ${WHITE}Shard",
+                npcPrice = null,
+            ),
+            FishingProfitDropInfo(
+                itemId = "SHARD_THUNDER",
+                itemName = "Thunder Shard",
+                itemDisplayName = "${RARE}Thunder ${WHITE}Shard",
+                npcPrice = null,
+            ),
+            FishingProfitDropInfo(
+                itemId = "SHARD_ABYSSAL_MINER",
+                itemName = "Abyssal Miner Shard",
+                itemDisplayName = "${EPIC}Abyssal Miner ${WHITE}Shard",
+                npcPrice = null,
+            ),
+            FishingProfitDropInfo(
+                itemId = "SHARD_STINGRAY",
+                itemName = "Stingray Shard",
+                itemDisplayName = "${RARE}Stingray ${WHITE}Shard",
+                npcPrice = null,
+            ),
+            FishingProfitDropInfo(
+                itemId = "SHARD_WATER_SNAKE",
+                itemName = "Water Snake Shard",
+                itemDisplayName = "${UNCOMMON}Water Snake ${WHITE}Shard",
+                npcPrice = null,
+            ),
+            FishingProfitDropInfo(
+                itemId = "SHARD_EMBER",
+                itemName = "Ember Shard",
+                itemDisplayName = "${UNCOMMON}Ember ${WHITE}Shard",
+                npcPrice = null,
+            ),
+            FishingProfitDropInfo(
+                itemId = "SHARD_SOLAR",
+                itemName = "Solar Shard",
+                itemDisplayName = "${UNCOMMON}Solar ${WHITE}Shard",
+                npcPrice = null,
+            ),
+            FishingProfitDropInfo(
+                itemId = "SHARD_SEPIALOT",
+                itemName = "Sepialot Shard",
+                itemDisplayName = "${UNCOMMON}Sepialot ${WHITE}Shard",
+                npcPrice = null,
+            ),
+            FishingProfitDropInfo(
+                itemId = "SHARD_HAGGARD",
+                itemName = "Haggard Shard",
+                itemDisplayName = "${COMMON}Haggard ${WHITE}Shard",
+                npcPrice = null,
+            ),
+            FishingProfitDropInfo(
+                itemId = "SHARD_BRINELING",
+                itemName = "Brineling Shard",
+                itemDisplayName = "${COMMON}Brineling ${WHITE}Shard",
+                npcPrice = null,
+            ),
+            FishingProfitDropInfo(
+                itemId = "SHARD_SPRAWL",
+                itemName = "Sprawl Shard",
+                itemDisplayName = "${UNCOMMON}Sprawl ${WHITE}Shard",
+                npcPrice = null,
+            ),
+            FishingProfitDropInfo(
+                itemId = "SHARD_SILKBREEZE",
+                itemName = "Silkbreeze Shard",
+                itemDisplayName = "${EPIC}Silkbreeze ${WHITE}Shard",
+                npcPrice = null,
+            ),
+            FishingProfitDropInfo(
+                itemId = "SHARD_GIANT_ISOPOD",
+                itemName = "Giant Isopod Shard",
+                itemDisplayName = "${EPIC}Giant Isopod ${WHITE}Shard",
+                npcPrice = null,
+            ),
+            FishingProfitDropInfo(
+                itemId = "SHARD_TORRID",
+                itemName = "Torrid Shard",
+                itemDisplayName = "${RARE}Torrid ${WHITE}Shard",
+                npcPrice = null,
+            ),
+            FishingProfitDropInfo(
+                itemId = "SHARD_GIANT_WATER_BUG",
+                itemName = "Giant Water Bug Shard",
+                itemDisplayName = "${RARE}Giant Water Bug ${WHITE}Shard",
+                npcPrice = null,
+            ),
 
             // Water
 
@@ -777,7 +942,6 @@ class FishingProfitDrops {
                 itemName = "Bobbin' Scriptures",
                 itemDisplayName = "${RARE}Bobbin' Scriptures",
                 npcPrice = 250_000.0,
-                shouldAnnounceRareDrop = true,
             ),
             FishingProfitDropInfo(
                 itemId = "CHUM",
@@ -798,10 +962,28 @@ class FishingProfitDrops {
                 npcPrice = 1_600.0,
             ),
             FishingProfitDropInfo(
+                itemId = "CONDENSED_WATER_LILY",
+                itemName = "Condensed Lily Pad",
+                itemDisplayName = "${RARE}Condensed Lily Pad",
+                npcPrice = 256_000.0,
+            ),
+            FishingProfitDropInfo(
                 itemId = "INK_SACK",
                 itemName = "Ink Sac",
                 itemDisplayName = "${COMMON}Ink Sac",
                 npcPrice = 2.0,
+            ),
+            FishingProfitDropInfo(
+                itemId = "ENCHANTED_INK_SACK",
+                itemName = "Enchanted Ink Sac",
+                itemDisplayName = "${UNCOMMON}Enchanted Ink Sac",
+                npcPrice = 160.0,
+            ),
+            FishingProfitDropInfo(
+                itemId = "INK_SPLAT",
+                itemName = "Ink Splat",
+                itemDisplayName = "${RARE}Ink Splat",
+                npcPrice = 25_000.0,
             ),
             FishingProfitDropInfo(
                 itemId = "ENCHANTED_PRISMARINE_CRYSTALS",
@@ -965,14 +1147,6 @@ class FishingProfitDrops {
                 npcPrice = null,
             ),
             FishingProfitDropInfo(
-                itemId = "ENCHANTMENT_LUCK_OF_THE_SEA_6",
-                itemName = "Enchanted Book (Luck of the Sea VI)",
-                itemAlternateNames = listOf("Enchanted Book (Luck of the Sea 6)"),
-                itemDisplayName = "${RARE}Luck of the Sea VI ${WHITE}Book",
-                npcPrice = null,
-                shouldAnnounceRareDrop = true,
-            ),
-            FishingProfitDropInfo(
                 itemId = "ENCHANTMENT_CASTER_6",
                 itemName = "Enchanted Book (Caster VI)",
                 itemAlternateNames = listOf("Enchanted Book (Caster 6)"),
@@ -986,7 +1160,6 @@ class FishingProfitDrops {
                 itemAlternateNames = listOf("Enchanted Book (Blessing 6)"),
                 itemDisplayName = "${RARE}Blessing VI ${WHITE}Book",
                 npcPrice = null,
-                shouldAnnounceRareDrop = true,
             ),
             FishingProfitDropInfo(
                 itemId = "CARROT_ITEM",
@@ -1148,7 +1321,6 @@ class FishingProfitDrops {
                 itemName = "Broken Radar",
                 itemDisplayName = "${RARE}Broken Radar",
                 npcPrice = 25_000.0,
-                shouldAnnounceRareDrop = true,
             ),
             FishingProfitDropInfo(
                 itemId = "EDIBLE_SEAWEED",
@@ -1269,19 +1441,51 @@ class FishingProfitDrops {
                 itemDisplayName = "${RARE}Enchanted Clay Block",
                 npcPrice = 76_800.0,
             ),
+            FishingProfitDropInfo(
+                itemId = "SNAKE_EYES",
+                itemName = "Snake Eyes",
+                itemDisplayName = "${LEGENDARY}Snake Eyes",
+                npcPrice = 1_000_000.0,
+            ),
 
             // Galatea
 
             FishingProfitDropInfo(
+                itemId = "AGATHA_COUPON",
+                itemName = "Agatha's Coupon",
+                itemDisplayName = "${UNCOMMON}Agatha's Coupon",
+                npcPrice = 10_000.0,
+                ignoreFromInventory = true,
+            ),
+            FishingProfitDropInfo(
+                itemId = "ESSENCE_FOREST",
+                itemName = "Forest Essence",
+                itemDisplayName = "${COMMON}Forest Essence",
+                npcPrice = null,
+                ignoreFromInventory = true,
+            ),
+            FishingProfitDropInfo(
                 itemId = "SWAMP_THE_FISH",
                 itemName = "Swamp the Fish",
                 itemDisplayName = "${SPECIAL}Swamp the Fish",
-                npcPrice = null,
+                npcPrice = 50_000.0,
             ),
             FishingProfitDropInfo(
                 itemId = "FISH_THE_FISH",
                 itemName = "Fish the Fish",
                 itemDisplayName = "${SPECIAL}Fish the Fish",
+                npcPrice = 50_000.0,
+            ),
+            FishingProfitDropInfo(
+                itemId = "MOB_THE_FISH",
+                itemName = "Mob the Fish",
+                itemDisplayName = "${SPECIAL}Mob the Fish",
+                npcPrice = 50_000.0,
+            ),
+            FishingProfitDropInfo(
+                itemId = "MOB_THE_FISH",
+                itemName = "Mob the Fish",
+                itemDisplayName = "${SPECIAL}Mob the Fish",
                 npcPrice = null,
             ),
             FishingProfitDropInfo(
@@ -1364,6 +1568,140 @@ class FishingProfitDrops {
                 shouldAnnounceRareDrop = true,
                 categories = listOf(PET_ITEM_CATEGORY),
             ),
+            FishingProfitDropInfo(
+                itemId = "MOUND_OF_SEAGRASS",
+                itemName = "Mound of Seagrass",
+                itemDisplayName = "${EPIC}Mound of Seagrass",
+                npcPrice = null,
+                shouldAnnounceRareDrop = true,
+            ),
+            FishingProfitDropInfo(
+                itemId = "VIBRANT_CORAL",
+                itemName = "Vibrant Coral",
+                itemDisplayName = "${LEGENDARY}Vibrant Coral",
+                npcPrice = 1_000_000.0,
+            ),
+
+            // Lotus Atoll
+            FishingProfitDropInfo(
+                itemId = "LOTUS",
+                itemName = "Lotus",
+                itemDisplayName = "${UNCOMMON}Lotus",
+                npcPrice = 15.0,
+            ),
+            FishingProfitDropInfo(
+                itemId = "LOTUS_SILVER",
+                itemName = "Silver Lotus",
+                itemDisplayName = "${RARE}Silver Lotus",
+                npcPrice = 1_200.0,
+            ),
+            FishingProfitDropInfo(
+                itemId = "LOTUS_GOLD",
+                itemName = "Gold Lotus",
+                itemDisplayName = "${EPIC}Gold Lotus",
+                npcPrice = 96_000.0,
+            ),
+            FishingProfitDropInfo(
+                itemId = "FROGCOIN",
+                itemName = "Frogcoin",
+                itemDisplayName = "${UNCOMMON}Frogcoin",
+                npcPrice = null,
+            ),
+            FishingProfitDropInfo(
+                itemId = "ENCHANTED_GOLD_BLOCK",
+                itemName = "Enchanted Gold Block",
+                itemDisplayName = "${RARE}Enchanted Gold Block",
+                npcPrice = 76_800.0,
+            ),
+            FishingProfitDropInfo(
+                itemId = "UNLUCKY_DOUBLOON",
+                itemName = "Unlucky Doubloon",
+                itemDisplayName = "${EPIC}Unlucky Doubloon",
+                npcPrice = 100_000.0,
+            ),
+            FishingProfitDropInfo(
+                itemId = "REVERSE_REFORGE_STONE_CORE",
+                itemName = "eroC enotS egrofeR",
+                itemDisplayName = "${RARE}eroC enotS egrofeR",
+                npcPrice = 25_000.0,
+            ),
+            FishingProfitDropInfo(
+                itemId = "PRINCE_CROWN_JEWEL",
+                itemName = "Prince's Crown Jewel",
+                itemDisplayName = "${LEGENDARY}Prince's Crown Jewel",
+                npcPrice = 1_000_000.0,
+            ),
+
+            // Torrhus Canyon
+            FishingProfitDropInfo(
+                itemId = "HELIX_LOG",
+                itemName = "Helix Log",
+                itemDisplayName = "${COMMON}Helix Log",
+                npcPrice = 9.0,
+            ),
+            FishingProfitDropInfo(
+                itemId = "ENCHANTED_HELIX_LOG",
+                itemName = "Enchanted Helix Log",
+                itemDisplayName = "${UNCOMMON}Enchanted Helix Log",
+                npcPrice = 1_440.0,
+            ),
+            FishingProfitDropInfo(
+                itemId = "RUBY_VEILSHROOM",
+                itemName = "Ruby Veilshroom",
+                itemDisplayName = "${COMMON}Ruby Veilshroom",
+                npcPrice = 5.0,
+            ),
+            FishingProfitDropInfo(
+                itemId = "ENCHANTED_RUBY_VEILSHROOM",
+                itemName = "Enchanted Ruby Veilshroom",
+                itemDisplayName = "${UNCOMMON}Enchanted Ruby Veilshroom",
+                npcPrice = 800.0,
+            ),
+            FishingProfitDropInfo(
+                itemId = "RUBBER_SNORKEL",
+                itemName = "Rubber Snorkel",
+                itemDisplayName = "${RARE}Rubber Snorkel",
+                npcPrice = 25_000.0,
+            ),
+            FishingProfitDropInfo(
+                itemId = "HELIXIS",
+                itemName = "Helixis",
+                itemDisplayName = "${RARE}Helixis",
+                npcPrice = 230_400.0,
+                shouldAnnounceRareDrop = true,
+            ),
+            FishingProfitDropInfo(
+                itemId = "WATER_HYACINTH",
+                itemName = "Water Hyacinth",
+                itemDisplayName = "${LEGENDARY}Water Hyacinth",
+                npcPrice = 1_000_000.0,
+            ),
+            FishingProfitDropInfo(
+                itemId = "SUBLIME_SILK",
+                itemName = "Sublime Silk",
+                itemDisplayName = "${EPIC}Sublime Silk",
+                npcPrice = 50_000.0,
+                shouldAnnounceRareDrop = true,
+            ),
+            FishingProfitDropInfo(
+                itemId = "DISTANT_ECHO",
+                itemName = "Distant Echo",
+                itemDisplayName = "${LEGENDARY}Distant Echo",
+                npcPrice = 1_000_000.0,
+            ),
+            FishingProfitDropInfo(
+                itemId = "ISOPOD_HUSK",
+                itemName = "Isopod Husk",
+                itemDisplayName = "${EPIC}Isopod Husk",
+                npcPrice = 1_000_000.0, // ?
+                shouldAnnounceRareDrop = true,
+            ),
+            FishingProfitDropInfo(
+                itemId = "REINFORCED_NETTING",
+                itemName = "Reinforced Netting",
+                itemDisplayName = "${LEGENDARY}Reinforced Netting",
+                npcPrice = 1_000_000.0, // ?
+            ),
 
             // Crimson Isle
 
@@ -1403,6 +1741,7 @@ class FishingProfitDrops {
                 itemName = "Scorched Crab Stick",
                 itemDisplayName = "${RARE}Scorched Crab Stick",
                 npcPrice = 25_000.0,
+                shouldAnnounceRareDrop = true,
             ),
             FishingProfitDropInfo(
                 itemId = "SCUTTLER_SHELL",
@@ -1435,7 +1774,6 @@ class FishingProfitDrops {
                 itemName = "Chain of the End Times",
                 itemDisplayName = "${LEGENDARY}Chain of the End Times",
                 npcPrice = 1_000_000.0,
-                shouldAnnounceRareDrop = true,
             ),
             FishingProfitDropInfo(
                 itemId = "LUMP_OF_MAGMA",
@@ -1512,6 +1850,7 @@ class FishingProfitDrops {
                     essenceItemId = "ESSENCE_CRIMSON",
                     essenceCount = 15
                 ),
+                categories = listOf(CRIMSON_ISLE_TRASH_GEAR_CATEGORY),
             ),
             FishingProfitDropInfo(
                 itemId = "MOOGMA_LEGGINGS",
@@ -1522,6 +1861,7 @@ class FishingProfitDrops {
                     essenceItemId = "ESSENCE_CRIMSON",
                     essenceCount = 20
                 ),
+                categories = listOf(CRIMSON_ISLE_TRASH_GEAR_CATEGORY),
             ),
             FishingProfitDropInfo(
                 itemId = "FLAMING_CHESTPLATE",
@@ -1532,6 +1872,7 @@ class FishingProfitDrops {
                     essenceItemId = "ESSENCE_CRIMSON",
                     essenceCount = 25
                 ),
+                categories = listOf(CRIMSON_ISLE_TRASH_GEAR_CATEGORY),
             ),
             FishingProfitDropInfo(
                 itemId = "TAURUS_HELMET",
@@ -1542,6 +1883,7 @@ class FishingProfitDrops {
                     essenceItemId = "ESSENCE_CRIMSON",
                     essenceCount = 30
                 ),
+                categories = listOf(CRIMSON_ISLE_TRASH_GEAR_CATEGORY),
             ),
             FishingProfitDropInfo(
                 itemId = "BLADE_OF_THE_VOLCANO",
@@ -1552,6 +1894,7 @@ class FishingProfitDrops {
                     essenceItemId = "ESSENCE_CRIMSON",
                     essenceCount = 10
                 ),
+                categories = listOf(CRIMSON_ISLE_TRASH_GEAR_CATEGORY),
             ),
             FishingProfitDropInfo(
                 itemId = "STAFF_OF_THE_VOLCANO",
@@ -1562,12 +1905,20 @@ class FishingProfitDrops {
                     essenceItemId = "ESSENCE_CRIMSON",
                     essenceCount = 10
                 ),
+                categories = listOf(CRIMSON_ISLE_TRASH_GEAR_CATEGORY),
             ),
             FishingProfitDropInfo(
                 itemId = "PITCHIN_KOI",
                 itemName = "Pitchin' Koi",
                 itemDisplayName = "${RARE}Pitchin' Koi",
                 npcPrice = 22_222.0,
+            ),
+            FishingProfitDropInfo(
+                itemId = "SEARED_ESCARGOT",
+                itemName = "Seared Escargot",
+                itemDisplayName = "${RARE}Seared Escargot",
+                npcPrice = 25_000.0,
+                shouldAnnounceRareDrop = true
             ),
             FishingProfitDropInfo(
                 itemId = "MAGMA_LORD_FRAGMENT",
@@ -1604,6 +1955,13 @@ class FishingProfitDrops {
                 itemId = "ENCHANTMENT_CHARM_1",
                 itemName = "Enchanted Book (Charm I)",
                 itemDisplayName = "${RARE}Charm I ${WHITE}Book",
+                npcPrice = null,
+            ),
+            FishingProfitDropInfo(
+                itemId = "ENCHANTMENT_MAGMARIZER_6",
+                itemName = "Enchanted Book (Pyroclasm VI)",
+                itemAlternateNames = listOf("Enchanted Book (Pyroclasm 6)"),
+                itemDisplayName = "${RARE}Pyroclasm VI ${WHITE}Book",
                 npcPrice = null,
             ),
             FishingProfitDropInfo(
@@ -1656,49 +2014,49 @@ class FishingProfitDrops {
             ),
             FishingProfitDropInfo(
                 itemId = "ROUGH_JADE_GEM",
-                itemName = "☘ Rough Jade Gemstone",
+                itemName = "Rough Jade Gemstone",
                 itemDisplayName = "${COMMON}Rough Jade Gemstone",
                 npcPrice = 3.0,
             ),
             FishingProfitDropInfo(
                 itemId = "ROUGH_AMETHYST_GEM",
-                itemName = "❈ Rough Amethyst Gemstone",
+                itemName = "Rough Amethyst Gemstone",
                 itemDisplayName = "${COMMON}Rough Amethyst Gemstone",
                 npcPrice = 3.0,
             ),
             FishingProfitDropInfo(
                 itemId = "ROUGH_AMBER_GEM",
-                itemName = "⸕ Rough Amber Gemstone",
+                itemName = "Rough Amber Gemstone",
                 itemDisplayName = "${COMMON}Rough Amber Gemstone",
                 npcPrice = 3.0,
             ),
             FishingProfitDropInfo(
                 itemId = "ROUGH_SAPPHIRE_GEM",
-                itemName = "✎ Rough Sapphire Gemstone",
+                itemName = "Rough Sapphire Gemstone",
                 itemDisplayName = "${COMMON}Rough Sapphire Gemstone",
                 npcPrice = 3.0,
             ),
             FishingProfitDropInfo(
                 itemId = "ROUGH_TOPAZ_GEM",
-                itemName = "✧ Rough Topaz Gemstone",
+                itemName = "Rough Topaz Gemstone",
                 itemDisplayName = "${COMMON}Rough Topaz Gemstone",
                 npcPrice = 3.0,
             ),
             FishingProfitDropInfo(
                 itemId = "FLAWED_JADE_GEM",
-                itemName = "☘ Flawed Jade Gemstone",
+                itemName = "Flawed Jade Gemstone",
                 itemDisplayName = "${UNCOMMON}Flawed Jade Gemstone",
                 npcPrice = 3.0,
             ),
             FishingProfitDropInfo(
                 itemId = "FLAWED_SAPPHIRE_GEM",
-                itemName = "✎ Flawed Sapphire Gemstone",
+                itemName = "Flawed Sapphire Gemstone",
                 itemDisplayName = "${UNCOMMON}Flawed Sapphire Gemstone",
                 npcPrice = 3.0,
             ),
             FishingProfitDropInfo(
                 itemId = "FLAWED_AMETHYST_GEM",
-                itemName = "❈ Flawed Amethyst Gemstone",
+                itemName = "Flawed Amethyst Gemstone",
                 itemDisplayName = "${UNCOMMON}Flawed Amethyst Gemstone",
                 npcPrice = 3.0,
             ),
@@ -1722,6 +2080,24 @@ class FishingProfitDrops {
                 itemName = "Purple Candy",
                 itemDisplayName = "${EPIC}Purple Candy",
                 npcPrice = 5_000.0,
+            ),
+            FishingProfitDropInfo(
+                itemId = "PUMPKIN",
+                itemName = "Pumpkin",
+                itemDisplayName = "${COMMON}Pumpkin",
+                npcPrice = 10.0,
+            ),
+            FishingProfitDropInfo(
+                itemId = "ENCHANTED_PUMPKIN",
+                itemName = "Enchanted Pumpkin",
+                itemDisplayName = "${UNCOMMON}Enchanted Pumpkin",
+                npcPrice = 1_600.0,
+            ),
+            FishingProfitDropInfo(
+                itemId = "POLISHED_PUMPKIN",
+                itemName = "Polished Pumpkin",
+                itemDisplayName = "${RARE}Polished Pumpkin",
+                npcPrice = 256_000.0,
             ),
             FishingProfitDropInfo(
                 itemId = "LUCKY_HOOF",
@@ -1757,8 +2133,8 @@ class FishingProfitDrops {
             ),
             FishingProfitDropInfo(
                 itemId = "PHANTOM_HOOK",
-                itemName = "Phantom Hook",
-                itemDisplayName = "${RARE}Phantom Hook",
+                itemName = "Spooky Hook",
+                itemDisplayName = "${RARE}Spooky Hook",
                 npcPrice = 250_000.0,
             ),
 
@@ -1829,6 +2205,7 @@ class FishingProfitDrops {
                 itemName = "Walnut",
                 itemDisplayName = "${UNCOMMON}Walnut",
                 npcPrice = 200.0,
+                shouldAnnounceRareDrop = true,
             ),
             FishingProfitDropInfo(
                 itemId = "WHITE_GIFT",
@@ -1867,6 +2244,12 @@ class FishingProfitDrops {
                 npcPrice = 25_000.0,
             ),
             FishingProfitDropInfo(
+                itemId = "HILT_OF_TRUE_ICE",
+                itemName = "True Ice",
+                itemDisplayName = "${LEGENDARY}True Ice",
+                npcPrice = 100_000.0,
+            ),
+            FishingProfitDropInfo(
                 itemId = "ENCHANTMENT_PROSPERITY_1",
                 itemName = "Enchanted Book (Prosperity I)",
                 itemAlternateNames = listOf("Enchanted Book (Prosperity 1)"),
@@ -1875,17 +2258,11 @@ class FishingProfitDrops {
                 shouldAnnounceRareDrop = true,
             ),
             FishingProfitDropInfo(
-                itemId = "BABY_YETI;3",
-                itemName = "[Lvl 1] Baby Yeti (EPIC)",
-                itemDisplayName = "${GRAY}[Lvl 1] ${EPIC}Baby Yeti",
-                npcPrice = 10_000.0,
-                shouldAnnounceRareDrop = true,
-            ),
-            FishingProfitDropInfo(
-                itemId = "BABY_YETI;4",
-                itemName = "[Lvl 1] Baby Yeti (LEGENDARY)",
-                itemDisplayName = "${GRAY}[Lvl 1] ${LEGENDARY}Baby Yeti",
+                itemId = "BABY_YETI;0",
+                itemName = "[Lvl 1] Baby Yeti (COMMON)",
+                itemDisplayName = "${GRAY}[Lvl 1] ${COMMON}Baby Yeti",
                 npcPrice = 1_000_000.0,
+                shouldAnnounceRareDrop = true,
             ),
 
             // Fishing Festival
@@ -1947,6 +2324,12 @@ class FishingProfitDrops {
                 itemName = "Enchanted Mithril",
                 itemDisplayName = "${RARE}Enchanted Mithril",
                 npcPrice = 1_280.0,
+            ),
+            FishingProfitDropInfo(
+                itemId = "PLASMA",
+                itemName = "Plasma",
+                itemDisplayName = "${RARE}Plasma",
+                npcPrice = 20_000.0,
             ),
             FishingProfitDropInfo(
                 itemId = "SPECKLED_TEACUP",
@@ -2470,6 +2853,345 @@ class FishingProfitDrops {
                 itemDisplayName = "${LEGENDARY}Golden Fish ${AQUA}${BOLD}DIAMOND",
                 npcPrice = null,
                 amountOfMagmaFish = 1300,
+            ),
+
+            // Trophy Frogs
+            // https://hypixelskyblock.minecraft.wiki/w/Researcher_Ribery#Donating
+            FishingProfitDropInfo(
+                itemId = "COMMON_FROG_BRONZE",
+                itemName = "Common Frog BRONZE",
+                itemDisplayName = "${COMMON}Common Frog ${DARK_GRAY}${BOLD}BRONZE",
+                npcPrice = null,
+                amountOfLotus = 8,
+            ),
+            FishingProfitDropInfo(
+                itemId = "COMMON_FROG_SILVER",
+                itemName = "Common Frog SILVER",
+                itemDisplayName = "${COMMON}Common Frog ${GRAY}${BOLD}SILVER",
+                npcPrice = null,
+                amountOfLotus = 16,
+            ),
+            FishingProfitDropInfo(
+                itemId = "COMMON_FROG_GOLD",
+                itemName = "Common Frog GOLD",
+                itemDisplayName = "${COMMON}Common Frog ${GOLD}${BOLD}GOLD",
+                npcPrice = null,
+                amountOfLotus = 32,
+            ),
+            FishingProfitDropInfo(
+                itemId = "COMMON_FROG_DIAMOND",
+                itemName = "Common Frog DIAMOND",
+                itemDisplayName = "${COMMON}Common Frog ${AQUA}${BOLD}DIAMOND",
+                npcPrice = null,
+                amountOfLotus = 64,
+            ),
+            FishingProfitDropInfo(
+                itemId = "LEAP_FROG_BRONZE",
+                itemName = "Leap Frog BRONZE",
+                itemDisplayName = "${COMMON}Leap Frog ${DARK_GRAY}${BOLD}BRONZE",
+                npcPrice = null,
+                amountOfLotus = 24,
+            ),
+            FishingProfitDropInfo(
+                itemId = "LEAP_FROG_SILVER",
+                itemName = "Leap Frog SILVER",
+                itemDisplayName = "${COMMON}Leap Frog ${GRAY}${BOLD}SILVER",
+                npcPrice = null,
+                amountOfLotus = 48,
+            ),
+            FishingProfitDropInfo(
+                itemId = "LEAP_FROG_GOLD",
+                itemName = "Leap Frog GOLD",
+                itemDisplayName = "${COMMON}Leap Frog ${GOLD}${BOLD}GOLD",
+                npcPrice = null,
+                amountOfLotus = 96,
+            ),
+            FishingProfitDropInfo(
+                itemId = "LEAP_FROG_DIAMOND",
+                itemName = "Leap Frog DIAMOND",
+                itemDisplayName = "${COMMON}Leap Frog ${AQUA}${BOLD}DIAMOND",
+                npcPrice = null,
+                amountOfLotus = 128,
+            ),
+            FishingProfitDropInfo(
+                itemId = "WETLANDS_FROG_BRONZE",
+                itemName = "Wetlands Frog BRONZE",
+                itemDisplayName = "${UNCOMMON}Wetlands Frog ${DARK_GRAY}${BOLD}BRONZE",
+                npcPrice = null,
+                amountOfLotus = 20,
+            ),
+            FishingProfitDropInfo(
+                itemId = "WETLANDS_FROG_SILVER",
+                itemName = "Wetlands Frog SILVER",
+                itemDisplayName = "${UNCOMMON}Wetlands Frog ${GRAY}${BOLD}SILVER",
+                npcPrice = null,
+                amountOfLotus = 40,
+            ),
+            FishingProfitDropInfo(
+                itemId = "WETLANDS_FROG_GOLD",
+                itemName = "Wetlands Frog GOLD",
+                itemDisplayName = "${UNCOMMON}Wetlands Frog ${GOLD}${BOLD}GOLD",
+                npcPrice = null,
+                amountOfLotus = 80,
+            ),
+            FishingProfitDropInfo(
+                itemId = "WETLANDS_FROG_DIAMOND",
+                itemName = "Wetlands Frog DIAMOND",
+                itemDisplayName = "${UNCOMMON}Wetlands Frog ${AQUA}${BOLD}DIAMOND",
+                npcPrice = null,
+                amountOfLotus = 160,
+            ),
+            FishingProfitDropInfo(
+                itemId = "REALITY_HOPPER_BRONZE",
+                itemName = "Reality Hopper BRONZE",
+                itemDisplayName = "${UNCOMMON}Reality Hopper ${DARK_GRAY}${BOLD}BRONZE",
+                npcPrice = null,
+                amountOfLotus = 20,
+            ),
+            FishingProfitDropInfo(
+                itemId = "REALITY_HOPPER_SILVER",
+                itemName = "Reality Hopper SILVER",
+                itemDisplayName = "${UNCOMMON}Reality Hopper ${GRAY}${BOLD}SILVER",
+                npcPrice = null,
+                amountOfLotus = 40,
+            ),
+            FishingProfitDropInfo(
+                itemId = "REALITY_HOPPER_GOLD",
+                itemName = "Reality Hopper GOLD",
+                itemDisplayName = "${UNCOMMON}Reality Hopper ${GOLD}${BOLD}GOLD",
+                npcPrice = null,
+                amountOfLotus = 80,
+            ),
+            FishingProfitDropInfo(
+                itemId = "REALITY_HOPPER_DIAMOND",
+                itemName = "Reality Hopper DIAMOND",
+                itemDisplayName = "${UNCOMMON}Reality Hopper ${AQUA}${BOLD}DIAMOND",
+                npcPrice = null,
+                amountOfLotus = 160,
+            ),
+            FishingProfitDropInfo(
+                itemId = "EXPLODING_FROG_BRONZE",
+                itemName = "Exploding Frog BRONZE",
+                itemDisplayName = "${UNCOMMON}Exploding Frog ${DARK_GRAY}${BOLD}BRONZE",
+                npcPrice = null,
+                amountOfLotus = 12,
+            ),
+            FishingProfitDropInfo(
+                itemId = "EXPLODING_FROG_SILVER",
+                itemName = "Exploding Frog SILVER",
+                itemDisplayName = "${UNCOMMON}Exploding Frog ${GRAY}${BOLD}SILVER",
+                npcPrice = null,
+                amountOfLotus = 24,
+            ),
+            FishingProfitDropInfo(
+                itemId = "EXPLODING_FROG_GOLD",
+                itemName = "Exploding Frog GOLD",
+                itemDisplayName = "${UNCOMMON}Exploding Frog ${GOLD}${BOLD}GOLD",
+                npcPrice = null,
+                amountOfLotus = 48,
+            ),
+            FishingProfitDropInfo(
+                itemId = "EXPLODING_FROG_DIAMOND",
+                itemName = "Exploding Frog DIAMOND",
+                itemDisplayName = "${UNCOMMON}Exploding Frog ${AQUA}${BOLD}DIAMOND",
+                npcPrice = null,
+                amountOfLotus = 96,
+            ),
+            FishingProfitDropInfo(
+                itemId = "BLESSED_FROG_BRONZE",
+                itemName = "Blessed Frog BRONZE",
+                itemDisplayName = "${RARE}Blessed Frog ${DARK_GRAY}${BOLD}BRONZE",
+                npcPrice = null,
+                amountOfLotus = 32,
+            ),
+            FishingProfitDropInfo(
+                itemId = "BLESSED_FROG_SILVER",
+                itemName = "Blessed Frog SILVER",
+                itemDisplayName = "${RARE}Blessed Frog ${GRAY}${BOLD}SILVER",
+                npcPrice = null,
+                amountOfLotus = 64,
+            ),
+            FishingProfitDropInfo(
+                itemId = "BLESSED_FROG_GOLD",
+                itemName = "Blessed Frog GOLD",
+                itemDisplayName = "${RARE}Blessed Frog ${GOLD}${BOLD}GOLD",
+                npcPrice = null,
+                amountOfLotus = 128,
+            ),
+            FishingProfitDropInfo(
+                itemId = "BLESSED_FROG_DIAMOND",
+                itemName = "Blessed Frog DIAMOND",
+                itemDisplayName = "${RARE}Blessed Frog ${AQUA}${BOLD}DIAMOND",
+                npcPrice = null,
+                amountOfLotus = 256,
+            ),
+            FishingProfitDropInfo(
+                itemId = "SEA_FROG_BRONZE",
+                itemName = "Sea Frog BRONZE",
+                itemDisplayName = "${RARE}Sea Frog ${DARK_GRAY}${BOLD}BRONZE",
+                npcPrice = null,
+                amountOfLotus = 40,
+            ),
+            FishingProfitDropInfo(
+                itemId = "SEA_FROG_SILVER",
+                itemName = "Sea Frog SILVER",
+                itemDisplayName = "${RARE}Sea Frog ${GRAY}${BOLD}SILVER",
+                npcPrice = null,
+                amountOfLotus = 80,
+            ),
+            FishingProfitDropInfo( 
+                itemId = "SEA_FROG_GOLD",
+                itemName = "Sea Frog GOLD",
+                itemDisplayName = "${RARE}Sea Frog ${GOLD}${BOLD}GOLD",
+                npcPrice = null,
+                amountOfLotus = 160,
+            ),
+            FishingProfitDropInfo(
+                itemId = "SEA_FROG_DIAMOND",
+                itemName = "Sea Frog DIAMOND",
+                itemDisplayName = "${RARE}Sea Frog ${AQUA}${BOLD}DIAMOND",
+                npcPrice = null,
+                amountOfLotus = 320,
+            ),
+            FishingProfitDropInfo(
+                itemId = "BULLFROG_BRONZE",
+                itemName = "Bullfrog BRONZE",
+                itemDisplayName = "${RARE}Bullfrog ${DARK_GRAY}${BOLD}BRONZE",
+                npcPrice = null,
+                amountOfLotus = 40,
+            ),
+            FishingProfitDropInfo(
+                itemId = "BULLFROG_SILVER",
+                itemName = "Bullfrog SILVER",
+                itemDisplayName = "${RARE}Bullfrog ${GRAY}${BOLD}SILVER",
+                npcPrice = null,
+                amountOfLotus = 80,
+            ),
+            FishingProfitDropInfo(
+                itemId = "BULLFROG_GOLD",
+                itemName = "Bullfrog GOLD",
+                itemDisplayName = "${RARE}Bullfrog ${GOLD}${BOLD}GOLD",
+                npcPrice = null,
+                amountOfLotus = 160,
+            ),
+            FishingProfitDropInfo(
+                itemId = "BULLFROG_DIAMOND",
+                itemName = "Bullfrog DIAMOND",
+                itemDisplayName = "${RARE}Bullfrog ${AQUA}${BOLD}DIAMOND",
+                npcPrice = null,
+                amountOfLotus = 320,
+            ),
+            FishingProfitDropInfo(
+                itemId = "TREE_FROG_BRONZE",
+                itemName = "Tree Frog BRONZE",
+                itemDisplayName = "${EPIC}Tree Frog ${DARK_GRAY}${BOLD}BRONZE",
+                npcPrice = null,
+                amountOfLotus = 80,
+            ),
+            FishingProfitDropInfo(
+                itemId = "TREE_FROG_SILVER",
+                itemName = "Tree Frog SILVER",
+                itemDisplayName = "${EPIC}Tree Frog ${GRAY}${BOLD}SILVER",
+                npcPrice = null,
+                amountOfLotus = 160,
+            ),
+            FishingProfitDropInfo(
+                itemId = "TREE_FROG_GOLD",
+                itemName = "Tree Frog GOLD",
+                itemDisplayName = "${EPIC}Tree Frog ${GOLD}${BOLD}GOLD",
+                npcPrice = null,
+                amountOfLotus = 320,
+            ),
+            FishingProfitDropInfo(
+                itemId = "TREE_FROG_DIAMOND",
+                itemName = "Tree Frog DIAMOND",
+                itemDisplayName = "${EPIC}Tree Frog ${AQUA}${BOLD}DIAMOND",
+                npcPrice = null,
+                amountOfLotus = 640,
+            ),
+            FishingProfitDropInfo(
+                itemId = "CAVE_FROG_BRONZE",
+                itemName = "Cave Frog BRONZE",
+                itemDisplayName = "${EPIC}Cave Frog ${DARK_GRAY}${BOLD}BRONZE",
+                npcPrice = null,
+                amountOfLotus = 80,
+            ),
+            FishingProfitDropInfo(
+                itemId = "CAVE_FROG_SILVER",
+                itemName = "Cave Frog SILVER",
+                itemDisplayName = "${EPIC}Cave Frog ${GRAY}${BOLD}SILVER",
+                npcPrice = null,
+                amountOfLotus = 160,
+            ),
+            FishingProfitDropInfo(
+                itemId = "CAVE_FROG_GOLD",
+                itemName = "Cave Frog GOLD",
+                itemDisplayName = "${EPIC}Cave Frog ${GOLD}${BOLD}GOLD",
+                npcPrice = null,
+                amountOfLotus = 320,
+            ),
+            FishingProfitDropInfo(
+                itemId = "CAVE_FROG_DIAMOND",
+                itemName = "Cave Frog DIAMOND",
+                itemDisplayName = "${EPIC}Cave Frog ${AQUA}${BOLD}DIAMOND",
+                npcPrice = null,
+                amountOfLotus = 640,
+            ),
+            FishingProfitDropInfo(
+                itemId = "HIGHLANDS_FROG_BRONZE",
+                itemName = "Highlands Frog BRONZE",
+                itemDisplayName = "${EPIC}Highlands Frog ${DARK_GRAY}${BOLD}BRONZE",
+                npcPrice = null,
+                amountOfLotus = 80,
+            ),
+            FishingProfitDropInfo(
+                itemId = "HIGHLANDS_FROG_SILVER",
+                itemName = "Highlands Frog SILVER",
+                itemDisplayName = "${EPIC}Highlands Frog ${GRAY}${BOLD}SILVER",
+                npcPrice = null,
+                amountOfLotus = 160,
+            ),
+            FishingProfitDropInfo(
+                itemId = "HIGHLANDS_FROG_GOLD",
+                itemName = "Highlands Frog GOLD",
+                itemDisplayName = "${EPIC}Highlands Frog ${GOLD}${BOLD}GOLD",
+                npcPrice = null,
+                amountOfLotus = 320,
+            ),
+            FishingProfitDropInfo(
+                itemId = "HIGHLANDS_FROG_DIAMOND",
+                itemName = "Highlands Frog DIAMOND",
+                itemDisplayName = "${EPIC}Highlands Frog ${AQUA}${BOLD}DIAMOND",
+                npcPrice = null,
+                amountOfLotus = 640,
+            ),
+            FishingProfitDropInfo(
+                itemId = "PUDDLE_JUMPER_BRONZE",
+                itemName = "Puddle Jumper BRONZE",
+                itemDisplayName = "${LEGENDARY}Puddle Jumper ${DARK_GRAY}${BOLD}BRONZE",
+                npcPrice = null,
+                amountOfLotus = 128,
+            ),
+            FishingProfitDropInfo(
+                itemId = "PUDDLE_JUMPER_SILVER",
+                itemName = "Puddle Jumper SILVER",
+                itemDisplayName = "${LEGENDARY}Puddle Jumper ${GRAY}${BOLD}SILVER",
+                npcPrice = null,
+                amountOfLotus = 192,
+            ),
+            FishingProfitDropInfo(
+                itemId = "PUDDLE_JUMPER_GOLD",
+                itemName = "Puddle Jumper GOLD",
+                itemDisplayName = "${LEGENDARY}Puddle Jumper ${GOLD}${BOLD}GOLD",
+                npcPrice = null,
+                amountOfLotus = 256,
+            ),
+            FishingProfitDropInfo(
+                itemId = "PUDDLE_JUMPER_DIAMOND",
+                itemName = "Puddle Jumper DIAMOND",
+                itemDisplayName = "${LEGENDARY}Puddle Jumper ${AQUA}${BOLD}DIAMOND",
+                npcPrice = null,
+                amountOfLotus = 320,
             ),
 
             // Dirt

@@ -1,15 +1,14 @@
 package com.github.sleepypanda.feesh.utils
 
-import com.github.sleepypanda.feesh.FeeshMod
-import net.minecraft.entity.decoration.ArmorStandEntity
-import net.minecraft.entity.Entity
-import net.minecraft.text.Text
+import net.minecraft.world.entity.decoration.ArmorStand
+import net.minecraft.world.entity.Entity
 import com.github.sleepypanda.feesh.utils.ChatUtils.getFormattedString
-import com.github.sleepypanda.feesh.utils.ChatUtils.removeFormatting
+import com.github.sleepypanda.feesh.utils.ChatUtils.getUnformattedString
+import net.minecraft.world.phys.Vec3
 
 object HotspotUtils {
     data class HotspotData(
-        val entity: ArmorStandEntity,
+        val entity: ArmorStand,
         val x: Double,
         val y: Double,
         val z: Double,
@@ -23,27 +22,27 @@ object HotspotUtils {
      * @param hotspotStand The hotspot armor stand.
      * @return true if the candidate is a perk for the hotspot.
      */
-    private fun isPerkForHotspot(perkCandidate: ArmorStandEntity, hotspotStand: ArmorStandEntity): Boolean {
+    private fun isPerkForHotspot(perkCandidate: ArmorStand, hotspotStand: ArmorStand): Boolean {
         return perkCandidate.x == hotspotStand.x &&
                 perkCandidate.y < hotspotStand.y &&
                 hotspotStand.y - perkCandidate.y <= 1.0 &&
                 perkCandidate.z == hotspotStand.z &&
-                perkCandidate.pitch == hotspotStand.pitch
+                perkCandidate.xRot == hotspotStand.xRot
     }
 
     /**
-     * Find the closest Hotspot in the specified range from the specified entity.
-     * @param entity The entity to search from.
+     * Find the closest Hotspot in the specified range from the specified entity position.
+     * @param entityPosition The position to search from.
      * @param distance The maximum distance to search.
      * @returns HotspotData in the format { entity, position, perk } or null if not found.
      */
-    fun findClosestHotspotInRange(entity: Entity, distance: Double): HotspotData? {
-        val armorStands = EntityUtils.getArmorStandsInRange(entity, distance)
+    fun findClosestHotspotInRange(entityPosition: Vec3, distance: Double): HotspotData? {
+        val armorStands = EntityUtils.getArmorStandsInRange(entityPosition, distance)
         if (armorStands.isEmpty()) return null
 
         val closestHotspotArmorStand = armorStands
-            .filter { it.customName?.string == "HOTSPOT" }
-            .minByOrNull { EntityUtils.getDistance(entity, it) }
+            .filter { it.customName.getUnformattedString() == "HOTSPOT" }
+            .minByOrNull { EntityUtils.getDistance(it, entityPosition.x, entityPosition.y, entityPosition.z) }
 
         if (closestHotspotArmorStand == null) return null
 
@@ -70,9 +69,9 @@ object HotspotUtils {
      * @returns List of HotspotData
      */
     fun findHotspotsInRange(entity: Entity, distance: Double): List<HotspotData> {
-        val armorStands = EntityUtils.getArmorStandsInRange(entity, distance)
+        val armorStands = EntityUtils.getArmorStandsInRange(Vec3(entity.x, entity.y, entity.z), distance)
         val closeHotspotArmorStands = armorStands
-            .filter { it.customName?.string == "HOTSPOT" }
+            .filter { it.customName.getUnformattedString() == "HOTSPOT" }
             .sortedBy { EntityUtils.getDistance(entity, it) }
             .map { asEntity ->
                 // Find the perk armor stand (same X and Z, Y is below the HOTSPOT, within 1 block)

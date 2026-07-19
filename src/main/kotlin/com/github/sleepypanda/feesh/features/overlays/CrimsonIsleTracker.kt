@@ -1,32 +1,32 @@
 package com.github.sleepypanda.feesh.features.overlays
 
-import com.github.sleepypanda.feesh.FeeshMod
 import com.github.sleepypanda.feesh.constants.SeaCreatures
 import com.github.sleepypanda.feesh.constants.RareDrops
-import com.github.sleepypanda.feesh.constants.TYPE_CRIMSON_ISLE_LAVA
-import com.github.sleepypanda.feesh.utils.RegisterUtils
 import com.github.sleepypanda.feesh.utils.WorldUtils
+import com.github.sleepypanda.feesh.utils.PlayerUtils
 import com.github.sleepypanda.feesh.utils.ChatUtils
 import com.github.sleepypanda.feesh.utils.CommonUtils
 import com.github.sleepypanda.feesh.utils.SoundUtils
+import com.github.sleepypanda.feesh.utils.FishingHookUtils
 import com.github.sleepypanda.feesh.settings.categories.General
 import com.github.sleepypanda.feesh.settings.categories.SoundMode
 import com.github.sleepypanda.feesh.constants.Sounds
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
-import com.github.sleepypanda.feesh.utils.PlayerUtils
 import com.github.sleepypanda.feesh.events.EventBus
 import com.github.sleepypanda.feesh.events.models.ClientTickEvent
 import com.github.sleepypanda.feesh.events.models.GameClosedEvent
 import com.github.sleepypanda.feesh.events.models.OwnSeaCreatureCaughtEvent
 import com.github.sleepypanda.feesh.events.models.RareDropEvent
 import com.github.sleepypanda.feesh.utils.gui.FeeshGui
-import com.github.sleepypanda.feesh.utils.gui.GuiButton
+import com.github.sleepypanda.feesh.utils.gui.LineInfo
 import com.github.sleepypanda.feesh.settings.categories.Overlays
 import com.github.sleepypanda.feesh.utils.data.PersistentDataManager
+import com.github.sleepypanda.feesh.features.overlays.base.IResettableTracker
 import java.util.Date
 
-object CrimsonIsleTracker {
+object CrimsonIsleTracker : IResettableTracker {
+
     data class CrimsonIsleTrackerData(
         val thunder: CatchCounterData = CatchCounterData(),
         val lordJawbus: CatchCounterData = CatchCounterData(),
@@ -36,14 +36,17 @@ object CrimsonIsleTracker {
         val radioactiveVials: DropCounterData = DropCounterData()
     )
 
-    const val RESET_COMMAND = "feeshResetCrimsonIsle"
+    const val RESET_COMMAND = "feeshResetCrimsonIsleTracker"
+
+    override val trackerName = "Crimson Isle tracker"
+    override val resetCommand = RESET_COMMAND
 
     private const val TICKS_PER_UPDATE = 20
 
-    private var data = PersistentDataManager.feeshData.crimsonIsle
+    private val data: CrimsonIsleTrackerData
+        get() = PersistentDataManager.feeshData.crimsonIsle
     private var tickCounter = 0
-    private val baseTitle = "${AQUA}${BOLD}Crimson Isle tracker"
-
+    private val baseTitle = "${AQUA}${BOLD}${trackerName}"
 
     private val thunder = SeaCreatures.allSeaCreatures.find { it.name == "Thunder" }!!
     private val lordJawbus = SeaCreatures.allSeaCreatures.find { it.name == "Lord Jawbus" }!!
@@ -58,45 +61,57 @@ object CrimsonIsleTracker {
         .setSampleLines(listOf(
             baseTitle,
             "${fieryScuttler.displayName}${GRAY}: ${WHITE}50 ${GRAY}catches ago ${DARK_GRAY}(${GRAY}avg: ${WHITE}100${DARK_GRAY})",
-            "${GRAY}Last on: ${WHITE}30m ago ${GRAY}(${WHITE}2025-01-15 15:00:00${GRAY})",
+            "${GRAY}Last on: ${WHITE}30m ago",
             "${ragnarok.displayName}${GRAY}: ${WHITE}500 ${GRAY}catches ago ${DARK_GRAY}(${GRAY}avg: ${WHITE}1 000${DARK_GRAY})",
-            "${GRAY}Last on: ${WHITE}3h 45m ago ${GRAY}(${WHITE}2025-01-15 12:00:00${GRAY})",
+            "${GRAY}Last on: ${WHITE}3h 45m ago",
             "${plhlegblast.displayName}${GRAY}: ${WHITE}200 ${GRAY}catches ago ${DARK_GRAY}(${GRAY}avg: ${WHITE}400${DARK_GRAY})",
-            "${GRAY}Last on: ${WHITE}1h 20m ago ${GRAY}(${WHITE}2025-01-15 14:00:00${GRAY})",
+            "${GRAY}Last on: ${WHITE}1h 20m ago",
             "${thunder.displayName}${GRAY}: ${WHITE}10 ${GRAY}catches ago ${DARK_GRAY}(${GRAY}avg: ${WHITE}200${DARK_GRAY})",
-            "${GRAY}Last on: ${WHITE}10m ago ${GRAY}(${WHITE}2025-01-15 14:30:00${GRAY})",
+            "${GRAY}Last on: ${WHITE}10m ago",
             "${lordJawbus.displayName}${GRAY}: ${WHITE}1 000 ${GRAY}catches ago ${DARK_GRAY}(${GRAY}avg: ${WHITE}500${DARK_GRAY})",
-            "${GRAY}Last on: ${WHITE}5h 20m ago ${GRAY}(${WHITE}2025-01-15 10:10:00${GRAY})",
+            "${GRAY}Last on: ${WHITE}5h 20m ago",
             "${radioactiveVial.displayName}s${GRAY}: ${WHITE}5",
-            "${GRAY}Last on: ${WHITE}2h 15m ${GRAY}(${WHITE}2025-01-15 13:15:00${GRAY})",
+            "${GRAY}Last on: ${WHITE}2h 15m ago",
             "${GRAY}Last on: ${WHITE}5 ${GRAY}Lord Jawbuses ago"
         ))
         .setSettingsKey { Overlays.crimsonIsleTrackerOverlay }
+        .setApplyCustomStyleKey { Overlays.crimsonIsleTrackerCustomStyle }
         .setCondition {
-            WorldUtils.getWorldName() == WorldUtils.CRIMSON_ISLE && PlayerUtils.isFishingHookSeenMinutesAgo(5)
+            !isTrackerDisabled()
         }
 
     fun init() {
-        registerCommands()
+        registerResetCommand()
         EventBus.subscribe(OwnSeaCreatureCaughtEvent::class, ::onSeaCreature)
         EventBus.subscribe(ClientTickEvent::class, ::onClientTick)
         EventBus.subscribe(RareDropEvent::class, ::onRareDrop)
         EventBus.subscribe(GameClosedEvent::class, ::onGameClosed)
     }
-    
-    private fun registerCommands() {
-        RegisterUtils.command(RESET_COMMAND) { args ->
-            val isConfirmed = args.isNotEmpty() && args[0] == "noconfirm"
-            resetCrimsonIsleTracker(isConfirmed)
-        }
+
+    override fun hasData(): Boolean {
+        return data.thunder.hasData() || data.lordJawbus.hasData() || data.fieryScuttler.hasData() || data.ragnarok.hasData() || data.plhlegblast.hasData() || data.radioactiveVials.hasData()
+    }
+
+    override fun resetData(force: Boolean) {
+        data.thunder.reset()
+        data.lordJawbus.reset()
+        data.fieryScuttler.reset()
+        data.ragnarok.reset()
+        data.plhlegblast.reset()
+        data.radioactiveVials.reset()
+        saveData(force)
+    }
+
+    override fun refreshGui() {
+        updateGuiLines()
     }
 
     private fun onSeaCreature(event: OwnSeaCreatureCaughtEvent) {
         if (!Overlays.crimsonIsleTrackerOverlay || !WorldUtils.isInSkyblock() || WorldUtils.getWorldName() != WorldUtils.CRIMSON_ISLE) return
 
         val seaCreatureName = event.seaCreatureName
-        val seaCreatureInfo = SeaCreatures.allSeaCreatures.find { it.name == seaCreatureName } ?: return
-        if (!seaCreatureInfo.types.contains(TYPE_CRIMSON_ISLE_LAVA)) return
+        val seaCreatureInfo = event.seaCreatureInfo
+        if (!seaCreatureInfo.types.contains(SeaCreatures.TYPE_CRIMSON_ISLE_LAVA)) return
 
         val isInHotspot = isFishingInHotspot()
         val isInPlhlegblastPool = isInPlhlegblastPool()
@@ -228,96 +243,72 @@ object CrimsonIsleTracker {
         updateGuiLines()
     }
 
+    private fun isTrackerDisabled(): Boolean {
+        if (!Overlays.crimsonIsleTrackerOverlay || !WorldUtils.isInSkyblock() || WorldUtils.getWorldName() != WorldUtils.CRIMSON_ISLE) return true
+        if (!FishingHookUtils.wasFishingHookSubmergedMinutesAgo(5)) return true
+        if (PlayerUtils.isInTrophyArmor()) return true
+        return false
+    }
+
     private fun updateGuiLines() {
         gui.clearLines()
 
-        if (!Overlays.crimsonIsleTrackerOverlay || !WorldUtils.isInSkyblock() || !PlayerUtils.isFishingHookSeenMinutesAgo(5) || WorldUtils.getWorldName() != WorldUtils.CRIMSON_ISLE) return
-        if (!hasData()) return
+        if (isTrackerDisabled() || !hasData()) return
 
         val isInHotspot = isFishingInHotspot()
         val isInPlhlegblastPool = isInPlhlegblastPool()
-        val lines = mutableListOf<String>()
-        lines.add(baseTitle)
+        val lines = mutableListOf<LineInfo>()
+        lines.add(LineInfo(baseTitle))
 
         if (isInHotspot) {
-            lines.addAll(data.fieryScuttler.getOverlayText(fieryScuttler.displayName))
-            lines.addAll(data.ragnarok.getOverlayText(ragnarok.displayName))
+            lines.addAll(data.fieryScuttler.getOverlayLines(fieryScuttler.displayName))
+            lines.addAll(data.ragnarok.getOverlayLines(ragnarok.displayName))
         }
 
         if (isInPlhlegblastPool) {
-            lines.addAll(data.plhlegblast.getOverlayText(plhlegblast.displayName))
+            lines.addAll(data.plhlegblast.getOverlayLines(plhlegblast.displayName))
         }
 
-        lines.addAll(data.thunder.getOverlayText(thunder.displayName))
-        lines.addAll(data.lordJawbus.getOverlayText(lordJawbus.displayName))
-        lines.addAll(data.radioactiveVials.getOverlayText(radioactiveVial.displayName, lordJawbus.displayName))
+        lines.addAll(data.thunder.getOverlayLines(thunder.displayName))
+        lines.addAll(data.lordJawbus.getOverlayLines(lordJawbus.displayName))
+        lines.addAll(data.radioactiveVials.getOverlayLines(radioactiveVial.displayName, lordJawbus.displayName))
 
         gui.setLines(lines)
-        gui.setButtons(listOf(GuiButton(0, "${GRAY}[${RED}Click to reset${GRAY}]", { resetCrimsonIsleTracker(false) })))
-    }
-
-    private fun hasData(): Boolean {
-        return data.thunder.hasData() || data.lordJawbus.hasData() || data.fieryScuttler.hasData() || data.ragnarok.hasData() || data.plhlegblast.hasData() || data.radioactiveVials.hasData()
+        gui.setButtons(listOf(getResetGuiButton { requestReset(false) }))
     }
 
     private fun onGameClosed(@Suppress("UNUSED_PARAMETER") event: GameClosedEvent) {
-        if (Overlays.resetCrimsonIsleTrackerOnGameClosed &&
-            Overlays.crimsonIsleTrackerOverlay &&
-            hasData()) {
-            reset()
-            FeeshMod.LOGGER.info("[Feesh] Automatically reset Crimson Isle tracker on game closed.")
+        if (Overlays.resetCrimsonIsleTrackerOnGameClosed) {
+            resetOnGameClosed()
         }
     }
 
-    private fun reset() {
-        data.thunder.reset()
-        data.lordJawbus.reset()
-        data.fieryScuttler.reset()
-        data.ragnarok.reset()
-        data.plhlegblast.reset()
-        data.radioactiveVials.reset()
-        saveData()
-    }
-
-    private fun resetCrimsonIsleTracker(isConfirmed: Boolean) {
-        try {
-            if (!isConfirmed) {
-                ChatUtils.sendLocalChatWithCommand(
-                    "${WHITE}Do you want to reset Crimson Isle tracker? ${RED}${BOLD}[Click to confirm]",
-                    "${RESET_COMMAND} noconfirm",
-                    true
-                )
-                return
-            }
-
-            reset()
-            updateGuiLines()
-            ChatUtils.sendLocalChat("${WHITE}Crimson Isle tracker was reset.", true)
-        } catch (e: Exception) {
-            FeeshMod.LOGGER.error("[Feesh] Failed to reset Crimson Isle tracker.", e)
+    private fun saveData(force: Boolean = false) {
+        if (force) {
+            PersistentDataManager.forceSaveFeeshDataToFileSync()
+        } else {
+            PersistentDataManager.saveFeeshDataToFileAsync()
         }
-    }
-
-    private fun saveData() {
-        PersistentDataManager.saveFeeshDataToFileAsync()
     }
     
-    fun setRadioactiveVials(count: Int, lastOn: Date?) {
-        try {
+    fun setRadioactiveVials(count: Int, catchesSinceLast: Int, lastOn: Date?) {
+        CommonUtils.runWithCatching(
+            message = "Failed to set Radioactive Vials.",
+            onError = {
+                ChatUtils.sendLocalChat("${RED}Failed to set Radioactive Vials.", true)
+            }
+        ) {
             if (!WorldUtils.isInSkyblock()) return
-            
-            data.radioactiveVials.initDropCount(count, lastOn)         
+
+            data.radioactiveVials.initDropCount(count, lastOn, catchesSinceLast)
             saveData()
-            ChatUtils.sendLocalChat("${GRAY}Successfully changed Radioactive Vials count to ${count} in the Crimson Isle tracker.", true)
-        } catch (e: Exception) {
-            FeeshMod.LOGGER.error("[Feesh] Failed to set Radioactive Vials.", e)
-            ChatUtils.sendLocalChat("${RED}Failed to set Radioactive Vials.", true)
+            ChatUtils.sendLocalChat("Successfully changed Radioactive Vials for the Crimson Isle tracker.\nCount = ${count}, Lord Jawbuses since last = ${catchesSinceLast}, last on = ${lastOn}.", true)
         }
     }
 
     private fun isFishingInHotspot(): Boolean {
         if (WorldUtils.getWorldName() != WorldUtils.CRIMSON_ISLE) return false
-        return PlayerUtils.isFishingHookInHotspotSeenMinutesAgo(1)
+        return FishingHookUtils.wasFishingHookSubmergedInHotspotSecondsAgo(15)
     }
 
     private fun isInPlhlegblastPool(): Boolean {

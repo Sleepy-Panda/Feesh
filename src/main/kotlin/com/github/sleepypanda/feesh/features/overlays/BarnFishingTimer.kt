@@ -3,37 +3,36 @@ package com.github.sleepypanda.feesh.features.overlays
 import com.github.sleepypanda.feesh.FeeshMod
 import com.github.sleepypanda.feesh.events.EventBus
 import com.github.sleepypanda.feesh.events.models.ClientTickEvent
+import com.github.sleepypanda.feesh.events.models.ChatEvent
 import com.github.sleepypanda.feesh.events.models.WorldChangedEvent
 import com.github.sleepypanda.feesh.settings.categories.Overlays
 import com.github.sleepypanda.feesh.settings.categories.Alerts
 import com.github.sleepypanda.feesh.utils.WorldUtils
 import com.github.sleepypanda.feesh.utils.PlayerUtils
-import com.github.sleepypanda.feesh.utils.EntityUtils
-import com.github.sleepypanda.feesh.utils.ChatUtils
 import com.github.sleepypanda.feesh.utils.ChatUtils.getFormattedString
 import com.github.sleepypanda.feesh.utils.ChatUtils.removeFormatting
 import com.github.sleepypanda.feesh.utils.gui.FeeshGui
-import com.github.sleepypanda.feesh.utils.gui.GuiButton
+import com.github.sleepypanda.feesh.utils.gui.LineInfo
 import com.github.sleepypanda.feesh.utils.CommonUtils
-import com.github.sleepypanda.feesh.utils.SoundUtils
 import com.github.sleepypanda.feesh.utils.RegisterUtils
-import com.github.sleepypanda.feesh.utils.KeybindUtils
+import com.github.sleepypanda.feesh.utils.SoundUtils
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
-import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
 import com.github.sleepypanda.feesh.constants.SeaCreatures
 import com.github.sleepypanda.feesh.constants.Sounds
 import com.github.sleepypanda.feesh.settings.categories.General
 import com.github.sleepypanda.feesh.settings.categories.SoundMode
-import org.lwjgl.glfw.GLFW
-import net.minecraft.entity.decoration.ArmorStandEntity
-import net.minecraft.entity.EquipmentSlot
-import net.minecraft.component.DataComponentTypes
+import com.github.sleepypanda.feesh.features.overlays.base.IResettableTracker
+import net.minecraft.world.entity.decoration.ArmorStand
 import java.util.Date
 
-object BarnFishingTimer {
+object BarnFishingTimer : IResettableTracker {
     private const val TIMER_THRESHOLD_IN_MINUTES = 5
     private const val TICKS_PER_CHECK = 10
     const val RESET_COMMAND = "feeshResetBarnFishingTimer"
+    private val PERSONAL_CAP_PATTERN = Regex("^There is not enough space for another Sea Creature! Kill some to make space for new ones!$")
+
+    override val trackerName = "Barn fishing timer"
+    override val resetCommand = RESET_COMMAND
 
     private var mobsCount = 0
     private var startTime: Long? = null
@@ -42,7 +41,9 @@ object BarnFishingTimer {
 
     private var tickCounter = 0
 
-    private val allSeaCreaturesNames = SeaCreatures.allSeaCreatures.map { it.name }
+    private val allSeaCreaturesNames = SeaCreatures.allSeaCreatures
+        .map { it.name }
+        .filter { it != "Vanquisher" }
         .plus("Mithril Grubber") // A sea creature is called Small Mithril Grubber, but corrupted one is Corrupted Mithril Grubber (without "Small")
         .plus("Jawbus Follower")
 
@@ -53,33 +54,60 @@ object BarnFishingTimer {
             "${WHITE}25 ${GRAY}sea creatures ${DARK_GRAY}(${WHITE}2m 30s${DARK_GRAY})",
         ))
         .setSettingsKey { Overlays.barnFishingTimerOverlay }
+        .setApplyCustomStyleKey { Overlays.barnFishingTimerCustomStyle }
         .setCondition {
             WorldUtils.isInFishingWorld() &&
             PlayerUtils.hasFishingRodInHotbar() &&
-            !isInHunterArmor()
+            !PlayerUtils.isInTrophyArmor()
         }
 
     fun init() {
+        registerResetCommand()
+        EventBus.subscribe(ChatEvent::class, ::onChat)
         EventBus.subscribe(ClientTickEvent::class, ::onClientTick)
         EventBus.subscribe(WorldChangedEvent::class, ::onWorldChanged)
-        registerCommands()
-        registerKeybinds()
     }
 
-    private fun registerCommands() {
-        RegisterUtils.command(RESET_COMMAND) {
-            resetSeaCreaturesCountAndTimer()
+    override fun registerResetCommand() {
+        RegisterUtils.command(resetCommand) {
+            requestReset(isConfirmed = true, needsChatFeedback = false)
         }
     }
 
-    private fun registerKeybinds() {
-        KeybindUtils.registerKeybind("key.feesh.resetBarnFishingTimer", GLFW.GLFW_KEY_UNKNOWN) {
-            resetSeaCreaturesCountAndTimer()
+    override fun hasData(): Boolean {
+        return mobsCount > 0 || startTime != null
+    }
+
+    override fun resetData(force: Boolean) {
+        startTime = null
+        mobsCount = 0
+        countNotificationShownAt = null
+        timerNotificationShownAt = null
+    }
+
+    override fun refreshGui() {
+        updateGuiLines()
+    }
+
+    fun triggerResetKeybind() {
+        requestReset(isConfirmed = true, needsChatFeedback = false)
+    }
+
+    private fun onChat(event: ChatEvent) {
+        if (!WorldUtils.isInSkyblock()) return
+
+        CommonUtils.runWithCatching("Failed to handle personal cap chat message") {
+            if (PERSONAL_CAP_PATTERN.matches(event.unformattedText)) {
+                CommonUtils.showTitle("${RED}Kill sea creatures", "${WHITE}Personal cap reached")
+                if (General.soundMode == SoundMode.MEME) SoundUtils.playCustomSound(Sounds.FEESH_NOTIFICATION_BELL)
+                else SoundUtils.playSound()
+            }
         }
     }
 
     private fun onWorldChanged(@Suppress("UNUSED_PARAMETER") event: WorldChangedEvent) {
-        resetSeaCreaturesCountAndTimer()
+        resetData()
+        gui.clearLines()
     }
 
     private fun onClientTick(@Suppress("UNUSED_PARAMETER") event: ClientTickEvent) {
@@ -99,31 +127,22 @@ object BarnFishingTimer {
         updateGuiLines()
     }
 
-    private fun resetSeaCreaturesCountAndTimer() {
-        startTime = null
-        mobsCount = 0
-        countNotificationShownAt = null
-        timerNotificationShownAt = null
-        gui.clearLines()
-    }
-
     private fun trackSeaCreaturesCount() {
         if (!WorldUtils.isInSkyblock() || !WorldUtils.isInFishingWorld()) return
 
-        val world = FeeshMod.mc.world ?: return
-        val entities = world.entities.filterIsInstance<ArmorStandEntity>()
+        val world = FeeshMod.mc.level ?: return
+        val entities = world.entitiesForRendering().filterIsInstance<ArmorStand>()
 
         var newMobsCount = 0
         entities.forEach { entity ->
             val customName = entity.customName?.getFormattedString() ?: return@forEach
             val plainName = customName.removeFormatting()
 
-            // Mobs / corrupted mobs have prefix like [Lv100], only Grinch does not have it
+            // Mobs / corrupted mobs have prefix like [Lv100]
             // This check is needed to exclude Necromancy souls and pets
             val hasLevelPrefix = plainName.contains("[Lv") && plainName.contains("❤")
-            val isGrinch = plainName.contains("Grinch  ❤")
-            
-            if ((hasLevelPrefix && allSeaCreaturesNames.any { sc -> plainName.contains(sc) }) || isGrinch) {
+
+            if ((hasLevelPrefix && allSeaCreaturesNames.any { sc -> plainName.contains(sc) })) {
                 if (plainName.contains("Rider of the Deep")) {
                     newMobsCount += 2
                 } else {
@@ -147,7 +166,7 @@ object BarnFishingTimer {
         if (!Alerts.alertOnSeaCreaturesCountThreshold ||
             !WorldUtils.isInSkyblock() ||
             !WorldUtils.isInFishingWorld() ||
-            isInHunterArmor() ||
+            PlayerUtils.isInTrophyArmor() ||
             !PlayerUtils.hasFishingRodInHotbar()
         ) return
 
@@ -170,7 +189,7 @@ object BarnFishingTimer {
             !Alerts.alertOnSeaCreaturesTimerThreshold ||
             !WorldUtils.isInSkyblock() ||
             !WorldUtils.isInFishingWorld() ||
-            isInHunterArmor() ||
+            PlayerUtils.isInTrophyArmor() ||
             !PlayerUtils.hasFishingRodInHotbar()
         ) return
 
@@ -198,7 +217,7 @@ object BarnFishingTimer {
             !WorldUtils.isInSkyblock() ||
             !WorldUtils.isInFishingWorld() ||
             !PlayerUtils.hasFishingRodInHotbar() ||
-            isInHunterArmor()
+            PlayerUtils.isInTrophyArmor()
         ) return
 
         val deltaInMillis = System.currentTimeMillis() - startTime!!
@@ -213,15 +232,15 @@ object BarnFishingTimer {
             if (minutes > 0) append("${minutes}m ")
             if (seconds > 0 || minutes > 0) append("${seconds}s")
         }
-        
+
         val timerColor = if (minutes >= TIMER_THRESHOLD_IN_MINUTES) RED else WHITE
         val seaCreaturesText = if (mobsCount > 1) "sea creatures" else "sea creature"
         val seaCreaturesColor = if (mobsCount >= getSeaCreaturesCountThreshold()) RED else WHITE
 
         val overlayText = "${seaCreaturesColor}${mobsCount} ${GRAY}${seaCreaturesText} ${DARK_GRAY}(${timerColor}${timerText}${DARK_GRAY})"
 
-        gui.setLines(listOf(overlayText))
-        gui.setButtons(listOf(GuiButton(0, "${GRAY}[${RED}Click to reset${GRAY}]", { resetSeaCreaturesCountAndTimer() })))
+        gui.setLines(listOf(LineInfo(overlayText)))
+        gui.setButtons(listOf(getResetGuiButton { requestReset(isConfirmed = true, needsChatFeedback = false) }))
     }
 
     private fun getSeaCreaturesCountThreshold(): Int {
@@ -233,23 +252,6 @@ object BarnFishingTimer {
             WorldUtils.CRYSTAL_HOLLOWS -> Alerts.seaCreaturesCountThreshold_CrystalHollows
             WorldUtils.GALATEA -> Alerts.seaCreaturesCountThreshold_Galatea
             else -> Alerts.seaCreaturesCountThreshold_Default
-        }
-    }
-
-    private fun isInHunterArmor(): Boolean {
-        val player = FeeshMod.mc.player ?: return false
-        
-        val helmet = player.getEquippedStack(EquipmentSlot.HEAD)
-        val chestplate = player.getEquippedStack(EquipmentSlot.CHEST)
-        val leggings = player.getEquippedStack(EquipmentSlot.LEGS)
-        val boots = player.getEquippedStack(EquipmentSlot.FEET)
-        
-        val armorPieces = listOf(helmet, chestplate, leggings, boots)
-        return armorPieces.all { armorPiece ->
-            if (armorPiece == null || armorPiece.isEmpty) return false
-            
-            val itemName = armorPiece.name.string
-            return itemName.contains("Hunter", ignoreCase = true)
         }
     }
 }

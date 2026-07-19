@@ -8,13 +8,12 @@ import com.github.sleepypanda.feesh.utils.ChatUtils.removeFormatting
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
 import com.github.sleepypanda.feesh.utils.ChatUtils
-import com.github.sleepypanda.feesh.FeeshMod
 import com.github.sleepypanda.feesh.settings.categories.Commands
 import com.github.sleepypanda.feesh.utils.enums.PricingMode
-import net.minecraft.text.Text
-import net.minecraft.text.Style
-import net.minecraft.text.ClickEvent.RunCommand
-import net.minecraft.text.HoverEvent.ShowText
+import net.minecraft.network.chat.Component
+import net.minecraft.network.chat.Style
+import net.minecraft.network.chat.ClickEvent.RunCommand
+import net.minecraft.network.chat.HoverEvent.ShowText
 
 object GearCraftPricesCommand {
     const val COMMAND_NAME = "feeshGearCraftPrices"
@@ -47,7 +46,7 @@ object GearCraftPricesCommand {
                 CraftableItem("MAGMA_LORD_CHESTPLATE", "${LEGENDARY}Magma Lord Chestplate", 8),
                 CraftableItem("MAGMA_LORD_LEGGINGS", "${LEGENDARY}Magma Lord Leggings", 7),
                 CraftableItem("MAGMA_LORD_BOOTS", "${LEGENDARY}Magma Lord Boots", 4),
-                CraftableItem("MAGMA_LORD_GAUNTLET", "${EPIC}Magma Lord Gauntlet", 6)
+                CraftableItem("MAGMA_LORD_GAUNTLET", "${LEGENDARY}Magma Lord Necklace", 5)
             )
         ),
         CraftableCategory(
@@ -89,16 +88,17 @@ object GearCraftPricesCommand {
     }
     
     private fun calculateGearCraftPrices() {
-        try {
+        CommonUtils.runWithCatching("Failed to calculate Gear craft price statistics") {
             if (!WorldUtils.isInSkyblock()) {
                 ChatUtils.sendLocalChat("${RED}You must be on Hypixel Skyblock to use this command!", true)
                 return
             }
                  
+            val modeText = Commands.gearCraftPricesPriceMode.displayName
             val chatBreak = "${GRAY}${ChatUtils.getChatBreak("-")}"
             ChatUtils.sendLocalChat(chatBreak)
             ChatUtils.sendLocalChat("${GREEN}${BOLD}Gear craft prices", true)
-            ChatUtils.sendLocalChat("${DARK_GRAY}Prices for crafted gear compared with price for selling base items via sell offer. Click a line to open Supercraft menu.")
+            ChatUtils.sendLocalChat("${GRAY}Prices for crafted gear compared with price for selling base items ($modeText). Click a line to open Supercraft menu.")
             
             CRAFTABLES.forEach { category ->
                 val baseItemPrice = getPrice(category.baseItemId)
@@ -120,17 +120,15 @@ object GearCraftPricesCommand {
                     val profitPerBaseItemStr = CommonUtils.toShortNumber(craftProfit.profitPerBaseItem) ?: "N/A"
                     val itemNameWithoutFormatting = craftProfit.itemName.removeFormatting()
                     
-                    val clickableText = Text.literal(" - ${craftProfit.itemName}${RESET}: ${GOLD}$itemPriceStr${RESET} (${GOLD}$profitPerBaseItemStr${RESET} per item)")
+                    val clickableText = Component.literal(" - ${craftProfit.itemName}${RESET}: ${GOLD}$itemPriceStr${RESET} (${GOLD}$profitPerBaseItemStr${RESET} per item)")
                         .setStyle(
                             Style.EMPTY
                                 .withClickEvent(RunCommand("/recipe $itemNameWithoutFormatting"))
-                                .withHoverEvent(ShowText(Text.literal("Click to Supercraft $itemNameWithoutFormatting")))
+                                .withHoverEvent(ShowText(Component.literal("Click to Supercraft $itemNameWithoutFormatting")))
                         )
                     ChatUtils.sendLocalChat(clickableText)
                 }
             }
-        } catch (e: Exception) {
-            FeeshMod.LOGGER.error("[Feesh] Failed to calculate gear craft price statistics.", e)
         }
     }
     

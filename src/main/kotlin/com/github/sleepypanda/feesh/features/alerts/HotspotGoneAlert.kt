@@ -2,11 +2,13 @@ package com.github.sleepypanda.feesh.features.alerts
 
 import com.github.sleepypanda.feesh.FeeshMod
 import com.github.sleepypanda.feesh.settings.categories.Alerts
+import com.github.sleepypanda.feesh.utils.ChatUtils.getUnformattedString
 import com.github.sleepypanda.feesh.utils.CommonUtils
 import com.github.sleepypanda.feesh.utils.SoundUtils
 import com.github.sleepypanda.feesh.utils.PlayerUtils
 import com.github.sleepypanda.feesh.utils.WorldUtils
 import com.github.sleepypanda.feesh.utils.HotspotUtils
+import com.github.sleepypanda.feesh.utils.FishingHookUtils
 import com.github.sleepypanda.feesh.utils.EntityUtils
 import com.github.sleepypanda.feesh.utils.ChatUtils
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
@@ -18,6 +20,7 @@ import com.github.sleepypanda.feesh.events.models.WorldUnloadEvent
 import java.util.Timer
 import java.util.UUID
 import kotlin.concurrent.timerTask
+import net.minecraft.world.phys.Vec3
 
 object HotspotGoneAlert {
     private var lastClosestHotspot: HotspotUtils.HotspotData? = null
@@ -50,7 +53,7 @@ object HotspotGoneAlert {
         if (!Alerts.alertOnHotspotGone || !WorldUtils.isInSkyblock() || !WorldUtils.isInHotspotFishingWorld() || !PlayerUtils.hasFishingRodInHotbar()) return
         val hotspot = lastClosestHotspot ?: return
         if (hotspot.entity.uuid != event.armorStand.uuid) return
-        if (event.armorStand.customName?.string != "HOTSPOT") return
+        if (event.armorStand.customName.getUnformattedString() != "HOTSPOT") return
 
         val player = FeeshMod.mc.player ?: return
         val distance = EntityUtils.getDistance(player, hotspot.entity)
@@ -59,33 +62,28 @@ object HotspotGoneAlert {
         val perk = hotspot.perk
         val hotspotUuid: UUID = event.armorStand.uuid
 
-        Timer().schedule(timerTask {
+        Timer(true).schedule(timerTask {
             FeeshMod.mc.execute {
+                if (FeeshMod.mc.level == null) return@execute // Leaving the world or game
                 if (lastClosestHotspot == null) return@execute
                 if (lastClosestHotspot!!.entity.uuid != hotspotUuid) return@execute
                 playAlert(perk)
                 lastClosestHotspot = null
             }
-        }, 100) // If player changes server, it causes armor stand to despawn before, but we don't need alert. Let onWorldChanged trigger first.
+        }, 150) // If player changes server, it causes armor stand to despawn before, but we don't need alert. Let onWorldChanged trigger first.
     }
 
     private fun trackLatestHotspot() {
-        try {
+        CommonUtils.runWithCatching("Failed to track latest Hotspot") {
             if (!Alerts.alertOnHotspotGone || !WorldUtils.isInSkyblock() || !WorldUtils.isInHotspotFishingWorld() || !PlayerUtils.hasFishingRodInHotbar()) return
 
-            val player = FeeshMod.mc.player ?: return
-            val isHookActive = EntityUtils.isFishingHookActive(player)
+            val isHookActive = FishingHookUtils.isFishingHookSubmerged()
             if (!isHookActive) return
 
-            val playerHook = EntityUtils.getPlayersFishingHook()
-            if (playerHook == null) return
+            val playerHook = FishingHookUtils.getSubmergedFishingHook() ?: return
+            val closestHotspot = HotspotUtils.findClosestHotspotInRange(Vec3(playerHook.x, playerHook.y, playerHook.z), NEAREST_HOTSPOT_RANGE_FROM_HOOK) ?: return
 
-            val closestHotspot = HotspotUtils.findClosestHotspotInRange(playerHook, NEAREST_HOTSPOT_RANGE_FROM_HOOK)
-            if (closestHotspot != null) {
-                lastClosestHotspot = closestHotspot
-            }
-        } catch (e: Exception) {
-            FeeshMod.LOGGER.error("[Feesh] Failed to track latest Hotspot", e)
+            lastClosestHotspot = closestHotspot
         }
     }
 

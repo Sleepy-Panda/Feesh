@@ -1,27 +1,42 @@
 package com.github.sleepypanda.feesh.utils
 
+import com.github.sleepypanda.feesh.utils.ChatUtils.getUnformattedString
 import com.github.sleepypanda.feesh.utils.ChatUtils.removeFormatting
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.GRAY
 import com.google.gson.JsonObject
 import com.mojang.serialization.JsonOps
-import net.minecraft.component.DataComponentTypes
-import net.minecraft.component.type.NbtComponent
-import net.minecraft.item.ItemStack
+import net.minecraft.core.component.DataComponents
+import net.minecraft.world.item.component.CustomData
+import net.minecraft.world.item.ItemStack
 import net.minecraft.nbt.NbtOps
+import net.minecraft.world.item.FishingRodItem
 
 object ItemUtils {
+
+    /*
+     * Gets the unformatted lore lines from the item stack.
+     * Null lines are returned as empty strings.
+     * @param stack The item stack to get the lore lines from.
+     * @returns {List<String>} The lore lines without formatting.
+     */
+    fun getUnformattedLoreLines(stack: ItemStack): List<String> {
+        if (stack.isEmpty) return emptyList()
+        val loreLines = stack.get(DataComponents.LORE)?.lines()?.map { it?.getUnformattedString() ?: "" } ?: emptyList()
+        return loreLines
+    }
+
     /**
      * Returns the item's custom data component (CUSTOM_DATA), or null if absent.
      */
-    fun getCustomData(stack: ItemStack): NbtComponent? {
+    fun getCustomData(stack: ItemStack): CustomData? {
         if (stack.isEmpty) return null
-        return stack.get(DataComponentTypes.CUSTOM_DATA)
+        return stack.get(DataComponents.CUSTOM_DATA)
     }
 
     /**
      * Returns the "id" field from custom data (e.g. "PET" for pets).
      */
-    fun getCustomDataId(customData: NbtComponent): String? {
+    fun getCustomDataId(customData: CustomData): String? {
         val obj = customDataToJsonObject(customData) ?: return null
         return obj.get("id")?.takeIf { it.isJsonPrimitive }?.asString
     }
@@ -29,13 +44,18 @@ object ItemUtils {
     /**
      * Returns the "petInfo" JSON string from custom data. Caller should parse it for further processing.
      */
-    fun getCustomDataPetInfo(customData: NbtComponent): String? {
+    fun getCustomDataPetInfo(customData: CustomData): String? {
         val obj = customDataToJsonObject(customData) ?: return null
         return obj.get("petInfo")?.takeIf { it.isJsonPrimitive }?.asString
     }
 
-    private fun customDataToJsonObject(customData: NbtComponent): JsonObject? {
-        val nbt = customData.copyNbt()
+    /*
+     * Converts a custom data component to a JSON object.
+     * @param customData The custom data component to convert.
+     * @returns {JsonObject} The JSON object, or null if the conversion fails.
+     */
+    fun customDataToJsonObject(customData: CustomData): JsonObject? {
+        val nbt = customData.copyTag()
         if (nbt.isEmpty) return null
         val jsonEl = try {
             NbtOps.INSTANCE.convertTo(JsonOps.INSTANCE, nbt)
@@ -46,27 +66,54 @@ object ItemUtils {
     }
 
     /*
+     * Gets the clean item name without formatting. It also removes the amount suffix from NPC menu if present (e.g. §9Fish Affinity Talisman §8x1 -> Fish Affinity Talisman).
+     * @param itemName The formatted item name to clean.
+     * @returns {String} The clean item name.
+     */
+    fun getCleanItemName(itemName: String): String {
+        if (itemName.isBlank()) return ""
+        var cleanedItemName = itemName
+
+        // Booster cookie menu or NPCs append the amount to the item name - e.g. §9Fish Affinity Talisman §8x1
+        if (Regex(".+ §8x\\d+$").matches(cleanedItemName)) {
+            cleanedItemName = cleanedItemName.split(" ").dropLast(1).joinToString(" ")
+        }
+
+        cleanedItemName = cleanedItemName.removeFormatting()
+
+        // ☘ Rough Jade Gemstone -> Rough Jade Gemstone
+        if (cleanedItemName.endsWith(" Gemstone")) {
+            cleanedItemName = cleanedItemName.replace(Regex("[^a-zA-Z0-9 ]"), "").trim()
+        }
+
+        return cleanedItemName
+    }
+
+    /*
      * Checks if the item is a Dirt Rod.
      * @param item The item to check.
      * @returns {Boolean} True if the item is a Dirt Rod, false otherwise.
      */
     fun isDirtRod(item: ItemStack?): Boolean {
         if (item == null || item.isEmpty) return false
-        return item.name.string.contains("Dirt Rod")
+        return item.hoverName.getUnformattedString().contains("Dirt Rod")
     }
 
     /*
      * Checks if the item is a Skyblock fishing rod.
-     * @param item The item to check.
+     * @param item The item stack to check.
      * @returns {Boolean} True if the item is a fishing rod, false otherwise.
      */
-    fun isFishingRod(item: ItemStack?): Boolean {
-        if (item == null || item.isEmpty) return false
+    fun isFishingRod(itemStack: ItemStack?): Boolean {
+        if (itemStack == null || itemStack.isEmpty) return false        
+        if (itemStack.item == null || itemStack.item !is FishingRodItem) return false
 
-        val name = item.name.string
+        val name = itemStack.hoverName.getUnformattedString()
         if (name.contains("Carnival Rod")) return false
 
-        val loreLines = item.get(DataComponentTypes.LORE)?.lines?.map { it.string } ?: listOf()
+        val loreLines = getUnformattedLoreLines(itemStack)
+        if (loreLines.any { it.contains("This rod is broken")}) return false
+
         return loreLines.any { it.contains("FISHING ROD", ignoreCase = true) || it.contains("FISHING WEAPON", ignoreCase = true) }
     }
 
@@ -141,5 +188,18 @@ object ItemUtils {
         val rarityNumericCode = itemId.split(";")[1].substringBefore("+").toInt()
         val rarityCode = CommonUtils.getRarityColorCode(rarityNumericCode)
         return "${GRAY}[Lvl ${level}] ${rarityCode}${petName}"
+    }
+
+    /*
+     * Gets the name of the enchanted book from the stack.
+     * @param stack The item stack to get the name from.
+     * @returns {String} The name of the enchanted book, or null if the stack is not an enchanted book.
+     */
+    fun getEnchantedBookName(stack: ItemStack): String? {
+        val lore = getUnformattedLoreLines(stack)
+        val filteredLore = lore.filter { it.isNotBlank() && !it.contains("Combinable in Anvil") }
+        val bookName = filteredLore.firstOrNull()?.trim() ?: return null
+        if (bookName.isEmpty()) return null
+        return bookName
     }
 }

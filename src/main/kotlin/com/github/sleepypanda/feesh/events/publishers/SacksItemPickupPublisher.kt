@@ -1,50 +1,54 @@
 package com.github.sleepypanda.feesh.events.publishers
 
 import com.github.sleepypanda.feesh.events.EventBus
-import com.github.sleepypanda.feesh.events.models.ChatEvent
+import com.github.sleepypanda.feesh.events.models.ChatCancellableEvent
 import com.github.sleepypanda.feesh.events.models.SacksItemsPickupEvent
+import com.github.sleepypanda.feesh.utils.ChatUtils.getUnformattedString
 import com.github.sleepypanda.feesh.utils.ChatUtils.removeFormatting
+import com.github.sleepypanda.feesh.utils.CommonUtils
 import com.github.sleepypanda.feesh.utils.WorldUtils
-import net.minecraft.text.HoverEvent
-import net.minecraft.text.Text
+import net.minecraft.network.chat.HoverEvent
+import net.minecraft.network.chat.Component
 
 object SacksItemPickupPublisher {
     private val SACKS_TRIGGER = Regex("^\\[Sacks\\] \\+.*") // [Sacks] +2,362 items, -2,362 items. (Last 16s.)
     private val ITEM_LINE_REGEX = Regex("(\\+[\\d,]+) (.+) \\((.+)\\)") // +1,344 Pufferfish (Fishing Sack)
 
     fun init() {
-        EventBus.subscribe(ChatEvent::class, ::onChat)
+        EventBus.subscribe(ChatCancellableEvent::class, ::onChat) // Message might be cancelled by sacks hider e.g. from SH
     }
 
-    private fun onChat(event: ChatEvent) {
+    private fun onChat(event: ChatCancellableEvent) {
         if (!WorldUtils.isInSkyblock()) return
 
-        val message = event.message
-        if (!SACKS_TRIGGER.matches(message.string)) return
+        CommonUtils.runWithCatching("Failed to handle sacks item pickup in publisher.") {
+            val message = event.message
+            if (!SACKS_TRIGGER.matches(event.unformattedText)) return@onChat
 
-        val items = parseItemsFromSacksMessage(message)
-            .filter { (itemName, amount, _) -> amount > 0 && itemName.isNotBlank() }
-            .map { (itemName, amount, sackName) ->
-                SacksItemsPickupEvent.SacksPickupItem(itemName = itemName, amount = amount, sackName = sackName)
+            val items = parseItemsFromSacksMessage(message)
+                .filter { (itemName, amount, _) -> amount > 0 && itemName.isNotBlank() }
+                .map { (itemName, amount, sackName) ->
+                    SacksItemsPickupEvent.SacksPickupItem(itemName = itemName, amount = amount, sackName = sackName)
+                }
+                
+            if (items.isNotEmpty()) {
+                EventBus.publish(SacksItemsPickupEvent(items = items))
             }
-            
-        if (items.isNotEmpty()) {
-            EventBus.publish(SacksItemsPickupEvent(items = items))
         }
     }
 
     /**
      * Parses sack notification hover text: "Added items:" with lines like "+1,344 Pufferfish (Fishing Sack)".
      */
-    private fun parseItemsFromSacksMessage(message: Text): List<Triple<String, Int, String>> {
+    private fun parseItemsFromSacksMessage(message: Component): List<Triple<String, Int, String>> {
         val items = mutableListOf<Triple<String, Int, String>>()
         message.siblings.forEach { part ->
-            if (!part.string.contains(" item")) return@forEach
+            if (!part.getUnformattedString().contains(" item")) return@forEach
 
             val hover = part.style?.hoverEvent ?: return@forEach
 
             if (hover is HoverEvent.ShowText) {
-                val line = hover.value.string
+                val line = hover.value.getUnformattedString()
                 if (!line.contains("Added items:")) return@forEach
 
                 ITEM_LINE_REGEX.findAll(line).forEach { match ->

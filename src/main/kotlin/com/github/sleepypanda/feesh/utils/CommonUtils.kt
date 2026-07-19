@@ -5,16 +5,12 @@ import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import java.util.Date
 import java.util.concurrent.TimeUnit
 import java.text.SimpleDateFormat
+import net.minecraft.network.chat.Component
 
 object CommonUtils {
     fun showTitle(title: String, subtitle: String? = null, fadeIn: Int = 0, stay: Int = 40, fadeOut: Int = 10) {      
-        var mc = FeeshMod.mc
-
-        mc.inGameHud.apply {
-            setTitleTicks(fadeIn, stay, fadeOut)
-            setTitle(net.minecraft.text.Text.literal(title))
-            setSubtitle(net.minecraft.text.Text.literal(subtitle ?: " "))
-        }
+        val mc = FeeshMod.mc
+        mc.showTitleCompat(Component.literal(title), Component.literal(subtitle ?: " "), fadeIn, stay, fadeOut)
     }
 
     fun formatNumberWithSpaces(number: Int): String {
@@ -237,5 +233,50 @@ object CommonUtils {
      */
     fun getFormattedLocation(x: Double, y: Double, z: Double): String {
         return "x: ${Math.round(x)}, y: ${Math.round(y)}, z: ${Math.round(z)}"
+    }
+
+    /**
+     * Appends a line to a tooltip line list.
+     * @param tooltip Mutable tooltip lines.
+     * @param line Formatted text to append.
+     */
+    fun appendTooltipLine(tooltip: MutableList<Component>, line: String) {
+        if (line.isEmpty()) return
+        tooltip.add(Component.literal(line))
+    }
+
+    /**
+     * Appends a line to a tooltip line list.
+     * @param tooltip Mutable tooltip lines.
+     * @param line Component to append.
+     */
+    fun appendTooltipLine(tooltip: MutableList<Component>, line: Component) {
+        tooltip.add(line)
+    }
+
+    /*
+     * Runs a block of code with catching exceptions and logging them.
+     * @param message The message to log together with the exception.
+     * @param onError The block of code to run on error. If provided, it will be called after the exception is logged.
+     * @param block The block of code to run.
+     */
+    internal inline fun runWithCatching(
+        message: String,
+        noinline onError: (() -> Unit)? = null,
+        block: () -> Unit
+    ) {
+        try {
+            block()
+        } catch (e: Exception) {
+            val shortDetails = e.stackTrace.firstOrNull()?.let { stackTrace ->
+                val file = stackTrace.fileName?.takeIf { it.isNotBlank() } ?: "Unknown File"
+                val line = stackTrace.lineNumber.toString()
+                val method = stackTrace.methodName?.takeIf { it.isNotBlank() } ?: "Unknown Method"
+                "Error occurred in $file:$line in method $method"
+            } ?: ""
+
+            FeeshMod.LOGGER.error("[${FeeshMod.MOD_NAME}] $shortDetails - $message", e)
+            onError?.invoke()
+        }
     }
 }

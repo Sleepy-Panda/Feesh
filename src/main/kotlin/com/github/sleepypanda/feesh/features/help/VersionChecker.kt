@@ -4,6 +4,7 @@ import com.github.sleepypanda.feesh.FeeshMod
 import com.github.sleepypanda.feesh.events.EventBus
 import com.github.sleepypanda.feesh.events.models.WorldChangedEvent
 import com.github.sleepypanda.feesh.utils.ChatUtils
+import com.github.sleepypanda.feesh.utils.CommonUtils
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
 import com.google.gson.JsonParser
@@ -20,9 +21,9 @@ private const val MODRINTH_VERSIONS_PAGE = "https://modrinth.com/mod/$MODRINTH_M
 
 // https://docs.modrinth.com/api/operations/getprojectversions/
 private const val MODRINTH_VERSIONS_URL = "https://api.modrinth.com/v2/project/$MODRINTH_MOD_ID/version"
-private const val GAME_VERSION = "1.21.10" // TODO: Make it detected based on the current Minecraft version
+private val GAME_VERSION: String = FeeshMod.mcVersion
+private val GAME_VERSIONS = """["$GAME_VERSION"]"""
 private const val LOADERS = """["fabric"]"""
-private const val GAME_VERSIONS = """["$GAME_VERSION"]"""
 private const val REQUEST_TIMEOUT_MS = 10000
 
 object VersionChecker {
@@ -43,7 +44,7 @@ object VersionChecker {
     }
 
     private fun onWorldChanged(@Suppress("UNUSED_PARAMETER") event: WorldChangedEvent) {
-        if (FeeshMod.mc.player == null || FeeshMod.mc.inGameHud == null) return
+        if (FeeshMod.mc.player == null || FeeshMod.mc.gui == null) return
         if (hasChecked) return
 
         hasChecked = true
@@ -52,8 +53,8 @@ object VersionChecker {
 
     private fun checkForNewVersion() {
         executor.execute {
-            try {
-                // https://api.modrinth.com/v2/project/feesh/version?game_versions=%5B%221.21.10%22%5D&loaders=%5B%22fabric%22%5D&include_changelog=false
+            CommonUtils.runWithCatching("Failed to check new Modrinth version") {
+                // https://api.modrinth.com/v2/project/feesh/version?game_versions=%5B%221.21.11%22%5D&loaders=%5B%22fabric%22%5D&include_changelog=false
                 val query = "game_versions=${URLEncoder.encode(GAME_VERSIONS, StandardCharsets.UTF_8)}&loaders=${URLEncoder.encode(LOADERS, StandardCharsets.UTF_8)}&include_changelog=false"
                 val url = URI("$MODRINTH_VERSIONS_URL?$query").toURL()
                 val connection = url.openConnection() as HttpURLConnection
@@ -75,7 +76,10 @@ object VersionChecker {
                 connection.disconnect()
 
                 val versions = JsonParser.parseString(response).asJsonArray
-                if (versions.size() == 0) return@execute
+                if (versions.size() == 0) {
+                    FeeshMod.LOGGER.error("[Feesh] Version check on Modrinth failed: No versions found")
+                    return@execute
+                }
 
                 val latestVersion = versions[0]?.asJsonObject ?: return@execute
                 val latestVersionNumber = latestVersion.get("version_number")?.asString ?: return@execute
@@ -92,8 +96,6 @@ object VersionChecker {
                         showNewVersionMessage(currentVersion, latestVersionNumber)
                     }
                 }
-            } catch (e: Exception) {
-                FeeshMod.LOGGER.error("[Feesh] Version check on Modrinth failed: ${e.message}")
             }
         }
     }

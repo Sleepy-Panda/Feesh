@@ -17,19 +17,33 @@ pluginManagement {
     }
 
     plugins {
-        kotlin("jvm") version("2.2.21")
-        id("dev.deftu.gradle.multiversion-root") version("2.64.0")
+        kotlin("jvm") version("2.3.0")
+        // https://github.com/Deftu/Gradle-Toolkit
+        id("dev.deftu.gradle.multiversion-root") version("2.73.0") // Applies preprocessing for multiple versions of Minecraft and/or multiple mod loaders.
+        id("net.fabricmc.fabric-loom") version("1.17.11")
+        id("net.fabricmc.fabric-loom-remap") version("1.17.11")
     }
 }
 
 rootProject.buildFileName = "root.gradle.kts"
 
 listOf(
-    "1.21.10-fabric"
+    "1.21.11-fabric",
 ).forEach { version ->
     include(":$version")
     project(":$version").apply {
         projectDir = file("versions/$version")
-        buildFileName = "../../build.gradle.kts"
+        buildFileName = "../../build.remap-1.21.x.gradle.kts"
+    }
+}
+
+listOf(
+    "26.1-fabric",
+    "26.2-fabric",
+).forEach { version ->
+    include(":$version")
+    project(":$version").apply {
+        projectDir = file("versions/$version")
+        buildFileName = "../../build.unobfuscated-26.x.gradle.kts"
     }
 }

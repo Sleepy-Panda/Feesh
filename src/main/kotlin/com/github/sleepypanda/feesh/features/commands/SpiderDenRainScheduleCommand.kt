@@ -2,10 +2,10 @@ package com.github.sleepypanda.feesh.features.commands
 
 import com.github.sleepypanda.feesh.utils.RegisterUtils
 import com.github.sleepypanda.feesh.utils.ChatUtils
+import com.github.sleepypanda.feesh.utils.CommonUtils
 import com.github.sleepypanda.feesh.utils.WorldUtils
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
-import com.github.sleepypanda.feesh.FeeshMod
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.util.concurrent.TimeUnit
@@ -59,7 +59,7 @@ object SpiderDenRainScheduleCommand {
             return
         }
 
-        try {
+        CommonUtils.runWithCatching("Failed to show Spider's Den rain schedule") {
             val nowSeconds = System.currentTimeMillis() / 1000
             val skyblockAge = nowSeconds - SKYBLOCK_EPOCH_START_SECONDS
 
@@ -101,8 +101,6 @@ object SpiderDenRainScheduleCommand {
             message.append("\n${DARK_GRAY}Gain +50☂ Fishing Speed during Rain, and +3α Sea Creature Chance during Thunderstorm.\n")
 
             ChatUtils.sendLocalChat(message.toString())
-        } catch (e: Exception) {
-            FeeshMod.LOGGER.error("[Feesh] Failed to show Spider's Den rain schedule.", e)
         }
     }
 }

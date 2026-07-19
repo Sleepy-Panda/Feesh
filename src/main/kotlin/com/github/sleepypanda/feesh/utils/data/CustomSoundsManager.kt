@@ -2,18 +2,17 @@ package com.github.sleepypanda.feesh.utils.data
 
 import com.github.sleepypanda.feesh.FeeshMod
 import com.github.sleepypanda.feesh.constants.RareDrops
-import com.github.sleepypanda.feesh.constants.SeaCreatures
+import com.github.sleepypanda.feesh.settings.models.AlertableSeaCreatureTypes
 import com.github.sleepypanda.feesh.constants.Sounds
-import com.github.sleepypanda.feesh.utils.RegisterUtils
+import com.github.sleepypanda.feesh.utils.CommonUtils
 import com.github.sleepypanda.feesh.utils.FileUtils
-import com.github.sleepypanda.feesh.utils.PlayerUtils
 import com.github.sleepypanda.feesh.utils.SoundUtils
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
 import net.fabricmc.loader.api.FabricLoader
 import net.minecraft.SharedConstants
-import net.minecraft.resource.ResourceType
+import net.minecraft.server.packs.PackType
 import java.io.File
 import java.io.FileOutputStream
 import java.util.concurrent.Executors
@@ -68,8 +67,8 @@ object CustomSoundsManager {
     private fun addDefaultCatchSoundForMissingSeaCreatures(): Boolean {
         var updated = false
         
-        SeaCreatures.rareSeaCreatures.forEach { seaCreature ->
-            val key = seaCreature.name.uppercase()
+        AlertableSeaCreatureTypes.values().forEach { seaCreature ->
+            val key = seaCreature.displayName.uppercase()
             if (!catchSoundsData.containsKey(key)) {
                 catchSoundsData[key] = UserCatchSoundData(Sounds.FEESH_NOTIFICATION)
                 updated = true
@@ -153,9 +152,9 @@ object CustomSoundsManager {
     }
     
     private fun initResourcePackStructure() {
-        try {
+        CommonUtils.runWithCatching("Failed to initialize resource pack structure") {
             if (resourcePackDir.exists()) {
-                FeeshMod.LOGGER.error("[Feesh] Resource pack sounds directory already exists. Skipping initialization.")
+                FeeshMod.LOGGER.warn("[Feesh] Resource pack sounds directory already exists. Skipping initialization.")
                 return
             }
 
@@ -163,7 +162,7 @@ object CustomSoundsManager {
             // 69.0 for 1.21.10
             // 75.0 for 1.21.11
             // https://minecraft.wiki/w/Pack_format
-            val packFormat = SharedConstants.getGameVersion().packVersion(ResourceType.CLIENT_RESOURCES)
+            val packFormat = SharedConstants.getCurrentVersion().packVersion(PackType.CLIENT_RESOURCES)
             
             if (!resourcePackMcmetaFile.exists()) {
                 val packMcmetaContent = """
@@ -190,15 +189,13 @@ object CustomSoundsManager {
             if (resourcePackDir.exists()) {
                 FeeshMod.LOGGER.info("[Feesh] Resource pack directory ready: ${resourcePackDir.absolutePath}")
             }
-        } catch (e: Exception) {
-            FeeshMod.LOGGER.error("[Feesh] Failed to initialize resource pack structure", e)
         }
     }
     
     private fun generateSoundsJsonFromFiles() {
-        try {
+        CommonUtils.runWithCatching("Failed to generate sounds.json for custom user resource pack") {
             if (!resourcePackSoundsDir.exists()) {
-                FeeshMod.LOGGER.info("[Feesh] Resource pack sounds directory does not exist. Please create it and add your .ogg files to it.", true)
+                FeeshMod.LOGGER.info("[Feesh] Resource pack sounds directory does not exist. Please create it and add your .ogg files to it.")
                 return
             }
             
@@ -237,8 +234,6 @@ object CustomSoundsManager {
             resourcePackSoundsJsonFile.writeText(json)
             
             FeeshMod.LOGGER.info("[Feesh] Generated sounds.json with ${soundsMap.size} sound entries")
-        } catch (e: Exception) {
-            FeeshMod.LOGGER.error("[Feesh] Failed to generate sounds.json for custom user resource pack", e)
         }
     }
 }

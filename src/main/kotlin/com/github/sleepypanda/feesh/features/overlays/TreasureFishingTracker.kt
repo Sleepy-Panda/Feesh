@@ -1,8 +1,10 @@
 package com.github.sleepypanda.feesh.features.overlays
 
-import com.github.sleepypanda.feesh.FeeshMod
 import com.github.sleepypanda.feesh.constants.RareDrops
+import com.github.sleepypanda.feesh.features.overlays.base.IResettableViewModeTracker
+import com.github.sleepypanda.feesh.features.overlays.base.TrackerViewMode
 import com.github.sleepypanda.feesh.events.EventBus
+import com.github.sleepypanda.feesh.events.models.ChatEvent
 import com.github.sleepypanda.feesh.events.models.ClientTickEvent
 import com.github.sleepypanda.feesh.events.models.GameClosedEvent
 import com.github.sleepypanda.feesh.events.models.RareDropEvent
@@ -13,24 +15,24 @@ import com.github.sleepypanda.feesh.utils.WorldUtils
 import com.github.sleepypanda.feesh.utils.ChatUtils
 import com.github.sleepypanda.feesh.utils.RegisterUtils
 import com.github.sleepypanda.feesh.utils.gui.FeeshGui
+import com.github.sleepypanda.feesh.utils.gui.LineInfo
 import com.github.sleepypanda.feesh.utils.gui.GuiButton
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
 import com.github.sleepypanda.feesh.utils.data.PersistentDataManager
+import net.minecraft.network.chat.Component
 import java.util.Date
 
-object TreasureFishingTracker {
-    enum class ViewMode {
-        SESSION,
-        TOTAL
-    }
-
+object TreasureFishingTracker : IResettableViewModeTracker {
     data class TreasureCatchesData(
         var good: Int = 0,
         var great: Int = 0,
         var outstanding: Int = 0
     ) {
         fun totalCatches(): Int = good + great + outstanding
+
+        fun rngMeterPercent(): Double =
+            (outstanding / 10_000.0 + great / 100_000.0 + good / 1_000_000.0) * 100.0
     }
 
     data class TreasureFishingSessionData(
@@ -39,22 +41,32 @@ object TreasureFishingTracker {
 
     data class TreasureFishingTotalData(
         var catches: TreasureCatchesData = TreasureCatchesData(),
-        var treasureDyes: DropCounterData = DropCounterData()
+        var treasureDyes: TreasureDyesData = TreasureDyesData()
     )
+
+    data class TreasureDyesData(
+        var catchesBreakdown: TreasureCatchesData = TreasureCatchesData(),
+    ) : DropCounterData()
 
     data class TreasureFishingData(
         var session: TreasureFishingSessionData = TreasureFishingSessionData(),
         var total: TreasureFishingTotalData = TreasureFishingTotalData(),
-        var viewMode: String = ViewMode.SESSION.name
+        var viewMode: String = TrackerViewMode.SESSION.name
     )
 
-    const val RESET_SESSION_COMMAND = "feeshResetTreasureFishing"
-    const val RESET_TOTAL_COMMAND = "feeshResetTreasureFishingTotal"
+    override val trackerName = "Treasure fishing tracker"
 
-    private val TOGGLE_VIEW_MODE_COMMAND = "feeshToggleTreasureFishingViewMode"
-    private val PATTERN_TREASURE_CATCH = Regex("^⛃ (GOOD|GOOD JUNK|GREAT|GREAT JUNK|OUTSTANDING|OUTSTANDING JUNK) CATCH!")
+    const val RESET_SESSION_COMMAND = "feeshResetTreasureFishingTracker"
+    override val resetSessionCommand = RESET_SESSION_COMMAND
+    const val RESET_TOTAL_COMMAND = "feeshResetTreasureFishingTrackerTotal"
+    override val resetTotalCommand = RESET_TOTAL_COMMAND
+    private const val TOGGLE_VIEW_MODE_COMMAND = "feeshToggleTreasureFishingTrackerViewMode"
 
-    private var data = PersistentDataManager.feeshData.treasureFishing
+    //  GOOD JUNK CATCH! You caught a Rusty Coin!
+    private val PATTERN_TREASURE_CATCH = Regex("^. (GOOD|GOOD JUNK|GREAT|GREAT JUNK|OUTSTANDING|OUTSTANDING JUNK) CATCH!")
+
+    private val data: TreasureFishingData
+        get() = PersistentDataManager.feeshData.treasureFishing
     private var lastTreasureCaughtAt: Date? = null
     private var tickCounter = 0
     private const val TICKS_PER_UPDATE = 20
@@ -72,38 +84,94 @@ object TreasureFishingTracker {
             "${GRAY}Total Treasures: ${WHITE}160",
             "",
             "${GOLD}Treasure Dyes${GRAY}: ${WHITE}2",
-            "${GRAY}Last on: ${WHITE}7h 15m ${GRAY}(${WHITE}2025-01-15 13:15:00${GRAY})",
-            "${GRAY}Last on: ${WHITE}5 000 ${GRAY}Treasures ago"
+            "${GRAY}Last on: ${WHITE}7h 15m ago",
+            "${GRAY}Last on: ${WHITE}5 000 ${GRAY}Treasures ago",
+            "${GRAY}RNG meter: ${WHITE}15.67%"
         ))
         .setSettingsKey { Overlays.treasureFishingTrackerOverlay }
+        .setApplyCustomStyleKey { Overlays.treasureFishingTrackerCustomStyle }
         .setCondition {
             WorldUtils.isInFishingWorld()
         }
 
     fun init() {
-        registerChatHandlers()
+        registerViewModeResetCommands()
         registerCommands()
+        EventBus.subscribe(ChatEvent::class, ::onChat)
         EventBus.subscribe(ClientTickEvent::class, ::onClientTick)
         EventBus.subscribe(WorldChangedEvent::class, ::onWorldChanged)
         EventBus.subscribe(RareDropEvent::class, ::onRareDrop)
         EventBus.subscribe(GameClosedEvent::class, ::onGameClosed)
     }
+    
+    // TODO: Remove migration code in a while
+    fun migrateCatchesSinceLastDye() {
+        CommonUtils.runWithCatching("Failed to migrate good/great/outstanding catches since last Treasure Dye") {
+            val treasureFishing = PersistentDataManager.feeshData.treasureFishing
+            treasureFishing.total.treasureDyes.catchesBreakdown = getCatchesSinceLastDyeFromTracker(treasureFishing)
+            saveData()
+        }
+    }
 
-    private fun registerChatHandlers() {
-        RegisterUtils.chat(PATTERN_TREASURE_CATCH) { _, matchResult -> trackTreasureCatch(matchResult.groupValues[1].orEmpty().lowercase()) }
+    override fun getCurrentViewMode(): TrackerViewMode {
+        return try {
+            TrackerViewMode.valueOf(data.viewMode)
+        } catch (e: Exception) {
+            TrackerViewMode.SESSION
+        }
+    }
+
+    override fun hasSessionData(): Boolean {
+        return data.session.catches.totalCatches() > 0
+    }
+
+    override fun hasTotalData(): Boolean {
+        return data.total.catches.totalCatches() > 0 || data.total.treasureDyes.hasData()
+    }
+
+    override fun resetSessionData(force: Boolean) {
+        data.session = TreasureFishingSessionData()
+        saveData(force)
+    }
+
+    override fun resetTotalData(force: Boolean) {
+        data.total = TreasureFishingTotalData()
+        saveData(force)
+    }
+
+    override fun refreshGui() {
+        updateGuiLines()
+    }
+
+    private fun getCatchesSinceLastDyeFromTracker(treasureFishing: TreasureFishingData): TreasureCatchesData {
+        val catchesSinceLast = treasureFishing.total.treasureDyes.catchesSinceLast
+        return when (catchesSinceLast) {
+            treasureFishing.total.catches.totalCatches() -> TreasureCatchesData(
+                good = treasureFishing.total.catches.good,
+                great = treasureFishing.total.catches.great,
+                outstanding = treasureFishing.total.catches.outstanding
+            )
+            treasureFishing.session.catches.totalCatches() -> TreasureCatchesData(
+                good = treasureFishing.session.catches.good,
+                great = treasureFishing.session.catches.great,
+                outstanding = treasureFishing.session.catches.outstanding
+            )
+            else -> TreasureCatchesData(good = catchesSinceLast, great = 0, outstanding = 0)
+        }
     }
 
     private fun registerCommands() {
-        RegisterUtils.command(RESET_SESSION_COMMAND) { args ->
-            val isConfirmed = args.isNotEmpty() && args[0] == "noconfirm"
-            resetTreasureFishingTracker(isConfirmed, ViewMode.SESSION)
-        }
-        RegisterUtils.command(RESET_TOTAL_COMMAND) { args ->
-            val isConfirmed = args.isNotEmpty() && args[0] == "noconfirm"
-            resetTreasureFishingTracker(isConfirmed, ViewMode.TOTAL)
-        }
         RegisterUtils.command(TOGGLE_VIEW_MODE_COMMAND) {
             toggleViewMode()
+        }
+    }
+
+    private fun onChat(event: ChatEvent) {
+        if (!Overlays.treasureFishingTrackerOverlay || !WorldUtils.isInSkyblock() || !WorldUtils.isInFishingWorld()) return
+
+        CommonUtils.runWithCatching("Failed to track treasure catch") {
+            val matchResult = PATTERN_TREASURE_CATCH.find(event.unformattedText) ?: return@onChat
+            trackTreasureCatch(matchResult.groupValues[1].lowercase())
         }
     }
 
@@ -120,11 +188,8 @@ object TreasureFishingTracker {
     }
 
     private fun onGameClosed(@Suppress("UNUSED_PARAMETER") event: GameClosedEvent) {
-        if (Overlays.resetTreasureFishingTrackerSessionOnGameClosed &&
-            Overlays.treasureFishingTrackerOverlay &&
-            data.session.catches.totalCatches() > 0) {
-            resetSession()
-            FeeshMod.LOGGER.info("[Feesh] Automatically reset Treasure fishing tracker [Session] on game closed.")
+        if (Overlays.resetTreasureFishingTrackerSessionOnGameClosed) {
+            resetOnGameClosed()
         }
     }
 
@@ -135,91 +200,40 @@ object TreasureFishingTracker {
         }
     }
 
-    fun setTreasureDyes(count: Int, lastOn: Date?) {
-        try {
+    fun setTreasureDyes(count: Int, catchesBreakdown: TreasureCatchesData, lastOn: Date?) {
+        CommonUtils.runWithCatching(
+            message = "Failed to set Treasure Dyes.",
+            onError = {
+                ChatUtils.sendLocalChat("${RED}Failed to set Treasure Dyes for the Treasure fishing tracker.", true)
+            }
+        ) {
             if (!WorldUtils.isInSkyblock()) return
-            
-            data.total.treasureDyes.initDropCount(count, lastOn)         
-            saveData()
-            ChatUtils.sendLocalChat("${GRAY}Successfully changed Treasure Dyes count to ${count} for the Treasure fishing tracker.", true)
-        } catch (e: Exception) {
-            FeeshMod.LOGGER.error("[Feesh] Failed to set Treasure Dyes.", e)
-            ChatUtils.sendLocalChat("${RED}Failed to set Treasure Dyes.", true)
-        }
-    }
 
-    private fun getCurrentViewMode(): ViewMode {
-        return try {
-            ViewMode.valueOf(data.viewMode)
-        } catch (e: Exception) {
-            ViewMode.SESSION
+            val treasuresSinceLast = catchesBreakdown.totalCatches()
+            data.total.treasureDyes.initDropCount(count, lastOn, treasuresSinceLast)
+            data.total.treasureDyes.catchesBreakdown = catchesBreakdown
+            saveData()
+            ChatUtils.sendLocalChat("Successfully changed Treasure Dyes for the Treasure fishing tracker.\nCount = ${count}, treasures since last = ${treasuresSinceLast} (${catchesBreakdown.good} good/${catchesBreakdown.great} great/${catchesBreakdown.outstanding} outstanding), last on = ${lastOn}.", true)
         }
     }
 
     private fun toggleViewMode() {
         val currentMode = getCurrentViewMode()
-        val newMode = if (currentMode == ViewMode.SESSION) ViewMode.TOTAL else ViewMode.SESSION
+        val newMode = if (currentMode == TrackerViewMode.SESSION) TrackerViewMode.TOTAL else TrackerViewMode.SESSION
         data.viewMode = newMode.name
         updateGuiLines()
         saveData()
     }
 
-    private fun getSourceCatches(viewMode: ViewMode): TreasureCatchesData {
+    private fun getSourceCatches(viewMode: TrackerViewMode): TreasureCatchesData {
         return when (viewMode) {
-            ViewMode.SESSION -> data.session.catches
-            ViewMode.TOTAL -> data.total.catches
-        }
-    }
-
-    private fun getViewModeDisplayText(viewMode: ViewMode): String {
-        return when (viewMode) {
-            ViewMode.SESSION -> "${GRAY}[${GREEN}Session${GRAY}]"
-            ViewMode.TOTAL -> "${GRAY}[${GREEN}Total${GRAY}]"
-        }
-    }
-
-    private fun resetSession() {
-        data.session = TreasureFishingSessionData()
-        saveData()
-    }
-
-    private fun resetTotal() {
-        data.total = TreasureFishingTotalData()
-        saveData()
-    }
-
-    private fun resetTreasureFishingTracker(isConfirmed: Boolean, resetViewMode: ViewMode) {
-        try {
-            val viewModeText = getViewModeDisplayText(resetViewMode)
-
-            if (!isConfirmed) {
-                val resetCommand = when (resetViewMode) {
-                    ViewMode.SESSION -> "$RESET_SESSION_COMMAND noconfirm"
-                    ViewMode.TOTAL -> "$RESET_TOTAL_COMMAND noconfirm"
-                }
-                ChatUtils.sendLocalChatWithCommand(
-                    "${WHITE}Do you want to reset Treasure fishing tracker ${viewModeText}${WHITE}? ${RED}${BOLD}[Click to confirm]",
-                    resetCommand,
-                    true
-                )
-                return
-            }
-
-            when (resetViewMode) {
-                ViewMode.SESSION -> resetSession()
-                ViewMode.TOTAL -> resetTotal()
-            }
-
-            updateGuiLines()
-            ChatUtils.sendLocalChat("${WHITE}Treasure fishing tracker ${viewModeText} ${WHITE}was reset.", true)
-        } catch (e: Exception) {
-            FeeshMod.LOGGER.error("[Feesh] Failed to reset Treasure fishing tracker", e)
-            ChatUtils.sendLocalChat("${RED}Failed to reset Treasure fishing tracker.", true)
+            TrackerViewMode.SESSION -> data.session.catches
+            TrackerViewMode.TOTAL -> data.total.catches
         }
     }
 
     private fun trackTreasureCatch(treasureType: String) {
-        try {
+        CommonUtils.runWithCatching("Failed to track treasure catch") {
             if (!Overlays.treasureFishingTrackerOverlay || !WorldUtils.isInSkyblock() || !WorldUtils.isInFishingWorld()) return
 
             lastTreasureCaughtAt = Date()
@@ -227,40 +241,36 @@ object TreasureFishingTracker {
                 "good", "good junk" -> {
                     data.total.catches.good++
                     data.session.catches.good++
+                    data.total.treasureDyes.catchesBreakdown.good++
                 }
                 "great", "great junk" -> {
                     data.total.catches.great++
                     data.session.catches.great++
+                    data.total.treasureDyes.catchesBreakdown.great++
                 }
                 "outstanding", "outstanding junk" -> {
                     data.total.catches.outstanding++
                     data.session.catches.outstanding++
+                    data.total.treasureDyes.catchesBreakdown.outstanding++
                 }
             }
             data.total.treasureDyes.updateAfterCatch(false)
             updateGuiLines()
             saveData()
-        } catch (e: Exception) {
-            FeeshMod.LOGGER.error("[Feesh] Failed to track treasure catch", e)
         }
     }
 
     private fun trackTreasureDyeDrop() {
-        try {
+        CommonUtils.runWithCatching("Failed to track Treasure Dye drop") {
             if (!Overlays.treasureFishingTrackerOverlay || !WorldUtils.isInSkyblock() || !WorldUtils.isInFishingWorld()) return
 
+            val catchesSinceLastDye = data.total.treasureDyes.catchesBreakdown
             data.total.treasureDyes.updateAfterDrop(treasureDye.boldDisplayName, "treasure", null)
+            ChatUtils.sendLocalChat("${GRAY}RNG meter dropped at: ${formatRngMeterPercent(catchesSinceLastDye)}%", true)
+            data.total.treasureDyes.catchesBreakdown = TreasureCatchesData()
             updateGuiLines()
             saveData()
-        } catch (e: Exception) {
-            FeeshMod.LOGGER.error("[Feesh] Failed to track Treasure Dye drop", e)
         }
-    }
-
-    private fun hasAnyData(): Boolean {
-        return data.session.catches.totalCatches() > 0 ||
-            data.total.catches.totalCatches() > 0 ||
-            data.total.treasureDyes.hasData()
     }
 
     private fun updateGuiLines() {
@@ -279,26 +289,72 @@ object TreasureFishingTracker {
         if (catches.totalCatches() == 0) return
         
         val viewModeText = getViewModeDisplayText(viewMode)
-        val nextMode = if (viewMode == ViewMode.SESSION) ViewMode.TOTAL else ViewMode.SESSION
+        val nextMode = if (viewMode == TrackerViewMode.SESSION) TrackerViewMode.TOTAL else TrackerViewMode.SESSION
         val nextModeText = getViewModeDisplayText(nextMode)
 
-        val lines = mutableListOf<String>()
-        lines.add("$baseTitle $viewModeText")
-        lines.add("${GRAY}- ${DARK_PURPLE}Good catch${GRAY}: ${WHITE}${CommonUtils.formatNumberWithSpaces(catches.good)}")
-        lines.add("${GRAY}- ${GOLD}Great catch${GRAY}: ${WHITE}${CommonUtils.formatNumberWithSpaces(catches.great)}")
-        lines.add("${GRAY}- ${LIGHT_PURPLE}Outstanding catch${GRAY}: ${WHITE}${CommonUtils.formatNumberWithSpaces(catches.outstanding)}")
-        lines.add("${GRAY}Total Treasures: ${WHITE}${CommonUtils.formatNumberWithSpaces(catches.totalCatches())}")
-        lines.add("")
-        lines.addAll(data.total.treasureDyes.getOverlayText(treasureDye.displayName, "treasure"))
+        val lines = mutableListOf<LineInfo>()
+        lines.add(LineInfo("$baseTitle $viewModeText"))
+        lines.add(LineInfo("${GRAY}- ${DARK_PURPLE}Good catch${GRAY}: ${WHITE}${CommonUtils.formatNumberWithSpaces(catches.good)}"))
+        lines.add(LineInfo("${GRAY}- ${GOLD}Great catch${GRAY}: ${WHITE}${CommonUtils.formatNumberWithSpaces(catches.great)}"))
+        lines.add(LineInfo("${GRAY}- ${LIGHT_PURPLE}Outstanding catch${GRAY}: ${WHITE}${CommonUtils.formatNumberWithSpaces(catches.outstanding)}"))
+        lines.add(LineInfo("${GRAY}Total Treasures: ${WHITE}${CommonUtils.formatNumberWithSpaces(catches.totalCatches())}"))
+        lines.add(LineInfo(""))
+        lines.addAll(data.total.treasureDyes.getOverlayLines(treasureDye.displayName, "treasure"))
+        val catchesSinceLastDye = data.total.treasureDyes.catchesBreakdown
+        lines.add(LineInfo(
+            "${GRAY}RNG meter: ${formatRngMeterPercent(catchesSinceLastDye)}%",
+            tooltip = getRngMeterTooltip(catchesSinceLastDye)
+        ))
 
         gui.setLines(lines)
         gui.setButtons(listOf(
             GuiButton(0, "${GRAY}[Click to show $nextModeText${GRAY}]", { toggleViewMode() }),
-            GuiButton(1, "${GRAY}[${RED}Click to reset${GRAY}]", { resetTreasureFishingTracker(false, getCurrentViewMode()) })
+            getResetGuiButton(1) { requestReset() }
         ))
     }
 
-    private fun saveData() {
-        PersistentDataManager.saveFeeshDataToFileAsync()
+    private fun getRngMeterTooltip(catches: TreasureCatchesData): List<Component> {
+        val lines = listOf(
+            "${AQUA}RNG meter",
+            "${GRAY}Progress towards next Treasure Dye drop.",
+            "",
+            "${GRAY}Each treasure catch adds pity:",
+            "  ${LIGHT_PURPLE}Outstanding${GRAY}: 1 in 10,000 (${WHITE}0.01%${GRAY})",
+            "  ${GOLD}Great${GRAY}: 1 in 100,000 (${WHITE}0.001%${GRAY})",
+            "  ${DARK_PURPLE}Good${GRAY}: 1 in 1,000,000 (${WHITE}0.0001%${GRAY})",
+            "",
+            "${GRAY}Progress:",
+            "  ${LIGHT_PURPLE}Outstanding${GRAY}: ${WHITE}${CommonUtils.formatNumberWithSpaces(catches.outstanding)} ${GRAY}-> ${WHITE}${formatTooltipPercent(catches.outstanding / 10_000.0 * 100.0)}",
+            "  ${GOLD}Great${GRAY}: ${WHITE}${CommonUtils.formatNumberWithSpaces(catches.great)} ${GRAY}-> ${WHITE}${formatTooltipPercent(catches.great / 100_000.0 * 100.0)}",
+            "  ${DARK_PURPLE}Good${GRAY}: ${WHITE}${CommonUtils.formatNumberWithSpaces(catches.good)} ${GRAY}-> ${WHITE}${formatTooltipPercent(catches.good / 1_000_000.0 * 100.0)}",
+        )
+        return lines.map { Component.literal(it) }
+    }
+
+    private fun formatTooltipPercent(percent: Double): String {
+        return when {
+            percent >= 0.01 -> "${String.format("%.2f", percent)}%"
+            percent > 0 -> "${String.format("%.4f", percent)}%"
+            else -> "0%"
+        }
+    }
+
+    private fun formatRngMeterPercent(catches: TreasureCatchesData): String {
+        val percent = catches.rngMeterPercent()
+        return when {
+            percent >= 90 -> "${RED}${String.format("%.2f", percent)}"
+            percent >= 50 -> "${YELLOW}${String.format("%.2f", percent)}"
+            percent >= 0.01 -> "${WHITE}${String.format("%.2f", percent)}"
+            percent > 0 -> "${WHITE}${String.format("%.4f", percent)}"
+            else -> "${WHITE}0"
+        }
+    }
+
+    private fun saveData(force: Boolean = false) {
+        if (force) {
+            PersistentDataManager.forceSaveFeeshDataToFileSync()
+        } else {
+            PersistentDataManager.saveFeeshDataToFileAsync()
+        }
     }
 }

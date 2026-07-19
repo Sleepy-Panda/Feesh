@@ -10,7 +10,6 @@ import com.github.sleepypanda.feesh.utils.CommonUtils
 import com.github.sleepypanda.feesh.utils.ChatUtils
 import com.github.sleepypanda.feesh.utils.data.PersistentDataManager
 import com.github.sleepypanda.feesh.utils.WorldUtils
-import com.github.sleepypanda.feesh.FeeshMod
 
 // TODO It would be great to get drop number from fishing profit tracker instead of tracking it here,
 // But it requires a little exploration how to do it in a clean way.
@@ -28,22 +27,22 @@ object RareDropMessage {
         EventBus.subscribe(RareDropEvent::class, ::onDrop)
     }
 
-    fun reset() {
+    fun reset(force: Boolean = false) {
         PersistentDataManager.feeshData.rareDropNotifications.items.clear()
-        saveData()
+        saveData(force)
     }
 
     private fun onDrop(event: RareDropEvent) {
-        try {
+        CommonUtils.runWithCatching("Failed to send rare drop message") {
             if (!WorldUtils.isInSkyblock() || !Chat.messageOnRareDrops) return
 
-            val itemName = event.itemName
-            val type = RareDropTypes.values().find { it.displayName == itemName } ?: return
+            val dropInfo = RareDrops.rareDrops.find { it.itemName == event.itemName || it.alternateNames.contains(event.itemName) } ?: return
+            val type = RareDropTypes.values().find { it.displayName == dropInfo.itemName } ?: return // Rare drop not supported by the mod
     
-            if (!Chat.messageOnRareDropTypes.contains(type)) return
-    
+            if (!Chat.messageOnRareDropTypes.contains(RareDropTypes.ALL) && !Chat.messageOnRareDropTypes.contains(type)) return
+
             var metadata = listOf<String>()
-            val dropNumber = getDropNumber(itemName)
+            val dropNumber = getDropNumber(dropInfo.itemName)
             if (dropNumber != null) {
                 metadata += "#$dropNumber"
             }
@@ -51,11 +50,8 @@ object RareDropMessage {
                 metadata += "+${event.magicFind} ✯ Magic Find"
             }
     
-            val message = getDropMessage(itemName, metadata)
+            val message = getDropMessage(dropInfo.itemName, metadata)
             ChatUtils.sendPartyChat(message) 
-        }
-        catch (e: Exception) {
-            FeeshMod.LOGGER.error("[Feesh] Failed to send rare drop message.", e)
         }
     }
 
@@ -79,7 +75,11 @@ object RareDropMessage {
         return "--> ${article} ${itemName} has dropped${metadataString} <--"
     }
 
-    private fun saveData() {
-        PersistentDataManager.saveFeeshDataToFileAsync()
+    private fun saveData(force: Boolean = false) {
+        if (force) {
+            PersistentDataManager.forceSaveFeeshDataToFileSync()
+        } else {
+            PersistentDataManager.saveFeeshDataToFileAsync()
+        }
     }
 }

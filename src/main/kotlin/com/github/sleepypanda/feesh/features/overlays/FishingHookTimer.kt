@@ -10,13 +10,14 @@ import com.github.sleepypanda.feesh.settings.categories.FishingHookTimerMode
 import com.github.sleepypanda.feesh.utils.WorldUtils
 import com.github.sleepypanda.feesh.utils.PlayerUtils
 import com.github.sleepypanda.feesh.utils.EntityUtils
+import com.github.sleepypanda.feesh.utils.FishingHookUtils
 import com.github.sleepypanda.feesh.utils.ChatUtils.getFormattedString
 import com.github.sleepypanda.feesh.utils.gui.FeeshGui
+import com.github.sleepypanda.feesh.utils.gui.LineInfo
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
 import com.github.sleepypanda.feesh.utils.enums.Alignment
-import net.minecraft.entity.decoration.ArmorStandEntity
-import net.minecraft.entity.projectile.FishingBobberEntity
+import net.minecraft.world.entity.decoration.ArmorStand
 import java.util.UUID
 
 enum class FishState {
@@ -47,6 +48,7 @@ object FishingHookTimer {
             "${YELLOW}${BOLD}2.0s"
         ))
         .setSettingsKey { Overlays.fishingHookTimerOverlay }
+        .setApplyCustomStyleKey { Overlays.fishingHookTimerCustomStyle }
         .setCondition {
             WorldUtils.isInFishingWorld() &&
             PlayerUtils.hasFishingRodInHotbar()
@@ -74,7 +76,7 @@ object FishingHookTimer {
             return
         }
 
-        val fishingHook = getPlayerFishingHook() ?: run {
+        val fishingHook = FishingHookUtils.getActiveFishingHook() ?: run {
             fishingHookTimer = null
             gui.clearLines()
             return
@@ -85,7 +87,7 @@ object FishingHookTimer {
             fishState = FishState.NONE
         )
 
-        val hypixelHookTimer = getHypixelFishingHookTimer(fishingHook)
+        val hypixelHookTimer = getHypixelFishingHookTimer(fishingHook.x, fishingHook.y, fishingHook.z)
         if (hypixelHookTimer != null) {
             fishingHookTimer = fishingHookTimer!!.copy(
                 hypixelTimerUuid = hypixelHookTimer.uuid,
@@ -125,7 +127,7 @@ object FishingHookTimer {
         }
 
         if (text != null) {
-            gui.setLines(listOf(text))
+            gui.setLines(listOf(LineInfo(text)))
         } else {
             gui.clearLines()
         }
@@ -145,23 +147,15 @@ object FishingHookTimer {
         return fishingHookTimer?.hypixelTimerUuid == entityUuid
     }
 
-    private fun getPlayerFishingHook(): FishingBobberEntity? {
-        val player = FeeshMod.mc.player ?: return null
-        val world = FeeshMod.mc.world ?: return null
+    private fun getHypixelFishingHookTimer(x: Double, y: Double, z: Double): HypixelTimerData? {
+        val world = FeeshMod.mc.level ?: return null
 
-        return world.entities
-            .filterIsInstance<FishingBobberEntity>()
-            .firstOrNull { it.owner == player }
-    }
-
-    private fun getHypixelFishingHookTimer(fishingHook: FishingBobberEntity): HypixelTimerData? {
-        val world = FeeshMod.mc.world ?: return null
-
-        val armorStands = world.entities
-            .filterIsInstance<ArmorStandEntity>()
+        val armorStands = world
+            .entitiesForRendering()
+            .filterIsInstance<ArmorStand>()
             .filter { armorStand ->
-                val distance = EntityUtils.getDistance(fishingHook, armorStand)
-                distance <= 5.0 && armorStand.isCustomNameVisible
+                val distance = EntityUtils.getDistance(x, y, z, armorStand.x, armorStand.y, armorStand.z)
+                distance <= 5.0 && armorStand.customName != null
             }
 
         for (armorStand in armorStands) {

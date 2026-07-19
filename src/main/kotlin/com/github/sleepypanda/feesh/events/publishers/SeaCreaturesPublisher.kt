@@ -18,7 +18,7 @@ object SeaCreaturesPublisher {
     private fun onChat(event: ChatCancellableEvent) {
         if (!WorldUtils.isInSkyblock()) return
         
-        var chatMessage = event.message.string
+        var chatMessage = event.unformattedText
 
         if (doubleHookPattern.containsMatchIn(chatMessage)) {
             isDoubleHook = true
@@ -31,8 +31,8 @@ object SeaCreaturesPublisher {
         SeaCreatures.allSeaCreatures
             .find { sc -> sc.pattern.containsMatchIn(chatMessage) }
             ?.let { sc ->
-                val doubleHooked = if (sc.name == "Vanquisher" || sc.name == "Reindrake") false else isDoubleHook
-                EventBus.publish(OwnSeaCreatureCaughtEvent(sc.name, doubleHooked, chatMessage))
+                val doubleHooked = if (!sc.canBeDoubleHooked) false else isDoubleHook
+                EventBus.publish(OwnSeaCreatureCaughtEvent(sc.name, doubleHooked, chatMessage, sc))
                 isDoubleHook = false
                 if (Chat.compactSeaCreaturesMessages) {
                     event.isCancelled = true

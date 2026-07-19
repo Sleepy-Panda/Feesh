@@ -7,6 +7,7 @@ import com.github.sleepypanda.feesh.settings.categories.Chat
 import com.github.sleepypanda.feesh.settings.categories.Overlays
 import com.github.sleepypanda.feesh.settings.categories.Commands
 import com.github.sleepypanda.feesh.settings.categories.WorldRendering
+import com.github.sleepypanda.feesh.settings.categories.Items
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
 import com.github.sleepypanda.feesh.features.help.VersionChecker
@@ -20,7 +21,7 @@ object Settings : ConfigKt("${FeeshMod.MOD_ID}/config") {
         
     override val description: TranslatableValue
         get() = Literal(
-            "QOL mod for Hypixel Skyblock fishing. ${if (VersionChecker.cachedLatestVersion.isNullOrEmpty()) "" else "Latest on Modrinth: ${if (VersionChecker.isLatestVersion) GREEN else RED}${BOLD}${VersionChecker.cachedLatestVersion}"}"
+            "QOL mod for Hypixel Skyblock fishing. ${if (VersionChecker.cachedLatestVersion.isNullOrEmpty()) "" else "${WHITE}Latest on Modrinth: ${if (VersionChecker.isLatestVersion) "${WHITE}${VersionChecker.cachedLatestVersion} - ${GREEN}${BOLD}Up to date" else "${WHITE}${VersionChecker.cachedLatestVersion} - ${RED}${BOLD}Update available"}"}"
         )
     
     init {
@@ -31,7 +32,7 @@ object Settings : ConfigKt("${FeeshMod.MOD_ID}/config") {
         
         button {
             title = "Modrinth"
-            description = "Find official releases here. Open to check latest version."
+            description = "Find official releases and changelogs here. Open a specific version to check its changelog."
             text = "Open"
             onClick {
                 openLink("https://modrinth.com/project/feesh/versions")
@@ -40,7 +41,7 @@ object Settings : ConfigKt("${FeeshMod.MOD_ID}/config") {
 
         button {
             title = "GitHub"
-            description = "Find source code, docs and report issues/suggestions/feedback here."
+            description = "Find source code and docs here."
             text = "Open"
             onClick {
                 openLink("https://github.com/Sleepy-Panda/Feesh")
@@ -48,10 +49,50 @@ object Settings : ConfigKt("${FeeshMod.MOD_ID}/config") {
         }
 
         button {
-            title = "Discord"
-            description = "m00nlight_sky - contact me if you have any questions, feedback, or suggestions."
+            title = "My Discord"
+            description = "m00nlight_sky - feel free to contact me if you have any questions, feedback, or suggestions."
             text = "Button does nothing"
             onClick { }
+        }
+
+        separator {
+            this.title = "${AQUA}${BOLD}Credits"
+        }
+
+        button {
+            title = "Casters Discord"
+            description = "Big fishing community with guides, discussions and more. Check out #feesh-mod / #mod-discussion channels for mod news & discussions!"
+            text = "Join Casters"
+            onClick {
+                openLink("https://discord.gg/vn3RzuyJz")
+            }
+        }
+
+        button {
+            title = "Elite Skyblock's Lowest BIN API"
+            description = "API used by Feesh for getting auction lbin prices."
+            text = "Open API"
+            onClick {
+                openLink("https://api.eliteskyblock.com/resources/auctions/neu")
+            }
+        }
+
+        button {
+            title = "Elite Skyblock's 7-days average API"
+            description = "API used by Feesh for getting auction average lbin prices."
+            text = "Open API"
+            onClick {
+                openLink("https://api.eliteskyblock.com/resources/auctions/neu/average-lbin/7day")
+            }
+        }
+
+        button {
+            title = "Elite Skyblock"
+            description = "Elite Skyblock is a website to view player's farming stats."
+            text = "Open website"
+            onClick {
+                openLink("https://eliteskyblock.com/")
+            }
         }
 
         // Settings categories
@@ -59,6 +100,7 @@ object Settings : ConfigKt("${FeeshMod.MOD_ID}/config") {
         category(Alerts)        
         category(Chat)
         category(Overlays)
+        category(Items)
         category(WorldRendering)
         category(Commands)
     }
@@ -66,6 +108,6 @@ object Settings : ConfigKt("${FeeshMod.MOD_ID}/config") {
     fun save() = FeeshMod.INSTANCE.settings.save()
 
     private fun openLink(url: String) {
-        Util.getOperatingSystem().open(url)
+        Util.getPlatform().openUri(url)
     }
 }

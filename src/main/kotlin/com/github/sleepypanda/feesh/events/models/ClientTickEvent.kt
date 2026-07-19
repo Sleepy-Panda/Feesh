@@ -1,5 +1,5 @@
 package com.github.sleepypanda.feesh.events.models
 
-import net.minecraft.client.MinecraftClient
+import net.minecraft.client.Minecraft
 
-data class ClientTickEvent(val mc: MinecraftClient)
+data class ClientTickEvent(val mc: Minecraft)

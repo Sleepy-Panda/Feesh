@@ -1,17 +1,18 @@
 package com.github.sleepypanda.feesh.settings.categories
 
 import com.github.sleepypanda.feesh.FeeshMod
-import com.github.sleepypanda.feesh.constants.RareSeaCreatureTypes
-import com.github.sleepypanda.feesh.constants.RareSeaCreatureTypesAllChat
+import com.github.sleepypanda.feesh.settings.models.AlertableSeaCreatureTypes
+import com.github.sleepypanda.feesh.settings.models.RareSeaCreatureTypesAllChat
 import com.github.sleepypanda.feesh.constants.RareDropTypes
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
+import com.github.sleepypanda.feesh.features.chat.CompactCatchMessages
+import com.github.sleepypanda.feesh.utils.getScreenCompat
+import com.github.sleepypanda.feesh.utils.setScreenCompat
 import com.teamresourceful.resourcefulconfigkt.api.CategoryKt
-import com.teamresourceful.resourcefulconfig.api.annotations.Category
-import com.teamresourceful.resourcefulconfig.api.annotations.Comment
-import com.teamresourceful.resourcefulconfig.api.annotations.ConfigEntry
-import com.teamresourceful.resourcefulconfig.api.types.options.EntryType
-import net.minecraft.client.gui.screen.option.KeybindsScreen
+import com.teamresourceful.resourcefulconfig.api.types.options.TranslatableValue
+import net.minecraft.client.gui.screens.options.controls.KeyBindsScreen
+import net.minecraft.util.Util
 
 enum class HotspotChatSource(val displayName: String) {
     PARTY_CHAT("Party Chat"),
@@ -21,24 +22,78 @@ enum class HotspotChatSource(val displayName: String) {
 }
 
 object Chat : CategoryKt("Chat") {
+    override val description: TranslatableValue
+        get() = Literal(
+            "Features that share information via party/all chat, or modify the local player's chat."
+        )
+
     init {
         separator {
-            this.title = "${AQUA}${BOLD}Rare sea creatures"
+            this.title = "${AQUA}${BOLD}Compact catch messages"
         }
     }
 
     var compactSeaCreaturesMessages by boolean(false) {
         this.name = Translated("Compact sea creature catch messages")
-        this.description = Translated("Shortens double hook message and catch message that says what sea creature you caught.")
+        this.description = Translated("Shortens double hook message and catch message that says what sea creature you caught. So, instead of 'It's a Double Hook! Woot Woot! What is this creature!?' you will see 'DOUBLE HOOK! A Yeti has spawned!' in your chat.")
+    }
+
+    var compactSeaCreaturesMessagesUseGradientColors by boolean(false) {
+        this.name = Translated("Gradient for sea creature rarity")
+        this.description = Translated("Colors the sea creature name in your custom message with a gradient instead of the default solid color.")
+    }
+
+    var compactDoubleHookMessageTemplate by strings(CompactCatchMessages.DEFAULT_DOUBLE_HOOK_TEMPLATE) {
+        this.name = Translated("Double hook message template")
+        this.description = Translated("${GRAY}Custom text prefix shown before catch message when you get a double hook. Leave empty to use default.")
+    }
+
+    var compactCatchMessageTemplate by strings(CompactCatchMessages.DEFAULT_CATCH_TEMPLATE) {
+        this.name = Translated("Sea creature catch message template")
+        this.description = Translated("${GRAY}Custom text for the sea creature catch message. Leave empty to use default. Placeholders: ${WHITE}{article}${GRAY} - a/an (lowercase); ${WHITE}{Article}${GRAY} - A/An (capitalized); ${WHITE}{sc}${GRAY} - sea creature name (always has rarity color).")
+    }
+
+    init {
+        button {
+            title = "Colors & formatting guide"
+            description = "For using custom text templates above, please explore the guide explaining color codes and formatting codes."
+            text = "Click to open"
+            onClick {
+                Util.getPlatform().openUri("https://github.com/Sleepy-Panda/Feesh/blob/develop/docs/Colors%20and%20formatting%20guide.md")
+            }
+        }
+
+        button {
+            title = "Send test sea creature catch message"
+            description = "Sends a sample compact catch message to your chat using your current settings, so you can preview it."
+            text = "Click to send"
+            onClick {
+                CompactCatchMessages.sendTestChatMessage()
+            }
+        }
+    }
+
+    init {
+        separator {
+            this.title = "${AQUA}${BOLD}Sea creatures"
+        }
     }
 
     var shareRareSeaCreatures by boolean(true) {
-        this.name = Translated("Share rare sea creatures to the PARTY chat")
-        this.description = Translated("Sends a PARTY chat message when a rare sea creature is caught by you. Please enable ${YELLOW}Skyblock Settings -> Personal -> Fishing Settings -> Sea Creature Chat")
+        this.name = Translated("Share sea creatures to the PARTY chat")
+        this.description = Translated("Sends a PARTY chat message when a sea creature is caught by you. Please enable ${YELLOW}Skyblock Settings -> Personal -> Fishing Settings -> Sea Creature Chat")
     }
 
-    var shareRareSeaCreaturesTypes by select(RareSeaCreatureTypes.CARROT_KING, *RareSeaCreatureTypes.values()) {
+    var shareSeaCreaturesList by select(
+        *AlertableSeaCreatureTypes.values().filter { it.isEnabledByDefault }.toTypedArray(), // Selected by default
+    ) {
         this.name = Translated("Select sea creatures to share to the PARTY chat")
+        this.searchTerms = AlertableSeaCreatureTypes.values().map { it.displayName }.toList()
+    }
+
+    var shareSeaCreaturesIncludeCocooned by boolean(true) {
+        this.name = Translated("Share cocooned sea creature")
+        this.description = Translated("Also sends a PARTY chat message when selected sea creatures are cocooned by you.")
     }
 
     var shareRareSeaCreaturesAllChat by boolean(false) {
@@ -48,11 +103,12 @@ object Chat : CategoryKt("Chat") {
 
     var shareRareSeaCreaturesTypesAllChat by select(RareSeaCreatureTypesAllChat.THUNDER, *RareSeaCreatureTypesAllChat.values()) {
         this.name = Translated("Select sea creatures to share location to the ALL chat")
+        this.searchTerms = RareSeaCreatureTypesAllChat.values().map { it.displayName }.toList()
     }
 
     var messageOnPlayerDeath by boolean(true) {
-        this.name = Translated("Send a party chat message when killed by a Mythic sea creature")
-        this.description = Translated("Sends a message to the party chat when you are killed by Thunder / Lord Jawbus / Ragnarok / Wiki Tiki / Titanoboa. It enables the alerts for your party members so they can wait for you or laugh at you 😈")
+        this.name = Translated("Send a party chat message when killed by a fishing boss")
+        this.description = Translated("Sends a message to the party chat when you are killed by a fishing boss. It enables the alerts for your party members so they can wait for you or laugh at you 😈")
     }
 
     init {
@@ -66,13 +122,15 @@ object Chat : CategoryKt("Chat") {
         this.description = Translated("Sends a PARTY chat message when a rare item has dropped.")
     }
 
-    var messageOnRareDropTypes by select(RareDropTypes.LUCKY_CLOVER_CORE, *RareDropTypes.values()) {
+    var messageOnRareDropTypes by select(RareDropTypes.ALL, *RareDropTypes.values()) {
         this.name = Translated("Select rare drops to share to the PARTY chat")
+        this.description = Translated("ALL is equivalent of selecting all items in the list below - you can select it once, to enable all existing and future items in the list.")
+        this.searchTerms = RareDropTypes.values().map { it.displayName }.toList()
     }
 
     var includeDropNumberIntoDropMessage by boolean(true) {
         this.name = Translated("Include drop number")
-        this.description = Translated("${GRAY}Send the drop's ordinal number for the current session in the party chat message..\n${RED}Requires Fishing Profit Tracker to be enabled! ${GRAY}Drop numbers are reset when Fishing Profit Tracker is reset.")
+        this.description = Translated("${GRAY}Send the drop's ordinal number for the current session in the party chat message.\n${RED}Requires Fishing Profit Tracker to be enabled! ${GRAY}Drop numbers are reset when Fishing Profit Tracker is reset.")
     }
 
     var includeMagicFindIntoRareDropMessage by boolean(true) {
@@ -98,8 +156,9 @@ object Chat : CategoryKt("Chat") {
             text = "Click to open"
             onClick {
                 val mc = FeeshMod.mc
-                mc.send {
-                    mc.setScreen(KeybindsScreen(mc.currentScreen, mc.options))
+                mc.schedule {
+                    val currentScreen = mc.getScreenCompat() ?: return@schedule
+                    mc.setScreenCompat(KeyBindsScreen(currentScreen, mc.options))
                 }
             }
         }
@@ -113,5 +172,21 @@ object Chat : CategoryKt("Chat") {
     var autoMessageOnHotspotFoundSource by enum(HotspotChatSource.PARTY_CHAT) {
         this.name = Translated("Autoshare to")
         this.description = Translated("Source chat type to autoshare the found hotspots (if autosharing enabled).")
+    }
+
+    init {
+        separator {
+            this.title = "${AQUA}${BOLD}Trophy"
+        }
+    }
+
+    var shareTrophyFrogDiscovered by boolean(true) {
+        this.name = Translated("Share Trophy Frog discovery to the PARTY chat")
+        this.description = Translated("Sends a PARTY chat message when you discovered a new Trophy Frog.")
+    }
+
+    var shareTrophyFishDiscovered by boolean(true) {
+        this.name = Translated("Share Trophy Fish discovery to the PARTY chat")
+        this.description = Translated("Sends a PARTY chat message when you discovered a new Trophy Fish.")
     }
 }

@@ -2,12 +2,14 @@ package com.github.sleepypanda.feesh.utils
 
 import com.github.sleepypanda.feesh.utils.ChatUtils.removeFormatting
 import com.github.sleepypanda.feesh.FeeshMod
+import com.github.sleepypanda.feesh.utils.getScreenCompat
 import com.github.sleepypanda.feesh.events.EventBus
+import com.github.sleepypanda.feesh.events.models.ChatEvent
 import com.github.sleepypanda.feesh.events.models.GuiClosedEvent
-import com.github.sleepypanda.feesh.utils.RegisterUtils
-import net.minecraft.client.gui.screen.ChatScreen
-import net.minecraft.client.gui.screen.ingame.InventoryScreen
-import net.minecraft.client.gui.screen.ingame.HandledScreen
+import com.github.sleepypanda.feesh.utils.ChatUtils.getUnformattedString
+import net.minecraft.client.gui.screens.ChatScreen
+import net.minecraft.client.gui.screens.inventory.InventoryScreen
+import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen
 import java.util.Date
 import java.util.Timer
 import kotlin.concurrent.timerTask
@@ -17,9 +19,15 @@ data class LastKatUpgrade(
     var petName: String? = null
 )
 
+data class LastGfsCommand(
+    var executedAt: Date? = null,
+    var itemName: String? = null
+)
+
 data class LastGuisClosed(
     var lastSacksGuiClosedAt: Date? = null,
     var lastOdgerGuiClosedAt: Date? = null,
+    var lastTrophyFrogsGuiClosedAt: Date? = null,
     var lastAuctionGuiClosedAt: Date? = null,
     var lastSupercraftGuiClosedAt: Date? = null,
     var lastCraftGuiClosedAt: Date? = null,
@@ -30,30 +38,47 @@ data class LastGuisClosed(
 )
 
 object GuiUtils {
+    private val KAT_UPGRADE_PATTERN = Regex("^\\[NPC\\] Kat: I was able to upgrade your pet (.+) to .*")
+    private val ABIPHONE_CALL_PATTERN = Regex("^\\[NPC\\] Kat: ✆ Hi! I've finished training your (.+)!.*")
+    private val GFS_COMMAND_PATTERN = Regex("^Moved [\\d,]+ (.+) from your Sacks to your inventory\\.$")
+
     private var cachedIsInInventoryOrChat: Boolean = false
     private var timer: Timer? = null
 
     val lastGuisClosed = LastGuisClosed()
     val lastKatUpgrade = LastKatUpgrade()
+    val lastGfsCommand = LastGfsCommand()
 
     fun init() {
         startTimer()
-        registerKatChatHandlers()
+        EventBus.subscribe(ChatEvent::class, ::onChat)
         EventBus.subscribe(GuiClosedEvent::class, ::onGuiClosed)
     }
 
-    private fun registerKatChatHandlers() {
+    private fun onChat(event: ChatEvent) {
+        if (!WorldUtils.isInSkyblock()) return
+
         // When talking to NPC.
         // [NPC] Kat: I was able to upgrade your pet Guardian to LEGENDARY.
-        RegisterUtils.chat(Regex("^\\[NPC\\] Kat: I was able to upgrade your pet (.+) to .*")) { _, matchResult ->
+        KAT_UPGRADE_PATTERN.find(event.unformattedText)?.run {
             lastKatUpgrade.lastPetClaimedAt = Date()
-            lastKatUpgrade.petName = matchResult.groupValues[1].orEmpty().removeFormatting()
+            lastKatUpgrade.petName = this.groupValues[1].removeFormatting()
+            return@onChat
         }
+
         // Abiphone call.
         // [NPC] Kat: ✆ Hi! I've finished training your Guardian!
-        RegisterUtils.chat(Regex("^\\[NPC\\] Kat: ✆ Hi! I've finished training your (.+)!.*")) { _, matchResult ->
+        ABIPHONE_CALL_PATTERN.find(event.unformattedText)?.run {
             lastKatUpgrade.lastPetClaimedAt = Date()
-            lastKatUpgrade.petName = matchResult.groupValues[1].orEmpty().removeFormatting()
+            lastKatUpgrade.petName = this.groupValues[1].removeFormatting()
+            return@onChat
+        }
+
+        // Moved 3,900 Enchanted Sea Lumies from your Sacks to your inventory.        // Moved 3,900 Enchanted Sea Lumies from your Sacks to your inventory.
+        GFS_COMMAND_PATTERN.find(event.unformattedText)?.run {
+            lastGfsCommand.executedAt = Date()
+            lastGfsCommand.itemName = this.groupValues[1].removeFormatting()
+            return@onChat
         }
     }
 
@@ -64,9 +89,10 @@ object GuiUtils {
         val now = Date()
         when {
             chestName.contains("Sack") -> lastGuisClosed.lastSacksGuiClosedAt = now
-            chestName.contains("Trophy Fishing") -> lastGuisClosed.lastOdgerGuiClosedAt = now
+            chestName.contains("Trophy Fish") -> lastGuisClosed.lastOdgerGuiClosedAt = now
+            chestName.contains("Trophy Frogs") -> lastGuisClosed.lastTrophyFrogsGuiClosedAt = now
             chestName.contains("Manage Auctions") || chestName.contains("Confirm Purchase") ||
-                chestName.contains("BIN Auction View") || chestName.contains("Your Bids") ->
+            chestName.contains("BIN Auction View") || chestName.contains("Your Bids") ->
                 lastGuisClosed.lastAuctionGuiClosedAt = now
             chestName.endsWith("Recipe") -> lastGuisClosed.lastSupercraftGuiClosedAt = now
             chestName.contains("Craft Item") -> lastGuisClosed.lastCraftGuiClosedAt = now
@@ -82,13 +108,11 @@ object GuiUtils {
 
     private fun startTimer() {
         timer?.cancel()
-        timer = Timer()
+        timer = Timer("Feesh-GuiUtils", true)
 
         val task = timerTask {
-            try {
+            CommonUtils.runWithCatching("Failed to update Gui utils cache") {
                 updateCache()
-            } catch (e: Exception) {
-                FeeshMod.LOGGER.error("[Feesh] Failed to update gui utils cache.", e)
             }
         }
         timer?.scheduleAtFixedRate(task, 0, 200)
@@ -101,7 +125,7 @@ object GuiUtils {
     private fun readIsInInventoryOrChat(): Boolean {
         if (!WorldUtils.isInSkyblock()) return false
 
-        val screen = FeeshMod.mc.currentScreen ?: return false
+        val screen = FeeshMod.mc.getScreenCompat() ?: return false
         return screen is InventoryScreen || screen is ChatScreen
     }
 
@@ -115,31 +139,39 @@ object GuiUtils {
     }
 
     fun isInChest(): Boolean {
-        val screen = FeeshMod.mc.currentScreen ?: return false
-        return (screen is HandledScreen<*> && screen !is InventoryScreen)
+        val screen = FeeshMod.mc.getScreenCompat() ?: return false
+        return (screen is AbstractContainerScreen<*> && screen !is InventoryScreen)
     }
 
     fun getCurrentChestName(): String? {
-        val screen = FeeshMod.mc.currentScreen ?: return null
-        if (screen !is HandledScreen<*>) return null
-        return screen.getTitle().getString().removeFormatting()
+        val screen = FeeshMod.mc.getScreenCompat() ?: return null
+        if (screen !is AbstractContainerScreen<*>) return null
+        return screen.title.getUnformattedString()
     }
 
     /*
-     * Check if the player is a GUI which is non-storage (you can't take items from it).
+     * Check if the player is a GUI which is non-storage (you can't take fishing profit items from it).
      * This is used to check if to ignore inventory changes when in some GUI.
      * @returns {Boolean}
      */
     fun isInNonStorageGui(): Boolean {
         val guiName = getCurrentChestName() ?: return false
-        return guiName.startsWith("Wardrobe") || 
-            guiName.startsWith("Your Equipment") || 
+        return guiName.contains("Loadouts") || guiName.contains("Equipment Sets") || guiName.contains("Armor Sets") ||
+            guiName.contains("Collections") || 
+            guiName.contains("Skill") || // Your Skills, Fishing Skill, etc.
             guiName.startsWith("Abiphone") || 
+            guiName.startsWith("Chocolate") ||
+            guiName.startsWith("Hoppity") || 
             guiName == "Slayer" || 
             guiName == "Accessory Bag Thaumaturgy" ||
+            guiName == "Select Power Stone" ||
             guiName == "Stats Tuning" ||
-            guiName == "Skyblock Menu" ||
-            guiName == "Calendar and Events"
+            guiName == "Stat Tuning Template" ||
+            guiName == "SkyBlock Menu" ||
+            guiName == "Your Stats Breakdown" ||
+            guiName == "Stats & Equipment" ||
+            guiName == "Calendar and Events" ||
+            guiName == "Fast Travel"
     }
 
     fun isInSacksGui(): Boolean {

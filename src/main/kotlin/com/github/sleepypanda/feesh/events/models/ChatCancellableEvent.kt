@@ -1,10 +1,12 @@
 package com.github.sleepypanda.feesh.events.models
 
-import net.minecraft.text.Text
+import net.minecraft.network.chat.Component
 
 /*
- * Called when a chat message is about to be sent.
- * @param message The message to send.
+ * Called when a chat message is received. Also triggers for cancelled messages.
+ * @param message The message component received.
+ * @param formattedText The formatted text of the message.
+ * @param unformattedText The unformatted text of the message.
  * @param isCancelled Whether the message should be cancelled.
  */
-class ChatCancellableEvent(val message: Text, var isCancelled: Boolean = false)
+class ChatCancellableEvent(val message: Component, val formattedText: String, val unformattedText: String, var isCancelled: Boolean = false)

@@ -2,11 +2,12 @@ package com.github.sleepypanda.feesh.settings.categories
 
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
-import com.github.sleepypanda.feesh.constants.RareSeaCreatureTypes
+import com.github.sleepypanda.feesh.settings.models.AlertableSeaCreatureTypes
 import com.github.sleepypanda.feesh.constants.RareDropTypes
 import com.github.sleepypanda.feesh.utils.enums.DeployableTypes
 import com.github.sleepypanda.feesh.utils.enums.PricingModeWithNpc
 import com.teamresourceful.resourcefulconfigkt.api.CategoryKt
+import com.teamresourceful.resourcefulconfig.api.types.options.TranslatableValue
 
 enum class AlertSource(val displayName: String) {
     OWN_AND_PARTY("Own and party"),
@@ -24,19 +25,32 @@ enum class RareDropPriceScope(val displayName: String) {
 }
 
 object Alerts : CategoryKt("Alerts") {
+    override val description: TranslatableValue
+        get() = Literal(
+            "Personal alerts that appear on your screen, in local chat, or play a sound."
+        )
+
     init {
         separator {
-            this.title = "${AQUA}${BOLD}Rare sea creatures"
+            this.title = "${AQUA}${BOLD}Sea creatures"
         }
     }
 
     var alertOnRareSeaCreatures by boolean(true) {
-        this.name = Translated("Alert on rare sea creatures")
-        this.description = Translated("Shows a title and plays a sound when a rare sea creature is caught by you or your party members. Please enable ${YELLOW}Skyblock Settings -> Personal -> Fishing Settings -> Sea Creature Chat")
+        this.name = Translated("Alert on sea creatures")
+        this.description = Translated("Shows a title and plays a sound when a specific sea creature is caught by you or your party members. Sound can be customized for each creature from the list. Please enable ${YELLOW}Skyblock Settings -> Personal -> Fishing Settings -> Sea Creature Chat")
     }
 
-    var alertOnSeaCreaturesTypes by select(RareSeaCreatureTypes.CARROT_KING, *RareSeaCreatureTypes.values()) {
-        this.name = Translated("Select sea creatures to alert on")
+    var alertOnSeaCreaturesList by select(
+        *AlertableSeaCreatureTypes.values().filter { it.isEnabledByDefault }.toTypedArray(), // Selected by default
+    ) {
+        this.name = Translated("Select sea creatures to be alerted on")
+        this.searchTerms = AlertableSeaCreatureTypes.values().map { it.displayName }.toList()
+    }
+
+    var alertOnSeaCreaturesIncludeCocooned by boolean(true) {
+        this.name = Translated("Alert on cocooned sea creature")
+        this.description = Translated("Also alerts when selected sea creatures are cocooned by you or your party members.")
     }
 
     var alertOnRareSeaCreaturesSource by enum(AlertSource.OWN_AND_PARTY) {
@@ -50,8 +64,8 @@ object Alerts : CategoryKt("Alerts") {
     }
 
     var alertOnPlayerDeath by boolean(true) {
-        this.name = Translated("Alert when you or your party members are killed by a Mythic sea creature")
-        this.description = Translated("Shows a title and plays a sound when you or your party members are killed by Thunder / Lord Jawbus / Ragnarok / Wiki Tiki / Titanoboa.")
+        this.name = Translated("Alert when you or your party members are killed by a fishing boss")
+        this.description = Translated("Shows a title and plays a sound when you or your party members are killed by a fishing boss.")
     }
 
     init {
@@ -62,11 +76,13 @@ object Alerts : CategoryKt("Alerts") {
 
     var alertOnRareDrops by boolean(true) {
         this.name = Translated("Alert on rare drops")
-        this.description = Translated("Shows a title and plays a sound when a rare item has dropped by you or your party members.")
+        this.description = Translated("Shows a title and plays a sound when a rare item has dropped by you or your party members. Sound can be customized for each item from the list.")
     }
 
-    var alertOnRareDropTypes by select(RareDropTypes.LUCKY_CLOVER_CORE, *RareDropTypes.values()) {
-        this.name = Translated("Select rare drops to alert on")
+    var alertOnRareDropTypes by select(RareDropTypes.ALL, *RareDropTypes.values()) {
+        this.name = Translated("Select rare drops to be alerted on")
+        this.description = Translated("ALL is equivalent of selecting all items in the list below - you can select it once, to enable all existing and future items in the list.")
+        this.searchTerms = RareDropTypes.values().map { it.displayName }.toList()
     }
 
     var alertOnRareDropsSource by enum(AlertSource.OWN_AND_PARTY) {
@@ -82,6 +98,56 @@ object Alerts : CategoryKt("Alerts") {
     var alertOnRareDropsPriceMode by enum(PricingModeWithNpc.SELL_OFFER) {
         this.name = Translated("Rare drop price mode")
         this.description = Translated("Defines how to calculate price for the dropped item.")
+    }
+
+    init {
+        separator {
+            this.title = "${AQUA}${BOLD}Nessie"
+        }
+    }
+
+    var alertOnNessieDestination by boolean(true) {
+        this.name = Translated("Alert when Nessie has chosen its destination")
+        this.description = Translated("Shows a title and sends a local chat message when Nessie is swimming to the Driptoad Delve or Jade Dragon cave. Tracks Nessies only if you fished recently!")
+    }
+
+    var autoShareNessieDestination by boolean(false) {
+        this.name = Translated("Autoshare to party chat")
+        this.description = Translated("Shares Nessie's chosen destination to PARTY chat automatically.")
+    }
+
+    init {
+        separator {
+            this.title = "${AQUA}${BOLD}Puddle Jumper"
+        }
+    }
+
+    var alertOnPuddleJumperTimer by boolean(false) {
+        this.name = Translated("Alert on Puddle Jumper timer")
+        this.description = Translated("Shows a title and sends a local chat message when your Puddle Jumper is about to arrive to its destination.\nCan be used to swap your gear before Puddle Jumper finishes its jumping and gives the loot.")
+    }
+
+    var puddleJumperTimerSeconds by int(40) {
+        this.name = Translated("Puddle Jumper timer (seconds)")
+        this.description = Translated("Seconds elapsed after catching a Puddle Jumper to show the alert. Ignored if the Puddle Jumper timer alert is disabled.\n Usually, Puddle Jumper randomly takes 43-55 seconds to finish its jumping and give the loot, so adjust the timer to be alerted before it reaches the destination.")
+        this.range = 30..50
+        this.slider = true
+    }
+
+    init {
+        separator {
+            this.title = "${AQUA}${BOLD}Trophy"
+        }
+    }
+
+    var alertOnTrophyFrogDiscovered by boolean(true) {
+        this.name = Translated("Alert on new Trophy Frog discovered")
+        this.description = Translated("Shows a title and plays a sound when you discover a new Trophy Frog on Lotus Atoll.")
+    }
+
+    var alertOnTrophyFishDiscovered by boolean(true) {
+        this.name = Translated("Alert on new Trophy Fish discovered")
+        this.description = Translated("Shows a title and plays a sound when you discover a new Trophy Fish on Crimson Isle.")
     }
 
     init {
@@ -106,47 +172,52 @@ object Alerts : CategoryKt("Alerts") {
         }
     }
 
+    var alertOnSeaCreaturesPersonalCap by boolean(true) {
+        this.name = Translated("Alert after personal sea creatures count cap")
+        this.description = Translated("Shows a title and plays a sound when the personal sea creatures count cap is reached, and Skyblock says \"There is not enough space for another Sea Creature!\"")
+    }
+
     var alertOnSeaCreaturesTimerThreshold by boolean(true) {
-        this.name = Translated("Alert when sea creatures are alive for 5+ minutes")
-        this.description = Translated("Shows a title and plays a sound when the sea creatures nearby are alive for 5+ minutes and will despawn soon. Disabled if you have no fishing rod in your hotbar!")
+        this.name = Translated("Alert when own/others' sea creatures are alive for 5+ minutes")
+        this.description = Translated("Shows a title and plays a sound when the sea creatures nearby are alive for 5+ minutes and will despawn soon. It does not check if those are own or other people's sea creatures. Disabled if you have no fishing rod in your hotbar!")
     }
 
     var alertOnSeaCreaturesCountThreshold by boolean(true) {
-        this.name = Translated("Alert when sea creatures count hits threshold")
-        this.description = Translated("Shows a title and plays a sound when amount of sea creatures nearby hits the specified threshold. Useful to detect cap when barn fishing. Disabled if you have no fishing rod in your hotbar!")
+        this.name = Translated("Alert when own/others' sea creatures count hits threshold")
+        this.description = Translated("Shows a title and plays a sound when amount of sea creatures nearby hits the specified threshold. It does not check if those are own or other people's sea creatures. Disabled if you have no fishing rod in your hotbar!")
     }
 
     var seaCreaturesCountThreshold_Hub by int(50) {
         this.name = Translated("Sea creatures count threshold - HUB")
-        this.description = Translated("Count of sea creatures nearby required to see the alert when you are in the Hub. Ignored if the sea creatures count alert is disabled.")
+        this.description = Translated("Count of sea creatures nearby required to see the alert when you are in the Hub. It does not check if those are own or other people's sea creatures.Ignored if the sea creatures count alert is disabled.")
         this.range = 5..60
         this.slider = true
     }
 
     var seaCreaturesCountThreshold_CrimsonIsle by int(20) {
         this.name = Translated("Sea creatures count threshold - CRIMSON ISLE")
-        this.description = Translated("Count of sea creatures nearby required to see the alert when you are in the Crimson Isle. Ignored if the sea creatures count alert is disabled.")
+        this.description = Translated("Count of sea creatures nearby required to see the alert when you are in the Crimson Isle. It does not check if those are own or other people's sea creatures. Ignored if the sea creatures count alert is disabled.")
         this.range = 5..60
         this.slider = true
     }
 
     var seaCreaturesCountThreshold_CrystalHollows by int(20) {
         this.name = Translated("Sea creatures count threshold - CRYSTAL HOLLOWS")
-        this.description = Translated("Count of sea creatures nearby required to see the alert when you are in the Crystal Hollows. Ignored if the sea creatures count alert is disabled.")
+        this.description = Translated("Count of sea creatures nearby required to see the alert when you are in the Crystal Hollows. It does not check if those are own or other people's sea creatures. Ignored if the sea creatures count alert is disabled.")
         this.range = 5..60
         this.slider = true
     }
 
     var seaCreaturesCountThreshold_Galatea by int(30) {
         this.name = Translated("Sea creatures count threshold - GALATEA")
-        this.description = Translated("Count of sea creatures nearby required to see the alert when you are in the Galatea. Ignored if the sea creatures count alert is disabled.")
+        this.description = Translated("Count of sea creatures nearby required to see the alert when you are in the Galatea. It does not check if those are own or other people's sea creatures.Ignored if the sea creatures count alert is disabled.")
         this.range = 5..60
         this.slider = true
     }
 
     var seaCreaturesCountThreshold_Default by int(50) {
         this.name = Translated("Sea creatures count threshold - Other")
-        this.description = Translated("Count of sea creatures nearby required to see the alert when you are in other locations. Ignored if the sea creatures count alert is disabled.")
+        this.description = Translated("Count of sea creatures nearby required to see the alert when you are in other locations. It does not check if those are own or other people's sea creatures. Ignored if the sea creatures count alert is disabled.")
         this.range = 5..60
         this.slider = true
     }
@@ -158,12 +229,43 @@ object Alerts : CategoryKt("Alerts") {
     }
 
     var alertOnDeployableExpiresSoon by boolean(true) {
-        this.name = Translated("Alert when deployable item expires soon")
-        this.description = Translated("Shows a title and plays a sound when your deployable item expires in 10 seconds.")
+        this.name = Translated("Alert when deployable expires soon")
+        this.description = Translated("Shows a title and plays a sound when own deployable is about to expire.")
     }
 
     var alertOnDeployableTypes by select(DeployableTypes.TOTEM_OF_CORRUPTION, *DeployableTypes.values()) {
-        this.name = Translated("Select deployables to alert on")
+        this.name = Translated("Select deployables to be alerted on")
+        this.searchTerms = DeployableTypes.values().map { it.displayName }.toList()
+    }
+
+    var deployableExpiresSoonSeconds by int(10) {
+        this.name = Translated("Seconds before expiration [long-living deployables]")
+        this.description = Translated("How many seconds should remain until deployable expiration to see the alert. This setting is applicable to long-living deployables (3 min or 5 min).")
+        this.range = 1..60
+        this.slider = true
+    }
+
+    var shortLivingDeployableExpiresSoonSeconds by int(5) {
+        this.name = Translated("Seconds before expiration [short-living deployables]")
+        this.description = Translated("How many seconds should remain until deployable expiration to see the alert. This setting is applicable to short-living deployables (30s or 1 min).")
+        this.range = 1..30
+        this.slider = true
+    }
+
+    init {
+        separator {
+            this.title = "${AQUA}${BOLD}Consumables"
+        }
+    }
+
+    var alertOnConsumableExpiresSoon by boolean(true) {
+        this.name = Translated("Alert when a Moby-Duck expires soon")
+        this.description = Translated("Shows a title and plays a sound when a Moby-Duck expires in 10 seconds.")
+    }
+        
+    var alertOnSaltExpired by boolean(true) {
+        this.name = Translated("Alert when a Salt has expired")
+        this.description = Translated("Shows a title and plays a sound when a Salt has expired.")
     }
 
     init {
@@ -193,6 +295,22 @@ object Alerts : CategoryKt("Alerts") {
         this.description = Translated("Shows a title and plays a sound when the hotspot you recently fished in, is gone.")
     }
 
+    var alertOnWormholeGone by boolean(true) {
+        this.name = Translated("Alert when the wormhole is gone")
+        this.description = Translated("Shows a title and plays a sound when the wormhole you recently fished in, is gone.")
+    }
+
+    init {
+        separator {
+            this.title = "${AQUA}${BOLD}Rain, Thunder, Blizzard"
+        }
+    }
+
+    var alertOnRainEndingSoon by boolean(false) {
+        this.name = Translated("Alert when Rain/Thunder/Blizzard ends soon")
+        this.description = Translated("${GRAY}Shows a title and plays a sound when active Rain/Thunder/Blizzard ends soon. It's applicable to The Park, Spider's Den, Lotus Atoll, Backwater Bayou, and Jerry's Workshop. Please enable ${YELLOW}TabList settings -> General Info widget -> Show Rain / Show Blizzard")
+    }
+
     init {
         separator {
             this.title = "${AQUA}${BOLD}Fishing Festival"
@@ -211,13 +329,29 @@ object Alerts : CategoryKt("Alerts") {
 
     init {
         separator {
-            this.title = "${AQUA}${BOLD}Other"
+            this.title = "${AQUA}${BOLD}Bait"
         }
     }
-
+    
     var alertOnFishingBagDisabled by boolean(true) {
         this.name = Translated("Alert when Fishing Bag is disabled")
         this.description = Translated("Shows a title and plays a sound when current player starts fishing with Fishing Bag disabled.\n${YELLOW}After enabling the setting, please open your fishing bag once to initialize its state!")
+    }
+
+    var alertOnBaitChanged by boolean(true) {
+        this.name = Translated("Alert when bait is changed")
+        this.description = Translated("Shows a title and plays a sound when bait is changed while fishing.")
+    }
+
+    var alertOnBaitRunningOut by boolean(true) {
+        this.name = Translated("Alert when bait is running out")
+        this.description = Translated("Shows a title and plays a sound when almost no bait is remaining while fishing.")
+    }
+
+    init {
+        separator {
+            this.title = "${AQUA}${BOLD}Other"
+        }
     }
 
     var alertOnNonFishingArmor by boolean(true) {
@@ -243,11 +377,6 @@ object Alerts : CategoryKt("Alerts") {
     var alertOnThunderBottleCharged by boolean(true) {
         this.name = Translated("Alert when Thunder/Storm/Hurricane Bottle is charged")
         this.description = Translated("Shows a title and plays a sound when your Thunder, Storm, or Hurricane Bottle is fully charged.")
-    }
-    
-    var alertOnSaltExpired by boolean(true) {
-        this.name = Translated("Alert when a Salt has expired")
-        this.description = Translated("Shows a title and plays a sound when a Salt has expired.")
     }
     
     var alertOnWormTheFishCaught by boolean(false) {

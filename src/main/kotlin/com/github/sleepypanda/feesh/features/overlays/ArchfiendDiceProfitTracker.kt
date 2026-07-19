@@ -1,7 +1,9 @@
 package com.github.sleepypanda.feesh.features.overlays
 
-import com.github.sleepypanda.feesh.FeeshMod
+import com.github.sleepypanda.feesh.features.overlays.base.IResettableViewModeTracker
+import com.github.sleepypanda.feesh.features.overlays.base.TrackerViewMode
 import com.github.sleepypanda.feesh.events.EventBus
+import com.github.sleepypanda.feesh.events.models.ChatEvent
 import com.github.sleepypanda.feesh.events.models.ClientTickEvent
 import com.github.sleepypanda.feesh.events.models.GameClosedEvent
 import com.github.sleepypanda.feesh.events.models.WorldChangedEvent
@@ -12,18 +14,14 @@ import com.github.sleepypanda.feesh.utils.ChatUtils
 import com.github.sleepypanda.feesh.utils.RegisterUtils
 import com.github.sleepypanda.feesh.utils.PriceUtils
 import com.github.sleepypanda.feesh.utils.gui.FeeshGui
+import com.github.sleepypanda.feesh.utils.gui.LineInfo
 import com.github.sleepypanda.feesh.utils.gui.GuiButton
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
 import com.github.sleepypanda.feesh.utils.data.PersistentDataManager
 import java.util.Date
 
-object ArchfiendDiceProfitTracker {
-    enum class ViewMode {
-        SESSION,
-        TOTAL
-    }
-
+object ArchfiendDiceProfitTracker : IResettableViewModeTracker {
     enum class DiceType {
         ARCHFIEND,
         HIGH_CLASS
@@ -48,12 +46,16 @@ object ArchfiendDiceProfitTracker {
     data class ArchfiendDiceProfitData(
         var session: ArchfiendDiceData = ArchfiendDiceData(),
         var total: ArchfiendDiceData = ArchfiendDiceData(),
-        var viewMode: String = ViewMode.SESSION.name
+        var viewMode: String = TrackerViewMode.SESSION.name
     )
 
-    const val RESET_COMMAND = "feeshResetArchfiendDiceProfit"
-    const val RESET_TOTAL_COMMAND = "feeshResetArchfiendDiceProfitTotal"
-    private const val TOGGLE_VIEW_MODE_COMMAND = "feeshToggleArchfiendDiceViewMode"
+    override val trackerName = "Archfiend Dice profit tracker"
+
+    const val RESET_COMMAND = "feeshResetArchfiendDiceProfitTracker"
+    override val resetSessionCommand = RESET_COMMAND
+    const val RESET_TOTAL_COMMAND = "feeshResetArchfiendDiceProfitTrackerTotal"
+    override val resetTotalCommand = RESET_TOTAL_COMMAND
+    private const val TOGGLE_VIEW_MODE_COMMAND = "feeshToggleArchfiendDiceProfitTrackerViewMode"
     private const val ARCHFIEND_DICE_ID = "ARCHFIEND_DICE"
     private const val HIGH_CLASS_ARCHFIEND_DICE_ID = "HIGH_CLASS_ARCHFIEND_DICE"
     private const val ARCHFIEND_DYE_ID = "DYE_ARCHFIEND"
@@ -66,7 +68,8 @@ object ArchfiendDiceProfitTracker {
     private val ARCHFIEND_DICE_ROLL_MESSAGE = Regex("^Your Archfiend Dice rolled a (\\d+)!")
     private val HIGH_CLASS_ARCHFIEND_DICE_ROLL_MESSAGE = Regex("^Your High Class Archfiend Dice rolled a (\\d+)!")
 
-    private var data = PersistentDataManager.feeshData.archfiendDiceProfit
+    private val data: ArchfiendDiceProfitData
+        get() = PersistentDataManager.feeshData.archfiendDiceProfit
     private var lastDiceRolledAt: Date? = null
     private var tickCounter = 0
     private const val TICKS_PER_UPDATE = 20
@@ -90,46 +93,67 @@ object ArchfiendDiceProfitTracker {
             "${AQUA}${BOLD}Total profit: ${GREEN}1M"
         ))
         .setSettingsKey { Overlays.archfiendDiceProfitTrackerOverlay }
+        .setApplyCustomStyleKey { Overlays.archfiendDiceProfitTrackerCustomStyle }
         .setCondition {
             isRolledRecently()
         }
 
     fun init() {
-        registerChatHandlers()
-        registerCommands()
+        registerViewModeResetCommands()
+        RegisterUtils.command(TOGGLE_VIEW_MODE_COMMAND) {
+            toggleViewMode()
+        }
+        EventBus.subscribe(ChatEvent::class, ::onChat)
         EventBus.subscribe(ClientTickEvent::class, ::onClientTick)
         EventBus.subscribe(WorldChangedEvent::class, ::onWorldChanged)
         EventBus.subscribe(GameClosedEvent::class, ::onGameClosed)
     }
 
-    private fun registerChatHandlers() {
-        RegisterUtils.chat(ARCHFIEND_DICE_ROLL_MESSAGE) { _, matchResult ->
-            val number = matchResult.groupValues[1].toIntOrNull() ?: return@chat
-            trackArchfiendDiceRoll(data.session, DiceType.ARCHFIEND, number, true)
-            trackArchfiendDiceRoll(data.total, DiceType.ARCHFIEND, number, false)
-        }
-
-        RegisterUtils.chat(HIGH_CLASS_ARCHFIEND_DICE_ROLL_MESSAGE) { _, matchResult ->
-            val number = matchResult.groupValues[1].toIntOrNull() ?: return@chat
-            trackArchfiendDiceRoll(data.session, DiceType.HIGH_CLASS, number, true)
-            trackArchfiendDiceRoll(data.total, DiceType.HIGH_CLASS, number, false)
+    override fun getCurrentViewMode(): TrackerViewMode {
+        return try {
+            TrackerViewMode.valueOf(data.viewMode)
+        } catch (e: Exception) {
+            TrackerViewMode.SESSION
         }
     }
 
-    private fun registerCommands() {
-        RegisterUtils.command(RESET_COMMAND) { args ->
-            val isConfirmed = args.isNotEmpty() && args[0] == "noconfirm"
-            val viewMode = getCurrentViewMode()
-            resetArchfiendDiceProfitTracker(isConfirmed, viewMode)
-        }
+    override fun hasSessionData(): Boolean {
+        return data.session.archfiend.rollsCount > 0 || data.session.highClass.rollsCount > 0
+    }
 
-        RegisterUtils.command(RESET_TOTAL_COMMAND) { args ->
-            val isConfirmed = args.isNotEmpty() && args[0] == "noconfirm"
-            resetArchfiendDiceProfitTracker(isConfirmed, ViewMode.TOTAL)
-        }
+    override fun hasTotalData(): Boolean {
+        return data.total.archfiend.rollsCount > 0 || data.total.highClass.rollsCount > 0
+    }
 
-        RegisterUtils.command(TOGGLE_VIEW_MODE_COMMAND) {
-            toggleViewMode()
+    override fun resetSessionData(force: Boolean) {
+        data.session = ArchfiendDiceData()
+        saveData(force)
+    }
+
+    override fun resetTotalData(force: Boolean) {
+        data.total = ArchfiendDiceData()
+        saveData(force)
+    }
+
+    override fun refreshGui() {
+        updateGuiLines()
+    }
+
+    private fun onChat(event: ChatEvent) {
+        if (!WorldUtils.isInSkyblock() || !Overlays.archfiendDiceProfitTrackerOverlay) return
+        
+        ARCHFIEND_DICE_ROLL_MESSAGE.find(event.unformattedText)?.run {
+            val number = this.groupValues[1].toIntOrNull() ?: return@onChat
+            trackArchfiendDiceRoll(data.session, DiceType.ARCHFIEND, number, true)
+            trackArchfiendDiceRoll(data.total, DiceType.ARCHFIEND, number, false)
+            return@onChat
+        }
+        
+        HIGH_CLASS_ARCHFIEND_DICE_ROLL_MESSAGE.find(event.unformattedText)?.run {
+            val number = this.groupValues[1].toIntOrNull() ?: return@onChat
+            trackArchfiendDiceRoll(data.session, DiceType.HIGH_CLASS, number, true)
+            trackArchfiendDiceRoll(data.total, DiceType.HIGH_CLASS, number, false)
+            return@onChat
         }
     }
 
@@ -146,80 +170,23 @@ object ArchfiendDiceProfitTracker {
     }
 
     private fun onGameClosed(@Suppress("UNUSED_PARAMETER") event: GameClosedEvent) {
-        if (Overlays.resetArchfiendDiceProfitTrackerSessionOnGameClosed &&
-            Overlays.archfiendDiceProfitTrackerOverlay &&
-            (data.session.archfiend.rollsCount > 0 || data.session.highClass.rollsCount > 0)) {
-            resetSession()
-            FeeshMod.LOGGER.info("[Feesh] Automatically reset Archfiend Dice profit tracker [Session] on game closed.")
-        }
-    }
-
-    private fun getCurrentViewMode(): ViewMode {
-        return try {
-            ViewMode.valueOf(data.viewMode)
-        } catch (e: Exception) {
-            ViewMode.SESSION
+        if (Overlays.resetArchfiendDiceProfitTrackerSessionOnGameClosed) {
+            resetOnGameClosed()
         }
     }
 
     private fun toggleViewMode() {
         val currentMode = getCurrentViewMode()
-        val newMode = if (currentMode == ViewMode.SESSION) ViewMode.TOTAL else ViewMode.SESSION
+        val newMode = if (currentMode == TrackerViewMode.SESSION) TrackerViewMode.TOTAL else TrackerViewMode.SESSION
         data.viewMode = newMode.name
         updateGuiLines()
         saveData()
     }
 
-    private fun getSourceObject(viewMode: ViewMode): ArchfiendDiceData {
+    private fun getSourceObject(viewMode: TrackerViewMode): ArchfiendDiceData {
         return when (viewMode) {
-            ViewMode.SESSION -> data.session
-            ViewMode.TOTAL -> data.total
-        }
-    }
-
-    private fun getViewModeDisplayText(viewMode: ViewMode): String {
-        return when (viewMode) {
-            ViewMode.SESSION -> "${GRAY}[${GREEN}Session${GRAY}]"
-            ViewMode.TOTAL -> "${GRAY}[${GREEN}Total${GRAY}]"
-        }
-    }
-
-    private fun resetSession() {
-        data.session = ArchfiendDiceData()
-        saveData()
-    }
-
-    private fun resetTotal() {
-        data.total = ArchfiendDiceData()
-        saveData()
-    }
-
-    private fun resetArchfiendDiceProfitTracker(isConfirmed: Boolean, resetViewMode: ViewMode) {
-        try {
-            val viewModeText = getViewModeDisplayText(resetViewMode)
-
-            if (!isConfirmed) {
-                val resetAction = when (resetViewMode) {
-                    ViewMode.SESSION -> "$RESET_COMMAND noconfirm"
-                    ViewMode.TOTAL -> "$RESET_TOTAL_COMMAND noconfirm"
-                }
-                ChatUtils.sendLocalChatWithCommand(
-                    "${WHITE}Do you want to reset Archfiend Dice profit tracker ${viewModeText}${WHITE}? ${RED}${BOLD}[Click to confirm]",
-                    resetAction,
-                    true
-                )
-                return
-            }
-
-            when (resetViewMode) {
-                ViewMode.SESSION -> resetSession()
-                ViewMode.TOTAL -> resetTotal()
-            }
-
-            updateGuiLines()
-            ChatUtils.sendLocalChat("${WHITE}Archfiend Dice profit tracker ${viewModeText} ${WHITE}was reset.", true)
-        } catch (e: Exception) {
-            FeeshMod.LOGGER.error("[Feesh] Failed to reset Archfiend Dice profit tracker.", e)
+            TrackerViewMode.SESSION -> data.session
+            TrackerViewMode.TOTAL -> data.total
         }
     }
 
@@ -229,7 +196,7 @@ object ArchfiendDiceProfitTracker {
         number: Int,
         announceCost: Boolean
     ) {
-        try {
+        CommonUtils.runWithCatching("Failed to track Archfiend Dice roll for Archfiend Dice profit tracker") {
             if (!Overlays.archfiendDiceProfitTrackerOverlay || !WorldUtils.isInSkyblock() || number < 1 || number > 7) return
 
             lastDiceRolledAt = Date()
@@ -307,13 +274,11 @@ object ArchfiendDiceProfitTracker {
 
             saveData()
             updateGuiLines()
-        } catch (e: Exception) {
-            FeeshMod.LOGGER.error("[Feesh] Failed to track Archfiend Dice roll for Archfiend Dice profit tracker.", e)
         }
     }
 
     private fun updateGuiLines() {
-        try {
+        CommonUtils.runWithCatching("Failed to refresh tracker data for Archfiend Dice profit tracker") {
             gui.clearLines()
 
             val viewMode = getCurrentViewMode()
@@ -321,14 +286,14 @@ object ArchfiendDiceProfitTracker {
             if (!Overlays.archfiendDiceProfitTrackerOverlay ||
                 !WorldUtils.isInSkyblock() ||
                 !isRolledRecently() ||
-                (viewMode == ViewMode.SESSION && data.session.archfiend.rollsCount == 0 && data.session.highClass.rollsCount == 0) ||
-                (viewMode == ViewMode.TOTAL && data.total.archfiend.rollsCount == 0 && data.total.highClass.rollsCount == 0)
+                (viewMode == TrackerViewMode.SESSION && data.session.archfiend.rollsCount == 0 && data.session.highClass.rollsCount == 0) ||
+                (viewMode == TrackerViewMode.TOTAL && data.total.archfiend.rollsCount == 0 && data.total.highClass.rollsCount == 0)
             ) return
 
             val sourceObj = getSourceObject(viewMode)
             val viewModeText = getViewModeDisplayText(viewMode)
             val lines = mutableListOf<String>()
-            val nextMode = if (viewMode == ViewMode.SESSION) ViewMode.TOTAL else ViewMode.SESSION
+            val nextMode = if (viewMode == TrackerViewMode.SESSION) TrackerViewMode.TOTAL else TrackerViewMode.SESSION
             val nextModeText = getViewModeDisplayText(nextMode)
 
             lines.add("${baseTitle} ${viewModeText}")
@@ -352,13 +317,11 @@ object ArchfiendDiceProfitTracker {
             lines.add("")
             lines.add("${AQUA}${BOLD}Total profit: ${profitColor}${profitShort}")
 
-            gui.setLines(lines)
+            gui.setLines(lines.map { LineInfo(it) })
             gui.setButtons(listOf(
                 GuiButton(0, "${GRAY}[Click to show $nextModeText${GRAY}]", { toggleViewMode() }),
-                GuiButton(1, "${GRAY}[${RED}Click to reset${GRAY}]", { resetArchfiendDiceProfitTracker(false, getCurrentViewMode()) })
+                getResetGuiButton(1) { requestReset() }
             ))
-        } catch (e: Exception) {
-            FeeshMod.LOGGER.error("[Feesh] Failed to refresh tracker data for Archfiend Dice profit tracker.", e)
         }
     }
 
@@ -366,7 +329,11 @@ object ArchfiendDiceProfitTracker {
         return lastDiceRolledAt != null && Date().time - lastDiceRolledAt!!.time < 60_000
     }
 
-    private fun saveData() {
-        PersistentDataManager.saveFeeshDataToFileAsync()
+    private fun saveData(force: Boolean = false) {
+        if (force) {
+            PersistentDataManager.forceSaveFeeshDataToFileSync()
+        } else {
+            PersistentDataManager.saveFeeshDataToFileAsync()
+        }
     }
 }

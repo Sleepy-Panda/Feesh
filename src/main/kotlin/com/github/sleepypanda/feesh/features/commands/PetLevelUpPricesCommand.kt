@@ -8,7 +8,6 @@ import com.github.sleepypanda.feesh.utils.CommonUtils
 import com.github.sleepypanda.feesh.utils.ItemUtils
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
-import com.github.sleepypanda.feesh.FeeshMod
 
 object PetLevelUpPricesCommand {
     const val COMMAND_NAME = "feeshPetLevelUpPrices"
@@ -32,6 +31,7 @@ object PetLevelUpPricesCommand {
         PetInfo("${LEGENDARY}Flying Fish", 1),
         PetInfo("${MYTHIC}Flying Fish", 1),
         PetInfo("${LEGENDARY}Baby Yeti", 1),
+        PetInfo("${MYTHIC}Baby Yeti", 1),
         PetInfo("${LEGENDARY}Penguin", 1),
         PetInfo("${LEGENDARY}Spinosaurus", 1),
         PetInfo("${LEGENDARY}Megalodon", 1),
@@ -40,7 +40,8 @@ object PetLevelUpPricesCommand {
         PetInfo("${LEGENDARY}Dolphin", 1),
         PetInfo("${LEGENDARY}Reindeer", 2), // 2x faster to level up
         PetInfo("${LEGENDARY}Hermit Crab", 1),
-        PetInfo("${MYTHIC}Hermit Crab", 1)
+        PetInfo("${MYTHIC}Hermit Crab", 1),
+        PetInfo("${LEGENDARY}Seal", 1)
     )
 
     fun init() {
@@ -50,7 +51,7 @@ object PetLevelUpPricesCommand {
     }
     
     private fun calculateFishingPetPrices() {
-        try {
+        CommonUtils.runWithCatching("Failed to calculate fishing pet price statistics") {
             if (!WorldUtils.isInSkyblock()) {
                 ChatUtils.sendLocalChat("${RED}You must be on Hypixel Skyblock to use this command!", true)
                 return
@@ -77,18 +78,17 @@ object PetLevelUpPricesCommand {
             val chatBreak = "${GRAY}${ChatUtils.getChatBreak("-")}"
             ChatUtils.sendLocalChat(chatBreak)
             ChatUtils.sendLocalChat("${GREEN}${BOLD}Pets level up prices", true)
-            ChatUtils.sendLocalChat("${DARK_GRAY}Profits for leveling up the fishing pets from level 1 to level 100.")
+            ChatUtils.sendLocalChat("${GRAY}Profits for leveling up the fishing pets from level 1 to level 100.")
 
             for (petInfo in prices) {
-                val diffStr = CommonUtils.toShortNumber(petInfo.diff) ?: "N/A"
+                val diffCount = CommonUtils.toShortNumber(petInfo.diff) ?: "N/A"
+                val diffColor = if (petInfo.diff != null && petInfo.diff < 0) RED else GREEN
+                val diffText = if (petInfo.diff != null && petInfo.diff > 0) "+$diffCount" else diffCount
                 val level1PriceStr = CommonUtils.toShortNumber(petInfo.level1Price) ?: "N/A"
                 val level100PriceStr = CommonUtils.toShortNumber(petInfo.level100Price) ?: "N/A"
                 val coinsPerXpStr = petInfo.coinsPerXp?.let { String.format("%.2f", it) } ?: "N/A"
-                
-                ChatUtils.sendLocalChat(" - ${petInfo.petDisplayName}${RESET}: ${GREEN}+$diffStr${RESET} (${GOLD}$level1PriceStr${RESET} -> ${GOLD}$level100PriceStr${RESET}) | ${GOLD}$coinsPerXpStr ${RESET}coins/XP")
+                ChatUtils.sendLocalChat(" - ${petInfo.petDisplayName}${RESET}: ${diffColor}${diffText}${RESET} (${GOLD}$level1PriceStr${RESET} -> ${GOLD}$level100PriceStr${RESET}) | ${GOLD}$coinsPerXpStr ${RESET}coins/XP")
             }
-        } catch (e: Exception) {
-            FeeshMod.LOGGER.error("[Feesh] Failed to calculate pet price statistics.", e)
         }
     }
 }
