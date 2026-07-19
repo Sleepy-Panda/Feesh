@@ -9,6 +9,12 @@ Released on: ???
   - Added new sea creatures and drops.
   - Enabled hotspot functionalities.
 - Added setting to compact rod parts in the tooltip [disabled by default] - it removes rod parts descriptions to have shorter tooltip.
+- Added Plasma to the fishing profit tracker (new Mithril Grubber drop from Alpha server).
+- Added Octopus Tendril and Troubled Bubble rare drop alert & party chat message. Make sure to enable if you need it! (or use ALL)
+- Added toggle to use gradient color for sea creature name in "Compact sea creature catch messages" feature.
+- Gradient color for mod name prefix in chat c:
+- Added Flux and its variations to Deployable overlay / Deployable expiration alert.
+- Added setting to control amount of seconds for alert before deployable expiration.
 
 ## Bugfixes
 

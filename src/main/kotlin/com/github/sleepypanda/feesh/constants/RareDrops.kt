@@ -15,6 +15,8 @@ enum class RareDropTypes(val displayName: String) {
     TIKI_MASK("Tiki Mask"),
     TITANOBOA_SHED("Titanoboa Shed"),
     SNAKE_EYES("Snake Eyes"),
+    OCTOPUS_TENDRIL("Octopus Tendril"),
+    TROUBLED_BUBBLE("Troubled Bubble"),
     SCUTTLER_SHELL("Scuttler Shell"),
     BURNT_TEXTS("Burnt Texts"),
     FLASH_1("Flash 1"),
@@ -124,6 +126,22 @@ class RareDrops {
                 npcPrice = 1_000_000,
                 isExtremelyRare = true,
                 defaultSoundFileName = Sounds.FEESH_MINECRAFT_CHALLENGE_COMPLETED
+            ),
+            RareDropInfo(
+                id = "OCTOPUS_TENDRIL",
+                itemName = RareDropTypes.OCTOPUS_TENDRIL.displayName,
+                rarityColorCode = LEGENDARY.code,
+                npcPrice = 1_000_000,
+                isExtremelyRare = false,
+                defaultSoundFileName = Sounds.FEESH_OH_MY_GOD
+            ),
+            RareDropInfo(
+                id = "TROUBLED_BUBBLE",
+                itemName = RareDropTypes.TROUBLED_BUBBLE.displayName,
+                rarityColorCode = LEGENDARY.code,
+                npcPrice = 1_000_000,
+                isExtremelyRare = false,
+                defaultSoundFileName = Sounds.FEESH_OH_MY_GOD
             ),
             RareDropInfo(
                 id = "SCUTTLER_SHELL",

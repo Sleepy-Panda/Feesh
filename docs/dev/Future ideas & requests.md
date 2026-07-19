@@ -49,10 +49,6 @@ RIBBIT! [MVP+] _etaF caught their first DIAMOND Common Frog!
 ♔ TROPHY FROG! You caught a Common Frog BRONZE!
 ♔ TROPHY FROG! You caught a Puddle Jumper SILVER!
 
-## Deployables
-
-- Overflux and its variations
-
 ## Consumables
 
 Buffs from Lotus Atoll cave donations:
@@ -96,8 +92,6 @@ Session: 10x Baby Yeti (Epic), 5x Baby Yeti (Legendary), 1x Level 100
 
 ## Alerts & chat
 
-- RARE DROP! Troubled Bubble (+406 ✯ Magic Find) - with no mf also possible
-- RARE DROP! Octopus Tendril (+190 ✯ Magic Find)
 - Player who was dead returned back
 - Alert which soul has dropped for Summoning Ring.
 - Alert on Hotspot fishing without Tiki Mask
