@@ -39,7 +39,6 @@ Newly released - https://hypixel.net/threads/hypixel-skyblock-0-24-5-assorted-qo
  GOOD CATCH! You caught a Flexbone!
  GOOD CATCH! You caught a Shinyfish Shard!
 
-- Percent or seconds until deployable expiration. Note on 1min deployables and Bubble Gum. Also need to avoid issues when server lags and armor stand updates not every second.
 - Toggle for PBs, rework trackPersonalBestFishingFestival
 - Max MF PB
 - Xp/h
