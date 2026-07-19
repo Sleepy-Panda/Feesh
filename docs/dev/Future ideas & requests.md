@@ -49,10 +49,6 @@ RIBBIT! [MVP+] _etaF caught their first DIAMOND Common Frog!
 ♔ TROPHY FROG! You caught a Common Frog BRONZE!
 ♔ TROPHY FROG! You caught a Puddle Jumper SILVER!
 
-## Deployables
-
-- Overflux and its variations
-
 ## Consumables
 
 Buffs from Lotus Atoll cave donations:

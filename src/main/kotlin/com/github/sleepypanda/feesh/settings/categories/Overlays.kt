@@ -418,7 +418,7 @@ Hidden if you have no fishing rod in your hotbar!""".trimIndent())
 
     var deployablesTimerOverlay by boolean(false) {
         this.name = Translated("Deployables timer")
-        this.description = Translated("Shows an overlay with the remaining time of your deployable items placed nearby.")
+        this.description = Translated("Shows an overlay with the remaining time of own deployables placed nearby.")
     }
 
     var deployablesOverlayTypes by select(DeployableTypes.TOTEM_OF_CORRUPTION, *DeployableTypes.values()) {
