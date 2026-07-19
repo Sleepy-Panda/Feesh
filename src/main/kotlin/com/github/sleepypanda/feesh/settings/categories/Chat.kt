@@ -38,6 +38,11 @@ object Chat : CategoryKt("Chat") {
         this.description = Translated("Shortens double hook message and catch message that says what sea creature you caught. So, instead of 'It's a Double Hook! Woot Woot! What is this creature!?' you will see 'DOUBLE HOOK! A Yeti has spawned!' in your chat.")
     }
 
+    var compactSeaCreaturesMessagesUseGradientColors by boolean(false) {
+        this.name = Translated("Gradient for sea creature rarity")
+        this.description = Translated("Colors the sea creature name in your custom message with a gradient instead of the default solid color.")
+    }
+
     var compactDoubleHookMessageTemplate by strings(CompactCatchMessages.DEFAULT_DOUBLE_HOOK_TEMPLATE) {
         this.name = Translated("Double hook message template")
         this.description = Translated("${GRAY}Custom text shown when you get a double hook. Leave empty to use default.")
@@ -45,7 +50,7 @@ object Chat : CategoryKt("Chat") {
 
     var compactCatchMessageTemplate by strings(CompactCatchMessages.DEFAULT_CATCH_TEMPLATE) {
         this.name = Translated("Sea creature catch message template")
-        this.description = Translated("${GRAY}Custom text for the sea creature catch message. Leave empty to use default. Placeholders: ${WHITE}{article}${GRAY} — a/an (lowercase); ${WHITE}{Article}${GRAY} — A/An (capitalized); ${WHITE}{sc}${GRAY} — sea creature name (colored by default).")
+        this.description = Translated("${GRAY}Custom text for the sea creature catch message. Leave empty to use default. Placeholders: ${WHITE}{article}${GRAY} - a/an (lowercase); ${WHITE}{Article}${GRAY} - A/An (capitalized); ${WHITE}{sc}${GRAY} - sea creature name (always has rarity color).")
     }
 
     init {
@@ -55,6 +60,15 @@ object Chat : CategoryKt("Chat") {
             text = "Click to open"
             onClick {
                 Util.getPlatform().openUri("https://github.com/Sleepy-Panda/Feesh/blob/develop/docs/Colors%20and%20formatting%20guide.md")
+            }
+        }
+
+        button {
+            title = "Send test sea creature catch message"
+            description = "Sends a sample compact catch message to your chat using your current settings, so you can preview it."
+            text = "Click to send"
+            onClick {
+                CompactCatchMessages.sendTestChatMessage()
             }
         }
     }

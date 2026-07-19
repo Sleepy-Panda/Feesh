@@ -1,8 +1,8 @@
 package com.github.sleepypanda.feesh.utils
 
+import com.github.sleepypanda.feesh.FeeshMod
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
-import com.github.sleepypanda.feesh.FeeshMod
 import com.github.sleepypanda.feesh.events.EventBus
 import com.github.sleepypanda.feesh.events.models.ClientTickEvent
 import com.github.sleepypanda.feesh.events.models.WorldChangedEvent
@@ -17,7 +17,10 @@ import net.minecraft.ChatFormatting
 import java.util.*
 
 object ChatUtils {
-    val MOD_PREFIX = "${GRAY}[${AQUA}Feesh${GRAY}]"
+    private val MOD_NAME_COLORS = intArrayOf(0x158AB7, 0x52CC9D)
+    private val MOD_PREFIX: Component = Component.literal("${GRAY}[")
+        .append(ColorUtils.buildGradientTextComponent(" ${FeeshMod.MOD_NAME}", MOD_NAME_COLORS))
+        .append(Component.literal("${GRAY}]"))
 
     private enum class ChatType { ALL_CHAT, PARTY_CHAT }
 
@@ -63,8 +66,8 @@ object ChatUtils {
      */
     fun sendLocalChat(message: String, addModPrefix: Boolean = false) {
         if (message.isNullOrEmpty()) return
-        val formattedMessage = if (addModPrefix) "${MOD_PREFIX} ${RESET}${message}" else message
-        addLocalChatMessage(Component.literal(formattedMessage))
+        val text = Component.literal(if (addModPrefix) "${RESET}${message}" else message)
+        addLocalChatMessage(if (addModPrefix) withModPrefix(text) else text)
     }
 
     fun sendLocalChat(message: Component) {
@@ -120,12 +123,7 @@ object ChatUtils {
             .withHoverEvent(ShowText(Component.literal("Click to execute /$command")))
         
         val text = Component.literal(message).setStyle(style)
-        
-        val finalText = if (addModPrefix) {
-            Component.literal("${MOD_PREFIX} ${RESET}").append(text)
-        } else text
-        
-        addLocalChatMessage(finalText)
+        addLocalChatMessage(if (addModPrefix) withModPrefix(text) else text)
     }
 
     /**
@@ -142,11 +140,14 @@ object ChatUtils {
             .withHoverEvent(ShowText(Component.literal("Click to open $url")))
 
         val fullText = Component.literal(message).append(Component.literal("\n")).append(Component.literal(linkText).setStyle(linkStyle))
-        val finalText = if (addModPrefix) {
-            Component.literal("${MOD_PREFIX} ${RESET}").append(fullText)
-        } else fullText
+        addLocalChatMessage(if (addModPrefix) withModPrefix(fullText) else fullText)
+    }
 
-        addLocalChatMessage(finalText)
+    private fun withModPrefix(message: Component): Component {
+        return Component.empty()
+            .append(MOD_PREFIX)
+            .append(Component.literal(" "))
+            .append(message)
     }
 
     fun String?.removeFormatting(): String {
