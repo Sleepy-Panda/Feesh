@@ -5,7 +5,8 @@ enum class DeployableTypes(val displayName: String) {
     BLACK_HOLE("Black Hole"),
     UMBERELLA("Umberella"),
     FLARE("Flare"),
-    DWARVEN_LANTERN("Dwarven Lanterns");
+    DWARVEN_LANTERN("Dwarven Lanterns"),
+    FLUX("Flux");
 
     override fun toString(): String = displayName // Show display name in UI, but internally it uses name
 }

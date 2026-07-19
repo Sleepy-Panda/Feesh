@@ -38,8 +38,12 @@ object DeployablesTimer {
     private val FLARE_DISAPPEARED_PATTERN = Regex("^Your flare disappeared because you were too far away\\!$")
     private val PREVIOUS_DEPLOYABLE_REMOVED_PATTERN = Regex("^Your previous (.*) was removed\\!$")
 
-    private open class BaseDeployableData {
-        var remainingTime: String? = null
+    private open class BaseDeployableData(
+        val isShortLiving: Boolean = false,
+    ) {
+        var remainingTimeStr: String? = null
+        var remainingSeconds: Int? = null
+        var isAlerted: Boolean = false
         var lastAlertAt: Date? = null
     }
 
@@ -52,12 +56,16 @@ object DeployablesTimer {
     }
 
     private class FlareData : BaseDeployableData() {
-        var remainingSeconds: Int? = null
         var lastPlacedAt: Date? = null
         var itemDisplayName: String? = null
     }
 
     private class DwarvenLanternData : BaseDeployableData() {
+        var id: Int? = null
+        var itemDisplayName: String? = null
+    }
+
+    private class FluxData : BaseDeployableData(isShortLiving = true) {
         var id: Int? = null
         var itemDisplayName: String? = null
     }
@@ -69,21 +77,31 @@ object DeployablesTimer {
         "Glacite Lantern",
         "Will-o'-wisp",
     )
+    private val FLUX_NAME_PREFIXES = listOf(
+        "Overflux",
+        "Plasmaflux",
+        "Mana Flux",
+    )
 
     private fun isHeldItemDwarvenLantern(heldItemName: String): Boolean =
         DWARVEN_LANTERN_NAME_PREFIXES.any { prefix -> heldItemName == prefix }
+
+    private fun isHeldItemFlux(heldItemName: String): Boolean =
+        FLUX_NAME_PREFIXES.any { prefix -> heldItemName.contains(prefix + " Power Orb") }
 
     private var totemData = TotemData()
     private var blackHoleData = BlackHoleData()
     private var umberellaData = UmberellaData()
     private var flareData = FlareData()
     private var dwarvenLanternData = DwarvenLanternData()
+    private var fluxData = FluxData()
 
     private var tickCounter = 0
 
     // We can't know owner for those items, so we track when there was an interaction, to try ignoring spawns from other players.
     private var lastDwarvenLanternInteractTimeMs: Long = 0L
     private var lastUmberellaInteractTimeMs: Long = 0L
+    private var lastFluxInteractTimeMs: Long = 0L
 
     private val gui = FeeshGui()
         .setCoordsDataKey("deployablesTimer")
@@ -112,19 +130,23 @@ object DeployablesTimer {
         resetUmberella()
         resetFlare()
         resetDwarvenLantern()
+        resetFlux()
         lastUmberellaInteractTimeMs = 0L
         lastDwarvenLanternInteractTimeMs = 0L
+        lastFluxInteractTimeMs = 0L
     }
 
     private fun onChat(event: ChatEvent) {
-        if (!WorldUtils.isInSkyblock()) return
+        CommonUtils.runWithCatching("Failed to handle chat event") {
+            if (!WorldUtils.isInSkyblock()) return
 
-        if (FLARE_DISAPPEARED_PATTERN.matches(event.unformattedText)) {
-            resetFlare()
-        } else if (PREVIOUS_DEPLOYABLE_REMOVED_PATTERN.matches(event.unformattedText)) {
-            val matchResult = PREVIOUS_DEPLOYABLE_REMOVED_PATTERN.find(event.unformattedText) ?: return
-            val captured: String = matchResult.groupValues.getOrNull(1) ?: ""
-            if (captured.contains("flare", ignoreCase = true)) resetFlare()
+            if (FLARE_DISAPPEARED_PATTERN.matches(event.unformattedText)) {
+                resetFlare()
+            } else if (PREVIOUS_DEPLOYABLE_REMOVED_PATTERN.matches(event.unformattedText)) {
+                val matchResult = PREVIOUS_DEPLOYABLE_REMOVED_PATTERN.find(event.unformattedText) ?: return
+                val captured: String = matchResult.groupValues.getOrNull(1) ?: ""
+                if (captured.contains("flare", ignoreCase = true)) resetFlare()
+            }
         }
     }
 
@@ -158,20 +180,27 @@ object DeployablesTimer {
             if (isDwarvenLanternTrackingEnabled() && isHeldItemDwarvenLantern(heldItemName)) {
                 lastDwarvenLanternInteractTimeMs = System.currentTimeMillis()
             }
+
+            if (isFluxTrackingEnabled() && isHeldItemFlux(heldItemName)) {
+                lastFluxInteractTimeMs = System.currentTimeMillis()
+            }
         }
     }
 
     private fun onArmorStandDetailsLoaded(event: ArmorStandDetailsLoadedEvent) {
         CommonUtils.runWithCatching("Failed to handle deployable armor stand spawn") {
             if (!WorldUtils.isInSkyblock()) return
-            if (!isDwarvenLanternTrackingEnabled() && !isUmberellaTrackingEnabled()) return
+            if (!isDwarvenLanternTrackingEnabled() && !isUmberellaTrackingEnabled() && !isFluxTrackingEnabled()) return
 
             val armorStand = event.entity
             val player = FeeshMod.mc.player ?: return
             if (EntityUtils.getDistance(player, armorStand) > 5.0) return
 
             val nowMs = System.currentTimeMillis()
-            if (nowMs - lastDwarvenLanternInteractTimeMs > 1000L && nowMs - lastUmberellaInteractTimeMs > 1000L) return
+            if (nowMs - lastDwarvenLanternInteractTimeMs > 1000L &&
+                nowMs - lastUmberellaInteractTimeMs > 1000L &&
+                nowMs - lastFluxInteractTimeMs > 1000L
+            ) return
 
             val name = event.customNameUnformatted
 
@@ -188,6 +217,14 @@ object DeployablesTimer {
                 nowMs - lastUmberellaInteractTimeMs <= 1000L
             ) {
                 umberellaData.id = armorStand.id
+            } else if (isFluxTrackingEnabled() &&
+                isFluxArmorStandName(name) &&
+                (name.endsWith("30s") || name.endsWith("60s") || name.endsWith("120s")) &&
+                nowMs - lastFluxInteractTimeMs <= 1000L
+            ) {
+                fluxData.id = armorStand.id
+                val formattedName = event.customNameFormatted
+                fluxData.itemDisplayName = formattedName.replace(Regex(" §.+\\d+s"), "").replace(BOLD.code, "").trim().ifBlank { "Flux" }
             }
         }
     }
@@ -205,8 +242,7 @@ object DeployablesTimer {
                 }
 
             if (flareRockets.isNotEmpty()) {
-                flareData.remainingSeconds = 180
-                flareData.remainingTime = fromSecondsToTimeString(flareData.remainingSeconds!!)
+                setRemaining(flareData, 180) // TODO how to track if pet has Bubblegum which makes timer x2
                 flareData.lastPlacedAt = Date()
                 flareData.itemDisplayName = heldItemName
             }
@@ -263,6 +299,11 @@ object DeployablesTimer {
                (Overlays.deployablesTimerOverlay && Overlays.deployablesOverlayTypes.contains(DeployableTypes.DWARVEN_LANTERN))
     }
 
+    private fun isFluxTrackingEnabled(): Boolean {
+        return (Alerts.alertOnDeployableExpiresSoon && Alerts.alertOnDeployableTypes.contains(DeployableTypes.FLUX)) ||
+               (Overlays.deployablesTimerOverlay && Overlays.deployablesOverlayTypes.contains(DeployableTypes.FLUX))
+    }
+
     private fun resetTotem() {
         totemData = TotemData()
     }
@@ -283,26 +324,35 @@ object DeployablesTimer {
         dwarvenLanternData = DwarvenLanternData()
     }
 
+    private fun resetFlux() {
+        fluxData = FluxData()
+    }
+
     private fun trackDeployablesStatus() {
-        if (!WorldUtils.isInSkyblock()) return
-
-        val world = FeeshMod.mc.level ?: return
-        val entities = world.entitiesForRendering().filterIsInstance<ArmorStand>()
-
-        if (isTotemTrackingEnabled()) {
-            trackTotemStatus(entities)
-        }
-        if (isBlackHoleTrackingEnabled()) {
-            trackBlackHoleStatus(entities)
-        }
-        if (isUmberellaTrackingEnabled()) {
-            trackUmberellaStatus(entities)
-        }
-        if (isFlareTrackingEnabled()) {
-            trackFlareStatus()
-        }
-        if (isDwarvenLanternTrackingEnabled()) {
-            trackDwarvenLanternStatus(entities)
+        CommonUtils.runWithCatching("Failed to track deployables status") {
+            if (!WorldUtils.isInSkyblock()) return
+    
+            val world = FeeshMod.mc.level ?: return
+            val entities = world.entitiesForRendering().filterIsInstance<ArmorStand>()
+    
+            if (isTotemTrackingEnabled()) {
+                trackTotemStatus(entities)
+            }
+            if (isBlackHoleTrackingEnabled()) {
+                trackBlackHoleStatus(entities)
+            }
+            if (isUmberellaTrackingEnabled()) {
+                trackUmberellaStatus(entities)
+            }
+            if (isFlareTrackingEnabled()) {
+                trackFlareStatus()
+            }
+            if (isDwarvenLanternTrackingEnabled()) {
+                trackDwarvenLanternStatus(entities)
+            }
+            if (isFluxTrackingEnabled()) {
+                trackFluxStatus(entities)
+            }
         }
     }
 
@@ -345,15 +395,14 @@ object DeployablesTimer {
                 return
             }
 
-            totemData.remainingTime = remainingArmorStandName.split("Remaining: ").lastOrNull()
-
-            if (Alerts.alertOnDeployableExpiresSoon &&
-                Alerts.alertOnDeployableTypes.contains(DeployableTypes.TOTEM_OF_CORRUPTION) &&
-                fromTimeStringToSeconds(totemData.remainingTime!!) == Alerts.deployableExpiresSoonSeconds &&
-                (totemData.lastAlertAt == null || Date().time - totemData.lastAlertAt!!.time >= 5000)
-            ) {
-                playAlert("${DARK_PURPLE}Totem of Corruption", totemData)
-            }
+            val remainingTimeStr = remainingArmorStandName.split("Remaining: ").lastOrNull() ?: ""
+            setRemaining(totemData, fromTimeStringToSeconds(remainingTimeStr))
+            maybeAlertExpiresSoon(
+                totemData,
+                totemData.remainingSeconds!!,
+                DeployableTypes.TOTEM_OF_CORRUPTION,
+                "${DARK_PURPLE}Totem of Corruption",
+            )
         }
     }
 
@@ -392,15 +441,8 @@ object DeployablesTimer {
             val seconds = if (timer.isNotEmpty()) {
                 timer.replace("s", "").toIntOrNull() ?: 180
             } else 180
-            blackHoleData.remainingTime = fromSecondsToTimeString(seconds)
-
-            if (Alerts.alertOnDeployableExpiresSoon &&
-                Alerts.alertOnDeployableTypes.contains(DeployableTypes.BLACK_HOLE) &&
-                seconds == Alerts.deployableExpiresSoonSeconds &&
-                (blackHoleData.lastAlertAt == null || Date().time - blackHoleData.lastAlertAt!!.time >= 5000)
-            ) {
-                playAlert("${DARK_PURPLE}Black Hole", blackHoleData)
-            }
+            setRemaining(blackHoleData, seconds)
+            maybeAlertExpiresSoon(blackHoleData, seconds, DeployableTypes.BLACK_HOLE, "${DARK_PURPLE}Black Hole")
         }
     }
 
@@ -423,20 +465,16 @@ object DeployablesTimer {
 
             val name = umberellaArmorStand.customName.getUnformattedString()
             val seconds = name.split("Umberella ").lastOrNull()?.replace("s", "")?.toIntOrNull() ?: return
-            umberellaData.remainingTime = fromSecondsToTimeString(seconds)
-
-            if (Alerts.alertOnDeployableExpiresSoon &&
-                Alerts.alertOnDeployableTypes.contains(DeployableTypes.UMBERELLA) &&
-                seconds == Alerts.deployableExpiresSoonSeconds &&
-                (umberellaData.lastAlertAt == null || Date().time - umberellaData.lastAlertAt!!.time >= 5000)
-            ) {
-                playAlert("${BLUE}Umberella", umberellaData)
-            }
+            setRemaining(umberellaData, seconds)
+            maybeAlertExpiresSoon(umberellaData, seconds, DeployableTypes.UMBERELLA, "${BLUE}Umberella")
         }
     }
 
     private fun isDwarvenLanternArmorStandName(name: String): Boolean =
         DWARVEN_LANTERN_NAME_PREFIXES.any { name.startsWith(it) }
+
+    private fun isFluxArmorStandName(name: String): Boolean =
+        FLUX_NAME_PREFIXES.any { name.startsWith(it) }
 
     private fun trackDwarvenLanternStatus(entities: List<ArmorStand>) {
         CommonUtils.runWithCatching("Failed to track Dwarven Lantern status") {
@@ -457,15 +495,42 @@ object DeployablesTimer {
 
             val name = lanternArmorStand.customName.getUnformattedString()
             val seconds = name.split(" ").lastOrNull()?.replace("s", "")?.toIntOrNull() ?: return
-            dwarvenLanternData.remainingTime = fromSecondsToTimeString(seconds)
+            setRemaining(dwarvenLanternData, seconds)
+            maybeAlertExpiresSoon(
+                dwarvenLanternData,
+                seconds,
+                DeployableTypes.DWARVEN_LANTERN,
+                dwarvenLanternData.itemDisplayName!!,
+            )
+        }
+    }
 
-            if (Alerts.alertOnDeployableExpiresSoon &&
-                Alerts.alertOnDeployableTypes.contains(DeployableTypes.DWARVEN_LANTERN) &&
-                seconds == Alerts.deployableExpiresSoonSeconds &&
-                (dwarvenLanternData.lastAlertAt == null || Date().time - dwarvenLanternData.lastAlertAt!!.time >= 5000)
-            ) {
-                playAlert(dwarvenLanternData.itemDisplayName!!, dwarvenLanternData)
+    private fun trackFluxStatus(entities: List<ArmorStand>) {
+        CommonUtils.runWithCatching("Failed to track Flux status") {
+            if (!WorldUtils.isInSkyblock() || entities.isEmpty() || !isFluxTrackingEnabled()) {
+                resetFlux()
+                return
             }
+
+            val fluxArmorStand = entities.find { entity ->
+                entity.customName.getUnformattedString().let { isFluxArmorStandName(it) } &&
+                entity.id == fluxData.id
+            }
+
+            if (fluxArmorStand == null) {
+                resetFlux()
+                return
+            }
+
+            val name = fluxArmorStand.customName.getUnformattedString()
+            val seconds = name.split(" ").lastOrNull()?.replace("s", "")?.toIntOrNull() ?: return
+            setRemaining(fluxData, seconds)
+            maybeAlertExpiresSoon(
+                fluxData,
+                seconds,
+                DeployableTypes.FLUX,
+                fluxData.itemDisplayName!!,
+            )
         }
     }
 
@@ -476,27 +541,43 @@ object DeployablesTimer {
                 return
             }
 
-            val remainingSeconds = flareData.remainingSeconds ?: 0
-            if (remainingSeconds <= 0) {
+            val remainingSeconds = flareData.remainingSeconds
+            if (remainingSeconds == null || remainingSeconds <= 0) {
                 resetFlare()
                 return
             }
 
-            flareData.remainingSeconds = remainingSeconds - 1
-            flareData.remainingTime = fromSecondsToTimeString(flareData.remainingSeconds!!)
-
-            if (Alerts.alertOnDeployableExpiresSoon &&
-                Alerts.alertOnDeployableTypes.contains(DeployableTypes.FLARE) &&
-                remainingSeconds == Alerts.deployableExpiresSoonSeconds &&
-                (flareData.lastAlertAt == null || Date().time - flareData.lastAlertAt!!.time >= 5000)
-            ) {
-                playAlert(flareData.itemDisplayName ?: "Flare", flareData)
-            }
+            setRemaining(flareData, remainingSeconds - 1)
+            maybeAlertExpiresSoon(
+                flareData,
+                flareData.remainingSeconds!!,
+                DeployableTypes.FLARE,
+                flareData.itemDisplayName ?: "Flare",
+            )
         }
     }
 
-    private fun playAlert(itemDisplayName: String, data: BaseDeployableData) {
+    private fun expiresSoonSecondsFor(data: BaseDeployableData): Int =
+        return (if (data.isShortLiving) Alerts.shortLivingDeployableExpiresSoonSeconds else Alerts.deployableExpiresSoonSeconds)
+            .coerceAtLeast(1)
+
+    private fun maybeAlertExpiresSoon(
+        data: BaseDeployableData,
+        remainingSeconds: Int,
+        type: DeployableTypes,
+        itemDisplayName: String,
+    ) {
+        val expiresSoonSeconds = expiresSoonSecondsFor(data)
+        if (remainingSeconds > expiresSoonSeconds) {
+            data.isAlerted = false
+            data.lastAlertAt = null
+            return
+        }
+        if (!Alerts.alertOnDeployableExpiresSoon || !Alerts.alertOnDeployableTypes.contains(type) || data.isAlerted) return
+
+        data.isAlerted = true
         data.lastAlertAt = Date()
+
         CommonUtils.showTitle("$itemDisplayName ${RED}expires soon")
         ChatUtils.sendLocalChat("${WHITE}Your $itemDisplayName ${WHITE}expires soon.", true)
         if (General.soundMode == SoundMode.MEME) SoundUtils.playCustomSound(Sounds.FEESH_NOTIFICATION_BELL)
@@ -509,42 +590,68 @@ object DeployablesTimer {
         if (!Overlays.deployablesTimerOverlay || !WorldUtils.isInSkyblock()) return
 
         val lines = mutableListOf<String>()
-        val expiresSoonSeconds = Alerts.deployableExpiresSoonSeconds.coerceAtLeast(1)
 
-        if (Overlays.deployablesOverlayTypes.contains(DeployableTypes.UMBERELLA) && !umberellaData.remainingTime.isNullOrEmpty() && umberellaData.remainingTime != "00s") {
-            val timerColor = fromTimeStringToSeconds(umberellaData.remainingTime!!) <= expiresSoonSeconds
-            val colorCode = if (timerColor) RED.code else WHITE.code
-            lines.add("${BLUE.code}Umberella: $colorCode${umberellaData.remainingTime}")
+        if (Overlays.deployablesOverlayTypes.contains(DeployableTypes.UMBERELLA)) {
+            val seconds = umberellaData.remainingSeconds
+            if (seconds != null && seconds > 0) {
+                val colorCode = if (seconds <= expiresSoonSecondsFor(umberellaData)) RED.code else WHITE.code
+                lines.add("${BLUE.code}Umberella: $colorCode${umberellaData.remainingTimeStr}")
+            }
         }
 
-        if (Overlays.deployablesOverlayTypes.contains(DeployableTypes.FLARE) && !flareData.remainingTime.isNullOrEmpty() && flareData.remainingTime != "00s") {
-            val timerColor = (flareData.remainingSeconds ?: 0) <= expiresSoonSeconds
-            val colorCode = if (timerColor) RED.code else WHITE.code
-            lines.add("${flareData.itemDisplayName}: $colorCode${flareData.remainingTime}")
+        if (Overlays.deployablesOverlayTypes.contains(DeployableTypes.FLARE)) {
+            val seconds = flareData.remainingSeconds
+            if (seconds != null && seconds > 0) {
+                val colorCode = if (seconds <= expiresSoonSecondsFor(flareData)) RED.code else WHITE.code
+                lines.add("${flareData.itemDisplayName}: $colorCode${flareData.remainingTimeStr}")
+            }
         }
 
-        if (Overlays.deployablesOverlayTypes.contains(DeployableTypes.BLACK_HOLE) && !blackHoleData.remainingTime.isNullOrEmpty() && blackHoleData.remainingTime != "00s") {
-            val timerColor = fromTimeStringToSeconds(blackHoleData.remainingTime!!) <= expiresSoonSeconds
-            val colorCode = if (timerColor) RED.code else WHITE.code
-            lines.add("${DARK_PURPLE.code}Black Hole: $colorCode${blackHoleData.remainingTime}")
+        if (Overlays.deployablesOverlayTypes.contains(DeployableTypes.BLACK_HOLE)) {
+            val seconds = blackHoleData.remainingSeconds
+            if (seconds != null && seconds > 0) {
+                val colorCode = if (seconds <= expiresSoonSecondsFor(blackHoleData)) RED.code else WHITE.code
+                lines.add("${DARK_PURPLE.code}Black Hole: $colorCode${blackHoleData.remainingTimeStr}")
+            }
         }
 
-        if (Overlays.deployablesOverlayTypes.contains(DeployableTypes.TOTEM_OF_CORRUPTION) && !totemData.remainingTime.isNullOrEmpty() && totemData.remainingTime != "00s") {
-            val remainingSeconds = fromTimeStringToSeconds(totemData.remainingTime!!)
-            val timerColor = remainingSeconds > 0 && remainingSeconds <= expiresSoonSeconds && !totemData.remainingTime!!.contains("m")
-            val colorCode = if (timerColor) RED.code else WHITE.code
-            lines.add("${DARK_PURPLE.code}Totem of Corruption: $colorCode${totemData.remainingTime}")
+        if (Overlays.deployablesOverlayTypes.contains(DeployableTypes.TOTEM_OF_CORRUPTION)) {
+            val seconds = totemData.remainingSeconds
+            if (seconds != null && seconds > 0) {
+                val colorCode = if (seconds <= expiresSoonSecondsFor(totemData)) RED.code else WHITE.code
+                lines.add("${DARK_PURPLE.code}Totem of Corruption: $colorCode${totemData.remainingTimeStr}")
+            }
         }
 
-        if (Overlays.deployablesOverlayTypes.contains(DeployableTypes.DWARVEN_LANTERN) && !dwarvenLanternData.remainingTime.isNullOrEmpty() && dwarvenLanternData.remainingTime != "00s") {
-            val timerColor = fromTimeStringToSeconds(dwarvenLanternData.remainingTime!!) <= expiresSoonSeconds
-            val colorCode = if (timerColor) RED.code else WHITE.code
-            lines.add("${dwarvenLanternData.itemDisplayName!!}: $colorCode${dwarvenLanternData.remainingTime}")
+        if (Overlays.deployablesOverlayTypes.contains(DeployableTypes.DWARVEN_LANTERN)) {
+            val seconds = dwarvenLanternData.remainingSeconds
+            if (seconds != null && seconds > 0) {
+                val colorCode = if (seconds <= expiresSoonSecondsFor(dwarvenLanternData)) RED.code else WHITE.code
+                lines.add("${dwarvenLanternData.itemDisplayName!!}: $colorCode${dwarvenLanternData.remainingTimeStr}")
+            }
+        }
+
+        if (Overlays.deployablesOverlayTypes.contains(DeployableTypes.FLUX)) {
+            val seconds = fluxData.remainingSeconds
+            if (seconds != null && seconds > 0) {
+                val colorCode = if (seconds <= expiresSoonSecondsFor(fluxData)) RED.code else WHITE.code
+                lines.add("${fluxData.itemDisplayName!!}: $colorCode${fluxData.remainingTimeStr}")
+            }
         }
 
         if (lines.isNotEmpty()) {
             gui.setLines(lines.map { LineInfo(it) })
         }
+    }
+
+    private fun setRemaining(data: BaseDeployableData, seconds: Int) {
+        if (seconds <= 0) {
+            data.remainingSeconds = 0
+            data.remainingTimeStr = null
+            return
+        }
+        data.remainingSeconds = seconds
+        data.remainingTimeStr = fromSecondsToTimeString(seconds)
     }
 
     private fun fromSecondsToTimeString(totalSeconds: Int): String {
@@ -560,6 +667,7 @@ object DeployablesTimer {
 
     private fun fromTimeStringToSeconds(timeStr: String): Int {
         return try {
+            if (timeStr.isEmpty()) return 0
             if (timeStr.contains("m")) {
                 val parts = timeStr.split("m")
                 val minutes = parts[0].toIntOrNull() ?: 0

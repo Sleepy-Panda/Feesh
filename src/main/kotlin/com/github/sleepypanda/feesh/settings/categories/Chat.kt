@@ -45,7 +45,7 @@ object Chat : CategoryKt("Chat") {
 
     var compactDoubleHookMessageTemplate by strings(CompactCatchMessages.DEFAULT_DOUBLE_HOOK_TEMPLATE) {
         this.name = Translated("Double hook message template")
-        this.description = Translated("${GRAY}Custom text shown when you get a double hook. Leave empty to use default.")
+        this.description = Translated("${GRAY}Custom text prefix shown before catch message when you get a double hook. Leave empty to use default.")
     }
 
     var compactCatchMessageTemplate by strings(CompactCatchMessages.DEFAULT_CATCH_TEMPLATE) {

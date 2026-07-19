@@ -229,20 +229,27 @@ object Alerts : CategoryKt("Alerts") {
     }
 
     var alertOnDeployableExpiresSoon by boolean(true) {
-        this.name = Translated("Alert when deployable item expires soon")
-        this.description = Translated("Shows a title and plays a sound when your deployable item is about to expire.")
-    }
-
-    var deployableExpiresSoonSeconds by int(10) {
-        this.name = Translated("Seconds before deployable expiration")
-        this.description = Translated("Seconds remaining before deployable expiration to show the alert. Ignored if the deployable expiration alert is disabled.")
-        this.range = 1..60
-        this.slider = true
+        this.name = Translated("Alert when deployable expires soon")
+        this.description = Translated("Shows a title and plays a sound when own deployable is about to expire.")
     }
 
     var alertOnDeployableTypes by select(DeployableTypes.TOTEM_OF_CORRUPTION, *DeployableTypes.values()) {
         this.name = Translated("Select deployables to be alerted on")
         this.searchTerms = DeployableTypes.values().map { it.displayName }.toList()
+    }
+
+    var deployableExpiresSoonSeconds by int(10) {
+        this.name = Translated("Seconds before expiration [long-living deployables]")
+        this.description = Translated("How many seconds should remain until deployable expiration to see the alert. This setting is applicable to long-living deployables (3 min or 5 min).")
+        this.range = 1..60
+        this.slider = true
+    }
+
+    var shortLivingDeployableExpiresSoonSeconds by int(5) {
+        this.name = Translated("Seconds before expiration [short-living deployables]")
+        this.description = Translated("How many seconds should remain until deployable expiration to see the alert. This setting is applicable to short-living deployables (30s or 1 min).")
+        this.range = 1..30
+        this.slider = true
     }
 
     init {
