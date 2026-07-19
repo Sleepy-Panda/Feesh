@@ -9,7 +9,7 @@ enum class HexColorCodes(val colorCode: Int, val gradientColorCodes: IntArray) {
     RARE(0x449AFC, intArrayOf(0x449AFC, 0x3FE4B9, 0x6DBBEA)),
     EPIC(0xA234EB, intArrayOf(0xA234EB, 0xE68CAF, 0x873285)),
     LEGENDARY(0xFC8F00, intArrayOf(0xFC8F00, 0xFFB137, 0xFCCD18)),
-    MYTHIC(0xFC54FC, intArrayOf(0xFC54FC, 0xFF8C79, 0xFBAE52, 0xEB7195)),
+    MYTHIC(0xFC54FC, intArrayOf(0xFC54FC, 0xFBAE52, 0xEB7195)),
     DIVINE(0x54FCFC, intArrayOf(0x54FCFC, 0x46C0FC, 0x54FCFC)), // Not used so no good gradient
     SPECIAL(0xFC5454, intArrayOf(0xFC5454, 0xB20303, 0xFC5454)); // Same
 
