@@ -174,24 +174,24 @@ object FishingHookUtils {
     }
 
     private fun isOwnFishingHookSubmerged(): Boolean {
-        if (!WorldUtils.isInSkyblock()) return false
-        val player = FeeshMod.mc.player ?: return false
-
-        val heldItem = player.mainHandItem
-        if (!ItemUtils.isFishingRod(heldItem)) return false
-
-        val isDirtRod = heldItem.hoverName.getUnformattedString().contains("Dirt Rod")
-        val fishingHook = EntityUtils.getPlayersFishingHookEntity() ?: return false
-
-        if (!isDirtRod) {
-            if (isFishingHookInFluid(fishingHook)) return true
-        } else {
-            val level = fishingHook.level()
-            val basePos = fishingHook.blockPosition()
-            val block = level.getBlockState(basePos)
-            if (block.`is`(Blocks.DIRT) || block.`is`(Blocks.COARSE_DIRT)) return true
+        CommonUtils.runWithCatching("Failed to check if own fishing hook is submerged") {
+            if (!WorldUtils.isInSkyblock()) return false
+            val player = FeeshMod.mc.player ?: return false
+    
+            val heldItem = player.mainHandItem
+            if (!ItemUtils.isFishingRod(heldItem)) return false
+    
+            val isDirtRod = heldItem.hoverName.getUnformattedString().contains("Dirt Rod")
+            val fishingHook = EntityUtils.getPlayersFishingHookEntity() ?: return false
+    
+            if (!isDirtRod) {
+                if (isFishingHookInFluid(fishingHook)) return true
+            } else {
+                if (isFishingHookInDirt(fishingHook)) return true
+            }
+    
+            return false
         }
-
         return false
     }
 
@@ -203,15 +203,17 @@ object FishingHookUtils {
 
         val level = fishingHook.level()
         val basePos = fishingHook.blockPosition()
-        val checkPositions = arrayOf(basePos/*, basePos.below()*/)
+        val fluid = level.getFluidState(basePos)
+        if (fluid.`is`(FluidTags.WATER) || fluid.`is`(FluidTags.LAVA)) return true
+        val block = level.getBlockState(basePos)
+        return block.`is`(Blocks.KELP) || block.`is`(Blocks.KELP_PLANT) || block.`is`(Blocks.SEAGRASS) || block.`is`(Blocks.TALL_SEAGRASS)
+    }
 
-        for (pos in checkPositions) {
-            val fluid = level.getFluidState(pos)
-            if (fluid.`is`(FluidTags.WATER) || fluid.`is`(FluidTags.LAVA)) return true
-            val block = level.getBlockState(pos)
-            if (block.`is`(Blocks.KELP) || block.`is`(Blocks.KELP_PLANT) || block.`is`(Blocks.SEAGRASS) || block.`is`(Blocks.TALL_SEAGRASS)) return true
-        }
-
-        return false
+    private fun isFishingHookInDirt(fishingHook: FishingHook): Boolean {
+        val level = fishingHook.level()
+        val basePos = fishingHook.blockPosition()
+        val block = level.getBlockState(basePos)
+        val belowBlock = level.getBlockState(basePos.below())
+        return block.`is`(Blocks.DIRT) || block.`is`(Blocks.COARSE_DIRT) || belowBlock.`is`(Blocks.DIRT) || belowBlock.`is`(Blocks.COARSE_DIRT)
     }
 }

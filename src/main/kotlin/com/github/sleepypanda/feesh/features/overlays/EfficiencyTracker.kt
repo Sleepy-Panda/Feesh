@@ -26,9 +26,11 @@ import com.github.sleepypanda.feesh.utils.gui.Table
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
 import com.github.sleepypanda.feesh.features.overlays.base.IResettableTracker
+import com.github.sleepypanda.feesh.utils.EntityUtils
 import java.util.Date
 
 // Just timer when all stats are 0 - shown 0 stats for now
+// Drone pet
 // Stuck in kelp = submerged more than a second ago
 // Tracker starts when fishing hook is submerged, like other overlays
 // Tracker is paused when fishing hook is not submerged for 5 minutes
@@ -50,9 +52,9 @@ object EfficiencyTracker : IResettableTracker {
 
     private const val TICKS_PER_UPDATE = 20
     private const val HIDE_OVERLAY_MINUTES = 5
-    private const val CATCH_XP_ORB_SOUND_PATH = "entity.experience_orb.pickup" // Some trash items caught also play sound(s) with volume 0.5 + 0.1 or just 0.1 
-    private const val CATCH_XP_ORB_VOLUME = 0.1f
-    private val TREASURE_OR_JUNK_CATCH_PATTERN = Regex("^. (GOOD|GOOD JUNK|GREAT|GREAT JUNK|OUTSTANDING|OUTSTANDING JUNK) CATCH!")
+    private const val CATCH_XP_ORB_SOUND_PATH = "entity.experience_orb.pickup" // Some trash items caught also play sound(s) with volume 0.5 + 0.1 or just 0.1
+    // ♪ MUSICAL CATCH! You caught a Music Disc - Cat!
+    private val TREASURE_OR_JUNK_CATCH_PATTERN = Regex("^. (GOOD|GOOD JUNK|GREAT|GREAT JUNK|OUTSTANDING|OUTSTANDING JUNK|MUSICAL) CATCH!")
     private val TROPHY_CATCH_PATTERN = Regex("^. (TROPHY FISH|TROPHY FROG)!")
 
     private var catchesCount = 0
@@ -151,7 +153,7 @@ object EfficiencyTracker : IResettableTracker {
     private fun onClientTick(@Suppress("UNUSED_PARAMETER") event: ClientTickEvent) {
         CommonUtils.runWithCatching("Failed to handle tick in $trackerName") {
             val currentIsFishingHookActive = FishingHookUtils.getActiveFishingHook() != null
-            if (!currentIsFishingHookActive && lastIsFishingHookActive && isSuccessfulCatch()) onRodReeledIn()
+            if (!currentIsFishingHookActive && lastIsFishingHookActive) onRodReeledIn()
             lastIsFishingHookActive = currentIsFishingHookActive
     
             tickCounter++
@@ -159,6 +161,33 @@ object EfficiencyTracker : IResettableTracker {
             tickCounter = 0
     
             refreshElapsedTimeOrPause() // Once per second!
+            updateGuiLines()
+        }
+    }
+
+    private fun onSeaCreatureCaught(event: OwnSeaCreatureCaughtEvent) {
+        CommonUtils.runWithCatching("Failed to track sea creature catch in $trackerName") {
+            if (event.seaCreatureName == "Vanquisher") return
+            lastSeaCreatureCaughtAt = Date()
+
+            if (!isTrackerActive()) return
+
+            val isDoubleHooked = event.isDoubleHook
+            val dhValue = if (isDoubleHooked) 2 else 1
+
+            seaCreatureCatchesCount += 1
+            seaCreatureCountWithDh += dhValue
+            seaCreatureCountWithDhAndBs += dhValue         
+            updateGuiLines()
+        }
+    }
+
+    private fun onSeaCreatureCocooned(event: SeaCreatureCocoonedByYouEvent) {
+        CommonUtils.runWithCatching("Failed to track cocooned sea creature in $trackerName") {
+            if (!isTrackerVisible()) return
+            if (event.seaCreatureName == "Vanquisher") return
+
+            seaCreatureCountWithDhAndBs += 1
             updateGuiLines()
         }
     }
@@ -198,37 +227,38 @@ object EfficiencyTracker : IResettableTracker {
             if (!isTrackerActive()) return
             if (!isStatEnabled(EfficiencyStatTypes.CATCHES_PER_HOUR)) return
             if (event.soundId.path != CATCH_XP_ORB_SOUND_PATH) return
-            if (event.volume != CATCH_XP_ORB_VOLUME) return
+            if (event.volume != 0.1f && event.volume != 0.5f) return
 
             val player = FeeshMod.mc.player ?: return
-            val distanceText = when {
-                event.relative -> "${AQUA}rel"
-                player == null -> "${DARK_GRAY}n/a"
-                else -> {
-                    val dx = event.x - player.x
-                    val dy = event.y - player.y
-                    val dz = event.z - player.z
-                    val distance = kotlin.math.sqrt(dx * dx + dy * dy + dz * dz)
-                    val distColor = if (distance <= 8.0) GREEN else RED
-                    "${distColor}${"%.1f".format(distance)}m"
-                }
-            }
-            ChatUtils.sendLocalChat(
-                "${GRAY}XP sound ${DARK_GRAY}| ${GRAY}dist:$distanceText ${DARK_GRAY}",
-                true
-            )
+            val distanceSqr = EntityUtils.getDistanceSqr(player.x, player.y, player.z, event.x, event.y, event.z)
+            if (distanceSqr > 1.0) return // Usually sounds played with distance (non-sqr) 0.1 and 0.7
 
             lastCatchXpOrbSoundAt = Date()
         }
     }
 
+
+    private fun onRodReeledIn() {
+        CommonUtils.runWithCatching("Failed to track rod reeled in in $trackerName") {
+            if (!isTrackerActive()) return
+            if (!isStatEnabled(EfficiencyStatTypes.CATCHES_PER_HOUR)) return
+            if (!isSuccessfulCatch()) return
+            catchesCount += 1
+            updateGuiLines()
+            ChatUtils.sendLocalChat("Added catch " + catchesCount, true)
+        }
+    }
+
     private fun isSuccessfulCatch(): Boolean {
+        if (!isTrackerActive()) return false
+        if (!isStatEnabled(EfficiencyStatTypes.CATCHES_PER_HOUR)) return false
+
         val now = Date().time
         fun ageMs(timestamp: Date?): Long? = timestamp?.let { now - it.time }
         fun wasWithinMs(timestamp: Date?, windowMs: Long): Boolean = ageMs(timestamp)?.let { it < windowMs } == true
         fun formatMs(label: String, ageMs: Long?): String {
             if (ageMs == null) return "${GRAY}$label:${DARK_GRAY} n/a"
-            val color = if (ageMs > 300L) RED else WHITE
+            val color = if (ageMs > 250L) RED else WHITE
             return "${GRAY}$label:${color}${ageMs}ms"
         }
 
@@ -252,10 +282,11 @@ object EfficiencyTracker : IResettableTracker {
 
         if (!wasWithinMs(lastRodRightClickedAt, 500L)) return false
         if (!FishingHookUtils.wasFishingHookSubmergedMillisecondsAgo(500)) return false
-        return wasWithinMs(lastSeaCreatureCaughtAt, 250L) ||
-            wasWithinMs(lastTreasureOrJunkCaughtAt, 250L) ||
-            wasWithinMs(lastTrophyCaughtAt, 250L) ||
-            wasWithinMs(lastCatchXpOrbSoundAt, 250L)
+        
+        return wasWithinMs(lastSeaCreatureCaughtAt, 300L) ||
+            wasWithinMs(lastTreasureOrJunkCaughtAt, 300L) ||
+            wasWithinMs(lastTrophyCaughtAt, 300L) ||
+            wasWithinMs(lastCatchXpOrbSoundAt, 300L)
     }
 
     private fun isTrackerEnabledInWorld(): Boolean {
@@ -308,42 +339,6 @@ object EfficiencyTracker : IResettableTracker {
 
     private fun pauseInternal() {
         isSessionActive = false
-    }
-
-    private fun onRodReeledIn() {
-        CommonUtils.runWithCatching("Failed to track rod reeled in in $trackerName") {
-            if (!isTrackerActive()) return
-            if (!isStatEnabled(EfficiencyStatTypes.CATCHES_PER_HOUR)) return
-            catchesCount += 1
-            updateGuiLines()
-        }
-    }
-
-    private fun onSeaCreatureCaught(event: OwnSeaCreatureCaughtEvent) {
-        CommonUtils.runWithCatching("Failed to track sea creature catch in $trackerName") {
-            if (event.seaCreatureName == "Vanquisher") return
-            lastSeaCreatureCaughtAt = Date()
-
-            if (!isTrackerActive()) return
-
-            val isDoubleHooked = event.isDoubleHook
-            val dhValue = if (isDoubleHooked) 2 else 1
-
-            seaCreatureCatchesCount += 1
-            seaCreatureCountWithDh += dhValue
-            seaCreatureCountWithDhAndBs += dhValue         
-            updateGuiLines()
-        }
-    }
-
-    private fun onSeaCreatureCocooned(event: SeaCreatureCocoonedByYouEvent) {
-        CommonUtils.runWithCatching("Failed to track cocooned sea creature in $trackerName") {
-            if (!isTrackerVisible()) return
-            if (event.seaCreatureName == "Vanquisher") return
-
-            seaCreatureCountWithDhAndBs += 1
-            updateGuiLines()
-        }
     }
 
     private fun getTotalForStat(stat: EfficiencyStatTypes): Int {
