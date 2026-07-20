@@ -5,6 +5,7 @@ import com.github.sleepypanda.feesh.events.EventBus
 import com.github.sleepypanda.feesh.events.models.ChatEvent
 import com.github.sleepypanda.feesh.events.models.ClientTickEvent
 import com.github.sleepypanda.feesh.events.models.InteractActionType
+import com.github.sleepypanda.feesh.events.models.OwnFishingHookDespawnedEvent
 import com.github.sleepypanda.feesh.events.models.OwnSeaCreatureCaughtEvent
 import com.github.sleepypanda.feesh.events.models.PlayerInteractEvent
 import com.github.sleepypanda.feesh.events.models.SeaCreatureCocoonedByYouEvent
@@ -29,6 +30,7 @@ import com.github.sleepypanda.feesh.features.overlays.base.IResettableTracker
 import com.github.sleepypanda.feesh.utils.EntityUtils
 import java.util.Date
 
+// If only sc/h enabled and I fish in trophy, does it show empty widget?
 // Just timer when all stats are 0 - shown 0 stats for now
 // Drone pet
 // Stuck in kelp = submerged more than a second ago
@@ -64,7 +66,6 @@ object EfficiencyTracker : IResettableTracker {
     private var elapsedSeconds = 0
 
     private var isSessionActive = false
-    private var lastIsFishingHookActive = false
     private var lastRodRightClickedAt: Date? = null
     private var lastSeaCreatureCaughtAt: Date? = null
     private var lastTreasureOrJunkCaughtAt: Date? = null
@@ -98,6 +99,7 @@ object EfficiencyTracker : IResettableTracker {
         }
         EventBus.subscribe(OwnSeaCreatureCaughtEvent::class, ::onSeaCreatureCaught)
         EventBus.subscribe(SeaCreatureCocoonedByYouEvent::class, ::onSeaCreatureCocooned)
+        EventBus.subscribe(OwnFishingHookDespawnedEvent::class, ::onOwnFishingHookDespawned)
         EventBus.subscribe(ClientTickEvent::class, ::onClientTick)
         EventBus.subscribe(PlayerInteractEvent::class, ::onPlayerInteract)
         EventBus.subscribe(ChatEvent::class, ::onChat)
@@ -117,7 +119,6 @@ object EfficiencyTracker : IResettableTracker {
         isSessionActive = false
         elapsedSeconds = 0
 
-        lastIsFishingHookActive = false
         lastRodRightClickedAt = null
         lastSeaCreatureCaughtAt = null
         lastTreasureOrJunkCaughtAt = null
@@ -146,20 +147,27 @@ object EfficiencyTracker : IResettableTracker {
         lastTreasureOrJunkCaughtAt = null
         lastTrophyCaughtAt = null
         lastCatchXpOrbSoundAt = null
-        lastIsFishingHookActive = false
         gui.clearLines()
+    }
+
+    private fun onOwnFishingHookDespawned(@Suppress("UNUSED_PARAMETER") event: OwnFishingHookDespawnedEvent) {
+        CommonUtils.runWithCatching("Failed to track fishing hook despawned in $trackerName") {
+            if (!isTrackerActive()) return
+            if (!isStatEnabled(EfficiencyStatTypes.CATCHES_PER_HOUR)) return
+            if (!isSuccessfulCatch()) return
+
+            catchesCount += 1
+            updateGuiLines()
+            ChatUtils.sendLocalChat("Added catch " + catchesCount, true)
+        }
     }
 
     private fun onClientTick(@Suppress("UNUSED_PARAMETER") event: ClientTickEvent) {
         CommonUtils.runWithCatching("Failed to handle tick in $trackerName") {
-            val currentIsFishingHookActive = FishingHookUtils.getActiveFishingHook() != null
-            if (!currentIsFishingHookActive && lastIsFishingHookActive) onRodReeledIn()
-            lastIsFishingHookActive = currentIsFishingHookActive
-    
             tickCounter++
             if (tickCounter < TICKS_PER_UPDATE) return
             tickCounter = 0
-    
+
             refreshElapsedTimeOrPause() // Once per second!
             updateGuiLines()
         }
@@ -234,18 +242,6 @@ object EfficiencyTracker : IResettableTracker {
             if (distanceSqr > 1.0) return // Usually sounds played with distance (non-sqr) 0.1 and 0.7
 
             lastCatchXpOrbSoundAt = Date()
-        }
-    }
-
-
-    private fun onRodReeledIn() {
-        CommonUtils.runWithCatching("Failed to track rod reeled in in $trackerName") {
-            if (!isTrackerActive()) return
-            if (!isStatEnabled(EfficiencyStatTypes.CATCHES_PER_HOUR)) return
-            if (!isSuccessfulCatch()) return
-            catchesCount += 1
-            updateGuiLines()
-            ChatUtils.sendLocalChat("Added catch " + catchesCount, true)
         }
     }
 
