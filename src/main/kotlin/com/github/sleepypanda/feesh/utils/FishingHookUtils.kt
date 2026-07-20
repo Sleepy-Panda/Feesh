@@ -6,6 +6,9 @@ import com.github.sleepypanda.feesh.events.models.ClientTickEvent
 import com.github.sleepypanda.feesh.events.models.WorldChangedEvent
 import com.github.sleepypanda.feesh.utils.ChatUtils.getUnformattedString
 import java.util.Date
+import net.minecraft.tags.FluidTags
+import net.minecraft.world.entity.projectile.FishingHook
+import net.minecraft.world.level.block.Blocks
 import net.minecraft.world.phys.Vec3
 
 /** 
@@ -177,11 +180,37 @@ object FishingHookUtils {
         val heldItem = player.mainHandItem
         if (!ItemUtils.isFishingRod(heldItem)) return false
 
-        val fishingHook = EntityUtils.getPlayersFishingHookEntity() ?: return false
-        if (fishingHook.isInLava || fishingHook.isInWater) return true
-
         val isDirtRod = heldItem.hoverName.getUnformattedString().contains("Dirt Rod")
-        if (isDirtRod) return true // For dirt rod, the player's hook can be in dirt
+        val fishingHook = EntityUtils.getPlayersFishingHookEntity() ?: return false
+
+        if (!isDirtRod) {
+            if (isFishingHookInFluid(fishingHook)) return true
+        } else {
+            val level = fishingHook.level()
+            val basePos = fishingHook.blockPosition()
+            val block = level.getBlockState(basePos)
+            if (block.`is`(Blocks.DIRT) || block.`is`(Blocks.COARSE_DIRT)) return true
+        }
+
+        return false
+    }
+
+    /**
+     * Entity.isInWater/isInLava can be false when the bobber sits in/on waterlogged plants (seagrass, kelp, etc.)
+     */
+    private fun isFishingHookInFluid(fishingHook: FishingHook): Boolean {
+        if (fishingHook.isInWater || fishingHook.isInLava) return true
+
+        val level = fishingHook.level()
+        val basePos = fishingHook.blockPosition()
+        val checkPositions = arrayOf(basePos/*, basePos.below()*/)
+
+        for (pos in checkPositions) {
+            val fluid = level.getFluidState(pos)
+            if (fluid.`is`(FluidTags.WATER) || fluid.`is`(FluidTags.LAVA)) return true
+            val block = level.getBlockState(pos)
+            if (block.`is`(Blocks.KELP) || block.`is`(Blocks.KELP_PLANT) || block.`is`(Blocks.SEAGRASS) || block.`is`(Blocks.TALL_SEAGRASS)) return true
+        }
 
         return false
     }

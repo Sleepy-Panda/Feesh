@@ -23,7 +23,7 @@ enum class BulkResettableTrackerTypes(
 ) {
     SEA_CREATURES_TRACKER("Sea creatures tracker", isEnabledByDefault = true, hasSessionMode = true, resettableViewModeTracker = SeaCreaturesTracker),
     FISHING_PROFIT_TRACKER("Fishing profit tracker", isEnabledByDefault = true, hasSessionMode = true, resettableViewModeTracker = FishingProfitTracker),
-    SEA_CREATURES_PER_HOUR_TRACKER("Efficiency tracker", isEnabledByDefault = true, resettableTracker = EfficiencyTracker),
+    EFFICIENCY_TRACKER("Efficiency tracker", isEnabledByDefault = true, resettableTracker = EfficiencyTracker),
     JERRY_WORKSHOP_TRACKER("Jerry's Workshop tracker", resettableTracker = JerryWorkshopTracker),
     BAYOU_TRACKER("Bayou tracker", resettableTracker = BayouTracker),
     WATER_HOTSPOTS_TRACKER("Water Hotspots tracker", resettableTracker = WaterHotspotsTracker),

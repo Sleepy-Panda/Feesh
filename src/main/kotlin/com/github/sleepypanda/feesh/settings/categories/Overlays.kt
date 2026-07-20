@@ -550,23 +550,22 @@ Hidden if you have no fishing rod in your hotbar!""".trimIndent())
     var efficiencyTrackerOverlay by boolean(false) {
         this.name = Translated("Efficiency tracker")
         this.description = Translated("""
-${GRAY}Shows an overlay with various efficiency statistics of your fishing session. Not persistent - resets on MC restart.
+${GRAY}Shows an overlay with various efficiency stats of your fishing session. Not persistent - resets on MC restart.
 ${GRAY}To reset: ${WHITE}/${EfficiencyTracker.RESET_COMMAND}
 ${GRAY}To pause: ${WHITE}/${EfficiencyTracker.PAUSE_COMMAND}
 """.trimIndent())
     }
 
     var efficiencyTrackerStats by select(
-        EfficiencyStatTypes.SC_CATCHES_PER_HOUR,
-        EfficiencyStatTypes.SC_PER_HOUR_WITH_DH,
+        EfficiencyStatTypes.SC_PER_HOUR,
     ) {
-        this.name = Translated("Efficiency statistics to display")
+        this.name = Translated("Efficiency stats to display")
         this.description = Translated("""
-${GRAY}Select which per-hour and total counters to show:
-${WHITE}- Casts/hour${GRAY} - fishing rod cast/reel in count per hour.
-${WHITE}- SC catches/hour${GRAY} - sea creature catches per hour, each catch counts as 1.
-${WHITE}- SC/hour (+ DH)${GRAY} - sea creatures per hour, double hook counts as 2.
-${WHITE}- SC/hour (+ DH and BS)${GRAY} - same as SC/hour (includes DH), plus sea creatures you cocooned with Bloodshot (BS).
+${GRAY}Select stats to show:
+${WHITE}- Catches/hour${GRAY} - tracks rod casted/reeled in and you caught something. Works for treasure / trophy fishing / non-100 scc scenarios.
+${WHITE}- SC catches/hour${GRAY} - tracks sea creature catches, each SC catch counts as 1.
+${WHITE}- SC/hour${GRAY} - tracks sea creatures, double hook SC catch counts as 2.
+${WHITE}- SC/hour with BS${GRAY} - same as SC/hour (includes DH), plus sea creatures you cocooned with Bloodshot (BS).
 """.trimIndent())
         this.searchTerms = EfficiencyStatTypes.values().map { it.displayName }.toList()
     }
