@@ -79,6 +79,7 @@ Required Java version is 25+.
 - **Puddle Jumper timer alert** — Alerts when your Puddle Jumper is about to arrive to its destination.
 - **Trophy Frog discovered alert** — Alerts when a new Trophy Frog is discovered.
 - **Trophy Fish discovered alert** — Alerts when a new Trophy Fish is discovered.
+- **Alert when low on air** — Alerts when you are almost out of air (Galatea, Torrhus Canyon).
 
 ### Chat
 

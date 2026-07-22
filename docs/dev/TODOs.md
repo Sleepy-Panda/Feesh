@@ -41,7 +41,6 @@ Newly released - https://hypixel.net/threads/hypixel-skyblock-0-24-5-assorted-qo
 
 - Toggle for PBs, rework trackPersonalBestFishingFestival
 - Max MF PB
-- Low respiration alert?
 - Xp/h
 - SMILE! Polizei111 has sprinkled some joy your way! You feel a little happier. :)
 - Add All option for drops list in settings

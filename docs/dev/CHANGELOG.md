@@ -17,6 +17,7 @@ Released on: ???
 - Gradient color for mod name prefix in chat c:
 - Added Flux and its variations to Deployable overlay / Deployable expiration alert.
 - Added setting to control amount of seconds for alert before deployable expiration.
+- Added "Alert when low on air" for Galatea / Torrhus Canyon.
 
 ## Bugfixes
 
