@@ -30,6 +30,7 @@ object WorldUtils {
     const val GALATEA = "Galatea"
     const val LOTUS_ATOLL = "Lotus Atoll"
     const val TORRHUS_CANYON = "Torrhus Canyon"
+    const val SAFARI = "Safari"
 
     // Zones
     const val PLHLEGBLAST_POOL = "Plhlegblast Pool"
@@ -43,7 +44,8 @@ object WorldUtils {
         DUNGEONS,
         DUNGEON_HUB,
         THE_END,
-        GLACITE_MINESHAFTS
+        GLACITE_MINESHAFTS,
+        SAFARI
     )
 
     val WATER_FISHING_WORLDS = listOf(
