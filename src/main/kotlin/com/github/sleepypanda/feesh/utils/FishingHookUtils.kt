@@ -121,46 +121,49 @@ object FishingHookUtils {
     }
 
     private fun onClientTick(@Suppress("UNUSED_PARAMETER") event: ClientTickEvent) {
-        if (!WorldUtils.isInSkyblock() ||
-            !WorldUtils.isInFishingWorld() ||
-            !PlayerUtils.hasFishingRodInHotbar()
-        ) {
-            activeFishingHook = null
-            lastActiveFishingHook = null
-            submergedFishingHook = null
-            return
-        }
-
-        val fishingHookEntity = EntityUtils.getPlayersFishingHookEntity() ?: run {
-            activeFishingHook = null
-            submergedFishingHook = null
-            return@onClientTick
-        }
-
-        activeFishingHook = ActiveFishingHookInfo(
-            x = fishingHookEntity.x,
-            y = fishingHookEntity.y,
-            z = fishingHookEntity.z,
-            age = fishingHookEntity.tickCount,
-        )
-        lastActiveFishingHook = activeFishingHook
-        activeFishingHookSeenAt = Date()
-
-        if (isOwnFishingHookSubmerged()) {
-            submergedFishingHookSeenAt = Date()
-
-            val closestHotspot = if (WorldUtils.isInHotspotFishingWorld()) HotspotUtils.findClosestHotspotInRange(Vec3(activeFishingHook!!.x, activeFishingHook!!.y, activeFishingHook!!.z), 5.0) else null
-            if (closestHotspot != null) submergedFishingHookInHotspotSeenAt = Date()
-
-            submergedFishingHook = SubmergedFishingHookInfo(
+        CommonUtils.runWithCatching("Failed to update fishing hook utils") {
+            if (!WorldUtils.isInSkyblock() ||
+                !WorldUtils.isInFishingWorld() ||
+                !PlayerUtils.hasFishingRodInHotbar()
+            ) {
+                activeFishingHook = null
+                lastActiveFishingHook = null
+                submergedFishingHook = null
+                return@onClientTick
+            }
+    
+            val fishingHookEntity = EntityUtils.getPlayersFishingHookEntity() ?: run {
+                activeFishingHook = null
+                submergedFishingHook = null
+                return@onClientTick
+            }
+    
+            activeFishingHook = ActiveFishingHookInfo(
                 x = fishingHookEntity.x,
                 y = fishingHookEntity.y,
                 z = fishingHookEntity.z,
                 age = fishingHookEntity.tickCount,
-                isInHotspot = closestHotspot != null,
             )
-        } else {
-            submergedFishingHook = null
+            lastActiveFishingHook = activeFishingHook
+            activeFishingHookSeenAt = Date()
+    
+            if (isOwnFishingHookSubmerged()) {
+                submergedFishingHookSeenAt = Date()
+    
+                val closestHotspot = if (WorldUtils.isInHotspotFishingWorld()) HotspotUtils.findClosestHotspotInRange(Vec3(activeFishingHook!!.x, activeFishingHook!!.y, activeFishingHook!!.z), 5.0) else null
+                if (closestHotspot != null) submergedFishingHookInHotspotSeenAt = Date()
+    
+                submergedFishingHook = SubmergedFishingHookInfo(
+                    x = fishingHookEntity.x,
+                    y = fishingHookEntity.y,
+                    z = fishingHookEntity.z,
+                    age = fishingHookEntity.tickCount,
+                    isInHotspot = closestHotspot != null,
+                )
+            } else {
+                submergedFishingHook = null
+            }
+
         }
     }
 
