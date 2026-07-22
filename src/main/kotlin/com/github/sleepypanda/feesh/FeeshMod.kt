@@ -68,6 +68,7 @@ class FeeshMod : ClientModInitializer {
         FishingHookUtils.init()
         BaitUtils.init()
         ChatUtils.init()
+        ColorUtils.init()
         GuiUtils.init()
         PriceUtils.init()
         KeybindUtils.init()
@@ -151,7 +152,7 @@ class FeeshMod : ClientModInitializer {
         FishingFestivalTracker.init()
         FishingProfitTracker.init()
         MagmaCoreFishingTracker.init()
-        SeaCreaturesPerHourTracker.init()
+        EfficiencyTracker.init()
         RainTimer.init()
         MuteReindrakeGifts.init()
 
@@ -168,6 +169,7 @@ class FeeshMod : ClientModInitializer {
         SlotTextRendererManager.init() // After all slot text renderers are initialized and registered
 
         ExpertiseTooltip.init()
+        CompactedRodPartTooltip.init()
         TooltipManager.init() // After all tooltip features are initialized and registered
 
         // Commands

@@ -14,7 +14,7 @@ import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
 import com.github.sleepypanda.feesh.features.help.VersionChecker
 import com.teamresourceful.resourcefulconfig.api.types.options.TranslatableValue
 import com.teamresourceful.resourcefulconfigkt.api.ConfigKt
-import net.minecraft.Util
+import net.minecraft.util.Util
 
 object Settings : ConfigKt("${FeeshMod.MOD_ID}/config") {
     override val name: TranslatableValue

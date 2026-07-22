@@ -112,6 +112,8 @@ object ItemUtils {
         if (name.contains("Carnival Rod")) return false
 
         val loreLines = getUnformattedLoreLines(itemStack)
+        if (loreLines.any { it.contains("This rod is broken")}) return false
+
         return loreLines.any { it.contains("FISHING ROD", ignoreCase = true) || it.contains("FISHING WEAPON", ignoreCase = true) }
     }
 

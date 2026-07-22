@@ -156,8 +156,7 @@ object GuiUtils {
      */
     fun isInNonStorageGui(): Boolean {
         val guiName = getCurrentChestName() ?: return false
-        return guiName.startsWith("Wardrobe") || guiName.startsWith("Your Equipment") || // TODO will be outdated after Loadouts update
-            guiName.contains("Loadouts") || guiName.contains("Equipment Sets") || guiName.contains("Armor Sets") || 
+        return guiName.contains("Loadouts") || guiName.contains("Equipment Sets") || guiName.contains("Armor Sets") ||
             guiName.contains("Collections") || 
             guiName.contains("Skill") || // Your Skills, Fishing Skill, etc.
             guiName.startsWith("Abiphone") || 
@@ -170,6 +169,7 @@ object GuiUtils {
             guiName == "Stat Tuning Template" ||
             guiName == "SkyBlock Menu" ||
             guiName == "Your Stats Breakdown" ||
+            guiName == "Stats & Equipment" ||
             guiName == "Calendar and Events" ||
             guiName == "Fast Travel"
     }

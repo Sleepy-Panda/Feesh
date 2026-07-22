@@ -6,7 +6,7 @@ import com.github.sleepypanda.feesh.utils.ChatUtils
 import com.github.sleepypanda.feesh.utils.CommonUtils
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.FeeshMod
-import net.minecraft.resources.ResourceLocation
+import net.minecraft.resources.Identifier
 import net.minecraft.sounds.SoundEvent
 
 /**
@@ -64,7 +64,7 @@ object PlayTestSoundCommand {
 
     private fun getSoundEvent(soundName: String): SoundEvent {
         val path = soundName.lowercase()
-        val id = ResourceLocation.fromNamespaceAndPath("minecraft", path)
+        val id = Identifier.fromNamespaceAndPath("minecraft", path)
         return SoundEvent.createVariableRangeEvent(id)
     }
 }

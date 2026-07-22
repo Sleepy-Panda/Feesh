@@ -6,7 +6,7 @@ def mcProject = project.name
 def mcVersion = mcProject - "-fabric"
 
 // Get a property by MC version from gradle.properties
-// E.g. getPropertyByMcVersion("fabric-api.version") in scope of 1.21.10 gets fabric-api.version.1.21.10
+// E.g. getPropertyByMcVersion("fabric-api.version") in scope of 1.21.11 gets fabric-api.version.1.21.11
 def getPropertyByMcVersion = { String name ->
     def value = project.findProperty("${name}.${mcVersion}")?.toString()
     if (value == null) {
@@ -91,10 +91,6 @@ dependencies {
     add("implementation", "net.fabricmc:fabric-language-kotlin:${property("fabriclanguagekotlin.version")}")
 
     switch (mcProject) {
-        case "1.21.10-fabric":
-            includeModDependency("com.teamresourceful.resourcefulconfigkt:resourcefulconfigkt-fabric-1.21.5:${property("resourcefulconfig-kt.version.1.21.10")}")
-            includeModDependency("com.teamresourceful.resourcefulconfig:resourcefulconfig-fabric-1.21.9:${property("resourcefulconfig.version.1.21.10")}")
-            break
         case "1.21.11-fabric":
             includeModDependency("com.teamresourceful.resourcefulconfigkt:resourcefulconfigkt-fabric-1.21.5:${property("resourcefulconfig-kt.version.1.21.11")}")
             includeModDependency("com.teamresourceful.resourcefulconfig:resourcefulconfig-fabric-1.21.11:${property("resourcefulconfig.version.1.21.11")}")

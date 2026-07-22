@@ -90,6 +90,15 @@ object PlayerUtils {
         return cachedHasFishingRodInHotbar
     }
 
+    fun hasFishingRodInHandUncached(): Boolean {
+        CommonUtils.runWithCatching("Failed to check if player is holding a fishing rod") {
+            val player = FeeshMod.mc.player ?: return false
+            val heldItem = player.mainHandItem ?: return false
+            return ItemUtils.isFishingRod(heldItem)
+        }
+        return false
+    }
+
     fun hasFishingRodInHand(): Boolean {
         return fishingRodInHandCache != null
     }

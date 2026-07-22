@@ -7,7 +7,7 @@ import com.github.sleepypanda.feesh.events.models.WorldChangedEvent
 import com.github.sleepypanda.feesh.settings.categories.WorldRendering
 import com.github.sleepypanda.feesh.utils.CommonUtils
 import com.github.sleepypanda.feesh.utils.WorldUtils
-import net.minecraft.resources.ResourceLocation
+import net.minecraft.resources.Identifier
 
 object MuteReindrakeGifts {
     private const val REINDRAKE_NAME = "Reindrake"
@@ -26,7 +26,7 @@ object MuteReindrakeGifts {
     }
 
     @JvmStatic
-    fun shouldCancel(soundId: ResourceLocation?): Boolean {
+    fun shouldCancel(soundId: Identifier?): Boolean {
         if (!WorldRendering.muteReindrakeGifts) return false
         if (!isInJerryWorkshop()) return false
         if (!isOwnReindrakeAlive && !isWithinPostDeathMute()) return false

@@ -11,7 +11,7 @@ import kotlin.math.truncate
 
 object AutoRecombFlag : BaseSlotTextRenderer() {
 
-    private const val SLOT_COLOR = 0xFF55FFFF.toInt()
+    private const val SLOT_COLOR = 0xff54fcfc.toInt()
 
     fun init() {
         // Calling this ensures the object is initialized, and registered in base class.

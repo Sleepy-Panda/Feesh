@@ -11,6 +11,7 @@ import com.github.sleepypanda.feesh.settings.models.HighlightableSeaCreatureType
 import com.github.sleepypanda.feesh.utils.WorldUtils
 import com.github.sleepypanda.feesh.utils.EntityUtils
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes
+import com.github.sleepypanda.feesh.utils.enums.HexColorCodes
 import kotlin.jvm.JvmField
 import net.minecraft.world.entity.Entity
 import net.minecraft.world.entity.LivingEntity
@@ -87,16 +88,18 @@ object RareMobHighlight {
         entities.add(mobEntity)
 
         val color = when {
-            scInfo?.rarityColorCode == ColorCodes.COMMON.code -> 0xFFFFFF
-            scInfo?.rarityColorCode == ColorCodes.UNCOMMON.code -> 0x55FF55
-            scInfo?.rarityColorCode == ColorCodes.RARE.code -> 0x8AA1FF
-            scInfo?.rarityColorCode == ColorCodes.EPIC.code -> 0xAA00AA
-            scInfo?.rarityColorCode == ColorCodes.LEGENDARY.code -> 0xFFAA00
-            scInfo?.rarityColorCode == ColorCodes.MYTHIC.code -> 0xFF55FF
-            scInfo?.rarityColorCode == ColorCodes.DIVINE.code -> 0x55FFFF
-            scInfo?.rarityColorCode == ColorCodes.SPECIAL.code -> 0xFF5555
-            cleanName == HighlightableSeaCreatureTypes.FLIPFLOPPER.displayName || cleanName == HighlightableSeaCreatureTypes.SEASHINE.displayName -> 0x55FFFF
-            cleanName == HighlightableSeaCreatureTypes.JAWBUS_FOLLOWER.displayName || cleanName == HighlightableSeaCreatureTypes.WIKI_TIKI_LASER_TOTEM.displayName -> 0xF01616
+            scInfo?.rarityColorCode == ColorCodes.COMMON.code -> HexColorCodes.COMMON.colorCode
+            scInfo?.rarityColorCode == ColorCodes.UNCOMMON.code -> HexColorCodes.UNCOMMON.colorCode
+            scInfo?.rarityColorCode == ColorCodes.RARE.code -> HexColorCodes.RARE.colorCode
+            scInfo?.rarityColorCode == ColorCodes.EPIC.code -> HexColorCodes.EPIC.colorCode
+            scInfo?.rarityColorCode == ColorCodes.LEGENDARY.code -> HexColorCodes.LEGENDARY.colorCode
+            scInfo?.rarityColorCode == ColorCodes.MYTHIC.code -> HexColorCodes.MYTHIC.colorCode
+            scInfo?.rarityColorCode == ColorCodes.DIVINE.code -> HexColorCodes.DIVINE.colorCode
+            scInfo?.rarityColorCode == ColorCodes.SPECIAL.code -> HexColorCodes.SPECIAL.colorCode
+            cleanName == HighlightableSeaCreatureTypes.FLIPFLOPPER.displayName || cleanName == HighlightableSeaCreatureTypes.SEASHINE.displayName ->
+                HexColorCodes.DIVINE.colorCode
+            cleanName == HighlightableSeaCreatureTypes.JAWBUS_FOLLOWER.displayName || cleanName == HighlightableSeaCreatureTypes.WIKI_TIKI_LASER_TOTEM.displayName ->
+                HexColorCodes.SPECIAL.colorCode
             else -> 0x00FFFF
         }
 

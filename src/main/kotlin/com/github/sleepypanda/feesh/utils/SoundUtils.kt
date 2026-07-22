@@ -7,7 +7,7 @@ import com.github.sleepypanda.feesh.settings.categories.SoundMode
 import net.minecraft.client.resources.sounds.SimpleSoundInstance
 import net.minecraft.sounds.SoundEvents
 import net.minecraft.sounds.SoundEvent
-import net.minecraft.resources.ResourceLocation
+import net.minecraft.resources.Identifier
 
 object SoundUtils {
     const val SOUNDS_IDENTIFIER_PREFIX = "feesh"
@@ -27,7 +27,7 @@ object SoundUtils {
         CommonUtils.runWithCatching("Failed to play sound from file name: $fileName") {
             // Use file name as-is (remove .ogg extension)
             val nameWithoutExtension = fileName.removeSuffix(".ogg")
-            val identifier = ResourceLocation.fromNamespaceAndPath(SOUNDS_IDENTIFIER_PREFIX, nameWithoutExtension)
+            val identifier = Identifier.fromNamespaceAndPath(SOUNDS_IDENTIFIER_PREFIX, nameWithoutExtension)
             val soundEvent = SoundEvent.createVariableRangeEvent(identifier)
             playSound(soundEvent)
         }

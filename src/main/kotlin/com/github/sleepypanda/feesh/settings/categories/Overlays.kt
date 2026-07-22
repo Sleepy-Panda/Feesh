@@ -21,7 +21,7 @@ import com.github.sleepypanda.feesh.features.overlays.CrimsonIsleTracker
 import com.github.sleepypanda.feesh.features.overlays.FishingFestivalTracker
 import com.github.sleepypanda.feesh.features.overlays.JerryWorkshopTracker
 import com.github.sleepypanda.feesh.features.overlays.MagmaCoreFishingTracker
-import com.github.sleepypanda.feesh.features.overlays.SeaCreaturesPerHourTracker
+import com.github.sleepypanda.feesh.features.overlays.EfficiencyTracker
 import com.github.sleepypanda.feesh.features.overlays.SeaCreaturesTracker
 import com.github.sleepypanda.feesh.features.overlays.TreasureFishingTracker
 import com.github.sleepypanda.feesh.features.overlays.BayouTracker
@@ -30,9 +30,10 @@ import com.github.sleepypanda.feesh.features.overlays.GalateaWaterTracker
 import com.github.sleepypanda.feesh.features.overlays.LotusAtollTracker
 import com.github.sleepypanda.feesh.features.overlays.SeaCreatureHpTracker
 import com.github.sleepypanda.feesh.settings.models.HpTrackableSeaCreatureTypes
+import com.github.sleepypanda.feesh.settings.models.EfficiencyStatTypes
 import com.github.sleepypanda.feesh.utils.gui.MoveGuis
 import net.minecraft.client.gui.screens.options.controls.KeyBindsScreen
-import net.minecraft.Util
+import net.minecraft.util.Util
 import java.awt.Color
 
 enum class SeaCreaturesTrackerDisplayMode(val displayName: String) {
@@ -418,7 +419,7 @@ Hidden if you have no fishing rod in your hotbar!""".trimIndent())
 
     var deployablesTimerOverlay by boolean(false) {
         this.name = Translated("Deployables timer")
-        this.description = Translated("Shows an overlay with the remaining time of your deployable items placed nearby.")
+        this.description = Translated("Shows an overlay with the remaining time of own deployables placed nearby.")
     }
 
     var deployablesOverlayTypes by select(DeployableTypes.TOTEM_OF_CORRUPTION, *DeployableTypes.values()) {
@@ -542,27 +543,36 @@ Hidden if you have no fishing rod in your hotbar!""".trimIndent())
     
     init {
         separator {
-            this.title = "${AQUA}${BOLD}Sea creatures per hour"
+            this.title = "${AQUA}${BOLD}Efficiency"
         }
     }
 
-    var seaCreaturesPerHourTrackerOverlay by boolean(false) {
-        this.name = Translated("Sea creatures per hour tracker")
+    var efficiencyTrackerOverlay by boolean(false) {
+        this.name = Translated("Efficiency tracker")
         this.description = Translated("""
-${GRAY}Shows an overlay with the sea creatures caught per hour, and total sea creatures caught per session. Not persistent - resets on MC restart.
-${GRAY}To reset: ${WHITE}/${SeaCreaturesPerHourTracker.RESET_COMMAND}
-${GRAY}To pause: ${WHITE}/${SeaCreaturesPerHourTracker.PAUSE_COMMAND}
+${GRAY}Shows an overlay with various efficiency stats of your fishing session. Not persistent - resets on MC restart.
+${GRAY}To reset: ${WHITE}/${EfficiencyTracker.RESET_COMMAND}
+${GRAY}To pause: ${WHITE}/${EfficiencyTracker.PAUSE_COMMAND}
 """.trimIndent())
     }
 
-    var seaCreaturesPerHourCountDoubleHookAsTwo by boolean(true) {
-        this.name = Translated("Count double hook as 2")
-        this.description = Translated("When enabled, a double hook catch counts as 2 sea creatures. When disabled, it counts as 1.")
+    var efficiencyTrackerStats by select(
+        EfficiencyStatTypes.SC_PER_HOUR,
+    ) {
+        this.name = Translated("Efficiency stats to display")
+        this.description = Translated("""
+${GRAY}Select stats to show:
+${WHITE}- Catches/hour${GRAY} - tracks rod casted/reeled in and you caught something. Works for treasure / trophy fishing / non-100 scc scenarios.
+${WHITE}- SC catches/hour${GRAY} - tracks sea creature catches, each SC catch counts as 1.
+${WHITE}- SC/hour${GRAY} - tracks sea creatures, double hook SC catch counts as 2.
+${WHITE}- SC/hour with BS${GRAY} - same as SC/hour (includes DH), plus sea creatures you cocooned with Bloodshot (BS).
+""".trimIndent())
+        this.searchTerms = EfficiencyStatTypes.values().map { it.displayName }.toList()
     }
 
-    var seaCreaturesPerHourTrackerCustomStyle by boolean(true) {
+    var efficiencyTrackerCustomStyle by boolean(true) {
         this.name = Translated("Apply custom style")
-        this.description = Translated(getCustomStyleDescription("Sea creatures per hour tracker"))
+        this.description = Translated(getCustomStyleDescription("Efficiency tracker"))
     }
 
     init {

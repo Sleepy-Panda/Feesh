@@ -112,6 +112,14 @@ object SeaCreatureNames {
     const val PUDDLE_JUMPER = "Puddle Jumper"
     const val FROG_PRINCE = "Frog Prince"
 
+    // TORRHUS CANYON
+    const val HAGGARD = "Haggard"
+    const val BRINELING = "Brineling"
+    const val SPRAWL = "Sprawl"
+    const val TORRID = "Torrid"
+    const val SILKBREEZE = "Silkbreeze"
+    const val GIANT_ISOPOD = "Giant Isopod"
+
     // EXTRA
     const val VANQUISHER = "Vanquisher"
 }
@@ -225,6 +233,14 @@ object SeaCreatureMessages {
     const val GORF_MESSAGE = "^What even is that\\?! A\\.\\.\\. gorF\\?$"
     const val PUDDLE_JUMPER_MESSAGE = "^A Puddle Jumper is preparing for liftoff—cast your rod into it and hold on tight!$"
     const val FROG_PRINCE_MESSAGE = "^Bow down before the Frog Prince\\.\\.\\. or pay the hefty price!$"
+
+    // TORRHUS CANYON
+    const val HAGGARD_MESSAGE = "^A Haggard stumbles to the shore, ready for a fight!$"
+    const val BRINELING_MESSAGE = "^A Brineling interrupts you with a stream of bubbles!$"
+    const val SPRAWL_MESSAGE = "^A Sprawl emerges from the blue, and it’s looking for you!$"
+    const val TORRID_MESSAGE = "^The laughter of a Torrid echoes through the air\\.$"
+    const val SILKBREEZE_MESSAGE = "^Something zips through the air - it’s a Silkbreeze!$"
+    const val GIANT_ISOPOD_MESSAGE = "^A Giant Isopod was dredged up from the depths!$"
 }
 
 class SeaCreatures {
@@ -846,6 +862,50 @@ class SeaCreatures {
                 Regex(SeaCreatureMessages.FROG_PRINCE_MESSAGE),
                 true,
                 worlds = listOf(WorldUtils.LOTUS_ATOLL),
+            ),
+
+            // TORRHUS CANYON
+            SeaCreatureInfo(
+                SeaCreatureNames.HAGGARD,
+                COMMON.code,
+                Regex(SeaCreatureMessages.HAGGARD_MESSAGE),
+                false,
+                worlds = listOf(WorldUtils.TORRHUS_CANYON),
+            ),
+            SeaCreatureInfo(
+                SeaCreatureNames.BRINELING,
+                UNCOMMON.code,
+                Regex(SeaCreatureMessages.BRINELING_MESSAGE),
+                false,
+                worlds = listOf(WorldUtils.TORRHUS_CANYON),
+            ),     
+            SeaCreatureInfo(
+                SeaCreatureNames.SPRAWL,
+                RARE.code,
+                Regex(SeaCreatureMessages.SPRAWL_MESSAGE),
+                false,
+                worlds = listOf(WorldUtils.TORRHUS_CANYON),
+            ),
+            SeaCreatureInfo(
+                SeaCreatureNames.TORRID,
+                EPIC.code,
+                Regex(SeaCreatureMessages.TORRID_MESSAGE),
+                false,
+                worlds = listOf(WorldUtils.TORRHUS_CANYON),
+            ),
+            SeaCreatureInfo(
+                SeaCreatureNames.SILKBREEZE,
+                LEGENDARY.code,
+                Regex(SeaCreatureMessages.SILKBREEZE_MESSAGE),
+                true,
+                worlds = listOf(WorldUtils.TORRHUS_CANYON),
+            ),
+            SeaCreatureInfo(
+                SeaCreatureNames.GIANT_ISOPOD,
+                MYTHIC.code,
+                Regex(SeaCreatureMessages.GIANT_ISOPOD_MESSAGE),
+                true,
+                worlds = listOf(WorldUtils.TORRHUS_CANYON),
             ),
         )
 

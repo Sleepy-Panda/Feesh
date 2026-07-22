@@ -4,6 +4,18 @@
 
 - Test each release in 1.21.* and 26.x
 
+## Alpha Torrus Canyon
+
+ GREAT CATCH! You caught a Giant Water Bug!
+other name for Giant Water Bug Shard - recheck later and maybe add to profit tracker
+- All chat? Death message?
+- Contests to profit tracker? [NPC] Miria: You reached the EPIC Bracket in my contest!
+[NPC] Miria: You reached the LEGENDARY Bracket in my contest!
+- Tracker for Leg/Mythic SC?
+- Giant Isopod acts like a Nessie, implement immunity?
+offer warp springs if not in Springs
+highlight is slightly off
+
 ## Alpha Lotus Atoll
 
 https://hypixel.net/threads/may-6th-lotus-atoll-alpha-testing.6094444/
@@ -24,20 +36,22 @@ Newly released - https://hypixel.net/threads/hypixel-skyblock-0-24-5-assorted-qo
 
 ## Latest issues & feedback
 
+ GOOD CATCH! You caught a Flexbone!
+ GOOD CATCH! You caught a Shinyfish Shard!
+
 - Toggle for PBs, rework trackPersonalBestFishingFestival
 - Max MF PB
+- Low respiration alert?
 - Xp/h
 - SMILE! Polizei111 has sprinkled some joy your way! You feel a little happier. :)
 - Add All option for drops list in settings
 - Share Nessie with coords to all chat?
-- With the release of Minecraft version 26.2 on June 16th, we'll be dropping support for 1.21.9 and 1.21.10. A few weeks after that, we'll drop support for 1.21.11.
+- With the release of Minecraft version 26.2 on June 16th, we'll drop support for 1.21.11 in a few weeks.
 - Personal blacklist + party sharing
 - Runic sea creatures - alert or highlight
 - Pickups from trade menu
-- Shorten rod parts list (no descriptions)
 - Sea Creature Tracker where it says "Total" could you change that to "Total Sea Creatures"
 - Some legion counting radius logic reported
-- Catches/h for treasures
 - Improve link to changelog in settings, and update announcement
 - Work on various events sounds to make them more unique
 - 1.21 Fishing Hook armorstand flickering
