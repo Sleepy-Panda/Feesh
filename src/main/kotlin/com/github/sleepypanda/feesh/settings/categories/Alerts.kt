@@ -379,6 +379,11 @@ object Alerts : CategoryKt("Alerts") {
         this.description = Translated("Shows a title and plays a sound when your Thunder, Storm, or Hurricane Bottle is fully charged.")
     }
     
+    var alertOnOutOfAir by boolean(true) {
+        this.name = Translated("Alert when out of air soon")
+        this.description = Translated("Shows a title and plays a sound when you are low on air and will start drowning soon. Applicable for Galatea and Torrhus Canyon.")
+    }
+
     var alertOnWormTheFishCaught by boolean(false) {
         this.name = Translated("Alert when a Worm the Fish is caught")
         this.description = Translated("Shows a title and plays a sound when a Worm the Fish is detected in the world (Dirt Rod fishing).")

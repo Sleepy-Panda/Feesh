@@ -6,11 +6,41 @@
 
 ## Alpha Torrus Canyon
 
- GREAT CATCH! You caught a Giant Water Bug!
-other name for Giant Water Bug Shard - recheck later and maybe add to profit tracker
+You caught an Ember Shard!
+ GOOD CATCH! You caught Ember Shard! (a/an missing)
+
+You caught a Stingray Shard!
+ GOOD CATCH! You caught Stingray Shard!
+
+You caught x2 Solar Shards!
+ GOOD CATCH! You caught Solar Shard!
+
+You caught x2 Water Snake Shards!
+ GOOD CATCH! You caught Water Snake Shard!
+
+ GREAT CATCH! You caught a Giant Water Bug Shard!
+ OUTSTANDING CATCH! You caught Giant Water Bug Shard x7! - not counted
+
+Other islands - counted normally:
+ GOOD CATCH! You caught a Shinyfish Shard!
+ GOOD CATCH! You caught a Silentdepth Shard!
+ GOOD CATCH! You caught an Abyssal Lanternfish Shard!
+ GOOD CATCH! You caught a Piranha Shard!
+ GREAT CATCH! You caught a Salmon Shard! - goes to both inv and box
+
+
+- Add Safari to non-fishing worlds?
 - All chat? Death message?
-- Contests to profit tracker? [NPC] Miria: You reached the EPIC Bracket in my contest!
+- Contests to profit tracker?
+  STARLYN CONTEST REWARDS CLAIMED
+  - Coupons go to the sacks
+[NPC] Miria: You reached the EPIC Bracket in my contest!
 [NPC] Miria: You reached the LEGENDARY Bracket in my contest!
+  - Common: 10 Miria's Coupon (Rare, 15K), 20 essence
+  - Uncommon: 15 30
+  - 20 40
+  - 25 50
+  - Leg: 30 60
 - Tracker for Leg/Mythic SC?
 - Giant Isopod acts like a Nessie, implement immunity?
 offer warp springs if not in Springs
@@ -41,7 +71,6 @@ Newly released - https://hypixel.net/threads/hypixel-skyblock-0-24-5-assorted-qo
 
 - Toggle for PBs, rework trackPersonalBestFishingFestival
 - Max MF PB
-- Low respiration alert?
 - Xp/h
 - SMILE! Polizei111 has sprinkled some joy your way! You feel a little happier. :)
 - Add All option for drops list in settings
