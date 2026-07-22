@@ -41,6 +41,7 @@ Newly released - https://hypixel.net/threads/hypixel-skyblock-0-24-5-assorted-qo
 
 - Toggle for PBs, rework trackPersonalBestFishingFestival
 - Max MF PB
+- Low respiration alert?
 - Xp/h
 - SMILE! Polizei111 has sprinkled some joy your way! You feel a little happier. :)
 - Add All option for drops list in settings
@@ -51,7 +52,6 @@ Newly released - https://hypixel.net/threads/hypixel-skyblock-0-24-5-assorted-qo
 - Pickups from trade menu
 - Sea Creature Tracker where it says "Total" could you change that to "Total Sea Creatures"
 - Some legion counting radius logic reported
-- Catches/h for treasures
 - Improve link to changelog in settings, and update announcement
 - Work on various events sounds to make them more unique
 - 1.21 Fishing Hook armorstand flickering

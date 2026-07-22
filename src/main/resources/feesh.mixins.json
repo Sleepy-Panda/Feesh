@@ -9,7 +9,8 @@
 		"MultiPlayerGameModeMixin",
 		"MinecraftMixin",
 		"EntityRendererMixin",
-		"SoundEngineMixin"
+		"SoundEngineMixin",
+		"AbstractSoundInstanceAccessor"
 	],
 	"injectors": {
 		"defaultRequire": 1

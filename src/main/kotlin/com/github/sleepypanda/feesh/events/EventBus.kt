@@ -12,6 +12,7 @@ import com.github.sleepypanda.feesh.events.models.GuiClosedEvent
 import com.github.sleepypanda.feesh.events.models.ArmorStandDespawnedEvent
 import com.github.sleepypanda.feesh.events.models.ItemEntityLoadedEvent
 import com.github.sleepypanda.feesh.events.models.ArmorStandLoadedEvent
+import com.github.sleepypanda.feesh.events.models.OwnFishingHookDespawnedEvent
 import com.github.sleepypanda.feesh.events.models.WorldChangedEvent
 import com.github.sleepypanda.feesh.events.models.ItemTooltipRenderedEvent
 import com.github.sleepypanda.feesh.events.models.ScreenBeforeInitEvent
@@ -21,6 +22,7 @@ import com.github.sleepypanda.feesh.utils.InputUtils
 import kotlin.reflect.KClass
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents
+import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen
 import net.minecraft.client.gui.screens.ChatScreen
 import net.minecraft.client.gui.screens.inventory.InventoryScreen
@@ -36,7 +38,7 @@ import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback
 import net.fabricmc.fabric.api.client.screen.v1.ScreenMouseEvents
 import net.minecraft.world.entity.item.ItemEntity
 import net.minecraft.world.entity.decoration.ArmorStand
-
+import net.minecraft.world.entity.projectile.FishingHook
 object EventBus {
     private val subscribers = mutableMapOf<KClass<*>, MutableList<(Any) -> Unit>>()
 
@@ -124,8 +126,15 @@ object EventBus {
         }
 
         ClientEntityEvents.ENTITY_UNLOAD.register { entity, _ ->
-            if (entity is ArmorStand) {
-                publish(ArmorStandDespawnedEvent(entity))
+            when (entity) {
+                is ArmorStand -> publish(ArmorStandDespawnedEvent(entity))
+                is FishingHook -> {
+                    val player = Minecraft.getInstance().player
+                    if (player != null && entity.playerOwner == player) {
+                        publish(OwnFishingHookDespawnedEvent())
+                    }
+                }
+                else -> { }
             }
         }
     }
