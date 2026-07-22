@@ -1674,8 +1674,7 @@ class FishingProfitDrops {
                 itemId = "HELIXIS",
                 itemName = "Helixis",
                 itemDisplayName = "${RARE}Helixis",
-                npcPrice = 230_400.0,
-                shouldAnnounceRareDrop = true,
+                npcPrice = 1_536_000.0,
             ),
             FishingProfitDropInfo(
                 itemId = "WATER_HYACINTH",
