@@ -4,13 +4,15 @@ Released on: ???
 
 ## Features
 
-- Removed support of 1.21.10. RIP
-- Torrhus Canyon:
+- Torrhus Canyon alpha:
   - Added new sea creatures and drops.
-  - Enabled hotspot functionalities.
+  - Enabled hotspot functionalities on new island.
+- "Sea creatures per hour tracker" is replaced with Efficiency tracker:
+  - It offers various selectable stats, such as Catches/h, SC catches/h, SC/h, etc.
+  - Needs re-enabling in settings with new configuration!
 - Added setting to compact rod parts in the tooltip [disabled by default] - it removes rod parts descriptions to have shorter tooltip.
-- Added Plasma to the fishing profit tracker (new Mithril Grubber drop from Alpha server).
 - Added Octopus Tendril and Troubled Bubble rare drop alert & party chat message. Make sure to enable if you need it! (or use ALL)
+- Added Plasma to the fishing profit tracker (new Mithril Grubber drop from Alpha server).
 - Added toggle to use gradient color for sea creature name in "Compact sea creature catch messages" feature.
 - Gradient color for mod name prefix in chat c:
 - Added Flux and its variations to Deployable overlay / Deployable expiration alert.
@@ -18,7 +20,11 @@ Released on: ???
 
 ## Bugfixes
 
-- Fixed rare mobs highlight colors not matching new SB colors.
+- Fixed rare mobs highlight colors not matching new SB color schema.
+
+## Other
+
+- Removed support of 1.21.10. RIP
 
 # 1.10.0
 

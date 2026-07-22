@@ -98,14 +98,14 @@ Required Java version is 25+.
 > You can setup custom background & border style, and enable this style on each overlay level.
 
 - **Fishing profit tracker** - Shows how many coins you earned in total and per hour, with Session/Total modes.
+- **Sea creatures tracker** — Overview of caught sea creatures with Session/Total modes, percentages, and double hook statistics.
 - **Nearby entities counter tracker** — Shows players, fishing hooks, and Chumcap buckets count within 30 blocks.
 - **Barn fishing timer** — Shows count of sea creatures nearby and how long they've been alive.
 - **Deployables timer** — Shows remaining time of your deployable items placed nearby.
 - **Consumables timer** — Consumables tracker which shows consumed Moby-Duck's remaining time.
 - **Sea creatures HP** — Shows HP of nearby rare sea creatures in lootshare range with their immunity timer.
-- **Sea creatures tracker** — Overview of caught sea creatures with Session/Total modes, percentages, and double hook statistics.
 - **Fishing hook timer** — Displays hook timer and fish arrival indicator. Requires Skyblock Fishing Timer enabled.
-- **Sea creatures per hour tracker** — Shows sea creatures per hour and total caught per session.
+- **Efficiency tracker** — Shows various stats such as sea creatures per hour or catches per hour, and total catches per session.
 - **Fishing Festival tracker** — Shows Great White, Tiger, Blue and Nurse shark counts caught during the Fishing Festival.
 - **Jerry's Workshop tracker** — Yeti/Reindrake catch statistics in Jerry Workshop.
 - **Bayou tracker** — Titanoboa catch and Titanoboa Shed / Snake Eyes drop statistics for Backwater Bayou.

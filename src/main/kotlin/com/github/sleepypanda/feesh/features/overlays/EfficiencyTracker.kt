@@ -20,6 +20,7 @@ import com.github.sleepypanda.feesh.utils.PlayerUtils
 import com.github.sleepypanda.feesh.utils.FishingHookUtils
 import com.github.sleepypanda.feesh.utils.ChatUtils
 import com.github.sleepypanda.feesh.utils.RegisterUtils
+import com.github.sleepypanda.feesh.utils.EntityUtils
 import com.github.sleepypanda.feesh.utils.gui.FeeshGui
 import com.github.sleepypanda.feesh.utils.gui.LineInfo
 import com.github.sleepypanda.feesh.utils.gui.GuiButton
@@ -27,23 +28,7 @@ import com.github.sleepypanda.feesh.utils.gui.Table
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
 import com.github.sleepypanda.feesh.features.overlays.base.IResettableTracker
-import com.github.sleepypanda.feesh.utils.EntityUtils
 import java.util.Date
-
-// If only sc/h enabled and I fish in trophy, does it show empty widget?
-// Just timer when all stats are 0 - shown 0 stats for now
-// Drone pet
-// Stuck in kelp = submerged more than a second ago
-// Tracker starts when fishing hook is submerged, like other overlays
-// Tracker is paused when fishing hook is not submerged for 5 minutes
-// If in trophy armor, we track only Casts/hour but do not track SC catches/hour, SC/hour (+ DH), and SC/hour (+ DH and BS) - they are hidden
-// Tracker is hidden if all its stats disabled in settings or hidden
-// How to not count sc related stats if treasure fishing
-// Check dirt rod
-// Widget reappearing when started fishing after 5 minutes (while its hidden)
-// Build sample lines depending on enabled stats
-// Test that cocoons do not appear in not visible trackers
-// Fix settings descriptions and default values
 
 object EfficiencyTracker : IResettableTracker {
     const val RESET_COMMAND = "feeshResetEfficiencyTracker"
@@ -54,7 +39,7 @@ object EfficiencyTracker : IResettableTracker {
 
     private const val TICKS_PER_UPDATE = 20
     private const val HIDE_OVERLAY_MINUTES = 5
-    private const val CATCH_XP_ORB_SOUND_PATH = "entity.experience_orb.pickup" // Some trash items caught also play sound(s) with volume 0.5 + 0.1 or just 0.1
+    private const val CATCH_XP_ORB_SOUND_PATH = "entity.experience_orb.pickup"
     // ♪ MUSICAL CATCH! You caught a Music Disc - Cat!
     private val TREASURE_OR_JUNK_CATCH_PATTERN = Regex("^. (GOOD|GOOD JUNK|GREAT|GREAT JUNK|OUTSTANDING|OUTSTANDING JUNK|MUSICAL) CATCH!")
     private val TROPHY_CATCH_PATTERN = Regex("^. (TROPHY FISH|TROPHY FROG)!")
@@ -67,9 +52,7 @@ object EfficiencyTracker : IResettableTracker {
 
     private var isSessionActive = false
     private var lastRodRightClickedAt: Date? = null
-    private var lastSeaCreatureCaughtAt: Date? = null
-    private var lastTreasureOrJunkCaughtAt: Date? = null
-    private var lastTrophyCaughtAt: Date? = null
+    private var lastCatchAt: Date? = null
     private var lastCatchXpOrbSoundAt: Date? = null
 
     private var tickCounter = 0
@@ -89,7 +72,8 @@ object EfficiencyTracker : IResettableTracker {
         .setApplyCustomStyleKey { Overlays.efficiencyTrackerCustomStyle }
         .setCondition {
             WorldUtils.isInFishingWorld() &&
-            FishingHookUtils.wasFishingHookSubmergedMinutesAgo(HIDE_OVERLAY_MINUTES)
+            FishingHookUtils.wasFishingHookSubmergedMinutesAgo(HIDE_OVERLAY_MINUTES) &&
+            hasVisibleStatLines()
         }
 
     fun init() {
@@ -120,9 +104,7 @@ object EfficiencyTracker : IResettableTracker {
         elapsedSeconds = 0
 
         lastRodRightClickedAt = null
-        lastSeaCreatureCaughtAt = null
-        lastTreasureOrJunkCaughtAt = null
-        lastTrophyCaughtAt = null
+        lastCatchAt = null
         lastCatchXpOrbSoundAt = null
     }
 
@@ -143,22 +125,27 @@ object EfficiencyTracker : IResettableTracker {
     private fun onWorldChanged(@Suppress("UNUSED_PARAMETER") event: WorldChangedEvent) {
         pauseInternal()
         lastRodRightClickedAt = null
-        lastSeaCreatureCaughtAt = null
-        lastTreasureOrJunkCaughtAt = null
-        lastTrophyCaughtAt = null
+        lastCatchAt = null
         lastCatchXpOrbSoundAt = null
         gui.clearLines()
     }
 
+    // This function is a backup method for catches that do not have chat message (sea creatures, treasure, trophy, etc.)
+    // Chat message appears before fishing hook despawns, so those catches are tracked in chat message handlers.
+    // Some successful catches (raw fish, log, etc) do not have chat message, so we detect them by
+    // - reel in fishing rod with right click while it's in fluid
+    // - hear XP orb sound
     private fun onOwnFishingHookDespawned(@Suppress("UNUSED_PARAMETER") event: OwnFishingHookDespawnedEvent) {
         CommonUtils.runWithCatching("Failed to track fishing hook despawned in $trackerName") {
             if (!isTrackerActive()) return
             if (!isStatEnabled(EfficiencyStatTypes.CATCHES_PER_HOUR)) return
-            if (!isSuccessfulCatch()) return
+            if (isSomethingCaughtRecently()) return
 
-            catchesCount += 1
-            updateGuiLines()
-            ChatUtils.sendLocalChat("Added catch " + catchesCount, true)
+            if (!wasWithinMs(lastRodRightClickedAt, 500L)) return
+            if (!FishingHookUtils.wasFishingHookSubmergedMillisecondsAgo(500)) return
+            if (!wasWithinMs(lastCatchXpOrbSoundAt, 300L)) return
+
+            addCatch()
         }
     }
 
@@ -176,24 +163,27 @@ object EfficiencyTracker : IResettableTracker {
     private fun onSeaCreatureCaught(event: OwnSeaCreatureCaughtEvent) {
         CommonUtils.runWithCatching("Failed to track sea creature catch in $trackerName") {
             if (event.seaCreatureName == "Vanquisher") return
-            lastSeaCreatureCaughtAt = Date()
-
             if (!isTrackerActive()) return
 
+            tryAddCatchFromChat() // For catches/h stat
+
+            if (!hasAnySeaCreatureStatEnabled()) return
+
             val isDoubleHooked = event.isDoubleHook
-            val dhValue = if (isDoubleHooked) 2 else 1
+            val scCount = if (isDoubleHooked) 2 else 1
 
             seaCreatureCatchesCount += 1
-            seaCreatureCountWithDh += dhValue
-            seaCreatureCountWithDhAndBs += dhValue         
+            seaCreatureCountWithDh += scCount
+            seaCreatureCountWithDhAndBs += scCount
             updateGuiLines()
         }
     }
 
     private fun onSeaCreatureCocooned(event: SeaCreatureCocoonedByYouEvent) {
         CommonUtils.runWithCatching("Failed to track cocooned sea creature in $trackerName") {
-            if (!isTrackerVisible()) return
             if (event.seaCreatureName == "Vanquisher") return
+            if (!isTrackerVisible()) return
+            if (!hasAnySeaCreatureStatEnabled()) return
 
             seaCreatureCountWithDhAndBs += 1
             updateGuiLines()
@@ -215,21 +205,20 @@ object EfficiencyTracker : IResettableTracker {
         }
     }
 
+    // Note: Treasure catch might happen together with SC catch if Precursor Drone pet equipped.
+    // No double catches/h increase should happen in this case.
     private fun onChat(event: ChatEvent) {
         CommonUtils.runWithCatching("Failed to track catch chat message in $trackerName") {
-            if (!isTrackerActive()) return
-            if (!isStatEnabled(EfficiencyStatTypes.CATCHES_PER_HOUR)) return
-            if (TREASURE_OR_JUNK_CATCH_PATTERN.containsMatchIn(event.unformattedText)) {
-                lastTreasureOrJunkCaughtAt = Date()
-            }
-            if (TROPHY_CATCH_PATTERN.containsMatchIn(event.unformattedText)) {
-                lastTrophyCaughtAt = Date()
+            if (TREASURE_OR_JUNK_CATCH_PATTERN.containsMatchIn(event.unformattedText) ||
+                TROPHY_CATCH_PATTERN.containsMatchIn(event.unformattedText)
+            ) {
+                tryAddCatchFromChat()
             }
         }
     }
 
-    // Trash catches like raw fish are usually caught with XP orb sound (volume 0.5 + 0.1 or just 0.1)
-    // However it's not too precise because other players' catches play this sound too
+    // Trash catches like raw fish usually play XP orb sound (volume 0.5 + 0.1 or just 0.1).
+    // Used as backup signal on bobber despawn when there is no catch chat.
     private fun onSoundPlayed(event: SoundPlayedEvent) {
         CommonUtils.runWithCatching("Failed to track catch XP orb sound in $trackerName") {
             if (!isTrackerActive()) return
@@ -245,44 +234,25 @@ object EfficiencyTracker : IResettableTracker {
         }
     }
 
-    private fun isSuccessfulCatch(): Boolean {
-        if (!isTrackerActive()) return false
-        if (!isStatEnabled(EfficiencyStatTypes.CATCHES_PER_HOUR)) return false
+    private fun tryAddCatchFromChat() {
+        if (!isStatEnabled(EfficiencyStatTypes.CATCHES_PER_HOUR)) return
+        if (isSomethingCaughtRecently()) return
+        addCatch()
+    }
 
-        val now = Date().time
-        fun ageMs(timestamp: Date?): Long? = timestamp?.let { now - it.time }
-        fun wasWithinMs(timestamp: Date?, windowMs: Long): Boolean = ageMs(timestamp)?.let { it < windowMs } == true
-        fun formatMs(label: String, ageMs: Long?): String {
-            if (ageMs == null) return "${GRAY}$label:${DARK_GRAY} n/a"
-            val color = if (ageMs > 250L) RED else WHITE
-            return "${GRAY}$label:${color}${ageMs}ms"
-        }
+    private fun addCatch() {
+        catchesCount += 1
+        lastCatchAt = Date()
+        updateGuiLines()
+    }
 
-        val rodAgeMs = ageMs(lastRodRightClickedAt)
-        val submergedAgeMs = FishingHookUtils.lastSubmergedFishingHookSeenAt()?.let { now - it.time }
-        val seaCreatureAgeMs = ageMs(lastSeaCreatureCaughtAt)
-        val treasureAgeMs = ageMs(lastTreasureOrJunkCaughtAt)
-        val trophyAgeMs = ageMs(lastTrophyCaughtAt)
-        val xpAgeMs = ageMs(lastCatchXpOrbSoundAt)
+    private fun isSomethingCaughtRecently(): Boolean {
+        return wasWithinMs(lastCatchAt, 750L) // Flash V proc might be ~1s
+    }
 
-        ChatUtils.sendLocalChat(
-            "${GRAY}Catch debug ${DARK_GRAY}| " +
-                formatMs("rod", rodAgeMs) + " ${DARK_GRAY}| " +
-                formatMs("sub", submergedAgeMs) + " ${DARK_GRAY}| " +
-                formatMs("sc", seaCreatureAgeMs) + " ${DARK_GRAY}| " +
-                formatMs("tr", treasureAgeMs) + " ${DARK_GRAY}| " +
-                formatMs("tf", trophyAgeMs) + " ${DARK_GRAY}| " +
-                formatMs("xp", xpAgeMs),
-            true
-        )
-
-        if (!wasWithinMs(lastRodRightClickedAt, 500L)) return false
-        if (!FishingHookUtils.wasFishingHookSubmergedMillisecondsAgo(500)) return false
-        
-        return wasWithinMs(lastSeaCreatureCaughtAt, 300L) ||
-            wasWithinMs(lastTreasureOrJunkCaughtAt, 300L) ||
-            wasWithinMs(lastTrophyCaughtAt, 300L) ||
-            wasWithinMs(lastCatchXpOrbSoundAt, 300L)
+    private fun wasWithinMs(timestamp: Date?, windowMs: Long): Boolean {
+        if (timestamp == null) return false
+        return Date().time - timestamp.time <= windowMs
     }
 
     private fun isTrackerEnabledInWorld(): Boolean {
@@ -306,9 +276,20 @@ object EfficiencyTracker : IResettableTracker {
         return true
     }
 
+    private fun hasVisibleStatLines(): Boolean {
+        return EfficiencyStatTypes.entries.any { isStatEnabled(it) }
+    }
+
+    private fun hasAnySeaCreatureStatEnabled(): Boolean {
+        return (isStatEnabled(EfficiencyStatTypes.SC_CATCHES_PER_HOUR) ||
+                isStatEnabled(EfficiencyStatTypes.SC_PER_HOUR) ||
+                isStatEnabled(EfficiencyStatTypes.SC_PER_HOUR_WITH_BS)
+        )
+    }
+
     private fun refreshElapsedTimeOrPause() {
         CommonUtils.runWithCatching("Failed to refresh elapsed time in $trackerName") {
-            if (!isTrackerVisible()) {
+            if (!isTrackerVisible() || !hasVisibleStatLines()) {
                 pauseInternal()
                 return
             }
@@ -319,7 +300,7 @@ object EfficiencyTracker : IResettableTracker {
             if (isHookActive) {
                 isSessionActive = true
             }
-    
+
             if (!isTrackerActive()) return
 
             val lastHookSeenAt = FishingHookUtils.lastSubmergedFishingHookSeenAt() ?: return
@@ -375,7 +356,7 @@ object EfficiencyTracker : IResettableTracker {
     private fun updateGuiLines() {
         gui.clearLines()
 
-        if (!isTrackerVisible() || !hasData()) return
+        if (!isTrackerVisible() || !hasData() || !hasVisibleStatLines()) return
 
         val pausedText = if (isSessionActive) "" else " ${GRAY}[Paused]"
         val lines = mutableListOf<LineInfo>()
