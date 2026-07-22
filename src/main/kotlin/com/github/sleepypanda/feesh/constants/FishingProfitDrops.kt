@@ -1634,6 +1634,13 @@ class FishingProfitDrops {
 
             // Torrhus Canyon
             FishingProfitDropInfo(
+                itemId = "MIRIA_COUPON",
+                itemName = "Miria's Coupon",
+                itemDisplayName = "${RARE}Miria's Coupon",
+                npcPrice = 15_000.0,
+                ignoreFromInventory = true,
+            ),
+            FishingProfitDropInfo(
                 itemId = "HELIX_LOG",
                 itemName = "Helix Log",
                 itemDisplayName = "${COMMON}Helix Log",

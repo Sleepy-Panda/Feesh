@@ -94,6 +94,7 @@ object FishingProfitTracker : IResettableViewModeTracker {
     private val SHARDS_CHARMED_PATTERN = Regex("^(?:CHARM|NAGA|SALT) You charmed (?:a|an) (.+) and captured ([\\d]+) Shards from it.*")
     private val SHARDS_LOOTSHARED_PATTERN = Regex("^LOOT SHARE You received (.+) Shard.*")
     private val AGATHA_CONTEST_BRACKET_PATTERN = Regex("^\\[NPC] Agatha: You reached the (COMMON|UNCOMMON|RARE|EPIC|LEGENDARY|MYTHIC|DIVINE|SPECIAL) Bracket in my contest!$")
+    private val MIRIA_CONTEST_BRACKET_PATTERN = Regex("^\\[NPC] Miria: You reached the (COMMON|UNCOMMON|RARE|EPIC|LEGENDARY) Bracket in my contest!$")
 
     private const val TICKS_TIMER_ELAPSED_TIME = 20
     private const val TICKS_INVENTORY = 5
@@ -216,6 +217,12 @@ object FishingProfitTracker : IResettableViewModeTracker {
         // [NPC] Agatha: You reached the SPECIAL Bracket in my contest!
         AGATHA_CONTEST_BRACKET_PATTERN.find(event.unformattedText)?.run {
             onAgathaContestBracketReached(this.groupValues[1].orEmpty())
+            return@onChat
+        }
+
+        // [NPC] Miria: You reached the LEGENDARY Bracket in my contest!
+        MIRIA_CONTEST_BRACKET_PATTERN.find(event.unformattedText)?.run {
+            onMiriaContestBracketReached(this.groupValues[1].orEmpty())
             return@onChat
         }
 
@@ -772,6 +779,23 @@ object FishingProfitTracker : IResettableViewModeTracker {
         }
 
         findAndAddProfitTrackerItem({ it.itemId == "AGATHA_COUPON" }, agathaCouponCount)
+        findAndAddProfitTrackerItem({ it.itemId == "ESSENCE_FOREST" }, forestEssenceCount)
+    }
+
+    private fun onMiriaContestBracketReached(bracket: String) {
+        if (!isTrackerVisible()) return
+        if (WorldUtils.getWorldName() != WorldUtils.TORRHUS_CANYON) return
+
+        val (miriaCouponCount, forestEssenceCount) = when (bracket.uppercase()) {
+            "COMMON" -> 10 to 20
+            "UNCOMMON" -> 15 to 30
+            "RARE" -> 20 to 40
+            "EPIC" -> 25 to 50
+            "LEGENDARY" -> 30 to 60
+            else -> return
+        }
+
+        findAndAddProfitTrackerItem({ it.itemId == "MIRIA_COUPON" }, miriaCouponCount)
         findAndAddProfitTrackerItem({ it.itemId == "ESSENCE_FOREST" }, forestEssenceCount)
     }
 
