@@ -12,7 +12,7 @@ import com.github.sleepypanda.feesh.utils.WorldUtils
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import net.minecraft.sounds.SoundEvents
 
-object DrowningAlert {
+object OutOfAirAlert {
     private var hasAlerted = false
     private var tickCounter = 0
     private const val TICKS_PER_CHECK = 20
@@ -28,14 +28,14 @@ object DrowningAlert {
     }
 
     private fun onClientTick(@Suppress("UNUSED_PARAMETER") event: ClientTickEvent) {
-        if (!Alerts.alertOnDrowning || !WorldUtils.isInSkyblock()) return
+        if (!Alerts.alertOnOutOfAir || !WorldUtils.isInSkyblock()) return
         if (WorldUtils.getWorldName() != WorldUtils.GALATEA && WorldUtils.getWorldName() != WorldUtils.TORRHUS_CANYON) return
 
         tickCounter++
         if (tickCounter < TICKS_PER_CHECK) return
         tickCounter = 0
 
-        CommonUtils.runWithCatching("Failed to check drowning state") {
+        CommonUtils.runWithCatching("Failed to check out of air state") {
             val player = FeeshMod.mc.player ?: return
             val maxAir = player.maxAirSupply
             if (maxAir <= 0) return
@@ -51,7 +51,7 @@ object DrowningAlert {
 
             hasAlerted = true
             ChatUtils.sendLocalChat("${WHITE}You are almost out of air!", true)
-            CommonUtils.showTitle("${YELLOW}Low on air")
+            CommonUtils.showTitle("${YELLOW}Out of air soon!")
             SoundUtils.playSound(SoundEvents.PLAYER_HURT_DROWN)
         }
     }

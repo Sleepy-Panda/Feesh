@@ -98,7 +98,7 @@ class FeeshMod : ClientModInitializer {
         ThunderBottleChargedAlert.init()
         AnyReindrakeAlert.init()
         NonFishingArmorAlert.init()
-        DrowningAlert.init()
+        OutOfAirAlert.init()
         GoldenFishSpawnAlert.init()
         HotspotGoneAlert.init()
         WormholeGoneAlert.init()
