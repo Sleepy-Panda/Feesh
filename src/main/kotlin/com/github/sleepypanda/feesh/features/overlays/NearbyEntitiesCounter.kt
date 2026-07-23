@@ -1,12 +1,14 @@
 package com.github.sleepypanda.feesh.features.overlays
 
 import com.github.sleepypanda.feesh.FeeshMod
+import com.github.sleepypanda.feesh.constants.SeaCreatureNames
 import com.github.sleepypanda.feesh.events.EventBus
 import com.github.sleepypanda.feesh.events.models.ClientTickEvent
 import com.github.sleepypanda.feesh.events.models.WorldChangedEvent
 import com.github.sleepypanda.feesh.settings.categories.NearbyEntitiesCounterTypes
 import com.github.sleepypanda.feesh.settings.categories.Overlays
 import com.github.sleepypanda.feesh.utils.ChatUtils.getUnformattedString
+import com.github.sleepypanda.feesh.utils.CommonUtils
 import com.github.sleepypanda.feesh.utils.WorldUtils
 import com.github.sleepypanda.feesh.utils.PlayerUtils
 import com.github.sleepypanda.feesh.utils.EntityUtils
@@ -74,8 +76,10 @@ object NearbyEntitiesCounter {
             return
         }
 
-        trackPlayersAndFishingHooksNearby()
-        updateGuiLines()
+        CommonUtils.runWithCatching("Failed to update nearby entities counters") {
+            trackPlayersAndFishingHooksNearby()
+            updateGuiLines()
+        }
     }
 
     private fun trackPlayersAndFishingHooksNearby() {
@@ -106,6 +110,16 @@ object NearbyEntitiesCounter {
     }
 
     private fun getFishingHooksCount(): Int {
+
+        fun isNpcOrMobHoldingRod(ownerName: String): Boolean {
+            val worldName = WorldUtils.getWorldName()
+            if (ownerName.contains(SeaCreatureNames.PHANTOM_FISHER, ignoreCase = true)) return true
+            if (worldName == WorldUtils.TORRHUS_CANYON && ownerName == "Allay") return true // Torrid SC
+            if (worldName == WorldUtils.TORRHUS_CANYON && ownerName == "Hunter Jean") return true // NPC in Springs
+            if (worldName == WorldUtils.GALATEA && ownerName == "Martin ") return true // Tomb Floodway NPC
+            return false
+        }
+
         if (!Overlays.nearbyEntitiesCounterTypes.contains(NearbyEntitiesCounterTypes.BOBBING_TIME)) return 0
 
         val player = FeeshMod.mc.player ?: return 0
@@ -117,11 +131,10 @@ object NearbyEntitiesCounter {
                 val distance = EntityUtils.getDistance(player, hook)
                 if (distance > BOBBING_TIME_DISTANCE) return@filter false
 
-                val owner = hook.owner
-                if (owner == null) return@filter true
+                val owner = hook.owner ?: return@filter true
 
                 val ownerName = owner.name.getUnformattedString()
-                return@filter !ownerName.contains("Phantom Fisher", ignoreCase = true)
+                return@filter !isNpcOrMobHoldingRod(ownerName)
             }
 
         return fishingHooks.size
