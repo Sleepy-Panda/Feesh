@@ -8,6 +8,7 @@ Released on: ???
   - Added new sea creatures, drops and alerts.
   - Added Miria's contests to fishing profit tracker.
   - Enabled hotspot functionalities on new island.
+  - Added Torrhus Canyon tracker with Silkbreeze/Giant Isopod catch statistics [disabled by default].
 - "Sea creatures per hour tracker" is replaced with Efficiency tracker:
   - It offers various selectable stats, such as Catches/h, SC catches/h, SC/h, etc.
   - Needs re-enabling in settings with new configuration!

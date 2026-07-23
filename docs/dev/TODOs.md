@@ -32,6 +32,8 @@ Other islands - counted normally:
 - Tracker for Leg/Mythic SC?
 - Giant Isopod acts like a Nessie, implement immunity?
 - Giant Isopod highlight looks weird
+- Test large black hole
+- Hunter Jean's hook
 
 ## Alpha Lotus Atoll
 

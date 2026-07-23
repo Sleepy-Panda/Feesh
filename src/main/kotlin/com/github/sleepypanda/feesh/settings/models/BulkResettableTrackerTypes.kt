@@ -8,6 +8,7 @@ import com.github.sleepypanda.feesh.features.overlays.FishingProfitTracker
 import com.github.sleepypanda.feesh.features.overlays.GalateaWaterTracker
 import com.github.sleepypanda.feesh.features.overlays.JerryWorkshopTracker
 import com.github.sleepypanda.feesh.features.overlays.LotusAtollTracker
+import com.github.sleepypanda.feesh.features.overlays.TorrhusCanyonTracker
 import com.github.sleepypanda.feesh.features.overlays.MagmaCoreFishingTracker
 import com.github.sleepypanda.feesh.features.overlays.EfficiencyTracker
 import com.github.sleepypanda.feesh.features.overlays.SeaCreaturesTracker
@@ -29,6 +30,7 @@ enum class BulkResettableTrackerTypes(
     WATER_HOTSPOTS_TRACKER("Water Hotspots tracker", resettableTracker = WaterHotspotsTracker),
     CRIMSON_ISLE_TRACKER("Crimson Isle tracker", resettableTracker = CrimsonIsleTracker),
     GALATEA_WATER_TRACKER("Galatea water tracker", resettableTracker = GalateaWaterTracker),
+    TORRHUS_CANYON_TRACKER("Torrhus Canyon tracker", resettableTracker = TorrhusCanyonTracker),
     LOTUS_ATOLL_TRACKER("Lotus Atoll tracker", resettableTracker = LotusAtollTracker),
     TREASURE_FISHING_TRACKER("Treasure fishing tracker", hasSessionMode = true, resettableViewModeTracker = TreasureFishingTracker),
     MAGMA_CORE_FISHING_TRACKER("Magma Core fishing tracker", hasSessionMode = true, resettableViewModeTracker = MagmaCoreFishingTracker);
