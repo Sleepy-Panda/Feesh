@@ -28,23 +28,10 @@ Other islands - counted normally:
  GOOD CATCH! You caught a Piranha Shard!
  GREAT CATCH! You caught a Salmon Shard! - goes to both inv and box
 
-
-- Add Safari to non-fishing worlds?
-- All chat? Death message?
-- Contests to profit tracker?
-  STARLYN CONTEST REWARDS CLAIMED
-  - Coupons go to the sacks
-[NPC] Miria: You reached the EPIC Bracket in my contest!
-[NPC] Miria: You reached the LEGENDARY Bracket in my contest!
-  - Common: 10 Miria's Coupon (Rare, 15K), 20 essence
-  - Uncommon: 15 30
-  - 20 40
-  - 25 50
-  - Leg: 30 60
+- All chat? Death message? 
 - Tracker for Leg/Mythic SC?
 - Giant Isopod acts like a Nessie, implement immunity?
-offer warp springs if not in Springs
-highlight is slightly off
+- Giant Isopod highlight looks weird
 
 ## Alpha Lotus Atoll
 

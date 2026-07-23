@@ -5,7 +5,8 @@ Released on: ???
 ## Features
 
 - Torrhus Canyon alpha:
-  - Added new sea creatures and drops.
+  - Added new sea creatures, drops and alerts.
+  - Added Miria's contests to fishing profit tracker.
   - Enabled hotspot functionalities on new island.
 - "Sea creatures per hour tracker" is replaced with Efficiency tracker:
   - It offers various selectable stats, such as Catches/h, SC catches/h, SC/h, etc.
