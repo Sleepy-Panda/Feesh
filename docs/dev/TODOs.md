@@ -29,20 +29,9 @@ Other islands - counted normally:
  GREAT CATCH! You caught a Salmon Shard! - goes to both inv and box
 
 - All chat? Death message? 
-- Contests to profit tracker?
-  STARLYN CONTEST REWARDS CLAIMED
-  - Coupons go to the sacks
-[NPC] Miria: You reached the EPIC Bracket in my contest!
-[NPC] Miria: You reached the LEGENDARY Bracket in my contest!
-  - Common: 10 Miria's Coupon (Rare, 15K), 20 Forest Essence
-  - Uncommon: 15 30
-  - Rare: 20 40
-  - Epic: 25 50
-  - Legendary: 30 60
 - Tracker for Leg/Mythic SC?
 - Giant Isopod acts like a Nessie, implement immunity?
 - Giant Isopod highlight looks weird
-
 
 ## Alpha Lotus Atoll
 
