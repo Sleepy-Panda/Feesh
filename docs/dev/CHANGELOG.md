@@ -24,6 +24,7 @@ Released on: ???
 ## Bugfixes
 
 - Fixed rare mobs highlight colors not matching new SB color schema.
+- Fixed Martin NPC's bobber counted in Bobbin' Time overlay.
 
 ## Other
 
