@@ -113,6 +113,7 @@ Required Java version is 25+.
 - **Water hotspots tracker** — Wiki Tiki catch and Tiki Mask drop statistics for Water Hotspots.
 - **Crimson Isle tracker** — Fiery Scuttler, Ragnarok, Plhlegblast, Thunder, Lord Jawbus catch and Radioactive Vial drop statistics.
 - **Galatea water tracker** — The Loch Emperor/Nessie catch statistics in Galatea.
+- **Torrhus Canyon tracker** — Silkbreeze/Giant Isopod catch statistics in Torrhus Canyon.
 - **Lotus Atoll tracker** — The Frog Prince/Puddle Jumper catch statistics, and Prince's Crown Jewel drop statistics (in Lotus Atoll).
 - **Treasure fishing tracker** — Good/Great/Outstanding treasure catches and Treasure Dye drop statistics.
 - **Magma Core fishing tracker** — Lava Pigman/Lava Blaze catch stats and Magma Core drop profits (total and per hour), while in Crystal Hollows.

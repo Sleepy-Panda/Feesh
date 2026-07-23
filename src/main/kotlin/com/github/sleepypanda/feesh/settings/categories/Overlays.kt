@@ -28,6 +28,7 @@ import com.github.sleepypanda.feesh.features.overlays.BayouTracker
 import com.github.sleepypanda.feesh.features.overlays.WaterHotspotsTracker
 import com.github.sleepypanda.feesh.features.overlays.GalateaWaterTracker
 import com.github.sleepypanda.feesh.features.overlays.LotusAtollTracker
+import com.github.sleepypanda.feesh.features.overlays.TorrhusCanyonTracker
 import com.github.sleepypanda.feesh.features.overlays.SeaCreatureHpTracker
 import com.github.sleepypanda.feesh.settings.models.HpTrackableSeaCreatureTypes
 import com.github.sleepypanda.feesh.settings.models.EfficiencyStatTypes
@@ -761,6 +762,30 @@ ${GRAY}To reset: ${WHITE}/${GalateaWaterTracker.RESET_COMMAND}
     var galateaWaterTrackerCustomStyle by boolean(true) {
         this.name = Translated("Apply custom style")
         this.description = Translated(getCustomStyleDescription("Galatea water tracker"))
+    }
+  
+    init {
+        separator {
+            this.title = "${AQUA}${BOLD}Torrhus Canyon tracker"
+        }
+    }
+
+    var torrhusCanyonTrackerOverlay by boolean(false) {
+        this.name = Translated("Torrhus Canyon tracker")
+        this.description = Translated("""
+${GRAY}Shows an overlay with Silkbreeze and Giant Isopod catch statistics while fishing in Torrhus Canyon.
+${GRAY}To reset: ${WHITE}/${TorrhusCanyonTracker.RESET_COMMAND}
+        """.trimIndent())
+    }
+
+    var resetTorrhusCanyonTrackerOnGameClosed by boolean(false) {
+        this.name = Translated("Autoreset on closing game")
+        this.description = Translated("Automatically reset the Torrhus Canyon tracker when you close Minecraft.")
+    }
+
+    var torrhusCanyonTrackerCustomStyle by boolean(true) {
+        this.name = Translated("Apply custom style")
+        this.description = Translated(getCustomStyleDescription("Torrhus Canyon tracker"))
     }
 
     init {
