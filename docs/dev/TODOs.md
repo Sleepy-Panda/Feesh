@@ -6,28 +6,6 @@
 
 ## Alpha Torrus Canyon
 
-You caught an Ember Shard!
- GOOD CATCH! You caught Ember Shard! (a/an missing)
-
-You caught a Stingray Shard!
- GOOD CATCH! You caught Stingray Shard!
-
-You caught x2 Solar Shards!
- GOOD CATCH! You caught Solar Shard!
-
-You caught x2 Water Snake Shards!
- GOOD CATCH! You caught Water Snake Shard!
-
- GREAT CATCH! You caught a Giant Water Bug Shard!
- OUTSTANDING CATCH! You caught Giant Water Bug Shard x7! - not counted
-
-Other islands - counted normally:
- GOOD CATCH! You caught a Shinyfish Shard!
- GOOD CATCH! You caught a Silentdepth Shard!
- GOOD CATCH! You caught an Abyssal Lanternfish Shard!
- GOOD CATCH! You caught a Piranha Shard!
- GREAT CATCH! You caught a Salmon Shard! - goes to both inv and box
-
 - Giant Isopod acts like a Nessie, implement immunity?
 - Giant Isopod highlight looks weird
 - Test large black hole
@@ -55,6 +33,7 @@ Newly released - https://hypixel.net/threads/hypixel-skyblock-0-24-5-assorted-qo
  GOOD CATCH! You caught a Flexbone!
  GOOD CATCH! You caught a Shinyfish Shard!
 
+- Issues with setting RNG meter before first dye in Treasure tracker (0 as drops count)
 - Toggle for PBs, rework trackPersonalBestFishingFestival
 - Max MF PB
 - Xp/h

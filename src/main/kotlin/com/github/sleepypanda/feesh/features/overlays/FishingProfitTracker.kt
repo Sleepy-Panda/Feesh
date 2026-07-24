@@ -11,6 +11,7 @@ import com.github.sleepypanda.feesh.events.models.GuiClosedEvent
 import com.github.sleepypanda.feesh.events.models.WorldChangedEvent
 import com.github.sleepypanda.feesh.events.models.PetLevelUpEvent
 import com.github.sleepypanda.feesh.events.models.SacksItemsPickupEvent
+import com.github.sleepypanda.feesh.events.models.ShardCaughtEvent
 import com.github.sleepypanda.feesh.events.models.PricesUpdatedEvent
 import com.github.sleepypanda.feesh.events.models.IceEssenceStatusBarEvent
 import com.github.sleepypanda.feesh.constants.Sounds
@@ -88,11 +89,6 @@ object FishingProfitTracker : IResettableViewModeTracker {
 
     private val COINS_CATCH_PATTERN = Regex("^. (?:GOOD|GREAT|OUTSTANDING) CATCH! You caught ([\\d,]+) Coins.*")
     private val ICE_ESSENCE_CATCH_PATTERN = Regex("^. (?:GOOD|GREAT|OUTSTANDING) CATCH! You caught Ice Essence x([\\d,]+).*")
-    private val SHARD_CATCH_PATTERN = Regex("^. (?:GOOD|GREAT|OUTSTANDING) CATCH! You caught (?:a|an) (.+) Shard.*")
-    private val SHARDS_BLACK_HOLE_PATTERN = Regex("^You caught (.+) Shard[s]?.*")
-    private val SHARD_CHARMED_PATTERN = Regex("^(?:CHARM|NAGA|SALT) You charmed (?:a|an) (.+) and captured its Shard.*")
-    private val SHARDS_CHARMED_PATTERN = Regex("^(?:CHARM|NAGA|SALT) You charmed (?:a|an) (.+) and captured ([\\d]+) Shards from it.*")
-    private val SHARDS_LOOTSHARED_PATTERN = Regex("^LOOT SHARE You received (.+) Shard.*")
     private val AGATHA_CONTEST_BRACKET_PATTERN = Regex("^\\[NPC] Agatha: You reached the (COMMON|UNCOMMON|RARE|EPIC|LEGENDARY|MYTHIC|DIVINE|SPECIAL) Bracket in my contest!$")
     private val MIRIA_CONTEST_BRACKET_PATTERN = Regex("^\\[NPC] Miria: You reached the (COMMON|UNCOMMON|RARE|EPIC|LEGENDARY) Bracket in my contest!$")
 
@@ -142,6 +138,7 @@ object FishingProfitTracker : IResettableViewModeTracker {
         EventBus.subscribe(GuiClosedEvent::class, ::onGuiClosed)
         EventBus.subscribe(PetLevelUpEvent::class, ::onPetReachedMaxLevel)
         EventBus.subscribe(SacksItemsPickupEvent::class, ::onSacksItemsPickup)
+        EventBus.subscribe(ShardCaughtEvent::class, ::onShardCaught)
         EventBus.subscribe(IceEssenceStatusBarEvent::class, ::onIceEssenceStatusBar)
         EventBus.subscribe(PricesUpdatedEvent::class, ::onPricesUpdated)
     }
@@ -237,46 +234,6 @@ object FishingProfitTracker : IResettableViewModeTracker {
             if (WorldUtils.getWorldName() == WorldUtils.JERRY_WORKSHOP) {
                 onIceEssenceFished(this.groupValues[1].orEmpty())
             }
-            return@onChat
-        }
-
-        // ⛃ GOOD CATCH! You caught a Shinyfish Shard!
-        // ⛃ GOOD CATCH! You caught an Abyssal Lanternfish Shard!
-        SHARD_CATCH_PATTERN.find(event.unformattedText)?.run {
-            onShardFished(this.groupValues[1].orEmpty())
-            return@onChat
-        }
-
-        // You caught a Sea Archer Shard!
-        // You caught x4 Sea Archer Shards!
-        // You caught x4 Carrot King Shards!
-        // You caught x2 Loch Emperor Shards!
-        SHARDS_BLACK_HOLE_PATTERN.find(event.unformattedText)?.run {
-            onShardCaughtInBlackHole(this.groupValues[1].orEmpty())
-            return@onChat
-        }
-
-        // CHARM You charmed a Loch Emperor and captured its Shard.
-        // NAGA You charmed a Tadgang and captured its Shard.
-        SHARD_CHARMED_PATTERN.find(event.unformattedText)?.run {
-            onShardsCharmed(this.groupValues[1].orEmpty(), 1)
-            return@onChat
-        }
-
-        // SALT You charmed a Ent and captured 2 Shards from it.
-        // CHARM You charmed a Flaming Spider and captured 2 Shards from it.
-        // SALT You charmed a Tadgang and captured 2 Shards from it.
-        // SALT You charmed a Magma Slug and captured 3 Shards from it.
-        SHARDS_CHARMED_PATTERN.find(event.unformattedText)?.run {
-            val count = this.groupValues[2].toIntOrNull() ?: 1
-            onShardsCharmed(this.groupValues[1].orEmpty(), count)
-            return@onChat
-        }
-
-        // LOOT SHARE You received 2 Titanoboa Shards for assisting CuzImCrzz!
-        // LOOT SHARE You received 3 Magma Slug Shards for assisting OmeRuben!
-        SHARDS_LOOTSHARED_PATTERN.find(event.unformattedText)?.run {
-            onShardLootshared(this.groupValues[1].orEmpty())
             return@onChat
         }
     }
@@ -722,44 +679,13 @@ object FishingProfitTracker : IResettableViewModeTracker {
         findAndAddProfitTrackerItem({ it.itemId == "ESSENCE_ICE" }, count)
     }
 
-    private fun onShardFished(shard: String) {
-        if (!isSessionActive || !isTrackerVisible()) return
-        val shardName = shard + " Shard"
-        val predicate = { item: FishingProfitDropInfo -> item.itemName.equals(shardName, ignoreCase = true) || item.itemAlternateNames.any { alt -> alt.equals(shardName, ignoreCase = true) } }
-        findAndAddProfitTrackerItem(predicate, 1)
-    }
-
-    private fun onShardCaughtInBlackHole(shardsText: String) { // a|an|x5 Carrot King
-        if (!isSessionActive || !isTrackerVisible()) return
-        val parts = shardsText.split(" ")
-        val countText = parts.firstOrNull() ?: "a"
-        val count = when (countText) {
-            "a", "an" -> 1
-            else -> countText.replace("x", "").toIntOrNull() ?: 1
+    private fun onShardCaught(event: ShardCaughtEvent) {
+        CommonUtils.runWithCatching("Failed to add shard to Fishing profit tracker") {
+            if (!isSessionActive || !isTrackerVisible() || event.count <= 0) return@onShardCaught
+            val shardName = event.shardName
+            val predicate = { item: FishingProfitDropInfo -> item.itemName.equals(shardName, ignoreCase = true) || item.itemAlternateNames.any { alt -> alt.equals(shardName, ignoreCase = true) } }
+            findAndAddProfitTrackerItem(predicate, event.count)    
         }
-        val shardName = parts.drop(1).joinToString(" ") + " Shard"
-        val predicate = { item: FishingProfitDropInfo -> item.itemName.equals(shardName, ignoreCase = true) || item.itemAlternateNames.any { alt -> alt.equals(shardName, ignoreCase = true) } }
-        findAndAddProfitTrackerItem(predicate, count)
-    }
-
-    private fun onShardsCharmed(mobName: String, shardsCount: Int) {
-        if (!isSessionActive || !isTrackerVisible() || shardsCount <= 0) return
-        val shardName = mobName + " Shard"
-        val predicate = { item: FishingProfitDropInfo -> item.itemName.equals(shardName, ignoreCase = true) || item.itemAlternateNames.any { alt -> alt.equals(shardName, ignoreCase = true) } }
-        findAndAddProfitTrackerItem(predicate, shardsCount)
-    }
-
-    private fun onShardLootshared(shardsText: String) { // a|an|2 Titanoboa
-        if (!isSessionActive || !isTrackerVisible()) return
-        val parts = shardsText.split(" ")
-        val countText = parts.firstOrNull() ?: "a"
-        val count = when (countText) {
-            "a", "an" -> 1
-            else -> countText.toIntOrNull() ?: 1
-        }
-        val shardName = parts.drop(1).joinToString(" ") + " Shard"
-        val predicate = { item: FishingProfitDropInfo -> item.itemName.equals(shardName, ignoreCase = true) || item.itemAlternateNames.any { alt -> alt.equals(shardName, ignoreCase = true) } }
-        findAndAddProfitTrackerItem(predicate, count)
     }
 
     private fun onAgathaContestBracketReached(bracket: String) {
