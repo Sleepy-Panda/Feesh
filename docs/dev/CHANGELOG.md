@@ -1,6 +1,6 @@
 # 1.11.0
 
-Released on: ???
+Released on: 2026-07-24
 
 ## Features
 
