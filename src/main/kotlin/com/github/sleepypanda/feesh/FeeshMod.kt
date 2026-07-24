@@ -80,6 +80,7 @@ class FeeshMod : ClientModInitializer {
         TrophyDiscoveredPublisher.init()
         PetLevelUpPublisher.init()
         SacksItemPickupPublisher.init()
+        ShardsCaughtPublisher.init()
         IceEssenceStatusBarPublisher.init()
         ArmorStandPublisher.init()
         ItemEntityPublisher.init()
