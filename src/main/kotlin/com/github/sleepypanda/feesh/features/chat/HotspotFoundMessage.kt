@@ -7,6 +7,7 @@ import com.github.sleepypanda.feesh.utils.CommonUtils
 import com.github.sleepypanda.feesh.utils.WorldUtils
 import com.github.sleepypanda.feesh.utils.PlayerUtils
 import com.github.sleepypanda.feesh.utils.HotspotUtils
+import com.github.sleepypanda.feesh.utils.EntityUtils
 import com.github.sleepypanda.feesh.utils.ChatUtils
 import com.github.sleepypanda.feesh.utils.ChatUtils.removeFormatting
 import com.github.sleepypanda.feesh.utils.SoundUtils
@@ -26,9 +27,11 @@ import java.util.UUID
 object HotspotFoundMessage {
     private var lastClosestHotspot: HotspotUtils.HotspotData? = null
     private var lastFoundHotspotIds = mutableListOf<UUID>() // Last 2 found hotspots, to not alert again and again when moving between 2 close hotspots
+    private var knownFarHotspotIds = mutableSetOf<UUID>() // All seen hotspot IDs for far-alert dedup
     private var tickCounter = 0
     private const val TICKS_PER_CHECK = 10
     private const val NEAREST_HOTSPOT_RANGE_FROM_PLAYER = 10.0
+    private const val FAR_HOTSPOT_SCAN_RANGE = 128.0
 
     fun init() {
         EventBus.subscribe(ClientTickEvent::class, ::onClientTick)
@@ -47,10 +50,11 @@ object HotspotFoundMessage {
     private fun onWorldChanged(@Suppress("UNUSED_PARAMETER") event: WorldChangedEvent) {
         lastClosestHotspot = null
         lastFoundHotspotIds.clear()
+        knownFarHotspotIds.clear()
     }
 
     private fun onClientTick(@Suppress("UNUSED_PARAMETER") event: ClientTickEvent) {
-        if (!Chat.messageOnHotspotFound && !Chat.autoMessageOnHotspotFound) return
+        if (!Chat.messageOnHotspotFound && !Chat.autoMessageOnHotspotFound && !Chat.messageOnFarHotspotFound) return
         if (!WorldUtils.isInSkyblock() || !WorldUtils.isInHotspotFishingWorld() || !PlayerUtils.hasFishingRodInHotbar()) return
 
         tickCounter++
@@ -58,13 +62,16 @@ object HotspotFoundMessage {
         tickCounter = 0
 
         sendMessageOnHotspotFound()
+        sendMessageOnFarHotspotFound()
     }
 
     private fun onHotspotDespawned(@Suppress("UNUSED_PARAMETER") event: ArmorStandDespawnedEvent) {
-        if (!Chat.messageOnHotspotFound && !Chat.autoMessageOnHotspotFound) return
+        if (!Chat.messageOnHotspotFound && !Chat.autoMessageOnHotspotFound && !Chat.messageOnFarHotspotFound) return
         if (!WorldUtils.isInSkyblock() || !WorldUtils.isInHotspotFishingWorld() || !PlayerUtils.hasFishingRodInHotbar()) return
 
         val hotspotId = event.armorStand.uuid
+        knownFarHotspotIds.remove(hotspotId)
+
         if (!lastFoundHotspotIds.contains(hotspotId) && lastClosestHotspot?.entity?.uuid != hotspotId) return
 
         val player = FeeshMod.mc.player ?: return
@@ -101,6 +108,7 @@ object HotspotFoundMessage {
             val closestHotspot = HotspotUtils.findClosestHotspotInRange(Vec3(player.x, player.y, player.z), NEAREST_HOTSPOT_RANGE_FROM_PLAYER) ?: return
 
             val closestHotspotId = closestHotspot.entity.uuid
+            knownFarHotspotIds.add(closestHotspotId) // Avoid far-alert if we later move away from this hotspot
 
             if (lastFoundHotspotIds.contains(closestHotspotId)) return
 
@@ -115,6 +123,37 @@ object HotspotFoundMessage {
 
             lastClosestHotspot = closestHotspot
         }
+    }
+
+    private fun sendMessageOnFarHotspotFound() {
+        CommonUtils.runWithCatching("Failed to send message on far Hotspot found") {
+            if (!Chat.messageOnFarHotspotFound) return
+            if (!WorldUtils.isInSkyblock() || !WorldUtils.isInHotspotFishingWorld() || !PlayerUtils.hasFishingRodInHotbar()) return
+
+            val player = FeeshMod.mc.player ?: return
+            val hotspots = HotspotUtils.findHotspotsInRange(player, FAR_HOTSPOT_SCAN_RANGE)
+
+            for (hotspot in hotspots) {
+                val hotspotId = hotspot.entity.uuid
+                if (knownFarHotspotIds.contains(hotspotId)) continue
+                knownFarHotspotIds.add(hotspotId)
+
+                val distance = EntityUtils.getDistance(player, hotspot.entity)
+                if (distance <= NEAREST_HOTSPOT_RANGE_FROM_PLAYER) continue
+
+                announceFarHotspotFound(hotspot, distance)
+            }
+        }
+    }
+
+    private fun announceFarHotspotFound(hotspot: HotspotUtils.HotspotData, distance: Double) {
+        val perkText = if (hotspot.perk != null) "${hotspot.perk} " else ""
+        val location = CommonUtils.getFormattedLocation(hotspot.x, hotspot.y, hotspot.z)
+        ChatUtils.sendLocalChat(
+            "${WHITE}New ${perkText}${LIGHT_PURPLE}Hotspot${WHITE} found ${YELLOW}${distance.toInt()} ${WHITE}blocks away (${location}).",
+            true
+        )
+        SoundUtils.playSound()
     }
 
     private fun announceFoundHotspot(x: Double, y: Double, z: Double, perk: String?) {

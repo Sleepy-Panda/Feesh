@@ -149,6 +149,11 @@ object Chat : CategoryKt("Chat") {
         this.description = Translated("Shows clickable chat message that offers sharing Hotspot location and its perk to ALL chat or PARTY chat. You need to be close to the hotspot in order to trigger it.")
     }
 
+    var messageOnFarHotspotFound by boolean(false) {
+        this.name = Translated("Alert when a far hotspot is found")
+        this.description = Translated("Shows a chat message when a Hotspot further than 10 blocks away is loaded (e.g. while you're fishing in another hotspot and a better perk spawns nearby).")
+    }
+
     init {
         button {
             title = "Share hotspot button"
