@@ -17,17 +17,6 @@ object WorldRendering : CategoryKt("World Rendering") {
 
     init {
         separator {
-            this.title = "${AQUA}${BOLD}Fishing hooks"
-        }
-    }
-
-    var hideOtherPlayersFishingHooks by boolean(false) {
-        this.name = Translated("Hide other players' fishing hooks")
-        this.description = Translated("Hides fishing hooks that belong to other players.")
-    }
-
-    init {
-        separator {
             this.title = "${AQUA}${BOLD}Highlight"
         }
     }
@@ -61,8 +50,13 @@ object WorldRendering : CategoryKt("World Rendering") {
         }
     }
 
+    var hideOtherPlayersFishingHooks by boolean(false) {
+        this.name = Translated("Hide other players' fishing hooks")
+        this.description = Translated("Hides fishing hooks that belong to other players.")
+    }
+
     var hidePlayersNearBobber by boolean(false) {
-        this.name = Translated("Hide players near bobber")
+        this.name = Translated("Hide players near your bobber")
         this.description = Translated("Hides other players when your fishing rod is casted, if they are within the configured distance from your fishing hook.")
     }
 
@@ -86,6 +80,17 @@ object WorldRendering : CategoryKt("World Rendering") {
 
     init {
         separator {
+            this.title = "${AQUA}${BOLD}Nametags"
+        }
+    }
+
+    var hideTadgangNametags by boolean(false) {
+        this.name = Translated("Hide Tadgang nametags")
+        this.description = Translated("Hides Tadgang tadpoles nametags in Galatea. Tadgang frogs nametags are still visible!.")
+    }
+
+    init {
+        separator {
             this.title = "${AQUA}${BOLD}World sounds"
         }
     }
@@ -97,6 +102,6 @@ object WorldRendering : CategoryKt("World Rendering") {
 
     var muteReindrakeGifts by boolean(false) {
         this.name = Translated("Mute Reindrake gifts")
-        this.description = Translated("Mutes loud 'totem used' sounds while picking up gifts from a Reindrake.")
+        this.description = Translated("Mutes loud 'totem used' sounds while picking up gifts from own Reindrake.")
     }
 }

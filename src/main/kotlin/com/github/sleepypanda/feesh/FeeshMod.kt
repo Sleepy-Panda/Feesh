@@ -89,6 +89,7 @@ class FeeshMod : ClientModInitializer {
         // Rendering
         RareMobHighlight.init()
         HidePlayersNearBobber.init()
+        HideTadgangNametags.init()
 
         // Alerts
         RareCatchAlert.init()

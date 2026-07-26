@@ -2,6 +2,7 @@ package com.github.sleepypanda.feesh.mixin;
 
 import com.github.sleepypanda.feesh.features.overlays.FishingHookTimer;
 import com.github.sleepypanda.feesh.features.rendering.HideOtherPlayersHooks;
+import com.github.sleepypanda.feesh.features.rendering.HideTadgangNametags;
 import com.github.sleepypanda.feesh.features.rendering.RareMobHighlight;
 import com.github.sleepypanda.feesh.features.rendering.HidePlayersNearBobber;
 import net.minecraft.client.Minecraft;
@@ -27,7 +28,9 @@ public abstract class EntityRendererMixin<T extends Entity, S extends EntityRend
     private void feesh$onShouldRender(T entity, Frustum frustum, double camX, double camY, double camZ, CallbackInfoReturnable<Boolean> cir) {
         switch (entity) {
             case ArmorStand armorStand -> {
-                if (FishingHookTimer.shouldCancelArmorStandRendering(armorStand.getUUID())) {
+                if (FishingHookTimer.shouldCancelArmorStandRendering(armorStand.getUUID()) ||
+                    HideTadgangNametags.shouldHide(armorStand.getId())
+                ) {
                     cir.setReturnValue(false);
                 }
             }

@@ -9,6 +9,8 @@
 		"MultiPlayerGameModeMixin",
 		"MinecraftMixin",
 		"EntityRendererMixin",
+		"SynchedEntityDataMixin",
+		"EntityAccessor",
 		"SoundEngineMixin",
 		"AbstractSoundInstanceAccessor"
 	],

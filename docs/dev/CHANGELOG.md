@@ -4,7 +4,7 @@ Released on: ???
 
 ## Features
 
--
+- Added "Hide Tadgang nametags" setting to hide Tadgang tadpoles (not frogs) nametags in Galatea [disabled by default].
 
 # 1.11.0
 
