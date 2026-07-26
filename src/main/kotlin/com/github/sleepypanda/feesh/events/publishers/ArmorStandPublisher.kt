@@ -2,6 +2,7 @@ package com.github.sleepypanda.feesh.events.publishers
 
 import com.github.sleepypanda.feesh.events.EventBus
 import com.github.sleepypanda.feesh.utils.WorldUtils
+import com.github.sleepypanda.feesh.events.models.ArmorStandCustomNameChangedEvent
 import com.github.sleepypanda.feesh.events.models.ArmorStandDetailsLoadedEvent
 import com.github.sleepypanda.feesh.events.models.ArmorStandLoadedEvent
 import com.github.sleepypanda.feesh.events.models.ClientTickEvent
@@ -23,6 +24,21 @@ object ArmorStandPublisher {
         EventBus.subscribe(ArmorStandLoadedEvent::class, ::onArmorStandLoaded)
         EventBus.subscribe(ClientTickEvent::class, ::onClientTick)
         EventBus.subscribe(WorldChangedEvent::class, ::onWorldChanged)
+    }
+
+    @JvmStatic
+    fun onArmorStandCustomNameChanged(armorStand: ArmorStand) {
+        if (!WorldUtils.isInSkyblock()) return
+        if (!armorStand.isAlive) return
+
+        CommonUtils.runWithCatching("Failed to publish armor stand custom name changed") {
+            val name = armorStand.customName ?: return
+            val unformatted = name.getUnformattedString()
+            if (unformatted.isEmpty()) return
+
+            val formatted = name.getFormattedString()
+            EventBus.publish(ArmorStandCustomNameChangedEvent(armorStand, armorStand.id, formatted, unformatted))
+        }
     }
 
     private fun onArmorStandLoaded(event: ArmorStandLoadedEvent) {

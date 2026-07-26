@@ -134,6 +134,7 @@ Required Java version is 25+.
 - **Hide other players' hooks** — Hides other players' bobbers and fishing lines, so you can see only your own hook.
 - **Highlight rare sea creatures** — Applies glowing border to the rare sea creatures. Not visible through walls.
 - **Hide other players near bobber** — Hides other players near your bobber when a fishing rod is casted.
+- **Hide Tadgang nametags** — Hides Tadgang tadpoles nametags in Galatea.
 - **Mute Jade Dragon** — Mutes Jade dragon sounds while you are in dragon's cave.
 - **Mute Reindrake gifts** — Mutes loud 'totem used' sounds while picking up gifts from a Reindrake.
 
