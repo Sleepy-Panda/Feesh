@@ -1,8 +1,9 @@
 package com.github.sleepypanda.feesh.features.alerts
 
+import com.github.sleepypanda.feesh.constants.SeaCreatureNames
 import com.github.sleepypanda.feesh.events.EventBus
 import com.github.sleepypanda.feesh.events.models.ClientTickEvent
-import com.github.sleepypanda.feesh.events.models.ArmorStandDetailsLoadedEvent
+import com.github.sleepypanda.feesh.events.models.ArmorStandCustomNameChangedEvent
 import com.github.sleepypanda.feesh.events.models.WorldChangedEvent
 import com.github.sleepypanda.feesh.settings.categories.Alerts
 import com.github.sleepypanda.feesh.utils.ChatUtils
@@ -23,7 +24,6 @@ object NessieDestinationAlert {
         val isDestinationSent: Boolean = false
     )
 
-    private const val NESSIE_NAME = "Nessie"
     private const val TICKS_PER_MOBS_SCAN = 10
     private const val CLEANUP_DELAY_TICKS = 30 * 20
     private const val EXPIRATION_TIME_MS = 6 * 60 * 1000L
@@ -69,7 +69,7 @@ object NessieDestinationAlert {
     private var cleanupTickCounter = 0
 
     fun init() {
-        EventBus.subscribe(ArmorStandDetailsLoadedEvent::class, ::onArmorStandLoaded)
+        EventBus.subscribe(ArmorStandCustomNameChangedEvent::class, ::onArmorStandNameChanged)
         EventBus.subscribe(ClientTickEvent::class, ::onClientTick)
         EventBus.subscribe(WorldChangedEvent::class, ::onWorldChanged)
     }
@@ -83,17 +83,21 @@ object NessieDestinationAlert {
         onTickCleanup()
     }
 
-    private fun onArmorStandLoaded(event: ArmorStandDetailsLoadedEvent) {
-        if (!Alerts.alertOnNessieDestination || !WorldUtils.isInSkyblock() || WorldUtils.getWorldName() != WorldUtils.GALATEA) return
-        if (!event.customNameUnformatted.contains(NESSIE_NAME)) return
-        if (!FishingHookUtils.wasFishingHookSubmergedMinutesAgo(5)) return
-
-        EntityUtils.parseSeaCreatureNametag(event.entity, listOf(NESSIE_NAME)) ?: return
-
-        val mobId = event.entityId - 1
-        val existing = trackedNessieMobIds[mobId]
-        if (existing == null) {
-            trackedNessieMobIds[mobId] = TrackedNessieInfo(detectedTime = Date().time)
+    private fun onArmorStandNameChanged(event: ArmorStandCustomNameChangedEvent) {
+        CommonUtils.runWithCatching("Failed to check Nessie nametag") {
+            if (!event.isFirstLoaded) return
+            if (!Alerts.alertOnNessieDestination) return
+            if (!WorldUtils.isInSkyblock() || WorldUtils.getWorldName() != WorldUtils.GALATEA) return
+            if (!event.customNameUnformatted.contains(SeaCreatureNames.NESSIE)) return
+            if (!FishingHookUtils.wasFishingHookSubmergedMinutesAgo(5)) return
+    
+            EntityUtils.parseSeaCreatureNametag(event.entity, listOf(SeaCreatureNames.NESSIE)) ?: return
+    
+            val mobId = event.entityId - 1
+            val existing = trackedNessieMobIds[mobId]
+            if (existing == null) {
+                trackedNessieMobIds[mobId] = TrackedNessieInfo(detectedTime = Date().time)
+            }    
         }
     }
 

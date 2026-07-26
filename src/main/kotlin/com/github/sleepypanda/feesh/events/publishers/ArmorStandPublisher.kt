@@ -10,6 +10,7 @@ import com.github.sleepypanda.feesh.events.models.WorldChangedEvent
 import com.github.sleepypanda.feesh.utils.ChatUtils.getFormattedString
 import com.github.sleepypanda.feesh.utils.ChatUtils.getUnformattedString
 import com.github.sleepypanda.feesh.utils.CommonUtils
+import net.minecraft.network.chat.Component
 import net.minecraft.world.entity.decoration.ArmorStand
 
 object ArmorStandPublisher {
@@ -27,7 +28,7 @@ object ArmorStandPublisher {
     }
 
     @JvmStatic
-    fun onArmorStandCustomNameChanged(armorStand: ArmorStand) {
+    fun onArmorStandCustomNameChanged(armorStand: ArmorStand, previousCustomName: Component?) {
         if (!WorldUtils.isInSkyblock()) return
         if (!armorStand.isAlive) return
 
@@ -37,7 +38,19 @@ object ArmorStandPublisher {
             if (unformatted.isEmpty()) return
 
             val formatted = name.getFormattedString()
-            EventBus.publish(ArmorStandCustomNameChangedEvent(armorStand, armorStand.id, formatted, unformatted))
+            val previousFormatted = previousCustomName.getFormattedString()
+            val previousUnformatted = previousCustomName.getUnformattedString()
+            EventBus.publish(
+                ArmorStandCustomNameChangedEvent(
+                    armorStand,
+                    armorStand.id,
+                    previousCustomName == null || previousUnformatted.isEmpty(),
+                    previousFormatted,
+                    previousUnformatted,
+                    formatted,
+                    unformatted,
+                )
+            )
         }
     }
 

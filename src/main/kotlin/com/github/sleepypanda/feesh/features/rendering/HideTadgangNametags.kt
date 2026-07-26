@@ -27,6 +27,7 @@ object HideTadgangNametags {
     }
 
     private fun onArmorStandCustomNameChanged(event: ArmorStandCustomNameChangedEvent) {
+        if (!event.isFirstLoaded) return
         if (!WorldRendering.hideTadgangNametags) return
         if (!WorldUtils.isInSkyblock() || WorldUtils.getWorldName() != WorldUtils.GALATEA) return
 

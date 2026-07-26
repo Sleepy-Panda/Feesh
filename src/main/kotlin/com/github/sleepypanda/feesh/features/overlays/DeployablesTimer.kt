@@ -2,7 +2,7 @@ package com.github.sleepypanda.feesh.features.overlays
 
 import com.github.sleepypanda.feesh.FeeshMod
 import com.github.sleepypanda.feesh.events.EventBus
-import com.github.sleepypanda.feesh.events.models.ArmorStandDetailsLoadedEvent
+import com.github.sleepypanda.feesh.events.models.ArmorStandCustomNameChangedEvent
 import com.github.sleepypanda.feesh.events.models.ChatEvent
 import com.github.sleepypanda.feesh.events.models.ClientTickEvent
 import com.github.sleepypanda.feesh.events.models.PlayerInteractEvent
@@ -121,7 +121,7 @@ object DeployablesTimer {
         EventBus.subscribe(ClientTickEvent::class, ::onClientTick)
         EventBus.subscribe(WorldChangedEvent::class, ::onWorldChanged)
         EventBus.subscribe(PlayerInteractEvent::class, ::onPlayerInteract)
-        EventBus.subscribe(ArmorStandDetailsLoadedEvent::class, ::onArmorStandDetailsLoaded)
+        EventBus.subscribe(ArmorStandCustomNameChangedEvent::class, ::onArmorStandCustomNameChanged)
     }
 
     private fun onWorldChanged(@Suppress("UNUSED_PARAMETER") event: WorldChangedEvent) {
@@ -187,8 +187,9 @@ object DeployablesTimer {
         }
     }
 
-    private fun onArmorStandDetailsLoaded(event: ArmorStandDetailsLoadedEvent) {
+    private fun onArmorStandCustomNameChanged(event: ArmorStandCustomNameChangedEvent) {
         CommonUtils.runWithCatching("Failed to handle deployable armor stand spawn") {
+            if (!event.isFirstLoaded) return
             if (!WorldUtils.isInSkyblock()) return
             if (!isDwarvenLanternTrackingEnabled() && !isUmberellaTrackingEnabled() && !isFluxTrackingEnabled()) return
 
@@ -557,9 +558,10 @@ object DeployablesTimer {
         }
     }
 
-    private fun expiresSoonSecondsFor(data: BaseDeployableData): Int =
+    private fun expiresSoonSecondsFor(data: BaseDeployableData): Int {
         return (if (data.isShortLiving) Alerts.shortLivingDeployableExpiresSoonSeconds else Alerts.deployableExpiresSoonSeconds)
             .coerceAtLeast(1)
+    }
 
     private fun maybeAlertExpiresSoon(
         data: BaseDeployableData,

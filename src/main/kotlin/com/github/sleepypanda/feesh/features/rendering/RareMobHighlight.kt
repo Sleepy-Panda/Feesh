@@ -3,7 +3,7 @@ package com.github.sleepypanda.feesh.features.rendering
 import com.github.sleepypanda.feesh.FeeshMod
 import com.github.sleepypanda.feesh.constants.SeaCreatures
 import com.github.sleepypanda.feesh.events.EventBus
-import com.github.sleepypanda.feesh.events.models.ArmorStandDetailsLoadedEvent
+import com.github.sleepypanda.feesh.events.models.ArmorStandCustomNameChangedEvent
 import com.github.sleepypanda.feesh.events.models.ClientTickEvent
 import com.github.sleepypanda.feesh.events.models.WorldChangedEvent
 import com.github.sleepypanda.feesh.settings.categories.WorldRendering
@@ -34,7 +34,7 @@ object RareMobHighlight {
     fun init() {
         EventBus.subscribe(WorldChangedEvent::class, ::onWorldChange)
         EventBus.subscribe(ClientTickEvent::class, ::onClientTick)
-        EventBus.subscribe(ArmorStandDetailsLoadedEvent::class, ::onArmorStandDetailsLoaded)
+        EventBus.subscribe(ArmorStandCustomNameChangedEvent::class, ::onArmorStandCustomNameChanged)
         updateEnabledMobTypes()
     }
 
@@ -54,8 +54,10 @@ object RareMobHighlight {
         enabledMobTypes = WorldRendering.highlightSeaCreaturesList.map { it.displayName }.distinct().toList()
     }
 
-    private fun onArmorStandDetailsLoaded(event: ArmorStandDetailsLoadedEvent) {
+    private fun onArmorStandCustomNameChanged(event: ArmorStandCustomNameChangedEvent) {
+        if (!event.isFirstLoaded) return
         if (!WorldRendering.highlightSeaCreatures || !WorldUtils.isInSkyblock() || !WorldUtils.isInFishingWorld()) return
+        
         val entity = event.entity
         val cleanName = EntityUtils.parseSeaCreatureNametag(entity, enabledMobTypes)?.baseMobName ?: return
         if (!enabledMobTypes.contains(cleanName)) return
