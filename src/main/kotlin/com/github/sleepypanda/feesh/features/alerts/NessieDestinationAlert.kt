@@ -88,10 +88,18 @@ object NessieDestinationAlert {
             if (!event.isFirstLoaded) return
             if (!Alerts.alertOnNessieDestination) return
             if (!WorldUtils.isInSkyblock() || WorldUtils.getWorldName() != WorldUtils.GALATEA) return
-            if (!event.customNameUnformatted.contains(SeaCreatureNames.NESSIE)) return
+            if (!event.customName.unformatted.contains(SeaCreatureNames.NESSIE)) return
             if (!FishingHookUtils.wasFishingHookSubmergedMinutesAgo(5)) return
     
-            EntityUtils.parseSeaCreatureNametag(event.entity, listOf(SeaCreatureNames.NESSIE)) ?: return
+            EntityUtils.parseSeaCreatureNametag(
+                entityId = event.entityId,
+                customNameFormatted = event.customName.formatted,
+                customNameUnformatted = event.customName.unformatted,
+                x = event.position.x,
+                y = event.position.y,
+                z = event.position.z,
+                includedSeaCreatureNames = listOf(SeaCreatureNames.NESSIE),
+            ) ?: return
     
             val mobId = event.entityId - 1
             val existing = trackedNessieMobIds[mobId]

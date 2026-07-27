@@ -57,9 +57,17 @@ object RareMobHighlight {
     private fun onArmorStandCustomNameChanged(event: ArmorStandCustomNameChangedEvent) {
         if (!event.isFirstLoaded) return
         if (!WorldRendering.highlightSeaCreatures || !WorldUtils.isInSkyblock() || !WorldUtils.isInFishingWorld()) return
-        
-        val entity = event.entity
-        val cleanName = EntityUtils.parseSeaCreatureNametag(entity, enabledMobTypes)?.baseMobName ?: return
+
+        val world = FeeshMod.mc.level ?: return
+        val cleanName = EntityUtils.parseSeaCreatureNametag(
+            entityId = event.entityId,
+            customNameFormatted = event.customName.formatted,
+            customNameUnformatted = event.customName.unformatted,
+            x = event.position.x,
+            y = event.position.y,
+            z = event.position.z,
+            includedSeaCreatureNames = enabledMobTypes,
+        )?.baseMobName ?: return
         if (!enabledMobTypes.contains(cleanName)) return
 
         val scInfo = SeaCreatures.allSeaCreatures.find { it.name == cleanName }
@@ -77,11 +85,11 @@ object RareMobHighlight {
         val entities: MutableList<Entity> = mutableListOf()
 
         // Volcanic Snail and Jumpin Jack are ItemDisplay entities instead of LivingEntity
-        val potentialMobEntity = entity.level().getEntity(entity.id - mobEntityShift)
+        val potentialMobEntity = world.getEntity(event.entityId - mobEntityShift)
         var mobEntity = if (potentialMobEntity is LivingEntity || potentialMobEntity is ItemDisplay) potentialMobEntity else return
 
         if (cleanName == HighlightableSeaCreatureTypes.JAWBUS_FOLLOWER.displayName && mobEntity is Slime && mobEntity !is MagmaCube) { // Fire Eel
-            mobEntity = entity.level().getEntity(entity.id - 11) as? LivingEntity ?: return // -1 is for tail, we want to find Fire Eel's head
+            mobEntity = world.getEntity(event.entityId - 11) as? LivingEntity ?: return // -1 is for tail, we want to find Fire Eel's head
         }
 
         if (mobEntity is LivingEntity && !mobEntity.isAlive) return
@@ -119,7 +127,7 @@ object RareMobHighlight {
         if (cleanName == HighlightableSeaCreatureTypes.WIKI_TIKI.displayName) {
             val wikiTikiEntitiesShifts = listOf(3, 5, 7)
             wikiTikiEntitiesShifts.forEach { shift ->
-                val prevEntity = entity.level().getEntity(entity.id - shift) as? LivingEntity ?: return@forEach
+                val prevEntity = world.getEntity(event.entityId - shift) as? LivingEntity ?: return@forEach
                 entities.add(prevEntity)
             }
         }

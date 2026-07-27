@@ -3,8 +3,6 @@ package com.github.sleepypanda.feesh.events.publishers
 import com.github.sleepypanda.feesh.events.EventBus
 import com.github.sleepypanda.feesh.utils.WorldUtils
 import com.github.sleepypanda.feesh.events.models.ArmorStandCustomNameChangedEvent
-import com.github.sleepypanda.feesh.events.models.ClientTickEvent
-import com.github.sleepypanda.feesh.events.models.WorldChangedEvent
 import com.github.sleepypanda.feesh.utils.ChatUtils.getFormattedString
 import com.github.sleepypanda.feesh.utils.ChatUtils.getUnformattedString
 import com.github.sleepypanda.feesh.utils.CommonUtils
@@ -14,8 +12,7 @@ import net.minecraft.world.entity.decoration.ArmorStand
 object ArmorStandPublisher {
 
     fun init() {
-        EventBus.subscribe(ClientTickEvent::class, ::onClientTick)
-        EventBus.subscribe(WorldChangedEvent::class, ::onWorldChanged)
+
     }
 
     @JvmStatic
@@ -31,15 +28,25 @@ object ArmorStandPublisher {
             val formatted = name.getFormattedString()
             val previousFormatted = previousCustomName.getFormattedString()
             val previousUnformatted = previousCustomName.getUnformattedString()
+            val isFirstLoaded = previousCustomName == null || previousUnformatted.isEmpty()
+            
             EventBus.publish(
                 ArmorStandCustomNameChangedEvent(
-                    armorStand,
-                    armorStand.id,
-                    previousCustomName == null || previousUnformatted.isEmpty(),
-                    previousFormatted,
-                    previousUnformatted,
-                    formatted,
-                    unformatted,
+                    entityId = armorStand.id,
+                    isFirstLoaded = isFirstLoaded,
+                    previousCustomName = ArmorStandCustomNameChangedEvent.CustomName(
+                        formatted = previousFormatted,
+                        unformatted = previousUnformatted,
+                    ),
+                    customName = ArmorStandCustomNameChangedEvent.CustomName(
+                        formatted = formatted,
+                        unformatted = unformatted,
+                    ),
+                    position = ArmorStandCustomNameChangedEvent.Position(
+                        x = armorStand.x,
+                        y = armorStand.y,
+                        z = armorStand.z,
+                    ),
                 )
             )
         }

@@ -193,9 +193,8 @@ object DeployablesTimer {
             if (!WorldUtils.isInSkyblock()) return
             if (!isDwarvenLanternTrackingEnabled() && !isUmberellaTrackingEnabled() && !isFluxTrackingEnabled()) return
 
-            val armorStand = event.entity
             val player = FeeshMod.mc.player ?: return
-            if (EntityUtils.getDistance(player, armorStand) > 5.0) return
+            if (EntityUtils.getDistance(player, event.position.x, event.position.y, event.position.z) > 5.0) return
 
             val nowMs = System.currentTimeMillis()
             if (nowMs - lastDwarvenLanternInteractTimeMs > 1000L &&
@@ -203,28 +202,28 @@ object DeployablesTimer {
                 nowMs - lastFluxInteractTimeMs > 1000L
             ) return
 
-            val name = event.customNameUnformatted
+            val name = event.customName.unformatted
 
             if (isDwarvenLanternTrackingEnabled() &&
                 isDwarvenLanternArmorStandName(name) &&
                 (name.endsWith("300s") || name.endsWith("600s")) &&
                 nowMs - lastDwarvenLanternInteractTimeMs <= 1000L
             ) {
-                dwarvenLanternData.id = armorStand.id
-                val formattedName = event.customNameFormatted
+                dwarvenLanternData.id = event.entityId
+                val formattedName = event.customName.formatted
                 dwarvenLanternData.itemDisplayName = formattedName.replace(Regex(" §.+\\d+s"), "").replace(BOLD.code, "").trim().ifBlank { "Dwarven Lantern" }
             } else if (isUmberellaTrackingEnabled() &&
                 (name == "Umberella 300s" || name == "Umberella 600s") &&
                 nowMs - lastUmberellaInteractTimeMs <= 1000L
             ) {
-                umberellaData.id = armorStand.id
+                umberellaData.id = event.entityId
             } else if (isFluxTrackingEnabled() &&
                 isFluxArmorStandName(name) &&
                 (name.endsWith("30s") || name.endsWith("60s") || name.endsWith("120s")) &&
                 nowMs - lastFluxInteractTimeMs <= 1000L
             ) {
-                fluxData.id = armorStand.id
-                val formattedName = event.customNameFormatted
+                fluxData.id = event.entityId
+                val formattedName = event.customName.formatted
                 fluxData.itemDisplayName = formattedName.replace(Regex(" §.+\\d+s"), "").replace(BOLD.code, "").trim().ifBlank { "Flux" }
             }
         }
