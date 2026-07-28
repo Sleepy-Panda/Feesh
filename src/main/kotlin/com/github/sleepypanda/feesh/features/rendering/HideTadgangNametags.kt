@@ -27,11 +27,12 @@ object HideTadgangNametags {
     }
 
     private fun onArmorStandCustomNameChanged(event: ArmorStandCustomNameChangedEvent) {
+        if (!event.isFirstLoaded) return
         if (!WorldRendering.hideTadgangNametags) return
         if (!WorldUtils.isInSkyblock() || WorldUtils.getWorldName() != WorldUtils.GALATEA) return
 
         CommonUtils.runWithCatching("Failed to check Tadgang nametag") {
-            val name = event.customNameUnformatted
+            val name = event.customName.unformatted
             // Tadpoles are level 8, frogs are level 10
             if (!(name.contains("[Lv8]") && name.contains(SeaCreatureNames.TADGANG))) return
             hiddenNametagIds.add(event.entityId)

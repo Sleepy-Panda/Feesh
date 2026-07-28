@@ -11,7 +11,6 @@ import com.github.sleepypanda.feesh.events.models.GameStartedEvent
 import com.github.sleepypanda.feesh.events.models.GuiClosedEvent
 import com.github.sleepypanda.feesh.events.models.ArmorStandDespawnedEvent
 import com.github.sleepypanda.feesh.events.models.ItemEntityLoadedEvent
-import com.github.sleepypanda.feesh.events.models.ArmorStandLoadedEvent
 import com.github.sleepypanda.feesh.events.models.OwnFishingHookDespawnedEvent
 import com.github.sleepypanda.feesh.events.models.WorldChangedEvent
 import com.github.sleepypanda.feesh.events.models.ItemTooltipRenderedEvent
@@ -120,7 +119,6 @@ object EventBus {
         ClientEntityEvents.ENTITY_LOAD.register { entity, _ ->
             when (entity) {
                 is ItemEntity -> publish(ItemEntityLoadedEvent(entity))
-                is ArmorStand -> if (entity.isAlive) publish(ArmorStandLoadedEvent(entity))
                 else -> { }
             }
         }

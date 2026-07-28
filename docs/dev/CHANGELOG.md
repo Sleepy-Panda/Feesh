@@ -6,6 +6,14 @@ Released on: ???
 
 - Added "Hide Tadgang nametags" setting to hide Tadgang tadpoles (not frogs) nametags in Galatea [disabled by default].
 
+## Bugfixes
+
+- Fixed rare mobs highlight not applying sometimes when the server lags.
+
+## Other
+
+- Refactored way of handling armor stand spawn events.
+
 # 1.11.0
 
 Released on: 2026-07-24

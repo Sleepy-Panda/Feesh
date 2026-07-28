@@ -1,13 +1,14 @@
 package com.github.sleepypanda.feesh.utils
 
 import com.github.sleepypanda.feesh.FeeshMod
-import net.minecraft.world.entity.Entity
-import net.minecraft.world.entity.decoration.ArmorStand
-import net.minecraft.world.entity.projectile.FishingHook
+import com.github.sleepypanda.feesh.constants.SeaCreatureNames
 import com.github.sleepypanda.feesh.utils.ChatUtils.getFormattedString
 import com.github.sleepypanda.feesh.utils.ChatUtils.getUnformattedString
 import com.github.sleepypanda.feesh.utils.ChatUtils.removeFormatting
 import net.minecraft.world.phys.Vec3
+import net.minecraft.world.entity.Entity
+import net.minecraft.world.entity.decoration.ArmorStand
+import net.minecraft.world.entity.projectile.FishingHook
 import kotlin.math.sqrt
 
 object EntityUtils {
@@ -152,17 +153,34 @@ object EntityUtils {
      */
     fun parseSeaCreatureNametag(entity: ArmorStand, includedSeaCreatureNames: List<String>? = null): SeaCreatureParsedNametagInfo? {
         val customName = entity.customName ?: return null
-        val plainName = customName.getUnformattedString()
+        return parseSeaCreatureNametag(
+            entityId = entity.id,
+            customNameFormatted = customName.getFormattedString(),
+            customNameUnformatted = customName.getUnformattedString(),
+            x = entity.x,
+            y = entity.y,
+            z = entity.z,
+            includedSeaCreatureNames = includedSeaCreatureNames,
+        )
+    }
 
-        if (plainName.isEmpty() ||
-            !plainName.contains("[Lv") ||
-            !plainName.contains("]") ||
-            (!plainName.contains("❤") && !plainName.contains("Puddle Jumper")) || // Jumper has no health indicator
-            (includedSeaCreatureNames != null && !includedSeaCreatureNames.any { plainName.contains(it) })
+    fun parseSeaCreatureNametag(
+        entityId: Int,
+        customNameFormatted: String,
+        customNameUnformatted: String,
+        x: Double,
+        y: Double,
+        z: Double,
+        includedSeaCreatureNames: List<String>? = null,
+    ): SeaCreatureParsedNametagInfo? {
+        if (customNameUnformatted.isEmpty() ||
+            !customNameUnformatted.contains("[Lv") ||
+            !customNameUnformatted.contains("]") ||
+            (!customNameUnformatted.contains("❤") && !customNameUnformatted.contains(SeaCreatureNames.PUDDLE_JUMPER)) || // Jumper has no health indicator
+            (includedSeaCreatureNames != null && !includedSeaCreatureNames.any { customNameUnformatted.contains(it) })
         ) return null
 
-        val formattedText = customName.getFormattedString()
-        var name = formattedText
+        var name = customNameFormatted
             .replace("§e﴾ ", "")
             .replace(" §e﴿", "")
             .replace("§5§ka", "")
@@ -189,12 +207,12 @@ object EntityUtils {
         val maxHpNumber = if (hpMatch != null) CommonUtils.parseShortNumber(hpMatch.groupValues[2]) else 0.0
 
         return SeaCreatureParsedNametagInfo(
-            mcEntityId = entity.id,
+            mcEntityId = entityId,
             baseMobName = baseMobName, // "Lord Jawbus" or "Squid"
             shortNametag = shortName, // §c♆§7⚙§d♣ §c§lLord Jawbus§r§r §a69M§f/§a100M§c❤ §b✯
             currentHpNumber = currentHpNumber,
             maxHpNumber = maxHpNumber,
-            renderPos = Triple(entity.x, entity.y, entity.z)
+            renderPos = Triple(x, y, z)
         )
     }
 }
