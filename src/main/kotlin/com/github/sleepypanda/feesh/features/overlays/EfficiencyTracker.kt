@@ -4,6 +4,7 @@ import com.github.sleepypanda.feesh.FeeshMod
 import com.github.sleepypanda.feesh.events.EventBus
 import com.github.sleepypanda.feesh.events.models.ChatEvent
 import com.github.sleepypanda.feesh.events.models.ClientTickEvent
+import com.github.sleepypanda.feesh.events.models.FishingXpGainedEvent
 import com.github.sleepypanda.feesh.events.models.InteractActionType
 import com.github.sleepypanda.feesh.events.models.OwnFishingHookDespawnedEvent
 import com.github.sleepypanda.feesh.events.models.OwnSeaCreatureCaughtEvent
@@ -48,6 +49,7 @@ object EfficiencyTracker : IResettableTracker {
     private var seaCreatureCatchesCount = 0
     private var seaCreatureCountWithDh = 0
     private var seaCreatureCountWithDhAndBs = 0
+    private var fishingXpTotal = 0.0
     private var elapsedSeconds = 0
 
     private var isSessionActive = false
@@ -63,8 +65,9 @@ object EfficiencyTracker : IResettableTracker {
         .setClickable(true)
         .setSampleLines(listOf(
             baseTitle,
-            "${WHITE}500 ${GRAY}Catches/h (${WHITE}1000 ${GRAY}total)",
-            "${WHITE}600 ${GRAY}SC/h (${WHITE}1200 ${GRAY}total)",
+            "${GRAY}Catches/h: ${WHITE}500 ${GRAY}(${WHITE}1000 ${GRAY}total)",
+            "${GRAY}SC/h: ${WHITE}600 ${GRAY}(${WHITE}1200 ${GRAY}total)",
+            "${GRAY}XP/h: ${WHITE}1.5M ${GRAY}(${WHITE}750k ${GRAY}total)",
             "",
             "${AQUA}Elapsed time: ${WHITE}30m",
         ))
@@ -88,11 +91,12 @@ object EfficiencyTracker : IResettableTracker {
         EventBus.subscribe(PlayerInteractEvent::class, ::onPlayerInteract)
         EventBus.subscribe(ChatEvent::class, ::onChat)
         EventBus.subscribe(SoundPlayedEvent::class, ::onSoundPlayed)
+        EventBus.subscribe(FishingXpGainedEvent::class, ::onFishingXpGained)
         EventBus.subscribe(WorldChangedEvent::class, ::onWorldChanged)
     }
 
     override fun hasData(): Boolean {
-        return catchesCount > 0 || seaCreatureCatchesCount > 0 || seaCreatureCountWithDh > 0 || seaCreatureCountWithDhAndBs > 0 || elapsedSeconds > 0
+        return catchesCount > 0 || seaCreatureCatchesCount > 0 || seaCreatureCountWithDh > 0 || seaCreatureCountWithDhAndBs > 0 || fishingXpTotal > 0 || elapsedSeconds > 0
     }
 
     override fun resetData(force: Boolean) {
@@ -100,6 +104,7 @@ object EfficiencyTracker : IResettableTracker {
         seaCreatureCatchesCount = 0
         seaCreatureCountWithDh = 0
         seaCreatureCountWithDhAndBs = 0
+        fishingXpTotal = 0.0
         isSessionActive = false
         elapsedSeconds = 0
 
@@ -234,6 +239,16 @@ object EfficiencyTracker : IResettableTracker {
         }
     }
 
+    private fun onFishingXpGained(event: FishingXpGainedEvent) {
+        CommonUtils.runWithCatching("Failed to track Fishing XP gain in $trackerName") {
+            if (!isTrackerActive()) return
+            if (!isStatEnabled(EfficiencyStatTypes.XP_PER_HOUR)) return
+
+            fishingXpTotal += event.amount
+            updateGuiLines()
+        }
+    }
+
     private fun tryAddCatchFromChat() {
         if (!isStatEnabled(EfficiencyStatTypes.CATCHES_PER_HOUR)) return
         if (isSomethingCaughtRecently()) return
@@ -318,18 +333,19 @@ object EfficiencyTracker : IResettableTracker {
         isSessionActive = false
     }
 
-    private fun getTotalForStat(stat: EfficiencyStatTypes): Int {
+    private fun getTotalForStat(stat: EfficiencyStatTypes): Double {
         return when (stat) {
-            EfficiencyStatTypes.CATCHES_PER_HOUR -> catchesCount
-            EfficiencyStatTypes.SC_CATCHES_PER_HOUR -> seaCreatureCatchesCount
-            EfficiencyStatTypes.SC_PER_HOUR -> seaCreatureCountWithDh
-            EfficiencyStatTypes.SC_PER_HOUR_WITH_BS -> seaCreatureCountWithDhAndBs
+            EfficiencyStatTypes.CATCHES_PER_HOUR -> catchesCount.toDouble()
+            EfficiencyStatTypes.SC_CATCHES_PER_HOUR -> seaCreatureCatchesCount.toDouble()
+            EfficiencyStatTypes.SC_PER_HOUR -> seaCreatureCountWithDh.toDouble()
+            EfficiencyStatTypes.SC_PER_HOUR_WITH_BS -> seaCreatureCountWithDhAndBs.toDouble()
+            EfficiencyStatTypes.XP_PER_HOUR -> fishingXpTotal
         }
     }
 
-    private fun calculatePerHour(total: Int): Int {
+    private fun calculatePerHour(total: Double): Double {
         val elapsedHours = elapsedSeconds / 3600.0
-        return if (elapsedHours > 0) (total / elapsedHours).toInt() else 0
+        return if (elapsedHours > 0) total / elapsedHours else 0.0
     }
 
     private data class StatLineColumns(val perHour: String, val total: String) {
@@ -337,6 +353,13 @@ object EfficiencyTracker : IResettableTracker {
     }
 
     private fun getColumnsSeparator(): String = " ${DARK_GRAY}| "
+
+    private fun formatStatNumber(stat: EfficiencyStatTypes, value: Double): String {
+        if (stat == EfficiencyStatTypes.XP_PER_HOUR) {
+            return CommonUtils.toShortNumber(value) ?: "0"
+        }
+        return CommonUtils.formatNumberWithSpaces(value.toInt())
+    }
 
     private fun getStatLineColumns(stat: EfficiencyStatTypes): StatLineColumns {
         val total = getTotalForStat(stat)
@@ -346,10 +369,11 @@ object EfficiencyTracker : IResettableTracker {
             EfficiencyStatTypes.SC_CATCHES_PER_HOUR -> "SC catches/h"
             EfficiencyStatTypes.SC_PER_HOUR -> "SC/h"
             EfficiencyStatTypes.SC_PER_HOUR_WITH_BS -> "SC/h with BS"
+            EfficiencyStatTypes.XP_PER_HOUR -> "XP/h"
         }
         return StatLineColumns(
-            perHour = "${GRAY}$label: ${WHITE}${CommonUtils.formatNumberWithSpaces(perHour)}",
-            total = "${WHITE}${CommonUtils.formatNumberWithSpaces(total)} ${GRAY}total",
+            perHour = "${GRAY}$label: ${WHITE}${formatStatNumber(stat, perHour)}",
+            total = "${WHITE}${formatStatNumber(stat, total)} ${GRAY}total",
         )
     }
 

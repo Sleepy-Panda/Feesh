@@ -492,12 +492,12 @@ Hidden if you have no fishing rod in your hotbar!""".trimIndent())
 
     var fishingHookTimerOverlay by boolean(false) {
         this.name = Translated("Fishing hook timer")
-        this.description = Translated("Displays the timer of your fishing hook, as well as the sign when a fish arrived and can be reeled in. For this to work, please enable ${YELLOW}Skyblock Settings -> Personal -> Fishing Settings -> Fishing Timer")
+        this.description = Translated("Helps to customize fishing hook timer and the sign when a fish can be reeled in. For this to work, please enable ${YELLOW}Skyblock Settings -> Personal -> Fishing Settings -> Fishing Timer & Fishing Status Holograms")
     }
 
     var fishingHookTimerMode by enum(FishingHookTimerMode.UNTIL_REEL_IN) {
         this.name = Translated("Fishing hook timer mode")
-        this.description = Translated("'Until reel in' shows countdown while fish is swimming towards the fishing hook. 'Since casted' shows the timer while the fishing hook is casted.")
+        this.description = Translated("'Until reel in' shows countdown while fish is swimming towards the fishing hook. 'Since casted' shows the timer how long the fishing hook is casted - useful for catching Slugfish trophy.")
     }
 
     var fishingHookFishArrivedTemplate by string("§c§l!!!") {
@@ -567,6 +567,7 @@ ${WHITE}- Catches/hour${GRAY} - tracks rod casted/reeled in and you caught somet
 ${WHITE}- SC catches/hour${GRAY} - tracks sea creature catches, each SC catch counts as 1.
 ${WHITE}- SC/hour${GRAY} - tracks sea creatures, double hook SC catch counts as 2.
 ${WHITE}- SC/hour with BS${GRAY} - same as SC/hour (includes DH), plus sea creatures you cocooned with Bloodshot (BS).
+${WHITE}- XP/hour${GRAY} - tracks Fishing skill XP gains from the action bar.
 """.trimIndent())
         this.searchTerms = EfficiencyStatTypes.values().map { it.displayName }.toList()
     }
