@@ -4,10 +4,10 @@ import com.github.sleepypanda.feesh.events.EventBus
 import com.github.sleepypanda.feesh.events.models.ArmorStandCustomNameChangedEvent
 import com.github.sleepypanda.feesh.events.models.ArmorStandDespawnedEvent
 import com.github.sleepypanda.feesh.events.models.ClientTickEvent
-import com.github.sleepypanda.feesh.events.models.GameRenderEvent
 import com.github.sleepypanda.feesh.events.models.WorldChangedEvent
 import com.github.sleepypanda.feesh.settings.categories.Overlays
 import com.github.sleepypanda.feesh.settings.categories.FishingHookTimerMode
+import com.github.sleepypanda.feesh.utils.CommonUtils
 import com.github.sleepypanda.feesh.utils.WorldUtils
 import com.github.sleepypanda.feesh.utils.PlayerUtils
 import com.github.sleepypanda.feesh.utils.EntityUtils
@@ -29,6 +29,7 @@ enum class FishState {
 data class FishingHookTimerData(
     var ticksExisted: Int = 0,
     var fishState: FishState = FishState.NONE,
+    // while hypixel timer / !!! armorstand is visible, those fields will be set
     var hypixelTimerEntityId: Int? = null,
     var hypixelTimerUuid: UUID? = null,
     var hypixelTimerText: String = ""
@@ -36,7 +37,9 @@ data class FishingHookTimerData(
 
 object FishingHookTimer {
     private var fishingHookTimer: FishingHookTimerData? = null
-    private const val FISH_ARRIVED = "§c§l!!!";
+
+    private const val HYPIXEL_FISH_ARRIVED_NAMETAG = "§c§l!!!";
+
     private val FISHING_HOOK_TIMER_UNTIL_REEL_IN_REGEX = Regex("§e§l(\\d+(\\.\\d+)?)");
     private val DEFAULT_FISH_ARRIVED_TEMPLATE = "${RED}${BOLD}!!!"
     private val DEFAULT_TIMER_TEMPLATE = "${YELLOW}${BOLD}{timer}"
@@ -58,120 +61,141 @@ object FishingHookTimer {
     fun init() {
         EventBus.subscribe(ClientTickEvent::class, ::onClientTick)
         EventBus.subscribe(WorldChangedEvent::class, ::onWorldChanged)
-        EventBus.subscribe(GameRenderEvent::class, ::onRender)
         EventBus.subscribe(ArmorStandCustomNameChangedEvent::class, ::onArmorStandCustomNameChanged)
         EventBus.subscribe(ArmorStandDespawnedEvent::class, ::onArmorStandDespawned)
     }
 
     private fun onWorldChanged(@Suppress("UNUSED_PARAMETER") event: WorldChangedEvent) {
+        reset()
+    }
+
+    private fun reset() {
         fishingHookTimer = null
         gui.clearLines()
     }
 
     private fun onClientTick(@Suppress("UNUSED_PARAMETER") event: ClientTickEvent) {
-        if (!Overlays.fishingHookTimerOverlay ||
-            !WorldUtils.isInSkyblock() ||
-            !WorldUtils.isInFishingWorld() ||
-            !PlayerUtils.hasFishingRodInHotbar()
-        ) {
-            fishingHookTimer = null
-            gui.clearLines()
-            return
-        }
-
-        val fishingHook = FishingHookUtils.getActiveFishingHook() ?: run {
-            fishingHookTimer = null
-            gui.clearLines()
-            return
-        }
-
-        val timer = fishingHookTimer ?: FishingHookTimerData().also { fishingHookTimer = it }
-        timer.ticksExisted = fishingHook.age
-
-        val entityId = timer.hypixelTimerEntityId ?: return
-        if (EntityUtils.getMcEntityById(entityId) == null) {
-            clearHypixelTimer(timer)
+        CommonUtils.runWithCatching("Failed to check state for Fishing hook timer") {
+            if (!Overlays.fishingHookTimerOverlay ||
+                !WorldUtils.isInSkyblock() ||
+                !WorldUtils.isInFishingWorld() ||
+                !PlayerUtils.hasFishingRodInHotbar()
+            ) {
+                reset()
+                return
+            }
+    
+            val fishingHook = FishingHookUtils.getActiveFishingHook() ?: run {
+                reset()
+                return
+            }
+    
+            if (fishingHookTimer == null) fishingHookTimer = FishingHookTimerData()
+            fishingHookTimer!!.ticksExisted = fishingHook.age
+    
+            val entityId = fishingHookTimer!!.hypixelTimerEntityId
+            if (entityId != null && EntityUtils.getMcEntityById(entityId) == null) {
+                clearHypixelTimer()
+            }
+    
+            updateGuiLines()
         }
     }
 
     private fun onArmorStandCustomNameChanged(event: ArmorStandCustomNameChangedEvent) {
-        if (!Overlays.fishingHookTimerOverlay ||
-            !WorldUtils.isInSkyblock() ||
-            !WorldUtils.isInFishingWorld() ||
-            !PlayerUtils.hasFishingRodInHotbar()
-        ) return
+        CommonUtils.runWithCatching("Failed to handle armor stand custom name changed event for Fishing hook timer") {
+            if (!Overlays.fishingHookTimerOverlay ||
+                !WorldUtils.isInSkyblock() ||
+                !WorldUtils.isInFishingWorld() ||
+                !PlayerUtils.hasFishingRodInHotbar()
+            ) return
+    
+            val customName = event.customName.formatted
 
-        val customName = event.customName.formatted
-        val fishState = parseFishState(customName) ?: run {
-            val timer = fishingHookTimer
-            if (timer?.hypixelTimerEntityId == event.entityId) clearHypixelTimer(timer)
-            return
+            // Armor stand is something different from timer / !!!
+            val fishState = getFishStateFromNametag(customName) ?: run {
+                if (fishingHookTimer?.hypixelTimerEntityId == event.entityId) {
+                    clearHypixelTimer()
+                    updateGuiLines()
+                }
+                return
+            }
+    
+            // The same armor stand but custom name text is updated, e.g. 0.1s -> 0.2s
+            if (fishingHookTimer != null && fishingHookTimer!!.hypixelTimerEntityId == event.entityId) {
+                fishingHookTimer!!.fishState = fishState
+                fishingHookTimer!!.hypixelTimerText = customName
+                updateGuiLines()
+                return
+            }
+    
+            if (fishingHookTimer?.hypixelTimerEntityId != null) return
+    
+            // New armor stand, need to check if it's close enough to the fishing hook
+            val fishingHook = FishingHookUtils.getActiveFishingHook() ?: return
+            val distance = EntityUtils.getDistance(
+                fishingHook.x, fishingHook.y, fishingHook.z,
+                event.position.x, event.position.y, event.position.z
+            )
+            if (distance > 5.0) return
+
+            val armorStand = EntityUtils.getMcEntityById(event.entityId) as? ArmorStand ?: return
+
+            if (fishingHookTimer == null) fishingHookTimer = FishingHookTimerData(ticksExisted = fishingHook.age)
+    
+            fishingHookTimer!!.hypixelTimerEntityId = event.entityId
+            fishingHookTimer!!.hypixelTimerUuid = armorStand.uuid
+            fishingHookTimer!!.fishState = fishState
+            fishingHookTimer!!.hypixelTimerText = customName
+            updateGuiLines()
         }
-
-        val timer = fishingHookTimer
-        if (timer?.hypixelTimerEntityId == event.entityId) {
-            timer.fishState = fishState
-            timer.hypixelTimerText = customName
-            return
-        }
-        if (timer?.hypixelTimerEntityId != null) return
-
-        val fishingHook = FishingHookUtils.getActiveFishingHook() ?: return
-        val distance = EntityUtils.getDistance(
-            fishingHook.x, fishingHook.y, fishingHook.z,
-            event.position.x, event.position.y, event.position.z
-        )
-        if (distance > 5.0) return
-
-        val armorStand = EntityUtils.getMcEntityById(event.entityId) as? ArmorStand
-        val updated = timer ?: FishingHookTimerData(ticksExisted = fishingHook.age).also { fishingHookTimer = it }
-        updated.hypixelTimerEntityId = event.entityId
-        updated.hypixelTimerUuid = armorStand?.uuid
-        updated.fishState = fishState
-        updated.hypixelTimerText = customName
     }
 
     private fun onArmorStandDespawned(event: ArmorStandDespawnedEvent) {
-        val timer = fishingHookTimer ?: return
-        if (timer.hypixelTimerEntityId != event.armorStand.id &&
-            timer.hypixelTimerUuid != event.armorStand.uuid
-        ) return
-        clearHypixelTimer(timer)
+        CommonUtils.runWithCatching("Failed to handle armor stand despawned event for Fishing hook timer") {
+            if (fishingHookTimer == null) return
+            if (fishingHookTimer!!.hypixelTimerEntityId != event.armorStand.id && fishingHookTimer!!.hypixelTimerUuid != event.armorStand.uuid) return
+    
+            clearHypixelTimer()
+            updateGuiLines()    
+        }
     }
 
-    private fun onRender(@Suppress("UNUSED_PARAMETER") event: GameRenderEvent) {
-        if (fishingHookTimer == null ||
-            !Overlays.fishingHookTimerOverlay ||
-            !WorldUtils.isInSkyblock() ||
-            !PlayerUtils.hasFishingRodInHotbar() ||
-            !WorldUtils.isInFishingWorld()
-        ) {
-            gui.clearLines()
-            return
-        }
-
-        val text = when {
-            fishingHookTimer!!.fishState == FishState.ARRIVED -> {
-                val template = Overlays.fishingHookFishArrivedTemplate
-                if (template.isNotEmpty()) template else DEFAULT_FISH_ARRIVED_TEMPLATE
+    private fun updateGuiLines() {
+        CommonUtils.runWithCatching("Failed to update gui lines for Fishing hook timer") {
+            val timer = fishingHookTimer
+            if (timer == null ||
+                !Overlays.fishingHookTimerOverlay ||
+                !WorldUtils.isInSkyblock() ||
+                !PlayerUtils.hasFishingRodInHotbar() ||
+                !WorldUtils.isInFishingWorld()
+            ) {
+                gui.clearLines()
+                return
             }
-            fishingHookTimer!!.fishState == FishState.ARRIVING && Overlays.fishingHookTimerMode == FishingHookTimerMode.UNTIL_REEL_IN -> {
-                val template = Overlays.fishingHookFishTimerTemplate
-                val timerText = fishingHookTimer!!.hypixelTimerText
-                (if (template.isNotEmpty()) template else DEFAULT_TIMER_TEMPLATE).replace("{timer}", timerText)
+    
+            val text = when {
+                timer.fishState == FishState.ARRIVED -> {
+                    val template = Overlays.fishingHookFishArrivedTemplate
+                    if (template.isNotEmpty()) template else DEFAULT_FISH_ARRIVED_TEMPLATE
+                }
+                timer.fishState == FishState.ARRIVING && Overlays.fishingHookTimerMode == FishingHookTimerMode.UNTIL_REEL_IN -> {
+                    val template = Overlays.fishingHookFishTimerTemplate
+                    (if (template.isNotEmpty()) template else DEFAULT_TIMER_TEMPLATE).replace("{timer}", timer.hypixelTimerText)
+                }
+                Overlays.fishingHookTimerMode == FishingHookTimerMode.SINCE_CASTED -> {
+                    val template = Overlays.fishingHookFishTimerTemplate
+                    val seconds = String.format("%.1f", timer.ticksExisted / 20.0)
+                    (if (template.isNotEmpty()) template else DEFAULT_TIMER_TEMPLATE).replace("{timer}", seconds)
+                }
+                else -> null
             }
-            Overlays.fishingHookTimerMode == FishingHookTimerMode.SINCE_CASTED -> {
-                val template = Overlays.fishingHookFishTimerTemplate
-                val seconds = String.format("%.1f", fishingHookTimer!!.ticksExisted / 20.0)
-                (if (template.isNotEmpty()) template else DEFAULT_TIMER_TEMPLATE).replace("{timer}", seconds)
-            }
-            else -> null
-        }
-
-        if (text != null) {
-            gui.setLines(listOf(LineInfo(text)))
-        } else {
-            gui.clearLines()
+    
+            if (text != null) {
+                gui.setLines(listOf(LineInfo(text)))
+            } else {
+                gui.clearLines()
+            }    
         }
     }
 
@@ -189,18 +213,19 @@ object FishingHookTimer {
         return fishingHookTimer?.hypixelTimerUuid == entityUuid
     }
 
-    private fun parseFishState(customName: String): FishState? {
+    private fun getFishStateFromNametag(customName: String): FishState? {
         return when {
-            customName == FISH_ARRIVED -> FishState.ARRIVED
-            customName.matches(FISHING_HOOK_TIMER_UNTIL_REEL_IN_REGEX) -> FishState.ARRIVING
+            customName == HYPIXEL_FISH_ARRIVED_NAMETAG -> FishState.ARRIVED // !!!
+            customName.matches(FISHING_HOOK_TIMER_UNTIL_REEL_IN_REGEX) -> FishState.ARRIVING // 1.1, 2.0, etc.
             else -> null
         }
     }
 
-    private fun clearHypixelTimer(timer: FishingHookTimerData) {
-        timer.hypixelTimerEntityId = null
-        timer.hypixelTimerUuid = null
-        timer.hypixelTimerText = ""
-        timer.fishState = FishState.NONE
+    private fun clearHypixelTimer() {
+        if (fishingHookTimer == null) return
+        fishingHookTimer!!.hypixelTimerEntityId = null
+        fishingHookTimer!!.hypixelTimerUuid = null
+        fishingHookTimer!!.hypixelTimerText = ""
+        fishingHookTimer!!.fishState = FishState.NONE
     }
 }
