@@ -9,6 +9,7 @@ Released on: ???
 ## Bugfixes
 
 - Fixed Galatea functionalities not working after Hypixel renamed the island to Moonglade Marsh (alpha).
+- Fixed "Equip fishing armor" alert showing when Hypixel does not return armor piece name / NBT data every few seconds.
 - Fixed rare mobs highlight not applying sometimes when the server lags.
 - Fixed Fishing hook timer flickering (not hiding original timer armorstand) sometimes.
 
