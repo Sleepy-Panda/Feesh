@@ -145,7 +145,7 @@ class FeeshMod : ClientModInitializer {
         BayouTracker.init()
         WaterHotspotsTracker.init()
         CrimsonIsleTracker.init()
-        GalateaWaterTracker.init()
+        MoongladeMarshWaterTracker.init()
         TorrhusCanyonTracker.init()
         LotusAtollTracker.init()
         ArchfiendDiceProfitTracker.init()

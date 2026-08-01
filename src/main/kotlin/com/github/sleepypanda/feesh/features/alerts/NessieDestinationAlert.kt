@@ -87,7 +87,7 @@ object NessieDestinationAlert {
         CommonUtils.runWithCatching("Failed to check Nessie nametag") {
             if (!event.isFirstLoaded) return
             if (!Alerts.alertOnNessieDestination) return
-            if (!WorldUtils.isInSkyblock() || WorldUtils.getWorldName() != WorldUtils.GALATEA) return
+            if (!WorldUtils.isInSkyblock() || !isInGalatea()) return
             if (!event.customName.unformatted.contains(SeaCreatureNames.NESSIE)) return
             if (!FishingHookUtils.wasFishingHookSubmergedMinutesAgo(5)) return
     
@@ -114,7 +114,7 @@ object NessieDestinationAlert {
         if (tickCounter < TICKS_PER_MOBS_SCAN) return
         tickCounter = 0
 
-        if (!Alerts.alertOnNessieDestination || !WorldUtils.isInSkyblock() || WorldUtils.getWorldName() != WorldUtils.GALATEA) return
+        if (!Alerts.alertOnNessieDestination || !WorldUtils.isInSkyblock() || !isInGalatea()) return
 
         CommonUtils.runWithCatching("Failed to check Nessies nearby") {
             checkNessiesChosenDestinations()
@@ -126,7 +126,7 @@ object NessieDestinationAlert {
         if (cleanupTickCounter < CLEANUP_DELAY_TICKS) return
         cleanupTickCounter = 0
 
-        if (!WorldUtils.isInSkyblock() || WorldUtils.getWorldName() != WorldUtils.GALATEA) return
+        if (!WorldUtils.isInSkyblock() || !isInGalatea()) return
 
         if (trackedNessieMobIds.isEmpty()) return
         val now = Date().time
@@ -171,5 +171,9 @@ object NessieDestinationAlert {
         if (Alerts.autoShareNessieDestination) {
             ChatUtils.sendPartyChat(alertMessage.removeFormatting())
         }
+    }
+
+    private fun isInGalatea(): Boolean {
+        return WorldUtils.getWorldName() == WorldUtils.GALATEA || WorldUtils.getWorldName() == WorldUtils.MOONGLADE_MARSH
     }
 }

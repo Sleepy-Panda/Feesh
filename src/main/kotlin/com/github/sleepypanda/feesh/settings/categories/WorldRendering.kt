@@ -86,7 +86,7 @@ object WorldRendering : CategoryKt("World Rendering") {
 
     var hideTadgangNametags by boolean(false) {
         this.name = Translated("Hide Tadgang nametags")
-        this.description = Translated("Hides Tadgang tadpoles nametags in Galatea. Tadgang frogs nametags are still visible!.")
+        this.description = Translated("Hides Tadgang tadpoles nametags in Moonglade Marsh. Tadgang frogs nametags are still visible!.")
     }
 
     init {

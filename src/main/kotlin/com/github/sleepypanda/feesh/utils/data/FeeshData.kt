@@ -6,7 +6,7 @@ import com.github.sleepypanda.feesh.features.overlays.SeaCreaturesTracker
 import com.github.sleepypanda.feesh.features.overlays.BayouTracker
 import com.github.sleepypanda.feesh.features.overlays.WaterHotspotsTracker
 import com.github.sleepypanda.feesh.features.overlays.CrimsonIsleTracker
-import com.github.sleepypanda.feesh.features.overlays.GalateaWaterTracker
+import com.github.sleepypanda.feesh.features.overlays.MoongladeMarshWaterTracker
 import com.github.sleepypanda.feesh.features.overlays.LotusAtollTracker
 import com.github.sleepypanda.feesh.features.overlays.TorrhusCanyonTracker
 import com.github.sleepypanda.feesh.features.overlays.ArchfiendDiceProfitTracker
@@ -24,7 +24,7 @@ data class FeeshData(
     val bayouTracker: BayouTracker.BayouTrackerData = BayouTracker.BayouTrackerData(),
     val waterHotspotsTracker: WaterHotspotsTracker.WaterHotspotsTrackerData = WaterHotspotsTracker.WaterHotspotsTrackerData(),
     val crimsonIsle: CrimsonIsleTracker.CrimsonIsleTrackerData = CrimsonIsleTracker.CrimsonIsleTrackerData(),
-    val galateaWater: GalateaWaterTracker.GalateaWaterTrackerData = GalateaWaterTracker.GalateaWaterTrackerData(),
+    val galateaWater: MoongladeMarshWaterTracker.MoongladeMarshWaterTrackerData = MoongladeMarshWaterTracker.MoongladeMarshWaterTrackerData(),
     val torrhusCanyon: TorrhusCanyonTracker.TorrhusCanyonTrackerData = TorrhusCanyonTracker.TorrhusCanyonTrackerData(),
     val lotusAtollTracker: LotusAtollTracker.LotusAtollTrackerData = LotusAtollTracker.LotusAtollTrackerData(),
     val archfiendDiceProfit: ArchfiendDiceProfitTracker.ArchfiendDiceProfitData = ArchfiendDiceProfitTracker.ArchfiendDiceProfitData(),

@@ -4,10 +4,11 @@ Released on: ???
 
 ## Features
 
-- Added "Hide Tadgang nametags" setting to hide Tadgang tadpoles (not frogs) nametags in Galatea [disabled by default].
+- Added "Hide Tadgang nametags" setting to hide Tadgang tadpoles (not frogs) nametags in Moonglade Marsh [disabled by default].
 
 ## Bugfixes
 
+- Fixed Galatea functionalities not working after Hypixel renamed the island to Moonglade Marsh (alpha).
 - Fixed rare mobs highlight not applying sometimes when the server lags.
 - Fixed Fishing hook timer flickering (not hiding original timer armorstand) sometimes.
 
