@@ -4,7 +4,7 @@ Released on: ???
 
 ## Features
 
-- Added "Hide Tadgang nametags" setting to hide Tadgang tadpoles (not frogs) nametags in Galatea [disabled by default].
+- Added "Hide Tadgang nametags" setting to hide Tadgang tadpoles (not frogs) nametags in Moonglade Marsh [disabled by default].
 
 ## Bugfixes
 

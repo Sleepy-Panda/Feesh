@@ -79,7 +79,7 @@ Required Java version is 25+.
 - **Puddle Jumper timer alert** — Alerts when your Puddle Jumper is about to arrive to its destination.
 - **Trophy Frog discovered alert** — Alerts when a new Trophy Frog is discovered.
 - **Trophy Fish discovered alert** — Alerts when a new Trophy Fish is discovered.
-- **Alert when out of air** — Alerts when you are almost out of air (Galatea, Torrhus Canyon).
+- **Alert when out of air** — Alerts when you are almost out of air (Moonglade Marsh, Torrhus Canyon).
 
 ### Chat
 
@@ -112,7 +112,7 @@ Required Java version is 25+.
 - **Bayou tracker** — Titanoboa catch and Titanoboa Shed / Snake Eyes drop statistics for Backwater Bayou.
 - **Water hotspots tracker** — Wiki Tiki catch and Tiki Mask drop statistics for Water Hotspots.
 - **Crimson Isle tracker** — Fiery Scuttler, Ragnarok, Plhlegblast, Thunder, Lord Jawbus catch and Radioactive Vial drop statistics.
-- **Galatea water tracker** — The Loch Emperor/Nessie catch statistics in Galatea.
+- **Moonglade Marsh water tracker** — The Loch Emperor/Nessie catch statistics in Moonglade Marsh.
 - **Torrhus Canyon tracker** — Silkbreeze/Giant Isopod catch statistics in Torrhus Canyon.
 - **Lotus Atoll tracker** — The Frog Prince/Puddle Jumper catch statistics, and Prince's Crown Jewel drop statistics (in Lotus Atoll).
 - **Treasure fishing tracker** — Good/Great/Outstanding treasure catches and Treasure Dye drop statistics.
@@ -134,7 +134,7 @@ Required Java version is 25+.
 - **Hide other players' hooks** — Hides other players' bobbers and fishing lines, so you can see only your own hook.
 - **Highlight rare sea creatures** — Applies glowing border to the rare sea creatures. Not visible through walls.
 - **Hide other players near bobber** — Hides other players near your bobber when a fishing rod is casted.
-- **Hide Tadgang nametags** — Hides Tadgang tadpoles nametags in Galatea.
+- **Hide Tadgang nametags** — Hides Tadgang tadpoles nametags in Moonglade Marsh.
 - **Mute Jade Dragon** — Mutes Jade dragon sounds while you are in dragon's cave.
 - **Mute Reindrake gifts** — Mutes loud 'totem used' sounds while picking up gifts from a Reindrake.
 

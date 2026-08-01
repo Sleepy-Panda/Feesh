@@ -209,8 +209,8 @@ object Alerts : CategoryKt("Alerts") {
     }
 
     var seaCreaturesCountThreshold_Galatea by int(30) {
-        this.name = Translated("Sea creatures count threshold - GALATEA")
-        this.description = Translated("Count of sea creatures nearby required to see the alert when you are in the Galatea. It does not check if those are own or other people's sea creatures.Ignored if the sea creatures count alert is disabled.")
+        this.name = Translated("Sea creatures count threshold - MOONGLADE MARSH")
+        this.description = Translated("Count of sea creatures nearby required to see the alert when you are in the Moonglade Marsh. It does not check if those are own or other people's sea creatures. Ignored if the sea creatures count alert is disabled.")
         this.range = 5..60
         this.slider = true
     }

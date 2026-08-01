@@ -26,7 +26,7 @@ import com.github.sleepypanda.feesh.features.overlays.SeaCreaturesTracker
 import com.github.sleepypanda.feesh.features.overlays.TreasureFishingTracker
 import com.github.sleepypanda.feesh.features.overlays.BayouTracker
 import com.github.sleepypanda.feesh.features.overlays.WaterHotspotsTracker
-import com.github.sleepypanda.feesh.features.overlays.GalateaWaterTracker
+import com.github.sleepypanda.feesh.features.overlays.MoongladeMarshWaterTracker
 import com.github.sleepypanda.feesh.features.overlays.LotusAtollTracker
 import com.github.sleepypanda.feesh.features.overlays.TorrhusCanyonTracker
 import com.github.sleepypanda.feesh.features.overlays.SeaCreatureHpTracker
@@ -742,26 +742,26 @@ ${GRAY}To reset: ${WHITE}/${CrimsonIsleTracker.RESET_COMMAND}
 
     init {
         separator {
-            this.title = "${AQUA}${BOLD}Galatea water tracker"
+            this.title = "${AQUA}${BOLD}Moonglade Marsh water tracker"
         }
     }
 
     var galateaWaterTrackerOverlay by boolean(false) {
-        this.name = Translated("Galatea water tracker")
+        this.name = Translated("Moonglade Marsh water tracker")
         this.description = Translated("""
-${GRAY}Shows an overlay with The Loch Emperor and Nessie catch statistics while fishing in Galatea's water.
-${GRAY}To reset: ${WHITE}/${GalateaWaterTracker.RESET_COMMAND}
+${GRAY}Shows an overlay with The Loch Emperor and Nessie catch statistics while fishing in Moonglade Marsh's water.
+${GRAY}To reset: ${WHITE}/${MoongladeMarshWaterTracker.RESET_COMMAND}
         """.trimIndent())
     }
 
     var resetGalateaWaterTrackerOnGameClosed by boolean(false) {
         this.name = Translated("Autoreset on closing game")
-        this.description = Translated("Automatically reset the Galatea water tracker when you close Minecraft.")
+        this.description = Translated("Automatically reset the Moonglade Marsh water tracker when you close Minecraft.")
     }
 
     var galateaWaterTrackerCustomStyle by boolean(true) {
         this.name = Translated("Apply custom style")
-        this.description = Translated(getCustomStyleDescription("Galatea water tracker"))
+        this.description = Translated(getCustomStyleDescription("Moonglade Marsh water tracker"))
     }
   
     init {

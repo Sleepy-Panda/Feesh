@@ -1448,7 +1448,7 @@ class FishingProfitDrops {
                 npcPrice = 1_000_000.0,
             ),
 
-            // Galatea
+            // Moonglade Marsh
 
             FishingProfitDropInfo(
                 itemId = "AGATHA_COUPON",

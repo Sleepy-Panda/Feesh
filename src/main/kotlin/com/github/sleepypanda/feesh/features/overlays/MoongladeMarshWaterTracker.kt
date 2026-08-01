@@ -16,20 +16,22 @@ import com.github.sleepypanda.feesh.settings.categories.Overlays
 import com.github.sleepypanda.feesh.utils.data.PersistentDataManager
 import com.github.sleepypanda.feesh.features.overlays.base.IResettableTracker
 
-object GalateaWaterTracker : IResettableTracker {
-    data class GalateaWaterTrackerData(
+// Previous name: Galatea, island was renamed
+// Kept data key, settings names and coords data key for backwards compatibility so users dont have their data reset
+object MoongladeMarshWaterTracker : IResettableTracker {
+    data class MoongladeMarshWaterTrackerData(
         val lochEmperor: CatchCounterData = CatchCounterData(),
         val nessie: CatchCounterData = CatchCounterData()
     )
 
-    const val RESET_COMMAND = "feeshResetGalateaWaterTracker"
+    const val RESET_COMMAND = "feeshResetMoongladeMarshWaterTracker"
 
-    override val trackerName = "Galatea water tracker"
+    override val trackerName = "Moonglade Marsh water tracker"
     override val resetCommand = RESET_COMMAND
 
     private const val TICKS_PER_UPDATE = 20
 
-    private val data: GalateaWaterTrackerData
+    private val data: MoongladeMarshWaterTrackerData
         get() = PersistentDataManager.feeshData.galateaWater
     private var tickCounter = 0
 
@@ -75,10 +77,10 @@ object GalateaWaterTracker : IResettableTracker {
     }
 
     private fun onSeaCreature(event: OwnSeaCreatureCaughtEvent) {
-        if (!Overlays.galateaWaterTrackerOverlay || !WorldUtils.isInSkyblock() || WorldUtils.getWorldName() != WorldUtils.GALATEA) return
+        if (!Overlays.galateaWaterTrackerOverlay || !WorldUtils.isInSkyblock() || !isInGalatea()) return
 
         val seaCreatureInfo = event.seaCreatureInfo
-        if (seaCreatureInfo.types.contains(SeaCreatures.TYPE_GALATEA_LAVA)) return
+        if (seaCreatureInfo.types.contains(SeaCreatures.TYPE_MOONGLADE_MARSH_LAVA)) return
 
         val seaCreatureName = event.seaCreatureName
         if (seaCreatureName == lochEmperor.name) {
@@ -119,7 +121,7 @@ object GalateaWaterTracker : IResettableTracker {
     }
 
     private fun isTrackerDisabled(): Boolean {
-        if (!Overlays.galateaWaterTrackerOverlay || !WorldUtils.isInSkyblock() || WorldUtils.getWorldName() != WorldUtils.GALATEA) return true
+        if (!Overlays.galateaWaterTrackerOverlay || !WorldUtils.isInSkyblock() || !isInGalatea()) return true
         if (!FishingHookUtils.wasFishingHookSubmergedMinutesAgo(5)) return true
         if (PlayerUtils.isInTrophyArmor()) return true
         return false
@@ -151,5 +153,9 @@ object GalateaWaterTracker : IResettableTracker {
         } else {
             PersistentDataManager.saveFeeshDataToFileAsync()
         }
+    }
+
+    private fun isInGalatea(): Boolean {
+        return WorldUtils.getWorldName() == WorldUtils.GALATEA || WorldUtils.getWorldName() == WorldUtils.MOONGLADE_MARSH
     }
 }

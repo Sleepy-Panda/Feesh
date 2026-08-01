@@ -29,7 +29,7 @@ object OutOfAirAlert {
 
     private fun onClientTick(@Suppress("UNUSED_PARAMETER") event: ClientTickEvent) {
         if (!Alerts.alertOnOutOfAir || !WorldUtils.isInSkyblock()) return
-        if (WorldUtils.getWorldName() != WorldUtils.GALATEA && WorldUtils.getWorldName() != WorldUtils.TORRHUS_CANYON) return
+        if (WorldUtils.getWorldName() != WorldUtils.GALATEA && WorldUtils.getWorldName() != WorldUtils.MOONGLADE_MARSH && WorldUtils.getWorldName() != WorldUtils.TORRHUS_CANYON) return
 
         tickCounter++
         if (tickCounter < TICKS_PER_CHECK) return

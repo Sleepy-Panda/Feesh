@@ -95,7 +95,7 @@ object SeaCreatureNames {
     const val ALLIGATOR = "Alligator"
     const val TITANOBOA = "Titanoboa"
 
-    // GALATEA
+    // MOONGLADE MARSH
     const val NESSIE = "Nessie"
     const val THE_LOCH_EMPEROR = "The Loch Emperor"
     const val BOGGED = "Bogged"
@@ -217,7 +217,7 @@ object SeaCreatureMessages {
     const val ALLIGATOR_MESSAGE = "^A long snout breaks the surface of the water\\. It\\'s an Alligator\\!$"
     const val TITANOBOA_MESSAGE = "^A massive Titanoboa surfaces\\. Its body stretches as far as the eye can see\\.$"
 
-    // GALATEA
+    // MOONGLADE MARSH
     const val NESSIE_MESSAGE = "^You\\'ve caused a disturbance in the loch\\. Could it be\\.\\.\\. Nessie\\?$"
     const val THE_LOCH_EMPEROR_MESSAGE = "^The Loch Emperor arises from the depths\\.$"
     const val TADGANG_MESSAGE = "^A gang of Liltads\\!$"
@@ -259,7 +259,7 @@ class SeaCreatures {
 
     companion object {
         const val TYPE_CRIMSON_ISLE_LAVA = "CRIMSON_ISLE_LAVA"
-        const val TYPE_GALATEA_LAVA = "GALATEA_LAVA"
+        const val TYPE_MOONGLADE_MARSH_LAVA = "MOONGLADE_MARSH_LAVA"
         const val TYPE_MAGMA_FIELDS = "MAGMA_FIELDS"
 
         val allSeaCreatures = listOf(
@@ -767,56 +767,56 @@ class SeaCreatures {
                 worlds = listOf(WorldUtils.BACKWATER_BAYOU),
             ),
 
-            // GALATEA
+            // MOONGLADE MARSH
             SeaCreatureInfo(
                 SeaCreatureNames.NESSIE,
                 MYTHIC.code,
                 Regex(SeaCreatureMessages.NESSIE_MESSAGE),
                 true,
-                worlds = listOf(WorldUtils.GALATEA),
+                worlds = listOf(WorldUtils.MOONGLADE_MARSH, WorldUtils.GALATEA),
             ),
             SeaCreatureInfo(
                 SeaCreatureNames.THE_LOCH_EMPEROR,
                 LEGENDARY.code,
                 Regex(SeaCreatureMessages.THE_LOCH_EMPEROR_MESSAGE),
                 true,
-                worlds = listOf(WorldUtils.GALATEA),
+                worlds = listOf(WorldUtils.MOONGLADE_MARSH, WorldUtils.GALATEA),
             ),
             SeaCreatureInfo(
                 SeaCreatureNames.BOGGED,
                 COMMON.code,
                 Regex(SeaCreatureMessages.BOGGED_MESSAGE),
                 false,
-                worlds = listOf(WorldUtils.GALATEA),
+                worlds = listOf(WorldUtils.MOONGLADE_MARSH, WorldUtils.GALATEA),
             ),
             SeaCreatureInfo(
                 SeaCreatureNames.TADGANG,
                 UNCOMMON.code,
                 Regex(SeaCreatureMessages.TADGANG_MESSAGE),
                 false,
-                worlds = listOf(WorldUtils.GALATEA),
+                worlds = listOf(WorldUtils.MOONGLADE_MARSH, WorldUtils.GALATEA),
             ),
             SeaCreatureInfo(
                 SeaCreatureNames.ENT,
                 UNCOMMON.code,
                 Regex(SeaCreatureMessages.ENT_MESSAGE),
                 false,
-                worlds = listOf(WorldUtils.GALATEA),
+                worlds = listOf(WorldUtils.MOONGLADE_MARSH, WorldUtils.GALATEA),
             ),
             SeaCreatureInfo(
                 SeaCreatureNames.WETWING,
                 RARE.code,
                 Regex(SeaCreatureMessages.WETWING_MESSAGE),
                 false,
-                worlds = listOf(WorldUtils.GALATEA),
+                worlds = listOf(WorldUtils.MOONGLADE_MARSH, WorldUtils.GALATEA),
             ),
             SeaCreatureInfo(
                 SeaCreatureNames.STRIDERSURFER,
                 RARE.code,
                 Regex(SeaCreatureMessages.STRIDERSURFER_MESSAGE),
                 false,
-                types = listOf(TYPE_GALATEA_LAVA),
-                worlds = listOf(WorldUtils.GALATEA),
+                types = listOf(TYPE_MOONGLADE_MARSH_LAVA),
+                worlds = listOf(WorldUtils.MOONGLADE_MARSH, WorldUtils.GALATEA),
             ),
 
             // LOTUS ATOLL

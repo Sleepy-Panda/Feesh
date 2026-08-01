@@ -27,7 +27,8 @@ object WorldUtils {
     const val THE_END = "The End"
     const val GLACITE_MINESHAFTS = "Glacite Mineshafts"
     const val RIFT = "Rift Dimension"
-    const val GALATEA = "Galatea"
+    const val GALATEA = "Galatea" // TODO Delete when the update is released and it's renamed to Moonglade Marsh
+    const val MOONGLADE_MARSH = "Moonglade Marsh"
     const val LOTUS_ATOLL = "Lotus Atoll"
     const val TORRHUS_CANYON = "Torrhus Canyon"
     const val SAFARI = "Safari"
@@ -58,6 +59,7 @@ object WorldUtils {
         PARK,
         FARMING_ISLANDS,
         GALATEA,
+        MOONGLADE_MARSH,
         LOTUS_ATOLL,
         TORRHUS_CANYON,
     )
