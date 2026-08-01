@@ -33,6 +33,7 @@ Newly released - https://hypixel.net/threads/hypixel-skyblock-0-24-5-assorted-qo
  GOOD CATCH! You caught a Flexbone!
  GOOD CATCH! You caught a Shinyfish Shard!
 
+- Equip fishing armor on alpha (???)
 - Galatea -> Moonglade Marsh
 - Mod name is copied as [ Feesh]
 - Do ignore only pets if pet menu is/was opened
