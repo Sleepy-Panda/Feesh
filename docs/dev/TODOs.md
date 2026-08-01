@@ -33,12 +33,14 @@ Newly released - https://hypixel.net/threads/hypixel-skyblock-0-24-5-assorted-qo
  GOOD CATCH! You caught a Flexbone!
  GOOD CATCH! You caught a Shinyfish Shard!
 
+- Galatea -> Moonglade Marsh
+- Mod name is copied as [ Feesh]
+- Do ignore only pets if pet menu is/was opened
 - Issues with setting RNG meter before first dye in Treasure tracker (0 as drops count)
 - Toggle for PBs, rework trackPersonalBestFishingFestival
 - Max MF PB
 - Xp/h
 - SMILE! Polizei111 has sprinkled some joy your way! You feel a little happier. :)
-- Add All option for drops list in settings
 - Share Nessie with coords to all chat?
 - With the release of Minecraft version 26.2 on June 16th, we'll drop support for 1.21.11 in a few weeks.
 - Personal blacklist + party sharing
@@ -48,7 +50,6 @@ Newly released - https://hypixel.net/threads/hypixel-skyblock-0-24-5-assorted-qo
 - Some legion counting radius logic reported
 - Improve link to changelog in settings, and update announcement
 - Work on various events sounds to make them more unique
-- 1.21 Fishing Hook armorstand flickering
 - Ragnarok immunity timer
 - Manual "set tracker drops" command does not reset "sc since last" for that drop.
 - Fished coins to add via the command.

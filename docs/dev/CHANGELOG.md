@@ -9,6 +9,7 @@ Released on: ???
 ## Bugfixes
 
 - Fixed rare mobs highlight not applying sometimes when the server lags.
+- Fixed Fishing hook timer flickering (not hiding original timer armorstand) sometimes.
 
 ## Other
 
