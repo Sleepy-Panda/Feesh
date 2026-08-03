@@ -11,10 +11,12 @@ object ShardsCaughtPublisher {
     // ⛃ GOOD CATCH! You caught an Abyssal Lanternfish Shard!
     //  GREAT CATCH! You caught a Giant Water Bug Shard!
     //  GOOD CATCH! You caught Solar Shard!
-    //  GOOD CATCH! You caught Water Snake Shard!
+    //  GOOD CATCH! You caught a Water Snake Shard!
     private val SHARD_CATCH_PATTERN = Regex("^. (?:GOOD|GREAT|OUTSTANDING) CATCH! You caught (?:(?:a|an) )?(?<shardName>.+) Shard!")
 
     //  OUTSTANDING CATCH! You caught Giant Water Bug Shard x7!
+    //  GOOD CATCH! You caught Ember Shard x2!
+    //  GOOD CATCH! You caught Shinyfish Shard x2!
     private val SHARDS_CATCH_PATTERN = Regex("^. (?:GOOD|GREAT|OUTSTANDING) CATCH! You caught (?<shardName>.+) Shard x(?<count>[\\d]+)!")
 
     // You caught a Sea Archer Shard!
@@ -49,15 +51,7 @@ object ShardsCaughtPublisher {
 
             SHARD_CATCH_PATTERN.find(text)?.run {
                 val shard = groups["shardName"]?.value ?: return@onChat
-
-                // For some reason, Hypixel sends double shard catch messages in Torrhus Canyon (except for Giant Water Bug Shard), so we process more detailed one:
-                // You caught x2 Water Snake Shards!
-                //  GOOD CATCH! You caught Water Snake Shard!
-                // You caught an Ember Shard!
-                //  GOOD CATCH! You caught Ember Shard!
                 val shardName = "$shard Shard"
-                if (WorldUtils.getWorldName() == WorldUtils.TORRHUS_CANYON && shardName != "Giant Water Bug Shard") return@onChat
-
                 publish(shardName, 1)
                 return@onChat
             }
