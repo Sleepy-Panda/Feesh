@@ -33,7 +33,6 @@ Newly released - https://hypixel.net/threads/hypixel-skyblock-0-24-5-assorted-qo
  GOOD CATCH! You caught a Flexbone!
  GOOD CATCH! You caught a Shinyfish Shard!
 
-- Equip fishing armor on alpha (???)
 - Mod name is copied as [ Feesh]
 - Do ignore only pets if pet menu is/was opened
 - Issues with setting RNG meter before first dye in Treasure tracker (0 as drops count)

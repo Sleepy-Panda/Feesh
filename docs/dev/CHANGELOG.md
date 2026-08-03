@@ -1,6 +1,6 @@
 # 1.12.0
 
-Released on: ???
+Released on: 2026-08-03
 
 ## Features
 
@@ -8,8 +8,8 @@ Released on: ???
 
 ## Bugfixes
 
-- Fixed Galatea functionalities not working after Hypixel renamed the island to Moonglade Marsh (alpha).
-- Fixed "Equip fishing armor" alert showing when Hypixel does not return armor piece name / NBT data every few seconds.
+- Fixed Galatea functionalities not working after Hypixel renamed the island to Moonglade Marsh (Torrhus Canyon SB Update).
+- Fixed "Equip fishing armor" alert showing when Hypixel does not return armor piece name / NBT data every few seconds (Torrhus Canyon SB Update).
 - Fixed rare mobs highlight not applying sometimes when the server lags.
 - Fixed Fishing hook timer flickering (not hiding original timer armorstand) sometimes.
 
