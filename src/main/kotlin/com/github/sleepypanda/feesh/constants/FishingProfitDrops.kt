@@ -1644,13 +1644,13 @@ class FishingProfitDrops {
                 itemId = "HELIX_LOG",
                 itemName = "Helix Log",
                 itemDisplayName = "${COMMON}Helix Log",
-                npcPrice = 9.0,
+                npcPrice = 20.0,
             ),
             FishingProfitDropInfo(
                 itemId = "ENCHANTED_HELIX_LOG",
                 itemName = "Enchanted Helix Log",
                 itemDisplayName = "${UNCOMMON}Enchanted Helix Log",
-                npcPrice = 1_440.0,
+                npcPrice = 3_200.0,
             ),
             FishingProfitDropInfo(
                 itemId = "RUBY_VEILSHROOM",
@@ -1674,7 +1674,7 @@ class FishingProfitDrops {
                 itemId = "HELIXIS",
                 itemName = "Helixis",
                 itemDisplayName = "${RARE}Helixis",
-                npcPrice = 1_536_000.0,
+                npcPrice = 512_000.0,
             ),
             FishingProfitDropInfo(
                 itemId = "WATER_HYACINTH",

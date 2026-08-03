@@ -6,6 +6,7 @@ Released on: 2026-08-04
 
 - Fixed Sprawl and Silkbreeze sea creature catches not being tracked (SB changed catch message).
 - Adapted to new format of shards treasure messages so they are counted in profit tracker.
+- Fixed NPC price for new Torrhus Canyon drops in profit tracker.
 
 # 1.12.0
 
