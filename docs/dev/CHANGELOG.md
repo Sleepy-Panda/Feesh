@@ -1,3 +1,12 @@
+# 1.12.1
+
+Released on: 2026-08-04
+
+## Bugfixes
+
+- Fixed Sprawl and Silkbreeze sea creature catches not being tracked (SB changed catch message).
+- 
+
 # 1.12.0
 
 Released on: 2026-08-03

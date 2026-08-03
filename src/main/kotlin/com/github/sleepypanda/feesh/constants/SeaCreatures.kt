@@ -237,9 +237,9 @@ object SeaCreatureMessages {
     // TORRHUS CANYON
     const val HAGGARD_MESSAGE = "^A Haggard stumbles to the shore, ready for a fight!$"
     const val BRINELING_MESSAGE = "^A Brineling interrupts you with a stream of bubbles!$"
-    const val SPRAWL_MESSAGE = "^A Sprawl emerges from the blue, and it’s looking for you!$"
+    const val SPRAWL_MESSAGE = "^A Sprawl emerges from the blue, and it's looking for you!$"
     const val TORRID_MESSAGE = "^The laughter of a Torrid echoes through the air\\.$"
-    const val SILKBREEZE_MESSAGE = "^Something zips through the air - it’s a Silkbreeze!$"
+    const val SILKBREEZE_MESSAGE = "^Something zips through the air - it's a Silkbreeze!$"
     const val GIANT_ISOPOD_MESSAGE = "^A Giant Isopod was dredged up from the depths!$"
 }
 
