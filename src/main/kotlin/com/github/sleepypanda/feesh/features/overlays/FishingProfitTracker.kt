@@ -90,7 +90,7 @@ object FishingProfitTracker : IResettableViewModeTracker {
     private val COINS_CATCH_PATTERN = Regex("^. (?:GOOD|GREAT|OUTSTANDING) CATCH! You caught ([\\d,]+) Coins.*")
     private val ICE_ESSENCE_CATCH_PATTERN = Regex("^. (?:GOOD|GREAT|OUTSTANDING) CATCH! You caught Ice Essence x([\\d,]+).*")
     private val AGATHA_CONTEST_BRACKET_PATTERN = Regex("^\\[NPC] Agatha: You reached the (COMMON|UNCOMMON|RARE|EPIC|LEGENDARY|MYTHIC|DIVINE|SPECIAL) Bracket in my contest!$")
-    private val MIRIA_CONTEST_BRACKET_PATTERN = Regex("^\\[NPC] Miria: You reached the (COMMON|UNCOMMON|RARE|EPIC|LEGENDARY) Bracket in my contest!$")
+    private val MIRIA_CONTEST_BRACKET_PATTERN = Regex("^\\[NPC] Miria: You reached the (COMMON|UNCOMMON|RARE|EPIC|LEGENDARY|MYTHIC|DIVINE|SPECIAL) Bracket in my contest!$")
 
     private const val TICKS_TIMER_ELAPSED_TIME = 20
     private const val TICKS_INVENTORY = 5
@@ -718,6 +718,9 @@ object FishingProfitTracker : IResettableViewModeTracker {
             "RARE" -> 20 to 40
             "EPIC" -> 25 to 50
             "LEGENDARY" -> 30 to 60
+            "MYTHIC" -> 35 to 70
+            "DIVINE" -> 40 to 80
+            "SPECIAL" -> 45 to 90
             else -> return
         }
 
