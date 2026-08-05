@@ -5,6 +5,7 @@ Released on: ???
 ## Bugfixes
 
 - Removed Rubber Snorkel from fishing profit tracker pool.
+- Being killed by Torrid triggers player death alert.
 
 # 1.12.1
 
