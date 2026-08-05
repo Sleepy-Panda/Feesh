@@ -4,7 +4,7 @@ Released on: ???
 
 ## Bugfixes
 
--
+- Removed Rubber Snorkel from fishing profit tracker pool.
 
 # 1.12.1
 
