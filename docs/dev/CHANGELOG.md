@@ -5,8 +5,9 @@ Released on: ???
 ## Bugfixes
 
 - Fixed Miria's contests above Legendary not being tracked in the profit tracker.
+- Show [Immune] flag for 5 seconds for Silkbreeze in HP tracker.
 - Removed Rubber Snorkel from fishing profit tracker pool.
-- Being killed by Torrid triggers player death alert.
+- Fixed player death alert/message not triggering when killed by a Torrid.
 
 # 1.12.1
 
