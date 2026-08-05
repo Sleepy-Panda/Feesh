@@ -4,6 +4,7 @@ Released on: ???
 
 ## Bugfixes
 
+- Fixed Miria's contests above Legendary not being tracked in the profit tracker.
 - Removed Rubber Snorkel from fishing profit tracker pool.
 - Being killed by Torrid triggers player death alert.
 
