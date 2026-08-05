@@ -1665,12 +1665,6 @@ class FishingProfitDrops {
                 npcPrice = 800.0,
             ),
             FishingProfitDropInfo(
-                itemId = "RUBBER_SNORKEL",
-                itemName = "Rubber Snorkel",
-                itemDisplayName = "${RARE}Rubber Snorkel",
-                npcPrice = 25_000.0,
-            ),
-            FishingProfitDropInfo(
                 itemId = "HELIXIS",
                 itemName = "Helixis",
                 itemDisplayName = "${RARE}Helixis",
