@@ -1,6 +1,18 @@
-# 1.12.2
+# 1.13.0
 
 Released on: ???
+
+## Features
+
+-
+
+## Bugfixes
+
+-
+
+# 1.12.2
+
+Released on: 2026-08-06
 
 ## Bugfixes
 
