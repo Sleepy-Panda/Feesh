@@ -887,6 +887,12 @@ class FishingProfitDrops {
                 npcPrice = null,
             ),
             FishingProfitDropInfo(
+                itemId = "SHARD_GOLDOLOT",
+                itemName = "Goldolot Shard",
+                itemDisplayName = "${RARE}Goldolot ${WHITE}Shard",
+                npcPrice = null,
+            ),
+            FishingProfitDropInfo(
                 itemId = "SHARD_HAGGARD",
                 itemName = "Haggard Shard",
                 itemDisplayName = "${COMMON}Haggard ${WHITE}Shard",
@@ -1663,6 +1669,12 @@ class FishingProfitDrops {
                 itemName = "Enchanted Ruby Veilshroom",
                 itemDisplayName = "${UNCOMMON}Enchanted Ruby Veilshroom",
                 npcPrice = 800.0,
+            ),
+            FishingProfitDropInfo(
+                itemId = "VEILSHROOM_BUNCH",
+                itemName = "Veilshroom Bunch",
+                itemDisplayName = "${RARE}Veilshroom Bunch",
+                npcPrice = null,
             ),
             FishingProfitDropInfo(
                 itemId = "HELIXIS",
