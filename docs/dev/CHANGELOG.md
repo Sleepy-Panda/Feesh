@@ -5,7 +5,7 @@ Released on: ???
 ## Bugfixes
 
 - Track new drops in Fishing profit tracker: Goldolot Shard, Veilshroom Bunch.
-- 
+- Fixed charmed shards not being counted in Fishing profit tracker, after SB changed the chat message.
 
 # 1.12.2
 
