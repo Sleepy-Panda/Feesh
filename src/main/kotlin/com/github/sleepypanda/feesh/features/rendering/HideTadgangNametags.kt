@@ -22,14 +22,14 @@ object HideTadgangNametags {
     @JvmStatic
     fun shouldHide(entityId: Int): Boolean {
         if (!WorldRendering.hideTadgangNametags) return false
-        if (!WorldUtils.isInSkyblock() || !isInGalatea()) return false
+        if (!WorldUtils.isInSkyblock() || WorldUtils.getWorldName() != WorldUtils.MOONGLADE_MARSH) return false
         return entityId in hiddenNametagIds
     }
 
     private fun onArmorStandCustomNameChanged(event: ArmorStandCustomNameChangedEvent) {
         if (!event.isFirstLoaded) return
         if (!WorldRendering.hideTadgangNametags) return
-        if (!WorldUtils.isInSkyblock() || !isInGalatea()) return
+        if (!WorldUtils.isInSkyblock() || WorldUtils.getWorldName() != WorldUtils.MOONGLADE_MARSH) return
 
         CommonUtils.runWithCatching("Failed to check Tadgang nametag") {
             val name = event.customName.unformatted
@@ -45,9 +45,5 @@ object HideTadgangNametags {
 
     private fun onWorldChanged(@Suppress("UNUSED_PARAMETER") event: WorldChangedEvent) {
         hiddenNametagIds.clear()
-    }
-
-    private fun isInGalatea(): Boolean {
-        return WorldUtils.getWorldName() == WorldUtils.GALATEA || WorldUtils.getWorldName() == WorldUtils.MOONGLADE_MARSH
     }
 }

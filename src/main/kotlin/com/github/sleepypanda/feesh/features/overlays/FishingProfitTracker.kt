@@ -690,7 +690,7 @@ object FishingProfitTracker : IResettableViewModeTracker {
 
     private fun onAgathaContestBracketReached(bracket: String) {
         if (!isTrackerVisible()) return
-        if (WorldUtils.getWorldName() != WorldUtils.GALATEA && WorldUtils.getWorldName() != WorldUtils.MOONGLADE_MARSH) return
+        if (WorldUtils.getWorldName() != WorldUtils.MOONGLADE_MARSH) return
 
         val (agathaCouponCount, forestEssenceCount) = when (bracket.uppercase()) {
             "COMMON" -> 10 to 10

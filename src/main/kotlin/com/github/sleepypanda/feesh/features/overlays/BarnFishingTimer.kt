@@ -250,7 +250,7 @@ object BarnFishingTimer : IResettableTracker {
             WorldUtils.HUB -> Alerts.seaCreaturesCountThreshold_Hub
             WorldUtils.CRIMSON_ISLE -> Alerts.seaCreaturesCountThreshold_CrimsonIsle
             WorldUtils.CRYSTAL_HOLLOWS -> Alerts.seaCreaturesCountThreshold_CrystalHollows
-            WorldUtils.GALATEA, WorldUtils.MOONGLADE_MARSH -> Alerts.seaCreaturesCountThreshold_Galatea
+            WorldUtils.MOONGLADE_MARSH -> Alerts.seaCreaturesCountThreshold_Galatea
             else -> Alerts.seaCreaturesCountThreshold_Default
         }
     }
