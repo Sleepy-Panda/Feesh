@@ -32,23 +32,12 @@ Newly released - https://hypixel.net/threads/hypixel-skyblock-0-24-5-assorted-qo
  GOOD CATCH! You caught a Flexbone!
  GOOD CATCH! You caught a Shinyfish Shard!
 
-Improved the successful charm activation message
-CHARM! You charmed the Haggard and received 2 Haggard Shards!
-CHARM! You charmed the Haggard and received 3 Haggard Shards!
-CHARM! You charmed the Brineling and received 3 Brineling Shards!
-CHARM! You charmed the Haggard and received 1 Haggard Shard!
-CHARM! You charmed the Flaming Spider and received 2 Flaming Spider Shards!
-
-LOOT SHARE You received 3 Giant Isopod Shards for assisting lehurb!
-[NPC] Miria: You reached the LEGENDARY Bracket in my contest!
-[NPC] Miria: You reached the MYTHIC Bracket in my contest!
-
-Improved Miria's contest complete announcement
-Improved the successful shard trade message
-
+- Improved Miria's contest complete announcement - ?
+- Improved the successful shard trade message - ?
+- Default party drop on-screen alert ragebaits some people :(
 - Chat cleanup - lootshare messages
 - Hotspot nametag hider + overlay with hotspot perk
--  editing the format of feesh titles (summoned creature name, dropped rare item, price of an item, name of the player who did it etc) to change their order, color, duration, location(on title or subtitle) or to add some custom texts in it and so on.
+- Editing the format of feesh titles (summoned creature name, dropped rare item, price of an item, name of the player who did it etc) to change their order, color, duration, location(on title or subtitle) or to add some custom texts in it and so on.
 - Mod name is copied as [ Feesh]
 - Do ignore only pets if pet menu is/was opened
 - Issues with setting RNG meter before first dye in Treasure tracker (0 as drops count)
