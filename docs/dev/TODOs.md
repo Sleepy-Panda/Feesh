@@ -8,7 +8,6 @@
 
 - Giant Isopod acts like a Nessie, implement immunity?
 - Giant Isopod highlight looks weird
-- Test large black hole
 
 ## Alpha Lotus Atoll
 
@@ -33,6 +32,8 @@ Newly released - https://hypixel.net/threads/hypixel-skyblock-0-24-5-assorted-qo
  GOOD CATCH! You caught a Flexbone!
  GOOD CATCH! You caught a Shinyfish Shard!
 
+- Hotspot nametag hider + overlay with hotspot perk
+-  editing the format of feesh titles (summoned creature name, dropped rare item, price of an item, name of the player who did it etc) to change their order, color, duration, location(on title or subtitle) or to add some custom texts in it and so on.
 - Mod name is copied as [ Feesh]
 - Do ignore only pets if pet menu is/was opened
 - Issues with setting RNG meter before first dye in Treasure tracker (0 as drops count)
@@ -52,9 +53,7 @@ Newly released - https://hypixel.net/threads/hypixel-skyblock-0-24-5-assorted-qo
 - Ragnarok immunity timer
 - Manual "set tracker drops" command does not reset "sc since last" for that drop.
 - Fished coins to add via the command.
-- Carmine dye into tracker
 - Autoupdates
-- Settings are not saved after exiting the game, probably because user closes window using X button to exit
 
 ## Tech Debt
 

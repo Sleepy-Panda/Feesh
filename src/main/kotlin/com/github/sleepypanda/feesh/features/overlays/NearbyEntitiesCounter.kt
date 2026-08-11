@@ -116,7 +116,7 @@ object NearbyEntitiesCounter {
             if (ownerName.contains(SeaCreatureNames.PHANTOM_FISHER, ignoreCase = true)) return true
             if (worldName == WorldUtils.TORRHUS_CANYON && ownerName == "Allay") return true // Torrid SC
             if (worldName == WorldUtils.TORRHUS_CANYON && ownerName == "Hunter Jean") return true // NPC in Springs
-            if ((worldName == WorldUtils.GALATEA || worldName == WorldUtils.MOONGLADE_MARSH) && ownerName == "Martin ") return true // Tomb Floodway NPC
+            if (worldName == WorldUtils.MOONGLADE_MARSH && ownerName == "Martin ") return true // Tomb Floodway NPC
             return false
         }
 

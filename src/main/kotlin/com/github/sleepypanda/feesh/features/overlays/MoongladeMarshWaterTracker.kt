@@ -77,7 +77,7 @@ object MoongladeMarshWaterTracker : IResettableTracker {
     }
 
     private fun onSeaCreature(event: OwnSeaCreatureCaughtEvent) {
-        if (!Overlays.galateaWaterTrackerOverlay || !WorldUtils.isInSkyblock() || !isInGalatea()) return
+        if (!Overlays.galateaWaterTrackerOverlay || !WorldUtils.isInSkyblock() || WorldUtils.getWorldName() != WorldUtils.MOONGLADE_MARSH) return
 
         val seaCreatureInfo = event.seaCreatureInfo
         if (seaCreatureInfo.types.contains(SeaCreatures.TYPE_MOONGLADE_MARSH_LAVA)) return
@@ -121,7 +121,7 @@ object MoongladeMarshWaterTracker : IResettableTracker {
     }
 
     private fun isTrackerDisabled(): Boolean {
-        if (!Overlays.galateaWaterTrackerOverlay || !WorldUtils.isInSkyblock() || !isInGalatea()) return true
+        if (!Overlays.galateaWaterTrackerOverlay || !WorldUtils.isInSkyblock() || WorldUtils.getWorldName() != WorldUtils.MOONGLADE_MARSH) return true
         if (!FishingHookUtils.wasFishingHookSubmergedMinutesAgo(5)) return true
         if (PlayerUtils.isInTrophyArmor()) return true
         return false
@@ -153,9 +153,5 @@ object MoongladeMarshWaterTracker : IResettableTracker {
         } else {
             PersistentDataManager.saveFeeshDataToFileAsync()
         }
-    }
-
-    private fun isInGalatea(): Boolean {
-        return WorldUtils.getWorldName() == WorldUtils.GALATEA || WorldUtils.getWorldName() == WorldUtils.MOONGLADE_MARSH
     }
 }

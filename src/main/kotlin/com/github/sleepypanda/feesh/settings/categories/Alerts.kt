@@ -381,7 +381,7 @@ object Alerts : CategoryKt("Alerts") {
     
     var alertOnOutOfAir by boolean(true) {
         this.name = Translated("Alert when out of air soon")
-        this.description = Translated("Shows a title and plays a sound when you are low on air and will start drowning soon. Applicable for Galatea and Torrhus Canyon.")
+        this.description = Translated("Shows a title and plays a sound when you are low on air and will start drowning soon. Applicable for Moonglade Marsh and Torrhus Canyon.")
     }
 
     var alertOnWormTheFishCaught by boolean(false) {
