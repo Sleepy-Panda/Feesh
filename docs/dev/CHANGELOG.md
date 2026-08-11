@@ -1,14 +1,11 @@
-# 1.13.0
+# 1.12.3
 
 Released on: ???
 
-## Features
-
--
-
 ## Bugfixes
 
--
+- Track new drops in Fishing profit tracker: Goldolot Shard, Veilshroom Bunch.
+- 
 
 # 1.12.2
 
