@@ -1,6 +1,6 @@
 # 1.12.3
 
-Released on: ???
+Released on: 2026-08-12
 
 ## Bugfixes
 
