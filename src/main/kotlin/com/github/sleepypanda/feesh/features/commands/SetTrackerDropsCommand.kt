@@ -76,8 +76,8 @@ object SetTrackerDropsCommand {
         }
 
         val count = args[1].toIntOrNull()
-        if (count == null || count <= 0) {
-            ChatUtils.sendLocalChat("${RED}Please specify correct DROP_COUNT. Must be a positive number.", true)
+        if (count == null || count < 0) {
+            ChatUtils.sendLocalChat("${RED}Please specify correct DROP_COUNT. Must be a non-negative number.", true)
             return
         }
 

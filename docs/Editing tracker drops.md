@@ -53,9 +53,9 @@ Treasure fishing tracker uses a different third argument: good/great/outstanding
 | Argument | Required | Description |
 |----------|----------|-------------|
 | `DROP_ID` | Yes | `DYE_TREASURE` |
-| `DROP_COUNT` | Yes | Total Treasure Dyes obtained. Must be **> 0** |
+| `DROP_COUNT` | Yes | Total Treasure Dyes obtained. Must be **>= 0**. Use `0` if you have not dropped a dye yet (sets catch counters / RNG meter only; clears dye history) |
 | `GOOD/GREAT/OUTSTANDING` | Yes | Treasure catches since last dye, split by type (e.g. `12/123/1234`). Each part must be **>= 0** |
-| `LAST_ON_DATE` | No | When the last drop happened. Format: `YYYY-MM-DD hh:mm:ss`. Cannot be in the future. |
+| `LAST_ON_DATE` | No | When the last drop happened. Format: `YYYY-MM-DD hh:mm:ss`. Cannot be in the future. Ignored when `DROP_COUNT` is `0` |
 
 Treasures since last drop (shown as "N treasures ago") is the **sum** of good + great + outstanding. The breakdown also allows showing the RNG meter percentage.
 
@@ -69,4 +69,5 @@ Treasures since last drop (shown as "N treasures ago") is the **sum** of good + 
 /feeshSetTrackerDrops PRINCE_CROWN_JEWEL 2 0 2025-01-01 12:00:00
 /feeshSetTrackerDrops DYE_TREASURE 2 1234/123/12 2025-05-30 23:59:00
 /feeshSetTrackerDrops DYE_TREASURE 2 0/0/0
+/feeshSetTrackerDrops DYE_TREASURE 0 12/123/1234
 ```

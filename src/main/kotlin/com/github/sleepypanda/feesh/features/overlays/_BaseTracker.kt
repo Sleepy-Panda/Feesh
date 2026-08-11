@@ -142,9 +142,15 @@ open class DropCounterData(
 
     fun initDropCount(dropCount: Int, dropLastOn: Date?, catchesSinceLastDrop: Int) {
         count = dropCount
-        lastDropTime = dropLastOn
         catchesSinceLast = catchesSinceLastDrop
 
+        if (dropCount == 0) {
+            lastDropTime = null
+            dropsHistory = emptyList()
+            return
+        }
+
+        lastDropTime = dropLastOn
         if (dropLastOn != null) {
             val history = dropsHistory.toMutableList()
             if (history.isEmpty()) {
