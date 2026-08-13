@@ -3,11 +3,13 @@ package com.github.sleepypanda.feesh.utils
 import com.github.sleepypanda.feesh.FeeshMod
 import com.github.sleepypanda.feesh.events.EventBus
 import com.github.sleepypanda.feesh.events.models.BaitChangedEvent
+import com.github.sleepypanda.feesh.events.models.BaitConsumedEvent
 import com.github.sleepypanda.feesh.events.models.BaitRunningOutEvent
 import com.github.sleepypanda.feesh.events.models.ClientTickEvent
 import com.github.sleepypanda.feesh.events.models.WorldChangedEvent
 import com.github.sleepypanda.feesh.utils.ChatUtils.getFormattedString
 import com.github.sleepypanda.feesh.utils.ChatUtils.getUnformattedString
+import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen
 
 object BaitUtils {
     private const val BAIT_RUNNING_OUT_THRESHOLD = 16
@@ -27,6 +29,14 @@ object BaitUtils {
     fun getBaitDisplayName(): String = lastBaitDisplayName
 
     fun getBaitRemaining(): Int? = lastBaitRemaining
+
+    /**
+     * Get the item ID by the bait item name.
+     * Example: Spooky Bait -> SPOOKY_BAIT
+     */
+    fun getBaitItemId(baitName: String): String =
+        baitName.trim().split(Regex("\\s+")).filter { it.isNotBlank() }.joinToString("_").uppercase()
+    // TODO: Obfuscated bait is separate logic
 
     fun init() {
         EventBus.subscribe(ClientTickEvent::class, ::onClientTick)
@@ -74,6 +84,12 @@ object BaitUtils {
             EventBus.publish(BaitChangedEvent(lastBaitName, lastBaitDisplayName, currentBaitName, currentBaitDisplayName))
         }
 
+        if (lastBaitName.isNotEmpty() && lastBaitName == currentBaitName && lastBaitRemaining != null &&
+            currentBaitRemaining == lastBaitRemaining!! - 1 && !isInFishingBag()
+        ) {
+            EventBus.publish(BaitConsumedEvent(currentBaitName, currentBaitDisplayName, getBaitItemId(currentBaitName)))
+        }
+
         if (currentBaitRemaining <= BAIT_RUNNING_OUT_THRESHOLD && shouldPublishBaitRunningOut(currentBaitName)) {
             EventBus.publish(BaitRunningOutEvent(currentBaitName, currentBaitDisplayName))
         }
@@ -107,6 +123,11 @@ object BaitUtils {
         baitRunningOutPublishCache.entries.removeIf { now - it.value >= BAIT_RUNNING_OUT_CACHE_MS }
         baitRunningOutPublishCache[key] = now
         return true
+    }
+
+    private fun isInFishingBag(): Boolean {
+        val screen = FeeshMod.mc.getScreenCompat() ?: return false
+        return screen is AbstractContainerScreen<*> && screen.title.getUnformattedString().contains("Fishing Bag")
     }
 
     private fun reset() {

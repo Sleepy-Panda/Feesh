@@ -4,7 +4,8 @@ Released on: ???
 
 ## Features
 
--
+- Fishing profit tracker now tracks bait costs. Overlay shows Total (gross), Costs with hover breakdown, and Profit (Total − Costs).
+  - You can reset costs via `[x]` or `/feeshResetFishingProfitTrackerCosts` for Session / `/feeshResetFishingProfitTrackerCostsTotal` for Total.
 
 # 1.12.3
 

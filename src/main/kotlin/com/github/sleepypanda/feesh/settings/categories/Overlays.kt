@@ -275,6 +275,8 @@ ${GRAY}Shows an overlay with your profits you gained while fishing. This overlay
 ${GRAY}To count items added to your sacks, make sure to enable ${YELLOW}Skyblock Settings -> Personal -> Chat Feedback -> Sack Notifications
 ${GRAY}To reset [Session]: ${WHITE}/${FishingProfitTracker.RESET_COMMAND}
 ${GRAY}To reset [Total]: ${WHITE}/${FishingProfitTracker.RESET_TOTAL_COMMAND}
+${GRAY}To reset costs [Session]: ${WHITE}/${FishingProfitTracker.RESET_COSTS_COMMAND}
+${GRAY}To reset costs [Total]: ${WHITE}/${FishingProfitTracker.RESET_COSTS_TOTAL_COMMAND}
 ${GRAY}To pause: ${WHITE}/${FishingProfitTracker.PAUSE_COMMAND}
         """.trimIndent())
     }
