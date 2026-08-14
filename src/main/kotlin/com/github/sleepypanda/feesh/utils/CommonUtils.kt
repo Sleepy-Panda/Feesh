@@ -126,6 +126,8 @@ object CommonUtils {
             else -> absNumber.toLong().toString()
         }
 
+        formattedNumber.replace("1000k", "1M")
+
         return if (isNegative) "-$formattedNumber" else formattedNumber
     }
 

@@ -6,6 +6,10 @@ Released on: ???
 
 -
 
+## Bugfixes
+
+- Fixed numbers rounding issue showing "1000k" instead of "1M" sometimes.
+
 # 1.12.3
 
 Released on: 2026-08-12
