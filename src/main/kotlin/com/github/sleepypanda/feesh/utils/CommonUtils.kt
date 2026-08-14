@@ -6,6 +6,7 @@ import java.util.Date
 import java.util.concurrent.TimeUnit
 import java.text.SimpleDateFormat
 import net.minecraft.network.chat.Component
+import kotlin.math.abs
 
 object CommonUtils {
     fun showTitle(title: String, subtitle: String? = null, fadeIn: Int = 0, stay: Int = 40, fadeOut: Int = 10) {      
@@ -105,9 +106,9 @@ object CommonUtils {
         if (number == null) return null
 
         val isNegative = number < 0
-        val absNumber = Math.abs(number)
+        val absNumber = abs(number)
  
-        val formattedNumber = when {
+        var formattedNumber = when {
             absNumber >= 1_000_000_000 -> {
                 String.format("%.1fB", absNumber / 1_000_000_000.0)
                     .replace(".0B", "B")
@@ -126,7 +127,7 @@ object CommonUtils {
             else -> absNumber.toLong().toString()
         }
 
-        formattedNumber.replace("1000k", "1M")
+        formattedNumber = formattedNumber.replace("1000k", "1M")
 
         return if (isNegative) "-$formattedNumber" else formattedNumber
     }
