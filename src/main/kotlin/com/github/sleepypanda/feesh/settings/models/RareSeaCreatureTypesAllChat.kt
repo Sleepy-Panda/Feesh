@@ -8,7 +8,8 @@ enum class RareSeaCreatureTypesAllChat(val displayName: String) {
     RAGNAROK(SeaCreatureNames.RAGNAROK),
     VANQUISHER(SeaCreatureNames.VANQUISHER),
     WIKI_TIKI(SeaCreatureNames.WIKI_TIKI),
-    TITANOBOA(SeaCreatureNames.TITANOBOA);
+    TITANOBOA(SeaCreatureNames.TITANOBOA),
+    GIANT_ISOPOD(SeaCreatureNames.GIANT_ISOPOD);
 
     override fun toString(): String = displayName // Show display name in UI, but internally it uses name
 }
