@@ -4,7 +4,11 @@ Released on: ???
 
 ## Features
 
--
+- Added Giant Isopod to the ALL chat rare catch share functionality.
+
+## Bugfixes
+
+- Fixed numbers rounding issue showing "1000k" instead of "1M" sometimes.
 
 # 1.12.3
 

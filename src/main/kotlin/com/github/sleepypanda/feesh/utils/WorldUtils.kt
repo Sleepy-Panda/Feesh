@@ -36,6 +36,7 @@ object WorldUtils {
     const val PLHLEGBLAST_POOL = "Plhlegblast Pool"
     const val MURKWATER_DEPTHS = "Murkwater Depths"
     const val DRAGON_LAIR = "Dragon's Lair"
+    const val TORRHUS_SPRINGS = "Torrhus Springs"
 
     val NO_FISHING_WORLDS = listOf(
         RIFT,
