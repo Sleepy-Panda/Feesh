@@ -27,6 +27,12 @@ class FishingProfitDrops {
         const val PET_ITEM_CATEGORY = "Pet Item"
         const val CRIMSON_ISLE_TRASH_GEAR_CATEGORY = "Crimson Isle trash gear"
 
+        fun getFishingProfitItemByName(itemName: String): FishingProfitDropInfo? {
+            if (itemName.isEmpty()) return null
+            val lower = itemName.lowercase()
+            return items.find { it.itemName.lowercase() == lower || it.itemAlternateNames.any { alt -> alt.lowercase() == lower } }
+        }
+
         val items = listOf(
             // Dyes
             
