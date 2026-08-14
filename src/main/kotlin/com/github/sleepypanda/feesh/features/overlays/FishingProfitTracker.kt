@@ -10,7 +10,7 @@ import com.github.sleepypanda.feesh.events.models.GameClosedEvent
 import com.github.sleepypanda.feesh.events.models.InventoryProfitItemPickupEvent
 import com.github.sleepypanda.feesh.events.models.WorldChangedEvent
 import com.github.sleepypanda.feesh.events.models.PetLevelUpEvent
-import com.github.sleepypanda.feesh.events.models.SacksItemsPickupEvent
+import com.github.sleepypanda.feesh.events.models.SacksProfitItemsPickupEvent
 import com.github.sleepypanda.feesh.events.models.ShardCaughtEvent
 import com.github.sleepypanda.feesh.events.models.PricesUpdatedEvent
 import com.github.sleepypanda.feesh.events.models.IceEssenceStatusBarEvent
@@ -27,7 +27,6 @@ import com.github.sleepypanda.feesh.utils.RegisterUtils
 import com.github.sleepypanda.feesh.utils.WorldUtils
 import com.github.sleepypanda.feesh.utils.PlayerUtils
 import com.github.sleepypanda.feesh.utils.FishingHookUtils
-import com.github.sleepypanda.feesh.utils.GuiUtils
 import com.github.sleepypanda.feesh.utils.gui.FeeshGui
 import com.github.sleepypanda.feesh.utils.gui.GuiButton
 import com.github.sleepypanda.feesh.utils.gui.LineAction
@@ -131,7 +130,7 @@ object FishingProfitTracker : IResettableViewModeTracker {
         EventBus.subscribe(GameClosedEvent::class, ::onGameClosed)
         EventBus.subscribe(WorldChangedEvent::class, ::onWorldChanged)
         EventBus.subscribe(PetLevelUpEvent::class, ::onPetReachedMaxLevel)
-        EventBus.subscribe(SacksItemsPickupEvent::class, ::onSacksItemsPickup)
+        EventBus.subscribe(SacksProfitItemsPickupEvent::class, ::onSacksProfitItemsPickup)
         EventBus.subscribe(InventoryProfitItemPickupEvent::class, ::onInventoryProfitItemPickup)
         EventBus.subscribe(ShardCaughtEvent::class, ::onShardCaught)
         EventBus.subscribe(IceEssenceStatusBarEvent::class, ::onIceEssenceStatusBar)
@@ -632,40 +631,20 @@ object FishingProfitTracker : IResettableViewModeTracker {
         }
     }
 
-    private fun onSacksItemsPickup(event: SacksItemsPickupEvent) {
+    private fun onSacksProfitItemsPickup(event: SacksProfitItemsPickupEvent) {
         if (!isSessionActive || !isTrackerVisible()) return
-        if (GuiUtils.isInSacksGui() || GuiUtils.isInSupercraftGui()) return
 
-        val lastGuisClosed = GuiUtils.lastGuisClosed
-        val cooldownMilliseconds = 31_000
+        CommonUtils.runWithCatching("Failed to process sacks profit items pickup event in $trackerName") {
+            for (item in event.items) {
+                val dropInfo = FishingProfitDrops.items.find { it.itemId == item.itemId } ?: continue
+                addProfitTrackerItem(dropInfo.itemId, dropInfo.itemName, item.amount, null, true)
 
-        // 30 seconds is the maximum time to receive "[Sacks] +..." message after items were added to the sack
-        if (lastGuisClosed.lastSacksGuiClosedAt != null && Date().time - lastGuisClosed.lastSacksGuiClosedAt!!.time < cooldownMilliseconds) return
-        if (lastGuisClosed.lastSupercraftGuiClosedAt != null && Date().time - lastGuisClosed.lastSupercraftGuiClosedAt!!.time < cooldownMilliseconds) return
-
-        var added = false
-        for (item in event.items) {
-            if (item.amount <= 0 || item.itemName.isBlank()) continue
-            val itemName = ItemUtils.getCleanItemName(item.itemName)
-            val dropInfo = FishingProfitDrops.getFishingProfitItemByName(itemName) ?: continue
-            if (dropInfo.ignoreFromInventory) continue
-
-            if (dropInfo.itemId.startsWith("MAGMA_FISH") && 
-                lastGuisClosed.lastOdgerGuiClosedAt != null && Date().time - lastGuisClosed.lastOdgerGuiClosedAt!!.time < cooldownMilliseconds) {
-                continue; // User probably just filleted trophy fish
-            } else if (dropInfo.itemId.startsWith("LOTUS") && 
-                lastGuisClosed.lastTrophyFrogsGuiClosedAt != null && Date().time - lastGuisClosed.lastTrophyFrogsGuiClosedAt!!.time < cooldownMilliseconds) {
-                continue; // User probably just picked up trophy frogs
+                if (Overlays.shouldAnnounceRareDropsWhenPickup && dropInfo.shouldAnnounceRareDrop) {
+                    announceRareDropInChat(dropInfo, item.amount)
+                }
             }
-
-            addProfitTrackerItem(dropInfo.itemId, dropInfo.itemName, item.amount, null, true)
-            added = true
-
-            if (Overlays.shouldAnnounceRareDropsWhenPickup && dropInfo.shouldAnnounceRareDrop) {
-                announceRareDropInChat(dropInfo, item.amount)
-            }
+            refreshTotalItemsProfits()
         }
-        if (added) refreshTotalItemsProfits()
     }
 
     private fun onIceEssenceStatusBar(event: IceEssenceStatusBarEvent) {
