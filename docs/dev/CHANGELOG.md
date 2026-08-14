@@ -4,7 +4,7 @@ Released on: ???
 
 ## Features
 
--
+- Added Giant Isopod to the ALL chat rare catch share functionality.
 
 ## Bugfixes
 
