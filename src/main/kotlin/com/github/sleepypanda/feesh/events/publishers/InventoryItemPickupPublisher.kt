@@ -83,6 +83,12 @@ object InventoryItemPickupPublisher {
     private var lastGfsItemName: String? = null
     private var lastGfsAt: Date? = null
 
+    // You canceled your auction for Spooky Hook!
+    // You canceled your auction for [Lvl 1] Megalodon!
+    private val AUCTION_CANCELED_PATTERN = Regex("^You canceled your auction for .+!$")
+    private var lastAuctionCanceledMessage: String? = null
+    private var lastAuctionCanceledAt: Date? = null
+
     fun init() {
         EventBus.subscribe(ClientTickEvent::class, ::onClientTick)
         EventBus.subscribe(ChatCancellableEvent::class, ::onChat)
@@ -91,9 +97,9 @@ object InventoryItemPickupPublisher {
     }
 
     private fun onChat(event: ChatCancellableEvent) {
-        if (!WorldUtils.isInSkyblock()) return
+        if (!WorldUtils.isInSkyblock() || !WorldUtils.isInFishingWorld()) return
 
-        CommonUtils.runWithCatching("Failed to handle chat messages in inventory item pickuppublisher.") {
+        CommonUtils.runWithCatching("Failed to handle chat messages in inventory item pickup publisher.") {
             if (BAZAAR_ITEM_PATTERN.matches(event.unformattedText)) {
                 lastBazaarMessage = event.unformattedText
                 lastBazaarItemAt = Date()
@@ -127,6 +133,11 @@ object InventoryItemPickupPublisher {
             GFS_COMMAND_PATTERN.find(event.unformattedText)?.run {
                 lastGfsItemName = this.groupValues[1].removeFormatting()
                 lastGfsAt = Date()
+                return@onChat
+            }
+            if (AUCTION_CANCELED_PATTERN.matches(event.unformattedText)) {
+                lastAuctionCanceledMessage = event.unformattedText
+                lastAuctionCanceledAt = Date()
                 return@onChat
             }    
         }
@@ -319,55 +330,48 @@ object InventoryItemPickupPublisher {
 
     private fun shouldSkipItem(itemId: String, dropInfo: FishingProfitDropInfo): Boolean {
 
-        fun wasPotentiallyClaimedFromBazaar(fishingProfitItemName: String): Boolean {
+        fun wasPotentiallyClaimedFromBazaar(dropInfo: FishingProfitDropInfo): Boolean {
             val now = Date()
 
             if (GuiUtils.isInBazaarGui() || (
-                GuiUtils.lastGuisClosed.lastBazaarGuiClosedAt != null && Date().time - GuiUtils.lastGuisClosed.lastBazaarGuiClosedAt!!.time < 1_000)
+                GuiUtils.lastGuisClosed.lastBazaarGuiClosedAt != null && Date().time - GuiUtils.lastGuisClosed.lastBazaarGuiClosedAt!!.time < 2_000)
             ) return true
 
             val bazaarMessage = lastBazaarMessage ?: return false
-            if (lastBazaarItemAt != null && now.time - lastBazaarItemAt!!.time < 1_000) return false
+            if (lastBazaarItemAt == null || now.time - lastBazaarItemAt!!.time >= 2_000) return false
 
-            if (bazaarMessage.contains(fishingProfitItemName, ignoreCase = true)) return true
-            if (dropInfo.itemAlternateNames.any { bazaarMessage.contains(it, ignoreCase = true) }) return true
+            if (isItemContainedInText(dropInfo.itemName, dropInfo.itemAlternateNames, bazaarMessage)) return true
 
-            if (fishingProfitItemName.startsWith("Enchanted Book")) {
-                val bookName = Regex("^Enchanted Book \\((.+)\\)$").matchEntire(fishingProfitItemName)?.groupValues[1]
+            if (dropInfo.itemName.startsWith("Enchanted Book")) {
+                val bookName = Regex("^Enchanted Book \\((.+)\\)$").matchEntire(dropInfo.itemName)?.groupValues[1]
                 if (bookName != null && bazaarMessage.contains(bookName, ignoreCase = true)) return true    
             }
 
             return false
         }
 
-        fun wasPotentiallyBoughtBackFromNpcShop(fishingProfitItemName: String): Boolean {
+        fun wasPotentiallyBoughtBackFromNpcShop(dropInfo: FishingProfitDropInfo): Boolean {
             val now = Date()
             val boughtBackMessage = lastBoughtBackMessage ?: return false
-            if (lastBoughtBackAt == null || now.time - lastBoughtBackAt!!.time >= 1_000) return false
+            if (lastBoughtBackAt == null || now.time - lastBoughtBackAt!!.time >= 2_000) return false
 
-            if (boughtBackMessage.contains(fishingProfitItemName, ignoreCase = true)) return true
-            if (dropInfo.itemAlternateNames.any { boughtBackMessage.contains(it, ignoreCase = true) }) return true
-            return false
+            return isItemContainedInText(dropInfo.itemName, dropInfo.itemAlternateNames, boughtBackMessage)
         }
 
-        fun wasPotentiallySupercrafted(fishingProfitItemName: String): Boolean {
+        fun wasPotentiallySupercrafted(dropInfo: FishingProfitDropInfo): Boolean {
             val now = Date()
             val supercraftedMessage = lastSupercraftedMessage ?: return false
-            if (lastSupercraftedAt == null || now.time - lastSupercraftedAt!!.time >= 1_000) return false
+            if (lastSupercraftedAt == null || now.time - lastSupercraftedAt!!.time >= 2_000) return false
 
-            if (supercraftedMessage.contains(fishingProfitItemName, ignoreCase = true)) return true
-            if (dropInfo.itemAlternateNames.any { supercraftedMessage.contains(it, ignoreCase = true) }) return true
-            return false
+            return isItemContainedInText(dropInfo.itemName, dropInfo.itemAlternateNames, supercraftedMessage)
         }
 
-        fun wasPotentiallyBoughtFromNpcShop(fishingProfitItemName: String): Boolean {
+        fun wasPotentiallyBoughtFromNpcShop(dropInfo: FishingProfitDropInfo): Boolean {
             val now = Date()
             val boughtMessage = lastBoughtMessage ?: return false
-            if (lastBoughtAt == null || now.time - lastBoughtAt!!.time >= 1_000) return false
+            if (lastBoughtAt == null || now.time - lastBoughtAt!!.time >= 2_000) return false
 
-            if (boughtMessage.contains(fishingProfitItemName, ignoreCase = true)) return true
-            if (dropInfo.itemAlternateNames.any { boughtMessage.contains(it, ignoreCase = true) }) return true
-            return false
+            return isItemContainedInText(dropInfo.itemName, dropInfo.itemAlternateNames, boughtMessage)
         }
 
         // TODO: 1 second after menu closed for all below cases?
@@ -384,22 +388,21 @@ object InventoryItemPickupPublisher {
             return false
         }
 
-        fun wasPotentiallyClaimedFromFishingBag(chestName: String?, fishingProfitItemName: String): Boolean {
+        fun wasPotentiallyClaimedFromFishingBag(chestName: String?, categories: List<String>): Boolean {
             if (chestName == null) return false
-            if (chestName == "Fishing Bag" && (fishingProfitItemName.endsWith("Bait") || fishingProfitItemName.contains("Obfuscated"))) return true
+            if (chestName == "Fishing Bag" && categories.contains(FishingProfitDrops.BAIT_CATEGORY)) return true
             return false
         }
 
-        fun wasPotentiallyClaimedFromAccessoryBag(chestName: String?, fishingProfitItemName: String): Boolean {
+        fun wasPotentiallyClaimedFromAccessoryBag(chestName: String?, categories: List<String>): Boolean {
             if (chestName == null) return false
-            // TODO check if is accessory (Fish Affinity Talisman etc)
-            if (chestName.startsWith("Accessory Bag")) return true
+            if (chestName.startsWith("Accessory Bag") && categories.contains(FishingProfitDrops.ACCESSORY_CATEGORY)) return true
             return false
         }
 
-        fun wasPotentiallyClaimedFromTimePocket(chestName: String?, fishingProfitItemName: String): Boolean {
+        fun wasPotentiallyClaimedFromTimePocket(chestName: String?, categories: List<String>): Boolean {
             if (chestName == null) return false
-            if (chestName == "Time Pocket" && fishingProfitItemName.startsWith("Moby-Duck")) return true
+            if (chestName == "Time Pocket" && categories.contains(FishingProfitDrops.EVOLVING_IN_TIME_BAG_CATEGORY)) return true
             return false
         }
 
@@ -418,7 +421,7 @@ object InventoryItemPickupPublisher {
 
         fun wasPotentiallyMovedFromSacksViaGfs(fishingProfitItemName: String): Boolean {
             val now = Date()
-            if (lastGfsAt == null || now.time - lastGfsAt!!.time >= 1_000) return false
+            if (lastGfsAt == null || now.time - lastGfsAt!!.time >= 2_000) return false
             val gfsItemName = lastGfsItemName ?: return false
             return fishingProfitItemName == gfsItemName
         }
@@ -426,14 +429,20 @@ object InventoryItemPickupPublisher {
         fun wasPotentiallyClaimedFromPetItemSwap(categories: List<String>): Boolean {
             val now = Date()
             val closedAt = GuiUtils.lastGuisClosed.lastPetItemSwapGuiClosedAt ?: return false
-            if (now.time - closedAt.time >= 1_000) return false
+            if (now.time - closedAt.time >= 2_000) return false
             return categories.contains(FishingProfitDrops.PET_ITEM_CATEGORY)
         }
 
-        fun wasPotentiallyClaimedFromAuction(): Boolean {
+        fun wasPotentiallyClaimedFromAuction(dropInfo: FishingProfitDropInfo): Boolean {
             val now = Date()
+
+            if (lastAuctionCanceledAt != null && now.time - lastAuctionCanceledAt!!.time < 2_000) {
+                if (lastAuctionCanceledMessage != null && isItemContainedInText(dropInfo.itemName, dropInfo.itemAlternateNames, lastAuctionCanceledMessage!!))
+                    return true
+            }
+
             val closedAt = GuiUtils.lastGuisClosed.lastAuctionGuiClosedAt ?: return false
-            return now.time - closedAt.time < 3_000
+            return now.time - closedAt.time < 5_000
         }
 
         fun wasPotentiallyClaimedFromKat(fishingProfitItemName: String): Boolean {
@@ -445,29 +454,42 @@ object InventoryItemPickupPublisher {
             return fishingProfitItemName.contains(katPetName)
         }
 
+        fun wasPotentiallyClaimedFromGeorge(fishingProfitItemName: String): Boolean {
+            if (!isPet(fishingProfitItemName)) return false
+            val closedAt = GuiUtils.lastGuisClosed.lastGeorgeGuiClosedAt ?: return false
+            return Date().time - closedAt.time <= 2_000
+        }
+
         val chestName = GuiUtils.getCurrentChestName()
 
-        if (wasPotentiallyClaimedFromBazaar(dropInfo.itemName)) return true
+        if (wasPotentiallyClaimedFromBazaar(dropInfo)) return true
         if (wasPotentiallyClaimedFromPetMenu(chestName, dropInfo.itemName)) return true
         if (wasPotentiallyClaimedFromHuntingBox(chestName, dropInfo.itemName)) return true
-        if (wasPotentiallyClaimedFromFishingBag(chestName, dropInfo.itemName)) return true
-        if (wasPotentiallyClaimedFromAccessoryBag(chestName, dropInfo.itemName)) return true
-        if (wasPotentiallyClaimedFromTimePocket(chestName, dropInfo.itemName)) return true
+        if (wasPotentiallyClaimedFromFishingBag(chestName, dropInfo.categories)) return true
+        if (wasPotentiallyClaimedFromAccessoryBag(chestName, dropInfo.categories)) return true
+        if (wasPotentiallyClaimedFromTimePocket(chestName, dropInfo.categories)) return true
         if (wasPotentiallyFilletedTrophy(chestName, dropInfo.itemId)) return true
-        if (wasPotentiallyBoughtBackFromNpcShop(dropInfo.itemName)) return true
+        if (wasPotentiallyBoughtBackFromNpcShop(dropInfo)) return true
         if (wasPotentiallyClaimedFromSacks(chestName)) return true
         if (wasPotentiallyMovedFromSacksViaGfs(dropInfo.itemName)) return true
-        if (wasPotentiallySupercrafted(dropInfo.itemName)) return true
-        if (wasPotentiallyBoughtFromNpcShop(dropInfo.itemName)) return true
+        if (wasPotentiallySupercrafted(dropInfo)) return true
+        if (wasPotentiallyBoughtFromNpcShop(dropInfo)) return true
         if (wasPotentiallyClaimedFromPetItemSwap(dropInfo.categories)) return true
-        if (wasPotentiallyClaimedFromAuction()) return true
+        if (wasPotentiallyClaimedFromAuction(dropInfo)) return true
         if (wasPotentiallyClaimedFromKat(dropInfo.itemName)) return true
+        if (wasPotentiallyClaimedFromGeorge(dropInfo.itemName)) return true
 
         return false
     }
 
     private fun isPet(itemName: String): Boolean {
         return itemName.startsWith("[Lvl 1] ")
+    }
+
+    private fun isItemContainedInText(itemName: String, itemAlternateNames: List<String>, text: String): Boolean {
+        if (text.isEmpty()) return false
+        if (text.contains(itemName, ignoreCase = true)) return true
+        return itemAlternateNames.any { text.contains(it, ignoreCase = true) }
     }
 
     private fun getItemOnCursor(): ItemStack? {

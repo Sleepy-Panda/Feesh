@@ -23,6 +23,7 @@ data class LastGuisClosed(
     var lastStorageGuiClosedAt: Date? = null,
     var lastBazaarGuiClosedAt: Date? = null,
     var lastPetItemSwapGuiClosedAt: Date? = null,
+    var lastGeorgeGuiClosedAt: Date? = null,
     var lastHotmGuiClosedAt: Date? = null
 )
 
@@ -46,17 +47,16 @@ object GuiUtils {
             chestName.contains("Sack") -> lastGuisClosed.lastSacksGuiClosedAt = now
             chestName.contains("Trophy Fish") -> lastGuisClosed.lastOdgerGuiClosedAt = now
             chestName.contains("Trophy Frogs") -> lastGuisClosed.lastTrophyFrogsGuiClosedAt = now
-            chestName.contains("Manage Auctions") || chestName.contains("Confirm Purchase") ||
-            chestName.contains("BIN Auction View") || chestName.contains("Your Bids") ->
+            chestName.contains("Manage Auctions") || chestName.contains("Confirm Purchase") || chestName.contains("BIN Auction View") || chestName.contains("Your Bids") ->
                 lastGuisClosed.lastAuctionGuiClosedAt = now
             chestName.endsWith("Recipe") -> lastGuisClosed.lastSupercraftGuiClosedAt = now
             chestName.contains("Craft Item") -> lastGuisClosed.lastCraftGuiClosedAt = now
             chestName.contains("Backpack") || chestName.contains("Chest") || chestName.contains("Ender Chest") ->
                 lastGuisClosed.lastStorageGuiClosedAt = now
-            chestName.contains("Bazaar Orders") || chestName.contains("Order options") || chestName.contains("Instant Buy") || chestName.contains("➡") ->
-                lastGuisClosed.lastBazaarGuiClosedAt = now
+            isBazaarChestName(chestName) -> lastGuisClosed.lastBazaarGuiClosedAt = now
             chestName == "Swap Pet Item" || chestName == "Remove Pet Item" -> 
                 lastGuisClosed.lastPetItemSwapGuiClosedAt = now
+            chestName.contains("George") -> lastGuisClosed.lastGeorgeGuiClosedAt = now
             chestName.contains("Heart of the Mountain") -> lastGuisClosed.lastHotmGuiClosedAt = now
         }
     }
@@ -106,7 +106,15 @@ object GuiUtils {
 
     fun isInBazaarGui(): Boolean {
         val title = getCurrentChestName() ?: return false
-        return (title.contains("Bazaar Orders") || title.contains("Order options") || title.contains("Instant Buy") || title.contains("➡"))
+        return isBazaarChestName(title)
+    }
+
+    private fun isBazaarChestName(chestName: String): Boolean {
+        return chestName.contains("Bazaar") ||
+            chestName.contains("Order options") ||
+            chestName.contains("Instant Buy") ||
+            chestName.contains("Bazaar Orders") ||
+            chestName.contains("➜") // Viewing specific item
     }
 
     fun isInSacksGui(): Boolean {

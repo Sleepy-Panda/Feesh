@@ -7,6 +7,7 @@ import com.github.sleepypanda.feesh.events.models.ChatCancellableEvent
 import com.github.sleepypanda.feesh.events.models.SacksProfitItemsPickupEvent
 import com.github.sleepypanda.feesh.utils.ChatUtils.getUnformattedString
 import com.github.sleepypanda.feesh.utils.ChatUtils.removeFormatting
+import com.github.sleepypanda.feesh.utils.ChatUtils // TODO: Remove
 import com.github.sleepypanda.feesh.utils.CommonUtils
 import com.github.sleepypanda.feesh.utils.GuiUtils
 import com.github.sleepypanda.feesh.utils.ItemUtils
@@ -32,7 +33,7 @@ object SacksItemPickupPublisher {
     }
 
     private fun onChat(event: ChatCancellableEvent) {
-        if (!WorldUtils.isInSkyblock()) return
+        if (!WorldUtils.isInSkyblock() || !WorldUtils.isInFishingWorld()) return
 
         CommonUtils.runWithCatching("Failed to handle chat message in sacks item pickup publisher.") {
             val text = event.unformattedText
@@ -73,6 +74,8 @@ object SacksItemPickupPublisher {
         if (dropInfo.ignoreFromInventory) return null
         if (shouldSkipItem(dropInfo)) return null
 
+        ChatUtils.sendLocalChat("Sacks item pickup publisher: $cleanName $amount") // TODO
+
         return SacksProfitItemsPickupEvent.SacksProfitPickupItem(
             itemId = dropInfo.itemId,
             itemNameUnformatted = dropInfo.itemName,
@@ -85,27 +88,25 @@ object SacksItemPickupPublisher {
         val lastGuisClosed = GuiUtils.lastGuisClosed
         val now = Date().time
 
-        fun wasPotentiallyFilletedTrophy(): Boolean {
-            if (dropInfo.itemId.startsWith("MAGMA_FISH") &&
+        fun wasPotentiallyFilletedTrophy(itemId: String): Boolean {
+            if (itemId.startsWith("MAGMA_FISH") &&
                 lastGuisClosed.lastOdgerGuiClosedAt != null && now - lastGuisClosed.lastOdgerGuiClosedAt!!.time < MAX_SACKS_MESSAGE_DELAY_MS) {
                 return true
-            } else if (dropInfo.itemId.startsWith("LOTUS") &&
+            } else if (itemId.startsWith("LOTUS") &&
                 lastGuisClosed.lastTrophyFrogsGuiClosedAt != null && now - lastGuisClosed.lastTrophyFrogsGuiClosedAt!!.time < MAX_SACKS_MESSAGE_DELAY_MS) {
                 return true
             }
             return false
         }
 
-        fun wasPotentiallySupercrafted(fishingProfitItemName: String): Boolean {
+        fun wasPotentiallySupercrafted(dropInfo: FishingProfitDropInfo): Boolean {
             val supercraftedMessage = lastSupercraftedMessage ?: return false
             if (lastSupercraftedAt == null || now - lastSupercraftedAt!!.time >= MAX_SACKS_MESSAGE_DELAY_MS) return false
-
-            if (supercraftedMessage.contains(fishingProfitItemName, ignoreCase = true)) return true
-            return false
+            return isItemContainedInText(dropInfo.itemName, dropInfo.itemAlternateNames, supercraftedMessage)
         }
 
-        if (wasPotentiallyFilletedTrophy()) return true
-        if (wasPotentiallySupercrafted(dropInfo.itemName)) return true
+        if (wasPotentiallyFilletedTrophy(dropInfo.itemId)) return true
+        if (wasPotentiallySupercrafted(dropInfo)) return true
 
         return false
     }
@@ -136,5 +137,11 @@ object SacksItemPickupPublisher {
             }
         }
         return items
+    }
+
+    private fun isItemContainedInText(itemName: String, itemAlternateNames: List<String>, text: String): Boolean {
+        if (text.isEmpty()) return false
+        if (text.contains(itemName, ignoreCase = true)) return true
+        return itemAlternateNames.any { text.contains(it, ignoreCase = true) }
     }
 }
