@@ -56,7 +56,7 @@ object GuiUtils {
             isBazaarChestName(chestName) -> lastGuisClosed.lastBazaarGuiClosedAt = now
             chestName == "Swap Pet Item" || chestName == "Remove Pet Item" -> 
                 lastGuisClosed.lastPetItemSwapGuiClosedAt = now
-            chestName.contains("George") -> lastGuisClosed.lastGeorgeGuiClosedAt = now
+            chestName.contains("Offer Pets") -> lastGuisClosed.lastGeorgeGuiClosedAt = now
             chestName.contains("Heart of the Mountain") -> lastGuisClosed.lastHotmGuiClosedAt = now
         }
     }

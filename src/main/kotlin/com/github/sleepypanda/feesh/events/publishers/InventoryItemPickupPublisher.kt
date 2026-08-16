@@ -15,24 +15,18 @@ import com.github.sleepypanda.feesh.utils.ChatUtils // TODO: Remove this
 import com.github.sleepypanda.feesh.utils.ChatUtils.getUnformattedString
 import com.github.sleepypanda.feesh.utils.CommonUtils
 import com.github.sleepypanda.feesh.utils.GuiUtils
+import com.github.sleepypanda.feesh.utils.getScreenCompat
 import com.github.sleepypanda.feesh.utils.ItemUtils
 import com.github.sleepypanda.feesh.utils.WorldUtils
 import com.google.gson.JsonParser
+import net.minecraft.client.gui.screens.inventory.InventoryScreen
+import net.minecraft.world.entity.EquipmentSlot
 import net.minecraft.world.item.ItemStack
 import java.util.Date
 import kotlin.collections.set
 
-// You claimed True Ice from [MVP+] Minecraft_Kides's auction! - Individual msg for each drop
-// Accessory Bag (1/4)
-// Ignore whatever while in Trades menu
-  // Trade completed message? Check for both cancelled and completed trades
-// You Supercrafted Polished Pumpkin x7!
-
-// [Bazaar] Cancelled! Refunded 3x Shinyfish Shard from cancelling Sell Offer! - doesnt work
-
-// You claimed Worm the Fish back from your expired auction!
-// Claim from bz counts - is in Co-op Bazaar Orders or Order Options
-// Gfs 
+// Test trades
+// Equip-unequip items in inventory
 
 object InventoryItemPickupPublisher {
     private var previousInventory: MutableMap<String, Int>? = null
@@ -89,6 +83,13 @@ object InventoryItemPickupPublisher {
     private var lastAuctionCanceledMessage: String? = null
     private var lastAuctionCanceledAt: Date? = null
 
+    // Trade completed with [MVP+] Player!
+    // You cancelled the trade!
+    // [MVP+] Player cancelled the trade!
+    private val TRADE_COMPLETED_PATTERN = Regex("^Trade completed with .*!$")
+    private val TRADE_CANCELLED_PATTERN = Regex("^.* cancelled the trade!$") // refunded items go back to inventory
+    private var lastTradeAt: Date? = null
+
     fun init() {
         EventBus.subscribe(ClientTickEvent::class, ::onClientTick)
         EventBus.subscribe(ChatCancellableEvent::class, ::onChat)
@@ -138,6 +139,10 @@ object InventoryItemPickupPublisher {
             if (AUCTION_CANCELED_PATTERN.matches(event.unformattedText)) {
                 lastAuctionCanceledMessage = event.unformattedText
                 lastAuctionCanceledAt = Date()
+                return@onChat
+            }
+            if (TRADE_COMPLETED_PATTERN.matches(event.unformattedText) || TRADE_CANCELLED_PATTERN.matches(event.unformattedText)) {
+                lastTradeAt = Date()
                 return@onChat
             }    
         }
@@ -260,6 +265,14 @@ object InventoryItemPickupPublisher {
         for (slot in player.containerMenu.slots) {
             if (slot.container === playerInventory) continue
             addFishingProfitStack(result, slot.item)
+        }
+
+        if (FeeshMod.mc.getScreenCompat() is InventoryScreen) {
+            addFishingProfitStack(result, player.getItemBySlot(EquipmentSlot.HEAD))
+            addFishingProfitStack(result, player.getItemBySlot(EquipmentSlot.CHEST))
+            addFishingProfitStack(result, player.getItemBySlot(EquipmentSlot.LEGS))
+            addFishingProfitStack(result, player.getItemBySlot(EquipmentSlot.FEET))
+            addFishingProfitStack(result, player.getItemBySlot(EquipmentSlot.OFFHAND))
         }
         return result
     }
@@ -433,8 +446,10 @@ object InventoryItemPickupPublisher {
             return categories.contains(FishingProfitDrops.PET_ITEM_CATEGORY)
         }
 
-        fun wasPotentiallyClaimedFromAuction(dropInfo: FishingProfitDropInfo): Boolean {
+        fun wasPotentiallyClaimedFromAuction(chestName: String?, dropInfo: FishingProfitDropInfo): Boolean {
             val now = Date()
+
+            if (chestName == "Create Auction" || chestName == "Create BIN Auction") return true
 
             if (lastAuctionCanceledAt != null && now.time - lastAuctionCanceledAt!!.time < 2_000) {
                 if (lastAuctionCanceledMessage != null && isItemContainedInText(dropInfo.itemName, dropInfo.itemAlternateNames, lastAuctionCanceledMessage!!))
@@ -460,6 +475,11 @@ object InventoryItemPickupPublisher {
             return Date().time - closedAt.time <= 2_000
         }
 
+        fun wasPotentiallyClaimedFromTradeWithPlayer(): Boolean {
+            val tradedAt = lastTradeAt ?: return false
+            return Date().time - tradedAt.time <= 2_000
+        }
+
         val chestName = GuiUtils.getCurrentChestName()
 
         if (wasPotentiallyClaimedFromBazaar(dropInfo)) return true
@@ -475,9 +495,10 @@ object InventoryItemPickupPublisher {
         if (wasPotentiallySupercrafted(dropInfo)) return true
         if (wasPotentiallyBoughtFromNpcShop(dropInfo)) return true
         if (wasPotentiallyClaimedFromPetItemSwap(dropInfo.categories)) return true
-        if (wasPotentiallyClaimedFromAuction(dropInfo)) return true
+        if (wasPotentiallyClaimedFromAuction(chestName, dropInfo)) return true
         if (wasPotentiallyClaimedFromKat(dropInfo.itemName)) return true
         if (wasPotentiallyClaimedFromGeorge(dropInfo.itemName)) return true
+        if (wasPotentiallyClaimedFromTradeWithPlayer()) return true
 
         return false
     }
