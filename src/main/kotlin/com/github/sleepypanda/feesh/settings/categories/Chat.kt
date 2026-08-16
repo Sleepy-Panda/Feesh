@@ -3,6 +3,7 @@ package com.github.sleepypanda.feesh.settings.categories
 import com.github.sleepypanda.feesh.FeeshMod
 import com.github.sleepypanda.feesh.settings.models.AlertableSeaCreatureTypes
 import com.github.sleepypanda.feesh.settings.models.RareSeaCreatureTypesAllChat
+import com.github.sleepypanda.feesh.settings.models.TrophyRarityTypes
 import com.github.sleepypanda.feesh.constants.RareDropTypes
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
@@ -188,5 +189,21 @@ object Chat : CategoryKt("Chat") {
     var shareTrophyFishDiscovered by boolean(true) {
         this.name = Translated("Share Trophy Fish discovery to the PARTY chat")
         this.description = Translated("Sends a PARTY chat message when you discovered a new Trophy Fish.")
+    }
+
+    var hideTrophyFrogCatches by boolean(false) {
+        this.name = Translated("Hide Trophy Frog catch messages")
+        this.description = Translated("Hides Trophy Frog catch messages from chat for the selected rarities. You will still see chat messages for newly discovered frogs!")
+    }
+
+    var hideTrophyFishCatches by boolean(false) {
+        this.name = Translated("Hide Trophy Fish catch messages")
+        this.description = Translated("Hides Trophy Fish catch messages from chat for the selected rarities. You will still see chat messages for newly discovered fish!")
+    }
+
+    var hideTrophyCatchRarities by select(TrophyRarityTypes.BRONZE, TrophyRarityTypes.SILVER) {
+        this.name = Translated("Trophy rarities to hide")
+        this.description = Translated("Catch messages for these rarities are hidden when hide option(s) above is enabled.")
+        this.searchTerms = TrophyRarityTypes.values().map { it.displayName }.toList()
     }
 }

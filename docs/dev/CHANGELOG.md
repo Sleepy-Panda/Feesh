@@ -4,10 +4,13 @@ Released on: ???
 
 ## Features
 
-- Added Giant Isopod to the ALL chat rare catch share functionality.
+- Added Giant Isopod to the ALL CHAT rare catch share functionality.
+- Added option to hide Trophy Fish/Frog catch messages from the chat for selected rarities [disabled by default].
+  - You will still see newly discovered ones, but cleanup chat from already obtained trophies.
 
 ## Bugfixes
 
+- Fixed detection if player is in Trophy armor not working sometimes when SB does not return equipped armor details.
 - Fixed numbers rounding issue showing "1000k" instead of "1M" sometimes.
 
 # 1.12.3

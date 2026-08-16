@@ -3,6 +3,7 @@ package com.github.sleepypanda.feesh.utils
 import com.github.sleepypanda.feesh.FeeshMod
 import com.github.sleepypanda.feesh.utils.ChatUtils.getFormattedString
 import com.github.sleepypanda.feesh.utils.ChatUtils.getUnformattedString
+import com.github.sleepypanda.feesh.utils.ItemUtils
 import com.github.sleepypanda.feesh.events.EventBus
 import com.github.sleepypanda.feesh.events.models.WorldChangedEvent
 import java.util.Timer
@@ -20,6 +21,11 @@ object PlayerUtils {
     private var cachedHasDirtRodInHand: Boolean = false
     private var cachedIsInTrophyArmor: Boolean = false
     private var timer: Timer? = null
+
+    private val TROPHY_ARMOR_ID_PREFIXES = listOf(
+        "FROGGLES", "RED_SWEATER",
+        "BRONZE_HUNTER_", "SILVER_HUNTER_", "GOLD_HUNTER_", "DIAMOND_HUNTER_",
+    )
 
     fun init() {
         startTimer()
@@ -167,8 +173,13 @@ object PlayerUtils {
         val boots = player.getItemBySlot(EquipmentSlot.FEET)
         
         val armorPieces = listOf(helmet, chestplate, leggings, boots)
+
         cachedIsInTrophyArmor = armorPieces.all { armorPiece ->
             if (armorPiece == null || armorPiece.isEmpty) return@all false
+
+            val itemId = ItemUtils.getCustomData(armorPiece)?.let { ItemUtils.getCustomDataId(it) }
+            if (itemId != null && TROPHY_ARMOR_ID_PREFIXES.any { itemId.startsWith(it) }) return@all true
+
             val itemName = armorPiece.hoverName?.getUnformattedString() ?: return@all false
             return@all itemName.contains("Hunter", ignoreCase = true) || 
                 itemName.contains("Froggles", ignoreCase = true) || 
