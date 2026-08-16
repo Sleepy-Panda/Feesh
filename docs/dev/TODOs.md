@@ -32,11 +32,11 @@ Newly released - https://hypixel.net/threads/hypixel-skyblock-0-24-5-assorted-qo
  GOOD CATCH! You caught a Flexbone!
  GOOD CATCH! You caught a Shinyfish Shard!
 
+- Overlays blinking when in trophy armor, SB does not send armor info T_T
 - Flipping items via bz + supercraft + sell still gets to the tracker
 - Do ignore only pets if pet menu is/was opened
 - Default party drop on-screen alert ragebaits some people :(
 - Chat cleanup - lootshare messages
-- Chat cleanup - removed already discovered trophy fish/frog catches from chat
 - Hotspot nametag hider + overlay with hotspot perk
 - Editing the format of feesh titles (summoned creature name, dropped rare item, price of an item, name of the player who did it etc) to change their order, color, duration, location(on title or subtitle) or to add some custom texts in it and so on.
 - Mod name is copied as [ Feesh]

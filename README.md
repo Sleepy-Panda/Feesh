@@ -92,6 +92,8 @@ Required Java version is 25+.
 - **Lootshare message** — Sends to PARTY chat when it's time to lootshare. Available via Keybind.
 - **Share Trophy Frog discovered** — Sends to PARTY chat when a new Trophy Frog is discovered.
 - **Share Trophy Fish discovered** — Sends to PARTY chat when a new Trophy Fish is discovered.
+- **Hide Trophy Frog catch messages** — Hides Trophy Frog catch messages from chat for the selected rarities.
+- **Hide Trophy Fish catch messages** — Hides Trophy Fish catch messages from chat for the selected rarities.
 
 ### Overlays
 
