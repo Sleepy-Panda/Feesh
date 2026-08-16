@@ -77,7 +77,7 @@ class FeeshMod : ClientModInitializer {
         SeaCreaturesCocoonPublisher.init()
         RareDropsPublisher.init()
         PartyChatPublisher.init()
-        TrophyDiscoveredPublisher.init()
+        TrophyCatchPublisher.init()
         PetLevelUpPublisher.init()
         SacksItemPickupPublisher.init()
         ShardsCaughtPublisher.init()
@@ -125,6 +125,7 @@ class FeeshMod : ClientModInitializer {
         LootshareMessage.init()
         TrophyFrogDiscoveredMessage.init()
         TrophyFishDiscoveredMessage.init()
+        HideTrophyCatchMessages.init()
 
         // PB
         DoubleHookPersonalBest.init()
