@@ -10,6 +10,7 @@ Released on: ???
 
 ## Bugfixes
 
+- Fixed Magma Pillar highlighting.
 - Fixed detection if player is in Trophy armor not working sometimes when SB does not return equipped armor details.
 - Fixed numbers rounding issue showing "1000k" instead of "1M" sometimes.
 
