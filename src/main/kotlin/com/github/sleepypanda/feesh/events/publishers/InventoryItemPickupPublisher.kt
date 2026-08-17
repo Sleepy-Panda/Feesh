@@ -267,6 +267,7 @@ object InventoryItemPickupPublisher {
             addFishingProfitStack(result, slot.item)
         }
 
+        // To cover the case of equipping/unequipping armor pieces from the inventory
         if (FeeshMod.mc.getScreenCompat() is InventoryScreen) {
             addFishingProfitStack(result, player.getItemBySlot(EquipmentSlot.HEAD))
             addFishingProfitStack(result, player.getItemBySlot(EquipmentSlot.CHEST))
@@ -464,6 +465,9 @@ object InventoryItemPickupPublisher {
             if (!isPet(fishingProfitItemName)) return false
 
             val now = Date()
+            val closedAt = GuiUtils.lastGuisClosed.lastKatGuiClosedAt
+            if (closedAt != null && now.time - closedAt.time < 2_000) return true
+
             if (lastKatPetClaimedAt == null || now.time - lastKatPetClaimedAt!!.time >= 7_000) return false // It takes some time for pet to appear in the inventory after claiming from Kat
             val katPetName = lastKatPetName ?: return false
             return fishingProfitItemName.contains(katPetName)
@@ -472,12 +476,12 @@ object InventoryItemPickupPublisher {
         fun wasPotentiallyClaimedFromGeorge(fishingProfitItemName: String): Boolean {
             if (!isPet(fishingProfitItemName)) return false
             val closedAt = GuiUtils.lastGuisClosed.lastGeorgeGuiClosedAt ?: return false
-            return Date().time - closedAt.time <= 2_000
+            return Date().time - closedAt.time < 2_000
         }
 
         fun wasPotentiallyClaimedFromTradeWithPlayer(): Boolean {
             val tradedAt = lastTradeAt ?: return false
-            return Date().time - tradedAt.time <= 2_000
+            return Date().time - tradedAt.time < 2_000
         }
 
         val chestName = GuiUtils.getCurrentChestName()

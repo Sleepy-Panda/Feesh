@@ -23,6 +23,7 @@ data class LastGuisClosed(
     var lastStorageGuiClosedAt: Date? = null,
     var lastBazaarGuiClosedAt: Date? = null,
     var lastPetItemSwapGuiClosedAt: Date? = null,
+    var lastKatGuiClosedAt: Date? = null,
     var lastGeorgeGuiClosedAt: Date? = null,
     var lastHotmGuiClosedAt: Date? = null
 )
@@ -57,6 +58,7 @@ object GuiUtils {
             chestName == "Swap Pet Item" || chestName == "Remove Pet Item" -> 
                 lastGuisClosed.lastPetItemSwapGuiClosedAt = now
             chestName.contains("Offer Pets") -> lastGuisClosed.lastGeorgeGuiClosedAt = now
+            chestName.contains("Pet Sitter") -> lastGuisClosed.lastKatGuiClosedAt = now
             chestName.contains("Heart of the Mountain") -> lastGuisClosed.lastHotmGuiClosedAt = now
         }
     }
