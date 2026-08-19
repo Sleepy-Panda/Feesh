@@ -81,6 +81,7 @@ class FeeshMod : ClientModInitializer {
         PetLevelUpPublisher.init()
         ReindrakeSummonedPublisher.init()
         SacksItemPickupPublisher.init()
+        InventoryItemPickupPublisher.init()
         ShardsCaughtPublisher.init()
         IceEssenceStatusBarPublisher.init()
         ArmorStandPublisher.init()
