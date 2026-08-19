@@ -7,8 +7,6 @@ preprocess {
 
     val fabric_26_2 = createNode("26.2-fabric", 26_02_00, "mojang")
     val fabric_26_1 = createNode("26.1-fabric", 26_01_00, "mojang")
-    val fabric_1_21_11 = createNode("1.21.11-fabric", 1_21_11, "mojang")
 
     fabric_26_2.link(fabric_26_1)
-    fabric_26_1.link(fabric_1_21_11)
 }

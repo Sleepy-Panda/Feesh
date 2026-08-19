@@ -23,10 +23,8 @@ fun Minecraft.setScreenCompat(screen: Screen?) {
 fun Minecraft.addClientChatMessageCompat(message: Component) {
     //#if MC >= 26.2
     //$$ gui.hud.getChat().addClientSystemMessage(message)
-    //#elseif MC >= 26.1
-    //$$ gui.chat.addClientSystemMessage(message)
     //#else
-    gui.chat.addMessage(message)
+    gui.chat.addClientSystemMessage(message)
     //#endif
 }
 

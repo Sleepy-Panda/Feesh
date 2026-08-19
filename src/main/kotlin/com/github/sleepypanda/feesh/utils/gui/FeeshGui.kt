@@ -14,11 +14,7 @@ import com.github.sleepypanda.feesh.utils.data.PersistentDataManager
 import net.minecraft.network.chat.Component
 import net.minecraft.client.gui.screens.inventory.InventoryScreen
 import net.minecraft.client.gui.screens.ChatScreen
-//#if MC >= 26.1
-//$$ import net.minecraft.client.gui.GuiGraphicsExtractor as GuiGraphics
-//#else
-import net.minecraft.client.gui.GuiGraphics
-//#endif
+import net.minecraft.client.gui.GuiGraphicsExtractor as GuiGraphics
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.Font
 import java.awt.Color
@@ -820,11 +816,7 @@ class FeeshGui {
     }
 
     private fun drawStringCompat(drawContext: GuiGraphics, textRenderer: Font, text: Component, x: Int, y: Int, color: Int, shadow: Boolean) {
-        //#if MC >= 26.1
-        //$$ drawContext.text(textRenderer, text, x, y, color, shadow)
-        //#else
-        drawContext.drawString(textRenderer, text, x, y, color, shadow)
-        //#endif
+        drawContext.text(textRenderer, text, x, y, color, shadow)
     }
 
     /**

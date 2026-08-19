@@ -16,6 +16,10 @@ Released on: ???
 - Fixed numbers rounding issue showing "1000k" instead of "1M" sometimes.
 - Fixed some cases of items not being counted into the Fishing profit tracker on pickup (e.g. while in pet menu).
 
+## Other
+
+- Removed support of 1.21.11. RIP
+
 # 1.12.3
 
 Released on: 2026-08-12
