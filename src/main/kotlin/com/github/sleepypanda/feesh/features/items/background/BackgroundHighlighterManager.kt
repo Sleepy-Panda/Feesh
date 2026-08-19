@@ -5,11 +5,7 @@ import com.github.sleepypanda.feesh.events.models.ScreenBeforeInitEvent
 import com.github.sleepypanda.feesh.events.models.BeforeSlotRenderedEvent
 import com.github.sleepypanda.feesh.utils.ChatUtils.getUnformattedString
 import com.github.sleepypanda.feesh.utils.WorldUtils
-//#if MC >= 26.1
-//$$ import net.minecraft.client.gui.GuiGraphicsExtractor as GuiGraphics
-//#else
-import net.minecraft.client.gui.GuiGraphics
-//#endif
+import net.minecraft.client.gui.GuiGraphicsExtractor as GuiGraphics
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.inventory.Slot
 

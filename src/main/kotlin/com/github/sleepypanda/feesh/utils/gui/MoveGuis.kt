@@ -11,11 +11,7 @@ import com.github.sleepypanda.feesh.utils.enums.Alignment
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
 import net.minecraft.client.gui.screens.Screen
-//#if MC >= 26.1
-//$$ import net.minecraft.client.gui.GuiGraphicsExtractor as GuiGraphics
-//#else
-import net.minecraft.client.gui.GuiGraphics
-//#endif
+import net.minecraft.client.gui.GuiGraphicsExtractor as GuiGraphics
 import net.minecraft.client.input.KeyEvent
 import net.minecraft.client.input.MouseButtonEvent
 import net.minecraft.network.chat.Component
@@ -74,11 +70,7 @@ class MoveGuisScreen : Screen(Component.literal("Feesh Move Guis")) {
     private var lastDraggedGui: FeeshGui? = null
     private val color = Color(255, 255, 255, 255).rgb
     
-    //#if MC >= 26.1
-    //$$ override fun extractRenderState(context: GuiGraphics, mouseX: Int, mouseY: Int, delta: Float) {
-    //#else
-    override fun render(context: GuiGraphics, mouseX: Int, mouseY: Int, delta: Float) {
-    //#endif
+    override fun extractRenderState(context: GuiGraphics, mouseX: Int, mouseY: Int, delta: Float) {
         val mc = minecraft ?: return
         val textRenderer = mc.font
         
@@ -93,18 +85,10 @@ class MoveGuisScreen : Screen(Component.literal("Feesh Move Guis")) {
             val gui = mapping.gui           
             gui.drawSample(context, textRenderer, mc)
         }
-        
-        //#if MC < 26.1
-        super.render(context, mouseX, mouseY, delta)
-        //#endif
     }
 
     private fun drawStringCompat(context: GuiGraphics, textRenderer: net.minecraft.client.gui.Font, text: Component, x: Int, y: Int, color: Int, shadow: Boolean) {
-        //#if MC >= 26.1
-        //$$ context.text(textRenderer, text, x, y, color, shadow)
-        //#else
-        context.drawString(textRenderer, text, x, y, color, shadow)
-        //#endif
+        context.text(textRenderer, text, x, y, color, shadow)
     }
     
     override fun mouseClicked(mouseButtonEvent: MouseButtonEvent, doubled: Boolean): Boolean {

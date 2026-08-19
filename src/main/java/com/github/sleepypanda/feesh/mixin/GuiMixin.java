@@ -10,11 +10,7 @@ import net.minecraft.client.DeltaTracker;
 //#else
 import net.minecraft.client.gui.Gui;
 //#endif
-//#if MC >= 26.1
-//$$ import net.minecraft.client.gui.GuiGraphicsExtractor;
-//#else
-import net.minecraft.client.gui.GuiGraphics;
-//#endif
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -30,17 +26,11 @@ public class GuiMixin {
     // Lets to draw custom content UNDER TabList and the rest of the HUD.
     //#if MC >= 26.2
     //$$ @Inject(method = "extractRenderState", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/Hud;extractTabList(Lnet/minecraft/client/gui/GuiGraphicsExtractor;Lnet/minecraft/client/DeltaTracker;)V", shift = At.Shift.BEFORE))
-    //#elseif MC >= 26.1
-    //$$ @Inject(method = "extractRenderState", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/Gui;extractTabList(Lnet/minecraft/client/gui/GuiGraphicsExtractor;Lnet/minecraft/client/DeltaTracker;)V", shift = At.Shift.BEFORE))
     //#else
-    @Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/Gui;renderTabList(Lnet/minecraft/client/gui/GuiGraphics;Lnet/minecraft/client/DeltaTracker;)V", shift = At.Shift.BEFORE), require = 1)
+    @Inject(method = "extractRenderState", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/Gui;extractTabList(Lnet/minecraft/client/gui/GuiGraphicsExtractor;Lnet/minecraft/client/DeltaTracker;)V", shift = At.Shift.BEFORE))
     //#endif
     private void feesh$onRenderInGameHudBeforePlayerList(
-        //#if MC >= 26.1
-        //$$ GuiGraphicsExtractor drawContext,
-        //#else
-        GuiGraphics drawContext,
-        //#endif
+        GuiGraphicsExtractor drawContext,
         DeltaTracker renderTickCounter,
         CallbackInfo ci
     ) {

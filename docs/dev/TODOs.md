@@ -2,7 +2,7 @@
 
 ## Reminders
 
-- Test each release in 1.21.* and 26.x
+- Test each release in 26.x
 
 ## Torrus Canyon
 
@@ -32,9 +32,7 @@ Newly released - https://hypixel.net/threads/hypixel-skyblock-0-24-5-assorted-qo
  GOOD CATCH! You caught a Flexbone!
  GOOD CATCH! You caught a Shinyfish Shard!
 
-- Overlays blinking when in trophy armor, SB does not send armor info T_T
 - Flipping items via bz + supercraft + sell still gets to the tracker
-- Do ignore only pets if pet menu is/was opened
 - Default party drop on-screen alert ragebaits some people :(
 - Chat cleanup - lootshare messages
 - Hotspot nametag hider + overlay with hotspot perk
@@ -46,7 +44,6 @@ Newly released - https://hypixel.net/threads/hypixel-skyblock-0-24-5-assorted-qo
 - Xp/h
 - SMILE! Polizei111 has sprinkled some joy your way! You feel a little happier. :)
 - Share Nessie with coords to all chat?
-- With the release of Minecraft version 26.2 on June 16th, we'll drop support for 1.21.11 in a few weeks.
 - Personal blacklist + party sharing
 - Runic sea creatures - alert or highlight
 - Pickups from trade menu

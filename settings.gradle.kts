@@ -21,21 +21,10 @@ pluginManagement {
         // https://github.com/Deftu/Gradle-Toolkit
         id("dev.deftu.gradle.multiversion-root") version("2.73.0") // Applies preprocessing for multiple versions of Minecraft and/or multiple mod loaders.
         id("net.fabricmc.fabric-loom") version("1.17.11")
-        id("net.fabricmc.fabric-loom-remap") version("1.17.11")
     }
 }
 
 rootProject.buildFileName = "root.gradle.kts"
-
-listOf(
-    "1.21.11-fabric",
-).forEach { version ->
-    include(":$version")
-    project(":$version").apply {
-        projectDir = file("versions/$version")
-        buildFileName = "../../build.remap-1.21.x.gradle.kts"
-    }
-}
 
 listOf(
     "26.1-fabric",
