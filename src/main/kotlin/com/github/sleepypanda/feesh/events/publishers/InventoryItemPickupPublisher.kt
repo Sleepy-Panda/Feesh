@@ -11,7 +11,6 @@ import com.github.sleepypanda.feesh.events.models.InventoryProfitItemPickupEvent
 import com.github.sleepypanda.feesh.events.models.WorldChangedEvent
 import com.github.sleepypanda.feesh.utils.ChatUtils.getFormattedString
 import com.github.sleepypanda.feesh.utils.ChatUtils.removeFormatting
-import com.github.sleepypanda.feesh.utils.ChatUtils // TODO: Remove this
 import com.github.sleepypanda.feesh.utils.ChatUtils.getUnformattedString
 import com.github.sleepypanda.feesh.utils.CommonUtils
 import com.github.sleepypanda.feesh.utils.GuiUtils
@@ -241,7 +240,6 @@ object InventoryItemPickupPublisher {
         if (now - stableSince < INVENTORY_STABLE_MS) return
 
         isInventoryLoaded = true
-        ChatUtils.sendLocalChat("Inventory loaded") // TODO: Remove this
     }
 
     private fun getFishingProfitItemsInCurrentInventory(): Map<String, Int> {
@@ -329,8 +327,6 @@ object InventoryItemPickupPublisher {
 
         if (shouldSkipItem(itemId, dropInfo)) return
 
-        ChatUtils.sendLocalChat("&cAdded: ${itemId} x${difference}") // TODO: Remove this
-
         EventBus.publish(
             InventoryProfitItemPickupEvent(
                 itemId = itemId,
@@ -387,8 +383,6 @@ object InventoryItemPickupPublisher {
 
             return isItemContainedInText(dropInfo.itemName, dropInfo.itemAlternateNames, boughtMessage)
         }
-
-        // TODO: 1 second after menu closed for all below cases?
 
         fun wasPotentiallyClaimedFromPetMenu(chestName: String?, fishingProfitItemName: String): Boolean {
             if (chestName == null) return false

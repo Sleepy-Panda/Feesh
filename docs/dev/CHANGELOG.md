@@ -14,6 +14,7 @@ Released on: ???
 - Fixed "Mute Reindrake gifts" to work when killing other player's dragon.
 - Fixed detection if player is in Trophy armor not working sometimes when SB does not return equipped armor details.
 - Fixed numbers rounding issue showing "1000k" instead of "1M" sometimes.
+- Fixed some cases of items not being counted into the Fishing profit tracker on pickup (e.g. while in pet menu).
 
 # 1.12.3
 

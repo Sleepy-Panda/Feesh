@@ -7,7 +7,6 @@ import com.github.sleepypanda.feesh.events.models.ChatCancellableEvent
 import com.github.sleepypanda.feesh.events.models.SacksProfitItemsPickupEvent
 import com.github.sleepypanda.feesh.utils.ChatUtils.getUnformattedString
 import com.github.sleepypanda.feesh.utils.ChatUtils.removeFormatting
-import com.github.sleepypanda.feesh.utils.ChatUtils // TODO: Remove
 import com.github.sleepypanda.feesh.utils.CommonUtils
 import com.github.sleepypanda.feesh.utils.GuiUtils
 import com.github.sleepypanda.feesh.utils.ItemUtils
@@ -73,8 +72,6 @@ object SacksItemPickupPublisher {
         val dropInfo = FishingProfitDrops.getFishingProfitItemByName(cleanName) ?: return null
         if (dropInfo.ignoreFromInventory) return null
         if (shouldSkipItem(dropInfo)) return null
-
-        ChatUtils.sendLocalChat("Sacks item pickup publisher: $cleanName $amount") // TODO
 
         return SacksProfitItemsPickupEvent.SacksProfitPickupItem(
             itemId = dropInfo.itemId,
