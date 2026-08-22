@@ -5,9 +5,8 @@ import com.github.sleepypanda.feesh.utils.ChatUtils.getFormattedString
 import com.github.sleepypanda.feesh.utils.ChatUtils.getUnformattedString
 import com.github.sleepypanda.feesh.utils.ItemUtils
 import com.github.sleepypanda.feesh.events.EventBus
+import com.github.sleepypanda.feesh.events.models.ClientTickEvent
 import com.github.sleepypanda.feesh.events.models.WorldChangedEvent
-import java.util.Timer
-import kotlin.concurrent.timerTask
 import net.minecraft.world.entity.EquipmentSlot
 
 data class FishingRodInHandCache(
@@ -18,15 +17,21 @@ data class FishingRodInHandCache(
 data class EquippedArmorPiece(
     val itemId: String? = null,
     val itemName: String? = null,
+    val loreLines: List<String> = emptyList(),
 )
 
 object PlayerUtils {
     private var cachedHasFishingRodInHotbar: Boolean = false
     private var fishingRodInHandCache = null as FishingRodInHandCache?
     private var cachedHasDirtRodInHand: Boolean = false
+
+    private var cachedEquippedArmorPieces: Array<EquippedArmorPiece>? = null
     private var cachedIsInTrophyArmor: Boolean = false
     private var cachedIsInFrozenBlaze: Boolean = false
-    private var timer: Timer? = null
+
+    private var tickCounter = 0
+
+    private const val TICKS_PER_UPDATE = 5
 
     private val TROPHY_ARMOR_ID_PREFIXES = listOf(
         "FROGGLES", "RED_SWEATER",
@@ -38,32 +43,32 @@ object PlayerUtils {
     )
 
     fun init() {
-        startTimer()
+        EventBus.subscribe(ClientTickEvent::class, ::onClientTick)
         EventBus.subscribe(WorldChangedEvent::class, ::onWorldChanged)
     }
 
-    private fun startTimer() {
-        timer?.cancel()
-        timer = Timer("Feesh-PlayerUtils", true)
-        
-        val task = timerTask {
-            CommonUtils.runWithCatching("Failed to update player utils cache") {
-                setHasFishingRodInHotbar()
-                setFishingRodInHand()
-                val armorPieces = getEquippedArmorPieces()
-                setIsInTrophyArmor(armorPieces)
-                setIsInFrozenBlaze(armorPieces)
-            }
+    private fun onClientTick(@Suppress("UNUSED_PARAMETER") event: ClientTickEvent) {
+        tickCounter++
+        if (tickCounter < TICKS_PER_UPDATE) return
+        tickCounter = 0
+
+        CommonUtils.runWithCatching("Failed to update player utils cache") {
+            setHasFishingRodInHotbar()
+            setFishingRodInHand()
+            cachedEquippedArmorPieces = readEquippedArmorPieces()
+            setIsInTrophyArmor(cachedEquippedArmorPieces)
+            setIsInFrozenBlaze(cachedEquippedArmorPieces)
         }
-        timer?.scheduleAtFixedRate(task, 0, 250)
     }
 
     private fun onWorldChanged(@Suppress("UNUSED_PARAMETER") event: WorldChangedEvent) {
         cachedHasFishingRodInHotbar = false
         fishingRodInHandCache = null
         cachedHasDirtRodInHand = false
+        cachedEquippedArmorPieces = null
         cachedIsInTrophyArmor = false
         cachedIsInFrozenBlaze = false
+        tickCounter = 0
     }
 
     /*
@@ -130,7 +135,12 @@ object PlayerUtils {
         return cachedHasDirtRodInHand
     }
 
-    /** Whether the player is wearing the armor for trophy fishing / trophy frogging (Bronze/Silver/Gold/Diamond Hunter, Froggles, Red Sweater). */
+    /** Get the player's equipped armor pieces. */
+    fun getEquippedArmorPieces(): Array<EquippedArmorPiece>? {
+        return cachedEquippedArmorPieces
+    }
+
+    /** Whether the player is wearing the full armor set for trophy fishing / trophy frogging. */
     fun isInTrophyArmor(): Boolean {
         return cachedIsInTrophyArmor
     }
@@ -179,15 +189,16 @@ object PlayerUtils {
         }
     }
 
-    private fun getEquippedArmorPieces(): Array<EquippedArmorPiece>? {
+    private fun readEquippedArmorPieces(): Array<EquippedArmorPiece>? {
         val player = FeeshMod.mc.player ?: return null
-
-        return arrayOf(
+        val armorSlots = arrayOf(
             EquipmentSlot.HEAD,
             EquipmentSlot.CHEST,
             EquipmentSlot.LEGS,
             EquipmentSlot.FEET,
-        ).map { slot ->
+        )
+
+        return armorSlots.map { slot ->
             val armorPiece = player.getItemBySlot(slot)
             if (armorPiece == null || armorPiece.isEmpty) {
                 EquippedArmorPiece()
@@ -195,6 +206,7 @@ object PlayerUtils {
                 EquippedArmorPiece(
                     itemId = ItemUtils.getCustomData(armorPiece)?.let { ItemUtils.getCustomDataId(it) },
                     itemName = armorPiece.hoverName?.getUnformattedString(),
+                    loreLines = ItemUtils.getUnformattedLoreLines(armorPiece),
                 )
             }
         }.toTypedArray()

@@ -11,13 +11,15 @@ Released on: ???
 
 ## Bugfixes
 
-- Fixed Magma Pillar highlighting.
+- Fixed partial Magma Pillar highlighting.
 - Fixed "Mute Reindrake gifts" to work when killing other player's dragon.
 - Fixed detection if player is in Trophy armor not working sometimes when SB does not return equipped armor details.
 - Fixed numbers rounding issue showing "1000k" instead of "1M" sometimes.
 - Fixed some cases of items not being counted into the Fishing profit tracker on pickup (e.g. while in pet menu).
 - Pinned Dyes at the top of Fishing profit tracker for NPC Sell price mode.
 - Added Uncommon Foraging Exp Boost (Ent drop) and removed Epic Foraging Exp Boost in the Fishing profit tracker.
+- Made "Equip fishing armor" alert no longer repeat while the same armor is equipped.
+- Made non-reforged Frozen Blaze armor no more triggering "Equip fishing armor" alert.
 
 ## Other
 
