@@ -35,7 +35,6 @@ Newly released - https://hypixel.net/threads/hypixel-skyblock-0-24-5-assorted-qo
 - Party > [MVP+] Shararame: My Alligator has been cocooned!
 - Flipping items via bz + supercraft + sell still gets to the tracker
 - Default party drop on-screen alert ragebaits some people :(
-- Chat cleanup - lootshare messages
 - Hotspot nametag hider + overlay with hotspot perk
 - Editing the format of feesh titles (summoned creature name, dropped rare item, price of an item, name of the player who did it etc) to change their order, color, duration, location(on title or subtitle) or to add some custom texts in it and so on.
 - Mod name is copied as [ Feesh]
