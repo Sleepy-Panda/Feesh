@@ -7,6 +7,7 @@ Released on: ???
 - Added Giant Isopod to the ALL CHAT rare catch share functionality.
 - Added option to hide Trophy Fish/Frog catch messages from the chat for selected rarities [disabled by default].
   - You will still see newly discovered ones, but cleanup chat from already obtained trophies.
+- Added option to hide lootshare messages when in Frozen Blaze armor [disabled by default].
 
 ## Bugfixes
 

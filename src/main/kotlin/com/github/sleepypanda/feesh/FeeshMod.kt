@@ -128,6 +128,7 @@ class FeeshMod : ClientModInitializer {
         TrophyFrogDiscoveredMessage.init()
         TrophyFishDiscoveredMessage.init()
         HideTrophyCatchMessages.init()
+        HideLootshareMessages.init()
 
         // PB
         DoubleHookPersonalBest.init()

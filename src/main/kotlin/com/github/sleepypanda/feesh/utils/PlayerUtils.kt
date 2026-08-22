@@ -15,16 +15,26 @@ data class FishingRodInHandCache(
     val itemNameFormatted: String? = null,
 )
 
+data class EquippedArmorPiece(
+    val itemId: String? = null,
+    val itemName: String? = null,
+)
+
 object PlayerUtils {
     private var cachedHasFishingRodInHotbar: Boolean = false
     private var fishingRodInHandCache = null as FishingRodInHandCache?
     private var cachedHasDirtRodInHand: Boolean = false
     private var cachedIsInTrophyArmor: Boolean = false
+    private var cachedIsInFrozenBlaze: Boolean = false
     private var timer: Timer? = null
 
     private val TROPHY_ARMOR_ID_PREFIXES = listOf(
         "FROGGLES", "RED_SWEATER",
         "BRONZE_HUNTER_", "SILVER_HUNTER_", "GOLD_HUNTER_", "DIAMOND_HUNTER_",
+    )
+
+    private val FROZEN_BLAZE_ARMOR_IDS = listOf(
+        "FROZEN_BLAZE_HELMET", "FROZEN_BLAZE_CHESTPLATE", "FROZEN_BLAZE_LEGGINGS", "FROZEN_BLAZE_BOOTS",
     )
 
     fun init() {
@@ -40,7 +50,9 @@ object PlayerUtils {
             CommonUtils.runWithCatching("Failed to update player utils cache") {
                 setHasFishingRodInHotbar()
                 setFishingRodInHand()
-                setIsInTrophyArmor()
+                val armorPieces = getEquippedArmorPieces()
+                setIsInTrophyArmor(armorPieces)
+                setIsInFrozenBlaze(armorPieces)
             }
         }
         timer?.scheduleAtFixedRate(task, 0, 250)
@@ -51,6 +63,7 @@ object PlayerUtils {
         fishingRodInHandCache = null
         cachedHasDirtRodInHand = false
         cachedIsInTrophyArmor = false
+        cachedIsInFrozenBlaze = false
     }
 
     /*
@@ -122,6 +135,11 @@ object PlayerUtils {
         return cachedIsInTrophyArmor
     }
 
+    /** Whether the player is wearing a full Frozen Blaze armor set. */
+    fun isInFrozenBlaze(): Boolean {
+        return cachedIsInFrozenBlaze
+    }
+
     private fun setHasFishingRodInHotbar() {
         val player = FeeshMod.mc.player ?: run {
             cachedHasFishingRodInHotbar = false
@@ -161,29 +179,49 @@ object PlayerUtils {
         }
     }
 
-    private fun setIsInTrophyArmor() {
-        val player = FeeshMod.mc.player ?: run {
-            cachedIsInTrophyArmor = false
-            return
-        }
-        
-        val helmet = player.getItemBySlot(EquipmentSlot.HEAD)
-        val chestplate = player.getItemBySlot(EquipmentSlot.CHEST)
-        val leggings = player.getItemBySlot(EquipmentSlot.LEGS)
-        val boots = player.getItemBySlot(EquipmentSlot.FEET)
-        
-        val armorPieces = listOf(helmet, chestplate, leggings, boots)
+    private fun getEquippedArmorPieces(): Array<EquippedArmorPiece>? {
+        val player = FeeshMod.mc.player ?: return null
 
-        cachedIsInTrophyArmor = armorPieces.all { armorPiece ->
-            if (armorPiece == null || armorPiece.isEmpty) return@all false
+        return arrayOf(
+            EquipmentSlot.HEAD,
+            EquipmentSlot.CHEST,
+            EquipmentSlot.LEGS,
+            EquipmentSlot.FEET,
+        ).map { slot ->
+            val armorPiece = player.getItemBySlot(slot)
+            if (armorPiece == null || armorPiece.isEmpty) {
+                EquippedArmorPiece()
+            } else {
+                EquippedArmorPiece(
+                    itemId = ItemUtils.getCustomData(armorPiece)?.let { ItemUtils.getCustomDataId(it) },
+                    itemName = armorPiece.hoverName?.getUnformattedString(),
+                )
+            }
+        }.toTypedArray()
+    }
 
-            val itemId = ItemUtils.getCustomData(armorPiece)?.let { ItemUtils.getCustomDataId(it) }
+    private fun setIsInTrophyArmor(armorPieces: Array<EquippedArmorPiece>?) {
+        cachedIsInTrophyArmor = armorPieces?.all { armorPiece ->
+            val itemId = armorPiece.itemId
             if (itemId != null && TROPHY_ARMOR_ID_PREFIXES.any { itemId.startsWith(it) }) return@all true
 
-            val itemName = armorPiece.hoverName?.getUnformattedString() ?: return@all false
-            return@all itemName.contains("Hunter", ignoreCase = true) || 
-                itemName.contains("Froggles", ignoreCase = true) || 
+            val itemName = armorPiece.itemName ?: return@all false
+            return@all itemName.contains("Hunter", ignoreCase = true) ||
+                itemName.contains("Froggles", ignoreCase = true) ||
                 itemName.contains("Red Sweater", ignoreCase = true)
-        }
+        } ?: false
+    }
+
+    private fun setIsInFrozenBlaze(armorPieces: Array<EquippedArmorPiece>?) {
+        cachedIsInFrozenBlaze = armorPieces?.all { armorPiece ->
+            val itemId = armorPiece.itemId
+            if (itemId != null && FROZEN_BLAZE_ARMOR_IDS.any { itemId == it }) return@all true
+
+            val itemName = armorPiece.itemName ?: return@all false
+            return@all itemName.contains("Frozen Blaze Helmet", ignoreCase = true) ||
+                itemName.contains("Frozen Blaze Chestplate", ignoreCase = true) ||
+                itemName.contains("Frozen Blaze Leggings", ignoreCase = true) ||
+                itemName.contains("Frozen Blaze Boots", ignoreCase = true)
+        } ?: false
     }
 }

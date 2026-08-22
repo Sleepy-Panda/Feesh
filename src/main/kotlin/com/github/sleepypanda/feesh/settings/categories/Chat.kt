@@ -206,4 +206,15 @@ object Chat : CategoryKt("Chat") {
         this.description = Translated("Catch messages for these rarities are hidden when hide option(s) above is enabled.")
         this.searchTerms = TrophyRarityTypes.values().map { it.displayName }.toList()
     }
+
+    init {
+        separator {
+            this.title = "${AQUA}${BOLD}Chat cleanup"
+        }
+    }
+
+    var hideLootshareMessagesInFrozenBlaze by boolean(false) {
+        this.name = Translated("Hide lootshare messages when in Frozen Blaze armor")
+        this.description = Translated("Hides LOOT SHARE chat messages while wearing Frozen Blaze armor.")
+    }
 }
