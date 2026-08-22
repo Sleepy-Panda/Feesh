@@ -32,7 +32,9 @@ Newly released - https://hypixel.net/threads/hypixel-skyblock-0-24-5-assorted-qo
  GOOD CATCH! You caught a Flexbone!
  GOOD CATCH! You caught a Shinyfish Shard!
 
-- Party > [MVP+] Shararame: My Alligator has been cocooned!
+- Hitting own drake sound not muted?
+- lf treasure streak (maybe good, great , outstanding streak but maybe to much)
+- Party > [MVP+] Shararame: My Alligator has been cocooned! My $name has been cocooned!
 - Flipping items via bz + supercraft + sell still gets to the tracker
 - Default party drop on-screen alert ragebaits some people :(
 - Hotspot nametag hider + overlay with hotspot perk
