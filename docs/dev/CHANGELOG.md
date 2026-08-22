@@ -16,6 +16,7 @@ Released on: ???
 - Fixed numbers rounding issue showing "1000k" instead of "1M" sometimes.
 - Fixed some cases of items not being counted into the Fishing profit tracker on pickup (e.g. while in pet menu).
 - Pinned Dyes at the top of Fishing profit tracker for NPC Sell price mode.
+- Added Uncommon Foraging Exp Boost (Ent drop) and removed Epic Foraging Exp Boost in the Fishing profit tracker.
 
 ## Other
 
