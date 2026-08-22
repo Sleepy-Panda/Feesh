@@ -29,6 +29,7 @@ class FishingProfitDrops {
         const val ACCESSORY_CATEGORY = "Accessory"
         const val EVOLVING_IN_TIME_BAG_CATEGORY = "Evolving"
         const val BAIT_CATEGORY = "Bait"
+        const val DYE_CATEGORY = "Dye"
 
         fun getFishingProfitItemByName(itemName: String): FishingProfitDropInfo? {
             if (itemName.isEmpty()) return null
@@ -44,42 +45,49 @@ class FishingProfitDrops {
                 itemName = "Treasure Dye",
                 itemDisplayName = "${LEGENDARY}${BOLD}Treasure Dye",
                 npcPrice = null,
+                categories = listOf(DYE_CATEGORY),
             ),
             FishingProfitDropInfo(
                 itemId = "DYE_AQUAMARINE",
                 itemName = "Aquamarine Dye",
                 itemDisplayName = "${LEGENDARY}${BOLD}Aquamarine Dye",
                 npcPrice = null,
+                categories = listOf(DYE_CATEGORY),
             ),
             FishingProfitDropInfo(
                 itemId = "DYE_ICEBERG",
                 itemName = "Iceberg Dye",
                 itemDisplayName = "${LEGENDARY}${BOLD}Iceberg Dye",
                 npcPrice = null,
+                categories = listOf(DYE_CATEGORY),
             ),
             FishingProfitDropInfo(
                 itemId = "DYE_CARMINE",
                 itemName = "Carmine Dye",
                 itemDisplayName = "${LEGENDARY}${BOLD}Carmine Dye",
                 npcPrice = null,
+                categories = listOf(DYE_CATEGORY),
             ),
             FishingProfitDropInfo(
                 itemId = "DYE_MIDNIGHT",
                 itemName = "Midnight Dye",
                 itemDisplayName = "${LEGENDARY}${BOLD}Midnight Dye",
                 npcPrice = null,
+                categories = listOf(DYE_CATEGORY),
             ),
             FishingProfitDropInfo(
                 itemId = "DYE_PERIWINKLE",
                 itemName = "Periwinkle Dye",
                 itemDisplayName = "${LEGENDARY}${BOLD}Periwinkle Dye",
                 npcPrice = null,
+                categories = listOf(DYE_CATEGORY),
             ),
             FishingProfitDropInfo(
                 itemId = "DYE_BONE",
                 itemName = "Bone Dye",
                 itemDisplayName = "${LEGENDARY}${BOLD}Bone Dye",
                 npcPrice = null,
+                categories = listOf(DYE_CATEGORY),
             ),
 
             // Treasures
