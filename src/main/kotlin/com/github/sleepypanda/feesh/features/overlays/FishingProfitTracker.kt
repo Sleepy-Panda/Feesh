@@ -969,14 +969,23 @@ object FishingProfitTracker : IResettableViewModeTracker {
     }
 
     private fun getDisplayTrackerData(viewMode: TrackerViewMode): DisplayTrackerData {
+
+        fun isDyeDrop(itemId: String): Boolean {
+            return FishingProfitDrops.items.find { it.itemId == itemId }?.categories?.contains(FishingProfitDrops.DYE_CATEGORY) == true
+        }
+
         val sourceObj = getSourceObject(viewMode)
         val minPrice = if (viewMode == TrackerViewMode.SESSION) Overlays.fishingProfitTrackerHideCheaperThan.toDouble() else Overlays.fishingProfitTrackerHideCheaperThanTotal.toDouble()
         val topN = Overlays.fishingProfitTrackerShowTop.coerceIn(1, 50)
+        val pinDyes = Overlays.fishingProfitTrackerPriceMode == PricingModeWithNpc.NPC_SELL
         val entries = sourceObj.profitTrackerItems.values.map { v ->
             EntryDisplay(v.itemId, getDisplayNameForGui(v.itemId, v.itemName), v.amount, v.totalItemProfit)
-        }.sortedByDescending { it.profit }
-        val expensive = entries.filter { it.profit >= minPrice || it.item.contains("Kuudra Key") }
-        val cheap = entries.filter { it.profit < minPrice && !it.item.contains("Kuudra Key") }
+        }.sortedWith(
+            if (pinDyes) compareByDescending<EntryDisplay> { isDyeDrop(it.itemId) }.thenByDescending { it.profit }
+            else compareByDescending { it.profit }
+        )
+        val expensive = entries.filter { it.profit >= minPrice || (pinDyes && isDyeDrop(it.itemId)) }
+        val cheap = entries.filter { it.profit < minPrice && !(pinDyes && isDyeDrop(it.itemId)) }
         val toShow = expensive.take(topN)
         val toHide = expensive.drop(topN) + cheap
         val elapsedHours = sourceObj.elapsedSeconds / 3600.0
