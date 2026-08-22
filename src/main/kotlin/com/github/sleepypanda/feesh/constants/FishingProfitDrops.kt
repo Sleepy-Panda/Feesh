@@ -1584,11 +1584,10 @@ class FishingProfitDrops {
                 npcPrice = 204_800.0,
             ),
             FishingProfitDropInfo(
-                itemId = "PET_ITEM_FORAGING_SKILL_BOOST_EPIC",
-                itemName = "Foraging Exp Boost (EPIC)",
-                itemDisplayName = "${EPIC}Foraging Exp Boost +50%",
+                itemId = "PET_ITEM_FORAGING_SKILL_BOOST_UNCOMMON",
+                itemName = "Foraging Exp Boost (UNCOMMON)",
+                itemDisplayName = "${UNCOMMON}Foraging Exp Boost +30%",
                 npcPrice = null,
-                shouldAnnounceRareDrop = true,
                 categories = listOf(PET_ITEM_CATEGORY),
             ),
             FishingProfitDropInfo(

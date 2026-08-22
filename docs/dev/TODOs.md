@@ -32,7 +32,6 @@ Newly released - https://hypixel.net/threads/hypixel-skyblock-0-24-5-assorted-qo
  GOOD CATCH! You caught a Flexbone!
  GOOD CATCH! You caught a Shinyfish Shard!
 
-+ Forgaing exp boost (green, 30%)
 - Party > [MVP+] Shararame: My Alligator has been cocooned!
 - Flipping items via bz + supercraft + sell still gets to the tracker
 - Default party drop on-screen alert ragebaits some people :(
