@@ -28,6 +28,7 @@ object RareCatchAlert {
     val FEESH_PCHAT_DH_PATTERN = Regex("^--> DOUBLE HOOK! Two (?<uppercaseScName>(.*))s have spawned (.*)<--$")
     val FEESH_PCHAT_COCOON_PATTERN = Regex("^--> (A|An) (?<uppercaseScName>(.*)) was cocooned (.*)<--$")
     val SH_PCHAT_PATTERN = Regex("^(?<dh>(DOUBLE HOOK: )?)I caught (a|an) (?<scName>(.*))\\!$")
+    val SH_COCOON_PCHAT_PATTERN = Regex("^My (?<scName>(.*)) has been cocooned\\!$")
 
     fun init() {
         EventBus.subscribe(OwnSeaCreatureCaughtEvent::class, ::onOwnSeaCreature)
@@ -56,6 +57,7 @@ object RareCatchAlert {
 
         val me = PlayerUtils.getUnformattedName()
         if (me.isNullOrEmpty()) return
+        
         val playerName = PlayerUtils.getFormattedPlayerNameFromPartyChat(event.rankAndPlayer) ?: return
         if (!playerName.isNullOrEmpty() && playerName.removeFormatting().contains(me)) return
 
@@ -81,6 +83,12 @@ object RareCatchAlert {
             if (seaCreatureName == "The Sea Emperor") seaCreatureName = SeaCreatureNames.THE_LOCH_EMPEROR
             val isDoubleHook = dh.isNotEmpty()
             showCaughtAlert(seaCreatureName, isDoubleHook, playerName)
+        } else if (SH_COCOON_PCHAT_PATTERN.containsMatchIn(message)) {
+            if (!Alerts.alertOnSeaCreaturesIncludeCocooned) return
+            val match = SH_COCOON_PCHAT_PATTERN.matchEntire(message) ?: return
+            var seaCreatureName = match.groups.get("scName")?.value ?: return
+            if (seaCreatureName == "The Sea Emperor") seaCreatureName = SeaCreatureNames.THE_LOCH_EMPEROR
+            showCocoonAlert(seaCreatureName, playerName)
         }
     }
 
