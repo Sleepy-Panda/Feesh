@@ -1,11 +1,6 @@
 package com.github.sleepypanda.feesh.features.sounds
 
-import com.github.sleepypanda.feesh.events.EventBus
-import com.github.sleepypanda.feesh.events.models.ChatCancellableEvent
-import com.github.sleepypanda.feesh.events.models.ReindrakeSummonedEvent
-import com.github.sleepypanda.feesh.events.models.WorldChangedEvent
 import com.github.sleepypanda.feesh.settings.categories.WorldRendering
-import com.github.sleepypanda.feesh.utils.CommonUtils
 import com.github.sleepypanda.feesh.utils.WorldUtils
 import net.minecraft.resources.Identifier
 
