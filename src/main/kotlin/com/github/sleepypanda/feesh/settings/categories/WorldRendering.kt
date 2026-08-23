@@ -97,11 +97,11 @@ object WorldRendering : CategoryKt("World Rendering") {
 
     var muteJadeDragon by boolean(false) {
         this.name = Translated("Mute Jade Dragon")
-        this.description = Translated("Mutes Jade dragon sounds while you are in dragon's cave.")
+        this.description = Translated("Mutes Jade dragon sounds 'entity.ender_dragon.*' while you are in dragon's cave. ${YELLOW}If you use Sound Controller mod, this setting might be overridden by it!")
     }
 
     var muteReindrakeGifts by boolean(false) {
         this.name = Translated("Mute Reindrake gifts")
-        this.description = Translated("Mutes loud 'totem used' sounds while picking up gifts from a Reindrake.")
+        this.description = Translated("Mutes loud 'item.totem.use' sounds while picking up gifts from a Reindrake. ${YELLOW}If you use Sound Controller mod, this setting might be overridden by it!")
     }
 }

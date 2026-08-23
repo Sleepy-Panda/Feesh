@@ -32,7 +32,7 @@ Newly released - https://hypixel.net/threads/hypixel-skyblock-0-24-5-assorted-qo
  GOOD CATCH! You caught a Flexbone!
  GOOD CATCH! You caught a Shinyfish Shard!
 
-- Hitting own drake sound not muted?
+- Drake sound not muted when using Sound Controller mod
 - lf treasure streak (maybe good, great , outstanding streak but maybe to much)
 - Party > [MVP+] Shararame: My Alligator has been cocooned! My $name has been cocooned!
 - Flipping items via bz + supercraft + sell still gets to the tracker
