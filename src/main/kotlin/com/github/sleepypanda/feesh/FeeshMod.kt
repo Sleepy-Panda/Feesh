@@ -3,6 +3,7 @@ package com.github.sleepypanda.feesh
 import com.github.sleepypanda.feesh.features.alerts.*
 import com.github.sleepypanda.feesh.features.chat.*
 import com.github.sleepypanda.feesh.features.commands.*
+import com.github.sleepypanda.feesh.features.commands.debug.*
 import com.github.sleepypanda.feesh.features.help.*
 import com.github.sleepypanda.feesh.features.items.background.*
 import com.github.sleepypanda.feesh.features.items.slottext.*
@@ -185,6 +186,7 @@ class FeeshMod : ClientModInitializer {
         JunkerJoelShopPricesCommand.init()
         TerryShopPricesCommand.init()
         PlayTestSoundCommand.init()
+        LogSoundsCommand.init()
         SetTrackerDropsCommand.init()
         PauseAllTrackersCommand.init()
         BulkResetTrackersCommand.init()

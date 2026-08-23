@@ -25,6 +25,7 @@ Released on: ???
 ## Other
 
 - Removed support of 1.21.11. RIP
+- Added debug command /feeshDebugLogSounds for logging every sound played within 5 seconds.
 
 # 1.12.3
 
