@@ -4,6 +4,14 @@ Released on: ???
 
 ## Features
 
+-
+
+# 1.13.0
+
+Released on: 2026-08-24
+
+## Features
+
 - Added Sea Brine (new Brineling drop) to Fishing profit tracker.
 - Added Uncommon Foraging Exp Boost (Ent drop) and removed Epic Foraging Exp Boost in the Fishing profit tracker.
 - Added Giant Isopod to the ALL CHAT rare catch share functionality.
