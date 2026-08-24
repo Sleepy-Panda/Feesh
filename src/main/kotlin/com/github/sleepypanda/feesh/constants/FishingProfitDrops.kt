@@ -1705,6 +1705,12 @@ class FishingProfitDrops {
                 npcPrice = 1_000_000.0,
             ),
             FishingProfitDropInfo(
+                itemId = "SEA_BRINE",
+                itemName = "Sea Brine",
+                itemDisplayName = "${UNCOMMON}Sea Brine",
+                npcPrice = 1_000.0,
+            ),
+            FishingProfitDropInfo(
                 itemId = "SUBLIME_SILK",
                 itemName = "Sublime Silk",
                 itemDisplayName = "${EPIC}Sublime Silk",

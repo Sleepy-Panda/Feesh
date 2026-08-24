@@ -4,6 +4,8 @@ Released on: ???
 
 ## Features
 
+- Added Sea Brine (new Brineling drop) to Fishing profit tracker.
+- Added Uncommon Foraging Exp Boost (Ent drop) and removed Epic Foraging Exp Boost in the Fishing profit tracker.
 - Added Giant Isopod to the ALL CHAT rare catch share functionality.
 - Added option to hide Trophy Fish/Frog catch messages from the chat for selected rarities [disabled by default].
   - You will still see newly discovered ones, but cleanup chat from already obtained trophies.
@@ -14,14 +16,13 @@ Released on: ???
 
 - Fixed partial Magma Pillar highlighting.
 - Fixed detection if player is in Trophy armor not working sometimes when SB does not return equipped armor details.
-- Fixed numbers rounding issue showing "1000k" instead of "1M" sometimes.
 - Fixed some cases of items not being counted into the Fishing profit tracker on pickup (e.g. while in pet menu).
 - Pinned Dyes at the top of Fishing profit tracker for NPC Sell price mode.
-- Added Uncommon Foraging Exp Boost (Ent drop) and removed Epic Foraging Exp Boost in the Fishing profit tracker.
 - Made "Equip fishing armor" alert no longer repeat while the same armor is equipped.
 - Made non-reforged Frozen Blaze armor no more triggering "Equip fishing armor" alert.
 - Fixed "Mute Reindrake gifts" not working when killing other player's dragon.
   - There is still issue with Sound Controller overriding mute applied by Feesh.
+- Fixed numbers rounding issue showing "1000k" instead of "1M" sometimes.
 
 ## Other
 
