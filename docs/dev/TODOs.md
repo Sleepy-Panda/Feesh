@@ -4,6 +4,24 @@
 
 - Test each release in 26.x
 
+## Minister perks alpha
+
+The following islands within SkyBlock may now experience periodic bouts of weather!
+Backwater Bayou
+Crimson Isle
+Crystal Hollows
+Dwarven Mines
+Glacite Tunnels
+Jerry Island
+Lotus Atoll
+Moonglade Marsh
+Spider's Den
+The End
+The Garden
+Mild weather occurs every 20 minutes, and grants thematic stats to all players on the island. Every 3rd instance of weather will instead of EXTREME, granting more stats alongside an exclusive bonus.
+
+- Enable blizzard bottle tracking on some more islands?
+
 ## Torrus Canyon
 
 - Giant Isopod acts like a Nessie, implement immunity?
@@ -32,7 +50,9 @@ Newly released - https://hypixel.net/threads/hypixel-skyblock-0-24-5-assorted-qo
  GOOD CATCH! You caught a Flexbone!
  GOOD CATCH! You caught a Shinyfish Shard!
 
+- Alligator shards not being counted?
 - Drake sound not muted when using Sound Controller mod
+-  integrate medal clipping for rare drops / dyes? have seen it in sbo and its pretty neat  https://medal.tv/developer/auto-clipping#api-reference
 - lf treasure streak (maybe good, great , outstanding streak but maybe to much)
 - Party > [MVP+] Shararame: My Alligator has been cocooned! My $name has been cocooned!
 - Flipping items via bz + supercraft + sell still gets to the tracker
