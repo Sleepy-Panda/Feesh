@@ -114,7 +114,7 @@ object Commands : CategoryKt("Commands") {
 
         button {
             title = "Weather schedule"
-            description = "Displays 3 nearest weather conditions (Mild / Extreme) schedule in the chat. Executes ${WHITE}/${WeatherScheduleCommand.COMMAND_NAME}"
+            description = "Displays 3 upcoming weather conditions (Mild / Extreme) schedule in the chat. Executes ${WHITE}/${WeatherScheduleCommand.COMMAND_NAME}"
             text = "Click to execute"
             onClick {
                 ChatUtils.command(WeatherScheduleCommand.COMMAND_NAME)

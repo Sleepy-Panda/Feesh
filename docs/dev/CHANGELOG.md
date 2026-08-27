@@ -4,7 +4,7 @@ Released on: ???
 
 ## Features
 
-- Renamed **/feeshSpiderDenRainSchedule** to **/feeshWeatherSchedule** and changed its output to show Clear / Mild / Extreme weather conditions schedule.
+- Renamed **/feeshSpiderDenRainSchedule** to **/feeshWeatherSchedule** and changed its output to show upcoming Mild / Extreme weather conditions schedule.
 
 # 1.13.0
 
