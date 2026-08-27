@@ -302,13 +302,13 @@ object Alerts : CategoryKt("Alerts") {
 
     init {
         separator {
-            this.title = "${AQUA}${BOLD}Rain, Thunder, Blizzard"
+            this.title = "${AQUA}${BOLD}Weather"
         }
     }
 
-    var alertOnRainEndingSoon by boolean(false) {
-        this.name = Translated("Alert when Rain/Thunder/Blizzard ends soon")
-        this.description = Translated("${GRAY}Shows a title and plays a sound when active Rain/Thunder/Blizzard ends soon. It's applicable to The Park, Spider's Den, Lotus Atoll, Backwater Bayou, and Jerry's Workshop. Please enable ${YELLOW}TabList settings -> General Info widget -> Show Rain / Show Blizzard")
+    var alertOnWeatherEndingSoon by boolean(false) {
+        this.name = Translated("Alert when weather event ends soon")
+        this.description = Translated("${GRAY}Shows a title and plays a sound when active weather event ends soon. Please enable ${YELLOW}TabList settings -> General Info widget -> Show Weather")
     }
 
     init {

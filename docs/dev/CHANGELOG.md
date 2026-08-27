@@ -5,6 +5,7 @@ Released on: ???
 ## Features
 
 - Renamed **/feeshSpiderDenRainSchedule** to **/feeshWeatherSchedule** and changed its output to show upcoming Mild / Extreme weather conditions schedule.
+- Removed old Rain timer overlay/alert and added new Weather timer/alert working for all new weather-affected worlds. **Please re-enable in settings if you need it!**
 
 # 1.13.0
 

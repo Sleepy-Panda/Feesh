@@ -158,7 +158,7 @@ class FeeshMod : ClientModInitializer {
         FishingProfitTracker.init()
         MagmaCoreFishingTracker.init()
         EfficiencyTracker.init()
-        RainTimer.init()
+        WeatherTimer.init()
         MuteReindrakeGifts.init()
 
         MoveGuis.init() // After all overlays are initialized and registered FeeshGui objects

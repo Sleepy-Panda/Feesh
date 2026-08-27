@@ -67,7 +67,7 @@ Required Java version is 25+.
 - **Salt expired** — Alerts when a Salt has expired.
 - **Worm the Fish** — Alerts when Worm the Fish is caught (Dirt Rod fishing).
 - **Fishing Festival** — Alerts when the Fishing Festival ends, and posts amounts of sharks caught in chat. Also has option to track personal best per festival.
-- **Rain/Thunder/Blizzard ends soon** — Alerts when Rain/Thunder/Blizzard ends soon while in relevant areas.
+- **Weather ends soon** — Alerts when weather event ends soon while in relevant areas.
 - **Nessie destination alert** — Alerts destination when a Nessie decides into which cave to swim - to Jade Dragon or to Driptoad Delve.
 - **Puddle Jumper timer alert** — Alerts when your Puddle Jumper is about to arrive to its destination.
 - **Trophy Frog discovered alert** — Alerts when a new Trophy Frog is discovered.
@@ -114,7 +114,7 @@ Required Java version is 25+.
 - **Treasure fishing tracker** — Good/Great/Outstanding treasure catches and Treasure Dye drop statistics.
 - **Magma Core fishing tracker** — Lava Pigman/Lava Blaze catch stats and Magma Core drop profits (total and per hour), while in Crystal Hollows.
 - **Archfiend Dice profit tracker** — Archfiend Dice / High Class Archfiend Dice profit overlay with Session/Total modes.
-- **Rain/Thunder/Blizzard timer** — Shows Rain/Thunder/Blizzard timer while in relevant areas.
+- **Weather timer** — Shows current/upcoming weather event timer while in relevant areas.
 - **Bait tracker** — Remaining bait counter based on bait preview in hotbar slot #9.
 
 ## Items
