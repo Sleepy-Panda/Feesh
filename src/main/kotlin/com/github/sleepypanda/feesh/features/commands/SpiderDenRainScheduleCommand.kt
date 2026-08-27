@@ -64,10 +64,13 @@ object SpiderDenRainScheduleCommand {
             val skyblockAge = nowSeconds - SKYBLOCK_EPOCH_START_SECONDS
 
             val sinceLastRainFinished = skyblockAge % CYCLE_DURATION
-            val sinceLastThunderstormFinished = skyblockAge % (CYCLE_DURATION * THUNDERSTORM_FREQUENCY)
+            val thunderstormCycle = CYCLE_DURATION * THUNDERSTORM_FREQUENCY
+            // Thunderstorm is the last rain of every 3-hour cycle (1h before remainder == RAIN_COOLDOWN).
+            val thunderstormStart = RAIN_COOLDOWN + 2 * CYCLE_DURATION
+            val sinceLastThunderstormFinished = skyblockAge % thunderstormCycle
 
             val isRaining = sinceLastRainFinished >= RAIN_COOLDOWN
-            val isThunderstorm = sinceLastThunderstormFinished >= RAIN_COOLDOWN && sinceLastThunderstormFinished < CYCLE_DURATION
+            val isThunderstorm = sinceLastThunderstormFinished >= thunderstormStart
             val rainTimeLeft = if (isRaining) CYCLE_DURATION - sinceLastRainFinished else 0L
 
             val nextRain = if (isRaining) rainTimeLeft + RAIN_COOLDOWN else RAIN_COOLDOWN - sinceLastRainFinished
@@ -91,7 +94,7 @@ object SpiderDenRainScheduleCommand {
 
             nextEvents.forEach { startsIn ->
                 val eventTime = nowSeconds + startsIn
-                val isNextEventThunderstorm = (skyblockAge + startsIn) % (CYCLE_DURATION * THUNDERSTORM_FREQUENCY) == RAIN_COOLDOWN
+                val isNextEventThunderstorm = (skyblockAge + startsIn) % thunderstormCycle == thunderstormStart
                 val weatherType = if (isNextEventThunderstorm) "Thunderstorm" else "Rain"
                 val startsAtStr = formatDate(secondsToDate(eventTime))
                 val startsInStr = formatTimeElapsedBetweenDates(secondsToDate(nowSeconds), secondsToDate(eventTime))
