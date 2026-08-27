@@ -147,7 +147,7 @@ Required Java version is 25+.
 - **/feeshGearCraftPrices** — Calculates profits for crafting gear from fishing drops.
 - **/feeshFearMongererShopPrices** — Calculates profits for selling items from Fear Mongerer NPC shop.
 - **/feeshJunkerJoelShopPrices** — Calculates profits for selling items from Junker Joel NPC shop.
-- **/feeshSpiderDenRainSchedule** — Displays nearest Spider's Den Rain/Thunderstorm events.
+- **/feeshWeatherSchedule** — Displays 3 upcoming weather conditions (Mild / Extreme) schedule.
 - **/feeshSetTrackerDrops** — Initialize drop history (Titanoboa Shed, Snake Eyes, Tiki Mask, Radioactive Vial, Prince's Crown Jewel, Treasure Dye).
 
 Also, each overlay has individual commands to reset or pause.

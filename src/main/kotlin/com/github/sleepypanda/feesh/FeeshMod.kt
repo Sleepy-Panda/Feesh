@@ -179,7 +179,7 @@ class FeeshMod : ClientModInitializer {
 
         // Commands
         PersonalBestsCommand.init()
-        SpiderDenRainScheduleCommand.init()
+        WeatherScheduleCommand.init()
         PetLevelUpPricesCommand.init()
         GearCraftPricesCommand.init()
         FearMongererShopPricesCommand.init()
