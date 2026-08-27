@@ -6,8 +6,12 @@ Released on: ???
 
 - Renamed **/feeshSpiderDenRainSchedule** to **/feeshWeatherSchedule** and changed its output to show upcoming Mild / Extreme weather conditions schedule.
 - Removed old Rain timer overlay/alert and added new Weather timer/alert working for all new weather-affected worlds. **Please re-enable in settings if you need it!**
+
+## Bugfixes
+
 - Removed Corruption I book from profit tracker as they are not in the drop pool anymore.
 - Removed Bayou Travel Scroll from /feeshJunkerJoelShopPrices command output.
+- Fixed Tadgang's tadpoles nametags not being hidden after changing their mob level.
 
 # 1.13.0
 
