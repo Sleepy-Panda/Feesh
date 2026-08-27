@@ -578,18 +578,18 @@ ${WHITE}- SC/hour with BS${GRAY} - same as SC/hour (includes DH), plus sea creat
 
     init {
         separator {
-            this.title = "${AQUA}${BOLD}Rain, Thunder, Blizzard"
+            this.title = "${AQUA}${BOLD}Weather"
         }
     }
 
-    var rainTimerOverlay by boolean(false) {
-        this.name = Translated("Rain/Thunder/Blizzard timer")
-        this.description = Translated("${GRAY}Shows an overlay with the active/upcoming Rain/Thunder/Blizzard timer in The Park, Spider's Den, Lotus Atoll, Backwater Bayou, and Jerry's Workshop. Please enable ${YELLOW}TabList settings -> General Info widget -> Show Rain / Show Blizzard")
+    var weatherTimerOverlay by boolean(false) {
+        this.name = Translated("Weather timer")
+        this.description = Translated("${GRAY}Shows an overlay with the active/upcoming weather event timer. Please enable ${YELLOW}TabList settings -> General Info widget -> Show Weather")
     }
 
-    var rainTimerCustomStyle by boolean(true) {
+    var weatherTimerCustomStyle by boolean(true) {
         this.name = Translated("Apply custom style")
-        this.description = Translated(getCustomStyleDescription("Rain/Thunder/Blizzard timer"))
+        this.description = Translated(getCustomStyleDescription("Weather timer"))
     }
 
     init {

@@ -33,6 +33,8 @@ object WorldUtils {
     const val SAFARI = "Safari"
 
     // Zones
+    const val BIRCH_PARK = "Birch Park"
+    const val GLACITE_TUNNELS = "Glacite Tunnels"
     const val PLHLEGBLAST_POOL = "Plhlegblast Pool"
     const val MURKWATER_DEPTHS = "Murkwater Depths"
     const val DRAGON_LAIR = "Dragon's Lair"
@@ -72,6 +74,19 @@ object WorldUtils {
         PARK,
         CRIMSON_ISLE,
         TORRHUS_CANYON,
+    )
+
+    val WEATHER_WORLDS = listOf(
+        BACKWATER_BAYOU,
+        CRIMSON_ISLE,
+        CRYSTAL_HOLLOWS,
+        DWARVEN_MINES,
+        JERRY_WORKSHOP,
+        LOTUS_ATOLL,
+        MOONGLADE_MARSH,
+        SPIDERS_DEN,
+        THE_END,
+        GARDEN,
     )
 
     val WATER_HOTSPOT_WORLDS = listOf(
@@ -243,6 +258,16 @@ object WorldUtils {
         val worldName = getWorldName()
     	if (worldName.isNullOrEmpty()) return false
         return HOTSPOT_WORLDS.contains(getWorldName())
+    }
+
+    /**
+     * Is in Weather areas.
+     */
+    fun isInWeatherWorld(): Boolean {
+        if (!isInSkyblock()) return false
+        val worldName = getWorldName() ?: return false
+        if (worldName == PARK) return getZoneName() == BIRCH_PARK
+        return WEATHER_WORLDS.contains(worldName)
     }
 
     /**
