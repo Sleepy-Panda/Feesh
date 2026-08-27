@@ -10,22 +10,22 @@ import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.util.concurrent.TimeUnit
 
-object SpiderDenRainScheduleCommand {
-    const val COMMAND_NAME = "feeshSpiderDenRainSchedule"
+object WeatherScheduleCommand {
+    const val COMMAND_NAME = "feeshWeatherSchedule"
 
-    private const val RAIN_COOLDOWN = 2400L
-    private const val RAIN_DURATION = 1200L
-    private const val CYCLE_DURATION = RAIN_COOLDOWN + RAIN_DURATION
-    private const val THUNDERSTORM_FREQUENCY = 3L
+    private const val CLEAR_DURATION = 2400L
+    private const val WEATHER_DURATION = 1200L
+    private const val CYCLE_DURATION = CLEAR_DURATION + WEATHER_DURATION
+    private const val EXTREME_FREQUENCY = 3L
     private const val SKYBLOCK_EPOCH_START_MS = 1560275700000L
     private const val SKYBLOCK_EPOCH_START_SECONDS = SKYBLOCK_EPOCH_START_MS / 1000
 
     fun init() {
         RegisterUtils.command(COMMAND_NAME) {
-            showSpidersDenRainSchedule()
+            showWeatherSchedule()
         }
     }
-    
+
     private fun formatElapsedTime(seconds: Long): String {
         val hours = TimeUnit.SECONDS.toHours(seconds)
         val minutes = TimeUnit.SECONDS.toMinutes(seconds) % 60
@@ -53,58 +53,52 @@ object SpiderDenRainScheduleCommand {
         return java.util.Date(seconds * 1000)
     }
 
-    private fun showSpidersDenRainSchedule() {
+    private fun showWeatherSchedule() {
         if (!WorldUtils.isInSkyblock()) {
             ChatUtils.sendLocalChat("${RED}You must be on Hypixel Skyblock to use this command!", true)
             return
         }
 
-        CommonUtils.runWithCatching("Failed to show Spider's Den rain schedule") {
+        CommonUtils.runWithCatching("Failed to show weather schedule") {
             val nowSeconds = System.currentTimeMillis() / 1000
             val skyblockAge = nowSeconds - SKYBLOCK_EPOCH_START_SECONDS
 
-            val sinceLastRainFinished = skyblockAge % CYCLE_DURATION
-            val thunderstormCycle = CYCLE_DURATION * THUNDERSTORM_FREQUENCY
-            // Thunderstorm is the last rain of every 3-hour cycle (1h before remainder == RAIN_COOLDOWN).
-            val thunderstormStart = RAIN_COOLDOWN + 2 * CYCLE_DURATION
-            val sinceLastThunderstormFinished = skyblockAge % thunderstormCycle
+            val sinceLastWeatherFinished = skyblockAge % CYCLE_DURATION
+            val extremeCycle = CYCLE_DURATION * EXTREME_FREQUENCY
+            // Extreme is the last weather of every 3-hour cycle
+            val extremeStart = CLEAR_DURATION + 2 * CYCLE_DURATION
+            val sinceLastExtremeFinished = skyblockAge % extremeCycle
 
-            val isRaining = sinceLastRainFinished >= RAIN_COOLDOWN
-            val isThunderstorm = sinceLastThunderstormFinished >= thunderstormStart
-            val rainTimeLeft = if (isRaining) CYCLE_DURATION - sinceLastRainFinished else 0L
+            val isWeatherActive = sinceLastWeatherFinished >= CLEAR_DURATION
+            val isExtreme = sinceLastExtremeFinished >= extremeStart
+            val weatherTimeLeft = if (isWeatherActive) CYCLE_DURATION - sinceLastWeatherFinished else 0L
 
-            val nextRain = if (isRaining) rainTimeLeft + RAIN_COOLDOWN else RAIN_COOLDOWN - sinceLastRainFinished
+            val nextWeather = if (isWeatherActive) weatherTimeLeft + CLEAR_DURATION else CLEAR_DURATION - sinceLastWeatherFinished
             val nextEvents = listOf(
-                nextRain,
-                nextRain + CYCLE_DURATION,
-                nextRain + 2 * CYCLE_DURATION
+                nextWeather,
+                nextWeather + CYCLE_DURATION,
+                nextWeather + 2 * CYCLE_DURATION
             )
 
             val chatBreak = "${GRAY}${ChatUtils.getChatBreak("-")}"
             ChatUtils.sendLocalChat(chatBreak)
-            ChatUtils.sendLocalChat("${GREEN}${BOLD}Spider's Den rain schedule${RESET}", true)
-           
-            val message = StringBuilder()
-            if (isRaining) {
-                val weatherType = if (isThunderstorm) "Thunderstorm" else "Rain"
-                message.append("${WHITE}Now: ${AQUA}$weatherType ${RESET}(${formatElapsedTime(rainTimeLeft)} left)\n\n")
+            ChatUtils.sendLocalChat("${GREEN}${BOLD}Weather schedule${RESET}", true)
+
+            if (isWeatherActive) {
+                val weatherType = if (isExtreme) "${RED}${BOLD}Extreme" else "${YELLOW}Mild"
+                ChatUtils.sendLocalChat("${WHITE}Now: ${AQUA}$weatherType ${RESET}weather (${formatElapsedTime(weatherTimeLeft)} left)")
             } else {
-                message.append("${WHITE}Now: ${YELLOW}Sunny\n\n")
+                ChatUtils.sendLocalChat("${WHITE}Now: Clear weather")
             }
 
             nextEvents.forEach { startsIn ->
                 val eventTime = nowSeconds + startsIn
-                val isNextEventThunderstorm = (skyblockAge + startsIn) % thunderstormCycle == thunderstormStart
-                val weatherType = if (isNextEventThunderstorm) "Thunderstorm" else "Rain"
+                val isNextEventExtreme = (skyblockAge + startsIn) % extremeCycle == extremeStart
+                val weatherType = if (isNextEventExtreme) "${RED}${BOLD}Extreme" else "${YELLOW}Mild"
                 val startsAtStr = formatDate(secondsToDate(eventTime))
                 val startsInStr = formatTimeElapsedBetweenDates(secondsToDate(nowSeconds), secondsToDate(eventTime))
-                message.append("${GRAY}- ${AQUA}$weatherType ${WHITE}starts at $startsAtStr (in $startsInStr)\n")
+                ChatUtils.sendLocalChat("${GRAY}- $weatherType ${WHITE}starts at $startsAtStr (in $startsInStr)")
             }
-
-            message.append("\n${DARK_GRAY}Gain +50☂ Fishing Speed during Rain, and +3α Sea Creature Chance during Thunderstorm.\n")
-
-            ChatUtils.sendLocalChat(message.toString())
         }
     }
 }
-
