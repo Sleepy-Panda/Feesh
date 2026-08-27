@@ -20,7 +20,11 @@ The End
 The Garden
 Mild weather occurs every 20 minutes, and grants thematic stats to all players on the island. Every 3rd instance of weather will instead of EXTREME, granting more stats alongside an exclusive bonus.
 
-- Enable blizzard bottle tracking on some more islands?
+- Rework command
+- Remove blizzard bottle pb
+
+ ACID RAIN BONUS! You caught a bonus Busted Belt Buckle!
+
 
 ## Torrus Canyon
 
@@ -52,9 +56,8 @@ Newly released - https://hypixel.net/threads/hypixel-skyblock-0-24-5-assorted-qo
 
 - Alligator shards not being counted?
 - Drake sound not muted when using Sound Controller mod
--  integrate medal clipping for rare drops / dyes? have seen it in sbo and its pretty neat  https://medal.tv/developer/auto-clipping#api-reference
+- integrate medal clipping for rare drops / dyes? have seen it in sbo and its pretty neat  https://medal.tv/developer/auto-clipping#api-reference
 - lf treasure streak (maybe good, great , outstanding streak but maybe to much)
-- Party > [MVP+] Shararame: My Alligator has been cocooned! My $name has been cocooned!
 - Flipping items via bz + supercraft + sell still gets to the tracker
 - Default party drop on-screen alert ragebaits some people :(
 - Hotspot nametag hider + overlay with hotspot perk

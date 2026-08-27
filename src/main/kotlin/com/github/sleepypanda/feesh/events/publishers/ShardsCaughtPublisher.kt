@@ -32,6 +32,8 @@ object ShardsCaughtPublisher {
 
     // LOOT SHARE You received 2 Titanoboa Shards for assisting CuzImCrzz!
     // LOOT SHARE You received 3 Magma Slug Shards for assisting OmeRuben!
+    // LOOT SHARE You received an Alligator Shard for assisting KingOFFLies!
+    // LOOT SHARE You received a Titanoboa Shard for assisting fshbowl_!
     private val SHARDS_LOOTSHARED_PATTERN = Regex("^LOOT SHARE You received (?<shardsText>.+) Shard.*")
 
     fun init() {
