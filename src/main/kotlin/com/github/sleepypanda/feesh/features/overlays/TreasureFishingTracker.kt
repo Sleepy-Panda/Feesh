@@ -60,6 +60,9 @@ object TreasureFishingTracker : IResettableViewModeTracker {
     override val resetSessionCommand = RESET_SESSION_COMMAND
     const val RESET_TOTAL_COMMAND = "feeshResetTreasureFishingTrackerTotal"
     override val resetTotalCommand = RESET_TOTAL_COMMAND
+    const val SET_CATCHES_COMMAND = "feeshSetTreasureCatches"
+    const val SET_CATCHES_TOTAL_COMMAND = "feeshSetTreasureCatchesTotal"
+    const val GUIDE_URL = "https://github.com/Sleepy-Panda/Feesh/blob/develop/docs/Editing%20treasure%20fishing%20tracker.md"
     private const val TOGGLE_VIEW_MODE_COMMAND = "feeshToggleTreasureFishingTrackerViewMode"
 
     //  GOOD JUNK CATCH! You caught a Rusty Coin!
@@ -138,6 +141,12 @@ object TreasureFishingTracker : IResettableViewModeTracker {
         RegisterUtils.command(TOGGLE_VIEW_MODE_COMMAND) {
             toggleViewMode()
         }
+        RegisterUtils.command(SET_CATCHES_COMMAND) { args ->
+            onSetTreasureCatchesCommand(args, TrackerViewMode.SESSION)
+        }
+        RegisterUtils.command(SET_CATCHES_TOTAL_COMMAND) { args ->
+            onSetTreasureCatchesCommand(args, TrackerViewMode.TOTAL)
+        }
     }
 
     private fun onChat(event: ChatEvent) {
@@ -173,12 +182,71 @@ object TreasureFishingTracker : IResettableViewModeTracker {
             trackTreasureDyeDrop()
         }
     }
+  
+    private fun onSetTreasureCatchesCommand(args: Array<String>, viewMode: TrackerViewMode) {
+
+        fun sendGuideMessage() {
+            ChatUtils.sendLocalChatWithUrl("${GRAY}Edit Treasure Fishing Tracker guide:", "${GREEN}${UNDERLINE}View in browser", GUIDE_URL, true)
+        }
+
+        CommonUtils.runWithCatching(
+            message = "Failed to set treasure catches.",
+            onError = {
+                ChatUtils.sendLocalChat("${RED}Failed to set treasure catches in the ${trackerName}.", true)
+            }
+        ) {
+            if (!WorldUtils.isInSkyblock()) {
+                ChatUtils.sendLocalChat("${RED}You need to be in Skyblock to use this command.", true)
+                return
+            }
+
+            val commandName = when (viewMode) {
+                TrackerViewMode.SESSION -> SET_CATCHES_COMMAND
+                TrackerViewMode.TOTAL -> SET_CATCHES_TOTAL_COMMAND
+            }
+
+            if (args.isEmpty()) {
+                ChatUtils.sendLocalChat("${RED}Usage: /$commandName <GOOD>/<GREAT>/<OUTSTANDING>${GRAY}, e.g. 100/50/10", true)
+                sendGuideMessage()
+                return
+            }
+
+            val parts = args[0].split("/")
+            val good = parts.getOrNull(0)?.toIntOrNull()
+            val great = parts.getOrNull(1)?.toIntOrNull()
+            val outstanding = parts.getOrNull(2)?.toIntOrNull()
+            if (parts.size != 3 || good == null || great == null || outstanding == null || good < 0 || great < 0 || outstanding < 0) {
+                ChatUtils.sendLocalChat("${RED}Please specify treasure catches in format <GOOD>/<GREAT>/<OUTSTANDING>, e.g. 100/50/10. Each number must be >= 0.", true)
+                sendGuideMessage()
+                return
+            }
+
+            setTreasureCatches(viewMode, TreasureCatchesData(good, great, outstanding))
+        }
+    }
+
+    private fun setTreasureCatches(viewMode: TrackerViewMode, catches: TreasureCatchesData) {
+        val target = getSourceCatches(viewMode)
+        val previous = TreasureCatchesData(good = target.good, great = target.great, outstanding = target.outstanding)
+        target.good = catches.good
+        target.great = catches.great
+        target.outstanding = catches.outstanding
+        saveData()
+        updateGuiLines()
+
+        val viewModeText = getViewModeDisplayText(viewMode)
+        ChatUtils.sendLocalChat(
+            "Successfully changed treasure catches for the ${trackerName} $viewModeText.\n" +
+                "Good: ${previous.good} -> ${catches.good}, Great: ${previous.great} -> ${catches.great}, Outstanding: ${previous.outstanding} -> ${catches.outstanding}.",
+            true
+        )
+    }
 
     fun setTreasureDyes(count: Int, catchesBreakdown: TreasureCatchesData, lastOn: Date?) {
         CommonUtils.runWithCatching(
             message = "Failed to set Treasure Dyes.",
             onError = {
-                ChatUtils.sendLocalChat("${RED}Failed to set Treasure Dyes for the Treasure fishing tracker.", true)
+                ChatUtils.sendLocalChat("${RED}Failed to set Treasure Dyes in the ${trackerName}.", true)
             }
         ) {
             if (!WorldUtils.isInSkyblock()) return
@@ -187,7 +255,8 @@ object TreasureFishingTracker : IResettableViewModeTracker {
             data.total.treasureDyes.initDropCount(count, lastOn, treasuresSinceLast)
             data.total.treasureDyes.catchesBreakdown = catchesBreakdown
             saveData()
-            ChatUtils.sendLocalChat("Successfully changed Treasure Dyes for the Treasure fishing tracker.\nCount = ${count}, treasures since last = ${treasuresSinceLast} (${catchesBreakdown.good} good/${catchesBreakdown.great} great/${catchesBreakdown.outstanding} outstanding), last on = ${lastOn}.", true)
+            updateGuiLines()
+            ChatUtils.sendLocalChat("Successfully changed Treasure Dyes for the ${trackerName}.\nCount = ${count}, treasures since last = ${treasuresSinceLast} (${catchesBreakdown.good} Good/${catchesBreakdown.great} Great/${catchesBreakdown.outstanding} Outstanding), last on = ${lastOn}.", true)
         }
     }
 

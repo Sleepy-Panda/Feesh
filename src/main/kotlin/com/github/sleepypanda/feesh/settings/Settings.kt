@@ -64,7 +64,7 @@ object Settings : ConfigKt("${FeeshMod.MOD_ID}/config") {
             description = "Big fishing community with guides, discussions and more. Check out #feesh-mod / #mod-discussion channels for mod news & discussions!"
             text = "Join Casters"
             onClick {
-                openLink("https://discord.gg/d9WWUUeux")
+                openLink("https://discord.gg/fishing")
             }
         }
 
