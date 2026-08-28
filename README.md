@@ -148,23 +148,36 @@ Required Java version is 25+.
 - **/feeshFearMongererShopPrices** — Calculates profits for selling items from Fear Mongerer NPC shop.
 - **/feeshJunkerJoelShopPrices** — Calculates profits for selling items from Junker Joel NPC shop.
 - **/feeshWeatherSchedule** — Displays 3 upcoming weather conditions (Mild / Extreme) schedule.
-- **/feeshSetTrackerDrops** — Initialize drop history (Titanoboa Shed, Snake Eyes, Tiki Mask, Radioactive Vial, Prince's Crown Jewel, Treasure Dye).
 
 Also, each overlay has individual commands to reset or pause.
 
+## Guides
+
+Please explore the [docs folder](https://github.com/Sleepy-Panda/Feesh/tree/develop/docs) for various guides, e.g. for editing trackers data.
+
 ## Troubleshooting
 
-### Items from sacks do not go into profit tracker
+### Mod data is periodically reset
 
-Make sure that Personal -> Chat Feedback -> Sack Notifications SB setting is enabled.
+Make sure you quit the game normally - via close button or `Disconnect server` - `Quit game`. Do not force-exit the game using Alt+F4 or, even worse, by turning off the PC - it may corrupt mod files being used by Minecraft, and won't let some processes to finalize normally.
 
-If you do not see [Sacks] +N items chat message, it means one of other mods hides it, making Feesh unable to access picked up items. You need to find and disable this setting. If you want messages to be hidden, you might try to use SkyHanni's "Sack change hider" instead.
+If your data was reset recently, you can restore it from the backups stored in the MC folder/config/feesh/backups.
+
+### Items from sacks do not appear in the profit tracker
+
+Make sure that Skyblock Settings -> Personal -> Chat Feedback -> Sack Notifications is enabled.
 
 ### Sea creatures caught do not appear in the trackers
+
+Make sure that Skyblock Settings -> Personal -> Fishing Settings -> Sea Creature Chat is enabled.
 
 Please check if one of other mods modifies sea creature catch message in the chat. For example, SkyHanni's "Shorten catch messages" or "Compact double hook" changes message format making Feesh unable to know which sea creature was caught.
 
 Instead, you can enable "Compact sea creature catch messages" in Feesh, which will be compatible with other functionality.
+
+### APIs are not working
+
+If you see the "java.net.ConnectException: Connection timed out: getsockopt" error in the logs, check if APIs mentioned in the mod settings are working in your browser. If they work in browser but not in Minecraft, check that Java process has sufficient permissions. Go to Windows Defender Firewall, click "Allow an app or feature" and ensure javaw.exe, Java, and Minecraft have proper networks checked.
 
 ## Contacts
 
