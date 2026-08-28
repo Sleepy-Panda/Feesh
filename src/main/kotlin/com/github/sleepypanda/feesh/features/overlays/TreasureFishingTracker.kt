@@ -106,15 +106,6 @@ object TreasureFishingTracker : IResettableViewModeTracker {
         EventBus.subscribe(RareDropEvent::class, ::onRareDrop)
         EventBus.subscribe(GameClosedEvent::class, ::onGameClosed)
     }
-    
-    // TODO: Remove migration code in a while
-    fun migrateCatchesSinceLastDye() {
-        CommonUtils.runWithCatching("Failed to migrate good/great/outstanding catches since last Treasure Dye") {
-            val treasureFishing = PersistentDataManager.feeshData.treasureFishing
-            treasureFishing.total.treasureDyes.catchesBreakdown = getCatchesSinceLastDyeFromTracker(treasureFishing)
-            saveData()
-        }
-    }
 
     override fun getCurrentViewMode(): TrackerViewMode {
         return try {
@@ -144,23 +135,6 @@ object TreasureFishingTracker : IResettableViewModeTracker {
 
     override fun refreshGui() {
         updateGuiLines()
-    }
-
-    private fun getCatchesSinceLastDyeFromTracker(treasureFishing: TreasureFishingData): TreasureCatchesData {
-        val catchesSinceLast = treasureFishing.total.treasureDyes.catchesSinceLast
-        return when (catchesSinceLast) {
-            treasureFishing.total.catches.totalCatches() -> TreasureCatchesData(
-                good = treasureFishing.total.catches.good,
-                great = treasureFishing.total.catches.great,
-                outstanding = treasureFishing.total.catches.outstanding
-            )
-            treasureFishing.session.catches.totalCatches() -> TreasureCatchesData(
-                good = treasureFishing.session.catches.good,
-                great = treasureFishing.session.catches.great,
-                outstanding = treasureFishing.session.catches.outstanding
-            )
-            else -> TreasureCatchesData(good = catchesSinceLast, great = 0, outstanding = 0)
-        }
     }
 
     private fun registerCommands() {
