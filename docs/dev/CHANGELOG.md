@@ -6,6 +6,7 @@ Released on: ???
 
 - Renamed **/feeshSpiderDenRainSchedule** to **/feeshWeatherSchedule** and changed its output to show upcoming Mild / Extreme weather conditions schedule.
 - Removed old Rain timer overlay/alert and added new Weather timer/alert working for all new weather-affected worlds. **Please re-enable in settings if you need it!**
+- Removed "Blizzards started" counter from PB because Blizzard in a Bottle was reworked into a mixin.
 
 ## Bugfixes
 

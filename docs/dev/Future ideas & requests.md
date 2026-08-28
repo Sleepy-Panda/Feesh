@@ -25,7 +25,7 @@
 
 ## Fishing profit tracker
 
-- Track Blizzard in Bottle, Moby Duck, bought rain, consumed bait (exclude from profits).
+- Track Moby Duck, bought rain, consumed bait (exclude from profits).
 - Add levelled Magma Necklaces as some people level them for profits. Vanquished Magma Necklace upgraded to +10☠! Vanquished Magma Necklace upgraded to +1☠!
 - Propose compacting or selling items like raw fish going to the inventory (full sack).
 - Use drop # in the chat message based on current profit tracker.
@@ -192,7 +192,6 @@ Sort by: rarity, locked/unlocked
   - LS frag
 - Crimson Hotspots
 - Jerry
-  - Start Blizzard
   - No yeti for 1000 catches (requires tracker to be enabled)
   - No reindrake for 3000 catches (requires tracker to be enabled)
   - Lootshare a baby yeti
@@ -224,6 +223,7 @@ Sort by: rarity, locked/unlocked
   - Catch legendary squid
   - Catch a bouncy beach ball
   - Catch a bone
+  -  ACID RAIN BONUS! You caught a bonus Busted Belt Buckle!
 - Dye
   - Obtain aquamarine / iceberg / etc dye
 - Setup
