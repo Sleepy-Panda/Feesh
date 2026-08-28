@@ -95,6 +95,15 @@ object Settings : ConfigKt("${FeeshMod.MOD_ID}/config") {
             }
         }
 
+        button {
+            title = "Hypixel Skyblock's bazaar API"
+            description = "API used by Feesh for getting bazaar prices."
+            text = "Open API"
+            onClick {
+                openLink("https://api.hypixel.net/skyblock/bazaar?product")
+            }
+        }
+
         // Settings categories
         category(General)
         category(Alerts)        
