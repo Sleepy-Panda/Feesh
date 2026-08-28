@@ -21,17 +21,18 @@ import net.minecraft.world.entity.decoration.ArmorStand
 import net.minecraft.world.entity.animal.sniffer.Sniffer
 import java.util.Date
 import kotlin.math.ceil
+import kotlin.math.floor
 
 data class MobDisplayInfo(
     val nametag: String,
     val baseMobName: String,
     val isImmune: Boolean,
-    val immunitySecondsLeft: Int
+    val immunitySecondsLeft: Double
 )
 
 object SeaCreatureHpTracker {
     private const val LOOTSHARE_DISTANCE = 30.0
-    private const val TICKS_PER_CHECK = 5
+    private const val TICKS_PER_CHECK = 4
     private const val CLEANUP_DELAY_TICKS = 30 * 20
     private const val EXPIRATION_TIME_MS = 6 * 60 * 1000L // 6 minutes
     private const val IMMUNITY_TICKS = 20 * 5 // ~5 seconds
@@ -166,24 +167,25 @@ object SeaCreatureHpTracker {
                     val scType = trackedMobTypeByName[sc.baseMobName]
                     val hasImmunity = scType != null && IMMUNE_MOB_TYPES.contains(scType)
                     var isImmune = false
-                    var immunitySecondsLeft = 0
+                    var immunitySecondsLeft = 0.0
 
                     if (hasImmunity) {
                         val mobEntity = EntityUtils.getMcEntityById(sc.mcEntityId - 1)
                         val ticksExisted = mobEntity?.tickCount ?: 0
                         val seenTimestamp = seenMobEntityIds[sc.mcEntityId - 1] ?: 0L
                         val now = Date().time
-                        isImmune = ticksExisted <= IMMUNITY_TICKS && (now - seenTimestamp) <= IMMUNITY_MS
-                        immunitySecondsLeft = if (isImmune) {
-                            ceil((IMMUNITY_TICKS - ticksExisted) / 20.0).toInt().coerceAtLeast(1)
-                        } else 0
+                        val remainingSeconds = (IMMUNITY_TICKS - ticksExisted) / 20.0
+                        isImmune = ticksExisted <= IMMUNITY_TICKS &&
+                            (now - seenTimestamp) <= IMMUNITY_MS &&
+                            remainingSeconds > 0.0
+                        immunitySecondsLeft = if (isImmune) remainingSeconds else 0.0
                     }
 
                     if (sc.baseMobName == HpTrackableSeaCreatureTypes.NESSIE.displayName) {
                         val isNessieRunningAway = isNessieRunningAway(sc)
                         if (isNessieRunningAway) {
                             isImmune = true
-                            immunitySecondsLeft = 0
+                            immunitySecondsLeft = 0.0
                         }
                     }
 
@@ -236,12 +238,22 @@ object SeaCreatureHpTracker {
 
         val lines = mutableListOf<String>()
         mobs.forEach { mob ->
-            val immunityTimerText = if (mob.immunitySecondsLeft > 0) " ${WHITE}${mob.immunitySecondsLeft}s" else ""
+            val immunityTimerText = formatImmunityTimer(mob.immunitySecondsLeft)
             val immunityText = if (mob.isImmune) " ${RED}${BOLD}[Immune${immunityTimerText}${RED}${BOLD}]" else ""
             lines.add("${mob.nametag}$immunityText")
         }
 
         gui.setLines(lines.map { LineInfo(it) })
+    }
+
+    private fun formatImmunityTimer(secondsLeft: Double): String {
+        if (secondsLeft <= 0.0) return ""
+        val display = if (secondsLeft < 1.0) {
+            String.format("%.1f", floor(secondsLeft * 10.0) / 10.0)
+        } else {
+            ceil(secondsLeft).toInt().toString()
+        }
+        return " ${WHITE}${display}s"
     }
 
     private fun getSeaCreaturesInRange(includedSeaCreatureNames: List<String>, distance: Double): List<SeaCreatureParsedNametagInfo> {
