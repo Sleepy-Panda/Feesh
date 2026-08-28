@@ -137,6 +137,6 @@ object SetTrackerDropsCommand {
     private fun sendTreasureCommandGuide() {
         ChatUtils.sendLocalChat("${RED}Usage: /${COMMAND_NAME} DYE_TREASURE <DROP_COUNT> <GOOD>/<GREAT>/<OUTSTANDING> [LAST_ON_DATE]", true)
         ChatUtils.sendLocalChat("${GRAY}Example: /${COMMAND_NAME} DYE_TREASURE 2 1234/123/12 2025-05-30 23:59:00", true)
-        ChatUtils.sendLocalChat("${GRAY}Guide: ${GUIDE_URL}", true)
+        ChatUtils.sendLocalChat("${GRAY}Guide: ${TreasureFishingTracker.GUIDE_URL}", true)
     }
 }

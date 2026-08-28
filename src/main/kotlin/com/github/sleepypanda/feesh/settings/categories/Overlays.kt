@@ -845,11 +845,11 @@ ${GRAY}Reset total: ${WHITE}/${TreasureFishingTracker.RESET_TOTAL_COMMAND}
 
     init {
         button {
-            title = "Editing tracker drops guide"
-            description = "Opens a guide on how to initialize Treasure Dye drop statistics for the Treasure fishing tracker."
+            title = "Editing Treasure fishing tracker guide"
+            description = "Opens a guide on how to set treasure catch counts and Treasure Dye drop statistics."
             text = "Click to open"
             onClick {
-                Util.getPlatform().openUri(SetTrackerDropsCommand.GUIDE_URL)
+                Util.getPlatform().openUri(TreasureFishingTracker.GUIDE_URL)
             }
         }
     }
