@@ -31,6 +31,8 @@ import java.util.Date
 // Thunder: in 38m
 // Thunder: in 2m 30s
 // Thunder: 2m 30s left
+// Blizzard: 10m 50s
+// Blizzard: 0s
 // Park: same format as new
 
 object WeatherTimer {
@@ -173,7 +175,7 @@ object WeatherTimer {
     private fun updateGuiLines() {
         gui.clearLines()
 
-        if (!Overlays.weatherTimerOverlay || weatherTimerStr.isNullOrEmpty() || weatherSecondsLeft == null) return
+        if (!Overlays.weatherTimerOverlay || weatherTimerStr.isNullOrEmpty() || weatherSecondsLeft == null || weatherSecondsLeft!! <= 0) return
         if (!WorldUtils.isInSkyblock() || !WorldUtils.isInWeatherWorld()) return
 
         val label = eventName ?: "Weather event"
