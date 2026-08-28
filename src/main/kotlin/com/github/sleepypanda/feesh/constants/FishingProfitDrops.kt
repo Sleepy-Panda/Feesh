@@ -26,6 +26,16 @@ class FishingProfitDrops {
     companion object {
         const val PET_ITEM_CATEGORY = "Pet Item"
         const val CRIMSON_ISLE_TRASH_GEAR_CATEGORY = "Crimson Isle trash gear"
+        const val ACCESSORY_CATEGORY = "Accessory"
+        const val EVOLVING_IN_TIME_BAG_CATEGORY = "Evolving"
+        const val BAIT_CATEGORY = "Bait"
+        const val DYE_CATEGORY = "Dye"
+
+        fun getFishingProfitItemByName(itemName: String): FishingProfitDropInfo? {
+            if (itemName.isEmpty()) return null
+            val lower = itemName.lowercase()
+            return items.find { it.itemName.lowercase() == lower || it.itemAlternateNames.any { alt -> alt.lowercase() == lower } }
+        }
 
         val items = listOf(
             // Dyes
@@ -35,42 +45,49 @@ class FishingProfitDrops {
                 itemName = "Treasure Dye",
                 itemDisplayName = "${LEGENDARY}${BOLD}Treasure Dye",
                 npcPrice = null,
+                categories = listOf(DYE_CATEGORY),
             ),
             FishingProfitDropInfo(
                 itemId = "DYE_AQUAMARINE",
                 itemName = "Aquamarine Dye",
                 itemDisplayName = "${LEGENDARY}${BOLD}Aquamarine Dye",
                 npcPrice = null,
+                categories = listOf(DYE_CATEGORY),
             ),
             FishingProfitDropInfo(
                 itemId = "DYE_ICEBERG",
                 itemName = "Iceberg Dye",
                 itemDisplayName = "${LEGENDARY}${BOLD}Iceberg Dye",
                 npcPrice = null,
+                categories = listOf(DYE_CATEGORY),
             ),
             FishingProfitDropInfo(
                 itemId = "DYE_CARMINE",
                 itemName = "Carmine Dye",
                 itemDisplayName = "${LEGENDARY}${BOLD}Carmine Dye",
                 npcPrice = null,
+                categories = listOf(DYE_CATEGORY),
             ),
             FishingProfitDropInfo(
                 itemId = "DYE_MIDNIGHT",
                 itemName = "Midnight Dye",
                 itemDisplayName = "${LEGENDARY}${BOLD}Midnight Dye",
                 npcPrice = null,
+                categories = listOf(DYE_CATEGORY),
             ),
             FishingProfitDropInfo(
                 itemId = "DYE_PERIWINKLE",
                 itemName = "Periwinkle Dye",
                 itemDisplayName = "${LEGENDARY}${BOLD}Periwinkle Dye",
                 npcPrice = null,
+                categories = listOf(DYE_CATEGORY),
             ),
             FishingProfitDropInfo(
                 itemId = "DYE_BONE",
                 itemName = "Bone Dye",
                 itemDisplayName = "${LEGENDARY}${BOLD}Bone Dye",
                 npcPrice = null,
+                categories = listOf(DYE_CATEGORY),
             ),
 
             // Treasures
@@ -110,12 +127,14 @@ class FishingProfitDrops {
                 itemName = "Golden Bait",
                 itemDisplayName = "${UNCOMMON}Golden Bait", // From Seal pet
                 npcPrice = 100.0,
+                categories = listOf(BAIT_CATEGORY),
             ),
             FishingProfitDropInfo(
                 itemId = "TREASURE_BAIT",
                 itemName = "Treasure Bait",
                 itemDisplayName = "${RARE}Treasure Bait", // From Seal pet
                 npcPrice = 500.0,
+                categories = listOf(BAIT_CATEGORY),
             ),
             FishingProfitDropInfo(
                 itemId = "WATER_ORB",
@@ -636,6 +655,7 @@ class FishingProfitDrops {
                 itemName = "Moby-Duck",
                 itemDisplayName = "${RARE}Moby-Duck",
                 npcPrice = 1_000_000.0,
+                categories = listOf(EVOLVING_IN_TIME_BAG_CATEGORY),
             ),
 
             // Shards
@@ -887,6 +907,12 @@ class FishingProfitDrops {
                 npcPrice = null,
             ),
             FishingProfitDropInfo(
+                itemId = "SHARD_GOLDOLOT",
+                itemName = "Goldolot Shard",
+                itemDisplayName = "${RARE}Goldolot ${WHITE}Shard",
+                npcPrice = null,
+            ),
+            FishingProfitDropInfo(
                 itemId = "SHARD_HAGGARD",
                 itemName = "Haggard Shard",
                 itemDisplayName = "${COMMON}Haggard ${WHITE}Shard",
@@ -1104,12 +1130,7 @@ class FishingProfitDrops {
                 itemName = "Dark Bait",
                 itemDisplayName = "${COMMON}Dark Bait",
                 npcPrice = 8.0,
-            ),
-            FishingProfitDropInfo(
-                itemId = "ENCHANTMENT_CORRUPTION_1",
-                itemName = "Enchanted Book (Corruption I)",
-                itemDisplayName = "${RARE}Corruption I ${WHITE}Book",
-                npcPrice = null,
+                categories = listOf(BAIT_CATEGORY),
             ),
             FishingProfitDropInfo(
                 itemId = "ENCHANTMENT_MAGNET_6",
@@ -1273,6 +1294,7 @@ class FishingProfitDrops {
                 itemDisplayName = "${RARE}Fish Affinity Talisman",
                 npcPrice = 1_000.0,
                 shouldAnnounceRareDrop = true,
+                categories = listOf(ACCESSORY_CATEGORY),
             ),
             FishingProfitDropInfo(
                 itemId = "DIVER_FRAGMENT",
@@ -1446,6 +1468,7 @@ class FishingProfitDrops {
                 itemName = "Snake Eyes",
                 itemDisplayName = "${LEGENDARY}Snake Eyes",
                 npcPrice = 1_000_000.0,
+                categories = listOf(PET_ITEM_CATEGORY),
             ),
 
             // Moonglade Marsh
@@ -1481,12 +1504,6 @@ class FishingProfitDrops {
                 itemName = "Mob the Fish",
                 itemDisplayName = "${SPECIAL}Mob the Fish",
                 npcPrice = 50_000.0,
-            ),
-            FishingProfitDropInfo(
-                itemId = "MOB_THE_FISH",
-                itemName = "Mob the Fish",
-                itemDisplayName = "${SPECIAL}Mob the Fish",
-                npcPrice = null,
             ),
             FishingProfitDropInfo(
                 itemId = "FIG_LOG",
@@ -1561,11 +1578,10 @@ class FishingProfitDrops {
                 npcPrice = 204_800.0,
             ),
             FishingProfitDropInfo(
-                itemId = "PET_ITEM_FORAGING_SKILL_BOOST_EPIC",
-                itemName = "Foraging Exp Boost (EPIC)",
-                itemDisplayName = "${EPIC}Foraging Exp Boost +50%",
+                itemId = "PET_ITEM_FORAGING_SKILL_BOOST_UNCOMMON",
+                itemName = "Foraging Exp Boost (UNCOMMON)",
+                itemDisplayName = "${UNCOMMON}Foraging Exp Boost +30%",
                 npcPrice = null,
-                shouldAnnounceRareDrop = true,
                 categories = listOf(PET_ITEM_CATEGORY),
             ),
             FishingProfitDropInfo(
@@ -1665,6 +1681,12 @@ class FishingProfitDrops {
                 npcPrice = 800.0,
             ),
             FishingProfitDropInfo(
+                itemId = "VEILSHROOM_BUNCH",
+                itemName = "Veilshroom Bunch",
+                itemDisplayName = "${RARE}Veilshroom Bunch",
+                npcPrice = null,
+            ),
+            FishingProfitDropInfo(
                 itemId = "HELIXIS",
                 itemName = "Helixis",
                 itemDisplayName = "${RARE}Helixis",
@@ -1675,6 +1697,12 @@ class FishingProfitDrops {
                 itemName = "Water Hyacinth",
                 itemDisplayName = "${LEGENDARY}Water Hyacinth",
                 npcPrice = 1_000_000.0,
+            ),
+            FishingProfitDropInfo(
+                itemId = "SEA_BRINE",
+                itemName = "Sea Brine",
+                itemDisplayName = "${UNCOMMON}Sea Brine",
+                npcPrice = 1_000.0,
             ),
             FishingProfitDropInfo(
                 itemId = "SUBLIME_SILK",
@@ -1693,14 +1721,14 @@ class FishingProfitDrops {
                 itemId = "ISOPOD_HUSK",
                 itemName = "Isopod Husk",
                 itemDisplayName = "${EPIC}Isopod Husk",
-                npcPrice = 1_000_000.0, // ?
+                npcPrice = 250_000.0,
                 shouldAnnounceRareDrop = true,
             ),
             FishingProfitDropInfo(
                 itemId = "REINFORCED_NETTING",
                 itemName = "Reinforced Netting",
                 itemDisplayName = "${LEGENDARY}Reinforced Netting",
-                npcPrice = 1_000_000.0, // ?
+                npcPrice = 1_000_000.0,
             ),
 
             // Crimson Isle
@@ -2104,6 +2132,7 @@ class FishingProfitDrops {
                 itemName = "Lucky Hoof",
                 itemDisplayName = "${UNCOMMON}Lucky Hoof",
                 npcPrice = 50_000.0,
+                categories = listOf(ACCESSORY_CATEGORY),
             ),
             FishingProfitDropInfo(
                 itemId = "WEREWOLF_SKIN",
@@ -2356,6 +2385,7 @@ class FishingProfitDrops {
                 itemDisplayName = "${COMMON}${OBFUSCATED}Obfuscated-1 ${DARK_GRAY}${BOLD} BRONZE",
                 npcPrice = null,
                 amountOfMagmaFish = 16,
+                categories = listOf(BAIT_CATEGORY),
             ),
             FishingProfitDropInfo(
                 itemId = "OBFUSCATED_FISH_1_SILVER",
@@ -2363,6 +2393,7 @@ class FishingProfitDrops {
                 itemDisplayName = "${COMMON}${OBFUSCATED}Obfuscated-1 ${GRAY}${BOLD} SILVER",
                 npcPrice = null,
                 amountOfMagmaFish = 24,
+                categories = listOf(BAIT_CATEGORY),
             ),
             FishingProfitDropInfo(
                 itemId = "OBFUSCATED_FISH_1_GOLD",
@@ -2370,6 +2401,7 @@ class FishingProfitDrops {
                 itemDisplayName = "${COMMON}${OBFUSCATED}Obfuscated-1 ${GOLD}${BOLD} GOLD",
                 npcPrice = null,
                 amountOfMagmaFish = 32,
+                categories = listOf(BAIT_CATEGORY),
             ),
             FishingProfitDropInfo(
                 itemId = "OBFUSCATED_FISH_1_DIAMOND",
@@ -2377,6 +2409,7 @@ class FishingProfitDrops {
                 itemDisplayName = "${COMMON}${OBFUSCATED}Obfuscated-1 ${AQUA}${BOLD} DIAMOND",
                 npcPrice = null,
                 amountOfMagmaFish = 48,
+                categories = listOf(BAIT_CATEGORY),
             ),
             FishingProfitDropInfo(
                 itemId = "OBFUSCATED_FISH_2_BRONZE",
@@ -2384,6 +2417,7 @@ class FishingProfitDrops {
                 itemDisplayName = "${UNCOMMON}${OBFUSCATED}Obfuscated-2 ${DARK_GRAY}${BOLD} BRONZE",
                 npcPrice = null,
                 amountOfMagmaFish = 40,
+                categories = listOf(BAIT_CATEGORY),
             ),
             FishingProfitDropInfo(
                 itemId = "OBFUSCATED_FISH_2_SILVER",
@@ -2391,13 +2425,15 @@ class FishingProfitDrops {
                 itemDisplayName = "${UNCOMMON}${OBFUSCATED}Obfuscated-2 ${GRAY}${BOLD} SILVER",
                 npcPrice = null,
                 amountOfMagmaFish = 60,
+                categories = listOf(BAIT_CATEGORY),
             ),
             FishingProfitDropInfo(
                 itemId = "OBFUSCATED_FISH_2_GOLD",
                 itemName = "Obfuscated-2 GOLD",
                 itemDisplayName = "${UNCOMMON}${OBFUSCATED}Obfuscated-2 ${GOLD}${BOLD} GOLD",
                 npcPrice = null,
-                amountOfMagmaFish = 80,
+                amountOfMagmaFish = 80, 
+                categories = listOf(BAIT_CATEGORY),
             ),
             FishingProfitDropInfo(
                 itemId = "OBFUSCATED_FISH_2_DIAMOND",
@@ -2405,6 +2441,7 @@ class FishingProfitDrops {
                 itemDisplayName = "${UNCOMMON}${OBFUSCATED}Obfuscated-2 ${AQUA}${BOLD} DIAMOND",
                 npcPrice = null,
                 amountOfMagmaFish = 120,
+                categories = listOf(BAIT_CATEGORY),
             ),
             FishingProfitDropInfo(
                 itemId = "OBFUSCATED_FISH_3_BRONZE",

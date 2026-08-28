@@ -1,7 +1,7 @@
 package com.github.sleepypanda.feesh.events.publishers
 
 import com.github.sleepypanda.feesh.events.EventBus
-import com.github.sleepypanda.feesh.events.models.ChatEvent
+import com.github.sleepypanda.feesh.events.models.ChatCancellableEvent
 import com.github.sleepypanda.feesh.events.models.ShardCaughtEvent
 import com.github.sleepypanda.feesh.utils.CommonUtils
 import com.github.sleepypanda.feesh.utils.WorldUtils
@@ -25,25 +25,22 @@ object ShardsCaughtPublisher {
     // You caught x2 Loch Emperor Shards!
     private val SHARDS_BLACK_HOLE_PATTERN = Regex("^You caught (?<shardsText>.+) Shard[s]?!")
 
-    // CHARM You charmed a Loch Emperor and captured its Shard.
-    // NAGA You charmed a Tadgang and captured its Shard.
-    private val SHARD_CHARMED_PATTERN = Regex("^(?:CHARM|NAGA|SALT) You charmed (?:a|an) (?<mob>.+) and captured its Shard\\.")
-
-    // SALT You charmed a Ent and captured 2 Shards from it.
-    // CHARM You charmed a Flaming Spider and captured 2 Shards from it.
-    // SALT You charmed a Tadgang and captured 2 Shards from it.
-    // SALT You charmed a Magma Slug and captured 3 Shards from it.
-    private val SHARDS_CHARMED_PATTERN = Regex("^(?:CHARM|NAGA|SALT) You charmed (?:a|an) (?<mob>.+) and captured (?<count>[\\d]+) Shards from it\\.")
+    // CHARM! You charmed the Haggard and received 2 Haggard Shards!
+    // CHARM! You charmed the Haggard and received 1 Haggard Shard!
+    // CHARM! You charmed the Flaming Spider and received 2 Flaming Spider Shards!
+    private val SHARDS_CHARMED_PATTERN = Regex("^CHARM! You charmed (?:a|an|the) .+ and received (?<count>[\\d]+) (?<shardName>.+) Shard[s]!")
 
     // LOOT SHARE You received 2 Titanoboa Shards for assisting CuzImCrzz!
     // LOOT SHARE You received 3 Magma Slug Shards for assisting OmeRuben!
+    // LOOT SHARE You received an Alligator Shard for assisting KingOFFLies!
+    // LOOT SHARE You received a Titanoboa Shard for assisting fshbowl_!
     private val SHARDS_LOOTSHARED_PATTERN = Regex("^LOOT SHARE You received (?<shardsText>.+) Shard.*")
 
     fun init() {
-        EventBus.subscribe(ChatEvent::class, ::onChat)
+        EventBus.subscribe(ChatCancellableEvent::class, ::onChat)
     }
 
-    private fun onChat(event: ChatEvent) {
+    private fun onChat(event: ChatCancellableEvent) {
         if (!WorldUtils.isInSkyblock() || !WorldUtils.isInFishingWorld()) return
 
         CommonUtils.runWithCatching("Failed to handle Shard catch in publisher.") {
@@ -70,16 +67,10 @@ object ShardsCaughtPublisher {
                 return@onChat
             }
 
-            SHARD_CHARMED_PATTERN.find(text)?.run {
-                val mob = groups["mob"]?.value ?: return@onChat
-                publish("$mob Shard", 1)
-                return@onChat
-            }
-
             SHARDS_CHARMED_PATTERN.find(text)?.run {
-                val mob = groups["mob"]?.value ?: return@onChat
-                val count = groups["count"]?.value?.toIntOrNull() ?: 1
-                publish("$mob Shard", count)
+                val shard = groups["shardName"]?.value ?: return@onChat
+                val count = groups["count"]?.value?.toIntOrNull() ?: return@onChat
+                publish("$shard Shard", count)
                 return@onChat
             }
 

@@ -4,11 +4,55 @@ Released on: ???
 
 ## Features
 
--
+- Renamed **/feeshSpiderDenRainSchedule** to **/feeshWeatherSchedule** and changed its output to show upcoming Mild / Extreme weather conditions schedule.
+- Removed old Rain timer overlay/alert and added new Weather timer/alert working for all new weather-affected worlds. **Please re-enable in settings if you need it!**
+- Removed "Blizzards started" counter from PB because Blizzard in a Bottle was reworked into a mixin.
 
 ## Bugfixes
 
--
+- Removed Corruption I book from profit tracker as they are not in the drop pool anymore.
+- Removed Bayou Travel Scroll from /feeshJunkerJoelShopPrices command output.
+- Fixed Tadgang's tadpoles nametags not being hidden after changing their mob level.
+
+# 1.13.0
+
+Released on: 2026-08-24
+
+## Features
+
+- Added Sea Brine (new Brineling drop) to Fishing profit tracker.
+- Added Uncommon Foraging Exp Boost (Ent drop) and removed Epic Foraging Exp Boost in the Fishing profit tracker.
+- Added Giant Isopod to the ALL CHAT rare catch share functionality.
+- Added option to hide Trophy Fish/Frog catch messages from the chat for selected rarities [disabled by default].
+  - You will still see newly discovered ones, but cleanup chat from already obtained trophies.
+- Added option to hide lootshare messages when in Frozen Blaze armor [disabled by default].
+- Added SkyHanni party chat message format for cocoon alert.
+
+## Bugfixes
+
+- Fixed partial Magma Pillar highlighting.
+- Fixed detection if player is in Trophy armor not working sometimes when SB does not return equipped armor details.
+- Fixed some cases of items not being counted into the Fishing profit tracker on pickup (e.g. while in pet menu).
+- Pinned Dyes at the top of Fishing profit tracker for NPC Sell price mode.
+- Made "Equip fishing armor" alert no longer repeat while the same armor is equipped.
+- Made non-reforged Frozen Blaze armor no more triggering "Equip fishing armor" alert.
+- Fixed "Mute Reindrake gifts" not working when killing other player's dragon.
+  - There is still issue with Sound Controller overriding mute applied by Feesh.
+- Fixed numbers rounding issue showing "1000k" instead of "1M" sometimes.
+
+## Other
+
+- Removed support of 1.21.11. RIP
+- Added debug command /feeshDebugLogSounds for logging every sound played within 5 seconds.
+
+# 1.12.3
+
+Released on: 2026-08-12
+
+## Bugfixes
+
+- Track new drops in Fishing profit tracker: Goldolot Shard, Veilshroom Bunch.
+- Fixed charmed shards not being counted in Fishing profit tracker, after SB changed the chat message.
 
 # 1.12.2
 

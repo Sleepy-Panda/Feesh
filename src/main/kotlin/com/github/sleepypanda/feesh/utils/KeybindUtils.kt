@@ -10,11 +10,7 @@ import com.github.sleepypanda.feesh.features.overlays.BarnFishingTimer
 import net.minecraft.client.KeyMapping
 import com.mojang.blaze3d.platform.InputConstants
 import net.minecraft.resources.Identifier
-//#if MC >= 26.1
-//$$ import net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper as KeyBindingHelper
-//#else
-import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper
-//#endif
+import net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper as KeyBindingHelper
 import org.lwjgl.glfw.GLFW
 
 object KeybindUtils {
@@ -23,11 +19,7 @@ object KeybindUtils {
     private var keybindsRegistered = false
 
     private fun registerKeyBindingCompat(keyBinding: KeyMapping) {
-        //#if MC >= 26.1
-        //$$ KeyBindingHelper.registerKeyMapping(keyBinding)
-        //#else
-        KeyBindingHelper.registerKeyBinding(keyBinding)
-        //#endif
+        KeyBindingHelper.registerKeyMapping(keyBinding)
     }
 
     fun init() {

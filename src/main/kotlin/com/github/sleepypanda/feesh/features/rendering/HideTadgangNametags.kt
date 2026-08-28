@@ -33,8 +33,9 @@ object HideTadgangNametags {
 
         CommonUtils.runWithCatching("Failed to check Tadgang nametag") {
             val name = event.customName.unformatted
-            // Tadpoles are level 8, frogs are level 10
-            if (!(name.contains("[Lv8]") && name.contains(SeaCreatureNames.TADGANG))) return
+            // Tadpoles are level 8 pre-update, level 1 post-update, frogs are level 10 or 29
+            if (!name.contains(SeaCreatureNames.TADGANG)) return
+            if (!name.contains("[Lv8]") && !name.contains("[Lv1]")) return // TODO Cleanup old level prefixes
             hiddenNametagIds.add(event.entityId)
         }
     }

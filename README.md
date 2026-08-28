@@ -1,6 +1,6 @@
 # Feesh Mod
 
-`Feesh` is a Fabric 1.21.11 / 26.1 / 26.2 mod for Hypixel Skyblock. It introduces many fishing-related QOL features. Do `/feesh`, set up the mod, and enjoy fishing! <3
+`Feesh` is a Fabric 26.1 / 26.2 mod for Hypixel Skyblock. It introduces many fishing-related QOL features. Do `/feesh`, set up the mod, and enjoy fishing! <3
 
 This mod is an evolution of [FeeshNotifier ChatTriggers module](https://chattriggers.com/modules/v/FeeshNotifier) made for earlier MC versions.
 
@@ -22,13 +22,6 @@ This mod is an evolution of [FeeshNotifier ChatTriggers module](https://chattrig
 If you want early access to the pre-releases, Github automatically builds every version pushed to `develop` branch. They can be found in Actions - (select latest action) - Artifacts - find attached `.zip` which contains `.jar` file(s). **THOSE MAY BE UNSTABLE** as they are features in active development, probably not tested enough.
 
 ## Dependencies
-
-### 1.21.11
-
-Required Minecraft version is **1.21.11** (Fabric loader 0.18.4+).
-Required Java version is 21+.
-
-This mod requires [Fabric API](https://modrinth.com/mod/fabric-api) and [Fabric Language Kotlin](https://modrinth.com/mod/fabric-language-kotlin) mods for 1.21.11.
 
 ### 26.1
 
@@ -74,7 +67,7 @@ Required Java version is 25+.
 - **Salt expired** — Alerts when a Salt has expired.
 - **Worm the Fish** — Alerts when Worm the Fish is caught (Dirt Rod fishing).
 - **Fishing Festival** — Alerts when the Fishing Festival ends, and posts amounts of sharks caught in chat. Also has option to track personal best per festival.
-- **Rain/Thunder/Blizzard ends soon** — Alerts when Rain/Thunder/Blizzard ends soon while in relevant areas.
+- **Weather ends soon** — Alerts when weather event ends soon while in relevant areas.
 - **Nessie destination alert** — Alerts destination when a Nessie decides into which cave to swim - to Jade Dragon or to Driptoad Delve.
 - **Puddle Jumper timer alert** — Alerts when your Puddle Jumper is about to arrive to its destination.
 - **Trophy Frog discovered alert** — Alerts when a new Trophy Frog is discovered.
@@ -92,6 +85,9 @@ Required Java version is 25+.
 - **Lootshare message** — Sends to PARTY chat when it's time to lootshare. Available via Keybind.
 - **Share Trophy Frog discovered** — Sends to PARTY chat when a new Trophy Frog is discovered.
 - **Share Trophy Fish discovered** — Sends to PARTY chat when a new Trophy Fish is discovered.
+- **Hide Trophy Frog catch messages** — Hides Trophy Frog catch messages from chat for the selected rarities.
+- **Hide Trophy Fish catch messages** — Hides Trophy Fish catch messages from chat for the selected rarities.
+- **Hide lootshare messages when in Frozen Blaze** — Hides all LOOT SHARE chat messages while wearing a Frozen Blaze armor.
 
 ### Overlays
 
@@ -118,7 +114,7 @@ Required Java version is 25+.
 - **Treasure fishing tracker** — Good/Great/Outstanding treasure catches and Treasure Dye drop statistics.
 - **Magma Core fishing tracker** — Lava Pigman/Lava Blaze catch stats and Magma Core drop profits (total and per hour), while in Crystal Hollows.
 - **Archfiend Dice profit tracker** — Archfiend Dice / High Class Archfiend Dice profit overlay with Session/Total modes.
-- **Rain/Thunder/Blizzard timer** — Shows Rain/Thunder/Blizzard timer while in relevant areas.
+- **Weather timer** — Shows current/upcoming weather event timer while in relevant areas.
 - **Bait tracker** — Remaining bait counter based on bait preview in hotbar slot #9.
 
 ## Items
@@ -151,7 +147,7 @@ Required Java version is 25+.
 - **/feeshGearCraftPrices** — Calculates profits for crafting gear from fishing drops.
 - **/feeshFearMongererShopPrices** — Calculates profits for selling items from Fear Mongerer NPC shop.
 - **/feeshJunkerJoelShopPrices** — Calculates profits for selling items from Junker Joel NPC shop.
-- **/feeshSpiderDenRainSchedule** — Displays nearest Spider's Den Rain/Thunderstorm events.
+- **/feeshWeatherSchedule** — Displays 3 upcoming weather conditions (Mild / Extreme) schedule.
 - **/feeshSetTrackerDrops** — Initialize drop history (Titanoboa Shed, Snake Eyes, Tiki Mask, Radioactive Vial, Prince's Crown Jewel, Treasure Dye).
 
 Also, each overlay has individual commands to reset or pause.
@@ -183,7 +179,7 @@ In case of questions, bug reports, feature requests - please feel free to contac
 
 ### Credits
 
-- [Casters discord](https://discord.gg/vn3RzuyJz), for supporting the mod
+- [Casters discord](https://discord.gg/d9WWUUeux), for supporting the mod
 - [Elite Skyblock](https://eliteskyblock.com/) and their APIs, for providing auction lbin prices
   - [Elite Skyblock Lowest Bin API](https://api.eliteskyblock.com/resources/auctions/neu)
   - [Elite Skyblock 7-days average API](https://api.eliteskyblock.com/resources/auctions/neu/average-lbin/7day)

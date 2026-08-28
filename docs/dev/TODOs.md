@@ -2,9 +2,9 @@
 
 ## Reminders
 
-- Test each release in 1.21.* and 26.x
+- Test each release in 26.x
 
-## Alpha Torrus Canyon
+## Torrus Canyon
 
 - Giant Isopod acts like a Nessie, implement immunity?
 - Giant Isopod highlight looks weird
@@ -32,17 +32,20 @@ Newly released - https://hypixel.net/threads/hypixel-skyblock-0-24-5-assorted-qo
  GOOD CATCH! You caught a Flexbone!
  GOOD CATCH! You caught a Shinyfish Shard!
 
+- Drake sound not muted when using Sound Controller mod
+- integrate medal clipping for rare drops / dyes? have seen it in sbo and its pretty neat  https://medal.tv/developer/auto-clipping#api-reference
+- lf treasure streak (maybe good, great , outstanding streak but maybe to much)
+- Flipping items via bz + supercraft + sell still gets to the tracker
+- Default party drop on-screen alert ragebaits some people :(
 - Hotspot nametag hider + overlay with hotspot perk
--  editing the format of feesh titles (summoned creature name, dropped rare item, price of an item, name of the player who did it etc) to change their order, color, duration, location(on title or subtitle) or to add some custom texts in it and so on.
+- Editing the format of feesh titles (summoned creature name, dropped rare item, price of an item, name of the player who did it etc) to change their order, color, duration, location(on title or subtitle) or to add some custom texts in it and so on.
 - Mod name is copied as [ Feesh]
-- Do ignore only pets if pet menu is/was opened
 - Issues with setting RNG meter before first dye in Treasure tracker (0 as drops count)
 - Toggle for PBs, rework trackPersonalBestFishingFestival
 - Max MF PB
 - Xp/h
 - SMILE! Polizei111 has sprinkled some joy your way! You feel a little happier. :)
 - Share Nessie with coords to all chat?
-- With the release of Minecraft version 26.2 on June 16th, we'll drop support for 1.21.11 in a few weeks.
 - Personal blacklist + party sharing
 - Runic sea creatures - alert or highlight
 - Pickups from trade menu

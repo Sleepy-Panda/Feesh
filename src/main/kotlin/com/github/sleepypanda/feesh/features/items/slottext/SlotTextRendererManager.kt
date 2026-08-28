@@ -7,11 +7,7 @@ import com.github.sleepypanda.feesh.events.models.AfterSlotRenderedEvent
 import com.github.sleepypanda.feesh.utils.ChatUtils.getUnformattedString
 import com.github.sleepypanda.feesh.utils.WorldUtils
 import net.minecraft.client.gui.Font
-//#if MC >= 26.1
-//$$ import net.minecraft.client.gui.GuiGraphicsExtractor as GuiGraphics
-//#else
-import net.minecraft.client.gui.GuiGraphics
-//#endif
+import net.minecraft.client.gui.GuiGraphicsExtractor as GuiGraphics
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.inventory.Slot
 
@@ -32,11 +28,7 @@ object SlotTextRendererManager {
     private val enabledRenderers: MutableList<BaseSlotTextRenderer> = mutableListOf()
 
     private fun drawStringCompat(context: GuiGraphics, textRenderer: Font, text: String, x: Int, y: Int, color: Int, shadow: Boolean) {
-        //#if MC >= 26.1
-        //$$ context.text(textRenderer, text, x, y, color, shadow)
-        //#else
-        context.drawString(textRenderer, text, x, y, color, shadow)
-        //#endif
+        context.text(textRenderer, text, x, y, color, shadow)
     }
 
     fun init() {
