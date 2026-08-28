@@ -149,66 +149,6 @@ object TreasureFishingTracker : IResettableViewModeTracker {
         }
     }
 
-    private fun onSetTreasureCatchesCommand(args: Array<String>, viewMode: TrackerViewMode) {
-        fun applyChangeToCurrentValue(value: String, currentCount: Int): Int? {
-            val trimmed = value.trim()
-            if (trimmed.isEmpty()) return null
-
-            val newCount = when {
-                trimmed.startsWith("+") -> {
-                    val delta = trimmed.drop(1).toIntOrNull() ?: return null
-                    if (delta < 0) return null
-                    currentCount + delta
-                }
-                trimmed.startsWith("-") -> {
-                    val delta = trimmed.drop(1).toIntOrNull() ?: return null
-                    if (delta < 0) return null
-                    currentCount - delta
-                }
-                else -> trimmed.toIntOrNull()
-            } ?: return null
-
-            if (newCount < 0) return null
-            return newCount
-        }
-
-        CommonUtils.runWithCatching(
-            message = "Failed to set treasure catches.",
-            onError = {
-                ChatUtils.sendLocalChat("${RED}Failed to set treasure catches for the Treasure fishing tracker.", true)
-            }
-        ) {
-            val commandName = when (viewMode) {
-                TrackerViewMode.SESSION -> SET_CATCHES_COMMAND
-                TrackerViewMode.TOTAL -> SET_CATCHES_TOTAL_COMMAND
-            }
-
-            if (args.isEmpty()) {
-                ChatUtils.sendLocalChat("${RED}Usage: /$commandName <GOOD>/<GREAT>/<OUTSTANDING> ${GRAY}(e.g. 100/50/10, +1/+0/-5)", true)
-                ChatUtils.sendLocalChat("${GRAY}Guide: $GUIDE_URL", true)
-                return
-            }
-
-            val parts = args[0].split("/")
-            if (parts.size != 3) {
-                ChatUtils.sendLocalChat("${RED}Please specify catches in format good/great/outstanding, e.g. 100/50/10 or +1/+0/-5.", true)
-                ChatUtils.sendLocalChat("${GRAY}Guide: $GUIDE_URL", true)
-                return
-            }
-
-            val current = getSourceCatches(viewMode)
-            val newGood = applyChangeToCurrentValue(parts[0], current.good)
-            val newGreat = applyChangeToCurrentValue(parts[1], current.great)
-            val newOutstanding = applyChangeToCurrentValue(parts[2], current.outstanding)
-            if (newGood == null || newGreat == null || newOutstanding == null) {
-                ChatUtils.sendLocalChat("${RED}Invalid counts. Use integers >= 0, or +N / -N to adjust (result must stay >= 0).", true)
-                return
-            }
-
-            setTreasureCatches(viewMode, TreasureCatchesData(newGood, newGreat, newOutstanding))
-        }
-    }
-
     private fun onChat(event: ChatEvent) {
         if (!Overlays.treasureFishingTrackerOverlay || !WorldUtils.isInSkyblock() || !WorldUtils.isInFishingWorld()) return
 
@@ -242,12 +182,71 @@ object TreasureFishingTracker : IResettableViewModeTracker {
             trackTreasureDyeDrop()
         }
     }
+  
+    private fun onSetTreasureCatchesCommand(args: Array<String>, viewMode: TrackerViewMode) {
+
+        fun sendGuideMessage() {
+            ChatUtils.sendLocalChatWithUrl("${GRAY}Edit Treasure Fishing Tracker guide:", "${GREEN}${UNDERLINE}View in browser", GUIDE_URL, true)
+        }
+
+        CommonUtils.runWithCatching(
+            message = "Failed to set treasure catches.",
+            onError = {
+                ChatUtils.sendLocalChat("${RED}Failed to set treasure catches in the ${trackerName}.", true)
+            }
+        ) {
+            if (!WorldUtils.isInSkyblock()) {
+                ChatUtils.sendLocalChat("${RED}You need to be in Skyblock to use this command.", true)
+                return
+            }
+
+            val commandName = when (viewMode) {
+                TrackerViewMode.SESSION -> SET_CATCHES_COMMAND
+                TrackerViewMode.TOTAL -> SET_CATCHES_TOTAL_COMMAND
+            }
+
+            if (args.isEmpty()) {
+                ChatUtils.sendLocalChat("${RED}Usage: /$commandName <GOOD>/<GREAT>/<OUTSTANDING>${GRAY}, e.g. 100/50/10", true)
+                sendGuideMessage()
+                return
+            }
+
+            val parts = args[0].split("/")
+            val good = parts.getOrNull(0)?.toIntOrNull()
+            val great = parts.getOrNull(1)?.toIntOrNull()
+            val outstanding = parts.getOrNull(2)?.toIntOrNull()
+            if (parts.size != 3 || good == null || great == null || outstanding == null || good < 0 || great < 0 || outstanding < 0) {
+                ChatUtils.sendLocalChat("${RED}Please specify treasure catches in format <GOOD>/<GREAT>/<OUTSTANDING>, e.g. 100/50/10. Each number must be >= 0.", true)
+                sendGuideMessage()
+                return
+            }
+
+            setTreasureCatches(viewMode, TreasureCatchesData(good, great, outstanding))
+        }
+    }
+
+    private fun setTreasureCatches(viewMode: TrackerViewMode, catches: TreasureCatchesData) {
+        val target = getSourceCatches(viewMode)
+        val previous = TreasureCatchesData(good = target.good, great = target.great, outstanding = target.outstanding)
+        target.good = catches.good
+        target.great = catches.great
+        target.outstanding = catches.outstanding
+        saveData()
+        updateGuiLines()
+
+        val viewModeText = getViewModeDisplayText(viewMode)
+        ChatUtils.sendLocalChat(
+            "Successfully changed treasure catches for the ${trackerName} $viewModeText.\n" +
+                "Good: ${previous.good} -> ${catches.good}, Great: ${previous.great} -> ${catches.great}, Outstanding: ${previous.outstanding} -> ${catches.outstanding}.",
+            true
+        )
+    }
 
     fun setTreasureDyes(count: Int, catchesBreakdown: TreasureCatchesData, lastOn: Date?) {
         CommonUtils.runWithCatching(
             message = "Failed to set Treasure Dyes.",
             onError = {
-                ChatUtils.sendLocalChat("${RED}Failed to set Treasure Dyes for the Treasure fishing tracker.", true)
+                ChatUtils.sendLocalChat("${RED}Failed to set Treasure Dyes in the ${trackerName}.", true)
             }
         ) {
             if (!WorldUtils.isInSkyblock()) return
@@ -256,33 +255,8 @@ object TreasureFishingTracker : IResettableViewModeTracker {
             data.total.treasureDyes.initDropCount(count, lastOn, treasuresSinceLast)
             data.total.treasureDyes.catchesBreakdown = catchesBreakdown
             saveData()
-            ChatUtils.sendLocalChat("Successfully changed Treasure Dyes for the Treasure fishing tracker.\nCount = ${count}, treasures since last = ${treasuresSinceLast} (${catchesBreakdown.good} good/${catchesBreakdown.great} great/${catchesBreakdown.outstanding} outstanding), last on = ${lastOn}.", true)
-        }
-    }
-
-    fun setTreasureCatches(viewMode: TrackerViewMode, catches: TreasureCatchesData) {
-        CommonUtils.runWithCatching(
-            message = "Failed to set treasure catches.",
-            onError = {
-                ChatUtils.sendLocalChat("${RED}Failed to set treasure catches for the Treasure fishing tracker.", true)
-            }
-        ) {
-            if (!WorldUtils.isInSkyblock()) return
-
-            val target = getSourceCatches(viewMode)
-            val previous = TreasureCatchesData(good = target.good, great = target.great, outstanding = target.outstanding)
-            target.good = catches.good
-            target.great = catches.great
-            target.outstanding = catches.outstanding
-            saveData()
             updateGuiLines()
-
-            val viewModeText = getViewModeDisplayText(viewMode)
-            ChatUtils.sendLocalChat(
-                "Successfully changed treasure catches for the Treasure fishing tracker $viewModeText.\n" +
-                    "Good: ${previous.good} -> ${catches.good}, Great: ${previous.great} -> ${catches.great}, Outstanding: ${previous.outstanding} -> ${catches.outstanding}.",
-                true
-            )
+            ChatUtils.sendLocalChat("Successfully changed Treasure Dyes for the ${trackerName}.\nCount = ${count}, treasures since last = ${treasuresSinceLast} (${catchesBreakdown.good} Good/${catchesBreakdown.great} Great/${catchesBreakdown.outstanding} Outstanding), last on = ${lastOn}.", true)
         }
     }
 

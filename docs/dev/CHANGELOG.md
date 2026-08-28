@@ -8,7 +8,7 @@ Released on: ???
 - Removed old Rain timer overlay/alert and added new Weather timer/alert working for all new weather-affected worlds. **Please re-enable in settings if you need it!**
 - Removed "Blizzards started" counter from PB because Blizzard in a Bottle was reworked into a mixin.
 - Adjustments to editing Treasure fishing tracker data:
-  - Allowed 0 as Treasure Dye drop count in `/feeshSetTrackerDrops` command.
+  - Allowed 0 as Treasure Dye drop count in `/feeshSetTrackerDrops` command, to initialize catches before your first Treasure Dye.
   - Added `/feeshSetTreasureCatches` / `/feeshSetTreasureCatchesTotal` to set Good/Great/Outstanding catches counts for Session and Total mode.
   - Added [Editing treasure fishing tracker guide](https://github.com/Sleepy-Panda/Feesh/blob/develop/docs/Editing%20treasure%20fishing%20tracker.md).
 

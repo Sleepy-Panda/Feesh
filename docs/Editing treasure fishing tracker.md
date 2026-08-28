@@ -17,19 +17,9 @@ Make sure the overlay is **enabled**. Catch counts and dye stats are independent
 
 | Action | [Session] | [Total] |
 |--------|-----------|---------|
-| Set / adjust counts | `/feeshSetTreasureCatches <GOOD>/<GREAT>/<OUTSTANDING>` | `/feeshSetTreasureCatchesTotal <GOOD>/<GREAT>/<OUTSTANDING>` |
+| Set counts | `/feeshSetTreasureCatches <GOOD>/<GREAT>/<OUTSTANDING>` | `/feeshSetTreasureCatchesTotal <GOOD>/<GREAT>/<OUTSTANDING>` |
 
-Each part of `<GOOD>/<GREAT>/<OUTSTANDING>`:
-
-| Format | Meaning |
-|--------|---------|
-| `100` | Set count to **100** (replace current value) |
-| `+1` | Add **1** to current count |
-| `-1` | Subtract **1** from current count |
-| `+0` | No change |
-| `0` | Set count to **0** |
-
-Each resulting count must be **>= 0**. You can mix absolute and relative values (e.g. `100/+5/-1`).
+Each part must be an integer number **>= 0** (e.g. `100/50/10`). Values replace the current counts.
 
 ## Treasure Dye
 
@@ -52,8 +42,6 @@ Treasures since last drop (shown as "N treasures ago") and RNG meter % are calcu
 
 ```text
 /feeshSetTreasureCatches 100/50/10
-/feeshSetTreasureCatches +10/+5/+1
-/feeshSetTreasureCatches 0/0/+1
 /feeshSetTreasureCatchesTotal 1234/123/12
 /feeshSetTrackerDrops DYE_TREASURE 2 1234/123/12 2025-05-30 23:59:00
 /feeshSetTrackerDrops DYE_TREASURE 2 0/0/0

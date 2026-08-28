@@ -3,6 +3,7 @@ package com.github.sleepypanda.feesh.features.commands
 import com.github.sleepypanda.feesh.utils.RegisterUtils
 import com.github.sleepypanda.feesh.utils.ChatUtils
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
+import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
 import com.github.sleepypanda.feesh.features.overlays.BayouTracker
 import com.github.sleepypanda.feesh.features.overlays.WaterHotspotsTracker
 import com.github.sleepypanda.feesh.features.overlays.CrimsonIsleTracker
@@ -47,13 +48,13 @@ object SetTrackerDropsCommand {
 
         val count = args[1].toIntOrNull()
         if (count == null || count <= 0) {
-            ChatUtils.sendLocalChat("${RED}Please specify correct DROP_COUNT. Must be a positive number.", true)
+            ChatUtils.sendLocalChat("${RED}Please specify correct DROP_COUNT. Must be > 0.", true)
             return
         }
 
         val catchesSinceLast = args[2].toIntOrNull()
         if (catchesSinceLast == null || catchesSinceLast < 0) {
-            ChatUtils.sendLocalChat("${RED}Please specify correct SC_COUNT_SINCE_LAST. Must be a non-negative number (sea creatures since last drop).", true)
+            ChatUtils.sendLocalChat("${RED}Please specify correct SC_COUNT_SINCE_LAST. Must be >= 0 (sea creatures since last drop).", true)
             return
         }
 
@@ -77,13 +78,13 @@ object SetTrackerDropsCommand {
 
         val count = args[1].toIntOrNull()
         if (count == null || count < 0) {
-            ChatUtils.sendLocalChat("${RED}Please specify correct DROP_COUNT. Must be a non-negative number.", true)
+            ChatUtils.sendLocalChat("${RED}Please specify correct DROP_COUNT. Must be >= 0.", true)
             return
         }
 
         val catchesBreakdown = parseTreasureBreakdown(args[2])
         if (catchesBreakdown == null) {
-            ChatUtils.sendLocalChat("${RED}Please specify correct treasures breakdown in format good/great/outstanding, e.g. 1234/123/12.", true)
+            ChatUtils.sendLocalChat("${RED}Please specify treasure catches breakdown in format <GOOD>/<GREAT>/<OUTSTANDING>, e.g. 1234/123/12.", true)
             return
         }
 
@@ -131,12 +132,12 @@ object SetTrackerDropsCommand {
     private fun sendScBasedCommandGuide() {
         ChatUtils.sendLocalChat("${RED}Usage: /${COMMAND_NAME} <DROP_ID> <DROP_COUNT> <SC_COUNT_SINCE_LAST> [LAST_ON_DATE]", true)
         ChatUtils.sendLocalChat("${GRAY}Example: /${COMMAND_NAME} TITANOBOA_SHED 5 30 2025-05-30 23:59:00", true)
-        ChatUtils.sendLocalChat("${GRAY}Guide: ${GUIDE_URL}", true)
+        ChatUtils.sendLocalChatWithUrl("${GRAY}Edit tracker drops guide:", "${GREEN}${UNDERLINE}View in browser", GUIDE_URL, true)
     }
 
     private fun sendTreasureCommandGuide() {
         ChatUtils.sendLocalChat("${RED}Usage: /${COMMAND_NAME} DYE_TREASURE <DROP_COUNT> <GOOD>/<GREAT>/<OUTSTANDING> [LAST_ON_DATE]", true)
         ChatUtils.sendLocalChat("${GRAY}Example: /${COMMAND_NAME} DYE_TREASURE 2 1234/123/12 2025-05-30 23:59:00", true)
-        ChatUtils.sendLocalChat("${GRAY}Guide: ${TreasureFishingTracker.GUIDE_URL}", true)
+        ChatUtils.sendLocalChatWithUrl("${GRAY}Edit Treasure Dyes guide:", "${GREEN}${UNDERLINE}View in browser", TreasureFishingTracker.GUIDE_URL, true)
     }
 }
