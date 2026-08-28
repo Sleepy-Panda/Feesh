@@ -134,7 +134,6 @@ class FeeshMod : ClientModInitializer {
         // PB
         DoubleHookPersonalBest.init()
         MobyDuckPersonalBest.init()
-        BlizzardPersonalBest.init()
 
         // Overlays
         JerryWorkshopTracker.init()
