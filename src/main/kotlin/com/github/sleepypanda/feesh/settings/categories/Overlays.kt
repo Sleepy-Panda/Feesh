@@ -31,6 +31,7 @@ import com.github.sleepypanda.feesh.features.overlays.LotusAtollTracker
 import com.github.sleepypanda.feesh.features.overlays.TorrhusCanyonTracker
 import com.github.sleepypanda.feesh.features.overlays.SeaCreatureHpTracker
 import com.github.sleepypanda.feesh.settings.models.HpTrackableSeaCreatureTypes
+import com.github.sleepypanda.feesh.constants.ModVersionConstants
 import com.github.sleepypanda.feesh.settings.models.EfficiencyStatTypes
 import com.github.sleepypanda.feesh.utils.gui.MoveGuis
 import net.minecraft.client.gui.screens.options.controls.KeyBindsScreen
@@ -555,6 +556,7 @@ ${GRAY}Shows an overlay with various efficiency stats of your fishing session. N
 ${GRAY}To reset: ${WHITE}/${EfficiencyTracker.RESET_COMMAND}
 ${GRAY}To pause: ${WHITE}/${EfficiencyTracker.PAUSE_COMMAND}
 """.trimIndent())
+        this.searchTerms = listOf(ModVersionConstants.VERSION_1_11_0)
     }
 
     var efficiencyTrackerStats by select(
@@ -568,12 +570,13 @@ ${WHITE}- SC catches/hour${GRAY} - tracks sea creature catches, each SC catch co
 ${WHITE}- SC/hour${GRAY} - tracks sea creatures, double hook SC catch counts as 2.
 ${WHITE}- SC/hour with BS${GRAY} - same as SC/hour (includes DH), plus sea creatures you cocooned with Bloodshot (BS).
 """.trimIndent())
-        this.searchTerms = EfficiencyStatTypes.values().map { it.displayName }.toList()
+        this.searchTerms = EfficiencyStatTypes.values().map { it.displayName }.toList() + ModVersionConstants.VERSION_1_11_0
     }
 
     var efficiencyTrackerCustomStyle by boolean(true) {
         this.name = Translated("Apply custom style")
         this.description = Translated(getCustomStyleDescription("Efficiency tracker"))
+        this.searchTerms = listOf(ModVersionConstants.VERSION_1_11_0)
     }
 
     init {
@@ -585,11 +588,13 @@ ${WHITE}- SC/hour with BS${GRAY} - same as SC/hour (includes DH), plus sea creat
     var weatherTimerOverlay by boolean(false) {
         this.name = Translated("Weather timer")
         this.description = Translated("${GRAY}Shows an overlay with the active/upcoming weather event timer. Please enable ${YELLOW}TabList settings -> General Info widget -> Show Weather")
+        this.searchTerms = listOf(ModVersionConstants.VERSION_1_14_0)
     }
 
     var weatherTimerCustomStyle by boolean(true) {
         this.name = Translated("Apply custom style")
         this.description = Translated(getCustomStyleDescription("Weather timer"))
+        this.searchTerms = listOf(ModVersionConstants.VERSION_1_14_0)
     }
 
     init {
@@ -776,16 +781,19 @@ ${GRAY}To reset: ${WHITE}/${MoongladeMarshWaterTracker.RESET_COMMAND}
 ${GRAY}Shows an overlay with Silkbreeze and Giant Isopod catch statistics while fishing in Torrhus Canyon.
 ${GRAY}To reset: ${WHITE}/${TorrhusCanyonTracker.RESET_COMMAND}
         """.trimIndent())
+        this.searchTerms = listOf(ModVersionConstants.VERSION_1_11_0)
     }
 
     var resetTorrhusCanyonTrackerOnGameClosed by boolean(false) {
         this.name = Translated("Autoreset on closing game")
         this.description = Translated("Automatically reset the Torrhus Canyon tracker when you close Minecraft.")
+        this.searchTerms = listOf(ModVersionConstants.VERSION_1_11_0)
     }
 
     var torrhusCanyonTrackerCustomStyle by boolean(true) {
         this.name = Translated("Apply custom style")
         this.description = Translated(getCustomStyleDescription("Torrhus Canyon tracker"))
+        this.searchTerms = listOf(ModVersionConstants.VERSION_1_11_0)
     }
 
     init {
