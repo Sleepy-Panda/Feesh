@@ -3,6 +3,7 @@ package com.github.sleepypanda.feesh.settings.categories
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
 import com.github.sleepypanda.feesh.settings.models.AlertableSeaCreatureTypes
+import com.github.sleepypanda.feesh.constants.ModVersionConstants
 import com.github.sleepypanda.feesh.constants.RareDropTypes
 import com.github.sleepypanda.feesh.utils.enums.DeployableTypes
 import com.github.sleepypanda.feesh.utils.enums.PricingModeWithNpc
@@ -243,6 +244,7 @@ object Alerts : CategoryKt("Alerts") {
         this.description = Translated("How many seconds should remain until deployable expiration to see the alert. This setting is applicable to long-living deployables (3 min or 5 min).")
         this.range = 1..60
         this.slider = true
+        this.searchTerms = listOf(ModVersionConstants.VERSION_1_11_0)
     }
 
     var shortLivingDeployableExpiresSoonSeconds by int(5) {
@@ -250,6 +252,7 @@ object Alerts : CategoryKt("Alerts") {
         this.description = Translated("How many seconds should remain until deployable expiration to see the alert. This setting is applicable to short-living deployables (30s or 1 min).")
         this.range = 1..30
         this.slider = true
+        this.searchTerms = listOf(ModVersionConstants.VERSION_1_11_0)
     }
 
     init {
@@ -309,6 +312,7 @@ object Alerts : CategoryKt("Alerts") {
     var alertOnWeatherEndingSoon by boolean(false) {
         this.name = Translated("Alert when weather event ends soon")
         this.description = Translated("${GRAY}Shows a title and plays a sound when active weather event ends soon. Please enable ${YELLOW}TabList settings -> General Info widget -> Show Weather")
+        this.searchTerms = listOf(ModVersionConstants.VERSION_1_14_0)
     }
 
     init {
@@ -382,6 +386,7 @@ object Alerts : CategoryKt("Alerts") {
     var alertOnOutOfAir by boolean(true) {
         this.name = Translated("Alert when out of air soon")
         this.description = Translated("Shows a title and plays a sound when you are low on air and will start drowning soon. Applicable for Moonglade Marsh and Torrhus Canyon.")
+        this.searchTerms = listOf(ModVersionConstants.VERSION_1_11_0)
     }
 
     var alertOnWormTheFishCaught by boolean(false) {

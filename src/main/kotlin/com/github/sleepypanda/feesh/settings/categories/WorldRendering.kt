@@ -1,5 +1,6 @@
 package com.github.sleepypanda.feesh.settings.categories
 
+import com.github.sleepypanda.feesh.constants.ModVersionConstants
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
 import com.github.sleepypanda.feesh.features.rendering.HidePlayersNearBobber
@@ -87,6 +88,7 @@ object WorldRendering : CategoryKt("World Rendering") {
     var hideTadgangNametags by boolean(false) {
         this.name = Translated("Hide Tadgang nametags")
         this.description = Translated("Hides Tadgang tadpoles nametags in Moonglade Marsh. Tadgang frogs nametags are still visible!.")
+        this.searchTerms = listOf(ModVersionConstants.VERSION_1_12_0)
     }
 
     init {

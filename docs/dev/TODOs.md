@@ -41,7 +41,6 @@ Newly released - https://hypixel.net/threads/hypixel-skyblock-0-24-5-assorted-qo
 - Custom msg in catch message which can be shown in title (e.g. I KILL OWN)
 - Editing the format of feesh titles (summoned creature name, dropped rare item, price of an item, name of the player who did it etc) to change their order, color, duration, location(on title or subtitle) or to add some custom texts in it and so on.
 - Mod name is copied as [ Feesh]
-- Issues with setting RNG meter before first dye in Treasure tracker (0 as drops count)
 - Toggle for PBs, rework trackPersonalBestFishingFestival
 - Max MF PB
 - Xp/h
