@@ -32,6 +32,7 @@ Newly released - https://hypixel.net/threads/hypixel-skyblock-0-24-5-assorted-qo
  GOOD CATCH! You caught a Flexbone!
  GOOD CATCH! You caught a Shinyfish Shard!
 
+- You cannot send same message twice when sharing Isopods
 - Drake sound not muted when using Sound Controller mod
 - integrate medal clipping for rare drops / dyes? have seen it in sbo and its pretty neat  https://medal.tv/developer/auto-clipping#api-reference
 - lf treasure streak (maybe good, great , outstanding streak but maybe to much)
@@ -44,14 +45,12 @@ Newly released - https://hypixel.net/threads/hypixel-skyblock-0-24-5-assorted-qo
 - Toggle for PBs, rework trackPersonalBestFishingFestival
 - Max MF PB
 - Xp/h
-- SMILE! Polizei111 has sprinkled some joy your way! You feel a little happier. :)
 - Share Nessie with coords to all chat?
 - Personal blacklist + party sharing
 - Runic sea creatures - alert or highlight
 - Pickups from trade menu
 - Sea Creature Tracker where it says "Total" could you change that to "Total Sea Creatures"
 - Some legion counting radius logic reported
-- Improve link to changelog in settings, and update announcement
 - Work on various events sounds to make them more unique
 - Ragnarok immunity timer
 - Manual "set tracker drops" command does not reset "sc since last" for that drop.

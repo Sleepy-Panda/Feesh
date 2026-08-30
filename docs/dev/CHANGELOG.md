@@ -5,8 +5,8 @@ Released on: ???
 ## Features
 
 - Added ability to search for version-specific features in /feesh settings GUI (e.g. search for 1.14.0 to see new settings added in this version).
-- Added ability to provide search query when calling /feesh command: `/feesh 1.14.0` or `/feesh profit tracker`
-- Renamed `/feeshSpiderDenRainSchedule` to `/feeshWeatherSchedule` and changed its output to show upcoming Mild / Extreme weather conditions schedule.
+- Added ability to provide search query when calling /feesh command: `/feesh 1.14.0` or `/feesh profit tracker`.
+- Renamed `/feeshSpiderDenRainSchedule` to `/feeshWeatherSchedule` and changed its output to show upcoming Mild / Extreme weather schedule.
 - Removed old Rain timer overlay/alert and added new Weather timer/alert working for all new weather-affected worlds. **Please re-enable in settings if you need it!**
 - Removed "Blizzards started" counter from PB because Blizzard in a Bottle was reworked into a mixin.
 - Adjustments to editing Treasure fishing tracker data:
