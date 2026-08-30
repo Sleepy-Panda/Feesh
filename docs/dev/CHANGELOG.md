@@ -4,8 +4,52 @@ Released on: ???
 
 ## Features
 
-- Fishing profit tracker now tracks bait costs. Overlay shows Total (gross), Costs with hover breakdown, and Profit (Total − Costs).
-  - You can reset costs via `[x]` or `/feeshResetFishingProfitTrackerCosts` for Session / `/feeshResetFishingProfitTrackerCostsTotal` for Total.
+- Added ability to search for version-specific features in /feesh settings GUI (e.g. search for 1.14.0 to see new settings added in this version).
+- Added ability to provide search query when calling /feesh command: `/feesh 1.14.0` or `/feesh profit tracker`.
+- Renamed `/feeshSpiderDenRainSchedule` to `/feeshWeatherSchedule` and changed its output to show upcoming Mild / Extreme weather schedule.
+- Removed old Rain timer overlay/alert and added new Weather timer/alert working for all new weather-affected worlds. **Please re-enable in settings if you need it!**
+- Removed "Blizzards started" counter from PB because Blizzard in a Bottle was reworked into a mixin.
+- Adjustments to editing Treasure fishing tracker data:
+  - Allowed 0 as Treasure Dye drop count in `/feeshSetTrackerDrops` command, to initialize catches before your first Treasure Dye.
+  - Added `/feeshSetTreasureCatches` / `/feeshSetTreasureCatchesTotal` to set Good/Great/Outstanding catches counts for Session and Total mode.
+  - Added [Editing treasure fishing tracker guide](https://github.com/Sleepy-Panda/Feesh/blob/develop/docs/Editing%20treasure%20fishing%20tracker.md).
+
+## Bugfixes
+
+- Removed Corruption I book from profit tracker as they are not in the drop pool anymore.
+- Removed Bayou Travel Scroll from /feeshJunkerJoelShopPrices command output.
+- Fixed Tadgang's tadpoles nametags not being hidden after changing their mob level.
+
+# 1.13.0
+
+Released on: 2026-08-24
+
+## Features
+
+- Added Sea Brine (new Brineling drop) to Fishing profit tracker.
+- Added Uncommon Foraging Exp Boost (Ent drop) and removed Epic Foraging Exp Boost in the Fishing profit tracker.
+- Added Giant Isopod to the ALL CHAT rare catch share functionality.
+- Added option to hide Trophy Fish/Frog catch messages from the chat for selected rarities [disabled by default].
+  - You will still see newly discovered ones, but cleanup chat from already obtained trophies.
+- Added option to hide lootshare messages when in Frozen Blaze armor [disabled by default].
+- Added SkyHanni party chat message format for cocoon alert.
+
+## Bugfixes
+
+- Fixed partial Magma Pillar highlighting.
+- Fixed detection if player is in Trophy armor not working sometimes when SB does not return equipped armor details.
+- Fixed some cases of items not being counted into the Fishing profit tracker on pickup (e.g. while in pet menu).
+- Pinned Dyes at the top of Fishing profit tracker for NPC Sell price mode.
+- Made "Equip fishing armor" alert no longer repeat while the same armor is equipped.
+- Made non-reforged Frozen Blaze armor no more triggering "Equip fishing armor" alert.
+- Fixed "Mute Reindrake gifts" not working when killing other player's dragon.
+  - There is still issue with Sound Controller overriding mute applied by Feesh.
+- Fixed numbers rounding issue showing "1000k" instead of "1M" sometimes.
+
+## Other
+
+- Removed support of 1.21.11. RIP
+- Added debug command /feeshDebugLogSounds for logging every sound played within 5 seconds.
 
 # 1.12.3
 

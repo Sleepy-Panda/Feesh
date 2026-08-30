@@ -7,10 +7,10 @@ import com.github.sleepypanda.feesh.events.EventBus
 import com.github.sleepypanda.feesh.events.models.ClientTickEvent
 import com.github.sleepypanda.feesh.events.models.ChatEvent
 import com.github.sleepypanda.feesh.events.models.GameClosedEvent
-import com.github.sleepypanda.feesh.events.models.GuiClosedEvent
+import com.github.sleepypanda.feesh.events.models.InventoryProfitItemPickupEvent
 import com.github.sleepypanda.feesh.events.models.WorldChangedEvent
 import com.github.sleepypanda.feesh.events.models.PetLevelUpEvent
-import com.github.sleepypanda.feesh.events.models.SacksItemsPickupEvent
+import com.github.sleepypanda.feesh.events.models.SacksProfitItemsPickupEvent
 import com.github.sleepypanda.feesh.events.models.ShardCaughtEvent
 import com.github.sleepypanda.feesh.events.models.PricesUpdatedEvent
 import com.github.sleepypanda.feesh.events.models.IceEssenceStatusBarEvent
@@ -28,7 +28,6 @@ import com.github.sleepypanda.feesh.utils.RegisterUtils
 import com.github.sleepypanda.feesh.utils.WorldUtils
 import com.github.sleepypanda.feesh.utils.PlayerUtils
 import com.github.sleepypanda.feesh.utils.FishingHookUtils
-import com.github.sleepypanda.feesh.utils.GuiUtils
 import com.github.sleepypanda.feesh.utils.gui.FeeshGui
 import com.github.sleepypanda.feesh.utils.gui.GuiButton
 import com.github.sleepypanda.feesh.utils.gui.LineAction
@@ -39,12 +38,9 @@ import com.github.sleepypanda.feesh.utils.enums.PricingModeWithNpc
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
 import com.github.sleepypanda.feesh.utils.SoundUtils
-import com.github.sleepypanda.feesh.utils.ChatUtils.removeFormatting
-import com.github.sleepypanda.feesh.utils.ChatUtils.getFormattedString
 import com.github.sleepypanda.feesh.utils.ItemUtils
 import com.github.sleepypanda.feesh.features.overlays.base.IResettableViewModeTracker
 import com.github.sleepypanda.feesh.features.overlays.base.TrackerViewMode
-import com.google.gson.JsonParser
 import net.minecraft.core.component.DataComponents
 import net.minecraft.network.chat.Component
 import java.util.Date
@@ -106,14 +102,12 @@ object FishingProfitTracker : IResettableViewModeTracker {
     private val MIRIA_CONTEST_BRACKET_PATTERN = Regex("^\\[NPC] Miria: You reached the (COMMON|UNCOMMON|RARE|EPIC|LEGENDARY|MYTHIC|DIVINE|SPECIAL) Bracket in my contest!$")
 
     private const val TICKS_TIMER_ELAPSED_TIME = 20
-    private const val TICKS_INVENTORY = 5
     private const val HIDE_OVERLAY_AFTER_HOOK_MINUTES = 5
     private const val FISHED_COINS_ITEM_ID = "FISHED_COINS"
 
     private val data: FishingProfitData
         get() = PersistentDataManager.feeshData.fishingProfit
 
-    private var previousInventory: MutableMap<String, Int>? = null
     private var isSessionActive = false
     private var tickCounter = 0
 
@@ -150,9 +144,9 @@ object FishingProfitTracker : IResettableViewModeTracker {
         EventBus.subscribe(ClientTickEvent::class, ::onClientTick)
         EventBus.subscribe(GameClosedEvent::class, ::onGameClosed)
         EventBus.subscribe(WorldChangedEvent::class, ::onWorldChanged)
-        EventBus.subscribe(GuiClosedEvent::class, ::onGuiClosed)
         EventBus.subscribe(PetLevelUpEvent::class, ::onPetReachedMaxLevel)
-        EventBus.subscribe(SacksItemsPickupEvent::class, ::onSacksItemsPickup)
+        EventBus.subscribe(SacksProfitItemsPickupEvent::class, ::onSacksProfitItemsPickup)
+        EventBus.subscribe(InventoryProfitItemPickupEvent::class, ::onInventoryProfitItemPickup)
         EventBus.subscribe(ShardCaughtEvent::class, ::onShardCaught)
         EventBus.subscribe(IceEssenceStatusBarEvent::class, ::onIceEssenceStatusBar)
         EventBus.subscribe(PricesUpdatedEvent::class, ::onPricesUpdated)
@@ -160,7 +154,6 @@ object FishingProfitTracker : IResettableViewModeTracker {
     }
 
     override fun onBeforeReset() {
-        previousInventory = null
         isSessionActive = false
     }
 
@@ -266,20 +259,13 @@ object FishingProfitTracker : IResettableViewModeTracker {
         pause()
     }
 
-    private fun onGuiClosed(@Suppress("UNUSED_PARAMETER") event: GuiClosedEvent) {
-        detectInventoryChanges() // Actualize inventory state after taking items from chest and quickly closing a GUI
-    }
-
     private fun onClientTick(@Suppress("UNUSED_PARAMETER") event: ClientTickEvent) {
         tickCounter++
+        if (tickCounter < TICKS_TIMER_ELAPSED_TIME) return
+        tickCounter = 0
 
-        if (tickCounter % TICKS_TIMER_ELAPSED_TIME == 0) {
-            refreshElapsedTime()
-            updateGuiLines()
-        }
-        if (tickCounter % TICKS_INVENTORY == 0) {
-            detectInventoryChanges()
-        }
+        refreshElapsedTime()
+        updateGuiLines()
     }
 
     private fun onPricesUpdated(@Suppress("UNUSED_PARAMETER") event: PricesUpdatedEvent) {
@@ -309,7 +295,6 @@ object FishingProfitTracker : IResettableViewModeTracker {
     }
 
     private fun pause() {
-        previousInventory = null
         isSessionActive = false
     }
 
@@ -744,40 +729,86 @@ object FishingProfitTracker : IResettableViewModeTracker {
         saveData()
     }
 
-    private fun onSacksItemsPickup(event: SacksItemsPickupEvent) {
-        if (!isSessionActive || !isTrackerVisible()) return
-        if (GuiUtils.isInSacksGui() || GuiUtils.isInSupercraftGui()) return
+    private fun getCostItemPrice(itemId: String): Double {
+        val dropInfo = FishingProfitDrops.items.find { it.itemId == itemId }
+        if (Overlays.fishingProfitTrackerPriceMode == PricingModeWithNpc.NPC_SELL) {
+            dropInfo?.npcPrice?.let { return it }
+        }
 
-        val lastGuisClosed = GuiUtils.lastGuisClosed
-        val cooldownMilliseconds = 31_000
-
-        // 30 seconds is the maximum time to receive "[Sacks] +..." message after items were added to the sack
-        if (lastGuisClosed.lastSacksGuiClosedAt != null && Date().time - lastGuisClosed.lastSacksGuiClosedAt!!.time < cooldownMilliseconds) return
-        if (lastGuisClosed.lastSupercraftGuiClosedAt != null && Date().time - lastGuisClosed.lastSupercraftGuiClosedAt!!.time < cooldownMilliseconds) return
-
-        var added = false
-        for (item in event.items) {
-            if (item.amount <= 0 || item.itemName.isBlank()) continue
-            val itemName = ItemUtils.getCleanItemName(item.itemName)
-            val dropInfo = getFishingProfitItemByName(itemName) ?: continue
-            if (dropInfo.ignoreFromInventory) continue
-
-            if (dropInfo.itemId.startsWith("MAGMA_FISH") && 
-                lastGuisClosed.lastOdgerGuiClosedAt != null && Date().time - lastGuisClosed.lastOdgerGuiClosedAt!!.time < cooldownMilliseconds) {
-                continue; // User probably just filleted trophy fish
-            } else if (dropInfo.itemId.startsWith("LOTUS") && 
-                lastGuisClosed.lastTrophyFrogsGuiClosedAt != null && Date().time - lastGuisClosed.lastTrophyFrogsGuiClosedAt!!.time < cooldownMilliseconds) {
-                continue; // User probably just picked up trophy frogs
-            }
-
-            addProfitTrackerItem(dropInfo.itemId, dropInfo.itemName, item.amount, null, true)
-            added = true
-
-            if (Overlays.shouldAnnounceRareDropsWhenPickup && dropInfo.shouldAnnounceRareDrop) {
-                announceRareDropInChat(dropInfo, item.amount)
+        val bazaar = PriceUtils.getBazaarItemPrices(itemId)
+        if (bazaar != null) {
+            return when (Overlays.fishingProfitTrackerPriceMode) {
+                PricingModeWithNpc.INSTA_SELL -> bazaar.instaSell
+                PricingModeWithNpc.NPC_SELL -> dropInfo?.npcPrice ?: bazaar.instaSell
+                else -> bazaar.sellOffer
             }
         }
-        if (added) refreshTotalItemsProfits()
+
+        val auction = PriceUtils.getAuctionItemPrice(itemId)
+        if (auction != null) return auction.lbin
+
+        return dropInfo?.npcPrice ?: 0.0
+    }
+
+    private fun addCostTrackerItem(itemId: String, itemName: String, amountToAdd: Int) {
+        addCostTrackerItemInMode(TrackerViewMode.SESSION, itemId, itemName, amountToAdd)
+        addCostTrackerItemInMode(TrackerViewMode.TOTAL, itemId, itemName, amountToAdd)
+        refreshTotalItemsProfits()
+    }
+
+    private fun addCostTrackerItemInMode(
+        viewMode: TrackerViewMode,
+        itemId: String,
+        itemName: String,
+        amountToAdd: Int
+    ) {
+        val sourceObj = getSourceObject(viewMode)
+        val existing = sourceObj.costItems[itemId]
+        val currentAmount = existing?.amount ?: 0
+        sourceObj.costItems[itemId] = ProfitTrackerCostEntry(
+            itemName = itemName,
+            itemId = itemId,
+            amount = currentAmount + amountToAdd,
+            totalItemCost = existing?.totalItemCost ?: 0.0
+        )
+        saveData()
+    }
+
+    private fun onInventoryProfitItemPickup(event: InventoryProfitItemPickupEvent) {
+        
+        fun onItemAddedToInventory(itemId: String, difference: Int) {
+            val dropInfo = FishingProfitDrops.items.find { it.itemId == itemId } ?: return            
+            if (difference <= 0) return
+    
+            addProfitTrackerItem(itemId, dropInfo.itemName, difference, null, true)
+    
+            if (Overlays.shouldAnnounceRareDropsWhenPickup && dropInfo.shouldAnnounceRareDrop) {
+                announceRareDropInChat(dropInfo, difference)
+            }
+        }
+
+        if (!isSessionActive || !isTrackerVisible()) return
+
+        CommonUtils.runWithCatching("Failed to process inventory profit item pickup event in $trackerName") {
+            onItemAddedToInventory(event.itemId, event.amount)
+            refreshTotalItemsProfits()
+        }
+    }
+
+    private fun onSacksProfitItemsPickup(event: SacksProfitItemsPickupEvent) {
+        if (!isSessionActive || !isTrackerVisible()) return
+
+        CommonUtils.runWithCatching("Failed to process sacks profit items pickup event in $trackerName") {
+            for (item in event.items) {
+                val dropInfo = FishingProfitDrops.items.find { it.itemId == item.itemId } ?: continue
+                addProfitTrackerItem(dropInfo.itemId, dropInfo.itemName, item.amount, null, true)
+
+                if (Overlays.shouldAnnounceRareDropsWhenPickup && dropInfo.shouldAnnounceRareDrop) {
+                    announceRareDropInChat(dropInfo, item.amount)
+                }
+            }
+            refreshTotalItemsProfits()
+        }
     }
 
     private fun onIceEssenceStatusBar(event: IceEssenceStatusBarEvent) {
@@ -893,115 +924,6 @@ object FishingProfitTracker : IResettableViewModeTracker {
         saveData()
     }
 
-    private fun detectInventoryChanges() {
-        if (!isSessionActive || !isTrackerVisible()) {
-            previousInventory = null
-            return
-        }
-
-        if (previousInventory == null) {
-            previousInventory = getFishingProfitItemsInCurrentInventory().toMutableMap()
-            return
-        }
-
-        if (isPlayerMovingItem()) return
-
-        val currentInventory = getFishingProfitItemsInCurrentInventory()
-
-        // Allow being in some GUIs, because we often are in them when killing mobs and getting drops
-        if (GuiUtils.isInChest() && !GuiUtils.isInNonStorageGui()) {
-            previousInventory = currentInventory.toMutableMap()
-            return
-        }
-
-        var isUpdated = false
-
-        for ((itemId, currentTotal) in currentInventory) {
-            val previousTotal = previousInventory!![itemId] ?: 0
-            if (currentTotal > previousTotal) {
-                onItemAddedToInventory(itemId, previousTotal, currentTotal)
-                isUpdated = true
-            }
-        }
-
-        previousInventory = currentInventory.toMutableMap()
-        if (isUpdated) refreshTotalItemsProfits()
-    }
-
-    private fun getFishingProfitItemsInCurrentInventory(): Map<String, Int> {
-        val result = mutableMapOf<String, Int>()
-        val player = FeeshMod.mc.player ?: return result
-
-        for (i in 0..35) {
-            if (i == 8) continue // Bottom-right slot in player inventory UI (hotbar rightmost slot) which contains Bait Bag preview
-            val stack = player.inventory.getItem(i)
-            if (stack.isEmpty) continue
-            var slotItemName = ItemUtils.getCleanItemName(stack.hoverName.getFormattedString())
-            if (slotItemName.isBlank()) continue
-
-            if (slotItemName == "Enchanted Book") {
-                val bookName = ItemUtils.getEnchantedBookName(stack) ?: ""
-                if (bookName.isNotBlank()) {
-                    slotItemName += " ($bookName)"
-                }
-            }
-
-            if (slotItemName.endsWith("Exp Boost")) {
-                val loreLines = ItemUtils.getUnformattedLoreLines(stack)
-                val petItemLine = loreLines.find { it.endsWith("PET ITEM") }
-                if (petItemLine != null) {
-                    val description = petItemLine.split(" ").firstOrNull() ?: ""
-                    slotItemName += " ($description)"
-                }
-            }
-
-            if (slotItemName.startsWith("[Lvl 1] ")) {
-                val customData = ItemUtils.getCustomData(stack)
-                if (customData != null && ItemUtils.getCustomDataId(customData) == "PET") {
-                    val petInfoStr = ItemUtils.getCustomDataPetInfo(customData)
-                    val rarity = petInfoStr?.let { s ->
-                        try {
-                            JsonParser.parseString(s).asJsonObject.get("tier")?.takeIf { it.isJsonPrimitive }?.asString
-                        } catch (_: Exception) {
-                            null
-                        }
-                    }
-                    slotItemName += " (${rarity?.uppercase() ?: ""})"
-                }
-            }
-
-            val dropInfo = getFishingProfitItemByName(slotItemName)
-            if (dropInfo != null) {
-                result[dropInfo.itemId] = (result[dropInfo.itemId] ?: 0) + stack.count
-            }
-        }
-        return result
-    }
-
-    private fun getFishingProfitItemByName(itemName: String): FishingProfitDropInfo? {
-        val lower = itemName.lowercase()
-        return FishingProfitDrops.items.find {
-            it.itemName.lowercase() == lower ||
-                it.itemAlternateNames.any { alt -> alt.lowercase() == lower }
-        }
-    }
-
-    private fun onItemAddedToInventory(itemId: String, previousCount: Int, newCount: Int) {
-        val dropInfo = FishingProfitDrops.items.find { it.itemId == itemId } ?: return
-        if (dropInfo.ignoreFromInventory) return
-        
-        val difference = newCount - previousCount
-        if (difference <= 0) return
-
-        if (shouldSkipItem(itemId, dropInfo)) return
-
-        addProfitTrackerItem(itemId, dropInfo.itemName, difference, null, true)
-
-        if (Overlays.shouldAnnounceRareDropsWhenPickup && dropInfo.shouldAnnounceRareDrop) {
-            announceRareDropInChat(dropInfo, difference)
-        }
-    }
-
     private fun announceRareDropInChat(dropInfo: FishingProfitDropInfo, count: Int) {
         if (!Overlays.shouldAnnounceRareDropsWhenPickup || !dropInfo.shouldAnnounceRareDrop) return
 
@@ -1009,42 +931,6 @@ object FishingProfitTracker : IResettableViewModeTracker {
         ChatUtils.sendLocalChat("${GOLD}${BOLD}RARE DROP! ${RESET}${dropInfo.itemDisplayName}$diffText", true)
 
         if (General.soundMode != SoundMode.OFF) SoundUtils.playCustomSound(Sounds.FEESH_RARE_DROP)
-    }
-
-    private fun shouldSkipItem(itemId: String, dropInfo: FishingProfitDropInfo): Boolean {
-        val now = Date()
-        val lastGuisClosed = GuiUtils.lastGuisClosed
-
-        if (itemId.startsWith("MAGMA_FISH") && lastGuisClosed.lastOdgerGuiClosedAt != null &&
-            now.time - lastGuisClosed.lastOdgerGuiClosedAt!!.time < 1000) return true // User probably just filleted trophy fish
-
-        if (itemId.startsWith("LOTUS") && lastGuisClosed.lastTrophyFrogsGuiClosedAt != null &&
-            now.time - lastGuisClosed.lastTrophyFrogsGuiClosedAt!!.time < 1000) return true // User probably just exchanged trophy frogs
-
-        if (dropInfo.categories.contains(FishingProfitDrops.PET_ITEM_CATEGORY) && lastGuisClosed.lastPetItemSwapGuiClosedAt != null && 
-            now.time - lastGuisClosed.lastPetItemSwapGuiClosedAt!!.time < 1000) return true
-
-        if (lastGuisClosed.lastAuctionGuiClosedAt != null && now.time - lastGuisClosed.lastAuctionGuiClosedAt!!.time < 3_000) return true
-
-        val lastKatUpgrade = GuiUtils.lastKatUpgrade
-        if (lastKatUpgrade.lastPetClaimedAt != null && now.time - lastKatUpgrade.lastPetClaimedAt!!.time < 7_000) { // It takes some time for pet to appear in the inventory after claiming from Kat
-            val katPetName = lastKatUpgrade.petName?.removeFormatting() ?: return false
-            if (dropInfo.itemName.contains(katPetName)) return true
-        }
-
-        val lastGfsCommand = GuiUtils.lastGfsCommand
-        if (lastGfsCommand.executedAt != null && now.time - lastGfsCommand.executedAt!!.time < 1_000) {
-            val gfsItemName = lastGfsCommand.itemName ?: return false
-            if (dropInfo.itemName.removeFormatting().equals(gfsItemName, ignoreCase = true)) return true
-        }
-
-        return false
-    }
-
-    private fun isPlayerMovingItem(): Boolean {
-        val player = FeeshMod.mc.player ?: return false
-        val cursor = player.inventoryMenu.carried
-        return !cursor.isEmpty
     }
 
     private fun toggleViewMode() {
@@ -1276,14 +1162,23 @@ object FishingProfitTracker : IResettableViewModeTracker {
     }
 
     private fun getDisplayTrackerData(viewMode: TrackerViewMode): DisplayTrackerData {
+
+        fun isDyeDrop(itemId: String): Boolean {
+            return FishingProfitDrops.items.find { it.itemId == itemId }?.categories?.contains(FishingProfitDrops.DYE_CATEGORY) == true
+        }
+
         val sourceObj = getSourceObject(viewMode)
         val minPrice = if (viewMode == TrackerViewMode.SESSION) Overlays.fishingProfitTrackerHideCheaperThan.toDouble() else Overlays.fishingProfitTrackerHideCheaperThanTotal.toDouble()
         val topN = Overlays.fishingProfitTrackerShowTop.coerceIn(1, 50)
+        val pinDyes = Overlays.fishingProfitTrackerPriceMode == PricingModeWithNpc.NPC_SELL
         val entries = sourceObj.profitTrackerItems.values.map { v ->
             EntryDisplay(v.itemId, getDisplayNameForGui(v.itemId, v.itemName), v.amount, v.totalItemProfit)
-        }.sortedByDescending { it.profit }
-        val expensive = entries.filter { it.profit >= minPrice || it.item.contains("Kuudra Key") }
-        val cheap = entries.filter { it.profit < minPrice && !it.item.contains("Kuudra Key") }
+        }.sortedWith(
+            if (pinDyes) compareByDescending<EntryDisplay> { isDyeDrop(it.itemId) }.thenByDescending { it.profit }
+            else compareByDescending { it.profit }
+        )
+        val expensive = entries.filter { it.profit >= minPrice || (pinDyes && isDyeDrop(it.itemId)) }
+        val cheap = entries.filter { it.profit < minPrice && !(pinDyes && isDyeDrop(it.itemId)) }
         val toShow = expensive.take(topN)
         val toHide = expensive.drop(topN) + cheap
         val elapsedHours = sourceObj.elapsedSeconds / 3600.0

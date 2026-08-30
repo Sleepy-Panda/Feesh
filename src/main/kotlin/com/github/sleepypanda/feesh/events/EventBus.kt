@@ -28,11 +28,7 @@ import net.minecraft.client.gui.screens.inventory.InventoryScreen
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientEntityEvents
-//#if MC >= 26.1
-//$$ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLevelEvents as ClientWorldEvents
-//#else
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientWorldEvents
-//#endif
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLevelEvents as ClientWorldEvents
 import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback
 import net.fabricmc.fabric.api.client.screen.v1.ScreenMouseEvents
 import net.minecraft.world.entity.item.ItemEntity
@@ -108,11 +104,7 @@ object EventBus {
             publish(GameStartedEvent())
         }
 
-        //#if MC >= 26.1
-        //$$ ClientWorldEvents.AFTER_CLIENT_LEVEL_CHANGE.register { mc, world ->
-        //#else
-        ClientWorldEvents.AFTER_CLIENT_WORLD_CHANGE.register { mc, world ->
-        //#endif
+        ClientWorldEvents.AFTER_CLIENT_LEVEL_CHANGE.register { mc, world ->
             publish(WorldChangedEvent(mc, world))
         }
 

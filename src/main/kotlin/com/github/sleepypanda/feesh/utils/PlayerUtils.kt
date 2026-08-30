@@ -3,10 +3,10 @@ package com.github.sleepypanda.feesh.utils
 import com.github.sleepypanda.feesh.FeeshMod
 import com.github.sleepypanda.feesh.utils.ChatUtils.getFormattedString
 import com.github.sleepypanda.feesh.utils.ChatUtils.getUnformattedString
+import com.github.sleepypanda.feesh.utils.ItemUtils
 import com.github.sleepypanda.feesh.events.EventBus
+import com.github.sleepypanda.feesh.events.models.ClientTickEvent
 import com.github.sleepypanda.feesh.events.models.WorldChangedEvent
-import java.util.Timer
-import kotlin.concurrent.timerTask
 import net.minecraft.world.entity.EquipmentSlot
 
 data class FishingRodInHandCache(
@@ -14,37 +14,61 @@ data class FishingRodInHandCache(
     val itemNameFormatted: String? = null,
 )
 
+data class EquippedArmorPiece(
+    val itemId: String? = null,
+    val itemName: String? = null,
+    val loreLines: List<String> = emptyList(),
+)
+
 object PlayerUtils {
     private var cachedHasFishingRodInHotbar: Boolean = false
     private var fishingRodInHandCache = null as FishingRodInHandCache?
     private var cachedHasDirtRodInHand: Boolean = false
+
+    private var cachedEquippedArmorPieces: Array<EquippedArmorPiece>? = null
     private var cachedIsInTrophyArmor: Boolean = false
-    private var timer: Timer? = null
+    private var cachedIsInFrozenBlaze: Boolean = false
+
+    private var tickCounter = 0
+
+    private const val TICKS_PER_UPDATE = 5
+
+    private val TROPHY_ARMOR_ID_PREFIXES = listOf(
+        "FROGGLES", "RED_SWEATER",
+        "BRONZE_HUNTER_", "SILVER_HUNTER_", "GOLD_HUNTER_", "DIAMOND_HUNTER_",
+    )
+
+    private val FROZEN_BLAZE_ARMOR_IDS = listOf(
+        "FROZEN_BLAZE_HELMET", "FROZEN_BLAZE_CHESTPLATE", "FROZEN_BLAZE_LEGGINGS", "FROZEN_BLAZE_BOOTS",
+    )
 
     fun init() {
-        startTimer()
+        EventBus.subscribe(ClientTickEvent::class, ::onClientTick)
         EventBus.subscribe(WorldChangedEvent::class, ::onWorldChanged)
     }
 
-    private fun startTimer() {
-        timer?.cancel()
-        timer = Timer("Feesh-PlayerUtils", true)
-        
-        val task = timerTask {
-            CommonUtils.runWithCatching("Failed to update player utils cache") {
-                setHasFishingRodInHotbar()
-                setFishingRodInHand()
-                setIsInTrophyArmor()
-            }
+    private fun onClientTick(@Suppress("UNUSED_PARAMETER") event: ClientTickEvent) {
+        tickCounter++
+        if (tickCounter < TICKS_PER_UPDATE) return
+        tickCounter = 0
+
+        CommonUtils.runWithCatching("Failed to update player utils cache") {
+            setHasFishingRodInHotbar()
+            setFishingRodInHand()
+            cachedEquippedArmorPieces = readEquippedArmorPieces()
+            setIsInTrophyArmor(cachedEquippedArmorPieces)
+            setIsInFrozenBlaze(cachedEquippedArmorPieces)
         }
-        timer?.scheduleAtFixedRate(task, 0, 250)
     }
 
     private fun onWorldChanged(@Suppress("UNUSED_PARAMETER") event: WorldChangedEvent) {
         cachedHasFishingRodInHotbar = false
         fishingRodInHandCache = null
         cachedHasDirtRodInHand = false
+        cachedEquippedArmorPieces = null
         cachedIsInTrophyArmor = false
+        cachedIsInFrozenBlaze = false
+        tickCounter = 0
     }
 
     /*
@@ -111,9 +135,19 @@ object PlayerUtils {
         return cachedHasDirtRodInHand
     }
 
-    /** Whether the player is wearing the armor for trophy fishing / trophy frogging (Bronze/Silver/Gold/Diamond Hunter, Froggles, Red Sweater). */
+    /** Get the player's equipped armor pieces. */
+    fun getEquippedArmorPieces(): Array<EquippedArmorPiece>? {
+        return cachedEquippedArmorPieces
+    }
+
+    /** Whether the player is wearing the full armor set for trophy fishing / trophy frogging. */
     fun isInTrophyArmor(): Boolean {
         return cachedIsInTrophyArmor
+    }
+
+    /** Whether the player is wearing a full Frozen Blaze armor set. */
+    fun isInFrozenBlaze(): Boolean {
+        return cachedIsInFrozenBlaze
     }
 
     private fun setHasFishingRodInHotbar() {
@@ -155,24 +189,51 @@ object PlayerUtils {
         }
     }
 
-    private fun setIsInTrophyArmor() {
-        val player = FeeshMod.mc.player ?: run {
-            cachedIsInTrophyArmor = false
-            return
-        }
-        
-        val helmet = player.getItemBySlot(EquipmentSlot.HEAD)
-        val chestplate = player.getItemBySlot(EquipmentSlot.CHEST)
-        val leggings = player.getItemBySlot(EquipmentSlot.LEGS)
-        val boots = player.getItemBySlot(EquipmentSlot.FEET)
-        
-        val armorPieces = listOf(helmet, chestplate, leggings, boots)
-        cachedIsInTrophyArmor = armorPieces.all { armorPiece ->
-            if (armorPiece == null || armorPiece.isEmpty) return@all false
-            val itemName = armorPiece.hoverName?.getUnformattedString() ?: return@all false
-            return@all itemName.contains("Hunter", ignoreCase = true) || 
-                itemName.contains("Froggles", ignoreCase = true) || 
+    private fun readEquippedArmorPieces(): Array<EquippedArmorPiece>? {
+        val player = FeeshMod.mc.player ?: return null
+        val armorSlots = arrayOf(
+            EquipmentSlot.HEAD,
+            EquipmentSlot.CHEST,
+            EquipmentSlot.LEGS,
+            EquipmentSlot.FEET,
+        )
+
+        return armorSlots.map { slot ->
+            val armorPiece = player.getItemBySlot(slot)
+            if (armorPiece == null || armorPiece.isEmpty) {
+                EquippedArmorPiece()
+            } else {
+                EquippedArmorPiece(
+                    itemId = ItemUtils.getCustomData(armorPiece)?.let { ItemUtils.getCustomDataId(it) },
+                    itemName = armorPiece.hoverName?.getUnformattedString(),
+                    loreLines = ItemUtils.getUnformattedLoreLines(armorPiece),
+                )
+            }
+        }.toTypedArray()
+    }
+
+    private fun setIsInTrophyArmor(armorPieces: Array<EquippedArmorPiece>?) {
+        cachedIsInTrophyArmor = armorPieces?.all { armorPiece ->
+            val itemId = armorPiece.itemId
+            if (itemId != null && TROPHY_ARMOR_ID_PREFIXES.any { itemId.startsWith(it) }) return@all true
+
+            val itemName = armorPiece.itemName ?: return@all false
+            return@all itemName.contains("Hunter", ignoreCase = true) ||
+                itemName.contains("Froggles", ignoreCase = true) ||
                 itemName.contains("Red Sweater", ignoreCase = true)
-        }
+        } ?: false
+    }
+
+    private fun setIsInFrozenBlaze(armorPieces: Array<EquippedArmorPiece>?) {
+        cachedIsInFrozenBlaze = armorPieces?.all { armorPiece ->
+            val itemId = armorPiece.itemId
+            if (itemId != null && FROZEN_BLAZE_ARMOR_IDS.any { itemId == it }) return@all true
+
+            val itemName = armorPiece.itemName ?: return@all false
+            return@all itemName.contains("Frozen Blaze Helmet", ignoreCase = true) ||
+                itemName.contains("Frozen Blaze Chestplate", ignoreCase = true) ||
+                itemName.contains("Frozen Blaze Leggings", ignoreCase = true) ||
+                itemName.contains("Frozen Blaze Boots", ignoreCase = true)
+        } ?: false
     }
 }

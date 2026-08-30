@@ -1,5 +1,6 @@
 package com.github.sleepypanda.feesh.settings.categories
 
+import com.github.sleepypanda.feesh.constants.ModVersionConstants
 import com.github.sleepypanda.feesh.features.items.background.BackgroundHighlighterManager
 import com.github.sleepypanda.feesh.features.items.background.TrashBooksHighlighter
 import com.github.sleepypanda.feesh.features.items.slottext.SlotTextRendererManager
@@ -101,6 +102,7 @@ object Items : CategoryKt("Items") {
     var compactRodPartTooltip by ObservableEntry(boolean(false) {
         this.name = Translated("Compact rod parts")
         this.description = Translated("Hides descriptions for fishing rod parts (Hook, Line, and Sinker), keeping only the part name.")
+        this.searchTerms = listOf(ModVersionConstants.VERSION_1_11_0)
     }) { prev, new ->
         if (prev != new) {
             TooltipManager.refreshEnabledAdders()

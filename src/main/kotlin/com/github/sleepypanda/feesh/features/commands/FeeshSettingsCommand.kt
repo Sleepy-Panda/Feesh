@@ -7,10 +7,15 @@ import com.teamresourceful.resourcefulconfig.api.client.ResourcefulConfigScreen
 
 object FeeshSettingsCommand {
     fun init() {
-        RegisterUtils.command("feesh") {
+        RegisterUtils.command("feesh") { args ->
+            val query = args.joinToString(" ").trim()
             val mc = FeeshMod.mc
             mc.schedule {
-                mc.setScreenCompat(ResourcefulConfigScreen.getFactory("feesh").apply(null))
+                mc.setScreenCompat(
+                    ResourcefulConfigScreen.make(FeeshMod.INSTANCE.settings)
+                        .withQuery(query)
+                        .build()
+                )
             }
         }
     }

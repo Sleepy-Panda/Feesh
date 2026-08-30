@@ -132,6 +132,14 @@ object RareMobHighlight {
             }
         }
 
+        // Magma Pillar consists of 9 magma cube entities
+        if (cleanName == HighlightableSeaCreatureTypes.MAGMA_PILLAR.displayName) {
+            (2..9).forEach { shift ->
+                val prevEntity = world.getEntity(event.entityId - shift) as? LivingEntity ?: return@forEach
+                entities.add(prevEntity)
+            }
+        }
+
         entities.forEach { glowTarget ->
             applyGlow(glowTarget, color)
         }

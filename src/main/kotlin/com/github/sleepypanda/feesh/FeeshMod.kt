@@ -3,6 +3,7 @@ package com.github.sleepypanda.feesh
 import com.github.sleepypanda.feesh.features.alerts.*
 import com.github.sleepypanda.feesh.features.chat.*
 import com.github.sleepypanda.feesh.features.commands.*
+import com.github.sleepypanda.feesh.features.commands.debug.*
 import com.github.sleepypanda.feesh.features.help.*
 import com.github.sleepypanda.feesh.features.items.background.*
 import com.github.sleepypanda.feesh.features.items.slottext.*
@@ -77,9 +78,11 @@ class FeeshMod : ClientModInitializer {
         SeaCreaturesCocoonPublisher.init()
         RareDropsPublisher.init()
         PartyChatPublisher.init()
-        TrophyDiscoveredPublisher.init()
+        TrophyCatchPublisher.init()
         PetLevelUpPublisher.init()
+        ReindrakeSummonedPublisher.init()
         SacksItemPickupPublisher.init()
+        InventoryItemPickupPublisher.init()
         ShardsCaughtPublisher.init()
         IceEssenceStatusBarPublisher.init()
         ArmorStandPublisher.init()
@@ -125,11 +128,12 @@ class FeeshMod : ClientModInitializer {
         LootshareMessage.init()
         TrophyFrogDiscoveredMessage.init()
         TrophyFishDiscoveredMessage.init()
+        HideTrophyCatchMessages.init()
+        HideLootshareMessages.init()
 
         // PB
         DoubleHookPersonalBest.init()
         MobyDuckPersonalBest.init()
-        BlizzardPersonalBest.init()
 
         // Overlays
         JerryWorkshopTracker.init()
@@ -153,7 +157,7 @@ class FeeshMod : ClientModInitializer {
         FishingProfitTracker.init()
         MagmaCoreFishingTracker.init()
         EfficiencyTracker.init()
-        RainTimer.init()
+        WeatherTimer.init()
         MuteReindrakeGifts.init()
 
         MoveGuis.init() // After all overlays are initialized and registered FeeshGui objects
@@ -174,13 +178,14 @@ class FeeshMod : ClientModInitializer {
 
         // Commands
         PersonalBestsCommand.init()
-        SpiderDenRainScheduleCommand.init()
+        WeatherScheduleCommand.init()
         PetLevelUpPricesCommand.init()
         GearCraftPricesCommand.init()
         FearMongererShopPricesCommand.init()
         JunkerJoelShopPricesCommand.init()
         TerryShopPricesCommand.init()
         PlayTestSoundCommand.init()
+        LogSoundsCommand.init()
         SetTrackerDropsCommand.init()
         PauseAllTrackersCommand.init()
         BulkResetTrackersCommand.init()

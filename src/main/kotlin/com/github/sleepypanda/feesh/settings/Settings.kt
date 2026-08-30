@@ -64,7 +64,7 @@ object Settings : ConfigKt("${FeeshMod.MOD_ID}/config") {
             description = "Big fishing community with guides, discussions and more. Check out #feesh-mod / #mod-discussion channels for mod news & discussions!"
             text = "Join Casters"
             onClick {
-                openLink("https://discord.gg/vn3RzuyJz")
+                openLink("https://discord.gg/fishing")
             }
         }
 
@@ -92,6 +92,15 @@ object Settings : ConfigKt("${FeeshMod.MOD_ID}/config") {
             text = "Open website"
             onClick {
                 openLink("https://eliteskyblock.com/")
+            }
+        }
+
+        button {
+            title = "Hypixel Skyblock's bazaar API"
+            description = "API used by Feesh for getting bazaar prices."
+            text = "Open API"
+            onClick {
+                openLink("https://api.hypixel.net/skyblock/bazaar?product")
             }
         }
 
