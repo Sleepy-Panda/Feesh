@@ -1,4 +1,4 @@
-# 1.13.0
+# 1.14.0
 
 Released on: ???
 
@@ -19,6 +19,7 @@ Released on: ???
 - Removed Corruption I book from profit tracker as they are not in the drop pool anymore.
 - Removed Bayou Travel Scroll from /feeshJunkerJoelShopPrices command output.
 - Fixed Tadgang's tadpoles nametags not being hidden after changing their mob level.
+- Fixed NPC price for Foraging Exp Boost profit tracker drop.
 
 # 1.13.0
 
