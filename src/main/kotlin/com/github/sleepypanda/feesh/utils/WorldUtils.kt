@@ -101,6 +101,7 @@ object WorldUtils {
 
     private var cachedIsInSkyblock: Boolean = false
     private var cachedIsOnAlpha: Boolean = false
+    private var cachedIsOnBingo: Boolean = false
     private var cachedWorldName: String? = null
     private var cachedZoneName: String? = null
 
@@ -127,6 +128,7 @@ object WorldUtils {
         tickCounter = TICKS_PER_UPDATE
         cachedIsInSkyblock = false
         cachedIsOnAlpha = false
+        cachedIsOnBingo = false
         cachedWorldName = null
         cachedZoneName = null
 
@@ -136,8 +138,13 @@ object WorldUtils {
     private fun updateCache() {
         CommonUtils.runWithCatching("Failed to update world utils cache") {
             cachedIsInSkyblock = readIsInSkyblock()
+
             cachedIsOnAlpha = if (cachedIsInSkyblock) {
                 readIsOnAlpha()
+            } else false
+
+            cachedIsOnBingo = if (cachedIsInSkyblock) {
+                readIsOnBingo()
             } else false
 
             cachedWorldName = if (cachedIsInSkyblock) {
@@ -208,15 +215,24 @@ object WorldUtils {
         //if (!serverAddress.contains("hypixel", ignoreCase = true)) return false
         // ^ Commented out for now, because people with reverse proxy have other server addresses
 
-        val scoreboard = FeeshMod.mc.level?.scoreboard ?: return false
-        val objective = scoreboard.getDisplayObjective(DisplaySlot.SIDEBAR) ?: return false
-        val title = objective.displayName.getUnformattedString()
+        val title = getScoreboardTitle() ?: return false
         return title.contains("skyblock", ignoreCase = true)
     }
 
     private fun readIsOnAlpha(): Boolean {
-        val zoneLines = getUnformattedScoreboardLines()
-        return zoneLines.any { line -> line.contains("alpha.hypixel.net", ignoreCase = true) }
+        val scoreboardLines = getUnformattedScoreboardLines()
+        return scoreboardLines.any { line -> line.contains("alpha.hypixel.net", ignoreCase = true) }
+    }
+
+    private fun readIsOnBingo(): Boolean {
+        val title = getScoreboardTitle() ?: return false
+        return title.endsWith("Ⓑ")
+    }
+
+    private fun getScoreboardTitle(): String? {
+        val scoreboard = FeeshMod.mc.level?.scoreboard ?: return null
+        val objective = scoreboard.getDisplayObjective(DisplaySlot.SIDEBAR) ?: return null
+        return objective.displayName.getUnformattedString()
     }
 
     fun isInSkyblock(): Boolean {
@@ -226,6 +242,11 @@ object WorldUtils {
     fun isOnAlpha(): Boolean {
         if (!isInSkyblock()) return false
         return cachedIsOnAlpha
+    }
+
+    fun isOnBingo(): Boolean {
+        if (!isInSkyblock()) return false
+        return cachedIsOnBingo
     }
 
     /**
