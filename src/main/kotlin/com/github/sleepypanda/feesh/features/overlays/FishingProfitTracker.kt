@@ -15,6 +15,7 @@ import com.github.sleepypanda.feesh.events.models.ShardCaughtEvent
 import com.github.sleepypanda.feesh.events.models.PricesUpdatedEvent
 import com.github.sleepypanda.feesh.events.models.IceEssenceStatusBarEvent
 import com.github.sleepypanda.feesh.constants.Sounds
+import com.github.sleepypanda.feesh.constants.StarlynContests
 import com.github.sleepypanda.feesh.features.chat.RareDropMessage
 import com.github.sleepypanda.feesh.settings.categories.SoundMode
 import com.github.sleepypanda.feesh.settings.categories.General
@@ -678,18 +679,7 @@ object FishingProfitTracker : IResettableViewModeTracker {
         if (!isTrackerVisible()) return
         if (WorldUtils.getWorldName() != WorldUtils.MOONGLADE_MARSH) return
 
-        val (agathaCouponCount, forestEssenceCount) = when (bracket.uppercase()) {
-            "COMMON" -> 10 to 10
-            "UNCOMMON" -> 15 to 20
-            "RARE" -> 20 to 30
-            "EPIC" -> 25 to 40
-            "LEGENDARY" -> 30 to 50
-            "MYTHIC" -> 35 to 60
-            "DIVINE" -> 40 to 70
-            "SPECIAL" -> 45 to 80
-            else -> return
-        }
-
+        val (agathaCouponCount, forestEssenceCount) = StarlynContests.AGATHA_CONTEST_BRACKET_REWARDS_MAP[bracket.uppercase()] ?: return
         findAndAddProfitTrackerItem({ it.itemId == "AGATHA_COUPON" }, agathaCouponCount)
         findAndAddProfitTrackerItem({ it.itemId == "ESSENCE_FOREST" }, forestEssenceCount)
     }
@@ -698,18 +688,7 @@ object FishingProfitTracker : IResettableViewModeTracker {
         if (!isTrackerVisible()) return
         if (WorldUtils.getWorldName() != WorldUtils.TORRHUS_CANYON) return
 
-        val (miriaCouponCount, forestEssenceCount) = when (bracket.uppercase()) {
-            "COMMON" -> 10 to 20
-            "UNCOMMON" -> 15 to 30
-            "RARE" -> 20 to 40
-            "EPIC" -> 25 to 50
-            "LEGENDARY" -> 30 to 60
-            "MYTHIC" -> 35 to 70
-            "DIVINE" -> 40 to 80
-            "SPECIAL" -> 45 to 90
-            else -> return
-        }
-
+        val (miriaCouponCount, forestEssenceCount) = StarlynContests.MIRIA_CONTEST_BRACKET_REWARDS_MAP[bracket.uppercase()] ?: return
         findAndAddProfitTrackerItem({ it.itemId == "MIRIA_COUPON" }, miriaCouponCount)
         findAndAddProfitTrackerItem({ it.itemId == "ESSENCE_FOREST" }, forestEssenceCount)
     }
