@@ -112,6 +112,7 @@ class FeeshMod : ClientModInitializer {
         LootshareAlert.init()
         FishingBagDisabledAlert.init()
         BaitAlert.init()
+        SackDropsIntoInventoryAlert.init()
         WormTheFishCaughtAlert.init()
         NessieDestinationAlert.init()
         PuddleJumperTimerAlert.init()
