@@ -33,10 +33,14 @@ object BaitUtils {
     /**
      * Get the item ID by the bait item name.
      * Example: Spooky Bait -> SPOOKY_BAIT
+     * Example: Obfuscated-1 SILVER -> OBFUSCATED_FISH_1_SILVER
      */
-    fun getBaitItemId(baitName: String): String =
-        baitName.trim().split(Regex("\\s+")).filter { it.isNotBlank() }.joinToString("_").uppercase()
-    // TODO: Obfuscated bait is separate logic
+    fun getBaitItemId(baitName: String): String {
+        if (baitName.startsWith("Obfuscated-")) {
+            return baitName.replace("Obfuscated-", "OBFUSCATED_FISH_").replace(" ", "_").uppercase()
+        }
+        return baitName.trim().split(Regex("\\s+")).filter { it.isNotBlank() }.joinToString("_").uppercase()
+    }
 
     fun init() {
         EventBus.subscribe(ClientTickEvent::class, ::onClientTick)

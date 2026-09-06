@@ -634,8 +634,7 @@ object FishingProfitTracker : IResettableViewModeTracker {
 
     private fun getItemPrice(dropInfo: FishingProfitDropInfo): Double {
         if (dropInfo.amountOfMagmaFish != null) {
-            val magmaPrice = getPriceByMode("MAGMA_FISH")
-            return dropInfo.amountOfMagmaFish * magmaPrice
+            return getTrophyFishItemPrice(dropInfo)
         } else if (dropInfo.amountOfLotus != null) {
             val lotusPrice = getPriceByMode("LOTUS")
             return dropInfo.amountOfLotus * lotusPrice
@@ -663,6 +662,14 @@ object FishingProfitTracker : IResettableViewModeTracker {
         return getPriceByMode(dropInfo.itemId)
     }
 
+    private fun getTrophyFishItemPrice(dropInfo: FishingProfitDropInfo): Double {
+        if (dropInfo.amountOfMagmaFish != null) {
+            val magmaPrice = getPriceByMode("MAGMA_FISH")
+            return dropInfo.amountOfMagmaFish * magmaPrice
+        }
+        return 0.0
+    }
+
     private fun getPriceByMode(itemId: String): Double {
         val dropInfo = FishingProfitDrops.items.find { it.itemId == itemId } ?: return 0.0
 
@@ -686,7 +693,12 @@ object FishingProfitTracker : IResettableViewModeTracker {
 
     private fun getCostItemPrice(itemId: String): Double {
         if (Overlays.fishingProfitTrackerPriceMode == PricingModeWithNpc.NPC_SELL) {
-            return 0.0 // TODO remove 
+            return 0.0
+        }
+
+        if (itemId.startsWith("OBFUSCATED")) {
+            val dropInfo = FishingProfitDrops.items.find { it.itemId == itemId } ?: return 0.0
+            return getTrophyFishItemPrice(itemId)
         }
 
         val bazaar = PriceUtils.getBazaarItemPrices(itemId)
@@ -1036,7 +1048,7 @@ object FishingProfitTracker : IResettableViewModeTracker {
                 lines.add(LineInfo("${AQUA}Total: ${GOLD}${BOLD}$totalStr ${RESET}${GRAY}(${GOLD}$perHourStr${GRAY}/h) $priceModeStr"))
             }
 
-            if (displayData.hasCosts) {
+            if (displayData.hasCosts && Overlays.fishingProfitTrackerPriceMode != PricingModeWithNpc.NPC_SELL) {
                 val costStr = CommonUtils.toShortNumber(displayData.totalCost) ?: "0"
                 lines.add(
                     LineInfo(
