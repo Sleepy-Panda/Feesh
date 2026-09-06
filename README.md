@@ -73,6 +73,7 @@ Required Java version is 25+.
 - **Trophy Frog discovered alert** — Alerts when a new Trophy Frog is discovered.
 - **Trophy Fish discovered alert** — Alerts when a new Trophy Fish is discovered.
 - **Alert when out of air** — Alerts when you are almost out of air (Moonglade Marsh, Torrhus Canyon).
+- **Alert when sack fishing drops go into inventory** — Alerts when a fishing drop (e.g. raw fish) overflows into your inventory, meaning sack is full. It offers buttons for Supercrafting a compacted item / Bazaar sell.
 
 ### Chat
 

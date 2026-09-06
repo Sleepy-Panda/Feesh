@@ -27,7 +27,6 @@
 
 - Track Moby Duck, bought rain, consumed bait (exclude from profits).
 - Add levelled Magma Necklaces as some people level them for profits. Vanquished Magma Necklace upgraded to +10☠! Vanquished Magma Necklace upgraded to +1☠!
-- Propose compacting or selling items like raw fish going to the inventory (full sack).
 - Use drop # in the chat message based on current profit tracker.
 - Option to render icons instead of item names
 - Track scavenged coins in Fishing Profit Tracker
