@@ -26,6 +26,11 @@ object BaitUtils {
     private var lastBaitDisplayName = ""
     private var lastBaitRemaining = null as Int?
 
+    fun init() {
+        EventBus.subscribe(ClientTickEvent::class, ::onClientTick)
+        EventBus.subscribe(WorldChangedEvent::class, ::onWorldChanged)
+    }
+
     fun getBaitDisplayName(): String = lastBaitDisplayName
 
     fun getBaitRemaining(): Int? = lastBaitRemaining
@@ -40,11 +45,6 @@ object BaitUtils {
             return baitName.replace("Obfuscated-", "OBFUSCATED_FISH_").replace(" ", "_").uppercase()
         }
         return baitName.trim().split(Regex("\\s+")).filter { it.isNotBlank() }.joinToString("_").uppercase()
-    }
-
-    fun init() {
-        EventBus.subscribe(ClientTickEvent::class, ::onClientTick)
-        EventBus.subscribe(WorldChangedEvent::class, ::onWorldChanged)
     }
 
     private fun onClientTick(@Suppress("UNUSED_PARAMETER") event: ClientTickEvent) {
