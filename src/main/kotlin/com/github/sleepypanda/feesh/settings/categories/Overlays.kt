@@ -321,6 +321,11 @@ ${GRAY}To pause: ${WHITE}/${FishingProfitTracker.PAUSE_COMMAND}
         this.slider = true
     }
 
+    var shouldTrackCostsInFishingProfitTracker by boolean(true) {
+        this.name = Translated("Track costs")
+        this.description = Translated("Track and show costs of the items spent while fishing - for example, fishing bait used.")
+    }
+
     var shouldAnnounceRareDropsWhenPickup by boolean(true) {
         this.name = Translated("Announce rare drops")
         this.description = Translated("Send RARE DROP! message to player's chat when a rare item is added to the fishing profit tracker (for relatively rare items that have no RARE DROP! message from Hypixel by default).")

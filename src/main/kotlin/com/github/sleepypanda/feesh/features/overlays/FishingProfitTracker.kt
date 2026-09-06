@@ -117,7 +117,7 @@ object FishingProfitTracker : IResettableViewModeTracker {
         .setCoordsDataKey("fishingProfitTracker")
         .setClickable(true)
         .setSampleLines(listOf(
-            "$baseTitle ${GRAY}[${GREEN}Session${GRAY}]",
+            "$baseTitle ${GRAY}[${GREEN}Total${GRAY}]",
             "${GRAY}- ${WHITE}1982${GRAY}x ${BLUE}Scorched Crab Stick${GRAY}: ${GOLD}333.9M",
             "${GRAY}- ${WHITE}5${GRAY}x ${LIGHT_PURPLE}${BOLD}Radioactive Vial${GRAY}: ${GOLD}288.1M",
             "${GRAY}- ${WHITE}44954${GRAY}x ${DARK_PURPLE}Silver Magmafish${GRAY}: ${GOLD}269.7M",
@@ -273,6 +273,7 @@ object FishingProfitTracker : IResettableViewModeTracker {
     }
 
     private fun onBaitConsumed(event: BaitConsumedEvent) {
+        if (!Overlays.shouldTrackCostsInFishingProfitTracker) return
         if (!isSessionActive || !isTrackerVisible()) return
         if (event.baitName.isBlank() || event.baitId.isBlank()) return
         val itemName = event.baitDisplayName.ifBlank { event.baitName }
@@ -698,7 +699,7 @@ object FishingProfitTracker : IResettableViewModeTracker {
 
         if (itemId.startsWith("OBFUSCATED")) {
             val dropInfo = FishingProfitDrops.items.find { it.itemId == itemId } ?: return 0.0
-            return getTrophyFishItemPrice(itemId)
+            return getTrophyFishItemPrice(dropInfo)
         }
 
         val bazaar = PriceUtils.getBazaarItemPrices(itemId)
@@ -971,38 +972,60 @@ object FishingProfitTracker : IResettableViewModeTracker {
     private fun updateGuiLines() {
         CommonUtils.runWithCatching("Failed to update Fishing profit tracker GUI lines") {
             gui.clearLines()
-
-            if (!isTrackerVisible()) {
-                return
-            }
+            if (!isTrackerVisible()) return
 
             val viewMode = getCurrentViewMode()
-            val viewModeText = getViewModeDisplayText(viewMode)
             val nextMode = if (viewMode == TrackerViewMode.SESSION) TrackerViewMode.TOTAL else TrackerViewMode.SESSION
-            val nextText = getViewModeDisplayText(nextMode)
 
-            val displayData = getDisplayTrackerData(viewMode)
+            GuiLinesBuilder(
+                displayData = getDisplayTrackerData(viewMode),
+                viewMode = viewMode,
+                nextMode = nextMode,
+            )
+                .buildTitle()
+                .buildItemsList()
+                .buildHiddenItems()
+                .buildTotal()
+                .buildCostsAndProfit()
+                .buildTimer()
+                .buildButtons()
+                .finish()
+        }
+    }
 
-            val lines = mutableListOf<LineInfo>()
+    private class GuiLinesBuilder(
+        private val displayData: DisplayTrackerData,
+        private val viewMode: TrackerViewMode,
+        private val nextMode: TrackerViewMode
+    ) {
+        private val viewModeText = getViewModeDisplayText(viewMode)
+        private val nextViewModeText = getViewModeDisplayText(nextMode)
+        private val lines = mutableListOf<LineInfo>()
+        private val hideTimer = Overlays.shouldHideTimerInTotal && viewMode == TrackerViewMode.TOTAL
+        private val hiddenItemsRow: List<String>? = if (displayData.entriesToHide.isNotEmpty()) {
+            val profitStr = CommonUtils.toShortNumber(displayData.totalCheapItemsProfit) ?: "0"
+            val countStr = CommonUtils.formatNumberWithSpaces(displayData.totalCheapItemsCount)
+            val typesStr = CommonUtils.formatNumberWithSpaces(displayData.totalCheapItemsTypesCount)
+            TrackerLineColumns(
+                item = "${GRAY}- ${WHITE}${countStr}${GRAY}x items of ${WHITE}${typesStr} ${GRAY}types",
+                price = "${GOLD}$profitStr",
+            ).toCells()
+        } else {
+            null
+        }
+        private val tableLayout = Table.layout(
+            FeeshMod.mc.font,
+            displayData.entriesToShow.map { getProfitTrackerLineColumns(it).toCells() } + listOfNotNull(hiddenItemsRow),
+            getColumnsSeparator(),
+        )
+        private var tableRowIndex = 0
+
+        fun buildTitle(): GuiLinesBuilder {
             lines.add(LineInfo("$baseTitle $viewModeText"))
+            return this
+        }
 
-            val cheapItemsRow = if (displayData.entriesToHide.isNotEmpty()) {
-                val profitStr = CommonUtils.toShortNumber(displayData.totalCheapItemsProfit) ?: "0"
-                val countStr = CommonUtils.formatNumberWithSpaces(displayData.totalCheapItemsCount)
-                val typesStr = CommonUtils.formatNumberWithSpaces(displayData.totalCheapItemsTypesCount)
-                TrackerLineColumns(
-                    item = "${GRAY}- ${WHITE}${countStr}${GRAY}x items of ${WHITE}${typesStr} ${GRAY}types",
-                    price = "${GOLD}$profitStr",
-                ).toCells()
-            } else {
-                null
-            }
-
-            val columnRows = displayData.entriesToShow.map { getProfitTrackerLineColumns(it).toCells() } +
-                listOfNotNull(cheapItemsRow)
-            val tableLayout = Table.layout(FeeshMod.mc.font, columnRows, getColumnsSeparator())
-            var tableRowIndex = 0
-
+        fun buildItemsList(): GuiLinesBuilder {
             for (entry in displayData.entriesToShow) {
                 val itemId = entry.itemId
                 val actions = if (itemId == FISHED_COINS_ITEM_ID) {
@@ -1011,7 +1034,7 @@ object FishingProfitTracker : IResettableViewModeTracker {
                     listOf(
                         LineAction("${GRAY}[${GREEN}+${GRAY}]") { onLineItemIncrease(itemId) },
                         LineAction("${GRAY}[${RED}-${GRAY}]") { onLineItemDecrease(itemId) },
-                        LineAction("${GRAY}[${RED}x${GRAY}]") { onLineItemDelete(itemId) }
+                        LineAction("${GRAY}[${RED}x${GRAY}]") { onLineItemDelete(itemId) },
                     )
                 }
                 lines.add(
@@ -1022,16 +1045,21 @@ object FishingProfitTracker : IResettableViewModeTracker {
                     )
                 )
             }
+            return this
+        }
 
-            if (cheapItemsRow != null) {
-                lines.add(
-                    LineInfo.withCells(
-                        cells = tableLayout.rows[tableRowIndex++],
-                        tableWidth = tableLayout.tableWidth,
-                    )
+        fun buildHiddenItems(): GuiLinesBuilder {
+            if (hiddenItemsRow == null) return this
+            lines.add(
+                LineInfo.withCells(
+                    cells = tableLayout.rows[tableRowIndex++],
+                    tableWidth = tableLayout.tableWidth,
                 )
-            }
+            )
+            return this
+        }
 
+        fun buildTotal(): GuiLinesBuilder {
             val totalStr = CommonUtils.toShortNumber(displayData.totalProfit) ?: "0"
             val priceModeStr = when (Overlays.fishingProfitTrackerPriceMode) {
                 PricingModeWithNpc.SELL_OFFER -> "${DARK_GRAY}[sell offer]"
@@ -1039,47 +1067,60 @@ object FishingProfitTracker : IResettableViewModeTracker {
                 PricingModeWithNpc.NPC_SELL -> "${DARK_GRAY}[NPC sell]"
             }
             lines.add(LineInfo(""))
-
-            val hideTimer = Overlays.shouldHideTimerInTotal && viewMode == TrackerViewMode.TOTAL
             if (hideTimer) {
                 lines.add(LineInfo("${AQUA}Total: ${GOLD}${BOLD}$totalStr $priceModeStr"))
             } else {
                 val perHourStr = CommonUtils.toShortNumber(displayData.profitPerHour) ?: "0"
                 lines.add(LineInfo("${AQUA}Total: ${GOLD}${BOLD}$totalStr ${RESET}${GRAY}(${GOLD}$perHourStr${GRAY}/h) $priceModeStr"))
             }
+            return this
+        }
 
-            if (displayData.hasCosts && Overlays.fishingProfitTrackerPriceMode != PricingModeWithNpc.NPC_SELL) {
-                val costStr = CommonUtils.toShortNumber(displayData.totalCost) ?: "0"
-                lines.add(
-                    LineInfo(
-                        text = "${AQUA}Costs: ${RED}-${costStr}",
-                        tooltip = getCostsTooltip(displayData),
-                        actions = listOf(LineAction("${GRAY}[${RED}x${GRAY}]") { onResetCostsInline() }),
-                    )
+        fun buildCostsAndProfit(): GuiLinesBuilder {
+            if (!Overlays.shouldTrackCostsInFishingProfitTracker || !displayData.hasCosts || Overlays.fishingProfitTrackerPriceMode == PricingModeWithNpc.NPC_SELL) {
+                return this
+            }
+
+            val costStr = CommonUtils.toShortNumber(displayData.totalCost) ?: "0"
+            lines.add(
+                LineInfo(
+                    text = "${AQUA}Costs: ${RED}-${costStr}",
+                    tooltip = getCostsTooltip(displayData),
+                    actions = listOf(LineAction("${GRAY}[${RED}x${GRAY}]") { onResetCostsInline() }),
                 )
-                val netStr = CommonUtils.toShortNumber(displayData.netProfit) ?: "0"
-                val profitColor = if (displayData.netProfit < 0) RED else GOLD
-                if (hideTimer) {
-                    lines.add(LineInfo("${AQUA}Profit: ${profitColor}${BOLD}$netStr"))
-                } else {
-                    val netPerHourStr = CommonUtils.toShortNumber(displayData.netProfitPerHour) ?: "0"
-                    lines.add(LineInfo("${AQUA}Profit: ${profitColor}${BOLD}$netStr ${RESET}${GRAY}(${profitColor}$netPerHourStr${GRAY}/h)"))
-                }
+            )
+            val netStr = CommonUtils.toShortNumber(displayData.netProfit) ?: "0"
+            val profitColor = if (displayData.netProfit < 0) RED else GOLD
+            if (hideTimer) {
+                lines.add(LineInfo("${AQUA}Profit: ${profitColor}${BOLD}$netStr"))
+            } else {
+                val netPerHourStr = CommonUtils.toShortNumber(displayData.netProfitPerHour) ?: "0"
+                lines.add(LineInfo("${AQUA}Profit: ${profitColor}${BOLD}$netStr ${RESET}${GRAY}(${profitColor}$netPerHourStr${GRAY}/h)"))
             }
+            return this
+        }
 
-            if (!hideTimer) {
-                val elapsedStr = CommonUtils.formatTimeElapsed(displayData.elapsedTime)
-                val pausedSuffix = if (isSessionActive) "" else " ${GRAY}[Paused]"
-                lines.add(LineInfo("${AQUA}Elapsed time: ${WHITE}$elapsedStr$pausedSuffix"))
-            }
+        fun buildTimer(): GuiLinesBuilder {
+            if (hideTimer) return this
+            val elapsedStr = CommonUtils.formatTimeElapsed(displayData.elapsedTime)
+            val pausedSuffix = if (isSessionActive) "" else " ${GRAY}[Paused]"
+            lines.add(LineInfo("${AQUA}Elapsed time: ${WHITE}$elapsedStr$pausedSuffix"))
+            return this
+        }
 
+        fun buildButtons(): GuiLinesBuilder {
+            gui.setButtons(
+                listOf(
+                    GuiButton(0, "${GRAY}[Click to show ${nextViewModeText}${GRAY}]", { toggleViewMode() }),
+                    GuiButton(1, "${GRAY}[${YELLOW}Click to pause${GRAY}]", { pauseFishingProfitTracker() }),
+                    getResetGuiButton(2) { requestReset() },
+                )
+            )
+            return this
+        }
+
+        fun finish() {
             gui.setLines(lines)
-
-            gui.setButtons(listOf(
-                GuiButton(0, "${GRAY}[Click to show $nextText${GRAY}]", { toggleViewMode() }),
-                GuiButton(1, "${GRAY}[${YELLOW}Click to pause${GRAY}]", { pauseFishingProfitTracker() }),
-                getResetGuiButton(2) { requestReset() }
-            ))
         }
     }
 
@@ -1173,7 +1214,7 @@ object FishingProfitTracker : IResettableViewModeTracker {
 
     private fun getCostsTooltip(displayData: DisplayTrackerData): List<Component> {
         val header = "${AQUA}${BOLD}Costs"
-        val itemLines = displayData.costEntries.map { entry ->
+        val itemLines = displayData.costEntries.sortedByDescending { it.cost }.map { entry ->
             val countStr = CommonUtils.formatNumberWithSpaces(entry.amount)
             val costStr = CommonUtils.toShortNumber(entry.cost) ?: "0"
             val unitPrice = if (entry.amount > 0) entry.cost / entry.amount else 0.0
@@ -1181,7 +1222,7 @@ object FishingProfitTracker : IResettableViewModeTracker {
             "${GRAY}- ${WHITE}${countStr}${GRAY}x ${entry.item}${GRAY}: ${RED}$costStr ${DARK_GRAY}(${RED}$unitStr ${DARK_GRAY}each)"
         }
         val totalStr = CommonUtils.toShortNumber(displayData.totalCost) ?: "0"
-        val lines = listOf(header) + itemLines + listOf("${AQUA}Total: ${RED}$totalStr")
+        val lines = listOf(header) + itemLines + listOf("${AQUA}Total coins spent: ${RED}$totalStr")
         return lines.map { Component.literal(it) }
     }
 
