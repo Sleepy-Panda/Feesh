@@ -1,4 +1,4 @@
-# 1.13.0
+# 1.14.0
 
 Released on: ???
 
@@ -9,6 +9,7 @@ Released on: ???
 - Renamed `/feeshSpiderDenRainSchedule` to `/feeshWeatherSchedule` and changed its output to show upcoming Mild / Extreme weather schedule.
 - Removed old Rain timer overlay/alert and added new Weather timer/alert working for all new weather-affected worlds. **Please re-enable in settings if you need it!**
 - Removed "Blizzards started" counter from PB because Blizzard in a Bottle was reworked into a mixin.
+- Added alert when a fishing drop (e.g. raw fish) overflows into your inventory, meaning sack is full [disabled by default]. It offers buttons for Supercrafting a compacted item / Bazaar sell.
 - Adjustments to editing Treasure fishing tracker data:
   - Allowed 0 as Treasure Dye drop count in `/feeshSetTrackerDrops` command, to initialize catches before your first Treasure Dye.
   - Added `/feeshSetTreasureCatches` / `/feeshSetTreasureCatchesTotal` to set Good/Great/Outstanding catches counts for Session and Total mode.
@@ -19,6 +20,7 @@ Released on: ???
 - Removed Corruption I book from profit tracker as they are not in the drop pool anymore.
 - Removed Bayou Travel Scroll from /feeshJunkerJoelShopPrices command output.
 - Fixed Tadgang's tadpoles nametags not being hidden after changing their mob level.
+- Fixed NPC price for Foraging Exp Boost profit tracker drop.
 
 # 1.13.0
 

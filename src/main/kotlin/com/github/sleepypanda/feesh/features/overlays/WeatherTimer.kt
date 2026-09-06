@@ -189,8 +189,8 @@ object WeatherTimer {
         lastAlertAt = Date()
         val label = eventName ?: "Weather event"
         val eventColor = getWeatherEventColor(label)
-        CommonUtils.showTitle("${eventColor}${BOLD}$label ${YELLOW}ends soon")
-        ChatUtils.sendLocalChat("${eventColor}${BOLD}$label ${YELLOW}ends soon.", true)
+        CommonUtils.showTitle("${eventColor}${BOLD}$label ${WHITE}ends soon")
+        ChatUtils.sendLocalChat("${eventColor}${BOLD}$label ${WHITE}ends soon.", true)
         SoundUtils.playSound()
     }
 

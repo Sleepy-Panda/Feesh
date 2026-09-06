@@ -389,6 +389,12 @@ object Alerts : CategoryKt("Alerts") {
         this.searchTerms = listOf(ModVersionConstants.VERSION_1_11_0)
     }
 
+    var alertOnSackDropsIntoInventory by boolean(false) {
+        this.name = Translated("Alert when sack fishing drops go into inventory")
+        this.description = Translated("Sends a chat message when a fishing drop (e.g. raw fish) overflows into your inventory, meaning sack is full. It offers buttons for Supercrafting a compacted item / Bazaar sell. Enable only if you have all sacks, so items normally go into them!")
+        this.searchTerms = listOf(ModVersionConstants.VERSION_1_14_0)
+    }
+    
     var alertOnWormTheFishCaught by boolean(false) {
         this.name = Translated("Alert when a Worm the Fish is caught")
         this.description = Translated("Shows a title and plays a sound when a Worm the Fish is detected in the world (Dirt Rod fishing).")
