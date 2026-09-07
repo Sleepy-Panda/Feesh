@@ -41,7 +41,6 @@ import com.github.sleepypanda.feesh.utils.SoundUtils
 import com.github.sleepypanda.feesh.utils.ItemUtils
 import com.github.sleepypanda.feesh.features.overlays.base.IResettableViewModeTracker
 import com.github.sleepypanda.feesh.features.overlays.base.TrackerViewMode
-import net.minecraft.core.component.DataComponents
 import java.util.Date
 
 // TODO Drops counter for Rare Drop chat message
