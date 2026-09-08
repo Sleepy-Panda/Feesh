@@ -12,7 +12,7 @@ data class TrophyFishInfo(
 
 class TrophyFish {
     companion object {
-        // https://hypixelskyblock.minecraft.wiki/w/Trophy_Fish#List_of_Trophy_Fish
+        // https://hypixelskyblock.minecraft.wiki/w/Trophy_Fish#Filleting
 
         val OBFUSCATED_1_BRONZE = TrophyFishInfo(
             itemId = "OBFUSCATED_FISH_1_BRONZE",
