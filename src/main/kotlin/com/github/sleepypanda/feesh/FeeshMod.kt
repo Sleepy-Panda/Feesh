@@ -88,6 +88,7 @@ class FeeshMod : ClientModInitializer {
         ArmorStandPublisher.init()
         ItemEntityPublisher.init()
         ConsumablesPublishers.init()
+        ShurikenUsedPublisher.init()
 
         // Rendering
         RareMobHighlight.init()

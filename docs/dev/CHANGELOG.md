@@ -4,6 +4,7 @@ Released on: ???
 
 ## Features
 
+- Added option to track & show costs (spent bait, shurikens) in Fishing profit tracker. You can disable it in settings.
 - Added ability to search for version-specific features in /feesh settings GUI (e.g. search for 1.14.0 to see new settings added in this version).
 - Added ability to provide search query when calling /feesh command: `/feesh 1.14.0` or `/feesh profit tracker`.
 - Renamed `/feeshSpiderDenRainSchedule` to `/feeshWeatherSchedule` and changed its output to show upcoming Mild / Extreme weather schedule.

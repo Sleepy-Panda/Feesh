@@ -276,6 +276,8 @@ ${GRAY}Shows an overlay with your profits you gained while fishing. This overlay
 ${GRAY}To count items added to your sacks, make sure to enable ${YELLOW}Skyblock Settings -> Personal -> Chat Feedback -> Sack Notifications
 ${GRAY}To reset [Session]: ${WHITE}/${FishingProfitTracker.RESET_COMMAND}
 ${GRAY}To reset [Total]: ${WHITE}/${FishingProfitTracker.RESET_TOTAL_COMMAND}
+${GRAY}To reset costs [Session]: ${WHITE}/${FishingProfitTracker.RESET_COSTS_COMMAND}
+${GRAY}To reset costs [Total]: ${WHITE}/${FishingProfitTracker.RESET_COSTS_TOTAL_COMMAND}
 ${GRAY}To pause: ${WHITE}/${FishingProfitTracker.PAUSE_COMMAND}
         """.trimIndent())
     }
@@ -304,19 +306,25 @@ ${GRAY}To pause: ${WHITE}/${FishingProfitTracker.PAUSE_COMMAND}
 
     var fishingProfitTrackerHideCheaperThan by int(1_000_000) {
         this.name = Translated("Hide cheap items [Session]")
-        this.description = Translated("Items which are cheaper than the specified threshold in coins will be hidden in the fishing profit tracker [Session]. They will be grouped under 'Cheap items' section. Set to 0 to show all items.")
+        this.description = Translated("Items which are cheaper than the specified threshold in coins will be hidden in the fishing profit tracker [Session]. They will be grouped under 'Other items' section. Set to 0 to show all items.")
     }
 
     var fishingProfitTrackerHideCheaperThanTotal by int(1_000_000) {
         this.name = Translated("Hide cheap items [Total]")
-        this.description = Translated("Items which are cheaper than the specified threshold in coins will be hidden in the fishing profit tracker [Total]. They will be grouped under 'Cheap items' section. Set to 0 to show all items.")
+        this.description = Translated("Items which are cheaper than the specified threshold in coins will be hidden in the fishing profit tracker [Total]. They will be grouped under 'Other items' section. Set to 0 to show all items.")
     }
 
     var fishingProfitTrackerShowTop by int(15) {
         this.name = Translated("Maximum lines count")
-        this.description = Translated("Show top N lines for the most expensive items. Other cheaper items will be grouped under 'Cheap items' section. This works on top of 'Hide cheap items' setting.")
+        this.description = Translated("Show top N lines for the most expensive items. Other cheaper items will be grouped under 'Other items' section. This works on top of 'Hide cheap items' setting.")
         this.range = 1..50
         this.slider = true
+    }
+
+    var shouldTrackCostsInFishingProfitTracker by boolean(true) {
+        this.name = Translated("Track costs")
+        this.description = Translated("Track and show costs of the items spent while fishing - fishing bait or shurikens used. Also shows net profit after subtracting costs from total profit. Not shown if price mode is set to NPC price!")
+        this.searchTerms = listOf(ModVersionConstants.VERSION_1_14_0)
     }
 
     var shouldAnnounceRareDropsWhenPickup by boolean(true) {
