@@ -5,11 +5,13 @@ Released on: ???
 ## Features
 
 - Added option to track & show costs (spent bait, shurikens) in Fishing profit tracker. This also shows net profit after subtracting costs from total profit. You can disable it in settings.
-- Added ability to search for version-specific features in /feesh settings GUI (e.g. search for 1.14.0 to see new settings added in this version).
-- Added ability to provide search query when calling /feesh command: `/feesh 1.14.0` or `/feesh profit tracker`.
-- Renamed `/feeshSpiderDenRainSchedule` to `/feeshWeatherSchedule` and changed its output to show upcoming Mild / Extreme weather schedule.
-- Removed old Rain timer overlay/alert and added new Weather timer/alert working for all new weather-affected worlds. **Please re-enable in settings if you need it!**
-- Removed "Blizzards started" counter from PB because Blizzard in a Bottle was reworked into a mixin.
+- Improved settings search:
+  - You can search for version-specific features in /feesh settings GUI (e.g. search for 1.14.0 to see new settings added in this version).
+  - You can provide search query when calling /feesh command: `/feesh 1.14.0` or `/feesh profit tracker`.
+- Weather update preparation:
+  - Renamed `/feeshSpiderDenRainSchedule` to `/feeshWeatherSchedule` and changed its output to show upcoming Mild / Extreme weather events schedule.
+  - Removed old Rain timer overlay/alert and added new Weather timer/alert working for all new weather-affected worlds. **Please re-enable in settings if you need it!**
+  - Removed "Blizzards started" counter from Personal Bests, because Blizzard in a Bottle will become a mixin after the update.
 - Added alert when a fishing drop (e.g. raw fish) overflows into your inventory, meaning sack is full [disabled by default]. It offers buttons for Supercrafting a compacted item / Bazaar sell.
 - Adjustments to editing Treasure fishing tracker data:
   - Allowed 0 as Treasure Dye drop count in `/feeshSetTrackerDrops` command, to initialize catches before your first Treasure Dye.
@@ -19,10 +21,10 @@ Released on: ???
 ## Bugfixes
 
 - Removed Corruption I book from profit tracker as they are not in the drop pool anymore.
-- Removed Bayou Travel Scroll from /feeshJunkerJoelShopPrices command output.
+- Fixed outdated amount of Lotus when calculating profit for some trophy frogs.
+- Removed Bayou Travel Scroll from `/feeshJunkerJoelShopPrices` command output.
 - Fixed Tadgang's tadpoles nametags not being hidden after changing their mob level.
 - Fixed NPC price for Foraging Exp Boost profit tracker drop.
-- Fixed amount of lotus obtained when calculating profit for some trophy frogs.
 
 # 1.13.0
 
