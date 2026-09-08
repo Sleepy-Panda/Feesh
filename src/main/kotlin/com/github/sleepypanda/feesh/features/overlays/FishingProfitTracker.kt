@@ -126,7 +126,7 @@ object FishingProfitTracker : IResettableViewModeTracker {
             "${GRAY}- ${WHITE}16${GRAY}x ${GRAY}[Lvl 100] ${LIGHT_PURPLE}Hermit Crab${GRAY}: ${GOLD}240M",
             "${GRAY}- ${WHITE}4${GRAY}x ${GRAY}[Lvl 100] ${GOLD}Baby Yeti${GRAY}: ${GOLD}53.3M",
             "${GRAY}- ${WHITE}318${GRAY}x ${GOLD}Nether Star${GRAY}: ${GOLD}45M",
-            "${GRAY}- ${WHITE}100500${GRAY}x Other cheap items: ${GOLD}1.8B",
+            "${GRAY}- ${WHITE}100500${GRAY}x Other items: ${GOLD}1.8B",
             "",
             "${AQUA}Total: ${GOLD}${BOLD}3B ${RESET}${GRAY}(${GOLD}53.9M${GRAY}/h) ${DARK_GRAY}[sell offer]",
             "${AQUA}Costs: ${RED}-12.5M",
@@ -1075,15 +1075,28 @@ object FishingProfitTracker : IResettableViewModeTracker {
 
             fun getCostsTooltip(displayData: DisplayTrackerData): List<Component> {
                 val header = "${AQUA}${BOLD}Costs"
-                val itemLines = displayData.costEntries.sortedByDescending { it.cost }.map { entry ->
+                val sorted = displayData.costEntries.sortedByDescending { it.cost }
+                val maxEntriesToShow = 10
+                val topEntries = sorted.take(maxEntriesToShow)
+                val otherEntries = sorted.drop(maxEntriesToShow)
+
+                fun getFormattedCostLine(entry: CostEntryData): String {
                     val countStr = CommonUtils.formatNumberWithSpaces(entry.amount)
                     val costStr = CommonUtils.toShortNumber(entry.cost) ?: "0"
                     val unitPrice = if (entry.amount > 0) entry.cost / entry.amount else 0.0
                     val unitStr = CommonUtils.toShortNumber(unitPrice) ?: "0"
-                    "${GRAY}- ${WHITE}${countStr}${GRAY}x ${entry.item}${GRAY}: ${RED}$costStr ${DARK_GRAY}(${RED}$unitStr ${DARK_GRAY}each)"
+                    return "${GRAY}- ${WHITE}${countStr}${GRAY}x ${entry.item}${GRAY}: ${RED}$costStr ${DARK_GRAY}(${RED}$unitStr ${DARK_GRAY}each)"
                 }
+
+                val itemLines = topEntries.map { getFormattedCostLine(it) }.toMutableList()
+                if (otherEntries.isNotEmpty()) {
+                    val otherCost = otherEntries.sumOf { it.cost }
+                    val otherCostStr = CommonUtils.toShortNumber(otherCost) ?: "0"
+                    itemLines.add("${GRAY}- Other items: ${RED}$otherCostStr")
+                }
+
                 val totalStr = CommonUtils.toShortNumber(displayData.totalCost) ?: "0"
-                val lines = listOf(header) + itemLines + listOf("${AQUA}Total coins spent: ${RED}$totalStr")
+                val lines = listOf(header) + itemLines + listOf("${AQUA}Total coins spent: ${RED}${totalStr}")
                 return lines.map { Component.literal(it) }
             }
 
@@ -1136,15 +1149,15 @@ object FishingProfitTracker : IResettableViewModeTracker {
     }
 
     private data class DisplayTrackerData(
-        val entriesToShow: List<EntryDisplay>,
-        val entriesToHide: List<EntryDisplay>,
+        val entriesToShow: List<ItemEntryData>,
+        val entriesToHide: List<ItemEntryData>,
         val totalCheapItemsCount: Int,
         val totalCheapItemsTypesCount: Int,
         val totalCheapItemsProfit: Double,
         val elapsedTime: Int,
         val totalProfit: Double,
         val profitPerHour: Double,
-        val costEntries: List<CostDisplay>,
+        val costEntries: List<CostEntryData>,
         val totalCost: Double,
         val netProfit: Double,
         val netProfitPerHour: Double
@@ -1152,9 +1165,9 @@ object FishingProfitTracker : IResettableViewModeTracker {
         val hasCosts: Boolean get() = costEntries.isNotEmpty()
     }
 
-    private data class EntryDisplay(val itemId: String, val item: String, val amount: Int, val profit: Double)
+    private data class ItemEntryData(val itemId: String, val item: String, val amount: Int, val profit: Double)
 
-    private data class CostDisplay(val itemId: String, val item: String, val amount: Int, val cost: Double)
+    private data class CostEntryData(val itemId: String, val item: String, val amount: Int, val cost: Double)
 
     private data class TrackerLineColumns(val item: String, val price: String) {
         fun toCells(): List<String> = listOf(item, price)
@@ -1162,7 +1175,7 @@ object FishingProfitTracker : IResettableViewModeTracker {
 
     private fun getColumnsSeparator(): String = " "
 
-    private fun getProfitTrackerLineColumns(entry: EntryDisplay): TrackerLineColumns {
+    private fun getProfitTrackerLineColumns(entry: ItemEntryData): TrackerLineColumns {
         val countStr = CommonUtils.formatNumberWithSpaces(entry.amount)
         val profitStr = CommonUtils.toShortNumber(entry.profit) ?: "0"
         return TrackerLineColumns(
@@ -1190,9 +1203,9 @@ object FishingProfitTracker : IResettableViewModeTracker {
         val topN = Overlays.fishingProfitTrackerShowTop.coerceIn(1, 50)
         val pinDyes = Overlays.fishingProfitTrackerPriceMode == PricingModeWithNpc.NPC_SELL
         val entries = sourceObj.profitTrackerItems.values.map { v ->
-            EntryDisplay(v.itemId, getDisplayNameForGui(v.itemId, v.itemName), v.amount, v.totalItemProfit)
+            ItemEntryData(v.itemId, getDisplayNameForGui(v.itemId, v.itemName), v.amount, v.totalItemProfit)
         }.sortedWith(
-            if (pinDyes) compareByDescending<EntryDisplay> { isDyeDrop(it.itemId) }.thenByDescending { it.profit }
+            if (pinDyes) compareByDescending<ItemEntryData> { isDyeDrop(it.itemId) }.thenByDescending { it.profit }
             else compareByDescending { it.profit }
         )
         val expensive = entries.filter { it.profit >= minPrice || (pinDyes && isDyeDrop(it.itemId)) }
@@ -1202,7 +1215,7 @@ object FishingProfitTracker : IResettableViewModeTracker {
         val elapsedHours = sourceObj.elapsedSeconds / 3600.0
         val profitPerHour = if (elapsedHours > 0) sourceObj.totalProfit / elapsedHours else 0.0
         val costEntries = sourceObj.costItems.values.map { v ->
-            CostDisplay(v.itemId, v.itemName, v.amount, v.totalItemCost)
+            CostEntryData(v.itemId, v.itemName, v.amount, v.totalItemCost)
         }.sortedByDescending { it.cost }
         val netProfit = sourceObj.totalProfit - sourceObj.totalCost
         val netProfitPerHour = if (elapsedHours > 0) netProfit / elapsedHours else 0.0
