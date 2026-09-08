@@ -4,7 +4,7 @@ Released on: ???
 
 ## Features
 
-- Added option to track & show costs (spent bait, shurikens) in Fishing profit tracker. You can disable it in settings.
+- Added option to track & show costs (spent bait, shurikens) in Fishing profit tracker. This also shows net profit after subtracting costs from total profit. You can disable it in settings.
 - Added ability to search for version-specific features in /feesh settings GUI (e.g. search for 1.14.0 to see new settings added in this version).
 - Added ability to provide search query when calling /feesh command: `/feesh 1.14.0` or `/feesh profit tracker`.
 - Renamed `/feeshSpiderDenRainSchedule` to `/feeshWeatherSchedule` and changed its output to show upcoming Mild / Extreme weather schedule.
@@ -22,6 +22,7 @@ Released on: ???
 - Removed Bayou Travel Scroll from /feeshJunkerJoelShopPrices command output.
 - Fixed Tadgang's tadpoles nametags not being hidden after changing their mob level.
 - Fixed NPC price for Foraging Exp Boost profit tracker drop.
+- Fixed amount of lotus obtained when calculating profit for some trophy frogs.
 
 # 1.13.0
 
