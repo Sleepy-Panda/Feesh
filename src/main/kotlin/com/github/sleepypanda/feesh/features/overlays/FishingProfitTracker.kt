@@ -15,6 +15,7 @@ import com.github.sleepypanda.feesh.events.models.ShardCaughtEvent
 import com.github.sleepypanda.feesh.events.models.PricesUpdatedEvent
 import com.github.sleepypanda.feesh.events.models.IceEssenceStatusBarEvent
 import com.github.sleepypanda.feesh.events.models.BaitConsumedEvent
+import com.github.sleepypanda.feesh.events.models.ShurikenUsedEvent
 import com.github.sleepypanda.feesh.constants.Sounds
 import com.github.sleepypanda.feesh.constants.StarlynContests
 import com.github.sleepypanda.feesh.constants.TrophyFish
@@ -67,9 +68,9 @@ object FishingProfitTracker : IResettableViewModeTracker {
 
     data class FishingProfitSourceData(
         var profitTrackerItems: MutableMap<String, ProfitTrackerItemEntry> = mutableMapOf(),
+        var totalProfit: Double = 0.0, // Sum of all items prices before subtracting costs
         var costItems: MutableMap<String, ProfitTrackerCostEntry> = mutableMapOf(),
-        var totalProfit: Double = 0.0,
-        var totalCost: Double = 0.0,
+        var totalCost: Double = 0.0, // Sum of all costs
         var elapsedSeconds: Int = 0
     )
 
@@ -129,7 +130,7 @@ object FishingProfitTracker : IResettableViewModeTracker {
             "",
             "${AQUA}Total: ${GOLD}${BOLD}3B ${RESET}${GRAY}(${GOLD}53.9M${GRAY}/h) ${DARK_GRAY}[sell offer]",
             "${AQUA}Costs: ${RED}-12.5M",
-            "${AQUA}Profit: ${GOLD}${BOLD}2.99B ${RESET}${GRAY}(${GOLD}53.7M${GRAY}/h)",
+            "${AQUA}Net profit: ${GOLD}${BOLD}2.99B ${RESET}${GRAY}(${GOLD}53.7M${GRAY}/h)",
             "${AQUA}Elapsed time: ${WHITE}56h 23m 3s",
         ))
         .setSettingsKey { Overlays.fishingProfitTrackerOverlay }
@@ -152,6 +153,7 @@ object FishingProfitTracker : IResettableViewModeTracker {
         EventBus.subscribe(IceEssenceStatusBarEvent::class, ::onIceEssenceStatusBar)
         EventBus.subscribe(PricesUpdatedEvent::class, ::onPricesUpdated)
         EventBus.subscribe(BaitConsumedEvent::class, ::onBaitConsumed)
+        EventBus.subscribe(ShurikenUsedEvent::class, ::onShurikenUsed)
     }
 
     override fun onBeforeReset() {
@@ -280,11 +282,22 @@ object FishingProfitTracker : IResettableViewModeTracker {
     }
 
     private fun onBaitConsumed(event: BaitConsumedEvent) {
-        if (!Overlays.shouldTrackCostsInFishingProfitTracker) return
-        if (!isSessionActive || !isTrackerVisible()) return
-        if (event.baitName.isBlank() || event.baitId.isBlank()) return
-        val itemName = event.baitName
-        addCostTrackerItem(event.baitId, itemName, 1)
+        CommonUtils.runWithCatching("Failed to add bait to cost tracker in Fishing profit tracker") {
+            if (!Overlays.shouldTrackCostsInFishingProfitTracker) return
+            if (!isSessionActive || !isTrackerVisible()) return
+            if (event.baitName.isBlank() || event.baitId.isBlank()) return
+            val itemName = event.baitName
+            addCostTrackerItem(event.baitId, itemName, 1)
+        }
+    }
+
+    private fun onShurikenUsed(event: ShurikenUsedEvent) {
+        CommonUtils.runWithCatching("Failed to add Shuriken to cost tracker in Fishing profit tracker") {
+            if (!Overlays.shouldTrackCostsInFishingProfitTracker) return
+            if (!isTrackerVisible()) return // Track if overlay is visible even if paused
+            if (event.itemName.isBlank() || event.itemId.isBlank()) return
+            addCostTrackerItem(event.itemId, event.itemName, 1)
+        }
     }
 
     private fun isTrackerDisabled(): Boolean {
@@ -1086,14 +1099,14 @@ object FishingProfitTracker : IResettableViewModeTracker {
                     actions = listOf(LineAction("${GRAY}[${RED}x${GRAY}]") { onResetCostsInline() }),
                 )
             )
-            val netProfitStr = CommonUtils.toShortNumber(displayData.netProfit) ?: "0"
-            val profitColor = if (displayData.netProfit < 0) RED else GOLD
-            val profitStr = "${AQUA}Profit: ${profitColor}${BOLD}$netProfitStr"
+            val netProfitNumberStr = CommonUtils.toShortNumber(displayData.netProfit) ?: "0"
+            val netProfitColor = if (displayData.netProfit < 0) RED else GOLD
+            val netProfitStr = "${AQUA}Net profit: ${netProfitColor}${BOLD}${netProfitNumberStr}"
             if (hideTimerAndCoinsPerHour) {
-                lines.add(LineInfo(profitStr))
+                lines.add(LineInfo(netProfitStr))
             } else {
                 val netProfitPerHourStr = CommonUtils.toShortNumber(displayData.netProfitPerHour) ?: "0"
-                lines.add(LineInfo("${profitStr} ${RESET}${GRAY}(${profitColor}$netProfitPerHourStr${GRAY}/h)"))
+                lines.add(LineInfo("${netProfitStr} ${RESET}${GRAY}(${netProfitColor}${netProfitPerHourStr}${GRAY}/h)"))
             }
             return this
         }

@@ -323,7 +323,8 @@ ${GRAY}To pause: ${WHITE}/${FishingProfitTracker.PAUSE_COMMAND}
 
     var shouldTrackCostsInFishingProfitTracker by boolean(true) {
         this.name = Translated("Track costs")
-        this.description = Translated("Track and show costs of the items spent while fishing - for example, fishing bait used.")
+        this.description = Translated("Track and show costs of the items spent while fishing - for example, fishing bait or shurikens used. Also shows net profit after subtracting costs from total profit.")
+        this.searchTerms = listOf(ModVersionConstants.VERSION_1_14_0)
     }
 
     var shouldAnnounceRareDropsWhenPickup by boolean(true) {
