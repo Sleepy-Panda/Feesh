@@ -27,6 +27,10 @@ object SacksItemPickupPublisher {
     private var lastSupercraftedMessage: String? = null
     private var lastSupercraftedAt: Date? = null
 
+    // Transfer items to sacks button in View Stash GUI
+    private const val STASH_TO_SACKS_MESSAGE = "You have successfully transferred your items from this stash to your sacks!"
+    private var lastStashToSacksAt: Date? = null
+
     fun init() {
         EventBus.subscribe(ChatCancellableEvent::class, ::onChat) // Message might be cancelled by sacks hider e.g. from SH
     }
@@ -52,6 +56,10 @@ object SacksItemPickupPublisher {
                     lastSupercraftedMessage = text
                     lastSupercraftedAt = Date()
                 }
+
+                text == STASH_TO_SACKS_MESSAGE -> {
+                    lastStashToSacksAt = Date()
+                }
             }
         }
     }
@@ -62,6 +70,7 @@ object SacksItemPickupPublisher {
         val lastGuisClosed = GuiUtils.lastGuisClosed
         val now = Date().time
         if (lastGuisClosed.lastSacksGuiClosedAt != null && now - lastGuisClosed.lastSacksGuiClosedAt!!.time < MAX_SACKS_MESSAGE_DELAY_MS) return true
+        if (lastStashToSacksAt != null && now - lastStashToSacksAt!!.time < MAX_SACKS_MESSAGE_DELAY_MS) return true
         return false
     }
 
