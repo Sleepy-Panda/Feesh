@@ -6,6 +6,7 @@ import com.github.sleepypanda.feesh.events.models.InventoryProfitItemPickupEvent
 import com.github.sleepypanda.feesh.settings.categories.Alerts
 import com.github.sleepypanda.feesh.utils.ChatUtils
 import com.github.sleepypanda.feesh.utils.CommonUtils
+import com.github.sleepypanda.feesh.utils.SoundUtils
 import com.github.sleepypanda.feesh.utils.WorldUtils
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
@@ -13,6 +14,7 @@ import net.minecraft.network.chat.Component
 import net.minecraft.network.chat.Style
 import net.minecraft.network.chat.ClickEvent.RunCommand
 import net.minecraft.network.chat.HoverEvent.ShowText
+import net.minecraft.sounds.SoundEvents
 
 object SackDropsIntoInventoryAlert {
     private const val ALERT_COOLDOWN_MS = 10 * 60 * 1000L
@@ -53,6 +55,8 @@ object SackDropsIntoInventoryAlert {
                         .withHoverEvent(ShowText(Component.literal("Click to open Bazaar for ${dropInfo.itemName}")))
                 )
             ChatUtils.sendLocalChat(compactText.append(orText).append(bazaarText))
+
+            SoundUtils.playSound(SoundEvents.CHEST_OPEN, 2.0f, 0.5f)
         }
     }
 }
