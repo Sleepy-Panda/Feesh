@@ -12,11 +12,11 @@ import net.minecraft.resources.Identifier
 object SoundUtils {
     const val SOUNDS_IDENTIFIER_PREFIX = "feesh"
 
-    fun playSound(sound: SoundEvent = SoundEvents.EXPERIENCE_ORB_PICKUP, skipSoundModeCheck: Boolean = false) {
+    fun playSound(sound: SoundEvent = SoundEvents.EXPERIENCE_ORB_PICKUP, pitch: Float = 1.0f, volume: Float = 1.0f, skipSoundModeCheck: Boolean = false) {
         if (General.soundMode == SoundMode.OFF && !skipSoundModeCheck) return
 
         val mc = FeeshMod.mc
-        mc.soundManager.play(SimpleSoundInstance.forUI(sound, 1.0f, 1.0f))
+        mc.soundManager.play(SimpleSoundInstance.forUI(sound, pitch, volume))
     }
     
     fun playCustomSound(fileName: String?, skipSoundModeCheck: Boolean = false) {
