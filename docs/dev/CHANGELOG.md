@@ -25,6 +25,7 @@ Released on: ???
 - Removed Bayou Travel Scroll from `/feeshJunkerJoelShopPrices` command output.
 - Fixed Tadgang's tadpoles nametags not being hidden after changing their mob level.
 - Fixed NPC price for Foraging Exp Boost profit tracker drop.
+- Fixed sacks items counting in the Fishing profit tracker after sending stash to sacks.
 
 # 1.13.0
 
