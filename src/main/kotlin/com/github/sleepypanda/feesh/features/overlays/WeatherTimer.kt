@@ -10,7 +10,7 @@ import com.github.sleepypanda.feesh.utils.WorldUtils
 import com.github.sleepypanda.feesh.utils.ChatUtils
 import com.github.sleepypanda.feesh.utils.CommonUtils
 import com.github.sleepypanda.feesh.utils.SoundUtils
-import com.github.sleepypanda.feesh.utils.TabListUtils
+import com.github.sleepypanda.feesh.utils.TabListAndScoreboardUtils
 import com.github.sleepypanda.feesh.utils.gui.FeeshGui
 import com.github.sleepypanda.feesh.utils.gui.LineInfo
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes
@@ -129,7 +129,7 @@ object WeatherTimer {
     }
 
     private fun trackParkWeather() {
-        val newValue = TabListUtils.getLineAfter("Rain:").trim()
+        val newValue = TabListAndScoreboardUtils.getLineAfter("Rain:").trim()
         if (newValue.isEmpty() || newValue.contains("No rain!")) {
             weatherTimerStr = null
             weatherSecondsLeft = null
@@ -160,7 +160,7 @@ object WeatherTimer {
     }
 
     private fun findWeatherOnTabList(): Triple<String, Boolean, String>? {
-        for (line in TabListUtils.getUnformattedLines()) {
+        for (line in TabListAndScoreboardUtils.getUnformattedLines()) {
             val match = WEATHER_LINE_REGEX.find(line.trim()) ?: continue
             val name = match.groupValues[1]
             val rawValue = match.groupValues[2].trim()

@@ -119,6 +119,7 @@ class FeeshMod : ClientModInitializer {
         PuddleJumperTimerAlert.init()
         TrophyFrogDiscoveredAlert.init()
         TrophyFishDiscoveredAlert.init()
+        DayNightStartedAlert.init()
 
         // Chat
         RareCatchMessage.init()

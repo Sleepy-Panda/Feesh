@@ -32,13 +32,11 @@ Newly released - https://hypixel.net/threads/hypixel-skyblock-0-24-5-assorted-qo
  GOOD CATCH! You caught a Flexbone!
  GOOD CATCH! You caught a Shinyfish Shard!
 
-- Day/night notification to swap baits
 - You cannot send same message twice when sharing Isopods
 - Drake sound not muted when using Sound Controller mod
 - integrate medal clipping for rare drops / dyes? have seen it in sbo and its pretty neat  https://medal.tv/developer/auto-clipping#api-reference
 - lf treasure streak (maybe good, great , outstanding streak but maybe to much)
-- Flipping items via bz + supercraft + sell still gets to the tracker!!!
-  - You have successfully transferred your items from this stash to your sacks!
+- Flipping items via bz + supercraft + sell still gets to the tracker
 - Default party drop on-screen alert ragebaits some people :(
 - Hotspot nametag hider + overlay with hotspot perk
 - Custom msg in catch message which can be shown in title (e.g. I KILL OWN)

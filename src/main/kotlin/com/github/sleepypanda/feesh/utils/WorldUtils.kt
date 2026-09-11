@@ -6,7 +6,6 @@ import com.github.sleepypanda.feesh.events.models.ClientTickEvent
 import com.github.sleepypanda.feesh.events.models.WorldChangedEvent
 import com.github.sleepypanda.feesh.utils.ChatUtils.getUnformattedString
 import net.minecraft.world.scores.DisplaySlot
-import net.minecraft.world.scores.PlayerTeam
 
 object WorldUtils {
     const val CRIMSON_ISLE = "Crimson Isle"
@@ -158,12 +157,12 @@ object WorldUtils {
     }
     
     private fun readWorldName(): String? {
-        val worldName = TabListUtils.getLineAfter("Area:")
+        val worldName = TabListAndScoreboardUtils.getLineAfter("Area:")
         return worldName.ifEmpty { null }
     }
 
     private fun readZoneName(): String? {
-        val zoneLine = getUnformattedScoreboardLines().find { line -> zonePrefixes.any { line.contains(it) } }
+        val zoneLine = TabListAndScoreboardUtils.getUnformattedScoreboardLines().find { line -> zonePrefixes.any { line.contains(it) } }
         if (zoneLine.isNullOrEmpty()) return null
 
         // ⏣ Abandoned🐍 Quarry -> Abandoned Quarry
@@ -196,20 +195,6 @@ object WorldUtils {
         return value >= num1 && value <= num2
     }
 
-    private fun getUnformattedScoreboardLines(): List<String> {
-        val scoreboard = FeeshMod.mc.level?.scoreboard ?: return emptyList()
-        val objective = scoreboard.getDisplayObjective(DisplaySlot.SIDEBAR) ?: return emptyList()
-
-        val zoneLines = scoreboard.listPlayerScores(objective)
-            .filter { entry -> !entry.isHidden }
-            .map { entry ->
-                val team = scoreboard.getPlayersTeam(entry.owner)
-                PlayerTeam.formatNameForTeam(team, entry.ownerName()).getUnformattedString()
-            }
-
-        return zoneLines
-    }
-
     private fun readIsInSkyblock(): Boolean {
         //val serverAddress = FeeshMod.mc.currentServerEntry?.address ?: return false
         //if (!serverAddress.contains("hypixel", ignoreCase = true)) return false
@@ -220,7 +205,7 @@ object WorldUtils {
     }
 
     private fun readIsOnAlpha(): Boolean {
-        val scoreboardLines = getUnformattedScoreboardLines()
+        val scoreboardLines = TabListAndScoreboardUtils.getUnformattedScoreboardLines()
         return scoreboardLines.any { line -> line.contains("alpha.hypixel.net", ignoreCase = true) }
     }
 

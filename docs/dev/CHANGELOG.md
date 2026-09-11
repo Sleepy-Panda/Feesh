@@ -13,6 +13,7 @@ Released on: ???
   - Removed old Rain timer overlay/alert and added new Weather timer/alert working for all new weather-affected worlds. **Please re-enable in settings if you need it!**
   - Removed "Blizzards started" counter from Personal Bests, because Blizzard in a Bottle will become a mixin after the update.
 - Added alert when a fishing drop (e.g. raw fish) overflows into your inventory, meaning sack is full [disabled by default]. It offers buttons for Supercrafting a compacted item / Bazaar sell.
+- Added "Alert when Day/Night started" when Skyblock time hits 6:00am or 7:00pm [disabled by default]. Can be useful for swapping Light/Dark baits or other activities.
 - Adjustments to editing Treasure fishing tracker data:
   - Allowed 0 as Treasure Dye drop count in `/feeshSetTrackerDrops` command, to initialize catches before your first Treasure Dye.
   - Added `/feeshSetTreasureCatches` / `/feeshSetTreasureCatchesTotal` to set Good/Great/Outstanding catches counts for Session and Total mode.

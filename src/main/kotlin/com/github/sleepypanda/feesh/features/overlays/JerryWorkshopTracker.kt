@@ -6,7 +6,7 @@ import com.github.sleepypanda.feesh.utils.PlayerUtils
 import com.github.sleepypanda.feesh.utils.FishingHookUtils
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
-import com.github.sleepypanda.feesh.utils.TabListUtils
+import com.github.sleepypanda.feesh.utils.TabListAndScoreboardUtils
 import com.github.sleepypanda.feesh.events.EventBus
 import com.github.sleepypanda.feesh.events.models.ClientTickEvent
 import com.github.sleepypanda.feesh.events.models.GameClosedEvent
@@ -138,8 +138,8 @@ object JerryWorkshopTracker : IResettableTracker {
         lines.addAll(data.yeti.getOverlayLines(yeti.displayName))
         lines.addAll(data.reindrake.getOverlayLines(reindrake.displayName))
 
-        val islandOpen = TabListUtils.getLineAfter("Island open:")
-        val islandClosesIn = TabListUtils.getLineAfter("Island closes in:")
+        val islandOpen = TabListAndScoreboardUtils.getLineAfter("Island open:")
+        val islandClosesIn = TabListAndScoreboardUtils.getLineAfter("Island closes in:")
         if (!islandOpen.isNullOrEmpty()) {
             val islandOpenLine = LineInfo("${GRAY}Island open: ${WHITE}${islandOpen}")
             lines.add(islandOpenLine)
