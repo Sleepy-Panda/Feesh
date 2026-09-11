@@ -68,6 +68,7 @@ Required Java version is 25+.
 - **Worm the Fish** — Alerts when Worm the Fish is caught (Dirt Rod fishing).
 - **Fishing Festival** — Alerts when the Fishing Festival ends, and posts amounts of sharks caught in chat. Also has option to track personal best per festival.
 - **Weather ends soon** — Alerts when weather event ends soon while in relevant areas.
+- **Day/Night started** — Alerts when day starts (6:00am) or night starts (7:00pm).
 - **Nessie destination alert** — Alerts destination when a Nessie decides into which cave to swim - to Jade Dragon or to Driptoad Delve.
 - **Puddle Jumper timer alert** — Alerts when your Puddle Jumper is about to arrive to its destination.
 - **Trophy Frog discovered alert** — Alerts when a new Trophy Frog is discovered.
@@ -161,6 +162,8 @@ Please explore the [docs folder](https://github.com/Sleepy-Panda/Feesh/tree/deve
 ### Mod data is periodically reset
 
 Make sure you quit the game normally - via close button or `Disconnect server` - `Quit game`. Do not force-exit the game using Alt+F4 or, even worse, by turning off the PC - it may corrupt mod files being used by Minecraft, and won't let some processes to finalize normally.
+
+Also, preserve MC folder/config folder as it keeps data and settings for various mods.
 
 If your data was reset recently, you can restore it from the backups stored in the MC folder/config/feesh/backups.
 

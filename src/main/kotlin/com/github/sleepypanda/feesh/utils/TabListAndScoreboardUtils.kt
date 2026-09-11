@@ -4,8 +4,10 @@ import com.github.sleepypanda.feesh.FeeshMod
 import com.github.sleepypanda.feesh.utils.ChatUtils.getUnformattedString
 import net.minecraft.client.multiplayer.PlayerInfo
 import net.minecraft.network.chat.Component
+import net.minecraft.world.scores.DisplaySlot
+import net.minecraft.world.scores.PlayerTeam
 
-object TabListUtils {
+object TabListAndScoreboardUtils {
     
     fun getUnformattedLines(): List<String> {
         val playerList = getPlayerList()
@@ -40,6 +42,20 @@ object TabListUtils {
         }
         
         return ""
+    }
+
+    fun getUnformattedScoreboardLines(): List<String> {
+        val scoreboard = FeeshMod.mc.level?.scoreboard ?: return emptyList()
+        val objective = scoreboard.getDisplayObjective(DisplaySlot.SIDEBAR) ?: return emptyList()
+
+        val lines = scoreboard.listPlayerScores(objective)
+            .filter { entry -> !entry.isHidden }
+            .map { entry ->
+                val team = scoreboard.getPlayersTeam(entry.owner)
+                PlayerTeam.formatNameForTeam(team, entry.ownerName()).getUnformattedString()
+            }
+
+        return lines
     }
 
     private fun getPlayerList(): Collection<PlayerInfo> {

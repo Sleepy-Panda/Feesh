@@ -305,13 +305,25 @@ object Alerts : CategoryKt("Alerts") {
 
     init {
         separator {
-            this.title = "${AQUA}${BOLD}Weather"
+            this.title = "${AQUA}${BOLD}Weather and day/night"
         }
     }
 
     var alertOnWeatherEndingSoon by boolean(false) {
         this.name = Translated("Alert when weather event ends soon")
         this.description = Translated("${GRAY}Shows a title and plays a sound when active weather event ends soon. Please enable ${YELLOW}TabList settings -> General Info widget -> Show Weather")
+        this.searchTerms = listOf(ModVersionConstants.VERSION_1_14_0)
+    }
+
+    var alertOnDayNight by boolean(false) {
+        this.name = Translated("Alert when Day/Night started")
+        this.description = Translated("Shows a title and plays a sound when Skyblock day starts (6:00am) or Skyblock night starts (7:00pm). Can be used as a reminder to swap Light/Dark bait.")
+        this.searchTerms = listOf(ModVersionConstants.VERSION_1_14_0)
+    }
+
+    var alertOnDayNightOnlyWhenFishing by boolean(false) {
+        this.name = Translated("Alert when Day/Night started only when fishing")
+        this.description = Translated("Alerts only when you are fishing. If disabled, alerts you in every location regardless of whether you are fishing or not.")
         this.searchTerms = listOf(ModVersionConstants.VERSION_1_14_0)
     }
 
