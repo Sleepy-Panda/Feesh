@@ -15,6 +15,7 @@ import com.github.sleepypanda.feesh.events.models.ShardCaughtEvent
 import com.github.sleepypanda.feesh.events.models.PricesUpdatedEvent
 import com.github.sleepypanda.feesh.events.models.IceEssenceStatusBarEvent
 import com.github.sleepypanda.feesh.events.models.BaitConsumedEvent
+import com.github.sleepypanda.feesh.events.models.MobyDuckConsumedEvent
 import com.github.sleepypanda.feesh.events.models.ShurikenUsedEvent
 import com.github.sleepypanda.feesh.constants.Sounds
 import com.github.sleepypanda.feesh.constants.StarlynContests
@@ -156,6 +157,7 @@ object FishingProfitTracker : IResettableViewModeTracker {
         EventBus.subscribe(PricesUpdatedEvent::class, ::onPricesUpdated)
         EventBus.subscribe(BaitConsumedEvent::class, ::onBaitConsumed)
         EventBus.subscribe(ShurikenUsedEvent::class, ::onShurikenUsed)
+        EventBus.subscribe(MobyDuckConsumedEvent::class, ::onMobyDuckConsumed)
     }
 
     override fun onBeforeReset() {
@@ -289,34 +291,15 @@ object FishingProfitTracker : IResettableViewModeTracker {
         refreshTotalItemsProfits()
     }
 
-    private fun onBaitConsumed(event: BaitConsumedEvent) {
-        CommonUtils.runWithCatching("Failed to add bait to cost tracker in Fishing profit tracker") {
-            if (!Overlays.shouldTrackCostsInFishingProfitTracker) return
-            if (!isSessionActive || !isTrackerVisible()) return
-            if (event.baitName.isBlank() || event.baitId.isBlank()) return
-            val itemName = event.baitName
-            addCostTrackerItem(event.baitId, itemName, 1)
-        }
-    }
-
-    private fun onShurikenUsed(event: ShurikenUsedEvent) {
-        CommonUtils.runWithCatching("Failed to add Shuriken to cost tracker in Fishing profit tracker") {
-            if (!Overlays.shouldTrackCostsInFishingProfitTracker) return
-            if (!isTrackerVisible()) return // Track if overlay is visible even if paused
-            if (event.itemName.isBlank() || event.itemId.isBlank()) return
-            addCostTrackerItem(event.itemId, event.itemName, 1)
-        }
-    }
-
     private fun isTrackerDisabled(): Boolean {
         if (!Overlays.fishingProfitTrackerOverlay || !WorldUtils.isInSkyblock() || !WorldUtils.isInFishingWorld()) return true
-        if (!FishingHookUtils.wasFishingHookSubmergedMinutesAgo(HIDE_OVERLAY_AFTER_HOOK_MINUTES)) return true
         if (Overlays.shouldBeInactiveWhenInTrophyArmor && PlayerUtils.isInTrophyArmor()) return true
         return false
     }
 
     private fun isTrackerVisible(): Boolean {
         if (isTrackerDisabled()) return false
+        if (!FishingHookUtils.wasFishingHookSubmergedMinutesAgo(HIDE_OVERLAY_AFTER_HOOK_MINUTES)) return false
 
         val viewMode = getCurrentViewMode()
         val hasData = if (viewMode == TrackerViewMode.SESSION) hasSessionData() else hasTotalData()
@@ -670,7 +653,10 @@ object FishingProfitTracker : IResettableViewModeTracker {
             }
         }
 
-        if (!isSessionActive || !isTrackerVisible()) return
+        if (!isSessionActive || !isTrackerVisible()) {
+            pause()
+            return
+        }
         val lastHookSeenAt = FishingHookUtils.lastSubmergedFishingHookSeenAt() ?: return
         val elapsedSinceHook = (Date().time - lastHookSeenAt.time) / 1000
         if (elapsedSinceHook < Overlays.trackersAutoPauseSeconds) {
@@ -825,6 +811,34 @@ object FishingProfitTracker : IResettableViewModeTracker {
             totalItemCost = existing?.totalItemCost ?: 0.0
         )
         saveData()
+    }
+
+    private fun onBaitConsumed(event: BaitConsumedEvent) {
+        CommonUtils.runWithCatching("Failed to add bait to cost tracker in Fishing profit tracker") {
+            if (!Overlays.shouldTrackCostsInFishingProfitTracker) return
+            if (!isSessionActive || !isTrackerVisible()) return
+            if (event.baitName.isBlank() || event.baitId.isBlank()) return
+            val itemName = event.baitName
+            addCostTrackerItem(event.baitId, itemName, 1)
+        }
+    }
+
+    private fun onShurikenUsed(event: ShurikenUsedEvent) {
+        CommonUtils.runWithCatching("Failed to add Shuriken to cost tracker in Fishing profit tracker") {
+            if (!Overlays.shouldTrackCostsInFishingProfitTracker) return
+            if (!isTrackerVisible()) return // Track if overlay is visible even if paused
+            if (event.itemName.isBlank() || event.itemId.isBlank()) return
+            addCostTrackerItem(event.itemId, event.itemName, 1)
+        }
+    }
+
+    private fun onMobyDuckConsumed(event: MobyDuckConsumedEvent) {
+        CommonUtils.runWithCatching("Failed to add Moby-Duck to cost tracker in Fishing profit tracker") {
+            if (!Overlays.shouldTrackCostsInFishingProfitTracker) return
+            if (isTrackerDisabled()) return // Track if overlay enabled even if not visible
+            if (event.itemName.isBlank() || event.itemId.isBlank()) return
+            addCostTrackerItem(event.itemId, event.itemName, 1)
+        }
     }
 
     private fun onInventoryProfitItemPickup(event: InventoryProfitItemPickupEvent) {

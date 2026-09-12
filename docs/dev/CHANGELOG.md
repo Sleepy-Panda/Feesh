@@ -4,7 +4,7 @@ Released on: ???
 
 ## Features
 
-- Added option to track & show costs (spent bait, shurikens) in Fishing profit tracker. This also shows net profit after subtracting costs from total profit. You can disable it in settings.
+- Added option to track & show costs (spent bait, shurikens, Moby-Duck) in Fishing profit tracker. This also shows net profit after subtracting costs from total profit. You can disable it in settings.
   - Not shown when NPC Price mode selected.
 - Improved settings search:
   - You can search for version-specific features in /feesh settings GUI (e.g. search for 1.14.0 to see new settings added in this version).
