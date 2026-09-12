@@ -89,14 +89,16 @@ object FishingProfitTracker : IResettableViewModeTracker {
     const val PAUSE_COMMAND = "feeshPauseFishingProfitTracker"
 
     const val TOGGLE_VIEW_MODE_COMMAND = "feeshToggleFishingProfitTrackerViewMode"
-    const val SET_ITEM_COUNT_COMMAND = "feeshSetItemCountFishingProfit"
-    const val SET_ITEM_COUNT_TOTAL_COMMAND = "feeshSetItemCountFishingProfitTotal"
-    const val DELETE_ITEM_COMMAND = "feeshDeleteItemFishingProfit"
-    const val DELETE_ITEM_TOTAL_COMMAND = "feeshDeleteItemFishingProfitTotal"
-    const val SET_TIME_COMMAND = "feeshSetTimeFishingProfit"
-    const val SET_TIME_TOTAL_COMMAND = "feeshSetTimeFishingProfitTotal"
-    const val RESET_COSTS_COMMAND = "feeshResetFishingProfitTrackerCosts"
-    const val RESET_COSTS_TOTAL_COMMAND = "feeshResetFishingProfitTrackerCostsTotal"
+    const val SET_ITEM_COUNT_COMMAND = "feeshSetItemCountFishingProfitTracker"
+    const val SET_ITEM_COUNT_TOTAL_COMMAND = "feeshSetItemCountFishingProfitTrackerTotal"
+    const val GET_ITEM_COMMAND = "feeshGetItemFishingProfitTracker"
+    const val GET_ITEM_TOTAL_COMMAND = "feeshGetItemFishingProfitTrackerTotal"
+    const val DELETE_ITEM_COMMAND = "feeshDeleteItemFishingProfitTracker"
+    const val DELETE_ITEM_TOTAL_COMMAND = "feeshDeleteItemFishingProfitTrackerTotal"
+    const val SET_TIME_COMMAND = "feeshSetTimeFishingProfitTracker"
+    const val SET_TIME_TOTAL_COMMAND = "feeshSetTimeFishingProfitTrackerTotal"
+    const val RESET_COSTS_COMMAND = "feeshResetCostsFishingProfitTracker"
+    const val RESET_COSTS_TOTAL_COMMAND = "feeshResetCostsFishingProfitTrackerTotal"
 
     private val COINS_CATCH_PATTERN = Regex("^. (?:GOOD|GREAT|OUTSTANDING) CATCH! You caught ([\\d,]+) Coins.*")
     private val ICE_ESSENCE_CATCH_PATTERN = Regex("^. (?:GOOD|GREAT|OUTSTANDING) CATCH! You caught Ice Essence x([\\d,]+).*")
@@ -207,6 +209,12 @@ object FishingProfitTracker : IResettableViewModeTracker {
         }
         RegisterUtils.command(SET_ITEM_COUNT_TOTAL_COMMAND) { args ->
             onSetItemCountCommand(args, TrackerViewMode.TOTAL)
+        }
+        RegisterUtils.command(GET_ITEM_COMMAND) { args ->
+            onGetItemCommand(args, TrackerViewMode.SESSION)
+        }
+        RegisterUtils.command(GET_ITEM_TOTAL_COMMAND) { args ->
+            onGetItemCommand(args, TrackerViewMode.TOTAL)
         }
         RegisterUtils.command(DELETE_ITEM_COMMAND) { args ->
             onDeleteItemCommand(args, TrackerViewMode.SESSION)
@@ -405,6 +413,68 @@ object FishingProfitTracker : IResettableViewModeTracker {
 
             val viewModeText = getViewModeDisplayText(viewMode)
             ChatUtils.sendLocalChat("${WHITE}Count of ${displayName} ${WHITE}in Fishing profit tracker $viewModeText ${WHITE}is changed from ${AQUA}${previousCount} ${WHITE}to ${AQUA}${count}${WHITE}.", true)
+        }
+    }
+
+    private fun onGetItemCommand(args: Array<String>, viewMode: TrackerViewMode) {
+
+        fun findProfitTrackerItemsByIdOrName(sourceObj: FishingProfitSourceData, query: String): List<ProfitTrackerItemEntry> {
+            val matches = mutableMapOf<String, ProfitTrackerItemEntry>()
+            sourceObj.profitTrackerItems[query]?.let { matches[it.itemId] = it }
+            sourceObj.profitTrackerItems.values
+                .filter { it.itemName.contains(query, ignoreCase = true) }
+                .forEach { matches[it.itemId] = it }
+            return matches.values.sortedByDescending { it.totalItemProfit }
+        }
+
+        fun formatMatchLine(entry: ProfitTrackerItemEntry): String {
+            val displayName = getDisplayNameForGui(entry.itemId, entry.itemName)
+            val countStr = CommonUtils.formatNumberWithSpaces(entry.amount)
+            val profitStr = CommonUtils.toShortNumber(entry.totalItemProfit) ?: "0"
+            return "${GRAY}- ${WHITE}${countStr}${GRAY}x ${displayName}${WHITE}: ${GOLD}${profitStr}${WHITE} coins. Item ID: ${AQUA}${entry.itemId}${WHITE}"
+        }
+
+        CommonUtils.runWithCatching("Failed to get item from Fishing profit tracker") {
+            val commandName = when (viewMode) {
+                TrackerViewMode.SESSION -> GET_ITEM_COMMAND
+                TrackerViewMode.TOTAL -> GET_ITEM_TOTAL_COMMAND
+            }
+            val query = args.joinToString(" ").trim()
+            if (query.isBlank()) {
+                ChatUtils.sendLocalChat(
+                    "${RED}Usage: /$commandName <itemID or itemName>",
+                    true
+                )
+                return
+            }
+            if (query.length < 3) {
+                ChatUtils.sendLocalChat("${RED}Search query must be at least 3 characters.", true)
+                return
+            }
+
+            val viewModeText = getViewModeDisplayText(viewMode)
+            val sourceObj = getSourceObject(viewMode)
+            val matches = findProfitTrackerItemsByIdOrName(sourceObj, query)
+            if (matches.isEmpty()) {
+                ChatUtils.sendLocalChat(
+                    "${RED}Item '${query}' is not found in the Fishing profit tracker $viewModeText${RED}!",
+                    true
+                )
+                return
+            }
+
+            ChatUtils.sendLocalChat(
+                "${WHITE}Matching items in the Fishing profit tracker $viewModeText${WHITE}:",
+                true
+            )
+
+            val maxMatchesToShow = 5
+            matches.take(maxMatchesToShow).forEach { ChatUtils.sendLocalChat(formatMatchLine(it)) }
+            if (matches.size > maxMatchesToShow) {
+                ChatUtils.sendLocalChat(
+                    "${GRAY}Showing top ${maxMatchesToShow} of ${matches.size} matches - refine search parameter to see the relevant results."
+                )
+            }
         }
     }
 
