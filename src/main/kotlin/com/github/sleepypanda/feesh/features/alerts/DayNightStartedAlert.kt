@@ -58,8 +58,8 @@ object DayNightStartedAlert {
     }
 
     private fun playAlert(phase: SkyblockTimePhase) {
-        const dayIcon = "☀"
-        const nightIcon = ".✦⋆⁺"
+        val dayIcon = "☀"
+        val nightIcon = ".✦⋆⁺"
         when (phase) {
             SkyblockTimePhase.DAY -> {
                 CommonUtils.showTitle("${GOLD}${dayIcon} ${YELLOW}${BOLD}Day started")
