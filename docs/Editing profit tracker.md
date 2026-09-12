@@ -3,6 +3,7 @@
 ## Table of contents
 
 - [Intro](#intro)
+- [Getting tracker items](#getting-tracker-items)
 - [Editing tracker items](#editing-tracker-items)
 - [Editing elapsed time](#editing-elapsed-time)
 
@@ -11,6 +12,31 @@
 The **Fishing profit tracker** has two view modes: **[Session]** (resets on game close by default, unless disabled) and **[Total]** (persists until you reset it manually). This guide explains how to add, change, or remove items in each mode.
 
 It can be used if some item was not tracked during fishing, or you want to initialize your past drops history in Feesh.
+
+## Getting tracker items
+
+Cheap items and items beyond **Maximum lines count** are grouped under **Other items** on the overlay. Use the command to print item data to your chat, including hidden items. Matching items are listed in chat.
+
+| Action | [Session] | [Total] |
+|--------|-----------|---------|
+| Get item data | `/feeshGetItemFishingProfitTracker <ITEM_ID or ITEM_NAME>` | `/feeshGetItemFishingProfitTrackerTotal <ITEM_ID or ITEM_NAME>` |
+
+Query must be at least **3** characters.
+
+- `ITEM_ID` - exact match. Look at [Item IDs](#item-ids) below.
+- `ITEM_NAME` - full or partial item name.
+
+Examples:
+
+```text
+/feeshGetItemFishingProfitTracker ENCHANTED_SPONGE
+/feeshGetItemFishingProfitTracker Sponge
+/feeshGetItemFishingProfitTracker Fished Coins
+/feeshGetItemFishingProfitTrackerTotal Silver Magmafish
+/feeshGetItemFishingProfitTrackerTotal MAGMA_FISH_SILVER
+/feeshGetItemFishingProfitTrackerTotal Baby Yeti
+/feeshGetItemFishingProfitTrackerTotal FLYING_FISH;4+100
+```
 
 ## Editing tracker items
 
@@ -38,8 +64,8 @@ You can use chat commands when you need to set or adjust count for the items. Ma
 
 | Action | [Session] | [Total] |
 |--------|-----------|---------|
-| Set / adjust item count | `/feeshSetItemCountFishingProfit <ITEM_ID> <COUNT>` | `/feeshSetItemCountFishingProfitTotal <ITEM_ID> <COUNT>` |
-| Delete item (with confirmation) | `/feeshDeleteItemFishingProfit <ITEM_ID>` | `/feeshDeleteItemFishingProfitTotal <ITEM_ID>` |
+| Set / adjust item count | `/feeshSetItemCountFishingProfitTracker <ITEM_ID> <COUNT>` | `/feeshSetItemCountFishingProfitTrackerTotal <ITEM_ID> <COUNT>` |
+| Delete item (with confirmation) | `/feeshDeleteItemFishingProfitTracker <ITEM_ID>` | `/feeshDeleteItemFishingProfitTrackerTotal <ITEM_ID>` |
 
 **`<COUNT>` formats**
 
@@ -54,12 +80,12 @@ You can use chat commands when you need to set or adjust count for the items. Ma
 ### Examples
 
 ```text
-/feeshSetItemCountFishingProfit RADIOACTIVE_VIAL +1
-/feeshSetItemCountFishingProfit MAGMA_FISH 64000
-/feeshSetItemCountFishingProfitTotal MAGMA_FISH_SILVER 10000
-/feeshSetItemCountFishingProfit FLYING_FISH;4+100 3
-/feeshSetItemCountFishingProfit ENCHANTED_SPONGE -10
-/feeshDeleteItemFishingProfit ENCHANTED_SPONGE
+/feeshSetItemCountFishingProfitTracker RADIOACTIVE_VIAL +1
+/feeshSetItemCountFishingProfitTracker MAGMA_FISH 64000
+/feeshSetItemCountFishingProfitTrackerTotal MAGMA_FISH_SILVER 10000
+/feeshSetItemCountFishingProfitTracker FLYING_FISH;4+100 3
+/feeshSetItemCountFishingProfitTracker ENCHANTED_SPONGE -10
+/feeshDeleteItemFishingProfitTracker ENCHANTED_SPONGE
 ```
 
 ### Item IDs
@@ -97,7 +123,7 @@ While the overlay is **visible**, you can use the following commands:
 
 | Action | [Session] | [Total] |
 |--------|-----------|---------|
-| Set / adjust time | `/feeshSetTimeFishingProfit <SECONDS>` | `/feeshSetTimeFishingProfitTotal <SECONDS>` |
+| Set / adjust time | `/feeshSetTimeFishingProfitTracker <SECONDS>` | `/feeshSetTimeFishingProfitTrackerTotal <SECONDS>` |
 
 **`<SECONDS>` formats**
 
@@ -112,9 +138,9 @@ Result must be more than or equal to 0. Invalid input shows an error in chat.
 Examples:
 
 ```text
-/feeshSetTimeFishingProfit 3600
-/feeshSetTimeFishingProfitTotal +7200
-/feeshSetTimeFishingProfit -300
+/feeshSetTimeFishingProfitTracker 3600
+/feeshSetTimeFishingProfitTrackerTotal +7200
+/feeshSetTimeFishingProfitTracker -300
 ```
 
 If you don't know elapsed time for [Total], you might use **Hide timer and coins/h in [Total]** to show only the items list.

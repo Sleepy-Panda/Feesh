@@ -5,6 +5,7 @@ Released on: ???
 ## Features
 
 - Added option to track & show costs (spent bait, shurikens) in Fishing profit tracker. This also shows net profit after subtracting costs from total profit. You can disable it in settings.
+  - Not shown when NPC Price mode selected.
 - Improved settings search:
   - You can search for version-specific features in /feesh settings GUI (e.g. search for 1.14.0 to see new settings added in this version).
   - You can provide search query when calling /feesh command: `/feesh 1.14.0` or `/feesh profit tracker`.
@@ -14,10 +15,16 @@ Released on: ???
   - Removed "Blizzards started" counter from Personal Bests, because Blizzard in a Bottle will become a mixin after the update.
 - Added alert when a fishing drop (e.g. raw fish) overflows into your inventory, meaning sack is full [disabled by default]. It offers buttons for Supercrafting a compacted item / Bazaar sell.
 - Added "Alert when Day/Night started" when Skyblock time hits 6:00am or 7:00pm [disabled by default]. Can be useful for swapping Light/Dark baits or other activities.
-- Adjustments to editing Treasure fishing tracker data:
-  - Allowed 0 as Treasure Dye drop count in `/feeshSetTrackerDrops` command, to initialize catches before your first Treasure Dye.
-  - Added `/feeshSetTreasureCatches` / `/feeshSetTreasureCatchesTotal` to set Good/Great/Outstanding catches counts for Session and Total mode.
-  - Added [Editing treasure fishing tracker guide](https://github.com/Sleepy-Panda/Feesh/blob/develop/docs/Editing%20treasure%20fishing%20tracker.md).
+- Trackers commands adjustments:
+  - Added command to search item data in Fishing profit tracker:
+    - `/feeshGetItemFishingProfitTracker` / `/feeshGetItemFishingProfitTrackerTotal`
+    - Pass item ID or full/partial item name as argument
+    - [Guide](https://github.com/Sleepy-Panda/Feesh/blob/develop/docs/Editing%20profit%20tracker.md#getting-tracker-items)
+  - Renamed some commands to edit Fishing profit tracker, to follow consistent naming style.
+  - Adjustments to editing Treasure fishing tracker data:
+    - Allowed 0 as Treasure Dye drop count in `/feeshSetTrackerDrops` command, to initialize catches before your first Treasure Dye.
+    - Added `/feeshSetTreasureCatches` / `/feeshSetTreasureCatchesTotal` to set Good/Great/Outstanding catches counts for Session and Total mode.
+    - Added [Editing treasure fishing tracker guide](https://github.com/Sleepy-Panda/Feesh/blob/develop/docs/Editing%20treasure%20fishing%20tracker.md).
 
 ## Bugfixes
 
