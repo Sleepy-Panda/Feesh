@@ -34,6 +34,7 @@ Released on: ???
 - Fixed Tadgang's tadpoles nametags not being hidden after changing their mob level.
 - Fixed NPC price for Foraging Exp Boost profit tracker drop.
 - Fixed sacks items counting in the Fishing profit tracker after sending stash to sacks.
+- Aligned elapsed time calculation for Fishing profit tracker and Efficiency tracker.
 
 # 1.13.0
 
