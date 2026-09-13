@@ -323,7 +323,7 @@ ${GRAY}To pause: ${WHITE}/${FishingProfitTracker.PAUSE_COMMAND}
 
     var shouldTrackCostsInFishingProfitTracker by boolean(true) {
         this.name = Translated("Track costs")
-        this.description = Translated("Track and show costs of the items spent while fishing - fishing bait or shurikens used. Also shows net profit after subtracting costs from total profit. Not shown if price mode is set to NPC price!")
+        this.description = Translated("Track and show costs of the items spent while fishing - fishing bait, shurikens, or Moby-Duck used. Also shows net profit after subtracting costs from total profit. Not shown if price mode is set to NPC price!")
         this.searchTerms = listOf(ModVersionConstants.VERSION_1_14_0)
     }
 
