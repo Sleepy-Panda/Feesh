@@ -620,7 +620,7 @@ object FishingProfitTracker : IResettableViewModeTracker {
             if (!isSessionActive || !isTrackerVisible()) return
             pause()
             updateGuiLines()
-            ChatUtils.sendLocalChat("${WHITE}Fishing profit tracker is paused. Continue fishing to resume it.", true)
+            ChatUtils.sendLocalChat("${WHITE}Fishing profit tracker is paused.", true)
         }
     }
 
@@ -664,7 +664,7 @@ object FishingProfitTracker : IResettableViewModeTracker {
             data.total.elapsedSeconds += 1
             saveData()
         } else {
-            pause()
+            pauseFishingProfitTracker()
         }
     }
 
