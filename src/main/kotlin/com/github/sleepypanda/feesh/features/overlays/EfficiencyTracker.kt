@@ -118,7 +118,7 @@ object EfficiencyTracker : IResettableTracker {
 
             pauseInternal()
             updateGuiLines()
-            ChatUtils.sendLocalChat("${WHITE}$trackerName is paused. Continue fishing to resume it.", true)
+            ChatUtils.sendLocalChat("${WHITE}$trackerName is paused.", true)
         }
     }
 
@@ -294,14 +294,24 @@ object EfficiencyTracker : IResettableTracker {
                 return
             }
 
+            val prevIsActive = isSessionActive
             val isHookActive = FishingHookUtils.isFishingHookSubmerged()
 
             // Start fishing timer after pause or when tracker was empty
             if (isHookActive) {
                 isSessionActive = true
+                if (elapsedSeconds == 0) {
+                    elapsedSeconds = 1
+                }
+                if (!prevIsActive) {
+                    return
+                }
             }
 
-            if (!isTrackerActive()) return
+            if (!isTrackerActive()) {
+                pauseInternal()
+                return
+            }
 
             val lastHookSeenAt = FishingHookUtils.lastSubmergedFishingHookSeenAt() ?: return
             val elapsedSinceHook = (Date().time - lastHookSeenAt.time) / 1000

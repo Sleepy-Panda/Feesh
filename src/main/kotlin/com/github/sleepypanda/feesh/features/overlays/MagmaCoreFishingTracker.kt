@@ -138,7 +138,7 @@ object MagmaCoreFishingTracker : IResettableViewModeTracker {
 
             pause()
             updateGuiLines()
-            ChatUtils.sendLocalChat("${WHITE}$trackerName is paused. Continue fishing to resume it.", true)
+            ChatUtils.sendLocalChat("${WHITE}$trackerName is paused.", true)
         }
     }
 
