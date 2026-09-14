@@ -11,7 +11,7 @@ This mod is an evolution of [FeeshNotifier ChatTriggers module](https://chattrig
 - [Features](#features)
 - [Troubleshooting](#troubleshooting)
 - [Contacts](#contacts)
-- [Creadits and Special thanks](#credits-and-special-thanks)
+- [Credits and Special thanks](#credits-and-special-thanks)
 
 ## Releases
 
