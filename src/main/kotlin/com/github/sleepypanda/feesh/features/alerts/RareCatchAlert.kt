@@ -39,16 +39,14 @@ object RareCatchAlert {
     private fun onOwnSeaCreature(event: OwnSeaCreatureCaughtEvent) {
         if (!WorldUtils.isInSkyblock() || !Alerts.alertOnRareSeaCreatures) return
 
-        val playerName = PlayerUtils.getFormattedNameWithoutPrefix() ?: return
-        val seaCreatureName = event.seaCreatureName
-        val isDoubleHook = event.isDoubleHook
-        showCaughtAlert(seaCreatureName, isDoubleHook, playerName)
+        val playerName = ownCatchSubtitle() ?: return
+        showCaughtAlert(event.seaCreatureName, event.isDoubleHook, playerName)
     }
 
     private fun onSeaCreatureCocooned(event: SeaCreatureCocoonedByYouEvent) {
         if (!WorldUtils.isInSkyblock() || !Alerts.alertOnRareSeaCreatures || !Alerts.alertOnSeaCreaturesIncludeCocooned) return
 
-        val playerName = PlayerUtils.getFormattedNameWithoutPrefix() ?: return
+        val playerName = ownCatchSubtitle() ?: return
         showCocoonAlert(event.seaCreatureName, playerName)
     }
 
@@ -91,6 +89,11 @@ object RareCatchAlert {
             showCocoonAlert(scName, playerName)
             return
         }
+    }
+
+    private fun ownCatchSubtitle(): String? {
+        if (Alerts.alertOnRareSeaCreaturesSource == AlertSource.OWN) return ""
+        return PlayerUtils.getFormattedNameWithoutPrefix()
     }
 
     private fun getSkyHanniScName(match: MatchResult): String? {

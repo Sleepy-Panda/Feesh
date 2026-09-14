@@ -34,10 +34,8 @@ object RareDropAlert {
         if (!WorldUtils.isInSkyblock() || !Alerts.alertOnRareDrops) return
 
         CommonUtils.runWithCatching("Failed to show Own Rare Drop alert") {
-            val itemName = event.itemName
-            val playerName = PlayerUtils.getFormattedNameWithoutPrefix() ?: return@onOwnDrop
-
-            showAlert(itemName, playerName, isOwnDrop = true)
+            val playerName = ownDropSubtitle() ?: return@onOwnDrop
+            showAlert(event.itemName, playerName, isOwnDrop = true)
         }
     }
 
@@ -80,6 +78,11 @@ object RareDropAlert {
 
         if (General.soundMode == SoundMode.MEME) SoundUtils.playCustomSound(soundFileName)
         // Do not play MC sound in other cases because SB already plays rare drop sound for those items
+    }
+
+    private fun ownDropSubtitle(): String? {
+        if (Alerts.alertOnRareDropsSource == AlertSource.OWN) return ""
+        return PlayerUtils.getFormattedNameWithoutPrefix()
     }
 
     // TODO: Move this into PriceUtils and reuse
