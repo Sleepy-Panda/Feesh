@@ -90,30 +90,50 @@ object Alerts : CategoryKt("Alerts") {
         this.description = Translated("Defines how to calculate {price} for the dropped item in the title templates.")
     }
 
+    var alertOnRareDropsDurationTicks by int(40) {
+        this.name = Translated("Alert on rare drops duration")
+        this.description = Translated("For how long to show the alert's title/subtitle on the screen. Specified in ticks, 20 ticks is ~ 1 second.")
+        this.range = 10..100
+        this.slider = true
+        this.searchTerms = listOf(ModVersionConstants.VERSION_1_15_0)
+    }
+
     var rareDropAlertOwnTitleTemplate by string(RareDropAlert.DEFAULT_OWN_TITLE_TEMPLATE) {
-        this.name = Translated("Title template (own drop)")
-        this.description = Translated("${GRAY}Title shown for your own rare drops. Leave empty to use default. Placeholders: ${WHITE}{dropName}${GRAY} (keeps rarity color / extra-rare obfuscation), ${WHITE}{price}${GRAY}, ${WHITE}{playerName}${GRAY}, ${WHITE}{dropNumber}${GRAY} (reset with bulk reset fishing session if ${WHITE}Rare drop numbers (alerts)${GRAY} is selected), ${WHITE}{magicFind}${GRAY}. Color and formatting codes are supported.")
+        this.name = Translated("Title template (Own drop)")
+        this.description = Translated("""
+${GRAY}Title shown for your own rare drop alerts. Leave empty to use default.
+Placeholders: ${WHITE}{itemDisplayName}${GRAY}, ${WHITE}{price}${GRAY}, ${WHITE}{player}${GRAY}, ${WHITE}{dropNumber}${GRAY}, ${WHITE}{magicFind}${GRAY}.""")
+        this.searchTerms = listOf(ModVersionConstants.VERSION_1_15_0)
     }
 
     var rareDropAlertOwnSubtitleTemplate by string(RareDropAlert.DEFAULT_OWN_SUBTITLE_TEMPLATE) {
-        this.name = Translated("Subtitle template (own drop)")
-        this.description = Translated("${GRAY}Subtitle shown for your own rare drops. Leave empty to use default. Placeholders: ${WHITE}{dropName}${GRAY}, ${WHITE}{price}${GRAY}, ${WHITE}{playerName}${GRAY}, ${WHITE}{dropNumber}${GRAY} (reset with bulk reset fishing session if ${WHITE}Rare drop numbers (alerts)${GRAY} is selected), ${WHITE}{magicFind}${GRAY}. Color and formatting codes are supported.")
-    }
+        this.name = Translated("Subtitle template (Own drop)")
+        this.description = Translated("""
+${GRAY}Subtitle shown for your own rare drop alerts. Leave empty to use default.
+Placeholders: ${WHITE}{itemDisplayName}${GRAY}, ${WHITE}{price}${GRAY}, ${WHITE}{player}${GRAY}, ${WHITE}{dropNumber}${GRAY}, ${WHITE}{magicFind}${GRAY}.""")
+        this.searchTerms = listOf(ModVersionConstants.VERSION_1_15_0)
+}
 
     var rareDropAlertPartyTitleTemplate by string(RareDropAlert.DEFAULT_PARTY_TITLE_TEMPLATE) {
-        this.name = Translated("Title template (party drop)")
-        this.description = Translated("${GRAY}Title shown for party members' rare drops. Leave empty to use default. Placeholders: ${WHITE}{dropName}${GRAY} (keeps rarity color / extra-rare obfuscation), ${WHITE}{price}${GRAY}, ${WHITE}{playerName}${GRAY}, ${WHITE}{dropNumber}${GRAY}, ${WHITE}{magicFind}${GRAY}. Color and formatting codes are supported.")
+        this.name = Translated("Title template (Party drop)")
+        this.description = Translated("""
+${GRAY}Title shown for party members' rare drop alerts. Leave empty to use default.
+Placeholders: ${WHITE}{itemDisplayName}${GRAY}, ${WHITE}{price}${GRAY}, ${WHITE}{player}${GRAY}, ${WHITE}{dropNumber}${GRAY}, ${WHITE}{magicFind}${GRAY}.""")
+        this.searchTerms = listOf(ModVersionConstants.VERSION_1_15_0)
     }
 
     var rareDropAlertPartySubtitleTemplate by string(RareDropAlert.DEFAULT_PARTY_SUBTITLE_TEMPLATE) {
-        this.name = Translated("Subtitle template (party drop)")
-        this.description = Translated("${GRAY}Subtitle shown for party members' rare drops. Leave empty to use default. Placeholders: ${WHITE}{dropName}${GRAY}, ${WHITE}{price}${GRAY}, ${WHITE}{playerName}${GRAY}, ${WHITE}{dropNumber}${GRAY}, ${WHITE}{magicFind}${GRAY}. Color and formatting codes are supported.")
+        this.name = Translated("Subtitle template (Party drop)")
+        this.description = Translated("""
+${GRAY}Subtitle shown for party members' rare drop alerts. Leave empty to use default.
+Placeholders: ${WHITE}{itemDisplayName}${GRAY}, ${WHITE}{price}${GRAY}, ${WHITE}{player}${GRAY}, ${WHITE}{dropNumber}${GRAY}, ${WHITE}{magicFind}${GRAY}.""")
+        this.searchTerms = listOf(ModVersionConstants.VERSION_1_15_0)
     }
 
     init {
         button {
             title = "Colors & formatting guide"
-            description = "For rare drop title and subtitle templates, please explore the guide explaining color codes and formatting codes."
+            description = "For the templates above, please explore the guide explaining color codes and formatting codes."
             text = "Click to open"
             onClick {
                 Util.getPlatform().openUri("https://github.com/Sleepy-Panda/Feesh/blob/develop/docs/Colors%20and%20formatting%20guide.md")

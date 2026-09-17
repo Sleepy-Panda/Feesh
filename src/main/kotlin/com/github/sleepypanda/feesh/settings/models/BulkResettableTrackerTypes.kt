@@ -22,7 +22,7 @@ enum class BulkResettableTrackerTypes(
     val resettableTracker: IResettableTracker? = null,
     val resettableViewModeTracker: IResettableViewModeTracker? = null,
 ) {
-    RARE_DROP_NUMBERS("Rare drop # ordinal number for alerts", isEnabledByDefault = true);
+    RARE_DROP_NUMBERS("Rare drop # ordinal number for alerts", isEnabledByDefault = true),
     SEA_CREATURES_TRACKER("Sea creatures tracker", isEnabledByDefault = true, hasSessionMode = true, resettableViewModeTracker = SeaCreaturesTracker),
     FISHING_PROFIT_TRACKER("Fishing profit tracker", isEnabledByDefault = true, hasSessionMode = true, resettableViewModeTracker = FishingProfitTracker),
     EFFICIENCY_TRACKER("Efficiency tracker", isEnabledByDefault = true, resettableTracker = EfficiencyTracker),

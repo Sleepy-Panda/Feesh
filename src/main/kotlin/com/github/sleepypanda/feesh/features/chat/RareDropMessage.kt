@@ -6,7 +6,6 @@ import com.github.sleepypanda.feesh.constants.RareDropTypes
 import com.github.sleepypanda.feesh.settings.categories.Chat
 import com.github.sleepypanda.feesh.utils.CommonUtils
 import com.github.sleepypanda.feesh.utils.ChatUtils
-import com.github.sleepypanda.feesh.utils.RareDropAlertUtils
 import com.github.sleepypanda.feesh.utils.WorldUtils
 
 object RareDropMessage {
@@ -18,16 +17,16 @@ object RareDropMessage {
         CommonUtils.runWithCatching("Failed to send rare drop message") {
             if (!WorldUtils.isInSkyblock() || !Chat.messageOnRareDrops) return
 
-            val dropInfo = RareDropAlertUtils.findAlertableDropInfo(event.itemNameUnformatted) ?: return
-            val type = RareDropTypes.values().find { it.displayName == dropInfo.itemName } ?: return
+            val dropInfo = event.dropInfo
+            val settingsEntry = RareDropTypes.entries.find { it.displayName == dropInfo.itemName } ?: return
 
-            if (!Chat.messageOnRareDropTypes.contains(RareDropTypes.ALL) && !Chat.messageOnRareDropTypes.contains(type)) return
+            if (!Chat.messageOnRareDropTypes.contains(RareDropTypes.ALL) && !Chat.messageOnRareDropTypes.contains(settingsEntry)) return
 
             var metadata = listOf<String>()
-            if (Chat.includeDropNumberIntoDropMessage) {
+            if (event.dropNumber > 0 && Chat.includeDropNumberIntoDropMessage) {
                 metadata += "#${event.dropNumber}"
             }
-            if (event.magicFind != null && Chat.includeMagicFindIntoRareDropMessage) {
+            if (event.magicFind != null && event.magicFind > 0 && Chat.includeMagicFindIntoRareDropMessage) {
                 metadata += "+${event.magicFind} ✯ Magic Find"
             }
     

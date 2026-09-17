@@ -113,6 +113,6 @@ object RareFishingDropPublisher {
     private fun tryPublish(itemNameUnformatted: String, itemNameFormatted: String, magicFind: Int?) {
         val dropInfo = RareDropAlertUtils.findAlertableDropInfo(itemNameUnformatted) ?: return
         val dropNumber = RareDropAlertUtils.trackAlertableDrop(dropInfo.id)
-        EventBus.publish(ChatBasedRareDropEvent(dropInfo.itemName, itemNameFormatted, magicFind, dropNumber))
+        EventBus.publish(ChatBasedRareDropEvent(dropInfo, dropInfo.itemName, itemNameFormatted, magicFind, dropNumber))
     }
 }

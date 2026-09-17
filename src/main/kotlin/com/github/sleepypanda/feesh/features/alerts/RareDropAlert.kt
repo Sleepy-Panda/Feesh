@@ -3,7 +3,7 @@ package com.github.sleepypanda.feesh.features.alerts
 import com.github.sleepypanda.feesh.events.EventBus
 import com.github.sleepypanda.feesh.events.models.ChatBasedRareDropEvent
 import com.github.sleepypanda.feesh.constants.RareDropTypes
-import com.github.sleepypanda.feesh.constants.AlertableRareDrops
+import com.github.sleepypanda.feesh.constants.AlertableRareDropInfo
 import com.github.sleepypanda.feesh.settings.categories.AlertSource
 import com.github.sleepypanda.feesh.settings.categories.Alerts
 import com.github.sleepypanda.feesh.settings.categories.General
@@ -17,12 +17,15 @@ import com.github.sleepypanda.feesh.utils.PriceUtils
 import com.github.sleepypanda.feesh.utils.data.CustomSoundsManager
 import com.github.sleepypanda.feesh.utils.enums.PricingModeWithNpc
 import com.github.sleepypanda.feesh.utils.ChatUtils.removeFormatting
+import com.github.sleepypanda.feesh.utils.RareDropAlertUtils
+import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 
 object RareDropAlert {
-    const val DEFAULT_OWN_TITLE_TEMPLATE = "{dropName} (+{price})"
-    const val DEFAULT_OWN_SUBTITLE_TEMPLATE = "#{dropNumber}, +{magicFind} Magic Find"
-    const val DEFAULT_PARTY_TITLE_TEMPLATE = "{dropName} (+{price})"
-    const val DEFAULT_PARTY_SUBTITLE_TEMPLATE = "{playerName}"
+    val DEFAULT_OWN_TITLE_TEMPLATE = "{itemDisplayName} ${GRAY}#${WHITE}{dropNumber}"
+    val DEFAULT_OWN_SUBTITLE_TEMPLATE = "${GREEN}+${GOLD}{price}"
+
+    val DEFAULT_PARTY_TITLE_TEMPLATE = "{itemDisplayName} ${GRAY}#${WHITE}{dropNumber}"
+    val DEFAULT_PARTY_SUBTITLE_TEMPLATE = "{player}"
 
     // §9Компания §8> §b[MVP] PivoTheSadFisher§f: --> A Deep Sea Orb has dropped <--
     // §9Party §8> §6[MVP§3++§6] vadim31§f: --> A Deep Sea Orb has dropped (#10, +365 ✯ Magic Find) <--
@@ -37,11 +40,10 @@ object RareDropAlert {
         if (!WorldUtils.isInSkyblock() || !Alerts.alertOnRareDrops) return
 
         CommonUtils.runWithCatching("Failed to show Own Rare Drop alert") {
-            val itemName = event.itemNameUnformatted
             val playerName = PlayerUtils.getFormattedNameWithoutPrefix() ?: return@onOwnDrop
 
             showAlert(
-                itemName = itemName,
+                dropInfo = event.dropInfo,
                 playerName = playerName,
                 isOwnDrop = true,
                 magicFind = event.magicFind?.toString().orEmpty(),
@@ -64,31 +66,31 @@ object RareDropAlert {
             val playerName = PlayerUtils.getFormattedPlayerNameFromPartyChat(event.rankAndPlayer) ?: return@onPartyChatDrop
             if (!playerName.isEmpty() && playerName.removeFormatting().contains(me)) return@onPartyChatDrop
     
+            val dropInfo = RareDropAlertUtils.findAlertableDropInfo(itemName) ?: return@onPartyChatDrop
+
             showAlert(
-                itemName = itemName,
+                dropInfo = dropInfo,
                 playerName = playerName,
                 isOwnDrop = false,
-                magicFind = Regex("\\+(\\d+)").find(metadata)?.groupValues?.get(1).orEmpty(),
-                dropNumber = Regex("#(\\d+)").find(metadata)?.groupValues?.get(1).orEmpty()
+                magicFind = Regex("\\+(\\d+) . Magic Find").find(metadata)?.groupValues?.get(1).orEmpty(), // +number ✯ Magic Find
+                dropNumber = Regex("#(\\d+)").find(metadata)?.groupValues?.get(1).orEmpty() // #number
             )
         }
     }
 
-    private fun showAlert(itemName: String, playerName: String, isOwnDrop: Boolean, magicFind: String, dropNumber: String) {
-        val dropInfo = AlertableRareDrops.rareDrops.find { it.itemName == itemName || it.alternateNames.contains(itemName) } ?: return
-        val type = RareDropTypes.values().find { it.displayName == dropInfo.itemName } ?: return // Rare drop not supported by the mod
-    
-        if (!Alerts.alertOnRareDropTypes.contains(RareDropTypes.ALL) && !Alerts.alertOnRareDropTypes.contains(type)) return
+    private fun showAlert(dropInfo: AlertableRareDropInfo, playerName: String, isOwnDrop: Boolean, magicFind: String, dropNumber: String) {
+        val settingsEntry = RareDropTypes.entries.find { it.displayName == dropInfo.itemName } ?: return
+        if (!Alerts.alertOnRareDropTypes.contains(RareDropTypes.ALL) && !Alerts.alertOnRareDropTypes.contains(settingsEntry)) return
 
         val price = getPrice(dropInfo.id, dropInfo.npcPrice)
-        val priceStr = if (price > 0.0) CommonUtils.toShortNumber(price).orEmpty() else ""
+        val priceStr = if (price > 0.0) CommonUtils.toShortNumber(price).orEmpty() else "0"
 
-        val values = mapOf(
-            "dropName" to dropInfo.getTitle(),
-            "playerName" to playerName,
+        val keysToReplace = mapOf(
+            "itemDisplayName" to dropInfo.getTitle(),
+            "player" to playerName,
             "price" to priceStr,
-            "dropNumber" to dropNumber,
-            "magicFind" to magicFind
+            "dropNumber" to dropNumber.ifEmpty { "?" },
+            "magicFind" to magicFind.ifEmpty { "?" }
         )
 
         val titleTemplate = if (isOwnDrop) {
@@ -96,15 +98,16 @@ object RareDropAlert {
         } else {
             Alerts.rareDropAlertPartyTitleTemplate.ifEmpty { DEFAULT_PARTY_TITLE_TEMPLATE }
         }
+
         val subtitleTemplate = if (isOwnDrop) {
             Alerts.rareDropAlertOwnSubtitleTemplate.ifEmpty { DEFAULT_OWN_SUBTITLE_TEMPLATE }
         } else {
             Alerts.rareDropAlertPartySubtitleTemplate.ifEmpty { DEFAULT_PARTY_SUBTITLE_TEMPLATE }
         }
 
-        val title = applyTemplate(titleTemplate, values)
-        val subtitle = applyTemplate(subtitleTemplate, values)
-        CommonUtils.showTitle(title, subtitle.ifEmpty { null })
+        val title = replaceKeysInTemplate(titleTemplate, keysToReplace)
+        val subtitle = replaceKeysInTemplate(subtitleTemplate, keysToReplace)
+        CommonUtils.showTitle(title, subtitle, stay = Alerts.alertOnRareDropsDurationTicks)
         
         val soundData = CustomSoundsManager.getDropSoundData(dropInfo.id)
         val soundFileName = soundData?.source
@@ -113,23 +116,13 @@ object RareDropAlert {
         // Do not play MC sound in other cases because SB already plays rare drop sound for those items
     }
 
-    private fun applyTemplate(template: String, values: Map<String, String>): String {
+    private fun replaceKeysInTemplate(template: String, keysToReplace: Map<String, String>): String {
         var result = template
-        if (values["price"].isNullOrEmpty()) {
-            result = result.replace(" (+{price})", "").replace("(+{price})", "")
-        }
-        if (values["magicFind"].isNullOrEmpty()) {
-            result = result
-                .replace(", +{magicFind} Magic Find", "")
-                .replace("+{magicFind} Magic Find", "")
-        }
-        if (values["dropNumber"].isNullOrEmpty()) {
-            result = result.replace("#{dropNumber}, ", "").replace("#{dropNumber}", "")
-        }
-        values.forEach { (key, value) ->
+
+        keysToReplace.forEach { (key, value) ->
             result = result.replace("{$key}", value)
         }
-        return result.trim().trim(',', ' ')
+        return result.trim()
     }
 
     // TODO: Move this into PriceUtils and reuse
