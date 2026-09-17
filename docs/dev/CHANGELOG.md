@@ -4,6 +4,20 @@ Released on: ???
 
 ## Features
 
+
+
+- Changed command to reset fishing session
+- Added toggle to reset drop # to command (UNSELECTED for existing configs :c )
+- Drop # is not reset anymore via Fishing profit tracker reset
+- Drop # and mf can be used in alert titles
+- Price setting is removed, now done via template
+
+- What to do with template if no drop number/mf
+- No logic to extract mf from dye drop msg
+
+
+- Add release numbers to new settings
+
 ## Bugfixes
 
 # 1.14.0
