@@ -72,6 +72,7 @@ class FeeshMod : ClientModInitializer {
         GuiUtils.init()
         PriceUtils.init()
         KeybindUtils.init()
+        RareDropAlertUtils.init()
 
         // Event publishers
         SeaCreaturesPublisher.init()

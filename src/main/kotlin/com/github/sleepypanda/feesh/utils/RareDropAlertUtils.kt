@@ -1,6 +1,9 @@
 package com.github.sleepypanda.feesh.utils
 
+import com.github.sleepypanda.feesh.FeeshMod
 import com.github.sleepypanda.feesh.constants.AlertableRareDrops
+import com.github.sleepypanda.feesh.events.EventBus
+import com.github.sleepypanda.feesh.events.models.GameClosedEvent
 import com.github.sleepypanda.feesh.utils.data.PersistentDataManager
 
 object RareDropAlertUtils {
@@ -11,6 +14,10 @@ object RareDropAlertUtils {
     data class RareDropNotificationsData(
         val items: MutableMap<String, RareDropNotificationItem> = mutableMapOf()
     )
+
+    fun init() {
+        EventBus.subscribe(GameClosedEvent::class, ::onGameClosed)
+    }
 
     fun findAlertableDropInfo(itemName: String) =
         AlertableRareDrops.rareDrops.find { it.itemName == itemName || it.alternateNames.contains(itemName) }
@@ -29,6 +36,12 @@ object RareDropAlertUtils {
     fun reset(force: Boolean = false) {
         PersistentDataManager.feeshData.rareDropNotifications.items.clear()
         saveData(force)
+    }
+
+    private fun onGameClosed(@Suppress("UNUSED_PARAMETER") event: GameClosedEvent) {
+        if (!hasData()) return
+        reset(force = true)
+        FeeshMod.LOGGER.info("[Feesh] Automatically reset rare drop numbers on game closed.")
     }
 
     private fun saveData(force: Boolean = false) {

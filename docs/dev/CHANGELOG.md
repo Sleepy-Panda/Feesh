@@ -4,6 +4,8 @@ Released on: ???
 
 ## Features
 
+REMINDER: Add release numbers to new settings
+
 - Renamed command `feeshBulkResetTrackers` to `feeshBulkResetFishingSession`.
 - Made Magma Pillar shown in "Only rare" sea creatures tracker view.
 - Announce pickup of Hunk of Blue Ice, removed it for Walnut.
@@ -18,9 +20,9 @@ Released on: ???
 
 - What to do with template if no drop number/mf
 - No logic to extract mf from dye drop msg
+- Button to print settings to chat
+- Check empty setting to have empty title
 
-
-- Add release numbers to new settings
 
 ## Bugfixes
 

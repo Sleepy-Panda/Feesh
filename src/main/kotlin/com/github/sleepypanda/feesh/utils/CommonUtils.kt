@@ -10,6 +10,7 @@ import kotlin.math.abs
 
 object CommonUtils {
     fun showTitle(title: String, subtitle: String? = null, fadeIn: Int = 0, stay: Int = 40, fadeOut: Int = 10) {
+        if (title.isEmpty() && subtitle.isNullOrEmpty()) return
         val mc = FeeshMod.mc
         mc.showTitleCompat(Component.literal(title), Component.literal(subtitle ?: " "), fadeIn, stay, fadeOut)
     }

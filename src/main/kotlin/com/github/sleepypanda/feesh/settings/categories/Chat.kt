@@ -134,7 +134,7 @@ object Chat : CategoryKt("Chat") {
 
     var includeDropNumberIntoDropMessage by boolean(true) {
         this.name = Translated("Include drop number")
-        this.description = Translated("${GRAY}Send the drop's ordinal number in the party chat message.\nDrop numbers are reset by ${WHITE}/${BulkResetFishingSessionCommand.COMMAND_NAME}${GRAY} when ${WHITE}Rare drop numbers (alerts)${GRAY} is selected in the list.")
+        this.description = Translated("${GRAY}Send the drop's session ordinal number in the party chat message.\nDrop numbers are reset on game closed and by ${WHITE}/${BulkResetFishingSessionCommand.COMMAND_NAME}${GRAY} when selected in the list.")
     }
 
     var includeMagicFindIntoRareDropMessage by boolean(true) {

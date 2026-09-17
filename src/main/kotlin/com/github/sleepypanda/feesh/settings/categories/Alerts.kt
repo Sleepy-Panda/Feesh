@@ -85,49 +85,49 @@ object Alerts : CategoryKt("Alerts") {
         this.description = Translated("\"Own and party\" = your drops and party members' drops; \"Own\" = only your drops.")
     }
 
-    var alertOnRareDropsPriceMode by enum(PricingModeWithNpc.SELL_OFFER) {
-        this.name = Translated("Rare drop price mode")
-        this.description = Translated("Defines how to calculate {price} for the dropped item in the title templates.")
-    }
-
-    var alertOnRareDropsDurationTicks by int(40) {
-        this.name = Translated("Alert on rare drops duration")
-        this.description = Translated("For how long to show the alert's title/subtitle on the screen. Specified in ticks, 20 ticks is ~ 1 second.")
-        this.range = 10..100
+    var alertOnRareDropsDurationTicks by int(60) {
+        this.name = Translated("Alert duration")
+        this.description = Translated("For how long to show the rare drop alert's title/subtitle on the screen. Specified in ticks, 20 ticks is ~ 1 second.")
+        this.range = 10..200
         this.slider = true
         this.searchTerms = listOf(ModVersionConstants.VERSION_1_15_0)
     }
 
-    var rareDropAlertOwnTitleTemplate by string(RareDropAlert.DEFAULT_OWN_TITLE_TEMPLATE) {
+    var rareDropAlertOwnTitleTemplate by strings(RareDropAlert.DEFAULT_OWN_TITLE_TEMPLATE) {
         this.name = Translated("Title template (Own drop)")
         this.description = Translated("""
-${GRAY}Title shown for your own rare drop alerts. Leave empty to use default.
-Placeholders: ${WHITE}{itemDisplayName}${GRAY}, ${WHITE}{price}${GRAY}, ${WHITE}{player}${GRAY}, ${WHITE}{dropNumber}${GRAY}, ${WHITE}{magicFind}${GRAY}.""")
+${GRAY}Title shown for your own rare drop alerts.
+Placeholders: ${WHITE}{itemDisplayName}${GRAY} - formatted item name, ${WHITE}{price}${GRAY} - item price, ${WHITE}{player}${GRAY} - formatted player name, ${WHITE}{dropNumber}${GRAY} - ordinal number in this session, ${WHITE}{magicFind}${GRAY} - number when applicable.""")
         this.searchTerms = listOf(ModVersionConstants.VERSION_1_15_0)
     }
 
-    var rareDropAlertOwnSubtitleTemplate by string(RareDropAlert.DEFAULT_OWN_SUBTITLE_TEMPLATE) {
+    var rareDropAlertOwnSubtitleTemplate by strings(RareDropAlert.DEFAULT_OWN_SUBTITLE_TEMPLATE) {
         this.name = Translated("Subtitle template (Own drop)")
         this.description = Translated("""
-${GRAY}Subtitle shown for your own rare drop alerts. Leave empty to use default.
-Placeholders: ${WHITE}{itemDisplayName}${GRAY}, ${WHITE}{price}${GRAY}, ${WHITE}{player}${GRAY}, ${WHITE}{dropNumber}${GRAY}, ${WHITE}{magicFind}${GRAY}.""")
+${GRAY}Subtitle shown for your own rare drop alerts.
+Placeholders: ${WHITE}{itemDisplayName}${GRAY} - formatted item name, ${WHITE}{price}${GRAY} - item price, ${WHITE}{player}${GRAY} - formatted player name, ${WHITE}{dropNumber}${GRAY} - ordinal number in this session, ${WHITE}{magicFind}${GRAY} - number when applicable.""")
         this.searchTerms = listOf(ModVersionConstants.VERSION_1_15_0)
 }
 
-    var rareDropAlertPartyTitleTemplate by string(RareDropAlert.DEFAULT_PARTY_TITLE_TEMPLATE) {
+    var rareDropAlertPartyTitleTemplate by strings(RareDropAlert.DEFAULT_PARTY_TITLE_TEMPLATE) {
         this.name = Translated("Title template (Party drop)")
         this.description = Translated("""
-${GRAY}Title shown for party members' rare drop alerts. Leave empty to use default.
-Placeholders: ${WHITE}{itemDisplayName}${GRAY}, ${WHITE}{price}${GRAY}, ${WHITE}{player}${GRAY}, ${WHITE}{dropNumber}${GRAY}, ${WHITE}{magicFind}${GRAY}.""")
+${GRAY}Title shown for party members' rare drop alerts.
+Placeholders: ${WHITE}{itemDisplayName}${GRAY} - formatted item name, ${WHITE}{price}${GRAY} - item price, ${WHITE}{player}${GRAY} - formatted player name, ${WHITE}{dropNumber}${GRAY} - ordinal number in this session, ${WHITE}{magicFind}${GRAY} - number when applicable.""")
         this.searchTerms = listOf(ModVersionConstants.VERSION_1_15_0)
     }
 
-    var rareDropAlertPartySubtitleTemplate by string(RareDropAlert.DEFAULT_PARTY_SUBTITLE_TEMPLATE) {
+    var rareDropAlertPartySubtitleTemplate by strings(RareDropAlert.DEFAULT_PARTY_SUBTITLE_TEMPLATE) {
         this.name = Translated("Subtitle template (Party drop)")
         this.description = Translated("""
-${GRAY}Subtitle shown for party members' rare drop alerts. Leave empty to use default.
-Placeholders: ${WHITE}{itemDisplayName}${GRAY}, ${WHITE}{price}${GRAY}, ${WHITE}{player}${GRAY}, ${WHITE}{dropNumber}${GRAY}, ${WHITE}{magicFind}${GRAY}.""")
+${GRAY}Subtitle shown for party members' rare drop alerts.
+Placeholders: ${WHITE}{itemDisplayName}${GRAY} - formatted item name, ${WHITE}{price}${GRAY} - item price, ${WHITE}{player}${GRAY} - formatted player name, ${WHITE}{dropNumber}${GRAY} - ordinal number in this session, ${WHITE}{magicFind}${GRAY} - number when applicable.""")
         this.searchTerms = listOf(ModVersionConstants.VERSION_1_15_0)
+    }
+    
+    var alertOnRareDropsPriceMode by enum(PricingModeWithNpc.SELL_OFFER) {
+        this.name = Translated("Rare drop price mode")
+        this.description = Translated("Defines how to calculate price for the dropped item. Not applicable if you don't use price placeholder in the template.")
     }
 
     init {

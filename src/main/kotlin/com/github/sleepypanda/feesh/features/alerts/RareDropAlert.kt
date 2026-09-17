@@ -19,10 +19,11 @@ import com.github.sleepypanda.feesh.utils.enums.PricingModeWithNpc
 import com.github.sleepypanda.feesh.utils.ChatUtils.removeFormatting
 import com.github.sleepypanda.feesh.utils.RareDropAlertUtils
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
+import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
 
 object RareDropAlert {
     val DEFAULT_OWN_TITLE_TEMPLATE = "{itemDisplayName} ${GRAY}#${WHITE}{dropNumber}"
-    val DEFAULT_OWN_SUBTITLE_TEMPLATE = "${GREEN}+${GOLD}{price}"
+    val DEFAULT_OWN_SUBTITLE_TEMPLATE = "${GREEN}+ ${GOLD}${BOLD}{price}"
 
     val DEFAULT_PARTY_TITLE_TEMPLATE = "{itemDisplayName} ${GRAY}#${WHITE}{dropNumber}"
     val DEFAULT_PARTY_SUBTITLE_TEMPLATE = "{player}"
@@ -94,15 +95,15 @@ object RareDropAlert {
         )
 
         val titleTemplate = if (isOwnDrop) {
-            Alerts.rareDropAlertOwnTitleTemplate.ifEmpty { DEFAULT_OWN_TITLE_TEMPLATE }
+            Alerts.rareDropAlertOwnTitleTemplate.firstOrNull() ?: DEFAULT_OWN_TITLE_TEMPLATE
         } else {
-            Alerts.rareDropAlertPartyTitleTemplate.ifEmpty { DEFAULT_PARTY_TITLE_TEMPLATE }
+            Alerts.rareDropAlertPartyTitleTemplate.firstOrNull() ?: DEFAULT_PARTY_TITLE_TEMPLATE
         }
 
         val subtitleTemplate = if (isOwnDrop) {
-            Alerts.rareDropAlertOwnSubtitleTemplate.ifEmpty { DEFAULT_OWN_SUBTITLE_TEMPLATE }
+            Alerts.rareDropAlertOwnSubtitleTemplate.firstOrNull() ?: DEFAULT_OWN_SUBTITLE_TEMPLATE
         } else {
-            Alerts.rareDropAlertPartySubtitleTemplate.ifEmpty { DEFAULT_PARTY_SUBTITLE_TEMPLATE }
+            Alerts.rareDropAlertPartySubtitleTemplate.firstOrNull() ?: DEFAULT_PARTY_SUBTITLE_TEMPLATE
         }
 
         val title = replaceKeysInTemplate(titleTemplate, keysToReplace)
