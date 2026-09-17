@@ -92,12 +92,12 @@ object Alerts : CategoryKt("Alerts") {
 
     var rareDropAlertOwnTitleTemplate by string(RareDropAlert.DEFAULT_OWN_TITLE_TEMPLATE) {
         this.name = Translated("Title template (own drop)")
-        this.description = Translated("${GRAY}Title shown for your own rare drops. Leave empty to use default. Placeholders: ${WHITE}{dropName}${GRAY} (keeps rarity color / extra-rare obfuscation), ${WHITE}{price}${GRAY}, ${WHITE}{playerName}${GRAY}, ${WHITE}{dropNumber}${GRAY} (reset by /feeshBulkResetTrackers), ${WHITE}{magicFind}${GRAY}. Color and formatting codes are supported.")
+        this.description = Translated("${GRAY}Title shown for your own rare drops. Leave empty to use default. Placeholders: ${WHITE}{dropName}${GRAY} (keeps rarity color / extra-rare obfuscation), ${WHITE}{price}${GRAY}, ${WHITE}{playerName}${GRAY}, ${WHITE}{dropNumber}${GRAY} (reset with bulk reset fishing session if ${WHITE}Rare drop numbers (alerts)${GRAY} is selected), ${WHITE}{magicFind}${GRAY}. Color and formatting codes are supported.")
     }
 
     var rareDropAlertOwnSubtitleTemplate by string(RareDropAlert.DEFAULT_OWN_SUBTITLE_TEMPLATE) {
         this.name = Translated("Subtitle template (own drop)")
-        this.description = Translated("${GRAY}Subtitle shown for your own rare drops. Leave empty to use default. Placeholders: ${WHITE}{dropName}${GRAY}, ${WHITE}{price}${GRAY}, ${WHITE}{playerName}${GRAY}, ${WHITE}{dropNumber}${GRAY} (reset by /feeshBulkResetTrackers), ${WHITE}{magicFind}${GRAY}. Color and formatting codes are supported.")
+        this.description = Translated("${GRAY}Subtitle shown for your own rare drops. Leave empty to use default. Placeholders: ${WHITE}{dropName}${GRAY}, ${WHITE}{price}${GRAY}, ${WHITE}{playerName}${GRAY}, ${WHITE}{dropNumber}${GRAY} (reset with bulk reset fishing session if ${WHITE}Rare drop numbers (alerts)${GRAY} is selected), ${WHITE}{magicFind}${GRAY}. Color and formatting codes are supported.")
     }
 
     var rareDropAlertPartyTitleTemplate by string(RareDropAlert.DEFAULT_PARTY_TITLE_TEMPLATE) {

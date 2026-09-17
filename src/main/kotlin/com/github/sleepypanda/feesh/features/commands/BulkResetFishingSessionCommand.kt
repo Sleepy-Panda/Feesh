@@ -10,46 +10,36 @@ import com.github.sleepypanda.feesh.utils.WorldUtils
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
 
-object BulkResetTrackersCommand {
-    const val COMMAND_NAME = "feeshBulkResetTrackers"
+object BulkResetFishingSessionCommand {
+    const val COMMAND_NAME = "feeshBulkResetFishingSession"
 
     private val SESSION_VIEW_MODE_TEXT = "${GRAY}[${GREEN}Session${GRAY}]"
 
     fun init() {
         RegisterUtils.command(COMMAND_NAME) { args ->
             val isConfirmed = args.isNotEmpty() && args[0] == "noconfirm"
-            resetTrackers(isConfirmed)
+            resetFishingSession(isConfirmed)
         }
     }
 
-    fun triggerBulkResetSelectedTrackers() {
-        resetTrackers(isConfirmed = false)
+    fun triggerBulkResetFishingSession() {
+        resetFishingSession(isConfirmed = false)
     }
 
-    private fun resetTrackers(isConfirmed: Boolean) {
+    private fun resetFishingSession(isConfirmed: Boolean) {
         if (!WorldUtils.isInSkyblock()) return
 
-        val selected = Overlays.bulkResetTrackersList
-        if (selected.isEmpty()) {
-            ChatUtils.sendLocalChat("${YELLOW}No trackers are selected. Choose trackers in Feesh settings -> Overlays -> Trackers to reset on keybind.", true)
-            return
-        }
-
-        val toReset = selected.filter { hasData(it) }
-        val hasDropNumbers = RareDropUtils.hasData()
-        if (toReset.isEmpty() && !hasDropNumbers) {
-            ChatUtils.sendLocalChat("The trackers have no data to reset.", true)
+        val toReset = Overlays.bulkResetTrackersList.filter { hasData(it) }
+        if (toReset.isEmpty()) {
+            ChatUtils.sendLocalChat("The fishing session has no data to reset.", true)
             return
         }
 
         val linePrefix = "\n${GRAY}- ${WHITE}"
-        val trackersText = buildString {
-            toReset.forEach { append(linePrefix).append(getResetDisplayName(it)) }
-            if (hasDropNumbers) append(linePrefix).append("Rare drop numbers")
-        }
+        val trackersText = toReset.joinToString(linePrefix, prefix = linePrefix) { getResetDisplayName(it) }
 
         if (!isConfirmed) {
-            ChatUtils.sendLocalChat("${WHITE}Do you want to reset the following trackers?$trackersText", true)
+            ChatUtils.sendLocalChat("${WHITE}Do you want to reset the current fishing session?$trackersText", true)
             ChatUtils.sendLocalChatWithCommand(
                 "${RED}${BOLD}[Click to confirm]",
                 "$COMMAND_NAME noconfirm",
@@ -58,10 +48,9 @@ object BulkResetTrackersCommand {
             return
         }
 
-        CommonUtils.runWithCatching("Failed to reset selected trackers on keybind") {
+        CommonUtils.runWithCatching("Failed to reset fishing session on keybind") {
             toReset.forEach { resetTracker(it) }
-            RareDropUtils.reset()
-            ChatUtils.sendLocalChat("The trackers data was reset.", true)
+            ChatUtils.sendLocalChat("The fishing session was reset.", true)
         }
     }
 
@@ -74,11 +63,18 @@ object BulkResetTrackersCommand {
     }
 
     private fun hasData(tracker: BulkResettableTrackerTypes): Boolean {
+        if (tracker == BulkResettableTrackerTypes.RARE_DROP_NUMBERS) return RareDropUtils.hasData()
         tracker.resettableViewModeTracker?.let { return it.hasSessionData() }
         return tracker.resettableTracker?.hasData() ?: false
     }
 
     private fun resetTracker(tracker: BulkResettableTrackerTypes) {
+        if (tracker == BulkResettableTrackerTypes.RARE_DROP_NUMBERS) {
+            CommonUtils.runWithCatching("Failed to reset rare drop numbers on keybind") {
+                RareDropUtils.reset()
+            }
+            return
+        }
         tracker.resettableViewModeTracker?.let { viewModeTracker ->
             CommonUtils.runWithCatching("Failed to reset $tracker (Session) on keybind") {
                 viewModeTracker.bulkResetSession()
