@@ -4,6 +4,9 @@ Released on: ???
 
 ## Features
 
+- Made Magma Pillar shown in "Only rare" sea creatures tracker view.
+- Announce pickup of Hunk of Blue Ice, removed it for Walnut.
+
 ## Bugfixes
 
 # 1.14.0

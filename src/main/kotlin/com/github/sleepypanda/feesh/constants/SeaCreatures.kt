@@ -580,7 +580,7 @@ class SeaCreatures {
                 SeaCreatureNames.MAGMA_PILLAR,
                 EPIC.code,
                 Regex(SeaCreatureMessages.MAGMA_PILLAR_MESSAGE),
-                false,
+                true,
                 types = listOf(TYPE_CRIMSON_ISLE_LAVA),
                 worlds = listOf(WorldUtils.CRIMSON_ISLE),
             ),
