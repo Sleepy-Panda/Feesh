@@ -1,6 +1,7 @@
 package com.github.sleepypanda.feesh.utils
 
 import com.github.sleepypanda.feesh.FeeshMod
+import com.github.sleepypanda.feesh.features.commands.debug.LogPartyChatMessagesCommand
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
 import com.github.sleepypanda.feesh.events.EventBus
@@ -93,7 +94,12 @@ object ChatUtils {
      */
     fun sendPartyChat(message: String) {
         if (message.isNullOrEmpty()) return
-        messageQueue.add(QueuedChatMessage(ChatType.PARTY_CHAT, message.removeFormatting()))
+        val unformatted = message.removeFormatting()
+        messageQueue.add(QueuedChatMessage(ChatType.PARTY_CHAT, unformatted))
+
+        if (LogPartyChatMessagesCommand.isLoggingEnabled) {
+            sendLocalChat("${GRAY}Debug Party > ${RESET}$unformatted", true)
+        }
     }
 
     private fun sendAllChatImmediate(message: String) {

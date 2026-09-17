@@ -153,6 +153,13 @@ Required Java version is 25+.
 
 Also, each overlay has individual commands to reset or pause.
 
+#### Debug commands
+
+Useful for mod developers only.
+
+- **feeshDebugLogSounds** — Print every sound played within 5 seconds to the logs.
+- **feeshDebugLogPartyChatMessages** — Toggle duplicating outgoing party chat message into local chat.
+
 ## Guides
 
 Please explore the [docs folder](https://github.com/Sleepy-Panda/Feesh/tree/develop/docs) for various guides, e.g. for editing trackers data.

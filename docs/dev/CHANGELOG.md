@@ -24,6 +24,10 @@ Released on: ???
 
 ## Bugfixes
 
+## Other
+
+- Added `feeshDebugLogPartyChatMessages` command to toggle duplicating outgoing party chat message into local chat.
+
 # 1.14.0
 
 Released on: 2026-09-14
