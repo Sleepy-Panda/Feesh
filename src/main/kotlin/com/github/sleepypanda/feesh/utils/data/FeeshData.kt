@@ -12,7 +12,7 @@ import com.github.sleepypanda.feesh.features.overlays.TorrhusCanyonTracker
 import com.github.sleepypanda.feesh.features.overlays.ArchfiendDiceProfitTracker
 import com.github.sleepypanda.feesh.features.overlays.FishingProfitTracker
 import com.github.sleepypanda.feesh.features.overlays.MagmaCoreFishingTracker
-import com.github.sleepypanda.feesh.utils.RareDropUtils
+import com.github.sleepypanda.feesh.utils.RareDropAlertUtils
 
 data class FeeshData(
     var isWelcomeMessageShown: Boolean = false,
@@ -30,6 +30,6 @@ data class FeeshData(
     val archfiendDiceProfit: ArchfiendDiceProfitTracker.ArchfiendDiceProfitData = ArchfiendDiceProfitTracker.ArchfiendDiceProfitData(),
     val fishingProfit: FishingProfitTracker.FishingProfitData = FishingProfitTracker.FishingProfitData(),
     val magmaCoreFishing: MagmaCoreFishingTracker.MagmaCoreFishingData = MagmaCoreFishingTracker.MagmaCoreFishingData(),
-    val rareDropNotifications: RareDropUtils.RareDropNotificationsData = RareDropUtils.RareDropNotificationsData(),
+    val rareDropNotifications: RareDropAlertUtils.RareDropNotificationsData = RareDropAlertUtils.RareDropNotificationsData(),
     val personalBest: PersonalBestData = PersonalBestData(),
 )

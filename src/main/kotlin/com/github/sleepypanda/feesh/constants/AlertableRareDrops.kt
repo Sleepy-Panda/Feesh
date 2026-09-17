@@ -49,7 +49,7 @@ enum class RareDropTypes(val displayName: String) {
     override fun toString(): String = displayName // Show display name in UI, but internally it uses name
 }
 
-class RareDrops {
+class AlertableRareDrops {
     companion object {
         data class RareDropInfo(
             val id: String, 

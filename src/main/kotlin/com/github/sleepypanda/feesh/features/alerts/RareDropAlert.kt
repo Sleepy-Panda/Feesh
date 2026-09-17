@@ -1,9 +1,9 @@
 package com.github.sleepypanda.feesh.features.alerts
 
 import com.github.sleepypanda.feesh.events.EventBus
-import com.github.sleepypanda.feesh.events.models.RareDropEvent
+import com.github.sleepypanda.feesh.events.models.ChatBasedRareDropEvent
 import com.github.sleepypanda.feesh.constants.RareDropTypes
-import com.github.sleepypanda.feesh.constants.RareDrops
+import com.github.sleepypanda.feesh.constants.AlertableRareDrops
 import com.github.sleepypanda.feesh.settings.categories.AlertSource
 import com.github.sleepypanda.feesh.settings.categories.Alerts
 import com.github.sleepypanda.feesh.settings.categories.General
@@ -29,15 +29,15 @@ object RareDropAlert {
     val FEESH_PCHAT_PATTERN = Regex("^--> (?:A|An) (?<itemName>.+?) has dropped(?: \\((?<metadata>[^)]*)\\))? <--$")
 
     fun init() {
-        EventBus.subscribe(RareDropEvent::class, ::onOwnDrop)
+        EventBus.subscribe(ChatBasedRareDropEvent::class, ::onOwnDrop)
         EventBus.subscribe(PartyChatEvent::class, ::onPartyChatDrop)
     }
 
-    private fun onOwnDrop(event: RareDropEvent) {
+    private fun onOwnDrop(event: ChatBasedRareDropEvent) {
         if (!WorldUtils.isInSkyblock() || !Alerts.alertOnRareDrops) return
 
         CommonUtils.runWithCatching("Failed to show Own Rare Drop alert") {
-            val itemName = event.itemName
+            val itemName = event.itemNameUnformatted
             val playerName = PlayerUtils.getFormattedNameWithoutPrefix() ?: return@onOwnDrop
 
             showAlert(
@@ -75,7 +75,7 @@ object RareDropAlert {
     }
 
     private fun showAlert(itemName: String, playerName: String, isOwnDrop: Boolean, magicFind: String, dropNumber: String) {
-        val dropInfo = RareDrops.rareDrops.find { it.itemName == itemName || it.alternateNames.contains(itemName) } ?: return
+        val dropInfo = AlertableRareDrops.rareDrops.find { it.itemName == itemName || it.alternateNames.contains(itemName) } ?: return
         val type = RareDropTypes.values().find { it.displayName == dropInfo.itemName } ?: return // Rare drop not supported by the mod
     
         if (!Alerts.alertOnRareDropTypes.contains(RareDropTypes.ALL) && !Alerts.alertOnRareDropTypes.contains(type)) return

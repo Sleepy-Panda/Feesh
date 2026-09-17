@@ -1,6 +1,6 @@
 package com.github.sleepypanda.feesh.features.overlays
 
-import com.github.sleepypanda.feesh.constants.RareDrops
+import com.github.sleepypanda.feesh.constants.AlertableRareDrops
 import com.github.sleepypanda.feesh.constants.SeaCreatureNames
 import com.github.sleepypanda.feesh.constants.SeaCreatures
 import com.github.sleepypanda.feesh.utils.WorldUtils
@@ -14,7 +14,7 @@ import com.github.sleepypanda.feesh.events.EventBus
 import com.github.sleepypanda.feesh.events.models.ClientTickEvent
 import com.github.sleepypanda.feesh.events.models.GameClosedEvent
 import com.github.sleepypanda.feesh.events.models.OwnSeaCreatureCaughtEvent
-import com.github.sleepypanda.feesh.events.models.RareDropEvent
+import com.github.sleepypanda.feesh.events.models.ChatBasedRareDropEvent
 import com.github.sleepypanda.feesh.utils.gui.FeeshGui
 import com.github.sleepypanda.feesh.utils.gui.LineInfo
 import com.github.sleepypanda.feesh.settings.categories.Overlays
@@ -43,7 +43,7 @@ object LotusAtollTracker : IResettableTracker {
     private val baseTitle = "${AQUA}${BOLD}${trackerName}"
     private val frogPrince = SeaCreatures.allSeaCreatures.find { it.name == SeaCreatureNames.FROG_PRINCE }!!
     private val puddleJumper = SeaCreatures.allSeaCreatures.find { it.name == SeaCreatureNames.PUDDLE_JUMPER }!!
-    private val princesCrownJewel = RareDrops.rareDrops.find { it.itemName == "Prince's Crown Jewel" }!!
+    private val princesCrownJewel = AlertableRareDrops.rareDrops.find { it.itemName == "Prince's Crown Jewel" }!!
 
     private val gui = FeeshGui()
         .setCoordsDataKey("lotusAtollTracker")
@@ -68,7 +68,7 @@ object LotusAtollTracker : IResettableTracker {
         registerResetCommand()
         EventBus.subscribe(OwnSeaCreatureCaughtEvent::class, ::onSeaCreature)
         EventBus.subscribe(ClientTickEvent::class, ::onClientTick)
-        EventBus.subscribe(RareDropEvent::class, ::onRareDrop)
+        EventBus.subscribe(ChatBasedRareDropEvent::class, ::onRareDrop)
         EventBus.subscribe(GameClosedEvent::class, ::onGameClosed)
     }
 
@@ -139,10 +139,10 @@ object LotusAtollTracker : IResettableTracker {
         return false
     }
 
-    private fun onRareDrop(event: RareDropEvent) {
+    private fun onRareDrop(event: ChatBasedRareDropEvent) {
         CommonUtils.runWithCatching("Failed to track rare drop for Lotus Atoll tracker.") {
             if (!Overlays.lotusAtollTrackerOverlay || !WorldUtils.isInSkyblock() || WorldUtils.getWorldName() != WorldUtils.LOTUS_ATOLL) return
-            if (event.itemName != princesCrownJewel.itemName) return
+            if (event.itemNameUnformatted != princesCrownJewel.itemName) return
 
             data.princesCrownJewels.updateAfterDrop(princesCrownJewel.boldDisplayName, frogPrince.displayName, event.magicFind)
             saveData()

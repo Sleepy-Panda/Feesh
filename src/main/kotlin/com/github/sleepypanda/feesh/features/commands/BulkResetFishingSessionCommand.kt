@@ -4,7 +4,7 @@ import com.github.sleepypanda.feesh.settings.categories.Overlays
 import com.github.sleepypanda.feesh.settings.models.BulkResettableTrackerTypes
 import com.github.sleepypanda.feesh.utils.ChatUtils
 import com.github.sleepypanda.feesh.utils.CommonUtils
-import com.github.sleepypanda.feesh.utils.RareDropUtils
+import com.github.sleepypanda.feesh.utils.RareDropAlertUtils
 import com.github.sleepypanda.feesh.utils.RegisterUtils
 import com.github.sleepypanda.feesh.utils.WorldUtils
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
@@ -63,7 +63,7 @@ object BulkResetFishingSessionCommand {
     }
 
     private fun hasData(tracker: BulkResettableTrackerTypes): Boolean {
-        if (tracker == BulkResettableTrackerTypes.RARE_DROP_NUMBERS) return RareDropUtils.hasData()
+        if (tracker == BulkResettableTrackerTypes.RARE_DROP_NUMBERS) return RareDropAlertUtils.hasData()
         tracker.resettableViewModeTracker?.let { return it.hasSessionData() }
         return tracker.resettableTracker?.hasData() ?: false
     }
@@ -71,7 +71,7 @@ object BulkResetFishingSessionCommand {
     private fun resetTracker(tracker: BulkResettableTrackerTypes) {
         if (tracker == BulkResettableTrackerTypes.RARE_DROP_NUMBERS) {
             CommonUtils.runWithCatching("Failed to reset rare drop numbers on keybind") {
-                RareDropUtils.reset()
+                RareDropAlertUtils.reset()
             }
             return
         }

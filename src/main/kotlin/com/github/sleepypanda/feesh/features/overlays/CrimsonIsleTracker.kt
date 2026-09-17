@@ -1,7 +1,7 @@
 package com.github.sleepypanda.feesh.features.overlays
 
 import com.github.sleepypanda.feesh.constants.SeaCreatures
-import com.github.sleepypanda.feesh.constants.RareDrops
+import com.github.sleepypanda.feesh.constants.AlertableRareDrops
 import com.github.sleepypanda.feesh.utils.WorldUtils
 import com.github.sleepypanda.feesh.utils.PlayerUtils
 import com.github.sleepypanda.feesh.utils.ChatUtils
@@ -17,7 +17,7 @@ import com.github.sleepypanda.feesh.events.EventBus
 import com.github.sleepypanda.feesh.events.models.ClientTickEvent
 import com.github.sleepypanda.feesh.events.models.GameClosedEvent
 import com.github.sleepypanda.feesh.events.models.OwnSeaCreatureCaughtEvent
-import com.github.sleepypanda.feesh.events.models.RareDropEvent
+import com.github.sleepypanda.feesh.events.models.ChatBasedRareDropEvent
 import com.github.sleepypanda.feesh.utils.gui.FeeshGui
 import com.github.sleepypanda.feesh.utils.gui.LineInfo
 import com.github.sleepypanda.feesh.settings.categories.Overlays
@@ -53,7 +53,7 @@ object CrimsonIsleTracker : IResettableTracker {
     private val fieryScuttler = SeaCreatures.allSeaCreatures.find { it.name == "Fiery Scuttler" }!!
     private val ragnarok = SeaCreatures.allSeaCreatures.find { it.name == "Ragnarok" }!!
     private val plhlegblast = SeaCreatures.allSeaCreatures.find { it.name == "Plhlegblast" }!!
-    private val radioactiveVial = RareDrops.rareDrops.find { it.itemName == "Radioactive Vial" }!!
+    private val radioactiveVial = AlertableRareDrops.rareDrops.find { it.itemName == "Radioactive Vial" }!!
 
     private val gui = FeeshGui()
         .setCoordsDataKey("crimsonIsleTracker")
@@ -84,7 +84,7 @@ object CrimsonIsleTracker : IResettableTracker {
         registerResetCommand()
         EventBus.subscribe(OwnSeaCreatureCaughtEvent::class, ::onSeaCreature)
         EventBus.subscribe(ClientTickEvent::class, ::onClientTick)
-        EventBus.subscribe(RareDropEvent::class, ::onRareDrop)
+        EventBus.subscribe(ChatBasedRareDropEvent::class, ::onRareDrop)
         EventBus.subscribe(GameClosedEvent::class, ::onGameClosed)
     }
 
@@ -221,10 +221,10 @@ object CrimsonIsleTracker : IResettableTracker {
         }
     }
 
-    private fun onRareDrop(event: RareDropEvent) {
+    private fun onRareDrop(event: ChatBasedRareDropEvent) {
         if (!Overlays.crimsonIsleTrackerOverlay || !WorldUtils.isInSkyblock() || WorldUtils.getWorldName() != WorldUtils.CRIMSON_ISLE) return
 
-        if (event.itemName == radioactiveVial.itemName) {
+        if (event.itemNameUnformatted == radioactiveVial.itemName) {
             onRadioactiveVial(event.magicFind)
         }
     }

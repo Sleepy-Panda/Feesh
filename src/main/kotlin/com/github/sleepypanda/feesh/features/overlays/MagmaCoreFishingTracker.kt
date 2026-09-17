@@ -9,7 +9,7 @@ import com.github.sleepypanda.feesh.events.EventBus
 import com.github.sleepypanda.feesh.events.models.ClientTickEvent
 import com.github.sleepypanda.feesh.events.models.GameClosedEvent
 import com.github.sleepypanda.feesh.events.models.OwnSeaCreatureCaughtEvent
-import com.github.sleepypanda.feesh.events.models.RareDropEvent
+import com.github.sleepypanda.feesh.events.models.ChatBasedRareDropEvent
 import com.github.sleepypanda.feesh.events.models.WorldChangedEvent
 import com.github.sleepypanda.feesh.settings.categories.Overlays
 import com.github.sleepypanda.feesh.utils.ChatUtils
@@ -88,7 +88,7 @@ object MagmaCoreFishingTracker : IResettableViewModeTracker {
         EventBus.subscribe(ClientTickEvent::class, ::onClientTick)
         EventBus.subscribe(WorldChangedEvent::class, ::onWorldChanged)
         EventBus.subscribe(OwnSeaCreatureCaughtEvent::class, ::onOwnSeaCreatureCaught)
-        EventBus.subscribe(RareDropEvent::class, ::onRareDrop)
+        EventBus.subscribe(ChatBasedRareDropEvent::class, ::onRareDrop)
         EventBus.subscribe(GameClosedEvent::class, ::onGameClosed)
     }
 
@@ -198,10 +198,10 @@ object MagmaCoreFishingTracker : IResettableViewModeTracker {
         }
     }
 
-    private fun onRareDrop(event: RareDropEvent) {
+    private fun onRareDrop(event: ChatBasedRareDropEvent) {
         CommonUtils.runWithCatching("Failed to track Magma Core drop") {
             if (!isTrackerVisible()) return // Allow counting with paused tracker while it's visible
-            if (event.itemName != RareDropTypes.MAGMA_CORE.displayName) return
+            if (event.itemNameUnformatted != RareDropTypes.MAGMA_CORE.displayName) return
 
             data.session.magmaCoresCount += 1
             data.total.magmaCoresCount += 1

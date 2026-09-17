@@ -1,13 +1,13 @@
 package com.github.sleepypanda.feesh.features.overlays
 
-import com.github.sleepypanda.feesh.constants.RareDrops
+import com.github.sleepypanda.feesh.constants.AlertableRareDrops
 import com.github.sleepypanda.feesh.features.overlays.base.IResettableViewModeTracker
 import com.github.sleepypanda.feesh.features.overlays.base.TrackerViewMode
 import com.github.sleepypanda.feesh.events.EventBus
 import com.github.sleepypanda.feesh.events.models.ChatEvent
 import com.github.sleepypanda.feesh.events.models.ClientTickEvent
 import com.github.sleepypanda.feesh.events.models.GameClosedEvent
-import com.github.sleepypanda.feesh.events.models.RareDropEvent
+import com.github.sleepypanda.feesh.events.models.ChatBasedRareDropEvent
 import com.github.sleepypanda.feesh.events.models.WorldChangedEvent
 import com.github.sleepypanda.feesh.settings.categories.Overlays
 import com.github.sleepypanda.feesh.utils.CommonUtils
@@ -74,7 +74,7 @@ object TreasureFishingTracker : IResettableViewModeTracker {
     private var tickCounter = 0
     private const val TICKS_PER_UPDATE = 20
     private val baseTitle = "${AQUA}${BOLD}Treasure fishing tracker"
-    private val treasureDye = RareDrops.rareDrops.find { it.itemName == "Treasure Dye" }!!
+    private val treasureDye = AlertableRareDrops.rareDrops.find { it.itemName == "Treasure Dye" }!!
 
     private val gui = FeeshGui()
         .setCoordsDataKey("treasureFishingTracker")
@@ -103,7 +103,7 @@ object TreasureFishingTracker : IResettableViewModeTracker {
         EventBus.subscribe(ChatEvent::class, ::onChat)
         EventBus.subscribe(ClientTickEvent::class, ::onClientTick)
         EventBus.subscribe(WorldChangedEvent::class, ::onWorldChanged)
-        EventBus.subscribe(RareDropEvent::class, ::onRareDrop)
+        EventBus.subscribe(ChatBasedRareDropEvent::class, ::onRareDrop)
         EventBus.subscribe(GameClosedEvent::class, ::onGameClosed)
     }
 
@@ -176,9 +176,9 @@ object TreasureFishingTracker : IResettableViewModeTracker {
         }
     }
 
-    private fun onRareDrop(event: RareDropEvent) {
+    private fun onRareDrop(event: ChatBasedRareDropEvent) {
         if (!Overlays.treasureFishingTrackerOverlay || !WorldUtils.isInSkyblock() || !WorldUtils.isInFishingWorld()) return
-        if (event.itemName == "Treasure Dye") {
+        if (event.itemNameUnformatted == "Treasure Dye") {
             trackTreasureDyeDrop()
         }
     }

@@ -2,10 +2,10 @@ package com.github.sleepypanda.feesh.events.publishers
 
 import com.github.sleepypanda.feesh.events.EventBus
 import com.github.sleepypanda.feesh.events.models.ChatCancellableEvent
-import com.github.sleepypanda.feesh.events.models.RareDropEvent
+import com.github.sleepypanda.feesh.events.models.ChatBasedRareDropEvent
 import com.github.sleepypanda.feesh.utils.WorldUtils
 import com.github.sleepypanda.feesh.utils.PlayerUtils
-import com.github.sleepypanda.feesh.utils.RareDropUtils
+import com.github.sleepypanda.feesh.utils.RareDropAlertUtils
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.utils.ChatUtils.removeFormatting
 import com.github.sleepypanda.feesh.utils.CommonUtils
@@ -110,9 +110,9 @@ object RareFishingDropPublisher {
         }
     }
 
-    private fun tryPublish(itemName: String, itemDisplayName: String, magicFind: Int?) {
-        val dropInfo = RareDropUtils.findDrop(itemName) ?: return
-        val dropNumber = RareDropUtils.recordDrop(dropInfo.id)
-        EventBus.publish(RareDropEvent(dropInfo.itemName, itemDisplayName, magicFind, dropNumber))
+    private fun tryPublish(itemNameUnformatted: String, itemNameFormatted: String, magicFind: Int?) {
+        val dropInfo = RareDropAlertUtils.findAlertableDropInfo(itemNameUnformatted) ?: return
+        val dropNumber = RareDropAlertUtils.trackAlertableDrop(dropInfo.id)
+        EventBus.publish(ChatBasedRareDropEvent(dropInfo.itemName, itemNameFormatted, magicFind, dropNumber))
     }
 }

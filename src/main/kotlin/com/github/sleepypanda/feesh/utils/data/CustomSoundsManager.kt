@@ -1,7 +1,7 @@
 package com.github.sleepypanda.feesh.utils.data
 
 import com.github.sleepypanda.feesh.FeeshMod
-import com.github.sleepypanda.feesh.constants.RareDrops
+import com.github.sleepypanda.feesh.constants.AlertableRareDrops
 import com.github.sleepypanda.feesh.settings.models.AlertableSeaCreatureTypes
 import com.github.sleepypanda.feesh.constants.Sounds
 import com.github.sleepypanda.feesh.utils.CommonUtils
@@ -95,7 +95,7 @@ object CustomSoundsManager {
     private fun addDefaultDropSoundForMissingDrops(): Boolean {
         var updated = false
         
-        RareDrops.rareDrops.forEach { dropInfo ->
+        AlertableRareDrops.rareDrops.forEach { dropInfo ->
             val key = dropInfo.id.uppercase()
             if (!dropSoundsData.containsKey(key)) {
                 dropSoundsData[key] = UserDropSoundData(dropInfo.defaultSoundFileName)

@@ -1,9 +1,9 @@
 package com.github.sleepypanda.feesh.utils
 
-import com.github.sleepypanda.feesh.constants.RareDrops
+import com.github.sleepypanda.feesh.constants.AlertableRareDrops
 import com.github.sleepypanda.feesh.utils.data.PersistentDataManager
 
-object RareDropUtils {
+object RareDropAlertUtils {
     data class RareDropNotificationItem(
         var count: Int = 0
     )
@@ -12,10 +12,10 @@ object RareDropUtils {
         val items: MutableMap<String, RareDropNotificationItem> = mutableMapOf()
     )
 
-    fun findDrop(itemName: String) =
-        RareDrops.rareDrops.find { it.itemName == itemName || it.alternateNames.contains(itemName) }
+    fun findAlertableDropInfo(itemName: String) =
+        AlertableRareDrops.rareDrops.find { it.itemName == itemName || it.alternateNames.contains(itemName) }
 
-    fun recordDrop(itemId: String): Int {
+    fun trackAlertableDrop(itemId: String): Int {
         val items = PersistentDataManager.feeshData.rareDropNotifications.items
         val newCount = (items[itemId]?.count ?: 0) + 1
         items[itemId] = RareDropNotificationItem(newCount)
