@@ -7,20 +7,14 @@ import com.github.sleepypanda.feesh.constants.ModVersionConstants
 import com.github.sleepypanda.feesh.constants.RareDropTypes
 import com.github.sleepypanda.feesh.utils.enums.DeployableTypes
 import com.github.sleepypanda.feesh.utils.enums.PricingModeWithNpc
+import com.github.sleepypanda.feesh.features.alerts.RareDropAlert
 import com.teamresourceful.resourcefulconfigkt.api.CategoryKt
 import com.teamresourceful.resourcefulconfig.api.types.options.TranslatableValue
+import net.minecraft.util.Util
 
 enum class AlertSource(val displayName: String) {
     OWN_AND_PARTY("Own and party"),
     OWN("Own");
-
-    override fun toString(): String = displayName
-}
-
-enum class RareDropPriceScope(val displayName: String) {
-    OWN("Own"),
-    OWN_AND_PARTY("Own and party"),
-    OFF("Off");
 
     override fun toString(): String = displayName
 }
@@ -91,14 +85,40 @@ object Alerts : CategoryKt("Alerts") {
         this.description = Translated("\"Own and party\" = your drops and party members' drops; \"Own\" = only your drops.")
     }
 
-    var rareDropAlertShowPriceFor by enum(RareDropPriceScope.OWN_AND_PARTY) {
-        this.name = Translated("Show dropped item price in the title")
-        this.description = Translated("Show the price of the dropped item in the alert. \"Own\" = only for your drops; \"Own and party\" = for your drops and party members' drops; \"Off\" = don't show price.")
-    }
-
     var alertOnRareDropsPriceMode by enum(PricingModeWithNpc.SELL_OFFER) {
         this.name = Translated("Rare drop price mode")
-        this.description = Translated("Defines how to calculate price for the dropped item.")
+        this.description = Translated("Defines how to calculate {price} for the dropped item in the title templates.")
+    }
+
+    var rareDropAlertOwnTitleTemplate by string(RareDropAlert.DEFAULT_OWN_TITLE_TEMPLATE) {
+        this.name = Translated("Title template (own drop)")
+        this.description = Translated("${GRAY}Title shown for your own rare drops. Leave empty to use default. Placeholders: ${WHITE}{dropName}${GRAY} (keeps rarity color / extra-rare obfuscation), ${WHITE}{price}${GRAY}, ${WHITE}{playerName}${GRAY}, ${WHITE}{dropNumber}${GRAY} (reset by /feeshBulkResetTrackers), ${WHITE}{magicFind}${GRAY}. Color and formatting codes are supported.")
+    }
+
+    var rareDropAlertOwnSubtitleTemplate by string(RareDropAlert.DEFAULT_OWN_SUBTITLE_TEMPLATE) {
+        this.name = Translated("Subtitle template (own drop)")
+        this.description = Translated("${GRAY}Subtitle shown for your own rare drops. Leave empty to use default. Placeholders: ${WHITE}{dropName}${GRAY}, ${WHITE}{price}${GRAY}, ${WHITE}{playerName}${GRAY}, ${WHITE}{dropNumber}${GRAY} (reset by /feeshBulkResetTrackers), ${WHITE}{magicFind}${GRAY}. Color and formatting codes are supported.")
+    }
+
+    var rareDropAlertPartyTitleTemplate by string(RareDropAlert.DEFAULT_PARTY_TITLE_TEMPLATE) {
+        this.name = Translated("Title template (party drop)")
+        this.description = Translated("${GRAY}Title shown for party members' rare drops. Leave empty to use default. Placeholders: ${WHITE}{dropName}${GRAY} (keeps rarity color / extra-rare obfuscation), ${WHITE}{price}${GRAY}, ${WHITE}{playerName}${GRAY}, ${WHITE}{dropNumber}${GRAY}, ${WHITE}{magicFind}${GRAY}. Color and formatting codes are supported.")
+    }
+
+    var rareDropAlertPartySubtitleTemplate by string(RareDropAlert.DEFAULT_PARTY_SUBTITLE_TEMPLATE) {
+        this.name = Translated("Subtitle template (party drop)")
+        this.description = Translated("${GRAY}Subtitle shown for party members' rare drops. Leave empty to use default. Placeholders: ${WHITE}{dropName}${GRAY}, ${WHITE}{price}${GRAY}, ${WHITE}{playerName}${GRAY}, ${WHITE}{dropNumber}${GRAY}, ${WHITE}{magicFind}${GRAY}. Color and formatting codes are supported.")
+    }
+
+    init {
+        button {
+            title = "Colors & formatting guide"
+            description = "For rare drop title and subtitle templates, please explore the guide explaining color codes and formatting codes."
+            text = "Click to open"
+            onClick {
+                Util.getPlatform().openUri("https://github.com/Sleepy-Panda/Feesh/blob/develop/docs/Colors%20and%20formatting%20guide.md")
+            }
+        }
     }
 
     init {

@@ -4,6 +4,7 @@ import com.github.sleepypanda.feesh.settings.categories.Overlays
 import com.github.sleepypanda.feesh.settings.models.BulkResettableTrackerTypes
 import com.github.sleepypanda.feesh.utils.ChatUtils
 import com.github.sleepypanda.feesh.utils.CommonUtils
+import com.github.sleepypanda.feesh.utils.RareDropUtils
 import com.github.sleepypanda.feesh.utils.RegisterUtils
 import com.github.sleepypanda.feesh.utils.WorldUtils
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
@@ -35,13 +36,17 @@ object BulkResetTrackersCommand {
         }
 
         val toReset = selected.filter { hasData(it) }
-        if (toReset.isEmpty()) {
+        val hasDropNumbers = RareDropUtils.hasData()
+        if (toReset.isEmpty() && !hasDropNumbers) {
             ChatUtils.sendLocalChat("The trackers have no data to reset.", true)
             return
         }
 
         val linePrefix = "\n${GRAY}- ${WHITE}"
-        val trackersText = toReset.joinToString(linePrefix, prefix = linePrefix) { getResetDisplayName(it) }
+        val trackersText = buildString {
+            toReset.forEach { append(linePrefix).append(getResetDisplayName(it)) }
+            if (hasDropNumbers) append(linePrefix).append("Rare drop numbers")
+        }
 
         if (!isConfirmed) {
             ChatUtils.sendLocalChat("${WHITE}Do you want to reset the following trackers?$trackersText", true)
@@ -55,6 +60,7 @@ object BulkResetTrackersCommand {
 
         CommonUtils.runWithCatching("Failed to reset selected trackers on keybind") {
             toReset.forEach { resetTracker(it) }
+            RareDropUtils.reset()
             ChatUtils.sendLocalChat("The trackers data was reset.", true)
         }
     }

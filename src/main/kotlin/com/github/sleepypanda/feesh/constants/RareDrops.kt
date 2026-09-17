@@ -4,7 +4,7 @@ import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
 
 // Enum used to list selectable items in Alerts/Chat settings
-// This should be aligned with rareDrops.itemName and with itemName published from RareDropsPublisher
+// This should be aligned with rareDrops.itemName and with itemName published from RareFishingDropPublisher
 enum class RareDropTypes(val displayName: String) {
     ALL("ALL"), // Equivalent of selecting all items in the list below
 
@@ -63,7 +63,7 @@ class RareDrops {
             val displayName: String get() = rarityColorCode + itemName
             val boldDisplayName: String get() = rarityColorCode + BOLD + itemName
 
-            fun getTitle(): String {
+            fun getTitle(): String { // 
                 val baseTitle = this.boldDisplayName.substringBefore(" (") // Flying Fish (Legendary) -> Flying Fish
                 return if (this.isExtremelyRare) "${GOLD}${OBFUSCATED}x${RESET} ${baseTitle} ${GOLD}${OBFUSCATED}x${RESET}" 
                 else "${baseTitle}"

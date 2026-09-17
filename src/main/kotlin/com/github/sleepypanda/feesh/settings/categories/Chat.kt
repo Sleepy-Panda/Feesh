@@ -9,6 +9,7 @@ import com.github.sleepypanda.feesh.constants.RareDropTypes
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
 import com.github.sleepypanda.feesh.features.chat.CompactCatchMessages
+import com.github.sleepypanda.feesh.features.commands.BulkResetTrackersCommand
 import com.github.sleepypanda.feesh.utils.getScreenCompat
 import com.github.sleepypanda.feesh.utils.setScreenCompat
 import com.teamresourceful.resourcefulconfigkt.api.CategoryKt
@@ -133,7 +134,7 @@ object Chat : CategoryKt("Chat") {
 
     var includeDropNumberIntoDropMessage by boolean(true) {
         this.name = Translated("Include drop number")
-        this.description = Translated("${GRAY}Send the drop's ordinal number for the current session in the party chat message.\n${RED}Requires Fishing Profit Tracker to be enabled! ${GRAY}Drop numbers are reset when Fishing Profit Tracker is reset.")
+        this.description = Translated("${GRAY}Send the drop's ordinal number in the party chat message.\nDrop numbers are reset by ${WHITE}/${BulkResetTrackersCommand.COMMAND_NAME}${GRAY} (bulk reset trackers keybind).")
     }
 
     var includeMagicFindIntoRareDropMessage by boolean(true) {

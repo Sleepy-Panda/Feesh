@@ -127,7 +127,7 @@ object Overlays : CategoryKt("Overlays") {
     init {
         button {
             title = "Bulk reset trackers keybind"
-            description = "Set a keybind in Minecraft's Controls menu to reset multiple trackers on button pressed (with confirmation). Resets [Session] only for trackers with Session/Total view modes.\nExecutes ${WHITE}/${BulkResetTrackersCommand.COMMAND_NAME}"
+            description = "Set a keybind in Minecraft's Controls menu to reset multiple trackers on button pressed (with confirmation). Resets [Session] only for trackers with Session/Total view modes. Also resets rare drop numbers used in alerts and party chat.\nExecutes ${WHITE}/${BulkResetTrackersCommand.COMMAND_NAME}"
             text = "Click to open"
             onClick {
                 val mc = FeeshMod.mc

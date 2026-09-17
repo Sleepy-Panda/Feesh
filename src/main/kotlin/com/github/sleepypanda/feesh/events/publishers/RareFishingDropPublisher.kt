@@ -5,11 +5,12 @@ import com.github.sleepypanda.feesh.events.models.ChatCancellableEvent
 import com.github.sleepypanda.feesh.events.models.RareDropEvent
 import com.github.sleepypanda.feesh.utils.WorldUtils
 import com.github.sleepypanda.feesh.utils.PlayerUtils
+import com.github.sleepypanda.feesh.utils.RareDropUtils
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.utils.ChatUtils.removeFormatting
 import com.github.sleepypanda.feesh.utils.CommonUtils
 
-object RareDropsPublisher {
+object RareFishingDropPublisher {
     // §6§lRARE DROP! §dRadioactive Vial §b(+§b236 §b✯ Magic Find§b)
     // §6§lRARE DROP! §6Tiki Mask §b(+§b236 §b✯ Magic Find§b)
     //  can be used instead of ✯ as the Magic Find symbol:
@@ -57,7 +58,7 @@ object RareDropsPublisher {
             if (rareDropBookMatch != null) {
                 val item = rareDropBookMatch.groups.get("bookName")?.value ?: return@onChat
                 val magicFind = rareDropBookMatch.groups.get("mf")?.value?.removeFormatting()?.toIntOrNull()
-                EventBus.publish(RareDropEvent(item.removeFormatting(), item, magicFind))
+                tryPublish(item.removeFormatting(), item, magicFind)
                 return@onChat
             }
             
@@ -65,7 +66,7 @@ object RareDropsPublisher {
             if (rareDropMatch != null) {
                 val item = rareDropMatch.groups.get("item")?.value ?: return@onChat
                 val magicFind = rareDropMatch.groups.get("mf")?.value?.removeFormatting()?.toIntOrNull()
-                EventBus.publish(RareDropEvent(item.removeFormatting(), item, magicFind))
+                tryPublish(item.removeFormatting(), item, magicFind)
                 return@onChat
             }
             
@@ -74,7 +75,7 @@ object RareDropsPublisher {
                 val petDisplayName = petDropMatch.groups.get("pet")?.value ?: return@onChat
                 val rarityStr = CommonUtils.getRarityDescription(petDisplayName.substring(0, 2))
                 val petName = "${petDisplayName.removeFormatting()} ($rarityStr)"
-                EventBus.publish(RareDropEvent(petName, petDisplayName, null))
+                tryPublish(petName, petDisplayName, null)
                 return@onChat
             }
             
@@ -83,7 +84,7 @@ object RareDropsPublisher {
                 val petDisplayName = petCatchMatch.groups.get("pet")?.value ?: return@onChat
                 val rarityStr = CommonUtils.getRarityDescription(petDisplayName.substring(0, 2))
                 val petName = "${petDisplayName.removeFormatting()} ($rarityStr)"
-                EventBus.publish(RareDropEvent(petName, petDisplayName, null))
+                tryPublish(petName, petDisplayName, null)
                 return@onChat
             }
     
@@ -91,7 +92,7 @@ object RareDropsPublisher {
             if (phoenixMatch != null) {
                 val playerAndRank = phoenixMatch.groups.get("playerAndRank")?.value ?: return@onChat
                 if (playerAndRank.removeFormatting().contains(playerName, ignoreCase = false)) {
-                    EventBus.publish(RareDropEvent("Phoenix", "${SPECIAL}Phoenix", null))
+                    tryPublish("Phoenix", "${SPECIAL}Phoenix", null)
                 }
                 return@onChat
             }
@@ -102,10 +103,16 @@ object RareDropsPublisher {
                 val playerAndRankUnformatted = playerAndRank.removeFormatting()
                 if (playerAndRankUnformatted.contains(playerName, ignoreCase = false)) {
                     val dyeName = dyeMatch.groups.get("dyeName")?.value ?: return@onChat
-                    EventBus.publish(RareDropEvent(dyeName.removeFormatting(), dyeName, null))
+                    tryPublish(dyeName.removeFormatting(), dyeName, null)
                 }
                 return@onChat
             }
         }
+    }
+
+    private fun tryPublish(itemName: String, itemDisplayName: String, magicFind: Int?) {
+        val dropInfo = RareDropUtils.findDrop(itemName) ?: return
+        val dropNumber = RareDropUtils.recordDrop(dropInfo.id)
+        EventBus.publish(RareDropEvent(dropInfo.itemName, itemDisplayName, magicFind, dropNumber))
     }
 }

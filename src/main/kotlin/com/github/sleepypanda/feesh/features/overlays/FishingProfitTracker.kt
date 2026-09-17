@@ -20,7 +20,6 @@ import com.github.sleepypanda.feesh.events.models.ShurikenUsedEvent
 import com.github.sleepypanda.feesh.constants.Sounds
 import com.github.sleepypanda.feesh.constants.StarlynContests
 import com.github.sleepypanda.feesh.constants.TrophyFish
-import com.github.sleepypanda.feesh.features.chat.RareDropMessage
 import com.github.sleepypanda.feesh.settings.categories.SoundMode
 import com.github.sleepypanda.feesh.settings.categories.General
 import com.github.sleepypanda.feesh.settings.categories.Overlays
@@ -187,7 +186,6 @@ object FishingProfitTracker : IResettableViewModeTracker {
     override fun resetSessionData(force: Boolean) {
         data.session = FishingProfitSourceData()
         saveData(force)
-        RareDropMessage.reset(force) // TODO Make them not dependent
     }
 
     override fun resetTotalData(force: Boolean) {
