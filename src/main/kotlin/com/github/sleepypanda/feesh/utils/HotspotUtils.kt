@@ -1,5 +1,10 @@
 package com.github.sleepypanda.feesh.utils
 
+import com.github.sleepypanda.feesh.events.EventBus
+import com.github.sleepypanda.feesh.events.models.ArmorStandDespawnedEvent
+import com.github.sleepypanda.feesh.events.models.ClientTickEvent
+import com.github.sleepypanda.feesh.events.models.HotspotSpawnedEvent
+import com.github.sleepypanda.feesh.events.models.WorldChangedEvent
 import net.minecraft.world.entity.decoration.ArmorStand
 import net.minecraft.world.entity.Entity
 import com.github.sleepypanda.feesh.utils.ChatUtils.getFormattedString
@@ -12,8 +17,86 @@ object HotspotUtils {
         val x: Double,
         val y: Double,
         val z: Double,
-        val perk: String?
+        val perk: String?,
+        var fishedInRecently: Boolean = false
     )
+
+    private val knownHotspots = mutableListOf<HotspotData>()
+    private var tickCounter = 0
+
+    private const val TICKS_PER_CHECK = 10
+    private const val NEAREST_HOTSPOT_RANGE_FROM_HOOK = 5.0
+
+    fun init() {
+        EventBus.subscribe(HotspotSpawnedEvent::class, ::onHotspotSpawned)
+        EventBus.subscribe(ArmorStandDespawnedEvent::class, ::onArmorStandDespawned)
+        EventBus.subscribe(ClientTickEvent::class, ::onClientTick)
+        EventBus.subscribe(WorldChangedEvent::class, ::onWorldChanged)
+    }
+
+    fun getKnownHotspots(): List<HotspotData> = knownHotspots
+
+    fun getLastFishedHotspot(): HotspotData? = knownHotspots.find { it.fishedInRecently }
+
+    private fun onWorldChanged(@Suppress("UNUSED_PARAMETER") event: WorldChangedEvent) {
+        knownHotspots.clear()
+        tickCounter = 0
+    }
+
+    private fun onHotspotSpawned(event: HotspotSpawnedEvent) {
+        CommonUtils.runWithCatching("Failed to remember spawned hotspot") {
+            val entity = EntityUtils.getMcEntityById(event.hotspotArmorStandId) as? ArmorStand ?: return@runWithCatching
+            knownHotspots.removeAll { it.entity.id == event.hotspotArmorStandId }
+            knownHotspots.add(
+                HotspotData(
+                    entity = entity,
+                    x = event.position.x,
+                    y = event.position.y,
+                    z = event.position.z,
+                    perk = event.perk,
+                )
+            )
+            WaypointUtils.add(
+                x = event.position.x,
+                y = event.position.y - 1,
+                z = event.position.z,
+                colorRgb = 0xFC54FC,
+                alpha = 0.4f,
+                durationMillis = 30_000L,
+                throughWalls = true,
+            )
+        }
+    }
+
+    private fun onArmorStandDespawned(event: ArmorStandDespawnedEvent) {
+        knownHotspots.removeAll { it.entity.id == event.armorStand.id }
+    }
+
+    private fun onClientTick(@Suppress("UNUSED_PARAMETER") event: ClientTickEvent) {
+        if (!WorldUtils.isInSkyblock() || !WorldUtils.isInHotspotFishingWorld() || !PlayerUtils.hasFishingRodInHotbar()) return
+
+        tickCounter++
+        if (tickCounter < TICKS_PER_CHECK) return
+        tickCounter = 0
+
+        updateFishedInRecently()
+    }
+
+    private fun updateFishedInRecently() {
+        CommonUtils.runWithCatching("Failed to track fishing in hotspot") {
+            if (!FishingHookUtils.isFishingHookSubmerged()) return
+            val playerHook = FishingHookUtils.getSubmergedFishingHook() ?: return
+            val closestKnown = knownHotspots
+                .filter {
+                    EntityUtils.getDistance(it.x, it.y, it.z, playerHook.x, playerHook.y, playerHook.z) <= NEAREST_HOTSPOT_RANGE_FROM_HOOK
+                }
+                .minByOrNull {
+                    EntityUtils.getDistance(it.x, it.y, it.z, playerHook.x, playerHook.y, playerHook.z)
+                } ?: return
+
+            knownHotspots.forEach { it.fishedInRecently = it.entity.id == closestKnown.entity.id }
+        }
+    }
 
     /**
      * Check if an armor stand is a perk for a hotspot armor stand.
@@ -37,29 +120,12 @@ object HotspotUtils {
      * @returns HotspotData in the format { entity, position, perk } or null if not found.
      */
     fun findClosestHotspotInRange(entityPosition: Vec3, distance: Double): HotspotData? {
-        val armorStands = EntityUtils.getArmorStandsInRange(entityPosition, distance)
-        if (armorStands.isEmpty()) return null
+        val closestKnown = knownHotspots
+            .filter { EntityUtils.getDistance(it.x, it.y, it.z, entityPosition.x, entityPosition.y, entityPosition.z) <= distance }
+            .minByOrNull { EntityUtils.getDistance(it.x, it.y, it.z, entityPosition.x, entityPosition.y, entityPosition.z) }
+        if (closestKnown != null) return closestKnown
 
-        val closestHotspotArmorStand = armorStands
-            .filter { it.customName.getUnformattedString() == "HOTSPOT" }
-            .minByOrNull { EntityUtils.getDistance(it, entityPosition.x, entityPosition.y, entityPosition.z) }
-
-        if (closestHotspotArmorStand == null) return null
-
-        // Find the perk armor stand (same X and Z, Y is below the HOTSPOT, within 1 block)
-        val perkArmorStand = armorStands.find { e ->
-            isPerkForHotspot(e, closestHotspotArmorStand)
-        }
-
-        val perk = perkArmorStand?.customName?.getFormattedString()
-
-        return HotspotData(
-            entity = closestHotspotArmorStand,
-            x = closestHotspotArmorStand.x,
-            y = closestHotspotArmorStand.y,
-            z = closestHotspotArmorStand.z,
-            perk = perk
-        )
+        return findClosestHotspotInRangeFromWorld(entityPosition, distance)
     }
 
     /**
@@ -69,28 +135,54 @@ object HotspotUtils {
      * @returns List of HotspotData
      */
     fun findHotspotsInRange(entity: Entity, distance: Double): List<HotspotData> {
+        val closeKnown = knownHotspots
+            .filter { EntityUtils.getDistance(entity, it.x, it.y, it.z) <= distance }
+            .sortedBy { EntityUtils.getDistance(entity, it.x, it.y, it.z) }
+        if (closeKnown.isNotEmpty()) return closeKnown
+
+        return findHotspotsInRangeFromWorld(entity, distance)
+    }
+
+    private fun findClosestHotspotInRangeFromWorld(entityPosition: Vec3, distance: Double): HotspotData? {
+        val armorStands = EntityUtils.getArmorStandsInRange(entityPosition, distance)
+        if (armorStands.isEmpty()) return null
+
+        val closestHotspotArmorStand = armorStands
+            .filter { it.customName.getUnformattedString() == "HOTSPOT" }
+            .minByOrNull { EntityUtils.getDistance(it, entityPosition.x, entityPosition.y, entityPosition.z) }
+
+        if (closestHotspotArmorStand == null) return null
+
+        val perkArmorStand = armorStands.find { e ->
+            isPerkForHotspot(e, closestHotspotArmorStand)
+        }
+
+        return HotspotData(
+            entity = closestHotspotArmorStand,
+            x = closestHotspotArmorStand.x,
+            y = closestHotspotArmorStand.y,
+            z = closestHotspotArmorStand.z,
+            perk = perkArmorStand?.customName?.getFormattedString()
+        )
+    }
+
+    private fun findHotspotsInRangeFromWorld(entity: Entity, distance: Double): List<HotspotData> {
         val armorStands = EntityUtils.getArmorStandsInRange(Vec3(entity.x, entity.y, entity.z), distance)
-        val closeHotspotArmorStands = armorStands
+        return armorStands
             .filter { it.customName.getUnformattedString() == "HOTSPOT" }
             .sortedBy { EntityUtils.getDistance(entity, it) }
             .map { asEntity ->
-                // Find the perk armor stand (same X and Z, Y is below the HOTSPOT, within 1 block)
                 val perkArmorStand = armorStands.find { e ->
                     isPerkForHotspot(e, asEntity)
                 }
-
-                val perk = perkArmorStand?.customName?.getFormattedString()
 
                 HotspotData(
                     entity = asEntity,
                     x = asEntity.x,
                     y = asEntity.y,
                     z = asEntity.z,
-                    perk = perk
+                    perk = perkArmorStand?.customName?.getFormattedString()
                 )
             }
-
-        return closeHotspotArmorStands
     }
 }
-

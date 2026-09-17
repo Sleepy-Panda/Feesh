@@ -537,6 +537,22 @@ Hidden if you have no fishing rod in your hotbar!""".trimIndent())
 
     init {
         separator {
+            this.title = "${AQUA}${BOLD}Hotspot"
+        }
+    }
+
+    var hotspotTrackerOverlay by boolean(false) {
+        this.name = Translated("Hotspot tracker")
+        this.description = Translated("Shows the perk of the hotspot you are fishing in.")
+    }
+
+    var hotspotTrackerCustomStyle by boolean(true) {
+        this.name = Translated("Apply custom style")
+        this.description = Translated(getCustomStyleDescription("Hotspot tracker"))
+    }
+
+    init {
+        separator {
             this.title = "${AQUA}${BOLD}Bait"
         }
     }

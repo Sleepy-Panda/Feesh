@@ -293,6 +293,11 @@ object Alerts : CategoryKt("Alerts") {
         }
     }
 
+    var alertOnHotspotSeen by boolean(false) {
+        this.name = Translated("Alert when a hotspot is spawned")
+        this.description = Translated("Sends a chat message when a hotspot nametag is loaded, with its perk and coordinates.")
+    }
+
     var alertOnHotspotGone by boolean(true) {
         this.name = Translated("Alert when the hotspot is gone")
         this.description = Translated("Shows a title and plays a sound when the hotspot you recently fished in, is gone.")
