@@ -11,7 +11,7 @@ import com.github.sleepypanda.feesh.utils.setScreenCompat
 import com.teamresourceful.resourcefulconfigkt.api.ObservableEntry
 import com.teamresourceful.resourcefulconfigkt.api.CategoryKt
 import com.github.sleepypanda.feesh.features.commands.PauseAllTrackersCommand
-import com.github.sleepypanda.feesh.features.commands.BulkResetTrackersCommand
+import com.github.sleepypanda.feesh.features.commands.BulkResetFishingSessionCommand
 import com.github.sleepypanda.feesh.settings.models.BulkResettableTrackerTypes
 import com.github.sleepypanda.feesh.features.commands.SetTrackerDropsCommand
 import com.github.sleepypanda.feesh.features.overlays.ArchfiendDiceProfitTracker
@@ -126,8 +126,8 @@ object Overlays : CategoryKt("Overlays") {
 
     init {
         button {
-            title = "Bulk reset trackers keybind"
-            description = "Set a keybind in Minecraft's Controls menu to reset multiple trackers on button pressed (with confirmation). Resets [Session] only for trackers with Session/Total view modes.\nExecutes ${WHITE}/${BulkResetTrackersCommand.COMMAND_NAME}"
+            title = "Bulk reset fishing session data keybind"
+            description = "Set a keybind in Minecraft's Controls menu to reset different trackers/data in the current fishing session on button pressed (with confirmation). Resets [Session] only for trackers with Session/Total view modes.\nExecutes ${WHITE}/${BulkResetFishingSessionCommand.COMMAND_NAME}"
             text = "Click to open"
             onClick {
                 val mc = FeeshMod.mc
@@ -142,8 +142,8 @@ object Overlays : CategoryKt("Overlays") {
     var bulkResetTrackersList by select(
         *BulkResettableTrackerTypes.values().filter { it.isEnabledByDefault }.toTypedArray()
     ) {
-        this.name = Translated("Trackers to bulk reset on keybind")
-        this.description = Translated("Select which trackers' data to bulk reset when the keybind is pressed.")
+        this.name = Translated("Data to bulk reset when keybind is pressed")
+        this.description = Translated("Select which trackers/data to reset when the bulk reset fishing session data keybind is pressed.")
         this.searchTerms = BulkResettableTrackerTypes.values().map { it.displayName }.toList()
     }
 

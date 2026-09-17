@@ -9,23 +9,23 @@ import com.github.sleepypanda.feesh.utils.WorldUtils
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
 
-object BulkResetTrackersCommand {
-    const val COMMAND_NAME = "feeshBulkResetTrackers"
+object BulkResetFishingSessionCommand {
+    const val COMMAND_NAME = "feeshBulkResetFishingSession"
 
     private val SESSION_VIEW_MODE_TEXT = "${GRAY}[${GREEN}Session${GRAY}]"
 
     fun init() {
         RegisterUtils.command(COMMAND_NAME) { args ->
             val isConfirmed = args.isNotEmpty() && args[0] == "noconfirm"
-            resetTrackers(isConfirmed)
+            resetFishingSession(isConfirmed)
         }
     }
 
-    fun triggerBulkResetSelectedTrackers() {
-        resetTrackers(isConfirmed = false)
+    fun triggerBulkResetFishingSession() {
+        resetFishingSession(isConfirmed = false)
     }
 
-    private fun resetTrackers(isConfirmed: Boolean) {
+    private fun resetFishingSession(isConfirmed: Boolean) {
         if (!WorldUtils.isInSkyblock()) return
 
         val selected = Overlays.bulkResetTrackersList
@@ -36,7 +36,7 @@ object BulkResetTrackersCommand {
 
         val toReset = selected.filter { hasData(it) }
         if (toReset.isEmpty()) {
-            ChatUtils.sendLocalChat("The trackers have no data to reset.", true)
+            ChatUtils.sendLocalChat("The fishing session has no data to reset.", true)
             return
         }
 
@@ -44,7 +44,7 @@ object BulkResetTrackersCommand {
         val trackersText = toReset.joinToString(linePrefix, prefix = linePrefix) { getResetDisplayName(it) }
 
         if (!isConfirmed) {
-            ChatUtils.sendLocalChat("${WHITE}Do you want to reset the following trackers?$trackersText", true)
+            ChatUtils.sendLocalChat("${WHITE}Do you want to reset the current fishing session?$trackersText", true)
             ChatUtils.sendLocalChatWithCommand(
                 "${RED}${BOLD}[Click to confirm]",
                 "$COMMAND_NAME noconfirm",
@@ -53,9 +53,9 @@ object BulkResetTrackersCommand {
             return
         }
 
-        CommonUtils.runWithCatching("Failed to reset selected trackers on keybind") {
+        CommonUtils.runWithCatching("Failed to reset fishing session") {
             toReset.forEach { resetTracker(it) }
-            ChatUtils.sendLocalChat("The trackers data was reset.", true)
+            ChatUtils.sendLocalChat("The fishing session data was reset.", true)
         }
     }
 
