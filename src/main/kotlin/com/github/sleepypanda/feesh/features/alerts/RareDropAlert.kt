@@ -89,8 +89,8 @@ object RareDropAlert {
             "itemDisplayName" to dropInfo.getTitle(),
             "player" to playerName,
             "price" to priceStr,
-            "dropNumber" to dropNumber.ifEmpty { "?" },
-            "magicFind" to magicFind.ifEmpty { "?" }
+            "dropNumber" to dropNumber.ifEmpty { "N/A" }, // Can be not reported by the party member in pchat message
+            "magicFind" to magicFind.ifEmpty { "N/A" } // Can be not applicable (pets) or nor reported by the party member in pchat message
         )
 
         val titleTemplate = if (isOwnDrop) {
