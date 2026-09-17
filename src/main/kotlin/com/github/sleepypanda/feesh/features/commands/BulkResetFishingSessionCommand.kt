@@ -50,7 +50,7 @@ object BulkResetFishingSessionCommand {
 
         CommonUtils.runWithCatching("Failed to reset fishing session on keybind") {
             toReset.forEach { resetTracker(it) }
-            ChatUtils.sendLocalChat("The fishing session was reset.", true)
+            ChatUtils.sendLocalChat("The fishing session data was reset.", true)
         }
     }
 

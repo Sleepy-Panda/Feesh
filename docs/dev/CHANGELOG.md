@@ -4,6 +4,10 @@ Released on: ???
 
 ## Features
 
+- Renamed command `feeshBulkResetTrackers` to `feeshBulkResetFishingSession`.
+- Made Magma Pillar shown in "Only rare" sea creatures tracker view.
+- Announce pickup of Hunk of Blue Ice, removed it for Walnut.
+
 
 
 - Changed command to reset fishing session

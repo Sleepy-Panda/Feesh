@@ -2248,7 +2248,6 @@ class FishingProfitDrops {
                 itemName = "Walnut",
                 itemDisplayName = "${UNCOMMON}Walnut",
                 npcPrice = 200.0,
-                shouldAnnounceRareDrop = true,
             ),
             FishingProfitDropInfo(
                 itemId = "WHITE_GIFT",
@@ -2285,6 +2284,7 @@ class FishingProfitDrops {
                 itemName = "Hunk of Blue Ice",
                 itemDisplayName = "${RARE}Hunk of Blue Ice",
                 npcPrice = 25_000.0,
+                shouldAnnounceRareDrop = true,
             ),
             FishingProfitDropInfo(
                 itemId = "HILT_OF_TRUE_ICE",
