@@ -189,6 +189,7 @@ class FeeshMod : ClientModInitializer {
         TerryShopPricesCommand.init()
         PlayTestSoundCommand.init()
         LogSoundsCommand.init()
+        LogPartyChatMessagesCommand.init()
         SetTrackerDropsCommand.init()
         PauseAllTrackersCommand.init()
         BulkResetFishingSessionCommand.init()
