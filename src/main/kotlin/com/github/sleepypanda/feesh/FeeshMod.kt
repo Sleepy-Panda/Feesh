@@ -191,7 +191,7 @@ class FeeshMod : ClientModInitializer {
         LogSoundsCommand.init()
         SetTrackerDropsCommand.init()
         PauseAllTrackersCommand.init()
-        BulkResetTrackersCommand.init()
+        BulkResetFishingSessionCommand.init()
 
         LOGGER.info("$MOD_NAME loaded successfully!")
     }
