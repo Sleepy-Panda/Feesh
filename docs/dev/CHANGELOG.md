@@ -16,12 +16,14 @@ REMINDER: Add release numbers to new settings
 - Added toggle to reset drop # to command (UNSELECTED for existing configs :c )
 - Drop # is not reset anymore via Fishing profit tracker reset
 - Drop # and mf can be used in alert titles
+- Dye drop Magic Find is read from chance chat line when present.
 - Price setting is removed, now done via template
 
+
 - What to do with template if no drop number/mf
-- No logic to extract mf from dye drop msg
 - Button to print settings to chat
 - Check empty setting to have empty title
+- Test book drop, pet drop
 
 
 ## Bugfixes

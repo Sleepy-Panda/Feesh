@@ -3,6 +3,7 @@ package com.github.sleepypanda.feesh.events.publishers
 import com.github.sleepypanda.feesh.events.EventBus
 import com.github.sleepypanda.feesh.events.models.ChatCancellableEvent
 import com.github.sleepypanda.feesh.events.models.ChatBasedRareDropEvent
+import com.github.sleepypanda.feesh.events.models.WorldChangedEvent
 import com.github.sleepypanda.feesh.utils.WorldUtils
 import com.github.sleepypanda.feesh.utils.PlayerUtils
 import com.github.sleepypanda.feesh.utils.RareDropAlertUtils
@@ -11,6 +12,13 @@ import com.github.sleepypanda.feesh.utils.ChatUtils.removeFormatting
 import com.github.sleepypanda.feesh.utils.CommonUtils
 
 object RareFishingDropPublisher {
+    private data class PendingDyeDrop(
+        val itemNameUnformatted: String,
+        val itemNameFormatted: String,
+    )
+
+    private var pendingDyeDrop: PendingDyeDrop? = null // Keep Dye drop info until the Chance/Magic Find next chat line is found
+
     // §6§lRARE DROP! §dRadioactive Vial §b(+§b236 §b✯ Magic Find§b)
     // §6§lRARE DROP! §6Tiki Mask §b(+§b236 §b✯ Magic Find§b)
     //  can be used instead of ✯ as the Magic Find symbol:
@@ -31,6 +39,12 @@ object RareFishingDropPublisher {
     // §d§lWOW! §b[MVP§r§c+§r§b] §bMoonTheSadFisher§f §6found an §bAquamarine Dye §8#95§6!
     val DYE_DROP_PATTERN = Regex("^§d§lWOW! (?<playerAndRank>.+?) §6found (a|an) (?<dyeName>.+?)( §8#\\d+)?§6!.*$")
 
+    // Magic Find for Dyes is optional and sent on follow-up line, not the Dye drop line:
+    // An unbelievably minute 1/25k (0.004%) chance! (+295% ✯ Magic Find)
+    // An astonishingly peculiar 1/100k (0.001%) chance!
+    val DYE_CHANCE_PATTERN = Regex("^A(n)? .+ chance!.*$")
+    val DYE_CHANCE_MAGIC_FIND_PATTERN = Regex("\\(\\+(?<mf>\\d+)%? . Magic Find\\)")
+
     // Wow! [MVP+] MoonTheSadFisher found a Phoenix pet!
     // §eWow! §b[MVP§r§c+§r§b] §bMoonTheSadFisher§f §efound a §cPhoenix §epet!
     val PHOENIX_PET_DROP_PATTERN = Regex("^§eWow\\! (?<playerAndRank>.+?) §efound a §cPhoenix §epet\\!.*")
@@ -45,12 +59,31 @@ object RareFishingDropPublisher {
 
     fun init() {
         EventBus.subscribe(ChatCancellableEvent::class, ::onChat)
+        EventBus.subscribe(WorldChangedEvent::class, ::onWorldChanged)
+    }
+
+    private fun onWorldChanged(event: WorldChangedEvent) {
+        pendingDyeDrop = null
     }
 
     private fun onChat(event: ChatCancellableEvent) {
-        if (!WorldUtils.isInSkyblock()) return
+        if (!WorldUtils.isInSkyblock()) {
+            pendingDyeDrop = null
+            return
+        }
         
         CommonUtils.runWithCatching("Failed to handle rare drop in publisher.") {
+            val dyeDrop = pendingDyeDrop
+            if (dyeDrop != null) {
+                pendingDyeDrop = null
+                val magicFind = if (DYE_CHANCE_PATTERN.matches(event.unformattedText)) {
+                    DYE_CHANCE_MAGIC_FIND_PATTERN.find(event.unformattedText)?.groups?.get("mf")?.value?.toIntOrNull()
+                } else {
+                    null
+                }
+                tryPublish(dyeDrop.itemNameUnformatted, dyeDrop.itemNameFormatted, magicFind)
+            }
+
             val playerName = PlayerUtils.getUnformattedName()
             if (playerName.isNullOrEmpty()) return@onChat
 
@@ -103,7 +136,8 @@ object RareFishingDropPublisher {
                 val playerAndRankUnformatted = playerAndRank.removeFormatting()
                 if (playerAndRankUnformatted.contains(playerName, ignoreCase = false)) {
                     val dyeName = dyeMatch.groups.get("dyeName")?.value ?: return@onChat
-                    tryPublish(dyeName.removeFormatting(), dyeName, null)
+                    val dyeNameUnformatted = dyeName.removeFormatting()
+                    pendingDyeDrop = PendingDyeDrop(dyeNameUnformatted, dyeName)
                 }
                 return@onChat
             }
