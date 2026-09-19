@@ -15,7 +15,15 @@ This mod is an evolution of [FeeshNotifier ChatTriggers module](https://chattrig
 
 ## Releases
 
-[Modrinth](https://modrinth.com/project/feesh)
+[Feesh on Modrinth](https://modrinth.com/project/feesh)
+
+>**SOURCES:**
+>The only relevant source to download releases is Modrinth and linked GitHub. Feesh does not own any website and does not distribute releases through other sources.
+
+### Pre-releases
+
+If you want early access to the pre-releases, GitHub automatically builds every version pushed to `develop` branch. They can be found in Actions - (select latest action) - Artifacts - find attached `.zip` which contains `.jar` file(s).
+> **THOSE MAY BE UNSTABLE** as they are features in active development, probably not tested enough/subject to change. So I don't recommend it unless you are absolutely not patient :)
 
 ### Pre-releases
 
