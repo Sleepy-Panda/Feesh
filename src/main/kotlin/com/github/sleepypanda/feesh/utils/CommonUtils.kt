@@ -106,7 +106,8 @@ object CommonUtils {
     }
 
     /**
-     * Formats a number to a short representation (e.g., 1000 -> "1k", 1000000 -> "1M", 100500 -> "100.5k", 1500000 -> "1.5M")
+     * Formats a number to a short representation (e.g., 1000 -> "1k", 1000000 -> "1M", 100500 -> "100.5k", 1500000 -> "1.5M", 1560000000 -> "1.56B")
+     * Can use . or , as a separator depending on locale.
      * @param number The number to format.
      * @return The formatted string or null if the number is 0 or invalid.
      */
@@ -118,9 +119,10 @@ object CommonUtils {
  
         var formattedNumber = when {
             absNumber >= 1_000_000_000 -> {
-                String.format("%.1fB", absNumber / 1_000_000_000.0)
-                    .replace(".0B", "B")
-                    .replace(",0B", "B")
+                val billions = String.format("%.2f", absNumber / 1_000_000_000.0)
+                    .trimEnd('0')
+                    .trimEnd('.', ',')
+                "${billions}B"
             }
             absNumber >= 1_000_000 -> {
                 String.format("%.1fM", absNumber / 1_000_000.0)

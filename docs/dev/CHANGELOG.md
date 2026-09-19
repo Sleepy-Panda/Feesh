@@ -12,6 +12,7 @@ Released on: ???
   - Made PB title stay a bit longer on the screen.
 - Made Magma Pillar shown in "Only rare" sea creatures tracker view.
 - Announce pickup of Hunk of Blue Ice, removed it for Walnut.
+- Show 2 decimals instead of 1 for big profit numbers (billions).
 
 ## Bugfixes
 
