@@ -5,8 +5,11 @@ Released on: ???
 ## Features
 
 - Renamed command `feeshBulkResetTrackers` to `feeshBulkResetFishingSession`.
-- Added Personal Best for Treasure catch streak (longest streak of treasure/junk catches in a row until a non-treasure catch).
-- Added Personal Bests for Great treasure streak and Outstanding treasure streak.
+- Personal Bests:
+  - Adjusted output of `/feeshPersonalBests` command to show PB date and description on line hover.
+  - Added Personal Best for Treasure catch streak (longest streak of treasure/junk catches in a row until a non-treasure catch).
+  - Added Personal Bests for Great treasure streak and Outstanding treasure streak.
+  - Made PB title stay a bit longer on the screen.
 - Made Magma Pillar shown in "Only rare" sea creatures tracker view.
 - Announce pickup of Hunk of Blue Ice, removed it for Walnut.
 

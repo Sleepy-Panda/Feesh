@@ -37,7 +37,6 @@ Newly released - https://hypixel.net/threads/hypixel-skyblock-0-24-5-assorted-qo
 - For level 100 pets, would be cool to change their item name to be aligned with Level 1 pets. This also causes Lvl 100 pets being not easily found ny name via /get command.
 - Drake sound not muted when using Sound Controller mod
 - integrate medal clipping for rare drops / dyes? have seen it in sbo and its pretty neat  https://medal.tv/developer/auto-clipping#api-reference
-- lf treasure streak (maybe good, great , outstanding streak but maybe to much)
 - Flipping items via bz + supercraft + sell still gets to the tracker
 - Default party drop on-screen alert ragebaits some people :(
 - Hotspot nametag hider + overlay with hotspot perk
