@@ -9,6 +9,14 @@ import net.minecraft.network.chat.Component
 import kotlin.math.abs
 
 object CommonUtils {
+    /**
+     * Shows a title with an optional subtitle.
+     * @param title The title to show.
+     * @param subtitle The optional subtitle to show.
+     * @param fadeIn The fade in time in ticks.
+     * @param stay The stay time in ticks.
+     * @param fadeOut The fade out time in ticks.
+     */
     fun showTitle(title: String, subtitle: String? = null, fadeIn: Int = 0, stay: Int = 40, fadeOut: Int = 10) {      
         val mc = FeeshMod.mc
         mc.showTitleCompat(Component.literal(title), Component.literal(subtitle ?: " "), fadeIn, stay, fadeOut)

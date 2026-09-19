@@ -54,7 +54,7 @@ object TreasureCatchesStreakPersonalBest {
                 "${LIGHT_PURPLE}${BOLD}PERSONAL BEST!${RESET} Treasure catch streak: ${WHITE}${BOLD}${previousBest} ${GRAY}-> ${GREEN}${BOLD}$currentStreak",
                 true
             )
-            CommonUtils.showTitle("${LIGHT_PURPLE}${BOLD}PERSONAL BEST!", "Treasure catch streak: ${GREEN}$currentStreak")
+            CommonUtils.showTitle("${LIGHT_PURPLE}${BOLD}PERSONAL BEST!", "Treasure catch streak: ${GREEN}$currentStreak", stay = 60)
             SoundUtils.playSound(SoundEvents.PLAYER_LEVELUP)
         }
     }

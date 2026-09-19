@@ -216,7 +216,7 @@ object FishingFestivalTracker : IResettableTracker {
                 "${LIGHT_PURPLE}${BOLD}PERSONAL BEST!${RESET} You caught ${WHITE}${BOLD}${previousTotalPb} ${GRAY}-> ${GREEN}${BOLD}$total${RESET} sharks during the Fishing Festival!",
                 true
             )
-            CommonUtils.showTitle("${LIGHT_PURPLE}${BOLD}PERSONAL BEST!", "Sharks: ${GREEN}$total")
+            CommonUtils.showTitle("${LIGHT_PURPLE}${BOLD}PERSONAL BEST!", "Sharks: ${GREEN}$total", stay = 60)
         }
 
         if (greatWhiteCount > previousGwPb) {
@@ -227,7 +227,7 @@ object FishingFestivalTracker : IResettableTracker {
                 "${LIGHT_PURPLE}${BOLD}PERSONAL BEST!${RESET} You caught ${WHITE}${BOLD}${previousGwPb} ${GRAY}-> ${GREEN}${BOLD}$greatWhiteCount${RESET} Great White Sharks during the Fishing Festival!",
                 true
             )
-            CommonUtils.showTitle("${LIGHT_PURPLE}${BOLD}PERSONAL BEST!", "Great White Sharks: ${GREEN}$greatWhiteCount")
+            CommonUtils.showTitle("${LIGHT_PURPLE}${BOLD}PERSONAL BEST!", "Great White Sharks: ${GREEN}$greatWhiteCount", stay = 60)
         }
 
         if (isNewTotalPb || isNewGwPb) {
