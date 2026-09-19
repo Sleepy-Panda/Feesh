@@ -176,6 +176,7 @@ class FeeshMod : ClientModInitializer {
         ThunderBottleProgress.init()
         MobyDuckProgress.init()
         AutoRecombFlag.init()
+        RodPartsSlotText.init()
         SlotTextRendererManager.init() // After all slot text renderers are initialized and registered
 
         ExpertiseTooltip.init()

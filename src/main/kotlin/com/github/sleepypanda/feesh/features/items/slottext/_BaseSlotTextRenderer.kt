@@ -55,6 +55,16 @@ abstract class BaseSlotTextRenderer {
      */
     open fun drawShadow(): Boolean = true
 
+    /**
+     * Override to change where the text is positioned inside the slot.
+     */
+    open fun getPosition(): SlotTextPosition = SlotTextPosition.BOTTOM_LEFT
+
+    /**
+     * Override to change the text scale for this renderer.
+     */
+    open fun getTextScale(): Float = 0.7f
+
     fun clearCache() {
         if (itemTextCache.isNotEmpty()) itemTextCache.clear()
     }

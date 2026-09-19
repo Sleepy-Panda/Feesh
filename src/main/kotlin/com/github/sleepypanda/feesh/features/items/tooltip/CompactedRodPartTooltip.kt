@@ -1,5 +1,6 @@
 package com.github.sleepypanda.feesh.features.items.tooltip
 
+import com.github.sleepypanda.feesh.features.items.RodPartUtils
 import com.github.sleepypanda.feesh.settings.categories.Items
 import com.github.sleepypanda.feesh.utils.ChatUtils.getUnformattedString
 import com.github.sleepypanda.feesh.utils.ItemUtils
@@ -10,10 +11,6 @@ import net.minecraft.world.item.ItemStack
  * This feature is used to remove the description lines of the tooltip for fishing rod parts (Hook, Line, Sinker).
 */
 object CompactedRodPartTooltip : BaseTooltip() {
-
-    private val ROD_PART_NAME_REGEX = Regex(
-        """^(ථ|ꨃ|࿉) (Hook NONE|Line NONE|Sinker NONE|.+ Hook|.+ Line|.+ Sinker)$"""
-    )
 
     fun init() {
         // Calling this ensures the object is initialized and registered in the base class.
@@ -59,7 +56,6 @@ object CompactedRodPartTooltip : BaseTooltip() {
     }
 
     private fun isRodPartName(text: Component): Boolean {
-        val cleanText = text.getUnformattedString().trim()
-        return !cleanText.isEmpty() && ROD_PART_NAME_REGEX.matches(cleanText)
+        return RodPartUtils.isRodPartName(text.getUnformattedString())
     }
 }
