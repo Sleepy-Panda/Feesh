@@ -274,10 +274,10 @@ ${GRAY}To reset [Total]: ${WHITE}/${SeaCreaturesTracker.RESET_TOTAL}
         this.description = Translated("""
 ${GRAY}Shows an overlay with your profits you gained while fishing. This overlay has [Session] and [Total] view mode.
 ${GRAY}To count items added to your sacks, make sure to enable ${YELLOW}Skyblock Settings -> Personal -> Chat Feedback -> Sack Notifications
-${GRAY}To reset [Session]: ${WHITE}/${FishingProfitTracker.RESET_COMMAND}
-${GRAY}To reset [Total]: ${WHITE}/${FishingProfitTracker.RESET_TOTAL_COMMAND}
-${GRAY}To reset costs [Session]: ${WHITE}/${FishingProfitTracker.RESET_COSTS_COMMAND}
-${GRAY}To reset costs [Total]: ${WHITE}/${FishingProfitTracker.RESET_COSTS_TOTAL_COMMAND}
+
+${GRAY}To reset: ${WHITE}/${FishingProfitTracker.RESET_COMMAND} ${GRAY}for [Session] or ${WHITE}/${FishingProfitTracker.RESET_TOTAL_COMMAND} ${GRAY}for [Total]
+${GRAY}To reset Costs only: ${WHITE}/${FishingProfitTracker.RESET_COSTS_COMMAND} ${GRAY}for [Session] or ${WHITE}/${FishingProfitTracker.RESET_COSTS_TOTAL_COMMAND} ${GRAY}for [Total]
+${GRAY}To reset Catches only: ${WHITE}/${FishingProfitTracker.RESET_CATCHES_COMMAND} ${GRAY}for [Session] or ${WHITE}/${FishingProfitTracker.RESET_CATCHES_TOTAL_COMMAND} ${GRAY}for [Total]
 ${GRAY}To pause: ${WHITE}/${FishingProfitTracker.PAUSE_COMMAND}
         """.trimIndent())
     }
@@ -327,6 +327,12 @@ ${GRAY}To pause: ${WHITE}/${FishingProfitTracker.PAUSE_COMMAND}
         this.searchTerms = listOf(ModVersionConstants.VERSION_1_14_0)
     }
 
+    var shouldTrackCatchesInFishingProfitTracker by boolean(true) {
+        this.name = Translated("Track catches")
+        this.description = Translated("Track and show catches count (times you successfully reeled in) in the Fishing profit tracker.")
+        this.searchTerms = listOf(ModVersionConstants.VERSION_1_15_0)
+    }
+
     var shouldAnnounceRareDropsWhenPickup by boolean(true) {
         this.name = Translated("Announce rare drops")
         this.description = Translated("Send RARE DROP! message to player's chat when a rare item is added to the fishing profit tracker (for relatively rare items that have no RARE DROP! message from Hypixel by default).")
@@ -338,8 +344,8 @@ ${GRAY}To pause: ${WHITE}/${FishingProfitTracker.PAUSE_COMMAND}
     }
 
     var shouldHideTimerInTotal by boolean(false) {
-        this.name = Translated("Hide timer and coins/h in [Total] view")
-        this.description = Translated("Hide timer and coins/h in the fishing profit tracker [Total] view. Useful if you want to add past drops to the tracker but do not know the elapsed time.")
+        this.name = Translated("Hide timer and metrics/h in [Total] view")
+        this.description = Translated("Hide timer and metrics/hour in the fishing profit tracker [Total] view. Useful if you added past drops to the tracker but do not know the elapsed time to set.")
     }
 
     var resetFishingProfitTrackerOnGameClosed by boolean(true) {
@@ -350,7 +356,7 @@ ${GRAY}To pause: ${WHITE}/${FishingProfitTracker.PAUSE_COMMAND}
     init {
         button {
             title = "Editing Fishing profit tracker guide"
-            description = "Opens a guide on how to adjust item counts and elapsed time in the Fishing profit tracker [Session] and [Total]."
+            description = "Opens a guide on how to initialize or fix data in the Fishing profit tracker [Session] and [Total]."
             text = "Click to open"
             onClick {
                 Util.getPlatform().openUri("https://github.com/Sleepy-Panda/Feesh/blob/develop/docs/Editing%20profit%20tracker.md")
