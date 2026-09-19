@@ -49,11 +49,6 @@ import com.github.sleepypanda.feesh.features.overlays.base.TrackerViewMode
 import net.minecraft.network.chat.Component
 import java.util.Date
 
-// Check NPC sell mode
-// Check what is shown when only total profit enabled
-
-
-
 // TODO Drops counter for Rare Drop chat message
 // TODO Rely on chat message for some Rare Drops instead of pickup event?
 
@@ -1128,6 +1123,10 @@ object FishingProfitTracker : IResettableViewModeTracker {
         }
     }
 
+    private fun isCostsAndNetProfitEnabled(): Boolean {
+        return Overlays.shouldTrackCostsInFishingProfitTracker && Overlays.fishingProfitTrackerPriceMode != PricingModeWithNpc.NPC_SELL
+    }
+
     private fun onLineItemIncrease(itemId: String) {
         CommonUtils.runWithCatching("Failed to change item count in Fishing profit tracker") {
             if (!isTrackerVisible()) return
@@ -1321,7 +1320,7 @@ object FishingProfitTracker : IResettableViewModeTracker {
                 return lines.map { Component.literal(it) }
             }
 
-            if (!Overlays.shouldTrackCostsInFishingProfitTracker || !displayData.hasCosts || Overlays.fishingProfitTrackerPriceMode == PricingModeWithNpc.NPC_SELL) {
+            if (!isCostsAndNetProfitEnabled() || !displayData.hasCosts) {
                 return this
             }
 
@@ -1349,12 +1348,13 @@ object FishingProfitTracker : IResettableViewModeTracker {
 
             fun getCatchesTooltip(displayData: DisplayTrackerData): List<Component> {
                 val profitStr = CommonUtils.toShortNumber(displayData.profitPerCatch) ?: "0"
-                val netProfitStr = CommonUtils.toShortNumber(displayData.netProfitPerCatch) ?: "0"
-                val netProfitColor = if (displayData.netProfitPerCatch < 0) RED else GOLD
-                return listOf(
-                    "${AQUA}Profit per catch: ${GOLD}$profitStr",
-                    "${AQUA}Net profit per catch: ${netProfitColor}$netProfitStr",
-                ).map { Component.literal(it) }
+                val lines = mutableListOf("${AQUA}Profit per catch: ${GOLD}$profitStr")
+                if (isCostsAndNetProfitEnabled()) {
+                    val netProfitStr = CommonUtils.toShortNumber(displayData.netProfitPerCatch) ?: "0"
+                    val netProfitColor = if (displayData.netProfitPerCatch < 0) RED else GOLD
+                    lines.add("${AQUA}Net profit per catch: ${netProfitColor}$netProfitStr")
+                }
+                return lines.map { Component.literal(it) }
             }
     
             if (!Overlays.shouldTrackCatchesInFishingProfitTracker || displayData.catchesCount <= 0) return this

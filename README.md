@@ -94,10 +94,10 @@ Required Java version is 25+.
 ### Overlays
 
 > You can change position, scale and alignment (Left, Center, Right) for each overlay in **/feeshMoveAllGuis**
-> You can setup custom background & border style, and enable this style on each overlay level.
+> You can setup custom background & border style, and enable/disable this style on each overlay level.
 
-- **Fishing profit tracker** - Shows how many coins you earned in total and per hour, with Session/Total modes.
-- **Sea creatures tracker** — Overview of caught sea creatures with Session/Total modes, percentages, and double hook statistics.
+- **Fishing profit tracker** - Shows which items you dropped and how many coins you earned in total and per hour, with Session/Total modes. Offers extra information: costs spent, net profit, catches.
+- **Sea creatures tracker** — Overview of caught sea creatures with Session/Total modes, percentages, double hook and Bloodshot (cocoon) statistics.
 - **Nearby entities counter tracker** — Shows players, fishing hooks, and Chumcap buckets count within 30 blocks.
 - **Barn fishing timer** — Shows count of sea creatures nearby and how long they've been alive.
 - **Deployables timer** — Shows remaining time of your deployable items placed nearby.
