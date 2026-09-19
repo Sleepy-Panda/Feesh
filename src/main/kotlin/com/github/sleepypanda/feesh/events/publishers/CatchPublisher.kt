@@ -104,10 +104,12 @@ object CatchPublisher {
                 return
             }
 
-            if (JUNK_CATCH_PATTERN.containsMatchIn(event.unformattedText) ||
-                TROPHY_CATCH_PATTERN.containsMatchIn(event.unformattedText)
-            ) {
+            if (JUNK_CATCH_PATTERN.containsMatchIn(event.unformattedText)) {
                 lastJunkChatAt = Date()
+                tryPublishCatchFromChat()
+            }
+
+            if (TROPHY_CATCH_PATTERN.containsMatchIn(event.unformattedText)) {
                 tryPublishCatchFromChat()
             }
         }
