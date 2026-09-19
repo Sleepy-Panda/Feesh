@@ -26,6 +26,9 @@ object PersonalBestsCommand {
         ChatUtils.sendLocalChat("- Total sharks per festival: ${CommonUtils.formatNumberWithSpaces(pb.sharksCaught.amount)}")
         ChatUtils.sendLocalChat("- Great White Sharks per festival: ${CommonUtils.formatNumberWithSpaces(pb.greatWhiteSharksCaught.amount)}")
         ChatUtils.sendLocalChat("- Double Hook streak: ${CommonUtils.formatNumberWithSpaces(pb.doubleHookStreak.amount)}")
+        ChatUtils.sendLocalChat("- Treasure catches streak: ${CommonUtils.formatNumberWithSpaces(pb.treasureCatchesStreak.amount)}")
+        ChatUtils.sendLocalChat("- Great treasures streak: ${CommonUtils.formatNumberWithSpaces(pb.greatTreasuresStreak.amount)}")
+        ChatUtils.sendLocalChat("- Outstanding treasures streak: ${CommonUtils.formatNumberWithSpaces(pb.outstandingTreasuresStreak.amount)}")
         ChatUtils.sendLocalChat("- Total Moby-Ducks consumed: ${CommonUtils.formatNumberWithSpaces(pb.totalMobyDucksConsumed.amount)}")
         ChatUtils.sendLocalChat(chatBreak)
     }

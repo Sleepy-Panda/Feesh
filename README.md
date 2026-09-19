@@ -140,6 +140,15 @@ Required Java version is 25+.
 
 - **/feeshPersonalBests** — Displays all your personal best records tracked by the mod.
 
+What's tracked:
+
+- **Total sharks per festival** — Tracks biggest count of sharks caught within a single fishing festival.
+- **Great White Sharks per festival** — Tracks biggest count of Great White sharks caught within a single fishing festival.
+- **Double Hook streak** — Tracks longest chain of Double Hook sea creature catches.
+- **Treasure catch streak** — Tracks longest chain of treasure/junk catches.
+- **Great / Outstanding treasure streak** — Tracks longest chain of caught treasures/junk being Great / Outstanding.
+- **Total Moby-Ducks consumed**
+
 ### Commands
 
 - **/feesh** — Opens mod settings.

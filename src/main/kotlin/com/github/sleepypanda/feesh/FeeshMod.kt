@@ -75,6 +75,7 @@ class FeeshMod : ClientModInitializer {
 
         // Event publishers
         SeaCreaturesPublisher.init()
+        CatchPublisher.init()
         SeaCreaturesCocoonPublisher.init()
         RareDropsPublisher.init()
         PartyChatPublisher.init()
@@ -136,6 +137,8 @@ class FeeshMod : ClientModInitializer {
 
         // PB
         DoubleHookPersonalBest.init()
+        TreasureCatchesStreakPersonalBest.init()
+        GreatOrOutstandingTreasuresStreakPersonalBest.init()
         MobyDuckPersonalBest.init()
 
         // Overlays
