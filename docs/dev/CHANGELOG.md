@@ -4,21 +4,24 @@ Released on: ???
 
 ## Features
 
-- Renamed command `feeshBulkResetTrackers` to `feeshBulkResetFishingSession`.
+- Added option to track Catches & Catches/hour in Fishing profit tracker. You can disable it in settings.
+  - Hover over the Catches line while in inventory to see details such as profit per catch.
+  - You can initialize your past [Total] counter, using the commands from [the guide](https://github.com/Sleepy-Panda/Feesh/blob/develop/docs/Editing%20profit%20tracker.md#editing-catches).
+- Renamed command which resets data in the current fishing session - from `/feeshBulkResetTrackers` to `/feeshBulkResetFishingSession`.
 - Personal Bests:
   - Adjusted output of `/feeshPersonalBests` command to show PB date and description on line hover.
   - Added Personal Best for Treasure catch streak (longest streak of treasure/junk catches in a row until a non-treasure catch).
   - Added Personal Bests for Great treasure streak and Outstanding treasure streak.
   - Made PB title stay a bit longer on the screen.
 - Made Magma Pillar shown in "Only rare" sea creatures tracker view.
-- Announce pickup of Hunk of Blue Ice, removed it for Walnut.
+- Announce pickup of Hunk of Blue Ice into Fishing profit tracker (as they are somehow expensive), removed it for Walnut.
 - Show 2 decimals instead of 1 for big profit numbers (billions).
 
 ## Bugfixes
 
 ## Other
 
-- Added `feeshDebugLogPartyChatMessages` command to toggle duplicating outgoing party chat message into local chat.
+- Added `/feeshDebugLogPartyChatMessages` command to toggle duplicating outgoing party chat message into local chat.
 
 # 1.14.0
 
