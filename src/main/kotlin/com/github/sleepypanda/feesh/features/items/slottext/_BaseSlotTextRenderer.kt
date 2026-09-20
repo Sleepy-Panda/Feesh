@@ -1,6 +1,7 @@
 package com.github.sleepypanda.feesh.features.items.slottext
 
-import com.github.sleepypanda.feesh.features.items.slottext.SlotTextRendererManager
+import com.github.sleepypanda.feesh.features.items.slottext.models.SlotTextLine
+import com.github.sleepypanda.feesh.features.items.slottext.models.SlotTextPosition
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.inventory.Slot
@@ -10,16 +11,16 @@ import net.minecraft.world.inventory.Slot
  *
  * Responsibilities:
  * - Register once in [SlotTextRendererManager].
- * - Maintain a per-renderer cache of "item stack identifier" -> text (nullable).
+ * - Maintain a per-renderer cache of "item stack identifier" -> lines (nullable).
  * - Clear caches when the active GUI (screen) changes.
  */
 abstract class BaseSlotTextRenderer {
 
     /**
-     * Cache: item stack identifier -> text or null (meaning "no text").
+     * Cache: item stack identifier -> slot text lines or null (meaning "no text").
      * Cleared automatically when GUI (screen) changes.
      */
-    val itemTextCache: MutableMap<String, String?> = mutableMapOf()
+    val itemTextCache: MutableMap<String, List<SlotTextLine>?> = mutableMapOf()
 
     init {
         SlotTextRendererManager.register(this)
@@ -31,24 +32,19 @@ abstract class BaseSlotTextRenderer {
     abstract fun isEnabled(): Boolean
 
     /**
-     * Resolves text for a stack in current context.
+     * Resolves one or more slot text lines for a stack in current context.
      *
      * Return:
-     * - String to draw in slot corner, or
+     * - Lines to draw in the slot, or
      * - null if nothing should be drawn for this stack.
      *
      * The result is cached per item stack identifier until GUI changes.
      */
-    abstract fun getItemStackSlotText(
+    abstract fun getItemStackSlotLines(
         stack: ItemStack,
         screen: AbstractContainerScreen<*>,
         slot: Slot
-    ): String?
-
-    /**
-     * Override to change text color for this renderer.
-     */
-    open fun getTextColor(): Int = 0xFFFFFF
+    ): List<SlotTextLine>?
 
     /**
      * Override to disable text shadow for this renderer.

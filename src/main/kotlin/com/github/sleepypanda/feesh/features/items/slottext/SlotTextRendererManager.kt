@@ -4,10 +4,14 @@ import com.github.sleepypanda.feesh.FeeshMod
 import com.github.sleepypanda.feesh.events.EventBus
 import com.github.sleepypanda.feesh.events.models.ScreenBeforeInitEvent
 import com.github.sleepypanda.feesh.events.models.AfterSlotRenderedEvent
+import com.github.sleepypanda.feesh.features.items.slottext.models.SlotTextLine
+import com.github.sleepypanda.feesh.features.items.slottext.models.SlotTextPosition
 import com.github.sleepypanda.feesh.utils.ChatUtils.getUnformattedString
 import com.github.sleepypanda.feesh.utils.WorldUtils
 import net.minecraft.client.gui.Font
 import net.minecraft.client.gui.GuiGraphicsExtractor as GuiGraphics
+import net.minecraft.network.chat.Component
+import net.minecraft.network.chat.Style
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.inventory.Slot
 
@@ -41,10 +45,6 @@ object SlotTextRendererManager {
         enabledRenderers.addAll(renderers.filter { it.isEnabled() })
     }
 
-    fun clearAllCaches() {
-        renderers.forEach { it.clearCache() }
-    }
-
     private fun onScreenBeforeInit(@Suppress("UNUSED_PARAMETER") event: ScreenBeforeInitEvent) {
         clearAllCaches()
     }
@@ -63,16 +63,15 @@ object SlotTextRendererManager {
         val context = event.drawContext
 
         for (renderer in enabledRenderers) {
-            val text = renderer.itemTextCache.getOrPut(identifier) {
-                renderer.getItemStackSlotText(stack, screen, slot)
+            val lines = renderer.itemTextCache.getOrPut(identifier) {
+                renderer.getItemStackSlotLines(stack, screen, slot)
             } ?: continue
 
             drawSlotText(
                 context,
                 textRenderer,
                 slot,
-                text,
-                renderer.getTextColor(),
+                lines,
                 renderer.drawShadow(),
                 renderer.getPosition(),
                 renderer.getTextScale()
@@ -80,17 +79,19 @@ object SlotTextRendererManager {
         }
     }
 
+    private fun clearAllCaches() {
+        renderers.forEach { it.clearCache() }
+    }
+
     private fun drawSlotText(
         context: GuiGraphics,
         textRenderer: Font,
         slot: Slot,
-        text: String,
-        color: Int,
+        lines: List<SlotTextLine>,
         shadow: Boolean,
         position: SlotTextPosition,
         scale: Float
     ) {
-        val lines = text.split("\n")
         if (lines.isEmpty()) return
 
         val scaledTextHeight = textRenderer.lineHeight * scale
@@ -103,16 +104,16 @@ object SlotTextRendererManager {
             val y = when (position) {
                 SlotTextPosition.TOP_LEFT -> slot.y + 1 + index * scaledTextHeight
                 SlotTextPosition.BOTTOM_LEFT ->
-                    slot.y + DEFAULT_SLOT_SIZE - scaledTextHeight * (lines.size - index)
+                    slot.y + 1 + DEFAULT_SLOT_SIZE - scaledTextHeight * (lines.size - index)
             }
 
             drawStringCompat(
                 context,
                 textRenderer,
-                line,
+                toComponent(line),
                 (x / scale).toInt(),
                 (y / scale).toInt(),
-                color,
+                line.color,
                 shadow
             )
         }
@@ -120,7 +121,12 @@ object SlotTextRendererManager {
         context.pose().popMatrix()
     }
 
-    private fun drawStringCompat(context: GuiGraphics, textRenderer: Font, text: String, x: Int, y: Int, color: Int, shadow: Boolean) {
+    private fun toComponent(line: SlotTextLine): Component {
+        val style = if (line.bold) Style.EMPTY.withBold(true) else Style.EMPTY
+        return Component.literal(line.text).withStyle(style)
+    }
+
+    private fun drawStringCompat(context: GuiGraphics, textRenderer: Font, text: Component, x: Int, y: Int, color: Int, shadow: Boolean) {
         context.text(textRenderer, text, x, y, color, shadow)
     }
 
