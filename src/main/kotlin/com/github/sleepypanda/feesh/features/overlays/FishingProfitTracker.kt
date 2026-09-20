@@ -1055,12 +1055,11 @@ object FishingProfitTracker : IResettableViewModeTracker {
     }
 
     private fun onPetReachedMaxLevel(event: PetLevelUpEvent) {
-        if (!isSessionActive || !isTrackerVisible()) return
-        val petName = event.petName
-        val rarityCode = CommonUtils.getRarityNumericCode(event.petDisplayName.substring(0, 2))
-        val baseItemId = petName.split(" ").joinToString("_").uppercase()
-        val itemIdMaxLevel = "${baseItemId};${rarityCode}+${event.level}"
-        addProfitTrackerItem(itemIdMaxLevel, petName, 1, null)
+        CommonUtils.runWithCatching("Failed to add max level pet to Fishing profit tracker") {
+            if (!isTrackerVisible()) return@onPetReachedMaxLevel
+            val itemIdMaxLevel = ItemUtils.getMaxedPetId(event.petDisplayName, event.level)
+            addProfitTrackerItem(itemIdMaxLevel, event.petName, 1, null)
+        }
     }
 
     private fun findAndAddProfitTrackerItem(predicate: (FishingProfitDropInfo) -> Boolean, amountToAdd: Int) {
@@ -1442,7 +1441,7 @@ object FishingProfitTracker : IResettableViewModeTracker {
 
     private fun getDisplayNameForGui(itemId: String, itemName: String): String {
         return when {
-            ItemUtils.isMaxedPet(itemId) -> ItemUtils.getItemDisplayNameByPetId(itemId, itemName)
+            ItemUtils.isMaxedPet(itemId) -> ItemUtils.getLeveledPetDisplayNameByPetIdAndName(itemId, itemName)
             itemId == FISHED_COINS_ITEM_ID -> "${GOLD}Fished Coins"
             else -> FishingProfitDrops.items.find { it.itemId == itemId }?.itemDisplayName ?: itemName
         }
