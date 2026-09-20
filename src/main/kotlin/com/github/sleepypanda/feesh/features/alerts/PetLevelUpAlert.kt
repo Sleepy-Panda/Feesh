@@ -30,11 +30,14 @@ object PetLevelUpAlert {
             val itemId1level = ItemUtils.getLevel1PetId(event.petDisplayName)
             val basePrice = PriceUtils.getAuctionItemPrice(itemId1level)?.lbin ?: 0.0
             val priceMaxLevel = PriceUtils.getAuctionItemPrice(itemIdMaxLevel)?.lbin ?: 0.0
-            if (priceMaxLevel <= 0.0) return
+            if (priceMaxLevel <= 0.0) {
+                ChatUtils.sendLocalChat("${YELLOW}No price found in the API for ${event.petDisplayName} ${YELLOW}.", true)
+                return
+            }
     
             val priceStr = "${GOLD}${CommonUtils.toShortNumber(priceMaxLevel)}"
             val profitStr = "${GOLD}${CommonUtils.toShortNumber(priceMaxLevel - basePrice)}"
-            ChatUtils.sendLocalChat("Estimated cost for this pet is ${priceStr}${RESET}, profit for leveling up is ${profitStr}${RESET}.", true)    
+            ChatUtils.sendLocalChat("Estimated cost for ${event.petDisplayName} ${RESET}is ${priceStr}${RESET}, profit for leveling up is ${profitStr}${RESET}.", true)    
         }
     }
 }

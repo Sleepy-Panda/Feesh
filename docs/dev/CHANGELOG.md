@@ -19,6 +19,8 @@ Released on: ???
 
 ## Bugfixes
 
+- Fixed maxed T-Rex pet not triggering alert and not going into Fishing profit tracker.
+
 ## Other
 
 - Added `/feeshDebugLogPartyChatMessages` command to toggle duplicating outgoing party chat message into local chat.
