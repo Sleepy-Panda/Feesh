@@ -134,6 +134,7 @@ Required Java version is 25+.
 - **Thunder Bottle charge progress** — Renders Thunder / Storm / Hurricane Bottle charge percentage in the item slot.
 - **Moby-Duck progress** — Renders Moby-Duck evolving percentage in the item slot.
 - **Auto-recomb flag** — Renders recomb upgrade flag (`R`) for auto-recombobulated fishing drops in the item slot.
+- **Rod parts** — Renders abbreviations of equipped fishing rod parts (Hook, Line, Sinker) in the item slot. You can choose which parts to show.
 
 ### World Rendering
 

@@ -1,7 +1,7 @@
 package com.github.sleepypanda.feesh.features.items.slottext
 
 import com.github.sleepypanda.feesh.settings.categories.Items
-import com.github.sleepypanda.feesh.utils.ChatUtils.removeFormatting
+import com.github.sleepypanda.feesh.features.items.slottext.models.SlotTextLine
 import com.github.sleepypanda.feesh.utils.ChatUtils.getFormattedString
 import com.github.sleepypanda.feesh.utils.ItemUtils
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen
@@ -27,7 +27,7 @@ object ThunderBottleProgress : BaseSlotTextRenderer() {
 
     override fun isEnabled(): Boolean = Items.showThunderBottleProgress
 
-    override fun getItemStackSlotText(stack: ItemStack, screen: AbstractContainerScreen<*>, slot: Slot): String? {
+    override fun getItemStackSlotLines(stack: ItemStack, screen: AbstractContainerScreen<*>, slot: Slot): List<SlotTextLine>? {
         if (stack.isEmpty) return null
         val name = ItemUtils.getCleanItemName(stack.hoverName.getFormattedString())
 
@@ -39,9 +39,6 @@ object ThunderBottleProgress : BaseSlotTextRenderer() {
         val currentCharge = obj.get("thunder_charge")?.asDouble ?: 0.0
         val percent = truncate(currentCharge / maxCharge * 100).toInt()
         val percentSafe = percent.coerceIn(0, 100)
-        val slotText = "${percentSafe}%"
-        return slotText
+        return listOf(SlotTextLine("${percentSafe}%", PROGRESS_COLOR))
     }
-
-    override fun getTextColor(): Int = PROGRESS_COLOR
 }

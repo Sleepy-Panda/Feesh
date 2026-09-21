@@ -1,5 +1,6 @@
 package com.github.sleepypanda.feesh.utils
 
+import com.github.sleepypanda.feesh.utils.ChatUtils.getFormattedString
 import com.github.sleepypanda.feesh.utils.ChatUtils.getUnformattedString
 import com.github.sleepypanda.feesh.utils.ChatUtils.removeFormatting
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.GRAY
@@ -22,6 +23,18 @@ object ItemUtils {
     fun getUnformattedLoreLines(stack: ItemStack): List<String> {
         if (stack.isEmpty) return emptyList()
         val loreLines = stack.get(DataComponents.LORE)?.lines()?.map { it?.getUnformattedString() ?: "" } ?: emptyList()
+        return loreLines
+    }
+
+    /*
+     * Gets the formatted lore lines from the item stack.
+     * Null lines are returned as empty strings.
+     * @param stack The item stack to get the lore lines from.
+     * @returns {List<String>} The lore lines with formatting.
+     */
+    fun getFormattedLoreLines(stack: ItemStack): List<String> {
+        if (stack.isEmpty) return emptyList()
+        val loreLines = stack.get(DataComponents.LORE)?.lines()?.map { it?.getFormattedString() ?: "" } ?: emptyList()
         return loreLines
     }
 
