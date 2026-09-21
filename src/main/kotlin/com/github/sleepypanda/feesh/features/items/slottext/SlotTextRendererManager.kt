@@ -10,8 +10,6 @@ import com.github.sleepypanda.feesh.utils.ChatUtils.getUnformattedString
 import com.github.sleepypanda.feesh.utils.WorldUtils
 import net.minecraft.client.gui.Font
 import net.minecraft.client.gui.GuiGraphicsExtractor as GuiGraphics
-import net.minecraft.network.chat.Component
-import net.minecraft.network.chat.Style
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.inventory.Slot
 
@@ -110,10 +108,9 @@ object SlotTextRendererManager {
             drawStringCompat(
                 context,
                 textRenderer,
-                toComponent(line),
+                line,
                 (x / scale).toInt(),
                 (y / scale).toInt(),
-                line.color,
                 shadow
             )
         }
@@ -121,13 +118,15 @@ object SlotTextRendererManager {
         context.pose().popMatrix()
     }
 
-    private fun toComponent(line: SlotTextLine): Component {
-        val style = if (line.bold) Style.EMPTY.withBold(true) else Style.EMPTY
-        return Component.literal(line.text).withStyle(style)
-    }
-
-    private fun drawStringCompat(context: GuiGraphics, textRenderer: Font, text: Component, x: Int, y: Int, color: Int, shadow: Boolean) {
-        context.text(textRenderer, text, x, y, color, shadow)
+    private fun drawStringCompat(
+        context: GuiGraphics,
+        textRenderer: Font,
+        line: SlotTextLine,
+        x: Int,
+        y: Int,
+        shadow: Boolean
+    ) {
+        context.text(textRenderer, line.component, x, y, line.color, shadow)
     }
 
     private fun getStackIdentifier(stack: ItemStack): String {
