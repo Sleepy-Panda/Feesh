@@ -8,10 +8,8 @@ import com.github.sleepypanda.feesh.features.commands.PauseAllTrackersCommand
 import com.github.sleepypanda.feesh.features.commands.BulkResetFishingSessionCommand
 import com.github.sleepypanda.feesh.features.overlays.BarnFishingTimer
 import net.minecraft.client.KeyMapping
-import com.mojang.blaze3d.platform.InputConstants
 import net.minecraft.resources.Identifier
 import net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper as KeyBindingHelper
-import org.lwjgl.glfw.GLFW
 
 object KeybindUtils {
     val FEESH_CATEGORY: KeyMapping.Category = KeyMapping.Category.register(Identifier.fromNamespaceAndPath("feesh", "keybinds")) // Keys are localized in resources/assets/feesh/lang/en_us.json
@@ -30,32 +28,32 @@ object KeybindUtils {
     private fun registerAllKeybinds() {
         if (keybindsRegistered) return
 
-        registerKeybind("key.feesh.shareHotspotPartyChat", GLFW.GLFW_KEY_UNKNOWN) {
+        registerKeybind("key.feesh.shareHotspotPartyChat", InputUtils.unboundKey()) {
             HotspotFoundMessage.shareNearestHotspotToParty()
         }
-        registerKeybind("key.feesh.shareHotspotAllChat", GLFW.GLFW_KEY_UNKNOWN) {
+        registerKeybind("key.feesh.shareHotspotAllChat", InputUtils.unboundKey()) {
             HotspotFoundMessage.shareNearestHotspotToAll()
         }
-        registerKeybind("key.feesh.lootshareToPartyChat", GLFW.GLFW_KEY_UNKNOWN) {
+        registerKeybind("key.feesh.lootshareToPartyChat", InputUtils.unboundKey()) {
             LootshareMessage.triggerLootshareMessage()
         }
-        registerKeybind("key.feesh.resetBarnFishingTimer", GLFW.GLFW_KEY_UNKNOWN) {
+        registerKeybind("key.feesh.resetBarnFishingTimer", InputUtils.unboundKey()) {
             BarnFishingTimer.triggerResetKeybind()
         }
-        registerKeybind("key.feesh.pauseAllTrackers", GLFW.GLFW_KEY_PAUSE) {
+        registerKeybind("key.feesh.pauseAllTrackers", InputUtils.pauseKey()) {
             PauseAllTrackersCommand.triggerPauseAllTrackers()
         }
-        registerKeybind("key.feesh.bulkResetTrackers", GLFW.GLFW_KEY_UNKNOWN) {
+        registerKeybind("key.feesh.bulkResetTrackers", InputUtils.unboundKey()) {
             BulkResetFishingSessionCommand.triggerBulkResetFishingSession()
         }
 
         keybindsRegistered = true
     }
 
-    private fun registerKeybind(id: String, keyCode: Int = GLFW.GLFW_KEY_UNKNOWN, callback: () -> Unit): KeyMapping {
+    private fun registerKeybind(id: String, keyCode: Int, callback: () -> Unit): KeyMapping {
         val keyBinding = KeyMapping(
             id,
-            InputConstants.Type.KEYSYM,
+            InputUtils.keyType(),
             keyCode,
             FEESH_CATEGORY
         )

@@ -4,6 +4,7 @@ Released on: ???
 
 ## Features
 
+- Added Minecraft 26.3 support.
 - Added option to track Catches & Catches/hour in Fishing profit tracker. You can disable it in settings.
   - Hover over the Catches line while in inventory to see details such as profit per catch.
   - You can initialize your past [Total] counter, using the commands from [the guide](https://github.com/Sleepy-Panda/Feesh/blob/develop/docs/Editing%20profit%20tracker.md#editing-catches).

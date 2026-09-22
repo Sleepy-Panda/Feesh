@@ -6,6 +6,7 @@ import com.github.sleepypanda.feesh.events.models.AfterMouseClickEvent
 import com.github.sleepypanda.feesh.events.EventBus
 import com.github.sleepypanda.feesh.settings.categories.Overlays
 import com.github.sleepypanda.feesh.utils.GuiUtils
+import com.github.sleepypanda.feesh.utils.InputUtils
 import com.github.sleepypanda.feesh.utils.WorldUtils
 import com.github.sleepypanda.feesh.utils.getScreenCompat
 import com.github.sleepypanda.feesh.utils.enums.Alignment
@@ -316,7 +317,7 @@ class FeeshGui {
         if (!isClickable) return
         if (!WorldUtils.isInSkyblock()) return
         if (!GuiUtils.isInInventoryOrChat()) return
-        if (event.button != 0) return
+        if (!InputUtils.isLeftMouseButton(event.button)) return
         if (event.screen !is InventoryScreen && event.screen !is ChatScreen) return
         if (Overlays.overlayButtonsRequireCtrlClick && !event.hasControlDown) return
 

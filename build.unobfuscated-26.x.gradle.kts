@@ -57,7 +57,7 @@ val fabricLoomJar: Configuration = configurations.create("fabricLoomJar") {
 dependencies {
     fabricLoomJar("net.fabricmc:fabric-loom:1.17.11")
     add("minecraft", "com.mojang:minecraft:$mcVersion")
-    add(modTargetConfiguration, "net.fabricmc:fabric-loader:${property("fabricloader.version")}")
+    add(modTargetConfiguration, "net.fabricmc:fabric-loader:${propertyByMcVersion("fabricloader.version")}")
     add(modTargetConfiguration, "net.fabricmc.fabric-api:fabric-api:${propertyByMcVersion("fabric-api.version")}")
     add("implementation", "net.fabricmc:fabric-language-kotlin:${property("fabriclanguagekotlin.version")}")
     add("implementation", "net.fabricmc:sponge-mixin:0.17.0+mixin.0.8.7")
@@ -79,6 +79,16 @@ dependencies {
             )
             includeDependency(
                 "com.teamresourceful.resourcefulconfigkt:resourcefulconfigkt-26.1-rc-1:${property("resourcefulconfig-kt.version.26.2-rc-1")}",
+                "implementation",
+            )
+        }
+        "26.3-fabric" -> {
+            includeDependency(
+                "com.teamresourceful.resourcefulconfig:resourcefulconfig-fabric-26.3:${property("resourcefulconfig.version.26.3")}",
+                "implementation",
+            )
+            includeDependency(
+                "com.teamresourceful.resourcefulconfigkt:resourcefulconfigkt-26.1-rc-1:${property("resourcefulconfig-kt.version.26.3-rc-1")}",
                 "implementation",
             )
         }
