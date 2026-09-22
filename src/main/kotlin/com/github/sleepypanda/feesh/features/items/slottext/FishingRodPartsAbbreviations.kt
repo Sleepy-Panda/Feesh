@@ -30,7 +30,7 @@ object FishingRodPartsAbbreviations : BaseSlotTextRenderer() {
             .mapNotNull { part ->
                 val abbreviation = RodPartUtils.abbreviate(part)
                 if (abbreviation.isEmpty()) return@mapNotNull null
-                return@mapNotNull SlotTextLine(abbreviation, part.color)
+                return@mapNotNull SlotTextLine(abbreviation, part.color, isBold = true)
             }
 
         if (lines.isEmpty()) return null
