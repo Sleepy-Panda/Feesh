@@ -32,7 +32,7 @@ Newly released - https://hypixel.net/threads/hypixel-skyblock-0-24-5-assorted-qo
  GOOD CATCH! You caught a Flexbone!
  GOOD CATCH! You caught a Shinyfish Shard!
 
-- MC 26.3 released. Breaking changes in keybinds and key press events.
+- Cleanup Fishing Bag features after Fishing Bait Sack release.
 - You cannot send same message twice when sharing Isopods
 - For level 100 pets, would be cool to change their item name to be aligned with Level 1 pets. This also causes Lvl 100 pets being not easily found ny name via /get command.
 - Drake sound not muted when using Sound Controller mod
