@@ -34,8 +34,8 @@ import com.github.sleepypanda.feesh.settings.models.HpTrackableSeaCreatureTypes
 import com.github.sleepypanda.feesh.constants.ModVersionConstants
 import com.github.sleepypanda.feesh.settings.models.EfficiencyStatTypes
 import com.github.sleepypanda.feesh.utils.gui.MoveGuis
+import com.github.sleepypanda.feesh.utils.openUriCompat
 import net.minecraft.client.gui.screens.options.controls.KeyBindsScreen
-import net.minecraft.util.Util
 import java.awt.Color
 
 enum class SeaCreaturesTrackerDisplayMode(val displayName: String) {
@@ -253,7 +253,7 @@ ${GRAY}To reset [Total]: ${WHITE}/${SeaCreaturesTracker.RESET_TOTAL}
             description = "Opens a guide on how to adjust sea creature counts and statistics in Sea creatures tracker [Session] and [Total]."
             text = "Click to open"
             onClick {
-                Util.getPlatform().openUri("https://github.com/Sleepy-Panda/Feesh/blob/develop/docs/Editing%20sea%20creatures%20tracker.md")
+                openUriCompat("https://github.com/Sleepy-Panda/Feesh/blob/develop/docs/Editing%20sea%20creatures%20tracker.md")
             }
         }
     }
@@ -359,7 +359,7 @@ ${GRAY}To pause: ${WHITE}/${FishingProfitTracker.PAUSE_COMMAND}
             description = "Opens a guide on how to initialize or fix data in the Fishing profit tracker [Session] and [Total]."
             text = "Click to open"
             onClick {
-                Util.getPlatform().openUri("https://github.com/Sleepy-Panda/Feesh/blob/develop/docs/Editing%20profit%20tracker.md")
+                openUriCompat("https://github.com/Sleepy-Panda/Feesh/blob/develop/docs/Editing%20profit%20tracker.md")
             }
         }
     }
@@ -531,7 +531,7 @@ Hidden if you have no fishing rod in your hotbar!""".trimIndent())
             description = "For settings above with custom text templates, please explore color codes and formatting codes."
             text = "Click to open"
             onClick {
-                Util.getPlatform().openUri("https://github.com/Sleepy-Panda/Feesh/blob/develop/docs/Colors%20and%20formatting%20guide.md")
+                openUriCompat("https://github.com/Sleepy-Panda/Feesh/blob/develop/docs/Colors%20and%20formatting%20guide.md")
             }
         }
     }
@@ -679,7 +679,7 @@ ${GRAY}To reset: ${WHITE}/${BayouTracker.RESET_COMMAND}
             description = "Opens a guide on how to initialize drop statistics for the Bayou tracker."
             text = "Click to open"
             onClick {
-                Util.getPlatform().openUri(SetTrackerDropsCommand.GUIDE_URL)
+                openUriCompat(SetTrackerDropsCommand.GUIDE_URL)
             }
         }
     }
@@ -714,7 +714,7 @@ ${GRAY}To reset: ${WHITE}/${WaterHotspotsTracker.RESET_COMMAND}
             description = "Opens a guide on how to initialize drop statistics for the Water Hotspots tracker."
             text = "Click to open"
             onClick {
-                Util.getPlatform().openUri(SetTrackerDropsCommand.GUIDE_URL)
+                openUriCompat(SetTrackerDropsCommand.GUIDE_URL)
             }
         }
     }
@@ -749,7 +749,7 @@ ${GRAY}To reset: ${WHITE}/${CrimsonIsleTracker.RESET_COMMAND}
             description = "Opens a guide on how to initialize drop statistics for the Crimson Isle tracker."
             text = "Click to open"
             onClick {
-                Util.getPlatform().openUri(SetTrackerDropsCommand.GUIDE_URL)
+                openUriCompat(SetTrackerDropsCommand.GUIDE_URL)
             }
         }
     }
@@ -835,7 +835,7 @@ ${GRAY}To reset: ${WHITE}/${LotusAtollTracker.RESET_COMMAND}
             description = "Opens a guide on how to initialize drop statistics for the Lotus Atoll tracker."
             text = "Click to open"
             onClick {
-                Util.getPlatform().openUri(SetTrackerDropsCommand.GUIDE_URL)
+                openUriCompat(SetTrackerDropsCommand.GUIDE_URL)
             }
         }
     }
@@ -871,7 +871,7 @@ ${GRAY}Reset total: ${WHITE}/${TreasureFishingTracker.RESET_TOTAL_COMMAND}
             description = "Opens a guide on how to set treasure catch counts and Treasure Dye drop statistics."
             text = "Click to open"
             onClick {
-                Util.getPlatform().openUri(TreasureFishingTracker.GUIDE_URL)
+                openUriCompat(TreasureFishingTracker.GUIDE_URL)
             }
         }
     }

@@ -5,6 +5,7 @@ import com.github.sleepypanda.feesh.events.EventBus
 import com.github.sleepypanda.feesh.utils.RegisterUtils
 import com.github.sleepypanda.feesh.utils.ChatUtils
 import com.github.sleepypanda.feesh.utils.WorldUtils
+import com.github.sleepypanda.feesh.utils.InputUtils
 import com.github.sleepypanda.feesh.utils.setScreenCompat
 import com.github.sleepypanda.feesh.utils.data.PersistentDataManager
 import com.github.sleepypanda.feesh.utils.enums.Alignment
@@ -92,7 +93,7 @@ class MoveGuisScreen : Screen(Component.literal("Feesh Move Guis")) {
     }
     
     override fun mouseClicked(mouseButtonEvent: MouseButtonEvent, doubled: Boolean): Boolean {
-        if (mouseButtonEvent.button() != 0) return super.mouseClicked(mouseButtonEvent, doubled)
+        if (!InputUtils.isLeftMouseButton(mouseButtonEvent.button())) return super.mouseClicked(mouseButtonEvent, doubled)
         val mc = minecraft ?: return super.mouseClicked(mouseButtonEvent, doubled)
         val textRenderer = mc.font
         val mouseX = mouseButtonEvent.x()
@@ -125,7 +126,7 @@ class MoveGuisScreen : Screen(Component.literal("Feesh Move Guis")) {
     }
     
     override fun mouseDragged(mouseButtonEvent: MouseButtonEvent, deltaX: Double, deltaY: Double): Boolean {
-        if (mouseButtonEvent.button() == 0 && isDraggingGui != null) {
+        if (InputUtils.isLeftMouseButton(mouseButtonEvent.button()) && isDraggingGui != null) {
             val gui = isDraggingGui!!
             val mc = minecraft ?: return super.mouseDragged(mouseButtonEvent, deltaX, deltaY)
             val textRenderer = mc.font
@@ -154,7 +155,7 @@ class MoveGuisScreen : Screen(Component.literal("Feesh Move Guis")) {
     }
     
     override fun mouseReleased(mouseButtonEvent: MouseButtonEvent): Boolean {
-        if (mouseButtonEvent.button() == 0) {
+        if (InputUtils.isLeftMouseButton(mouseButtonEvent.button())) {
             if (isDraggingGui != null) {
                 saveGuiCoords(isDraggingGui!!)
             }
@@ -174,22 +175,22 @@ class MoveGuisScreen : Screen(Component.literal("Feesh Move Guis")) {
     override fun keyPressed(keyEvent: KeyEvent): Boolean {
         val mc = minecraft ?: return super.keyPressed(keyEvent)
         val keyCode = keyEvent.key()
-        if (keyCode == 256) { // ESC
+        if (InputUtils.isEscapeKey(keyCode)) {
             mc.setScreenCompat(null)
             return true
         }
         
         if (lastDraggedGui != null) {
-            when (keyCode) {
-                61, 334 -> { // = or + on numpad
+            when {
+                InputUtils.isPlusKey(keyCode) -> {
                     changeScale(lastDraggedGui!!, 0.1f)
                     return true
                 }
-                45, 333 -> { // - or - on numpad
+                InputUtils.isMinusKey(keyCode) -> {
                     changeScale(lastDraggedGui!!, -0.1f)
                     return true
                 }
-                48 -> { // 0
+                InputUtils.isZeroKey(keyCode) -> {
                     changeAlignment(lastDraggedGui!!)
                     return true
                 }

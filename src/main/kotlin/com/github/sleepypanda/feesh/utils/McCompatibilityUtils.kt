@@ -43,3 +43,19 @@ fun Minecraft.showTitleCompat(title: Component, subtitle: Component, fadeIn: Int
     }
     //#endif
 }
+
+fun openUriCompat(url: String) {
+    //#if MC >= 26.3
+    //$$ com.mojang.blaze3d.Blaze3D.openUri(java.net.URI.create(url))
+    //#else
+    net.minecraft.util.Util.getPlatform().openUri(url)
+    //#endif
+}
+
+fun openPathCompat(path: java.nio.file.Path) {
+    //#if MC >= 26.3
+    //$$ com.mojang.blaze3d.Blaze3D.openPath(path)
+    //#else
+    net.minecraft.util.Util.getPlatform().openUri(path.toUri().toString())
+    //#endif
+}
