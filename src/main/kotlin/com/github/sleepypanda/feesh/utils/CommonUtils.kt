@@ -187,6 +187,7 @@ object CommonUtils {
             MYTHIC.code -> 5
             DIVINE.code -> 6
             SPECIAL.code -> 7
+            VERY_SPECIAL.code -> 8
             else -> 0
         }
     }
@@ -206,6 +207,7 @@ object CommonUtils {
             5 -> MYTHIC.code
             6 -> DIVINE.code
             7 -> SPECIAL.code
+            8 -> VERY_SPECIAL.code
             else -> COMMON.code
         }
     }
@@ -225,6 +227,7 @@ object CommonUtils {
             MYTHIC.code -> "Mythic"
             DIVINE.code -> "Divine"
             SPECIAL.code -> "Special"
+            VERY_SPECIAL.code -> "Very Special"
             else -> ""
         }
     }
