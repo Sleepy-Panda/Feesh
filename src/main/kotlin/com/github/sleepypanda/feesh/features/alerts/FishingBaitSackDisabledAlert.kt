@@ -73,7 +73,7 @@ object FishingBaitSackDisabledAlert {
     }
 
     private fun alertOnFishingBaitUsageDisabled() {
-        CommonUtils.runWithCatching("Failed to check fishing bag state") {
+        CommonUtils.runWithCatching("Failed to check fishing bait sack state") {
             if (isAlerted ||
                 !Alerts.alertOnFishingBagDisabled ||
                 PersistentDataManager.feeshData.isFishingBagEnabled != false || // false means disabled, null means unknown
@@ -94,11 +94,10 @@ object FishingBaitSackDisabledAlert {
             val isHookActive = FishingHookUtils.isFishingHookSubmerged()
             if (!isHookActive) return
 
-            CommonUtils.showTitle("${RED}Bait disabled!")
+            CommonUtils.showTitle("${RED}Bait usage disabled!")
             SoundUtils.playSound()
-            isAlerted = true
-
-            ChatUtils.sendLocalChat("${WHITE}Using baits from Fishing Bag is disabled!", true) // TODO remove command after Bait Sack release
+            isAlerted = true 
+            ChatUtils.sendLocalChatWithCommand("${WHITE}Using baits from Fishing Bag is disabled. Click to open Fishing Bag!", "fb", true)
         }
     }
 

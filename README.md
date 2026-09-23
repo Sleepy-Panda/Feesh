@@ -71,7 +71,7 @@ Required Java version is 25+.
 - **Pet level up** — Alerts when a pet reaches max level. Can show estimated leveling price in chat.
 - **Hotspot found or gone** — Alerts when a hotspot is found or is gone.
 - **Wormhole gone** — Alerts when a wormhole is gone.
-- **Fishing Bag disabled** — Alerts when you start fishing with Fishing Bag disabled.
+- **Fishing Bag/Bait Sack disabled** — Alerts when you start fishing with Fishing Bag/Bait Sack disabled.
 - **Bait changed/running out of bait** — Alerts when active bait has changed or almost no bait remaining.
 - **No fishing armor** — Alerts when fishing without fishing armor equipped.
 - **Lootshare** — Alerts when "Lootshare!" message appears in party chat.

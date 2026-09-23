@@ -10,6 +10,7 @@ Released on: ???
   - You can initialize your past [Total] counter, using the commands from [the guide](https://github.com/Sleepy-Panda/Feesh/blob/develop/docs/Editing%20profit%20tracker.md#editing-catches).
 - Renamed command which resets data in the current fishing session - from `/feeshBulkResetTrackers` to `/feeshBulkResetFishingSession`.
 - Added option to show fishing rod parts abbreviations (Hook, Line, Sinker) in the item slot [disabled by default].
+- Added support of new Fishing Bait Sack for existing Alert when bait usage is disabled.
 - Personal Bests:
   - Adjusted output of `/feeshPersonalBests` command to show PB date and description on line hover.
   - Added Personal Best for Treasure catch streak (longest streak of treasure/junk catches in a row until a non-treasure catch).
