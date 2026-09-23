@@ -7,6 +7,7 @@ import com.github.sleepypanda.feesh.constants.ModVersionConstants
 import com.github.sleepypanda.feesh.constants.RareDropTypes
 import com.github.sleepypanda.feesh.utils.enums.DeployableTypes
 import com.github.sleepypanda.feesh.utils.enums.PricingModeWithNpc
+import com.github.sleepypanda.feesh.utils.enums.WeatherEventTypes
 import com.teamresourceful.resourcefulconfigkt.api.CategoryKt
 import com.teamresourceful.resourcefulconfig.api.types.options.TranslatableValue
 
@@ -305,8 +306,14 @@ object Alerts : CategoryKt("Alerts") {
 
     init {
         separator {
-            this.title = "${AQUA}${BOLD}Weather and day/night"
+            this.title = "${AQUA}${BOLD}Weather"
         }
+    }
+ 
+    var alertOnWeatherStartingSoon by boolean(false) {
+        this.name = Translated("Alert when weather event starts soon")
+        this.description = Translated("${GRAY}Shows a title and plays a sound when a weather event starts soon. Please enable ${YELLOW}TabList settings -> General Info widget -> Show Weather")
+        this.searchTerms = listOf(ModVersionConstants.VERSION_1_15_0)
     }
 
     var alertOnWeatherEndingSoon by boolean(false) {
@@ -315,6 +322,17 @@ object Alerts : CategoryKt("Alerts") {
         this.searchTerms = listOf(ModVersionConstants.VERSION_1_14_0)
     }
 
+    var alertOnWeatherEventTypes by select(*WeatherEventTypes.values()) {
+        this.name = Translated("Select weather type to be alerted on")
+        this.searchTerms = WeatherEventTypes.values().map { it.displayName }.toList() + ModVersionConstants.VERSION_1_15_0
+    }
+
+    init {
+        separator {
+            this.title = "${AQUA}${BOLD}Day/Night"
+        }
+    }
+    
     var alertOnDayNight by boolean(false) {
         this.name = Translated("Alert when Day/Night started")
         this.description = Translated("Shows a title and plays a sound when Skyblock day starts (6:00am) or Skyblock night starts (7:00pm). Can be used as a reminder to swap Light/Dark bait.")

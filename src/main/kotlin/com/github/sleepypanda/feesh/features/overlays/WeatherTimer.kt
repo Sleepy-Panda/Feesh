@@ -16,6 +16,7 @@ import com.github.sleepypanda.feesh.utils.gui.LineInfo
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
+import com.github.sleepypanda.feesh.utils.enums.WeatherEventTypes
 import java.util.Date
 
 // New tablist line format after weather update:
@@ -41,9 +42,7 @@ object WeatherTimer {
 
     private val PATTERN_RAIN_ADDED = Regex("^You added a minute of rain!.*$")
 
-    private val WEATHER_LINE_REGEX = Regex(
-        "^(Tropical Rain|Acid Rain|Thunderstorm|Thunder|Snowstorm|Hellstorm|Voidstorm|Wispfall|Ashfall|Moonfall|Rockfall|Blossoming|Blooming|Blizzard|Breeze|Mist|Smog|Rain):\\s(.+)"
-    )
+    private val WEATHER_LINE_REGEX = WeatherEventTypes.lineRegex
     // "in 7m", "for 19m", "for 1m 30s", "1m 30s left", "10s"
     private val TIMER_VALUE_REGEX = Regex(
         """
@@ -64,7 +63,8 @@ object WeatherTimer {
     private var eventName: String? = null // Tropical Rain, Thunder, Blizzard, etc
     private var isActiveEvent: Boolean = true // true = active (time left), false = upcoming event (starts in)
     private var tickCounter = 0
-    private var lastAlertAt: Date? = null
+    private var lastEndingAlertAt: Date? = null
+    private var lastStartingAlertAt: Date? = null
 
     private val gui = FeeshGui()
         .setCoordsDataKey("weatherTimer")
@@ -90,7 +90,8 @@ object WeatherTimer {
         weatherSecondsLeft = null
         weatherTimerStr = null
         eventName = null
-        lastAlertAt = null
+        lastEndingAlertAt = null
+        lastStartingAlertAt = null
         isActiveEvent = false
         gui.clearLines()
     }
@@ -101,24 +102,19 @@ object WeatherTimer {
         tickCounter = 0
 
         CommonUtils.runWithCatching("Failed to update weather timer state") {
-            if ((!Overlays.weatherTimerOverlay && !Alerts.alertOnWeatherEndingSoon) || !WorldUtils.isInSkyblock() || !WorldUtils.isInWeatherWorld()) {
+            if (!shouldTrackWeather() || !WorldUtils.isInSkyblock() || !WorldUtils.isInWeatherWorld()) {
                 gui.clearLines()
                 return@onClientTick
             }
     
             trackWeatherStatus()
             updateGuiLines()
-    
-            if (Alerts.alertOnWeatherEndingSoon && isActiveEvent && weatherSecondsLeft != null && weatherSecondsLeft!! in 1..SECONDS_ALERT_THRESHOLD) {
-                if (lastAlertAt == null || Date().time - lastAlertAt!!.time >= 15_000) { // TabList updates timer once in a few seconds, do not alert every second
-                    playWeatherEndingSoonAlert()
-                }
-            }    
+            maybePlayWeatherAlert()
         }
     }
 
     private fun trackWeatherStatus() {
-        if (!Overlays.weatherTimerOverlay && !Alerts.alertOnWeatherEndingSoon) return
+        if (!shouldTrackWeather()) return
         if (!WorldUtils.isInSkyblock() || !WorldUtils.isInWeatherWorld()) return
 
         if (WorldUtils.getWorldName() == WorldUtils.PARK) {
@@ -185,18 +181,50 @@ object WeatherTimer {
         gui.setLines(listOf(LineInfo(lineText)))
     }
 
+    private fun shouldTrackWeather(): Boolean =
+        Overlays.weatherTimerOverlay || Alerts.alertOnWeatherEndingSoon || Alerts.alertOnWeatherStartingSoon
+
+    private fun isSelectedWeatherEvent(): Boolean {
+        val type = WeatherEventTypes.fromDisplayName(eventName ?: return false) ?: return false
+        return Alerts.alertOnWeatherEventTypes.contains(type)
+    }
+
+    private fun maybePlayWeatherAlert() {
+        val seconds = weatherSecondsLeft ?: return
+        if (seconds !in 1..SECONDS_ALERT_THRESHOLD || !isSelectedWeatherEvent()) return
+
+        // TabList updates the timer once every few seconds; do not alert every tick.
+        if (isActiveEvent && Alerts.alertOnWeatherEndingSoon && canAlert(lastEndingAlertAt)) {
+            playWeatherEndingSoonAlert()
+        } else if (!isActiveEvent && Alerts.alertOnWeatherStartingSoon && canAlert(lastStartingAlertAt)) {
+            playWeatherStartingSoonAlert()
+        }
+    }
+
+    private fun canAlert(lastAlertAt: Date?): Boolean =
+        lastAlertAt == null || Date().time - lastAlertAt.time >= 15_000
+
     private fun playWeatherEndingSoonAlert() {
-        lastAlertAt = Date()
+        lastEndingAlertAt = Date()
+        playWeatherAlert("ends soon")
+    }
+
+    private fun playWeatherStartingSoonAlert() {
+        lastStartingAlertAt = Date()
+        playWeatherAlert("starts soon")
+    }
+
+    private fun playWeatherAlert(suffix: String) {
         val label = eventName ?: "Weather event"
         val eventColor = getWeatherEventColor(label)
-        CommonUtils.showTitle("${eventColor}${BOLD}$label ${WHITE}ends soon")
-        ChatUtils.sendLocalChat("${eventColor}${BOLD}$label ${WHITE}ends soon.", true)
+        CommonUtils.showTitle("${eventColor}${BOLD}$label ${WHITE}$suffix")
+        ChatUtils.sendLocalChat("${eventColor}${BOLD}$label ${WHITE}$suffix.", true)
         SoundUtils.playSound()
     }
 
     private fun getWeatherEventColor(eventName: String?): ColorCodes {
         return when (eventName) {
-            "Tropical Rain",  "Rain" -> AQUA
+            "Tropical Rain", "Rain" -> AQUA
             "Acid Rain" -> GREEN
             "Thunderstorm", "Thunder" -> YELLOW
             "Snowstorm" -> WHITE
