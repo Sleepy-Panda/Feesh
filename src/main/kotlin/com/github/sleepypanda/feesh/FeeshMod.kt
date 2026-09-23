@@ -112,7 +112,7 @@ class FeeshMod : ClientModInitializer {
         SaltExpiredAlert.init()
         PlayerDeathAlert.init()
         LootshareAlert.init()
-        FishingBagDisabledAlert.init()
+        FishingBaitSackDisabledAlert.init()
         BaitAlert.init()
         SackDropsIntoInventoryAlert.init()
         WormTheFishCaughtAlert.init()

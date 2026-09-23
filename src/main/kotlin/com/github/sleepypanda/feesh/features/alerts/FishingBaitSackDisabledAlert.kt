@@ -2,7 +2,7 @@ package com.github.sleepypanda.feesh.features.alerts
 
 import com.github.sleepypanda.feesh.FeeshMod
 import com.github.sleepypanda.feesh.events.EventBus
-import com.github.sleepypanda.feesh.events.models.ChatEvent
+import com.github.sleepypanda.feesh.events.models.ChatCancellableEvent
 import com.github.sleepypanda.feesh.settings.categories.Alerts
 import com.github.sleepypanda.feesh.utils.CommonUtils
 import com.github.sleepypanda.feesh.utils.SoundUtils
@@ -22,20 +22,27 @@ import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen
 import java.util.Timer
 import kotlin.concurrent.timerTask
 
-object FishingBagDisabledAlert {
+object FishingBaitSackDisabledAlert {
     private var isAlerted = false
     private var tickCounter = 0
 
-    private const val TICKS_PER_CHECK = 20
-    private val USE_BAITS_FROM_FISHING_BAG_DISABLED_PATTERN = Regex("^Use Baits From Bag is now disabled\\!$")
-    private val USE_BAITS_FROM_FISHING_BAG_ENABLED_PATTERN = Regex("^Use Baits From Bag is now enabled\\!$")
-    private const val FISHING_BAG_TITLE_CONTAINS = "Fishing Bag"
-    private const val TOGGLE_SLOT_NUMBER = 49
+    // Use Baits From Sacks are now disabled!
+    private val USE_BAITS_DISABLED_PATTERN = Regex("^Use Baits From (Bag|Sacks) (is|are) now disabled!$")
+    // Use Baits From Sacks are now enabled!
+    private val USE_BAITS_ENABLED_PATTERN = Regex("^Use Baits From (Bag|Sacks) (is|are) now enabled!$")
+    private const val BAG_TITLE_CONTAINS = "Fishing Bag" // TODO: Remove after Bait Sack release
+    private const val BAG_TOGGLE_SLOT_NUMBER = 49
     private const val USE_BAITS_FROM_BAG_ITEM_NAME = "Use Baits From Bag"
+
+    private const val BAIT_SACK_TITLE_CONTAINS = "Bait Sack"
+    private const val USE_BAITS_FROM_SACKS_ITEM_NAME = "Use Baits From Sacks"
+    private const val SACK_TOGGLE_SLOT_NUMBER = 61
+
     private const val CLICK_TO_DISABLE_TEXT = "Click to disable!"
+    private const val TICKS_PER_CHECK = 20
 
     fun init() {
-        EventBus.subscribe(ChatEvent::class, ::onChat)
+        EventBus.subscribe(ChatCancellableEvent::class, ::onChat)
         EventBus.subscribe(ClientTickEvent::class, ::onClientTick)
         EventBus.subscribe(WorldChangedEvent::class, ::onWorldChanged)
         EventBus.subscribe(GuiOpenedEvent::class, ::onGuiOpened)
@@ -45,13 +52,13 @@ object FishingBagDisabledAlert {
         isAlerted = false
     }
 
-    private fun onChat(event: ChatEvent) {
+    private fun onChat(event: ChatCancellableEvent) {
         if (!Alerts.alertOnFishingBagDisabled || !WorldUtils.isInSkyblock()) return
 
-        if (USE_BAITS_FROM_FISHING_BAG_DISABLED_PATTERN.matches(event.unformattedText)) {
-            setFishingBagState(false)
-        } else if (USE_BAITS_FROM_FISHING_BAG_ENABLED_PATTERN.matches(event.unformattedText)) {
-            setFishingBagState(true)
+        if (USE_BAITS_DISABLED_PATTERN.matches(event.unformattedText)) {
+            setFishingBaitSackState(false)
+        } else if (USE_BAITS_ENABLED_PATTERN.matches(event.unformattedText)) {
+            setFishingBaitSackState(true)
         }
     }
 
@@ -62,11 +69,11 @@ object FishingBagDisabledAlert {
         if (tickCounter < TICKS_PER_CHECK) return
         tickCounter = 0
         
-        alertOnFishingBagDisabled()
+        alertOnFishingBaitUsageDisabled()
     }
 
-    private fun alertOnFishingBagDisabled() {
-        CommonUtils.runWithCatching("Failed to check fishing bag state") {
+    private fun alertOnFishingBaitUsageDisabled() {
+        CommonUtils.runWithCatching("Failed to check fishing bait sack state") {
             if (isAlerted ||
                 !Alerts.alertOnFishingBagDisabled ||
                 PersistentDataManager.feeshData.isFishingBagEnabled != false || // false means disabled, null means unknown
@@ -79,17 +86,17 @@ object FishingBagDisabledAlert {
             if (currentScreen is AbstractContainerScreen<*>) {
                 val title = currentScreen.title.getUnformattedString()
 
-                // When player opens disabled fishing bag, avoid receiving alert again while it's disabled
-                if (title.contains(FISHING_BAG_TITLE_CONTAINS)) return
+                // When player opens disabled fishing bag/sack, avoid receiving alert again while it's disabled
+                if (title.contains(BAG_TITLE_CONTAINS)) return
+                if (title.contains(BAIT_SACK_TITLE_CONTAINS)) return
             }
 
             val isHookActive = FishingHookUtils.isFishingHookSubmerged()
             if (!isHookActive) return
 
-            CommonUtils.showTitle("${RED}Enable fishing bag!")
+            CommonUtils.showTitle("${RED}Bait usage disabled!")
             SoundUtils.playSound()
-            isAlerted = true
-
+            isAlerted = true 
             ChatUtils.sendLocalChatWithCommand("${WHITE}Using baits from Fishing Bag is disabled. Click to open Fishing Bag!", "fb", true)
         }
     }
@@ -98,33 +105,45 @@ object FishingBagDisabledAlert {
         val screen = event.screen
         if (screen !is AbstractContainerScreen<*> || !Alerts.alertOnFishingBagDisabled || !WorldUtils.isInSkyblock()) return
         
-        onFishingBagOpened(event)
+        onFishingBaitSackOpened(event)
     }
 
-    private fun onFishingBagOpened(event: GuiOpenedEvent) {
+    private fun onFishingBaitSackOpened(event: GuiOpenedEvent) {
         // Schedule task to check after GUI is fully loaded (~2 ticks delay)
         Timer(true).schedule(timerTask {
-            CommonUtils.runWithCatching("Failed to check fishing bag state on GUI opened") {
+            CommonUtils.runWithCatching("Failed to check fishing bait sack state on GUI opened") {
                 val currentScreen = event.screen
                 if (currentScreen !is AbstractContainerScreen<*>) return@timerTask
 
                 val title = currentScreen.title.getUnformattedString()
-                if (!title.contains(FISHING_BAG_TITLE_CONTAINS)) return@timerTask
+                if (!title.contains(BAG_TITLE_CONTAINS) && !title.contains(BAIT_SACK_TITLE_CONTAINS)) return@timerTask // TODO: Cleanup after Bait Sack release
 
-                val handler = currentScreen.menu
-                val item = handler.getSlot(TOGGLE_SLOT_NUMBER).item
-                
-                val itemName = item.hoverName.getUnformattedString()
-                if (itemName != USE_BAITS_FROM_BAG_ITEM_NAME) return@timerTask
-
-                val lore = ItemUtils.getUnformattedLoreLines(item)
-                val isEnabled = lore.any { line -> line.contains(CLICK_TO_DISABLE_TEXT) }
-                setFishingBagState(isEnabled)
+                if (title.contains(BAG_TITLE_CONTAINS)) {
+                    val handler = currentScreen.menu
+                    val item = handler.getSlot(BAG_TOGGLE_SLOT_NUMBER).item
+                    
+                    val itemName = item.hoverName.getUnformattedString()
+                    if (itemName != USE_BAITS_FROM_BAG_ITEM_NAME) return@timerTask
+    
+                    val lore = ItemUtils.getUnformattedLoreLines(item)
+                    val isEnabled = lore.any { line -> line.contains(CLICK_TO_DISABLE_TEXT) }
+                    setFishingBaitSackState(isEnabled)
+                } else if (title.contains(BAIT_SACK_TITLE_CONTAINS)) {
+                    val handler = currentScreen.menu
+                    val item = handler.getSlot(SACK_TOGGLE_SLOT_NUMBER).item
+                    
+                    val itemName = item.hoverName.getUnformattedString()
+                    if (itemName != USE_BAITS_FROM_SACKS_ITEM_NAME) return@timerTask
+    
+                    val lore = ItemUtils.getUnformattedLoreLines(item)
+                    val isEnabled = lore.any { line -> line.contains(CLICK_TO_DISABLE_TEXT) }
+                    setFishingBaitSackState(isEnabled)
+                }
             }
         }, 100)        
     }
 
-    private fun setFishingBagState(isEnabled: Boolean) {
+    private fun setFishingBaitSackState(isEnabled: Boolean) {
         PersistentDataManager.feeshData.isFishingBagEnabled = isEnabled
         PersistentDataManager.saveFeeshDataToFileAsync()
 
