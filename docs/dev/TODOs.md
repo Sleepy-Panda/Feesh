@@ -4,6 +4,16 @@
 
 - Test each release in 26.x
 
+## Minister update
+
+https://hypixel.net/threads/september-21st-minister-update-mob-level-improvements-testing-2.6150078/
+
+- You ran out of Whale Bait in your Bait Sacks! [DISMISS] - could be used for out of bait detection?
+- Adjusted all EPIC Phoenix Pets -> SPECIAL, Adjusted all LEGENDARY Phoenix Pets -> VERY SPECIAL
+  New pet drop message? New Pet IDs / pet price issues for leveled up pet?
+- Weather event starts / selection of weather types for alerts
+- Precursor Drone became Legendary. New ID?
+
 ## Torrus Canyon
 
 - Giant Isopod acts like a Nessie, implement immunity?
@@ -32,7 +42,7 @@ Newly released - https://hypixel.net/threads/hypixel-skyblock-0-24-5-assorted-qo
  GOOD CATCH! You caught a Flexbone!
  GOOD CATCH! You caught a Shinyfish Shard!
 
-- MC 26.3 released. Breaking changes in keybinds and key press events.
+- Cleanup Fishing Bag features after Fishing Bait Sack release.
 - You cannot send same message twice when sharing Isopods
 - For level 100 pets, would be cool to change their item name to be aligned with Level 1 pets. This also causes Lvl 100 pets being not easily found ny name via /get command.
 - Drake sound not muted when using Sound Controller mod

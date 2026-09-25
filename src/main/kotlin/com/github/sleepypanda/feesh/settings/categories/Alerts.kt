@@ -368,8 +368,8 @@ object Alerts : CategoryKt("Alerts") {
     }
     
     var alertOnFishingBagDisabled by boolean(true) {
-        this.name = Translated("Alert when Fishing Bag is disabled")
-        this.description = Translated("Shows a title and plays a sound when current player starts fishing with Fishing Bag disabled.\n${YELLOW}After enabling the setting, please open your fishing bag once to initialize its state!")
+        this.name = Translated("Alert when Fishing Bag/Bait Sack is disabled")
+        this.description = Translated("Shows a title and plays a sound when current player starts fishing with Fishing Bag/Bait Sack disabled.\n${YELLOW}After enabling the setting, please open your fishing bait sack once to initialize its state!")
     }
 
     var alertOnBaitChanged by boolean(true) {
