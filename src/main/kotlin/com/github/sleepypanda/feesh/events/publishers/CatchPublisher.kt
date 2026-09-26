@@ -11,15 +11,22 @@ import com.github.sleepypanda.feesh.events.models.OwnSeaCreatureCaughtEvent
 import com.github.sleepypanda.feesh.events.models.PlayerInteractEvent
 import com.github.sleepypanda.feesh.events.models.SoundPlayedEvent
 import com.github.sleepypanda.feesh.events.models.WorldChangedEvent
+import com.github.sleepypanda.feesh.utils.ChatUtils
+import com.github.sleepypanda.feesh.utils.ChatUtils.getFormattedString
+import com.github.sleepypanda.feesh.utils.ChatUtils.getUnformattedString
 import com.github.sleepypanda.feesh.utils.CommonUtils
 import com.github.sleepypanda.feesh.utils.EntityUtils
 import com.github.sleepypanda.feesh.utils.FishingHookUtils
 import com.github.sleepypanda.feesh.utils.ItemUtils
 import com.github.sleepypanda.feesh.utils.WorldUtils
+import com.github.sleepypanda.feesh.utils.enums.ColorCodes.GRAY
 import java.util.Date
+import net.minecraft.world.entity.item.ItemEntity
+import kotlin.math.sqrt
 
 object CatchPublisher {
     private const val CATCH_XP_ORB_SOUND_PATH = "entity.experience_orb.pickup"
+    private const val TRASH_ITEM_SEARCH_RADIUS = 5.0
     // ♪ MUSICAL CATCH! You caught a Music Disc - Cat!
     private val TREASURE_CATCH_PATTERN = Regex("^. (GOOD|GREAT|OUTSTANDING|MUSICAL) CATCH!")
     private val JUNK_CATCH_PATTERN = Regex("^. (GOOD JUNK|GREAT JUNK|OUTSTANDING JUNK) CATCH!")
@@ -64,7 +71,8 @@ object CatchPublisher {
             if (!FishingHookUtils.wasFishingHookSubmergedMillisecondsAgo(500)) return
             if (!wasWithinMs(lastCatchXpOrbSoundAt, 300L)) return
 
-            tryPublishTrashCatch()
+            val droppedItem = findClosestDroppedItemNearBobber()
+            tryPublishTrashCatch(droppedItem)
         }
     }
 
@@ -136,21 +144,68 @@ object CatchPublisher {
         publishCatch()
     }
 
-    private fun tryPublishTrashCatch() {
+    private fun tryPublishTrashCatch(droppedItem: NearbyDroppedItem?) {
         if (isSomethingCaughtRecently()) return
-        publishCatch()
+        publishCatch(
+            isTrash = true,
+            itemNameFormatted = droppedItem?.nameFormatted,
+            itemNameUnformatted = droppedItem?.nameUnformatted,
+        )
     }
 
-    private fun publishCatch() {
+    private fun publishCatch(
+        isTrash: Boolean = false,
+        itemNameFormatted: String? = null,
+        itemNameUnformatted: String? = null,
+    ) {
         lastCatchAt = Date()
         EventBus.publish(
             CatchEvent(
                 isTreasureCatch = wasWithinMs(lastTreasureChatAt, 750L),
                 isJunkCatch = wasWithinMs(lastJunkChatAt, 750L),
                 isSeaCreature = wasWithinMs(lastSeaCreatureAt, 750L),
+                isTrash = isTrash,
+                itemNameFormatted = itemNameFormatted,
+                itemNameUnformatted = itemNameUnformatted,
             )
         )
     }
+
+    // Dropped loot (Raw Fish, Salmon, Coal, etc.) spawns at the bobber as it despawns.
+    private fun findClosestDroppedItemNearBobber(): NearbyDroppedItem? {
+        val hook = FishingHookUtils.getLastActiveFishingHook() ?: return null
+        val world = FeeshMod.mc.level ?: return null
+        val maxDistanceSqr = TRASH_ITEM_SEARCH_RADIUS * TRASH_ITEM_SEARCH_RADIUS
+
+        val closest = world.entitiesForRendering()
+            .filterIsInstance<ItemEntity>()
+            .mapNotNull { itemEntity ->
+                val stack = itemEntity.item
+                if (stack.isEmpty) return@mapNotNull null
+                val distanceSqr = EntityUtils.getDistanceSqr(itemEntity.x, itemEntity.y, itemEntity.z, hook.x, hook.y, hook.z)
+                if (distanceSqr > maxDistanceSqr) return@mapNotNull null
+                val nameText = stack.customName ?: stack.hoverName
+                NearbyDroppedItem(
+                    distanceSqr = distanceSqr,
+                    nameFormatted = nameText.getFormattedString(),
+                    nameUnformatted = nameText.getUnformattedString(),
+                )
+            }
+            .minByOrNull { it.distanceSqr }
+
+        if (closest != null) {
+            val distance = "%.2f".format(sqrt(closest.distanceSqr))
+            ChatUtils.sendLocalChat("Trash item: ${closest.nameFormatted} ${GRAY}($distance blocks)", true)
+        }
+
+        return closest
+    }
+
+    private data class NearbyDroppedItem(
+        val distanceSqr: Double,
+        val nameFormatted: String,
+        val nameUnformatted: String,
+    )
 
     private fun isSomethingCaughtRecently(): Boolean {
         return wasWithinMs(lastCatchAt, 750L) // Flash V proc might be ~1s
