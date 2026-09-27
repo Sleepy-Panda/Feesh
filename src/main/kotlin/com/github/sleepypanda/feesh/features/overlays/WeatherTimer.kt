@@ -16,6 +16,7 @@ import com.github.sleepypanda.feesh.utils.gui.LineInfo
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
+import com.github.sleepypanda.feesh.utils.enums.WeatherEventTypes
 import java.util.Date
 
 // New tablist line format after weather update:
@@ -37,13 +38,12 @@ import java.util.Date
 
 object WeatherTimer {
     private const val TICKS_PER_READ = 20
-    private const val SECONDS_ALERT_THRESHOLD = 10
+    private const val STARTING_ALERT_THRESHOLD_SECONDS = 30
+    private const val ENDING_ALERT_THRESHOLD_SECONDS = 10
 
     private val PATTERN_RAIN_ADDED = Regex("^You added a minute of rain!.*$")
 
-    private val WEATHER_LINE_REGEX = Regex(
-        "^(Tropical Rain|Acid Rain|Thunderstorm|Thunder|Snowstorm|Hellstorm|Voidstorm|Wispfall|Ashfall|Moonfall|Rockfall|Blossoming|Blooming|Blizzard|Breeze|Mist|Smog|Rain):\\s(.+)"
-    )
+    private val WEATHER_LINE_REGEX = WeatherEventTypes.weatherTablistLineRegex
     // "in 7m", "for 19m", "for 1m 30s", "1m 30s left", "10s"
     private val TIMER_VALUE_REGEX = Regex(
         """
@@ -64,7 +64,8 @@ object WeatherTimer {
     private var eventName: String? = null // Tropical Rain, Thunder, Blizzard, etc
     private var isActiveEvent: Boolean = true // true = active (time left), false = upcoming event (starts in)
     private var tickCounter = 0
-    private var lastAlertAt: Date? = null
+    private var lastEndingAlertAt: Date? = null
+    private var lastStartingAlertAt: Date? = null
 
     private val gui = FeeshGui()
         .setCoordsDataKey("weatherTimer")
@@ -90,7 +91,8 @@ object WeatherTimer {
         weatherSecondsLeft = null
         weatherTimerStr = null
         eventName = null
-        lastAlertAt = null
+        lastEndingAlertAt = null
+        lastStartingAlertAt = null
         isActiveEvent = false
         gui.clearLines()
     }
@@ -101,24 +103,19 @@ object WeatherTimer {
         tickCounter = 0
 
         CommonUtils.runWithCatching("Failed to update weather timer state") {
-            if ((!Overlays.weatherTimerOverlay && !Alerts.alertOnWeatherEndingSoon) || !WorldUtils.isInSkyblock() || !WorldUtils.isInWeatherWorld()) {
+            if (!shouldTrackWeather() || !WorldUtils.isInSkyblock() || !WorldUtils.isInWeatherWorld()) {
                 gui.clearLines()
                 return@onClientTick
             }
     
             trackWeatherStatus()
             updateGuiLines()
-    
-            if (Alerts.alertOnWeatherEndingSoon && isActiveEvent && weatherSecondsLeft != null && weatherSecondsLeft!! in 1..SECONDS_ALERT_THRESHOLD) {
-                if (lastAlertAt == null || Date().time - lastAlertAt!!.time >= 15_000) { // TabList updates timer once in a few seconds, do not alert every second
-                    playWeatherEndingSoonAlert()
-                }
-            }    
+            maybePlayWeatherAlert()
         }
     }
 
     private fun trackWeatherStatus() {
-        if (!Overlays.weatherTimerOverlay && !Alerts.alertOnWeatherEndingSoon) return
+        if (!shouldTrackWeather()) return
         if (!WorldUtils.isInSkyblock() || !WorldUtils.isInWeatherWorld()) return
 
         if (WorldUtils.getWorldName() == WorldUtils.PARK) {
@@ -179,24 +176,57 @@ object WeatherTimer {
         if (!WorldUtils.isInSkyblock() || !WorldUtils.isInWeatherWorld()) return
 
         val label = eventName ?: "Weather event"
-        val color = if (isActiveEvent && weatherSecondsLeft!! in 0..SECONDS_ALERT_THRESHOLD) RED else WHITE
+        val color = if (isActiveEvent && weatherSecondsLeft!! in 0..ENDING_ALERT_THRESHOLD_SECONDS) RED else WHITE
         val timePart = if (!isActiveEvent) "${GRAY}starts in ${WHITE}${weatherTimerStr}" else "${GRAY}ends in ${color}${weatherTimerStr}"
         val lineText = "${getWeatherEventColor(label)}${BOLD}${label} $timePart"
         gui.setLines(listOf(LineInfo(lineText)))
     }
 
+    private fun shouldTrackWeather(): Boolean =
+        Overlays.weatherTimerOverlay || Alerts.alertOnWeatherEndingSoon || Alerts.alertOnWeatherStartingSoon
+
+    private fun isWeatherEventTypeEnabledForAlerts(): Boolean {
+        if (eventName.isNullOrEmpty()) return false
+        val type = WeatherEventTypes.getByName(eventName!!) ?: return false
+        return Alerts.alertOnWeatherEventTypes.contains(type)
+    }
+
+    private fun maybePlayWeatherAlert() {
+        if (!isWeatherEventTypeEnabledForAlerts()) return
+        val seconds = weatherSecondsLeft ?: return
+
+        // TabList updates the timer once every few seconds; amount of seconds can be not exact.
+        if (isActiveEvent && Alerts.alertOnWeatherEndingSoon && seconds in 1..ENDING_ALERT_THRESHOLD_SECONDS && isNotAlertedYet(lastEndingAlertAt)) {
+            playWeatherEndingSoonAlert()
+        } else if (!isActiveEvent && Alerts.alertOnWeatherStartingSoon && seconds in 1..STARTING_ALERT_THRESHOLD_SECONDS && isNotAlertedYet(lastStartingAlertAt)) {
+            playWeatherStartingSoonAlert()
+        }
+    }
+
+    private fun isNotAlertedYet(lastAlertAt: Date?): Boolean =
+        lastAlertAt == null || Date().time - lastAlertAt.time >= 60_000
+
     private fun playWeatherEndingSoonAlert() {
-        lastAlertAt = Date()
+        lastEndingAlertAt = Date()
+        playWeatherAlert("ends soon")
+    }
+
+    private fun playWeatherStartingSoonAlert() {
+        lastStartingAlertAt = Date()
+        playWeatherAlert("starts soon")
+    }
+
+    private fun playWeatherAlert(suffix: String) {
         val label = eventName ?: "Weather event"
         val eventColor = getWeatherEventColor(label)
-        CommonUtils.showTitle("${eventColor}${BOLD}$label ${WHITE}ends soon")
-        ChatUtils.sendLocalChat("${eventColor}${BOLD}$label ${WHITE}ends soon.", true)
+        CommonUtils.showTitle("${eventColor}${BOLD}$label ${WHITE}$suffix")
+        ChatUtils.sendLocalChat("${eventColor}${BOLD}$label ${WHITE}$suffix!", true)
         SoundUtils.playSound()
     }
 
     private fun getWeatherEventColor(eventName: String?): ColorCodes {
         return when (eventName) {
-            "Tropical Rain",  "Rain" -> AQUA
+            "Tropical Rain", "Rain" -> AQUA
             "Acid Rain" -> GREEN
             "Thunderstorm", "Thunder" -> YELLOW
             "Snowstorm" -> WHITE

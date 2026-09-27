@@ -80,6 +80,7 @@ object WorldUtils {
         CRIMSON_ISLE,
         CRYSTAL_HOLLOWS,
         DWARVEN_MINES,
+        GLACITE_TUNNELS,
         JERRY_WORKSHOP,
         LOTUS_ATOLL,
         MOONGLADE_MARSH,

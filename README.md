@@ -82,6 +82,7 @@ Required Java version is 25+.
 - **Salt expired** — Alerts when a Salt has expired.
 - **Worm the Fish** — Alerts when Worm the Fish is caught (Dirt Rod fishing).
 - **Fishing Festival** — Alerts when the Fishing Festival ends, and posts amounts of sharks caught in chat. Also has option to track personal best per festival.
+- **Weather starts soon** — Alerts when weather event starts soon while in relevant areas.
 - **Weather ends soon** — Alerts when weather event ends soon while in relevant areas.
 - **Day/Night started** — Alerts when day starts (6:00am) or night starts (7:00pm).
 - **Nessie destination alert** — Alerts destination when a Nessie decides into which cave to swim - to Jade Dragon or to Driptoad Delve.
