@@ -195,8 +195,8 @@ object WeatherTimer {
         if (!isWeatherEventTypeEnabledForAlerts()) return
         val seconds = weatherSecondsLeft ?: return
 
-        // TabList updates the timer once every few seconds; do not alert every second.
-        if (isActiveEvent && Alerts.alertOnWeatherEndingSoon && seconds !in 1..ENDING_ALERT_THRESHOLD_SECONDS && isNotAlertedYet(lastEndingAlertAt)) {
+        // TabList updates the timer once every few seconds; amount of seconds can be not exact.
+        if (isActiveEvent && Alerts.alertOnWeatherEndingSoon && seconds in 1..ENDING_ALERT_THRESHOLD_SECONDS && isNotAlertedYet(lastEndingAlertAt)) {
             playWeatherEndingSoonAlert()
         } else if (!isActiveEvent && Alerts.alertOnWeatherStartingSoon && seconds in 1..STARTING_ALERT_THRESHOLD_SECONDS && isNotAlertedYet(lastStartingAlertAt)) {
             playWeatherStartingSoonAlert()

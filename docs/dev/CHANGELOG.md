@@ -11,6 +11,7 @@ Released on: ???
 - Renamed command which resets data in the current fishing session - from `/feeshBulkResetTrackers` to `/feeshBulkResetFishingSession`.
 - Added option to show fishing rod parts abbreviations (Hook, Line, Sinker) in the item slot [disabled by default].
 - Added support of new Fishing Bait Sack for existing Alert when bait usage is disabled.
+- Added alert on weather event starting soon [disabled by default]. Also now you can select weather types for starts soon/ends soon alerts.
 - Personal Bests:
   - Adjusted output of `/feeshPersonalBests` command to show PB date and description on line hover.
   - Added Personal Best for Treasure catch streak (longest streak of treasure/junk catches in a row until a non-treasure catch).
