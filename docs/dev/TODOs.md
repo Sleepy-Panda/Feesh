@@ -11,7 +11,6 @@ https://hypixel.net/threads/september-21st-minister-update-mob-level-improvement
 - You ran out of Whale Bait in your Bait Sacks! [DISMISS] - could be used for out of bait detection?
 - Adjusted all EPIC Phoenix Pets -> SPECIAL, Adjusted all LEGENDARY Phoenix Pets -> VERY SPECIAL
   New pet drop message? New Pet IDs / pet price issues for leveled up pet?
-- Weather event starts / selection of weather types for alerts
 - Precursor Drone became Legendary. New ID?
 
 ## Torrus Canyon

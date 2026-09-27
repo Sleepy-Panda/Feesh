@@ -38,11 +38,12 @@ import java.util.Date
 
 object WeatherTimer {
     private const val TICKS_PER_READ = 20
-    private const val SECONDS_ALERT_THRESHOLD = 10
+    private const val STARTING_ALERT_THRESHOLD_SECONDS = 30
+    private const val ENDING_ALERT_THRESHOLD_SECONDS = 10
 
     private val PATTERN_RAIN_ADDED = Regex("^You added a minute of rain!.*$")
 
-    private val WEATHER_LINE_REGEX = WeatherEventTypes.lineRegex
+    private val WEATHER_LINE_REGEX = WeatherEventTypes.weatherTablistLineRegex
     // "in 7m", "for 19m", "for 1m 30s", "1m 30s left", "10s"
     private val TIMER_VALUE_REGEX = Regex(
         """
@@ -175,7 +176,7 @@ object WeatherTimer {
         if (!WorldUtils.isInSkyblock() || !WorldUtils.isInWeatherWorld()) return
 
         val label = eventName ?: "Weather event"
-        val color = if (isActiveEvent && weatherSecondsLeft!! in 0..SECONDS_ALERT_THRESHOLD) RED else WHITE
+        val color = if (isActiveEvent && weatherSecondsLeft!! in 0..ENDING_ALERT_THRESHOLD_SECONDS) RED else WHITE
         val timePart = if (!isActiveEvent) "${GRAY}starts in ${WHITE}${weatherTimerStr}" else "${GRAY}ends in ${color}${weatherTimerStr}"
         val lineText = "${getWeatherEventColor(label)}${BOLD}${label} $timePart"
         gui.setLines(listOf(LineInfo(lineText)))
@@ -184,25 +185,26 @@ object WeatherTimer {
     private fun shouldTrackWeather(): Boolean =
         Overlays.weatherTimerOverlay || Alerts.alertOnWeatherEndingSoon || Alerts.alertOnWeatherStartingSoon
 
-    private fun isSelectedWeatherEvent(): Boolean {
-        val type = WeatherEventTypes.fromDisplayName(eventName ?: return false) ?: return false
+    private fun isWeatherEventTypeEnabledForAlerts(): Boolean {
+        if (eventName.isNullOrEmpty()) return false
+        val type = WeatherEventTypes.getByName(eventName!!) ?: return false
         return Alerts.alertOnWeatherEventTypes.contains(type)
     }
 
     private fun maybePlayWeatherAlert() {
+        if (!isWeatherEventTypeEnabledForAlerts()) return
         val seconds = weatherSecondsLeft ?: return
-        if (seconds !in 1..SECONDS_ALERT_THRESHOLD || !isSelectedWeatherEvent()) return
 
-        // TabList updates the timer once every few seconds; do not alert every tick.
-        if (isActiveEvent && Alerts.alertOnWeatherEndingSoon && canAlert(lastEndingAlertAt)) {
+        // TabList updates the timer once every few seconds; do not alert every second.
+        if (isActiveEvent && Alerts.alertOnWeatherEndingSoon && seconds !in 1..ENDING_ALERT_THRESHOLD_SECONDS && isNotAlertedYet(lastEndingAlertAt)) {
             playWeatherEndingSoonAlert()
-        } else if (!isActiveEvent && Alerts.alertOnWeatherStartingSoon && canAlert(lastStartingAlertAt)) {
+        } else if (!isActiveEvent && Alerts.alertOnWeatherStartingSoon && seconds in 1..STARTING_ALERT_THRESHOLD_SECONDS && isNotAlertedYet(lastStartingAlertAt)) {
             playWeatherStartingSoonAlert()
         }
     }
 
-    private fun canAlert(lastAlertAt: Date?): Boolean =
-        lastAlertAt == null || Date().time - lastAlertAt.time >= 15_000
+    private fun isNotAlertedYet(lastAlertAt: Date?): Boolean =
+        lastAlertAt == null || Date().time - lastAlertAt.time >= 60_000
 
     private fun playWeatherEndingSoonAlert() {
         lastEndingAlertAt = Date()
@@ -218,7 +220,7 @@ object WeatherTimer {
         val label = eventName ?: "Weather event"
         val eventColor = getWeatherEventColor(label)
         CommonUtils.showTitle("${eventColor}${BOLD}$label ${WHITE}$suffix")
-        ChatUtils.sendLocalChat("${eventColor}${BOLD}$label ${WHITE}$suffix.", true)
+        ChatUtils.sendLocalChat("${eventColor}${BOLD}$label ${WHITE}$suffix!", true)
         SoundUtils.playSound()
     }
 

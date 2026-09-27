@@ -323,7 +323,7 @@ object Alerts : CategoryKt("Alerts") {
     }
 
     var alertOnWeatherEventTypes by select(*WeatherEventTypes.values()) {
-        this.name = Translated("Select weather type to be alerted on")
+        this.name = Translated("Select weather types to be alerted on")
         this.searchTerms = WeatherEventTypes.values().map { it.displayName }.toList() + ModVersionConstants.VERSION_1_15_0
     }
 

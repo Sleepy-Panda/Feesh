@@ -1,32 +1,31 @@
 package com.github.sleepypanda.feesh.utils.enums
 
 enum class WeatherEventTypes(val displayName: String) {
-    TROPICAL_RAIN("Tropical Rain"),
     ACID_RAIN("Acid Rain"),
-    THUNDERSTORM("Thunderstorm"),
-    THUNDER("Thunder"),
-    SNOWSTORM("Snowstorm"),
-    HELLSTORM("Hellstorm"),
-    VOIDSTORM("Voidstorm"),
-    WISPFALL("Wispfall"),
     ASHFALL("Ashfall"),
-    MOONFALL("Moonfall"),
-    ROCKFALL("Rockfall"),
-    BLOSSOMING("Blossoming"),
-    BLOOMING("Blooming"),
     BLIZZARD("Blizzard"),
+    BLOOMING("Blooming"),
+    BLOSSOMING("Blossoming"),
     BREEZE("Breeze"),
+    HELLSTORM("Hellstorm"),
     MIST("Mist"),
+    MOONFALL("Moonfall"),
+    RAIN("Rain"),
+    ROCKFALL("Rockfall"),
     SMOG("Smog"),
-    RAIN("Rain");
+    SNOWSTORM("Snowstorm"),
+    THUNDER("Thunder"),
+    THUNDERSTORM("Thunderstorm"),
+    TROPICAL_RAIN("Tropical Rain"),
+    VOIDSTORM("Voidstorm"),
+    WISPFALL("Wispfall");
 
     override fun toString(): String = displayName
 
     companion object {
-        fun fromDisplayName(name: String): WeatherEventTypes? = values().find { it.displayName == name }
+        fun getByName(name: String): WeatherEventTypes? = values().find { it.displayName == name }
 
-        val lineRegex: Regex = Regex(
-            "^(${values().joinToString("|") { Regex.escape(it.displayName) }}):\\s(.+)"
-        )
+        private val eventNames = values().joinToString("|") { Regex.escape(it.displayName) }
+        val weatherTablistLineRegex = Regex("^($eventNames):\\s(.+)")
     }
 }
