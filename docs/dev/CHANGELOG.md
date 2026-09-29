@@ -5,6 +5,8 @@ Released on: ???
 ## Features
 
 - Added Minecraft 26.3 support.
+- Added option to toggle showing profit lines (Profit, Costs, Net profit) in Fishing profit tracker.
+  - It replaces the "Track costs" setting with the toggles above! If you had Costs disabled, turn off Show Costs and Show Net profit.
 - Added option to track Catches & Catches/hour in Fishing profit tracker. You can disable it in settings.
   - Hover over the Catches line while in inventory to see details such as profit per catch.
   - You can initialize your past [Total] counter, using the commands from [the guide](https://github.com/Sleepy-Panda/Feesh/blob/develop/docs/Editing%20profit%20tracker.md#editing-catches).

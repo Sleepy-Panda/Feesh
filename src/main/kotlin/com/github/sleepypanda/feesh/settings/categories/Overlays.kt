@@ -309,7 +309,7 @@ ${GRAY}To pause: ${WHITE}/${FishingProfitTracker.PAUSE_COMMAND}
         this.description = Translated("Items which are cheaper than the specified threshold in coins will be hidden in the fishing profit tracker [Session]. They will be grouped under 'Other items' section. Set to 0 to show all items.")
     }
 
-    var fishingProfitTrackerHideCheaperThanTotal by int(1_000_000) {
+    var fishingProfitTrackerHideCheaperThanTotal by int(10_000_000) {
         this.name = Translated("Hide cheap items [Total]")
         this.description = Translated("Items which are cheaper than the specified threshold in coins will be hidden in the fishing profit tracker [Total]. They will be grouped under 'Other items' section. Set to 0 to show all items.")
     }
@@ -321,15 +321,27 @@ ${GRAY}To pause: ${WHITE}/${FishingProfitTracker.PAUSE_COMMAND}
         this.slider = true
     }
 
-    var shouldTrackCostsInFishingProfitTracker by boolean(true) {
-        this.name = Translated("Track costs")
-        this.description = Translated("Track and show costs of the items spent while fishing - fishing bait, shurikens, or Moby-Duck used. Also shows net profit after subtracting costs from total profit. Not shown if price mode is set to NPC price!")
-        this.searchTerms = listOf(ModVersionConstants.VERSION_1_14_0)
+    var showProfitInFishingProfitTracker by boolean(false) {
+        this.name = Translated("Show Profit line")
+        this.description = Translated("Show the Profit line (sum value of all drops) in the Fishing profit tracker.")
+        this.searchTerms = listOf(ModVersionConstants.VERSION_1_15_0)
     }
 
-    var shouldTrackCatchesInFishingProfitTracker by boolean(true) {
-        this.name = Translated("Track catches")
-        this.description = Translated("Track and show catches count (times you successfully reeled in) in the Fishing profit tracker.")
+    var showCostsInFishingProfitTracker by boolean(true) {
+        this.name = Translated("Show Costs line")
+        this.description = Translated("Show the Costs line (cost of the bait, shurikens, and Moby-Ducks spent while fishing) in the Fishing profit tracker. Counted as 0 when price mode is NPC price!")
+        this.searchTerms = listOf(ModVersionConstants.VERSION_1_14_0, ModVersionConstants.VERSION_1_15_0)
+    }
+
+    var showNetProfitInFishingProfitTracker by boolean(true) {
+        this.name = Translated("Show Net profit line")
+        this.description = Translated("Show the Net profit line (Profit minus Costs) in the Fishing profit tracker.")
+        this.searchTerms = listOf(ModVersionConstants.VERSION_1_14_0, ModVersionConstants.VERSION_1_15_0)
+    }
+
+    var shouldShowCatchesInFishingProfitTracker by boolean(true) {
+        this.name = Translated("Show catches line")
+        this.description = Translated("Track and show catches and catches/hour (times you successfully reeled in) in the Fishing profit tracker.")
         this.searchTerms = listOf(ModVersionConstants.VERSION_1_15_0)
     }
 
