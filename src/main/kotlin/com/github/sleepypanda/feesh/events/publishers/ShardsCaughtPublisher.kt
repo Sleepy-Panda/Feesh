@@ -14,10 +14,11 @@ object ShardsCaughtPublisher {
     //  GOOD CATCH! You caught a Water Snake Shard!
     private val SHARD_CATCH_PATTERN = Regex("^. (?:GOOD|GREAT|OUTSTANDING) CATCH! You caught (?:(?:a|an) )?(?<shardName>.+) Shard!")
 
-    //  OUTSTANDING CATCH! You caught Giant Water Bug Shard x7!
-    //  GOOD CATCH! You caught Ember Shard x2!
-    //  GOOD CATCH! You caught Shinyfish Shard x2!
-    private val SHARDS_CATCH_PATTERN = Regex("^. (?:GOOD|GREAT|OUTSTANDING) CATCH! You caught (?<shardName>.+) Shard x(?<count>[\\d]+)!")
+    //  OUTSTANDING CATCH! You caught a Giant Water Bug Shard x7!
+    //  GOOD CATCH! You caught an Ember Shard x2!
+    //  GOOD CATCH! You caught a Shinyfish Shard x2!
+    //  GOOD CATCH! You caught a Piranha Shard x3!
+    private val SHARDS_CATCH_PATTERN = Regex("^. (?:GOOD|GREAT|OUTSTANDING) CATCH! You caught (?:(?:a|an) )?(?<shardName>.+) Shard x(?<count>[\\d]+)!")
 
     // You caught a Sea Archer Shard!
     // You caught x4 Sea Archer Shards!
