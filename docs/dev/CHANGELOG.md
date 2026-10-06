@@ -1,12 +1,21 @@
-# 1.15.0
+# 1.16.0
 
 Released on: ???
 
 ## Features
 
+-
+
+# 1.15.0
+
+Released on: 2026-10-06
+
+## Features
+
 - Added Minecraft 26.3 support.
 - Added option to toggle showing profit lines (Profit, Costs, Net profit) in Fishing profit tracker.
-  - It replaces the "Track costs" setting with the toggles above! If you had Costs disabled, turn off Show Costs and Show Net profit.
+  - By default, Costs and Net profit is shown.
+  - New settings replace previous "Track costs" setting! If you had Costs disabled, turn off Show Costs and Show Net profit.
 - Added option to track Catches & Catches/hour in Fishing profit tracker. You can disable it in settings.
   - Hover over the Catches line while in inventory to see details such as profit per catch.
   - You can initialize your past [Total] counter, using the commands from [the guide](https://github.com/Sleepy-Panda/Feesh/blob/develop/docs/Editing%20profit%20tracker.md#editing-catches).
@@ -15,7 +24,7 @@ Released on: ???
 - Added support of new Fishing Bait Sack for existing Alert when bait usage is disabled.
 - Added alert on weather event starting soon [disabled by default]. Also now you can select weather types for starts soon/ends soon alerts.
 - Personal Bests:
-  - Adjusted output of `/feeshPersonalBests` command to show PB date and description on line hover.
+  - Adjusted output of `/feeshPersonalBests` command to show PB date and description when hovering.
   - Added Personal Best for Treasure catch streak (longest streak of treasure/junk catches in a row until a non-treasure catch).
   - Added Personal Bests for Great treasure streak and Outstanding treasure streak.
   - Made PB title stay a bit longer on the screen.

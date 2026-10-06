@@ -5,7 +5,6 @@ import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
 import com.github.sleepypanda.feesh.utils.enums.DeployableTypes
 import com.github.sleepypanda.feesh.utils.enums.PricingModeWithNpc
-import com.github.sleepypanda.feesh.utils.ChatUtils
 import com.github.sleepypanda.feesh.utils.getScreenCompat
 import com.github.sleepypanda.feesh.utils.setScreenCompat
 import com.teamresourceful.resourcefulconfigkt.api.ObservableEntry
@@ -321,19 +320,19 @@ ${GRAY}To pause: ${WHITE}/${FishingProfitTracker.PAUSE_COMMAND}
         this.slider = true
     }
 
-    var showProfitInFishingProfitTracker by boolean(false) {
+    var shouldShowTotalProfitInFishingProfitTracker by boolean(false) {
         this.name = Translated("Show Profit line")
-        this.description = Translated("Show the Profit line (sum value of all drops) in the Fishing profit tracker.")
+        this.description = Translated("Show the Profit line (sum value of all drops without costs subtraction) in the Fishing profit tracker.")
         this.searchTerms = listOf(ModVersionConstants.VERSION_1_15_0)
     }
 
-    var showCostsInFishingProfitTracker by boolean(true) {
+    var shouldShowCostsInFishingProfitTracker by boolean(true) {
         this.name = Translated("Show Costs line")
         this.description = Translated("Show the Costs line (cost of the bait, shurikens, and Moby-Ducks spent while fishing) in the Fishing profit tracker. Counted as 0 when price mode is NPC price!")
         this.searchTerms = listOf(ModVersionConstants.VERSION_1_14_0, ModVersionConstants.VERSION_1_15_0)
     }
 
-    var showNetProfitInFishingProfitTracker by boolean(true) {
+    var shouldShowNetProfitInFishingProfitTracker by boolean(true) {
         this.name = Translated("Show Net profit line")
         this.description = Translated("Show the Net profit line (Profit minus Costs) in the Fishing profit tracker.")
         this.searchTerms = listOf(ModVersionConstants.VERSION_1_14_0, ModVersionConstants.VERSION_1_15_0)
