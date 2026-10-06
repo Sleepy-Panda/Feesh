@@ -13,10 +13,8 @@ https://hypixel.net/threads/september-21st-minister-update-mob-level-improvement
   New pet drop message? New Pet IDs / pet price issues for leveled up pet? "PHOENIX;0+100", "PHOENIX;4+100"
 - Precursor Drone became Legendary. New ID? "PRECURSOR_DRONE;4+100"
 - Maybe disable nutcracker alert by default
--  GOOD CATCH! You caught a 47,385 Coins!
 - Check Ice Essence catch msg
-- Double shard counting when they go to inventory
-- 
+
 ## Torrus Canyon
 
 - Giant Isopod acts like a Nessie, implement immunity?
@@ -44,8 +42,9 @@ Newly released - https://hypixel.net/threads/hypixel-skyblock-0-24-5-assorted-qo
 
  GOOD CATCH! You caught a Flexbone!
  GOOD CATCH! You caught a Shinyfish Shard!
+§a §r§lACID RAIN BONUS! §r§fYou caught a bonus §r§aRusty Coin§r§f!
 
-- treasure shards (piranha) not counted, double salmon
+- Treasure shards that go to the inventory, such as salmon, counted twice (because chat message + inventory pickup)
 - Scrollable overlays
 - Mobs nametag looks different, may cause some issues?
 - Send a message like this "BAD JUNK CATCH! You caught a Salmon!" when catching a non-treasure while treasure/junk fishing

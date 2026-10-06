@@ -9,6 +9,7 @@ Released on: ???
 ## Bugfixes
 
 - Fixed shards caught as a Treasure not going into Fishing profit tracker.
+- Fixed coins caught as a Treasure not going into Fishing profit tracker.
 
 # 1.15.0
 
