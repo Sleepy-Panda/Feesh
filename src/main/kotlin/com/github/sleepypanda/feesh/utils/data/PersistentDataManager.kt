@@ -2,6 +2,7 @@ package com.github.sleepypanda.feesh.utils.data
 
 import com.github.sleepypanda.feesh.FeeshMod
 import com.github.sleepypanda.feesh.events.EventBus
+import com.github.sleepypanda.feesh.events.models.ClientTickEvent
 import com.github.sleepypanda.feesh.events.models.GameClosedEvent
 import com.github.sleepypanda.feesh.utils.CommonUtils
 import com.github.sleepypanda.feesh.utils.FileUtils
@@ -17,9 +18,6 @@ import java.io.FileOutputStream
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.ConcurrentModificationException
-import java.util.concurrent.Executors
-import java.util.concurrent.ScheduledExecutorService
-import java.util.concurrent.TimeUnit
 import java.util.zip.ZipEntry
 import java.util.zip.ZipOutputStream
 
@@ -48,26 +46,31 @@ object PersistentDataManager {
     private val overlayCoordsFile: File = File(feeshConfigDir, OVERLAY_COORDS_FILE_NAME)
 
     private val saveLock = Any()
-    private val saveStateLock = Any() // For debouncing intensive file saves
-    private val saveDebounceMs = 1000L
-    private var isFeeshDataSaveScheduled = false
-    private var lastFeeshDataSaveAtMs = 0L
+    private val saveStateLock = Any()
+
+    private const val SAVE_INTERVAL_TICKS = 20 * 5
+    private var tickCounter = 0
+
+    private var feeshDataSaveScheduled = false
+    private var overlayCoordsSaveScheduled = false
 
     private val gson: Gson = GsonBuilder()
         .setPrettyPrinting()
         .registerTypeAdapter(Date::class.java, UtcDateTypeAdapter)
         .create()
-        
-    private val executor: ScheduledExecutorService = Executors.newSingleThreadScheduledExecutor { r ->
-        Thread(r, "Feesh-Data-Saver").apply {
-            isDaemon = true
-        }
-    }
-    
+
     fun init() {
         loadFeeshDataFromFile()
         loadOverlayCoordsDataFromFile()
+        EventBus.subscribe(ClientTickEvent::class, ::onClientTick)
         EventBus.subscribe(GameClosedEvent::class, ::onGameClosed)
+    }
+
+    private fun onClientTick(@Suppress("UNUSED_PARAMETER") event: ClientTickEvent) {
+        tickCounter++
+        if (tickCounter < SAVE_INTERVAL_TICKS) return
+        tickCounter = 0
+        flushScheduledSaves()
     }
 
     private fun onGameClosed(@Suppress("UNUSED_PARAMETER") event: GameClosedEvent) {
@@ -78,8 +81,14 @@ object PersistentDataManager {
         CommonUtils.runWithCatching("Failed to save and backup data on game close") {
             val startNanos = System.nanoTime()
 
-            FileUtils.saveJsonToFileSync(overlayCoordsFile, overlayCoordsData, gson, saveLock, "Overlay coords")
-            forceSaveFeeshDataToFileSync()
+            synchronized(saveLock) {
+                synchronized(saveStateLock) {
+                    feeshDataSaveScheduled = false
+                    overlayCoordsSaveScheduled = false
+                }
+                FileUtils.saveJsonToFileSync(overlayCoordsFile, overlayCoordsData, gson, saveLock, "Overlay coords")
+                forceSaveFeeshDataToFileSync()
+            }
             backupFiles()
 
             val elapsedMs = (System.nanoTime() - startNanos) / 1_000_000
@@ -99,8 +108,10 @@ object PersistentDataManager {
         val dateFormat = SimpleDateFormat("yyyy-MM-dd-HHmmss")
         val zipName = "feesh-backup-${dateFormat.format(Date())}.zip"
         val zipFile = File(backupDir, zipName)
+
         CommonUtils.runWithCatching("Failed to backup config files") {
             backupDir.mkdirs()
+            
             FileOutputStream(zipFile).use { fileOut ->
                 ZipOutputStream(fileOut).use { zipOut ->
                     for (file in filesToBackup) {
@@ -112,6 +123,7 @@ object PersistentDataManager {
                     }
                 }
             }
+
             FeeshMod.LOGGER.info("[Feesh] Config backup succeeded: ${zipFile.absolutePath}")
             pruneOldBackups(backupDir)
         }
@@ -140,8 +152,8 @@ object PersistentDataManager {
     fun updateOverlayCoordsData(key: String, x: Int, y: Int, scale: Float, alignment: Alignment) {
         synchronized(saveLock) {
             overlayCoordsData[key] = OverlayCoordsData(x, y, scale, alignment)
-            saveOverlayCoordsDataToFileAsync()
         }
+        scheduleOverlayCoordsSave()
     }
     
     private fun loadOverlayCoordsDataFromFile() {
@@ -164,50 +176,69 @@ object PersistentDataManager {
         }
     }
 
-    private fun saveOverlayCoordsDataToFileAsync() {
-        FileUtils.saveJsonToFileAsync(overlayCoordsFile, overlayCoordsData, gson, executor, saveLock, "Overlay coords")
-    }
-
-    /*
-     * Schedules save of feeshData to JSON file asynchronously.
-     * Debounces saves to prevent too often file writes.
-     */
-    fun saveFeeshDataToFileAsync() {
+    private fun scheduleOverlayCoordsSave() {
         synchronized(saveStateLock) {
-            if (isFeeshDataSaveScheduled) return
-
-            val now = System.currentTimeMillis()
-            val delayMs = (saveDebounceMs - (now - lastFeeshDataSaveAtMs)).coerceAtLeast(0L)
-            isFeeshDataSaveScheduled = true
-            
-            executor.schedule({
-                val json = serializeFeeshDataToJson()
-                if (json != null) {
-                    FileUtils.saveJsonTextToFileAsync(feeshDataFile, json, executor, saveLock, "Feesh data")
-                    synchronized(saveStateLock) {
-                        isFeeshDataSaveScheduled = false
-                        lastFeeshDataSaveAtMs = System.currentTimeMillis()
-                    }
-                } else {
-                    FeeshMod.LOGGER.error("[Feesh] Failed to serialize Feesh data, skipped saving.")
-                    synchronized(saveStateLock) {
-                        isFeeshDataSaveScheduled = false
-                    }
-                }
-            }, delayMs, TimeUnit.MILLISECONDS)
+            overlayCoordsSaveScheduled = true
         }
     }
 
-    /*
-     * Forces immediate save of feeshData to JSON file synchronously. Applicable for cases when we need to save data immediately, e.g. on game closed.
-     * No debouncing is applied.
+    /**
+     * Marks data.json to be written on the next save tick. Does not write the file.
+     */
+    fun saveFeeshDataToFileAsync() {
+        synchronized(saveStateLock) {
+            feeshDataSaveScheduled = true
+        }
+    }
+
+    /**
+     * Writes data.json immediately via a temp file rename, then clears the pending schedule.
      */
     fun forceSaveFeeshDataToFileSync() {
-        val json = serializeFeeshDataToJson()
-        if (json != null) {
-            FileUtils.saveJsonTextToFileSync(feeshDataFile, json, saveLock, "Feesh data")
-        } else {
-            FeeshMod.LOGGER.error("[Feesh] Failed to serialize Feesh data, skipped force saving.")
+        synchronized(saveLock) {
+            synchronized(saveStateLock) {
+                feeshDataSaveScheduled = false
+            }
+            val json = serializeFeeshDataToJson()
+            if (json != null) {
+                FileUtils.saveJsonTextToFileSync(feeshDataFile, json, saveLock, "Feesh data")
+            } else {
+                FeeshMod.LOGGER.error("[Feesh] Failed to serialize Feesh data, skipped force saving.")
+                synchronized(saveStateLock) {
+                    feeshDataSaveScheduled = true
+                }
+            }
+        }
+    }
+
+    private fun flushScheduledSaves() {
+        CommonUtils.runWithCatching("Failed to flush scheduled saves") {
+            synchronized(saveLock) {
+                val saveData: Boolean
+                val saveCoords: Boolean
+                synchronized(saveStateLock) {
+                    saveData = feeshDataSaveScheduled
+                    saveCoords = overlayCoordsSaveScheduled
+                    feeshDataSaveScheduled = false
+                    overlayCoordsSaveScheduled = false
+                }
+                if (!saveData && !saveCoords) return@runWithCatching
+
+                if (saveData) {
+                    val json = serializeFeeshDataToJson()
+                    if (json != null) {
+                        FileUtils.overwriteJsonText(feeshDataFile, json, saveLock, "Feesh data")
+                    } else {
+                        FeeshMod.LOGGER.error("[Feesh] Failed to serialize Feesh data, skipped scheduled saving.")
+                        synchronized(saveStateLock) {
+                            feeshDataSaveScheduled = true
+                        }
+                    }
+                }
+                if (saveCoords) {
+                    FileUtils.overwriteJsonFile(overlayCoordsFile, overlayCoordsData, gson, saveLock, "Overlay coords")
+                }
+            }
         }
     }
 
