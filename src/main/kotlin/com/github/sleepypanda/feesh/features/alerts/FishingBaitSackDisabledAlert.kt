@@ -26,13 +26,8 @@ object FishingBaitSackDisabledAlert {
     private var isAlerted = false
     private var tickCounter = 0
 
-    // Use Baits From Sacks are now disabled!
-    private val USE_BAITS_DISABLED_PATTERN = Regex("^Use Baits From (Bag|Sacks) (is|are) now disabled!$")
-    // Use Baits From Sacks are now enabled!
-    private val USE_BAITS_ENABLED_PATTERN = Regex("^Use Baits From (Bag|Sacks) (is|are) now enabled!$")
-    private const val BAG_TITLE_CONTAINS = "Fishing Bag" // TODO: Remove after Bait Sack release
-    private const val BAG_TOGGLE_SLOT_NUMBER = 49
-    private const val USE_BAITS_FROM_BAG_ITEM_NAME = "Use Baits From Bag"
+    private val USE_BAITS_DISABLED_PATTERN = Regex("^Use Baits From Sacks are now disabled!$")
+    private val USE_BAITS_ENABLED_PATTERN = Regex("^Use Baits From Sacks are now enabled!$")
 
     private const val BAIT_SACK_TITLE_CONTAINS = "Bait Sack"
     private const val USE_BAITS_FROM_SACKS_ITEM_NAME = "Use Baits From Sacks"
@@ -86,8 +81,7 @@ object FishingBaitSackDisabledAlert {
             if (currentScreen is AbstractContainerScreen<*>) {
                 val title = currentScreen.title.getUnformattedString()
 
-                // When player opens disabled fishing bag/sack, avoid receiving alert again while it's disabled
-                if (title.contains(BAG_TITLE_CONTAINS)) return
+                // When player opens disabled bait sack, avoid receiving alert again while it's disabled
                 if (title.contains(BAIT_SACK_TITLE_CONTAINS)) return
             }
 
@@ -97,7 +91,7 @@ object FishingBaitSackDisabledAlert {
             CommonUtils.showTitle("${RED}Bait usage disabled!")
             SoundUtils.playSound()
             isAlerted = true 
-            ChatUtils.sendLocalChatWithCommand("${WHITE}Using baits from Fishing Bag is disabled. Click to open Fishing Bag!", "fb", true)
+            ChatUtils.sendLocalChatWithCommand("${WHITE}Using baits from Bait Sack is disabled. Click to open Bait Sack!", "baitsack", true)
         }
     }
 
@@ -116,29 +110,17 @@ object FishingBaitSackDisabledAlert {
                 if (currentScreen !is AbstractContainerScreen<*>) return@timerTask
 
                 val title = currentScreen.title.getUnformattedString()
-                if (!title.contains(BAG_TITLE_CONTAINS) && !title.contains(BAIT_SACK_TITLE_CONTAINS)) return@timerTask // TODO: Cleanup after Bait Sack release
+                if (!title.contains(BAIT_SACK_TITLE_CONTAINS)) return@timerTask
 
-                if (title.contains(BAG_TITLE_CONTAINS)) {
-                    val handler = currentScreen.menu
-                    val item = handler.getSlot(BAG_TOGGLE_SLOT_NUMBER).item
-                    
-                    val itemName = item.hoverName.getUnformattedString()
-                    if (itemName != USE_BAITS_FROM_BAG_ITEM_NAME) return@timerTask
-    
-                    val lore = ItemUtils.getUnformattedLoreLines(item)
-                    val isEnabled = lore.any { line -> line.contains(CLICK_TO_DISABLE_TEXT) }
-                    setFishingBaitSackState(isEnabled)
-                } else if (title.contains(BAIT_SACK_TITLE_CONTAINS)) {
-                    val handler = currentScreen.menu
-                    val item = handler.getSlot(SACK_TOGGLE_SLOT_NUMBER).item
-                    
-                    val itemName = item.hoverName.getUnformattedString()
-                    if (itemName != USE_BAITS_FROM_SACKS_ITEM_NAME) return@timerTask
-    
-                    val lore = ItemUtils.getUnformattedLoreLines(item)
-                    val isEnabled = lore.any { line -> line.contains(CLICK_TO_DISABLE_TEXT) }
-                    setFishingBaitSackState(isEnabled)
-                }
+                val handler = currentScreen.menu
+                val item = handler.getSlot(SACK_TOGGLE_SLOT_NUMBER).item
+                
+                val itemName = item.hoverName.getUnformattedString()
+                if (itemName != USE_BAITS_FROM_SACKS_ITEM_NAME) return@timerTask
+
+                val lore = ItemUtils.getUnformattedLoreLines(item)
+                val isEnabled = lore.any { line -> line.contains(CLICK_TO_DISABLE_TEXT) }
+                setFishingBaitSackState(isEnabled)
             }
         }, 100)        
     }
