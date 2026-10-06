@@ -93,8 +93,8 @@ object FishingProfitTracker : IResettableViewModeTracker {
     const val PAUSE_COMMAND = "feeshPauseFishingProfitTracker"
     const val TOGGLE_VIEW_MODE_COMMAND = "feeshToggleFishingProfitTrackerViewMode"
 
-    private val COINS_CATCH_PATTERN = Regex("^. (?:GOOD|GREAT|OUTSTANDING) CATCH! You caught ([\\d,]+) Coins.*")
-    private val ICE_ESSENCE_CATCH_PATTERN = Regex("^. (?:GOOD|GREAT|OUTSTANDING) CATCH! You caught Ice Essence x([\\d,]+).*")
+    private val COINS_CATCH_PATTERN = Regex("^. (?:GOOD|GREAT|OUTSTANDING) CATCH! You caught (?:(?:a|an) )?([\\d,]+) Coins!")
+    private val ICE_ESSENCE_CATCH_PATTERN = Regex("^. (?:GOOD|GREAT|OUTSTANDING) CATCH! You caught (?:(?:a|an) )?Ice Essence x([\\d,]+)!")
     private val AGATHA_CONTEST_BRACKET_PATTERN = Regex("^\\[NPC] Agatha: You reached the (COMMON|UNCOMMON|RARE|EPIC|LEGENDARY|MYTHIC|DIVINE|SPECIAL) Bracket in my contest!$")
     private val MIRIA_CONTEST_BRACKET_PATTERN = Regex("^\\[NPC] Miria: You reached the (COMMON|UNCOMMON|RARE|EPIC|LEGENDARY|MYTHIC|DIVINE|SPECIAL) Bracket in my contest!$")
 
@@ -221,6 +221,7 @@ object FishingProfitTracker : IResettableViewModeTracker {
         }
 
         // ⛃ GOOD CATCH! You caught 43,642 Coins!
+        //  GOOD CATCH! You caught a 47,385 Coins!
         COINS_CATCH_PATTERN.find(event.unformattedText)?.run {
             onCoinsFished(this.groupValues[1].orEmpty())
             return@onChat

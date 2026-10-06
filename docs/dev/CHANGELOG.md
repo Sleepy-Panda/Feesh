@@ -1,6 +1,19 @@
-# 1.15.0
+# 1.16.0
 
 Released on: ???
+
+## Features
+
+- Changed Nutcracker to not be enabled in alert/highlight/HP tracker by default for new users.
+
+## Bugfixes
+
+- Fixed shards caught as a Treasure not going into Fishing profit tracker.
+- Fixed coins caught as a Treasure not going into Fishing profit tracker.
+
+# 1.15.0
+
+Released on: 2026-10-06
 
 ## Features
 
