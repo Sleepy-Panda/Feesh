@@ -16,6 +16,7 @@ import com.github.sleepypanda.feesh.features.commands.SetTrackerDropsCommand
 import com.github.sleepypanda.feesh.features.overlays.ArchfiendDiceProfitTracker
 import com.github.sleepypanda.feesh.features.overlays.BarnFishingTimer
 import com.github.sleepypanda.feesh.features.overlays.FishingProfitTracker
+import com.github.sleepypanda.feesh.features.overlays.FishingProfitTrackerCommands
 import com.github.sleepypanda.feesh.features.overlays.CrimsonIsleTracker
 import com.github.sleepypanda.feesh.features.overlays.FishingFestivalTracker
 import com.github.sleepypanda.feesh.features.overlays.JerryWorkshopTracker
@@ -275,8 +276,8 @@ ${GRAY}Shows an overlay with your profits you gained while fishing. This overlay
 ${GRAY}To count items added to your sacks, make sure to enable ${YELLOW}Skyblock Settings -> Personal -> Chat Feedback -> Sack Notifications
 
 ${GRAY}To reset: ${WHITE}/${FishingProfitTracker.RESET_COMMAND} ${GRAY}for [Session] or ${WHITE}/${FishingProfitTracker.RESET_TOTAL_COMMAND} ${GRAY}for [Total]
-${GRAY}To reset Costs only: ${WHITE}/${FishingProfitTracker.RESET_COSTS_COMMAND} ${GRAY}for [Session] or ${WHITE}/${FishingProfitTracker.RESET_COSTS_TOTAL_COMMAND} ${GRAY}for [Total]
-${GRAY}To reset Catches only: ${WHITE}/${FishingProfitTracker.RESET_CATCHES_COMMAND} ${GRAY}for [Session] or ${WHITE}/${FishingProfitTracker.RESET_CATCHES_TOTAL_COMMAND} ${GRAY}for [Total]
+${GRAY}To reset Costs only: ${WHITE}/${FishingProfitTrackerCommands.RESET_COSTS_COMMAND} ${GRAY}for [Session] or ${WHITE}/${FishingProfitTrackerCommands.RESET_COSTS_TOTAL_COMMAND} ${GRAY}for [Total]
+${GRAY}To reset Catches only: ${WHITE}/${FishingProfitTrackerCommands.RESET_CATCHES_COMMAND} ${GRAY}for [Session] or ${WHITE}/${FishingProfitTrackerCommands.RESET_CATCHES_TOTAL_COMMAND} ${GRAY}for [Total]
 ${GRAY}To pause: ${WHITE}/${FishingProfitTracker.PAUSE_COMMAND}
         """.trimIndent())
     }

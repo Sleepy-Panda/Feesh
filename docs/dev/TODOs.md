@@ -10,8 +10,10 @@ https://hypixel.net/threads/september-21st-minister-update-mob-level-improvement
 
 - You ran out of Whale Bait in your Bait Sacks! [DISMISS] - could be used for out of bait detection?
 - Adjusted all EPIC Phoenix Pets -> SPECIAL, Adjusted all LEGENDARY Phoenix Pets -> VERY SPECIAL
-  New pet drop message? New Pet IDs / pet price issues for leveled up pet?
-- Precursor Drone became Legendary. New ID?
+  New pet drop message? New Pet IDs / pet price issues for leveled up pet? "PHOENIX;0+100", "PHOENIX;4+100"
+- Precursor Drone became Legendary. New ID? "PRECURSOR_DRONE;4+100"
+- Maybe disable nutcracker alert by default
+- Check Ice Essence catch msg
 
 ## Torrus Canyon
 
@@ -40,7 +42,11 @@ Newly released - https://hypixel.net/threads/hypixel-skyblock-0-24-5-assorted-qo
 
  GOOD CATCH! You caught a Flexbone!
  GOOD CATCH! You caught a Shinyfish Shard!
+§a §r§lACID RAIN BONUS! §r§fYou caught a bonus §r§aRusty Coin§r§f!
 
+- Treasure shards that go to the inventory, such as salmon, counted twice (because chat message + inventory pickup)
+- Scrollable overlays
+- Mobs nametag looks different, may cause some issues?
 - Send a message like this "BAD JUNK CATCH! You caught a Salmon!" when catching a non-treasure while treasure/junk fishing
 - You cannot send same message twice when sharing Isopods
 - For level 100 pets, would be cool to change their item name to be aligned with Level 1 pets. This also causes Lvl 100 pets being not easily found ny name via /get command.
