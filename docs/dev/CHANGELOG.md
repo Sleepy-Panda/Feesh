@@ -4,7 +4,7 @@ Released on: ???
 
 ## Features
 
--
+- Changed Nutcracker to not be enabled in alert/highlight/HP tracker by default for new users.
 
 ## Bugfixes
 
