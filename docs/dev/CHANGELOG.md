@@ -4,6 +4,14 @@ Released on: ???
 
 ## Features
 
+-
+
+# 1.15.1
+
+Released on: 2026-10-07
+
+## Features
+
 - Changed Nutcracker to not be enabled in alert/highlight/HP tracker by default for new users.
 
 ## Bugfixes
