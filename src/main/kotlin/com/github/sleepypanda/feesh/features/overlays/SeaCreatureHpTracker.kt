@@ -23,8 +23,10 @@ import java.util.Date
 import kotlin.math.ceil
 
 data class MobDisplayInfo(
-    val nametag: String,
     val baseMobName: String,
+    val formattedHp: String,
+    val isCorrupted: Boolean,
+    val hasShuriken: Boolean,
     val isImmune: Boolean,
     val immunitySecondsLeft: Int
 )
@@ -58,6 +60,7 @@ object SeaCreatureHpTracker {
         HpTrackableSeaCreatureTypes.GIANT_ISOPOD,
     )
     private val trackedMobTypeByName = HpTrackableSeaCreatureTypes.values().associateBy { it.displayName }
+    private val rarityColorByMobName = SeaCreatures.allSeaCreatures.associate { it.name to it.rarityColorCode }
     private var enabledMobTypes = listOf<String>()
 
     private var mobs = mutableListOf<MobDisplayInfo>()
@@ -188,8 +191,10 @@ object SeaCreatureHpTracker {
                     }
 
                     MobDisplayInfo(
-                        nametag = sc.shortNametag,
                         baseMobName = sc.baseMobName,
+                        formattedHp = sc.formattedHp,
+                        isCorrupted = sc.isCorrupted,
+                        hasShuriken = sc.hasShuriken,
                         isImmune = isImmune,
                         immunitySecondsLeft = immunitySecondsLeft
                     )
@@ -238,10 +243,34 @@ object SeaCreatureHpTracker {
         mobs.forEach { mob ->
             val immunityTimerText = if (mob.immunitySecondsLeft > 0) " ${WHITE}${mob.immunitySecondsLeft}s" else ""
             val immunityText = if (mob.isImmune) " ${RED}${BOLD}[Immune${immunityTimerText}${RED}${BOLD}]" else ""
-            lines.add("${mob.nametag}$immunityText")
+            lines.add("${buildSeaCreatureHpLine(mob)}$immunityText")
         }
 
         gui.setLines(lines.map { LineInfo(it) })
+    }
+
+    private fun buildSeaCreatureHpLine(mob: MobDisplayInfo): String {
+        val nameColor = rarityColorByMobName[mob.baseMobName] ?: WHITE.code
+        return buildString {
+            append(nameColor)
+            append(mob.baseMobName)
+            if (mob.formattedHp.isNotEmpty()) {
+                append(' ')
+                append(mob.formattedHp)
+            }
+            if (mob.isCorrupted) {
+                append(' ')
+                append(DARK_PURPLE)
+                append(OBFUSCATED)
+                append('a')
+                append(RESET)
+            }
+            if (mob.hasShuriken) {
+                append(' ')
+                append(AQUA)
+                append('✯')
+            }
+        }
     }
 
     private fun getSeaCreaturesInRange(includedSeaCreatureNames: List<String>, distance: Double): List<SeaCreatureParsedNametagInfo> {

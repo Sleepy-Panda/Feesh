@@ -5,6 +5,7 @@ import com.github.sleepypanda.feesh.constants.SeaCreatureNames
 import com.github.sleepypanda.feesh.utils.ChatUtils.getFormattedString
 import com.github.sleepypanda.feesh.utils.ChatUtils.getUnformattedString
 import com.github.sleepypanda.feesh.utils.ChatUtils.removeFormatting
+import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.OBFUSCATED
 import net.minecraft.world.phys.Vec3
 import net.minecraft.world.entity.Entity
 import net.minecraft.world.entity.decoration.ArmorStand
@@ -134,7 +135,10 @@ object EntityUtils {
         val shortNametag: String,
         val currentHpNumber: Double,
         val maxHpNumber: Double,
-        val renderPos: Triple<Double, Double, Double>
+        val renderPos: Triple<Double, Double, Double>,
+        val formattedHp: String,
+        val isCorrupted: Boolean,
+        val hasShuriken: Boolean,
     )
 
     // Original nametag samples:
@@ -202,9 +206,15 @@ object EntityUtils {
             .trim()
 
         val unformattedShortName = shortName.removeFormatting()
-        val hpMatch = Regex("([0-9.,]+[kKmMbB]?)\\/([0-9.,]+[kKmMbB]?)\\s*❤").find(unformattedShortName)
+        val hpMatch = HP_PATTERN.find(unformattedShortName)
         val currentHpNumber = if (hpMatch != null) CommonUtils.parseShortNumber(hpMatch.groupValues[1]) else 0.0
         val maxHpNumber = if (hpMatch != null) CommonUtils.parseShortNumber(hpMatch.groupValues[2]) else 0.0
+
+        val unformattedFullName = customNameFormatted.removeFormatting()
+        val formattedHpMatch = HP_PATTERN.find(unformattedFullName)
+        val formattedHp = if (formattedHpMatch != null) {
+            extractFormattedSpan(customNameFormatted, formattedHpMatch.range.first, formattedHpMatch.range.last + 1)
+        } else ""
 
         return SeaCreatureParsedNametagInfo(
             mcEntityId = entityId,
@@ -212,7 +222,41 @@ object EntityUtils {
             shortNametag = shortName, // §c♆§7⚙§d♣ §c§lLord Jawbus§r§r §a69M§f/§a100M§c❤ §b✯
             currentHpNumber = currentHpNumber,
             maxHpNumber = maxHpNumber,
-            renderPos = Triple(x, y, z)
+            renderPos = Triple(x, y, z),
+            formattedHp = formattedHp, // §a1.5M§f/§a10M§c❤
+            isCorrupted = customNameFormatted.contains(OBFUSCATED.code),
+            hasShuriken = customNameFormatted.contains("✯"),
         )
+    }
+
+    private val HP_PATTERN = Regex("([0-9.,]+[kKmMbB]?)\\/([0-9.,]+[kKmMbB]?)\\s*❤")
+
+    /**
+     * Slice [formatted] so the visible characters from [start] until [endExclusive]
+     * keep the § codes that apply to them.
+     */
+    private fun extractFormattedSpan(formatted: String, start: Int, endExclusive: Int): String {
+        val result = StringBuilder()
+        val pendingFormat = StringBuilder()
+        var visibleIndex = 0
+        var i = 0
+
+        while (i < formatted.length && visibleIndex < endExclusive) {
+            if (formatted[i] == '§' && i + 1 < formatted.length) {
+                pendingFormat.append(formatted[i]).append(formatted[i + 1])
+                i += 2
+                continue
+            }
+
+            if (visibleIndex >= start) {
+                result.append(pendingFormat)
+                result.append(formatted[i])
+            }
+            pendingFormat.setLength(0)
+            visibleIndex++
+            i++
+        }
+
+        return result.toString()
     }
 }
