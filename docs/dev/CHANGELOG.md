@@ -4,7 +4,7 @@ Released on: ???
 
 ## Features
 
--
+- Made sea creatures HP display more compact and colored sea creature names according to their rarity.
 
 # 1.15.1
 
