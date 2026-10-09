@@ -227,7 +227,7 @@ object FishingProfitTracker : IResettableViewModeTracker {
             return@onChat
         }
 
-        // ⛃ GOOD CATCH! You caught Ice Essence x5!
+        //  GREAT CATCH! You caught an Ice Essence x56!
         ICE_ESSENCE_CATCH_PATTERN.find(event.unformattedText)?.run {
             if (WorldUtils.getWorldName() == WorldUtils.JERRY_WORKSHOP) {
                 onIceEssenceFished(this.groupValues[1].orEmpty())

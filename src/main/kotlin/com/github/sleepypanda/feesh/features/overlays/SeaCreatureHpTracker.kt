@@ -39,28 +39,12 @@ object SeaCreatureHpTracker {
     private const val IMMUNITY_TICKS = 20 * 5 // ~5 seconds
     private const val IMMUNITY_MS = 5000L
 
-    private val IMMUNE_MOB_TYPES = setOf(
-        HpTrackableSeaCreatureTypes.FIERY_SCUTTLER,
-        HpTrackableSeaCreatureTypes.THUNDER,
-        HpTrackableSeaCreatureTypes.VANQUISHER,
-        HpTrackableSeaCreatureTypes.YETI,
-        HpTrackableSeaCreatureTypes.ALLIGATOR,
-        HpTrackableSeaCreatureTypes.BLUE_RINGED_OCTOPUS,
-        HpTrackableSeaCreatureTypes.WIKI_TIKI,
-        HpTrackableSeaCreatureTypes.TITANOBOA,
-        HpTrackableSeaCreatureTypes.ABYSSAL_MINER,
-        HpTrackableSeaCreatureTypes.THE_LOCH_EMPEROR,
-        HpTrackableSeaCreatureTypes.NESSIE,
-        HpTrackableSeaCreatureTypes.WATER_HYDRA,
-        HpTrackableSeaCreatureTypes.PHANTOM_FISHER,
-        HpTrackableSeaCreatureTypes.GRIM_REAPER,
-        HpTrackableSeaCreatureTypes.GREAT_WHITE_SHARK,
-        HpTrackableSeaCreatureTypes.FROG_PRINCE,
-        HpTrackableSeaCreatureTypes.SILKBREEZE,
-        HpTrackableSeaCreatureTypes.GIANT_ISOPOD,
+    private val rarityColorByMobName = SeaCreatures.allSeaCreatures.associate { it.name to it.rarityColorCode } + mapOf(
+        HpTrackableSeaCreatureTypes.JAWBUS_FOLLOWER.displayName to RED.code,
+        HpTrackableSeaCreatureTypes.WIKI_TIKI_LASER_TOTEM.displayName to RED.code,
+        HpTrackableSeaCreatureTypes.FLIPFLOPPER.displayName to AQUA.code,
+        HpTrackableSeaCreatureTypes.SEASHINE.displayName to AQUA.code,
     )
-    private val trackedMobTypeByName = HpTrackableSeaCreatureTypes.values().associateBy { it.displayName }
-    private val rarityColorByMobName = SeaCreatures.allSeaCreatures.associate { it.name to it.rarityColorCode }
     private var enabledMobTypes = listOf<String>()
 
     private var mobs = mutableListOf<MobDisplayInfo>()
@@ -73,8 +57,8 @@ object SeaCreatureHpTracker {
         .setCoordsDataKey("seaCreaturesHpTracker")
         .setClickable(false)
         .setSampleLines(listOf(
-            "${RED}♆${YELLOW}✰${GREEN}☮ ${RED}Jawbus Follower ${GREEN}3M${WHITE}/${GREEN}3M${RED}❤",
-            "${RED}♆${GRAY}⚙${LIGHT_PURPLE}♣ ${RED}${BOLD}Lord Jawbus ${GREEN}1M${WHITE}/${GREEN}2M${RED}❤",
+            "${RED}${BOLD}Jawbus Follower${RESET} ${GREEN}3M${WHITE}/${GREEN}3M${RED}❤",
+            "${LIGHT_PURPLE}${BOLD}Lord Jawbus${RESET} ${GREEN}1M${WHITE}/${GREEN}2M${RED}❤",
         ))
         .setSettingsKey { Overlays.seaCreaturesHpOverlay }
         .setApplyCustomStyleKey { Overlays.seaCreaturesHpCustomStyle }
@@ -166,8 +150,7 @@ object SeaCreatureHpTracker {
                 .sortedBy { it.currentHpNumber } // Lowest HP comes first
                 .take(Overlays.seaCreaturesHpOverlayMaxCount.coerceIn(1, 20)) // Top N
                 .map { sc ->
-                    val scType = trackedMobTypeByName[sc.baseMobName]
-                    val hasImmunity = scType != null && IMMUNE_MOB_TYPES.contains(scType)
+                    val hasImmunity = knownSeaCreatureByName[sc.baseMobName]?.hasSpawnImmunity == true
                     var isImmune = false
                     var immunitySecondsLeft = 0
 
@@ -251,25 +234,13 @@ object SeaCreatureHpTracker {
 
     private fun buildSeaCreatureHpLine(mob: MobDisplayInfo): String {
         val nameColor = rarityColorByMobName[mob.baseMobName] ?: WHITE.code
+        val obfuscatedIcon = "${DARK_PURPLE}${OBFUSCATED}a${RESET}"
         return buildString {
-            append(nameColor)
-            append(mob.baseMobName)
-            if (mob.formattedHp.isNotEmpty()) {
-                append(' ')
-                append(mob.formattedHp)
-            }
-            if (mob.isCorrupted) {
-                append(' ')
-                append(DARK_PURPLE)
-                append(OBFUSCATED)
-                append('a')
-                append(RESET)
-            }
-            if (mob.hasShuriken) {
-                append(' ')
-                append(AQUA)
-                append('✯')
-            }
+            if (mob.isCorrupted) append("${obfuscatedIcon} ")
+            append("${nameColor}${BOLD}${mob.baseMobName}${RESET}")
+            if (mob.formattedHp.isNotEmpty()) append(" ${mob.formattedHp}")
+            if (mob.isCorrupted) append(" ${obfuscatedIcon}")
+            if (mob.hasShuriken) append(" ${AQUA}✯")
         }
     }
 
