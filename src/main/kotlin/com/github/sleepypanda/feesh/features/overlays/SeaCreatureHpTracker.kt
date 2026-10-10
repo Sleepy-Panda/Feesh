@@ -238,8 +238,8 @@ object SeaCreatureHpTracker {
         return buildString {
             if (mob.isCorrupted) append("${obfuscatedIcon} ")
             append("${nameColor}${BOLD}${mob.baseMobName}${RESET}")
-            if (mob.formattedHp.isNotEmpty()) append(" ${mob.formattedHp}")
             if (mob.isCorrupted) append(" ${obfuscatedIcon}")
+            if (mob.formattedHp.isNotEmpty()) append(" ${mob.formattedHp}")
             if (mob.hasShuriken) append(" ${AQUA}✯")
         }
     }
