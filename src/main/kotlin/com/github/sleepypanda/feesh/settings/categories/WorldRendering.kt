@@ -60,7 +60,7 @@ object WorldRendering : CategoryKt("World Rendering") {
     }
   
     var lavaTintColor by ObservableEntry(
-        color(Color(0x280008).rgb) {
+        color(Color(0x3F76E4).rgb) {
             this.name = Translated("Tint water color")
             this.description = Translated("Color applied to the water that replaces lava when \"Tint water\" is on.")
             this.allowAlpha = false

@@ -90,6 +90,8 @@ object ReplaceAndTintLava {
         Material(Identifier.withDefaultNamespace(path)).withForceTranslucent(true)
 
     private object LavaTintSource : BlockTintSource {
+        private const val TINT_ALPHA = 128 // Used to control the transparency of the tinted block, 0-255
+
         override fun color(state: BlockState): Int {
             if (WorldRendering.tintReplacedLava) return tintColor()
             return ARGB.opaque(0x3F76E4)
@@ -100,6 +102,6 @@ object ReplaceAndTintLava {
             return BiomeColors.getAverageWaterColor(level, pos)
         }
 
-        private fun tintColor(): Int = ARGB.opaque(WorldRendering.lavaTintColor)
+        private fun tintColor(): Int = ARGB.color(TINT_ALPHA, WorldRendering.lavaTintColor)
     }
 }
