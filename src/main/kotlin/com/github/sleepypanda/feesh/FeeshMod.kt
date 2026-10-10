@@ -92,7 +92,7 @@ class FeeshMod : ClientModInitializer {
         ShurikenUsedPublisher.init()
 
         // Rendering
-        LavaRendering.init()
+        ReplaceAndTintLava.init()
         RareMobHighlight.init()
         HidePlayersNearBobber.init()
         HideTadgangNametags.init()

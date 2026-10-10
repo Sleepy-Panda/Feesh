@@ -1,8 +1,7 @@
 package com.github.sleepypanda.feesh.settings.categories
 
-import com.github.sleepypanda.feesh.FeeshMod
 import com.github.sleepypanda.feesh.constants.ModVersionConstants
-import com.github.sleepypanda.feesh.features.rendering.LavaRendering
+import com.github.sleepypanda.feesh.features.rendering.ReplaceAndTintLava
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
 import com.github.sleepypanda.feesh.features.rendering.HidePlayersNearBobber
@@ -34,17 +33,17 @@ object WorldRendering : CategoryKt("World Rendering") {
         }
     ) { prev, new ->
         if (prev != new) {
-            LavaRendering.reloadRenderedLava()
+            ReplaceAndTintLava.reloadRenderedLava()
         }
     }
    
     var lavaReplacementWorlds by ObservableEntry(select(LavaReplacementWorlds.CRIMSON_ISLE) {
         this.name = Translated("Worlds to replace lava")
         this.description = Translated("Worlds where lava is replaced with water.")
-        this.searchTerms = LavaReplacementWorlds.values().map { it.worldName } + ModVersionConstants.VERSION_1_16_0
+        this.searchTerms = LavaReplacementWorlds.entries.map { it.worldName } + ModVersionConstants.VERSION_1_16_0
     }) { prev, new ->
         if (!prev.contentEquals(new)) {
-            LavaRendering.reloadRenderedLava()
+            ReplaceAndTintLava.reloadRenderedLava()
         }
     }
 
@@ -56,12 +55,12 @@ object WorldRendering : CategoryKt("World Rendering") {
         }
     ) { prev, new ->
         if (prev != new) {
-            LavaRendering.reloadRenderedLava()
+            ReplaceAndTintLava.reloadRenderedLava()
         }
     }
   
     var lavaTintColor by ObservableEntry(
-        color(Color(0x470405).rgb) {
+        color(Color(0x280008).rgb) {
             this.name = Translated("Tint water color")
             this.description = Translated("Color applied to the water that replaces lava when \"Tint water\" is on.")
             this.allowAlpha = false
@@ -69,7 +68,7 @@ object WorldRendering : CategoryKt("World Rendering") {
         }
     ) { prev, new ->
         if (prev != new) {
-            LavaRendering.reloadRenderedLava()
+            ReplaceAndTintLava.reloadRenderedLava()
         }
     }
 
@@ -90,11 +89,11 @@ object WorldRendering : CategoryKt("World Rendering") {
     }
 
     var highlightSeaCreaturesList by ObservableEntry(select(
-            *HighlightableSeaCreatureTypes.values().filter { it.isEnabledByDefault }.toTypedArray(),
+            *HighlightableSeaCreatureTypes.entries.filter { it.isEnabledByDefault }.toTypedArray(),
         ) {
             this.name = Translated("Select sea creatures")
             this.description = Translated("Which sea creatures should have glowing outline applied to.")
-            this.searchTerms = HighlightableSeaCreatureTypes.values().map { it.displayName }.toList()
+            this.searchTerms = HighlightableSeaCreatureTypes.entries.map { it.displayName }.toList()
         }
     ) { prev, new ->
         if (!prev.contentEquals(new)) {

@@ -19,53 +19,39 @@ import net.minecraft.resources.Identifier
 import net.minecraft.util.ARGB
 import net.minecraft.world.level.block.state.BlockState
 
-object LavaRendering {
+object ReplaceAndTintLava {
     @Volatile
     private var lavaReplacementModel: FluidModel? = null
 
-    /** Chunks already rebuilt for the current world while replacement is on. */
-    private var appliedInWorld = false
+    /** Whether chunks are already reloaded for the current world (while replacement is on). */
+    private var isReplacementAppliedInWorld = false
 
     fun init() {
         EventBus.subscribe(ClientTickEvent::class, ::onClientTick)
         EventBus.subscribe(WorldChangedEvent::class, ::onWorldChanged)
     }
 
-    /** Tint only colors the water replacement, so replacement has to be on. */
     @JvmStatic
-    fun isActive(): Boolean {
+    fun isLavaReplacementActive(): Boolean {
         if (!WorldUtils.isInSkyblock() || !WorldRendering.replaceLavaWithWater) return false
-        return isSelectedWorld()
-    }
 
-    private fun isSelectedWorld(): Boolean {
         val worldName = WorldUtils.getWorldName() ?: return false
         return WorldRendering.lavaReplacementWorlds.any { it.worldName == worldName }
-    }
-
-    /**
-     * Scoreboard area arrives after some chunks mesh. Rebuild once the world is known.
-     */
-    private fun onClientTick(@Suppress("UNUSED_PARAMETER") event: ClientTickEvent) {
-        if (!isActive() || appliedInWorld) return
-        reloadRenderedLava()
-    }
-
-    private fun onWorldChanged(@Suppress("UNUSED_PARAMETER") event: WorldChangedEvent) {
-        appliedInWorld = false
     }
 
     @JvmStatic
     fun reloadRenderedLava() {
         if (!WorldUtils.isInSkyblock()) return
         val worldName = WorldUtils.getWorldName() ?: return
+
         val affectsThisWorld = LavaReplacementWorlds.values().any { it.worldName == worldName }
-        if (!affectsThisWorld && !appliedInWorld) return
-        appliedInWorld = isActive()
+        if (!affectsThisWorld && !isReplacementAppliedInWorld) return
+
+        isReplacementAppliedInWorld = isLavaReplacementActive()
 
         FeeshMod.mc.schedule {
             if (FeeshMod.mc.level == null) {
-                appliedInWorld = false
+                isReplacementAppliedInWorld = false
                 return@schedule
             }
             //#if MC >= 26.2
@@ -89,6 +75,15 @@ object LavaRendering {
 
     @JvmStatic
     fun getLavaReplacementModel(): FluidModel? = lavaReplacementModel
+
+    private fun onClientTick(@Suppress("UNUSED_PARAMETER") event: ClientTickEvent) {
+        if (!isLavaReplacementActive() || isReplacementAppliedInWorld) return
+        reloadRenderedLava()
+    }
+
+    private fun onWorldChanged(@Suppress("UNUSED_PARAMETER") event: WorldChangedEvent) {
+        isReplacementAppliedInWorld = false
+    }
 
     /** Water sprites on the translucent chunk layer, so lava is see-through like water. */
     private fun waterMaterial(path: String): Material =
