@@ -6,7 +6,6 @@ import com.github.sleepypanda.feesh.events.models.ClientTickEvent
 import com.github.sleepypanda.feesh.events.models.WorldChangedEvent
 import com.github.sleepypanda.feesh.utils.ChatUtils.getUnformattedString
 import net.minecraft.world.scores.DisplaySlot
-import net.minecraft.world.scores.PlayerTeam
 
 object WorldUtils {
     const val CRIMSON_ISLE = "Crimson Isle"
@@ -27,14 +26,18 @@ object WorldUtils {
     const val THE_END = "The End"
     const val GLACITE_MINESHAFTS = "Glacite Mineshafts"
     const val RIFT = "Rift Dimension"
-    const val GALATEA = "Galatea"
+    const val MOONGLADE_MARSH = "Moonglade Marsh"
     const val LOTUS_ATOLL = "Lotus Atoll"
     const val TORRHUS_CANYON = "Torrhus Canyon"
+    const val SAFARI = "Safari"
 
     // Zones
+    const val BIRCH_PARK = "Birch Park"
+    const val GLACITE_TUNNELS = "Glacite Tunnels"
     const val PLHLEGBLAST_POOL = "Plhlegblast Pool"
     const val MURKWATER_DEPTHS = "Murkwater Depths"
     const val DRAGON_LAIR = "Dragon's Lair"
+    const val TORRHUS_SPRINGS = "Torrhus Springs"
 
     val NO_FISHING_WORLDS = listOf(
         RIFT,
@@ -43,7 +46,8 @@ object WorldUtils {
         DUNGEONS,
         DUNGEON_HUB,
         THE_END,
-        GLACITE_MINESHAFTS
+        GLACITE_MINESHAFTS,
+        SAFARI
     )
 
     val WATER_FISHING_WORLDS = listOf(
@@ -55,7 +59,7 @@ object WorldUtils {
         JERRY_WORKSHOP,
         PARK,
         FARMING_ISLANDS,
-        GALATEA,
+        MOONGLADE_MARSH,
         LOTUS_ATOLL,
         TORRHUS_CANYON,
     )
@@ -71,6 +75,20 @@ object WorldUtils {
         TORRHUS_CANYON,
     )
 
+    val WEATHER_WORLDS = listOf(
+        BACKWATER_BAYOU,
+        CRIMSON_ISLE,
+        CRYSTAL_HOLLOWS,
+        DWARVEN_MINES,
+        GLACITE_TUNNELS,
+        JERRY_WORKSHOP,
+        LOTUS_ATOLL,
+        MOONGLADE_MARSH,
+        SPIDERS_DEN,
+        THE_END,
+        GARDEN,
+    )
+
     val WATER_HOTSPOT_WORLDS = listOf(
         BACKWATER_BAYOU,
         SPIDERS_DEN,
@@ -83,6 +101,7 @@ object WorldUtils {
 
     private var cachedIsInSkyblock: Boolean = false
     private var cachedIsOnAlpha: Boolean = false
+    private var cachedIsOnBingo: Boolean = false
     private var cachedWorldName: String? = null
     private var cachedZoneName: String? = null
 
@@ -109,6 +128,7 @@ object WorldUtils {
         tickCounter = TICKS_PER_UPDATE
         cachedIsInSkyblock = false
         cachedIsOnAlpha = false
+        cachedIsOnBingo = false
         cachedWorldName = null
         cachedZoneName = null
 
@@ -118,8 +138,13 @@ object WorldUtils {
     private fun updateCache() {
         CommonUtils.runWithCatching("Failed to update world utils cache") {
             cachedIsInSkyblock = readIsInSkyblock()
+
             cachedIsOnAlpha = if (cachedIsInSkyblock) {
                 readIsOnAlpha()
+            } else false
+
+            cachedIsOnBingo = if (cachedIsInSkyblock) {
+                readIsOnBingo()
             } else false
 
             cachedWorldName = if (cachedIsInSkyblock) {
@@ -133,12 +158,12 @@ object WorldUtils {
     }
     
     private fun readWorldName(): String? {
-        val worldName = TabListUtils.getLineAfter("Area:")
+        val worldName = TabListAndScoreboardUtils.getLineAfter("Area:")
         return worldName.ifEmpty { null }
     }
 
     private fun readZoneName(): String? {
-        val zoneLine = getUnformattedScoreboardLines().find { line -> zonePrefixes.any { line.contains(it) } }
+        val zoneLine = TabListAndScoreboardUtils.getUnformattedScoreboardLines().find { line -> zonePrefixes.any { line.contains(it) } }
         if (zoneLine.isNullOrEmpty()) return null
 
         // ⏣ Abandoned🐍 Quarry -> Abandoned Quarry
@@ -171,34 +196,29 @@ object WorldUtils {
         return value >= num1 && value <= num2
     }
 
-    private fun getUnformattedScoreboardLines(): List<String> {
-        val scoreboard = FeeshMod.mc.level?.scoreboard ?: return emptyList()
-        val objective = scoreboard.getDisplayObjective(DisplaySlot.SIDEBAR) ?: return emptyList()
-
-        val zoneLines = scoreboard.listPlayerScores(objective)
-            .filter { entry -> !entry.isHidden }
-            .map { entry ->
-                val team = scoreboard.getPlayersTeam(entry.owner)
-                PlayerTeam.formatNameForTeam(team, entry.ownerName()).getUnformattedString()
-            }
-
-        return zoneLines
-    }
-
     private fun readIsInSkyblock(): Boolean {
         //val serverAddress = FeeshMod.mc.currentServerEntry?.address ?: return false
         //if (!serverAddress.contains("hypixel", ignoreCase = true)) return false
         // ^ Commented out for now, because people with reverse proxy have other server addresses
 
-        val scoreboard = FeeshMod.mc.level?.scoreboard ?: return false
-        val objective = scoreboard.getDisplayObjective(DisplaySlot.SIDEBAR) ?: return false
-        val title = objective.displayName.getUnformattedString()
+        val title = getScoreboardTitle() ?: return false
         return title.contains("skyblock", ignoreCase = true)
     }
 
     private fun readIsOnAlpha(): Boolean {
-        val zoneLines = getUnformattedScoreboardLines()
-        return zoneLines.any { line -> line.contains("alpha.hypixel.net", ignoreCase = true) }
+        val scoreboardLines = TabListAndScoreboardUtils.getUnformattedScoreboardLines()
+        return scoreboardLines.any { line -> line.contains("alpha.hypixel.net", ignoreCase = true) }
+    }
+
+    private fun readIsOnBingo(): Boolean {
+        val title = getScoreboardTitle() ?: return false
+        return title.endsWith("Ⓑ")
+    }
+
+    private fun getScoreboardTitle(): String? {
+        val scoreboard = FeeshMod.mc.level?.scoreboard ?: return null
+        val objective = scoreboard.getDisplayObjective(DisplaySlot.SIDEBAR) ?: return null
+        return objective.displayName.getUnformattedString()
     }
 
     fun isInSkyblock(): Boolean {
@@ -208,6 +228,11 @@ object WorldUtils {
     fun isOnAlpha(): Boolean {
         if (!isInSkyblock()) return false
         return cachedIsOnAlpha
+    }
+
+    fun isOnBingo(): Boolean {
+        if (!isInSkyblock()) return false
+        return cachedIsOnBingo
     }
 
     /**
@@ -240,6 +265,16 @@ object WorldUtils {
         val worldName = getWorldName()
     	if (worldName.isNullOrEmpty()) return false
         return HOTSPOT_WORLDS.contains(getWorldName())
+    }
+
+    /**
+     * Is in Weather areas.
+     */
+    fun isInWeatherWorld(): Boolean {
+        if (!isInSkyblock()) return false
+        val worldName = getWorldName() ?: return false
+        if (worldName == PARK) return getZoneName() == BIRCH_PARK
+        return WEATHER_WORLDS.contains(worldName)
     }
 
     /**

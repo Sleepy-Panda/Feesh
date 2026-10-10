@@ -1,5 +1,6 @@
 package com.github.sleepypanda.feesh.settings.categories
 
+import com.github.sleepypanda.feesh.constants.ModVersionConstants
 
 import com.github.sleepypanda.feesh.FeeshMod
 import com.github.sleepypanda.feesh.features.rendering.LavaRendering
@@ -106,8 +107,13 @@ object WorldRendering : CategoryKt("World Rendering") {
         }
     }
 
+    var hideOtherPlayersFishingHooks by boolean(false) {
+        this.name = Translated("Hide other players' fishing hooks")
+        this.description = Translated("Hides fishing hooks that belong to other players.")
+    }
+
     var hidePlayersNearBobber by boolean(false) {
-        this.name = Translated("Hide players near bobber")
+        this.name = Translated("Hide players near your bobber")
         this.description = Translated("Hides other players when your fishing rod is casted, if they are within the configured distance from your fishing hook.")
     }
 
@@ -131,17 +137,29 @@ object WorldRendering : CategoryKt("World Rendering") {
 
     init {
         separator {
+            this.title = "${AQUA}${BOLD}Nametags"
+        }
+    }
+
+    var hideTadgangNametags by boolean(false) {
+        this.name = Translated("Hide Tadgang nametags")
+        this.description = Translated("Hides Tadgang tadpoles nametags in Moonglade Marsh. Tadgang frogs nametags are still visible!.")
+        this.searchTerms = listOf(ModVersionConstants.VERSION_1_12_0)
+    }
+
+    init {
+        separator {
             this.title = "${AQUA}${BOLD}World sounds"
         }
     }
 
     var muteJadeDragon by boolean(false) {
         this.name = Translated("Mute Jade Dragon")
-        this.description = Translated("Mutes Jade dragon sounds while you are in dragon's cave.")
+        this.description = Translated("Mutes Jade dragon sounds 'entity.ender_dragon.*' while you are in dragon's cave. ${YELLOW}If you use Sound Controller mod, this setting might be overridden by it!")
     }
 
     var muteReindrakeGifts by boolean(false) {
         this.name = Translated("Mute Reindrake gifts")
-        this.description = Translated("Mutes loud 'totem used' sounds while picking up gifts from a Reindrake.")
+        this.description = Translated("Mutes loud 'item.totem.use' sounds while picking up gifts from a Reindrake. ${YELLOW}If you use Sound Controller mod, this setting might be overridden by it!")
     }
 }

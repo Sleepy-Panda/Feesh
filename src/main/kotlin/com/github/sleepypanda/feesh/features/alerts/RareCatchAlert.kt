@@ -27,7 +27,8 @@ object RareCatchAlert {
     val FEESH_PCHAT_PATTERN = Regex("^--> (A|An) (?<uppercaseScName>(.*)) has spawned (.*)<--$")
     val FEESH_PCHAT_DH_PATTERN = Regex("^--> DOUBLE HOOK! Two (?<uppercaseScName>(.*))s have spawned (.*)<--$")
     val FEESH_PCHAT_COCOON_PATTERN = Regex("^--> (A|An) (?<uppercaseScName>(.*)) was cocooned (.*)<--$")
-    val SH_PCHAT_PATTERN = Regex("^(?<dh>(DOUBLE HOOK: )?)I caught (a|an) (?<scName>(.*))\\!$")
+    val SH_PCHAT_PATTERN = Regex("^(?<dh>(DOUBLE HOOK: )?)I caught (a|an) (?<scName>(.*))!$")
+    val SH_COCOON_PCHAT_PATTERN = Regex("^My (?<scName>(.*)) has been cocooned!$")
 
     fun init() {
         EventBus.subscribe(OwnSeaCreatureCaughtEvent::class, ::onOwnSeaCreature)
@@ -56,39 +57,52 @@ object RareCatchAlert {
 
         val me = PlayerUtils.getUnformattedName()
         if (me.isNullOrEmpty()) return
+
         val playerName = PlayerUtils.getFormattedPlayerNameFromPartyChat(event.rankAndPlayer) ?: return
-        if (!playerName.isNullOrEmpty() && playerName.removeFormatting().contains(me)) return
+        if (playerName.isNotEmpty() && playerName.removeFormatting().contains(me)) return
 
         val message = event.messagePayload.removeFormatting()
-        
-        if (FEESH_PCHAT_PATTERN.containsMatchIn(message)) {
-            val match = FEESH_PCHAT_PATTERN.matchEntire(message) ?: return
-            val uppercaseSeaCreatureName = match.groups.get("uppercaseScName")?.value ?: return
-            showCaughtAlert(uppercaseSeaCreatureName, false, playerName)
-        } else if (FEESH_PCHAT_DH_PATTERN.containsMatchIn(message)) {
-            val match = FEESH_PCHAT_DH_PATTERN.matchEntire(message) ?: return
-            val uppercaseSeaCreatureName = match.groups.get("uppercaseScName")?.value ?: return
-            showCaughtAlert(uppercaseSeaCreatureName, true, playerName)
-        } else if (FEESH_PCHAT_COCOON_PATTERN.containsMatchIn(message)) {
-            if (!Alerts.alertOnSeaCreaturesIncludeCocooned) return
-            val match = FEESH_PCHAT_COCOON_PATTERN.matchEntire(message) ?: return
-            val uppercaseSeaCreatureName = match.groups.get("uppercaseScName")?.value ?: return
-            showCocoonAlert(uppercaseSeaCreatureName, playerName)
-        } else if (SH_PCHAT_PATTERN.containsMatchIn(message)) {
-            val match = SH_PCHAT_PATTERN.matchEntire(message) ?: return
-            val dh = match.groups.get("dh")?.value ?: return
-            var seaCreatureName = match.groups.get("scName")?.value ?: return
-            if (seaCreatureName == "The Sea Emperor") seaCreatureName = SeaCreatureNames.THE_LOCH_EMPEROR
-            val isDoubleHook = dh.isNotEmpty()
-            showCaughtAlert(seaCreatureName, isDoubleHook, playerName)
+
+        FEESH_PCHAT_PATTERN.matchEntire(message)?.let { match ->
+            val seaCreatureName = match.groups["uppercaseScName"]?.value ?: return
+            showCaughtAlert(seaCreatureName, false, playerName)
+            return
         }
+        FEESH_PCHAT_DH_PATTERN.matchEntire(message)?.let { match ->
+            val seaCreatureName = match.groups["uppercaseScName"]?.value ?: return
+            showCaughtAlert(seaCreatureName, true, playerName)
+            return
+        }
+        FEESH_PCHAT_COCOON_PATTERN.matchEntire(message)?.let { match ->
+            if (!Alerts.alertOnSeaCreaturesIncludeCocooned) return
+            val seaCreatureName = match.groups["uppercaseScName"]?.value ?: return
+            showCocoonAlert(seaCreatureName, playerName)
+            return
+        }
+        SH_PCHAT_PATTERN.matchEntire(message)?.let { match ->
+            val dh = match.groups["dh"]?.value ?: return
+            val scName = getSkyHanniScName(match) ?: return
+            showCaughtAlert(scName, dh.isNotEmpty(), playerName)
+            return
+        }
+        SH_COCOON_PCHAT_PATTERN.matchEntire(message)?.let { match ->
+            if (!Alerts.alertOnSeaCreaturesIncludeCocooned) return
+            val scName = getSkyHanniScName(match) ?: return
+            showCocoonAlert(scName, playerName)
+            return
+        }
+    }
+
+    private fun getSkyHanniScName(match: MatchResult): String? {
+        val name = match.groups["scName"]?.value ?: return null
+        return if (name == "The Sea Emperor") SeaCreatureNames.THE_LOCH_EMPEROR else name
     }
 
     private fun showCaughtAlert(seaCreatureName: String, isDoubleHook: Boolean, playerName: String) {
         val enabledScNames = Alerts.alertOnSeaCreaturesList.map { it.displayName }
         if (!enabledScNames.any { it.equals(seaCreatureName, ignoreCase = true) }) return
 
-        var seaCreatureInfo = SeaCreatures.allSeaCreatures.find { it.name.equals(seaCreatureName, ignoreCase = true) } ?: return
+        val seaCreatureInfo = SeaCreatures.allSeaCreatures.find { it.name.equals(seaCreatureName, ignoreCase = true) } ?: return
 
         val title = SeaCreatures.getTitle(seaCreatureInfo.name, isDoubleHook)
         CommonUtils.showTitle(title, playerName)
@@ -110,7 +124,7 @@ object RareCatchAlert {
         val enabledScNames = Alerts.alertOnSeaCreaturesList.map { it.displayName }
         if (!enabledScNames.any { it.equals(seaCreatureName, ignoreCase = true) }) return
 
-        var seaCreatureInfo = SeaCreatures.allSeaCreatures.find { it.name.equals(seaCreatureName, ignoreCase = true) } ?: return
+        val seaCreatureInfo = SeaCreatures.allSeaCreatures.find { it.name.equals(seaCreatureName, ignoreCase = true) } ?: return
 
         val title = "${seaCreatureInfo.boldDisplayName} ${RED}cocooned"
         CommonUtils.showTitle(title, playerName)

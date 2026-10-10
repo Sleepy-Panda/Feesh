@@ -1,24 +1,208 @@
-# 1.11.0
+# 1.16.0
 
 Released on: ???
 
 ## Features
 
-- Removed support of 1.21.10. RIP
-- Torrhus Canyon:
-  - Added new sea creatures and drops.
-  - Enabled hotspot functionalities.
+- Made sea creatures HP display more compact and colored sea creature names according to their rarity.
+
+# 1.15.1
+
+Released on: 2026-10-07
+
+## Features
+
+- Changed Nutcracker to not be enabled in alert/highlight/HP tracker by default for new users.
+
+## Bugfixes
+
+- Fixed shards caught as a Treasure not going into Fishing profit tracker.
+- Fixed coins caught as a Treasure not going into Fishing profit tracker.
+
+# 1.15.0
+
+Released on: 2026-10-06
+
+## Features
+
+- Added Minecraft 26.3 support.
+- Added option to toggle showing profit lines (Profit, Costs, Net profit) in Fishing profit tracker.
+  - By default, Costs and Net profit is shown.
+  - New settings replace previous "Track costs" setting! If you had Costs disabled, turn off Show Costs and Show Net profit.
+- Added option to track Catches & Catches/hour in Fishing profit tracker. You can disable it in settings.
+  - Hover over the Catches line while in inventory to see details such as profit per catch.
+  - You can initialize your past [Total] counter, using the commands from [the guide](https://github.com/Sleepy-Panda/Feesh/blob/develop/docs/Editing%20profit%20tracker.md#editing-catches).
+- Renamed command which resets data in the current fishing session - from `/feeshBulkResetTrackers` to `/feeshBulkResetFishingSession`.
+- Added option to show fishing rod parts abbreviations (Hook, Line, Sinker) in the item slot [disabled by default].
+- Added support of new Fishing Bait Sack for existing Alert when bait usage is disabled.
+- Added alert on weather event starting soon [disabled by default]. Also now you can select weather types for starts soon/ends soon alerts.
+- Personal Bests:
+  - Adjusted output of `/feeshPersonalBests` command to show PB date and description when hovering.
+  - Added Personal Best for Treasure catch streak (longest streak of treasure/junk catches in a row until a non-treasure catch).
+  - Added Personal Bests for Great treasure streak and Outstanding treasure streak.
+  - Made PB title stay a bit longer on the screen.
+- Made Magma Pillar shown in "Only rare" sea creatures tracker view.
+- Announce pickup of Hunk of Blue Ice into Fishing profit tracker (as they are somehow expensive), removed it for Walnut.
+- Show 2 decimals instead of 1 for big profit numbers (billions).
+
+## Bugfixes
+
+- Fixed maxed T-Rex pet not triggering alert and not going into Fishing profit tracker.
+
+## Other
+
+- Added `/feeshDebugLogPartyChatMessages` command to toggle duplicating outgoing party chat message into local chat.
+
+# 1.14.0
+
+Released on: 2026-09-14
+
+## Features
+
+- Added option to track & show costs (spent bait, shurikens, Moby-Duck) in Fishing profit tracker. This also shows net profit after subtracting costs from total profit. You can disable it in settings.
+  - Hover over the Costs line while in inventory to see details.
+  - Not shown when NPC Price mode selected.
+- Improved settings search:
+  - You can search for version-specific features in /feesh settings GUI (e.g. search for 1.14.0 to see new settings added in this version).
+  - You can provide search query when calling /feesh command: `/feesh 1.14.0` or `/feesh profit tracker`.
+- Weather update preparation:
+  - Renamed `/feeshSpiderDenRainSchedule` to `/feeshWeatherSchedule` and changed its output to show upcoming Mild / Extreme weather events schedule.
+  - Removed old Rain timer overlay/alert and added new Weather timer/alert working for all new weather-affected worlds. **Please re-enable in settings if you need it!**
+  - Removed "Blizzards started" counter from Personal Bests, because Blizzard in a Bottle will become a mixin after the update.
+- Added alert when a fishing drop (e.g. raw fish) overflows into your inventory, meaning sack is full [disabled by default]. It offers buttons for Supercrafting a compacted item / Bazaar sell.
+- Added "Alert when Day/Night started" when Skyblock time hits 6:00am or 7:00pm [disabled by default]. Can be useful for swapping Light/Dark baits or other activities.
+- Trackers commands adjustments:
+  - Added command to search item data in Fishing profit tracker:
+    - `/feeshGetItemFishingProfitTracker` / `/feeshGetItemFishingProfitTrackerTotal`
+    - Pass item ID or full/partial item name as argument
+    - [Guide](https://github.com/Sleepy-Panda/Feesh/blob/develop/docs/Editing%20profit%20tracker.md#getting-tracker-items)
+  - Renamed some commands to edit Fishing profit tracker, to follow consistent naming style.
+  - Adjustments to editing Treasure fishing tracker data:
+    - Allowed 0 as Treasure Dye drop count in `/feeshSetTrackerDrops` command, to initialize catches before your first Treasure Dye.
+    - Added `/feeshSetTreasureCatches` / `/feeshSetTreasureCatchesTotal` to set Good/Great/Outstanding catches counts for Session and Total mode.
+    - Added [Editing treasure fishing tracker guide](https://github.com/Sleepy-Panda/Feesh/blob/develop/docs/Editing%20treasure%20fishing%20tracker.md).
+
+## Bugfixes
+
+- Removed Corruption I book from profit tracker as they are not in the drop pool anymore.
+- Fixed outdated amount of Lotus when calculating profit for some trophy frogs.
+- Removed Bayou Travel Scroll from `/feeshJunkerJoelShopPrices` command output.
+- Fixed Tadgang's tadpoles nametags not being hidden after changing their mob level.
+- Fixed NPC price for Foraging Exp Boost profit tracker drop.
+- Fixed sacks items counting in the Fishing profit tracker after sending stash to sacks.
+- Aligned elapsed time calculation for Fishing profit tracker and Efficiency tracker.
+
+# 1.13.0
+
+Released on: 2026-08-24
+
+## Features
+
+- Added Sea Brine (new Brineling drop) to Fishing profit tracker.
+- Added Uncommon Foraging Exp Boost (Ent drop) and removed Epic Foraging Exp Boost in the Fishing profit tracker.
+- Added Giant Isopod to the ALL CHAT rare catch share functionality.
+- Added option to hide Trophy Fish/Frog catch messages from the chat for selected rarities [disabled by default].
+  - You will still see newly discovered ones, but cleanup chat from already obtained trophies.
+- Added option to hide lootshare messages when in Frozen Blaze armor [disabled by default].
+- Added SkyHanni party chat message format for cocoon alert.
+
+## Bugfixes
+
+- Fixed partial Magma Pillar highlighting.
+- Fixed detection if player is in Trophy armor not working sometimes when SB does not return equipped armor details.
+- Fixed some cases of items not being counted into the Fishing profit tracker on pickup (e.g. while in pet menu).
+- Pinned Dyes at the top of Fishing profit tracker for NPC Sell price mode.
+- Made "Equip fishing armor" alert no longer repeat while the same armor is equipped.
+- Made non-reforged Frozen Blaze armor no more triggering "Equip fishing armor" alert.
+- Fixed "Mute Reindrake gifts" not working when killing other player's dragon.
+  - There is still issue with Sound Controller overriding mute applied by Feesh.
+- Fixed numbers rounding issue showing "1000k" instead of "1M" sometimes.
+
+## Other
+
+- Removed support of 1.21.11. RIP
+- Added debug command /feeshDebugLogSounds for logging every sound played within 5 seconds.
+
+# 1.12.3
+
+Released on: 2026-08-12
+
+## Bugfixes
+
+- Track new drops in Fishing profit tracker: Goldolot Shard, Veilshroom Bunch.
+- Fixed charmed shards not being counted in Fishing profit tracker, after SB changed the chat message.
+
+# 1.12.2
+
+Released on: 2026-08-06
+
+## Bugfixes
+
+- Fixed Miria's contests above Legendary not being tracked in the profit tracker.
+- Show [Immune] flag for 5 seconds for Silkbreeze in HP tracker.
+- Removed Rubber Snorkel from fishing profit tracker pool.
+- Fixed player death alert/message not triggering when killed by a Torrid.
+
+# 1.12.1
+
+Released on: 2026-08-04
+
+## Bugfixes
+
+- Fixed Sprawl and Silkbreeze sea creature catches not being tracked (SB changed catch message).
+- Adapted to new format of shards treasure messages so they are counted in profit tracker.
+- Fixed NPC price for new Torrhus Canyon drops in profit tracker.
+
+# 1.12.0
+
+Released on: 2026-08-03
+
+## Features
+
+- Added "Hide Tadgang nametags" setting to hide Tadgang tadpoles (not frogs) nametags in Moonglade Marsh [disabled by default].
+
+## Bugfixes
+
+- Fixed Galatea functionalities not working after Hypixel renamed the island to Moonglade Marsh (Torrhus Canyon SB Update).
+- Fixed "Equip fishing armor" alert showing when Hypixel does not return armor piece name / NBT data every few seconds (Torrhus Canyon SB Update).
+- Fixed rare mobs highlight not applying sometimes when the server lags.
+- Fixed Fishing hook timer flickering (not hiding original timer armorstand) sometimes.
+
+## Other
+
+- Refactored way of handling armor stand spawn events.
+
+# 1.11.0
+
+Released on: 2026-07-24
+
+## Features
+
+- Torrhus Canyon alpha:
+  - Added new sea creatures, drops and alerts.
+  - Added Miria's contests to fishing profit tracker.
+  - Enabled hotspot functionalities on new island.
+  - Added Torrhus Canyon tracker with Silkbreeze/Giant Isopod catch statistics [disabled by default].
+- "Sea creatures per hour tracker" is replaced with Efficiency tracker:
+  - It offers various selectable stats, such as Catches/h, SC catches/h, SC/h, etc.
+  - Needs re-enabling in settings with new configuration!
 - Added setting to compact rod parts in the tooltip [disabled by default] - it removes rod parts descriptions to have shorter tooltip.
-- Added Plasma to the fishing profit tracker (new Mithril Grubber drop from Alpha server).
 - Added Octopus Tendril and Troubled Bubble rare drop alert & party chat message. Make sure to enable if you need it! (or use ALL)
+- Added Plasma to the fishing profit tracker (new Mithril Grubber drop from Alpha server).
 - Added toggle to use gradient color for sea creature name in "Compact sea creature catch messages" feature.
 - Gradient color for mod name prefix in chat c:
 - Added Flux and its variations to Deployable overlay / Deployable expiration alert.
 - Added setting to control amount of seconds for alert before deployable expiration.
+- Added "Alert when out of air soon" for Galatea / Torrhus Canyon.
 
 ## Bugfixes
 
-- Fixed rare mobs highlight colors not matching new SB colors.
+- Fixed rare mobs highlight colors not matching new SB color schema.
+- Fixed Martin NPC's bobber counted in Bobbin' Time overlay.
+
+## Other
+
+- Removed support of 1.21.10. RIP
 
 # 1.10.0
 

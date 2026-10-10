@@ -30,7 +30,8 @@ object Welcome {
         ChatUtils.sendLocalChat(chatBreak)
         ChatUtils.sendLocalChat("${AQUA}α ${WHITE}${BOLD}Welcome to ${GOLD}${BOLD}${FeeshMod.MOD_NAME}${WHITE}${BOLD}!")
         ChatUtils.sendLocalChat("${GRAY}- ${WHITE}To open the settings, do ${AQUA}/feesh")
-        ChatUtils.sendLocalChat("${GRAY}- ${WHITE}To move the enabled GUIs, do ${AQUA}/${MoveGuis.COMMAND_NAME}")
+        ChatUtils.sendLocalChat("${GRAY}- ${WHITE}To search in the settings, do ${AQUA}/feesh <search query>${WHITE}, e.g. ${AQUA}/feesh 1.14.0")
+        ChatUtils.sendLocalChat("${GRAY}- ${WHITE}To move/scale the enabled overlays, do ${AQUA}/${MoveGuis.COMMAND_NAME}")
         ChatUtils.sendLocalChat("${GRAY}Happy Fishing!")
         ChatUtils.sendLocalChat(chatBreak)
     }

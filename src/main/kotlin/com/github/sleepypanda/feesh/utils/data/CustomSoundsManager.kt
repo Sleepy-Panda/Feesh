@@ -159,8 +159,6 @@ object CustomSoundsManager {
             }
 
             resourcePackSoundsDir.mkdirs()
-            // 69.0 for 1.21.10
-            // 75.0 for 1.21.11
             // https://minecraft.wiki/w/Pack_format
             val packFormat = SharedConstants.getCurrentVersion().packVersion(PackType.CLIENT_RESOURCES)
             

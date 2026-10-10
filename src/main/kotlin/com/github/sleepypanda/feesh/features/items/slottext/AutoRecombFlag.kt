@@ -1,13 +1,12 @@
 package com.github.sleepypanda.feesh.features.items.slottext
 
 import com.github.sleepypanda.feesh.settings.categories.Items
+import com.github.sleepypanda.feesh.features.items.slottext.models.SlotTextLine
 import com.github.sleepypanda.feesh.utils.ChatUtils.getFormattedString
-import com.github.sleepypanda.feesh.utils.ChatUtils.removeFormatting
 import com.github.sleepypanda.feesh.utils.ItemUtils
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.inventory.Slot
-import kotlin.math.truncate
 
 object AutoRecombFlag : BaseSlotTextRenderer() {
 
@@ -19,7 +18,7 @@ object AutoRecombFlag : BaseSlotTextRenderer() {
 
     override fun isEnabled(): Boolean = Items.showAutoRecombFlag
 
-    override fun getItemStackSlotText(stack: ItemStack, screen: AbstractContainerScreen<*>, slot: Slot): String? {
+    override fun getItemStackSlotLines(stack: ItemStack, screen: AbstractContainerScreen<*>, slot: Slot): List<SlotTextLine>? {
         if (stack.isEmpty) return null
         val name = ItemUtils.getCleanItemName(stack.hoverName.getFormattedString())
         if (name.isNullOrEmpty()) return null
@@ -47,9 +46,7 @@ object AutoRecombFlag : BaseSlotTextRenderer() {
         val nbt = ItemUtils.getCustomData(stack) ?: return null
         val obj = ItemUtils.customDataToJsonObject(nbt) ?: return null
         val hasUpgrade = obj.get("rarity_upgrades")?.asInt ?: false
-        val slotText = if (hasUpgrade == 1) "R" else null
-        return slotText
+        if (hasUpgrade != 1) return null
+        return listOf(SlotTextLine("R", SLOT_COLOR))
     }
-
-    override fun getTextColor(): Int = SLOT_COLOR
 }

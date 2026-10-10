@@ -3,9 +3,11 @@ package com.github.sleepypanda.feesh.settings.categories
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
 import com.github.sleepypanda.feesh.settings.models.AlertableSeaCreatureTypes
+import com.github.sleepypanda.feesh.constants.ModVersionConstants
 import com.github.sleepypanda.feesh.constants.RareDropTypes
 import com.github.sleepypanda.feesh.utils.enums.DeployableTypes
 import com.github.sleepypanda.feesh.utils.enums.PricingModeWithNpc
+import com.github.sleepypanda.feesh.utils.enums.WeatherEventTypes
 import com.teamresourceful.resourcefulconfigkt.api.CategoryKt
 import com.teamresourceful.resourcefulconfig.api.types.options.TranslatableValue
 
@@ -209,8 +211,8 @@ object Alerts : CategoryKt("Alerts") {
     }
 
     var seaCreaturesCountThreshold_Galatea by int(30) {
-        this.name = Translated("Sea creatures count threshold - GALATEA")
-        this.description = Translated("Count of sea creatures nearby required to see the alert when you are in the Galatea. It does not check if those are own or other people's sea creatures.Ignored if the sea creatures count alert is disabled.")
+        this.name = Translated("Sea creatures count threshold - MOONGLADE MARSH")
+        this.description = Translated("Count of sea creatures nearby required to see the alert when you are in the Moonglade Marsh. It does not check if those are own or other people's sea creatures. Ignored if the sea creatures count alert is disabled.")
         this.range = 5..60
         this.slider = true
     }
@@ -243,6 +245,7 @@ object Alerts : CategoryKt("Alerts") {
         this.description = Translated("How many seconds should remain until deployable expiration to see the alert. This setting is applicable to long-living deployables (3 min or 5 min).")
         this.range = 1..60
         this.slider = true
+        this.searchTerms = listOf(ModVersionConstants.VERSION_1_11_0)
     }
 
     var shortLivingDeployableExpiresSoonSeconds by int(5) {
@@ -250,6 +253,7 @@ object Alerts : CategoryKt("Alerts") {
         this.description = Translated("How many seconds should remain until deployable expiration to see the alert. This setting is applicable to short-living deployables (30s or 1 min).")
         this.range = 1..30
         this.slider = true
+        this.searchTerms = listOf(ModVersionConstants.VERSION_1_11_0)
     }
 
     init {
@@ -302,13 +306,43 @@ object Alerts : CategoryKt("Alerts") {
 
     init {
         separator {
-            this.title = "${AQUA}${BOLD}Rain, Thunder, Blizzard"
+            this.title = "${AQUA}${BOLD}Weather"
         }
     }
+ 
+    var alertOnWeatherStartingSoon by boolean(false) {
+        this.name = Translated("Alert when weather event starts soon")
+        this.description = Translated("${GRAY}Shows a title and plays a sound when a weather event starts soon. Please enable ${YELLOW}TabList settings -> General Info widget -> Show Weather")
+        this.searchTerms = listOf(ModVersionConstants.VERSION_1_15_0)
+    }
 
-    var alertOnRainEndingSoon by boolean(false) {
-        this.name = Translated("Alert when Rain/Thunder/Blizzard ends soon")
-        this.description = Translated("${GRAY}Shows a title and plays a sound when active Rain/Thunder/Blizzard ends soon. It's applicable to The Park, Spider's Den, Lotus Atoll, Backwater Bayou, and Jerry's Workshop. Please enable ${YELLOW}TabList settings -> General Info widget -> Show Rain / Show Blizzard")
+    var alertOnWeatherEndingSoon by boolean(false) {
+        this.name = Translated("Alert when weather event ends soon")
+        this.description = Translated("${GRAY}Shows a title and plays a sound when active weather event ends soon. Please enable ${YELLOW}TabList settings -> General Info widget -> Show Weather")
+        this.searchTerms = listOf(ModVersionConstants.VERSION_1_14_0)
+    }
+
+    var alertOnWeatherEventTypes by select(*WeatherEventTypes.values()) {
+        this.name = Translated("Select weather types to be alerted on")
+        this.searchTerms = WeatherEventTypes.values().map { it.displayName }.toList() + ModVersionConstants.VERSION_1_15_0
+    }
+
+    init {
+        separator {
+            this.title = "${AQUA}${BOLD}Day/Night"
+        }
+    }
+    
+    var alertOnDayNight by boolean(false) {
+        this.name = Translated("Alert when Day/Night started")
+        this.description = Translated("Shows a title and plays a sound when Skyblock day starts (6:00am) or Skyblock night starts (7:00pm). Can be used as a reminder to swap Light/Dark bait.")
+        this.searchTerms = listOf(ModVersionConstants.VERSION_1_14_0)
+    }
+
+    var alertOnDayNightOnlyWhenFishing by boolean(false) {
+        this.name = Translated("Alert when Day/Night started only when fishing")
+        this.description = Translated("Alerts only when you are fishing. If disabled, alerts you in every location regardless of whether you are fishing or not.")
+        this.searchTerms = listOf(ModVersionConstants.VERSION_1_14_0)
     }
 
     init {
@@ -334,8 +368,8 @@ object Alerts : CategoryKt("Alerts") {
     }
     
     var alertOnFishingBagDisabled by boolean(true) {
-        this.name = Translated("Alert when Fishing Bag is disabled")
-        this.description = Translated("Shows a title and plays a sound when current player starts fishing with Fishing Bag disabled.\n${YELLOW}After enabling the setting, please open your fishing bag once to initialize its state!")
+        this.name = Translated("Alert when Fishing Bag/Bait Sack is disabled")
+        this.description = Translated("Shows a title and plays a sound when current player starts fishing with Fishing Bait Sack disabled.\n${YELLOW}After enabling the setting, please open your fishing bait sack once to initialize its state!")
     }
 
     var alertOnBaitChanged by boolean(true) {
@@ -377,6 +411,18 @@ object Alerts : CategoryKt("Alerts") {
     var alertOnThunderBottleCharged by boolean(true) {
         this.name = Translated("Alert when Thunder/Storm/Hurricane Bottle is charged")
         this.description = Translated("Shows a title and plays a sound when your Thunder, Storm, or Hurricane Bottle is fully charged.")
+    }
+    
+    var alertOnOutOfAir by boolean(true) {
+        this.name = Translated("Alert when out of air soon")
+        this.description = Translated("Shows a title and plays a sound when you are low on air and will start drowning soon. Applicable for Moonglade Marsh and Torrhus Canyon.")
+        this.searchTerms = listOf(ModVersionConstants.VERSION_1_11_0)
+    }
+
+    var alertOnSackDropsIntoInventory by boolean(false) {
+        this.name = Translated("Alert when sack fishing drops go into inventory")
+        this.description = Translated("Sends a chat message when a fishing drop (e.g. raw fish) overflows into your inventory, meaning sack is full. It offers buttons for Supercrafting a compacted item / Bazaar sell. Enable only if you have all sacks, so items normally go into them!")
+        this.searchTerms = listOf(ModVersionConstants.VERSION_1_14_0)
     }
     
     var alertOnWormTheFishCaught by boolean(false) {

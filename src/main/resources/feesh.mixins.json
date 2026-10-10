@@ -9,7 +9,10 @@
 		"MultiPlayerGameModeMixin",
 		"MinecraftMixin",
 		"EntityRendererMixin",
+		"SynchedEntityDataMixin",
+		"EntityAccessor",
 		"SoundEngineMixin",
+		"AbstractSoundInstanceAccessor",
 		${fluid_mixins} // processed from build.common.gradle
 	],
 	"injectors": {

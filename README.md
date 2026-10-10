@@ -1,6 +1,6 @@
 # Feesh Mod
 
-`Feesh` is a Fabric 1.21.11 / 26.1 / 26.2 mod for Hypixel Skyblock. It introduces many fishing-related QOL features. Do `/feesh`, set up the mod, and enjoy fishing! <3
+`Feesh` is a Fabric 26.1 / 26.2 / 26.3 mod for Hypixel Skyblock. It introduces many fishing-related QOL features. Do `/feesh`, set up the mod, and enjoy fishing! <3
 
 This mod is an evolution of [FeeshNotifier ChatTriggers module](https://chattriggers.com/modules/v/FeeshNotifier) made for earlier MC versions.
 
@@ -11,24 +11,25 @@ This mod is an evolution of [FeeshNotifier ChatTriggers module](https://chattrig
 - [Features](#features)
 - [Troubleshooting](#troubleshooting)
 - [Contacts](#contacts)
-- [Creadits and Special thanks](#credits-and-special-thanks)
+- [Credits and Special thanks](#credits-and-special-thanks)
 
 ## Releases
 
-[Modrinth](https://modrinth.com/project/feesh)
+[Feesh on Modrinth](https://modrinth.com/project/feesh)
+
+>**SOURCES:**
+>The only relevant source to download releases is Modrinth and linked GitHub. Feesh does not own any website and does not distribute releases through other sources.
+
+### Pre-releases
+
+If you want early access to the pre-releases, GitHub automatically builds every version pushed to `develop` branch. They can be found in Actions - (select latest action) - Artifacts - find attached `.zip` which contains `.jar` file(s).
+> **THOSE MAY BE UNSTABLE** as they are features in active development, probably not tested enough/subject to change. So I don't recommend it unless you are absolutely not patient :)
 
 ### Pre-releases
 
 If you want early access to the pre-releases, Github automatically builds every version pushed to `develop` branch. They can be found in Actions - (select latest action) - Artifacts - find attached `.zip` which contains `.jar` file(s). **THOSE MAY BE UNSTABLE** as they are features in active development, probably not tested enough.
 
 ## Dependencies
-
-### 1.21.11
-
-Required Minecraft version is **1.21.11** (Fabric loader 0.18.4+).
-Required Java version is 21+.
-
-This mod requires [Fabric API](https://modrinth.com/mod/fabric-api) and [Fabric Language Kotlin](https://modrinth.com/mod/fabric-language-kotlin) mods for 1.21.11.
 
 ### 26.1
 
@@ -42,6 +43,13 @@ Required Java version is 25+.
 Required Minecraft version is **26.2** (Fabric loader 0.19.3+).
 
 This mod requires [Fabric API](https://modrinth.com/mod/fabric-api) and [Fabric Language Kotlin](https://modrinth.com/mod/fabric-language-kotlin) mods for 26.2.
+Required Java version is 25+.
+
+### 26.3
+
+Required Minecraft version is **26.3** (Fabric loader 0.19.5+).
+
+This mod requires [Fabric API](https://modrinth.com/mod/fabric-api) and [Fabric Language Kotlin](https://modrinth.com/mod/fabric-language-kotlin) mods for 26.3.
 Required Java version is 25+.
 
 ## Features
@@ -63,7 +71,7 @@ Required Java version is 25+.
 - **Pet level up** — Alerts when a pet reaches max level. Can show estimated leveling price in chat.
 - **Hotspot found or gone** — Alerts when a hotspot is found or is gone.
 - **Wormhole gone** — Alerts when a wormhole is gone.
-- **Fishing Bag disabled** — Alerts when you start fishing with Fishing Bag disabled.
+- **Fishing Bag/Bait Sack disabled** — Alerts when you start fishing with Fishing Bag/Bait Sack disabled.
 - **Bait changed/running out of bait** — Alerts when active bait has changed or almost no bait remaining.
 - **No fishing armor** — Alerts when fishing without fishing armor equipped.
 - **Lootshare** — Alerts when "Lootshare!" message appears in party chat.
@@ -74,11 +82,15 @@ Required Java version is 25+.
 - **Salt expired** — Alerts when a Salt has expired.
 - **Worm the Fish** — Alerts when Worm the Fish is caught (Dirt Rod fishing).
 - **Fishing Festival** — Alerts when the Fishing Festival ends, and posts amounts of sharks caught in chat. Also has option to track personal best per festival.
-- **Rain/Thunder/Blizzard ends soon** — Alerts when Rain/Thunder/Blizzard ends soon while in relevant areas.
+- **Weather starts soon** — Alerts when weather event starts soon while in relevant areas.
+- **Weather ends soon** — Alerts when weather event ends soon while in relevant areas.
+- **Day/Night started** — Alerts when day starts (6:00am) or night starts (7:00pm).
 - **Nessie destination alert** — Alerts destination when a Nessie decides into which cave to swim - to Jade Dragon or to Driptoad Delve.
 - **Puddle Jumper timer alert** — Alerts when your Puddle Jumper is about to arrive to its destination.
 - **Trophy Frog discovered alert** — Alerts when a new Trophy Frog is discovered.
 - **Trophy Fish discovered alert** — Alerts when a new Trophy Fish is discovered.
+- **Alert when out of air** — Alerts when you are almost out of air (Moonglade Marsh, Torrhus Canyon).
+- **Alert when sack fishing drops go into inventory** — Alerts when a fishing drop (e.g. raw fish) overflows into your inventory, meaning sack is full. It offers buttons for Supercrafting a compacted item / Bazaar sell.
 
 ### Chat
 
@@ -91,32 +103,36 @@ Required Java version is 25+.
 - **Lootshare message** — Sends to PARTY chat when it's time to lootshare. Available via Keybind.
 - **Share Trophy Frog discovered** — Sends to PARTY chat when a new Trophy Frog is discovered.
 - **Share Trophy Fish discovered** — Sends to PARTY chat when a new Trophy Fish is discovered.
+- **Hide Trophy Frog catch messages** — Hides Trophy Frog catch messages from chat for the selected rarities.
+- **Hide Trophy Fish catch messages** — Hides Trophy Fish catch messages from chat for the selected rarities.
+- **Hide lootshare messages when in Frozen Blaze** — Hides all LOOT SHARE chat messages while wearing a Frozen Blaze armor.
 
 ### Overlays
 
 > You can change position, scale and alignment (Left, Center, Right) for each overlay in **/feeshMoveAllGuis**
-> You can setup custom background & border style, and enable this style on each overlay level.
+> You can setup custom background & border style, and enable/disable this style on each overlay level.
 
-- **Fishing profit tracker** - Shows how many coins you earned in total and per hour, with Session/Total modes.
+- **Fishing profit tracker** - Shows which items you dropped and how many coins you earned in total and per hour, with Session/Total modes. Offers extra information: costs spent, net profit, catches.
+- **Sea creatures tracker** — Overview of caught sea creatures with Session/Total modes, percentages, double hook and Bloodshot (cocoon) statistics.
 - **Nearby entities counter tracker** — Shows players, fishing hooks, and Chumcap buckets count within 30 blocks.
 - **Barn fishing timer** — Shows count of sea creatures nearby and how long they've been alive.
 - **Deployables timer** — Shows remaining time of your deployable items placed nearby.
 - **Consumables timer** — Consumables tracker which shows consumed Moby-Duck's remaining time.
 - **Sea creatures HP** — Shows HP of nearby rare sea creatures in lootshare range with their immunity timer.
-- **Sea creatures tracker** — Overview of caught sea creatures with Session/Total modes, percentages, and double hook statistics.
 - **Fishing hook timer** — Displays hook timer and fish arrival indicator. Requires Skyblock Fishing Timer enabled.
-- **Sea creatures per hour tracker** — Shows sea creatures per hour and total caught per session.
+- **Efficiency tracker** — Shows various stats such as sea creatures per hour or catches per hour, and total catches per session.
 - **Fishing Festival tracker** — Shows Great White, Tiger, Blue and Nurse shark counts caught during the Fishing Festival.
 - **Jerry's Workshop tracker** — Yeti/Reindrake catch statistics in Jerry Workshop.
 - **Bayou tracker** — Titanoboa catch and Titanoboa Shed / Snake Eyes drop statistics for Backwater Bayou.
 - **Water hotspots tracker** — Wiki Tiki catch and Tiki Mask drop statistics for Water Hotspots.
 - **Crimson Isle tracker** — Fiery Scuttler, Ragnarok, Plhlegblast, Thunder, Lord Jawbus catch and Radioactive Vial drop statistics.
-- **Galatea water tracker** — The Loch Emperor/Nessie catch statistics in Galatea.
+- **Moonglade Marsh water tracker** — The Loch Emperor/Nessie catch statistics in Moonglade Marsh.
+- **Torrhus Canyon tracker** — Silkbreeze/Giant Isopod catch statistics in Torrhus Canyon.
 - **Lotus Atoll tracker** — The Frog Prince/Puddle Jumper catch statistics, and Prince's Crown Jewel drop statistics (in Lotus Atoll).
 - **Treasure fishing tracker** — Good/Great/Outstanding treasure catches and Treasure Dye drop statistics.
 - **Magma Core fishing tracker** — Lava Pigman/Lava Blaze catch stats and Magma Core drop profits (total and per hour), while in Crystal Hollows.
 - **Archfiend Dice profit tracker** — Archfiend Dice / High Class Archfiend Dice profit overlay with Session/Total modes.
-- **Rain/Thunder/Blizzard timer** — Shows Rain/Thunder/Blizzard timer while in relevant areas.
+- **Weather timer** — Shows current/upcoming weather event timer while in relevant areas.
 - **Bait tracker** — Remaining bait counter based on bait preview in hotbar slot #9.
 
 ## Items
@@ -126,18 +142,29 @@ Required Java version is 25+.
 - **Thunder Bottle charge progress** — Renders Thunder / Storm / Hurricane Bottle charge percentage in the item slot.
 - **Moby-Duck progress** — Renders Moby-Duck evolving percentage in the item slot.
 - **Auto-recomb flag** — Renders recomb upgrade flag (`R`) for auto-recombobulated fishing drops in the item slot.
+- **Rod parts** — Renders abbreviations of equipped fishing rod parts (Hook, Line, Sinker) in the item slot. You can choose which parts to show.
 
 ### World Rendering
 
 - **Hide other players' hooks** — Hides other players' bobbers and fishing lines, so you can see only your own hook.
 - **Highlight rare sea creatures** — Applies glowing border to the rare sea creatures. Not visible through walls.
 - **Hide other players near bobber** — Hides other players near your bobber when a fishing rod is casted.
+- **Hide Tadgang nametags** — Hides Tadgang tadpoles nametags in Moonglade Marsh.
 - **Mute Jade Dragon** — Mutes Jade dragon sounds while you are in dragon's cave.
 - **Mute Reindrake gifts** — Mutes loud 'totem used' sounds while picking up gifts from a Reindrake.
 
 ### Personal Best
 
 - **/feeshPersonalBests** — Displays all your personal best records tracked by the mod.
+
+What's tracked:
+
+- **Total sharks per festival** — Tracks biggest count of sharks caught within a single fishing festival.
+- **Great White Sharks per festival** — Tracks biggest count of Great White sharks caught within a single fishing festival.
+- **Double Hook streak** — Tracks longest chain of Double Hook sea creature catches.
+- **Treasure catch streak** — Tracks longest chain of treasure/junk catches.
+- **Great / Outstanding treasure streak** — Tracks longest chain of caught treasures/junk being Great / Outstanding.
+- **Total Moby-Ducks consumed**
 
 ### Commands
 
@@ -148,24 +175,46 @@ Required Java version is 25+.
 - **/feeshGearCraftPrices** — Calculates profits for crafting gear from fishing drops.
 - **/feeshFearMongererShopPrices** — Calculates profits for selling items from Fear Mongerer NPC shop.
 - **/feeshJunkerJoelShopPrices** — Calculates profits for selling items from Junker Joel NPC shop.
-- **/feeshSpiderDenRainSchedule** — Displays nearest Spider's Den Rain/Thunderstorm events.
-- **/feeshSetTrackerDrops** — Initialize drop history (Titanoboa Shed, Snake Eyes, Tiki Mask, Radioactive Vial, Prince's Crown Jewel, Treasure Dye).
+- **/feeshWeatherSchedule** — Displays 3 upcoming weather conditions (Mild / Extreme) schedule.
 
 Also, each overlay has individual commands to reset or pause.
 
+#### Debug commands
+
+Useful for mod developers only.
+
+- **feeshDebugLogSounds** — Print every sound played within 5 seconds to the logs.
+- **feeshDebugLogPartyChatMessages** — Toggle duplicating outgoing party chat message into local chat.
+
+## Guides
+
+Please explore the [docs folder](https://github.com/Sleepy-Panda/Feesh/tree/develop/docs) for various guides, e.g. for editing trackers data.
+
 ## Troubleshooting
 
-### Items from sacks do not go into profit tracker
+### Mod data is periodically reset
 
-Make sure that Personal -> Chat Feedback -> Sack Notifications SB setting is enabled.
+Make sure you quit the game normally - via close button or `Disconnect server` - `Quit game`. Do not force-exit the game using Alt+F4 or, even worse, by turning off the PC - it may corrupt mod files being used by Minecraft, and won't let some processes to finalize normally.
 
-If you do not see [Sacks] +N items chat message, it means one of other mods hides it, making Feesh unable to access picked up items. You need to find and disable this setting. If you want messages to be hidden, you might try to use SkyHanni's "Sack change hider" instead.
+Also, preserve MC folder/config folder as it keeps data and settings for various mods.
+
+If your data was reset recently, you can restore it from the backups stored in the MC folder/config/feesh/backups.
+
+### Items from sacks do not appear in the profit tracker
+
+Make sure that Skyblock Settings -> Personal -> Chat Feedback -> Sack Notifications is enabled.
 
 ### Sea creatures caught do not appear in the trackers
+
+Make sure that Skyblock Settings -> Personal -> Fishing Settings -> Sea Creature Chat is enabled.
 
 Please check if one of other mods modifies sea creature catch message in the chat. For example, SkyHanni's "Shorten catch messages" or "Compact double hook" changes message format making Feesh unable to know which sea creature was caught.
 
 Instead, you can enable "Compact sea creature catch messages" in Feesh, which will be compatible with other functionality.
+
+### APIs are not working
+
+If you see the "java.net.ConnectException: Connection timed out: getsockopt" error in the logs, check if APIs mentioned in the mod settings are working in your browser. If they work in browser but not in Minecraft, check that Java process has sufficient permissions. Go to Windows Defender Firewall, click "Allow an app or feature" and ensure javaw.exe, Java, and Minecraft have proper networks checked.
 
 ## Contacts
 
@@ -180,7 +229,8 @@ In case of questions, bug reports, feature requests - please feel free to contac
 
 ### Credits
 
-- [Casters discord](https://discord.gg/vn3RzuyJz), for supporting the mod
+- [Casters discord](https://discord.gg/fishing), for supporting the mod
+- [ResourcefulConfig](https://github.com/Team-Resourceful/Resourceful-Config), used as a library for `/feesh` config
 - [Elite Skyblock](https://eliteskyblock.com/) and their APIs, for providing auction lbin prices
   - [Elite Skyblock Lowest Bin API](https://api.eliteskyblock.com/resources/auctions/neu)
   - [Elite Skyblock 7-days average API](https://api.eliteskyblock.com/resources/auctions/neu/average-lbin/7day)

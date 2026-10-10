@@ -1,11 +1,7 @@
 package com.github.sleepypanda.feesh.utils
 
 import com.mojang.brigadier.arguments.StringArgumentType
-//#if MC >= 26.1
-//$$ import net.fabricmc.fabric.api.client.command.v2.ClientCommands as ClientCommandManager
-//#else
-import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager
-//#endif
+import net.fabricmc.fabric.api.client.command.v2.ClientCommands as ClientCommandManager
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback
 
 object RegisterUtils {

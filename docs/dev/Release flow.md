@@ -7,7 +7,7 @@
 - Build the mod using `./gradlew build`
 - Make sure the `build/versions` folder contains .jar file for each supported MC version
 - For each MC version, create a branch named like this: `release/1.5.0`
-  - Previously I used to create separate branch per MC version (e.g. `release/1.5.0+1.21.11`), but the source code is the same now and no need for extra effort.
+  - Previously I used to create separate branch per MC version (e.g. `release/1.5.0+26.2`), but the source code is the same now and no need for extra effort.
 
 ## Modrinth
 

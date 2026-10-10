@@ -62,6 +62,7 @@ object SeaCreaturesTracker : IResettableViewModeTracker {
     const val DELETE_SEA_CREATURE_TOTAL_COMMAND = "feeshDeleteSeaCreatureTotal"
 
     private const val TICKS_PER_UPDATE = 20
+    private const val HIDE_OVERLAY_MINUTES = 5
 
     private val data: SeaCreaturesTrackerData
         get() = PersistentDataManager.feeshData.seaCreatures
@@ -95,9 +96,7 @@ object SeaCreaturesTracker : IResettableViewModeTracker {
         .setSettingsKey { Overlays.seaCreaturesTrackerOverlay }
         .setApplyCustomStyleKey { Overlays.seaCreaturesTrackerCustomStyle }
         .setCondition {
-            WorldUtils.isInFishingWorld() &&
-            FishingHookUtils.wasFishingHookSubmergedMinutesAgo(5) &&
-            !PlayerUtils.isInTrophyArmor()
+            isTrackerVisible()
         }
 
     fun init() {
@@ -157,14 +156,25 @@ object SeaCreaturesTracker : IResettableViewModeTracker {
     }
 
     private fun onSeaCreatureCaught(event: OwnSeaCreatureCaughtEvent) {
-        if (!Overlays.seaCreaturesTrackerOverlay || !WorldUtils.isInSkyblock() || !WorldUtils.isInFishingWorld()) return
+
+        fun trackSeaCreatureCatch(sourceObj: SeaCreaturesData, seaCreatureName: String, valueToAdd: Int, isDoubleHook: Boolean) {
+            val key = seaCreatureName.uppercase()
+            val catchData = sourceObj.catches.getOrPut(key) { SeaCreatureCatchData() }
+            catchData.amount += valueToAdd
+            if (isDoubleHook) {
+                catchData.doubleHookAmount++
+            }
+            recalculateTotalCaughtCount(sourceObj)
+        }
+
+        if (!isTrackerEnabledInWorld()) return
 
         val seaCreatureName = event.seaCreatureName
         val isDoubleHook = event.isDoubleHook
         val valueToAdd = if (isDoubleHook) 2 else 1
 
         // Do not track Vanquishers if not fishing
-        if (seaCreatureName == "Vanquisher" && !FishingHookUtils.wasFishingHookSubmergedMinutesAgo(5)) return
+        if (seaCreatureName == "Vanquisher" && !isTrackerVisible()) return
 
         trackSeaCreatureCatch(data.session, seaCreatureName, valueToAdd, isDoubleHook)
         trackSeaCreatureCatch(data.total, seaCreatureName, valueToAdd, isDoubleHook)
@@ -174,12 +184,20 @@ object SeaCreaturesTracker : IResettableViewModeTracker {
     }
 
     private fun onSeaCreatureCocooned(event: SeaCreatureCocoonedByYouEvent) {
-        if (!Overlays.seaCreaturesTrackerOverlay || !WorldUtils.isInSkyblock() || !WorldUtils.isInFishingWorld()) return
+
+        fun trackSeaCreatureCocoon(sourceObj: SeaCreaturesData, seaCreatureName: String) {
+            val key = seaCreatureName.uppercase()
+            val catchData = sourceObj.catches.getOrPut(key) { SeaCreatureCatchData() }
+            catchData.cocoonedAmount += 1
+            recalculateTotalCocoonedCount(sourceObj)
+        }
+
+        if (!isTrackerVisible()) return
         if (!Overlays.countCocoonedSeaCreatures) return
 
         val seaCreatureName = event.seaCreatureName
 
-        if (seaCreatureName == "Vanquisher" && !FishingHookUtils.wasFishingHookSubmergedMinutesAgo(5)) return
+        if (seaCreatureName == "Vanquisher" && !isTrackerVisible()) return
 
         trackSeaCreatureCocoon(data.session, seaCreatureName)
         trackSeaCreatureCocoon(data.total, seaCreatureName)
@@ -188,21 +206,16 @@ object SeaCreaturesTracker : IResettableViewModeTracker {
         saveData()
     }
 
-    private fun trackSeaCreatureCatch(sourceObj: SeaCreaturesData, seaCreatureName: String, valueToAdd: Int, isDoubleHook: Boolean) {
-        val key = seaCreatureName.uppercase()
-        val catchData = sourceObj.catches.getOrPut(key) { SeaCreatureCatchData() }
-        catchData.amount += valueToAdd
-        if (isDoubleHook) {
-            catchData.doubleHookAmount++
-        }
-        recalculateTotalCaughtCount(sourceObj)
+    private fun isTrackerEnabledInWorld(): Boolean {
+        if (!Overlays.seaCreaturesTrackerOverlay || !WorldUtils.isInSkyblock() || !WorldUtils.isInFishingWorld()) return false
+        return true
     }
 
-    private fun trackSeaCreatureCocoon(sourceObj: SeaCreaturesData, seaCreatureName: String) {
-        val key = seaCreatureName.uppercase()
-        val catchData = sourceObj.catches.getOrPut(key) { SeaCreatureCatchData() }
-        catchData.cocoonedAmount += 1
-        recalculateTotalCocoonedCount(sourceObj)
+    private fun isTrackerVisible(): Boolean {
+        if (!isTrackerEnabledInWorld()) return false
+        if (!FishingHookUtils.wasFishingHookSubmergedMinutesAgo(HIDE_OVERLAY_MINUTES)) return false
+        if (PlayerUtils.isInTrophyArmor()) return false
+        return true
     }
 
     private fun toggleViewMode() {
@@ -493,11 +506,7 @@ object SeaCreaturesTracker : IResettableViewModeTracker {
     private fun updateGuiLines() {
         CommonUtils.runWithCatching("Failed to update GUI lines in Sea creatures tracker") {
             gui.clearLines()
-
-            if (!Overlays.seaCreaturesTrackerOverlay || !WorldUtils.isInSkyblock() || !WorldUtils.isInFishingWorld() ||
-                !FishingHookUtils.wasFishingHookSubmergedMinutesAgo(5) ||
-                PlayerUtils.isInTrophyArmor()
-            ) return
+            if (!isTrackerVisible()) return
 
             val viewMode = getCurrentViewMode()
             val sourceObj = getSourceObject(viewMode)

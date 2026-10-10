@@ -2,19 +2,23 @@
 
 ## Reminders
 
-- Test each release in 1.21.* and 26.x
+- Test each release in 26.x
 
-## Alpha Torrus Canyon
+## Minister update
 
- GREAT CATCH! You caught a Giant Water Bug!
-other name for Giant Water Bug Shard - recheck later and maybe add to profit tracker
-- All chat? Death message?
-- Contests to profit tracker? [NPC] Miria: You reached the EPIC Bracket in my contest!
-[NPC] Miria: You reached the LEGENDARY Bracket in my contest!
-- Tracker for Leg/Mythic SC?
+https://hypixel.net/threads/september-21st-minister-update-mob-level-improvements-testing-2.6150078/
+
+- You ran out of Whale Bait in your Bait Sacks! [DISMISS] - could be used for out of bait detection?
+- Adjusted all EPIC Phoenix Pets -> SPECIAL, Adjusted all LEGENDARY Phoenix Pets -> VERY SPECIAL
+  New pet drop message? New Pet IDs / pet price issues for leveled up pet? "PHOENIX;0+100", "PHOENIX;4+100"
+- Precursor Drone became Legendary. New ID? "PRECURSOR_DRONE;4+100"
+- Maybe disable nutcracker alert by default
+- Check Ice Essence catch msg
+
+## Torrus Canyon
+
 - Giant Isopod acts like a Nessie, implement immunity?
-offer warp springs if not in Springs
-highlight is slightly off
+- Giant Isopod highlight looks weird
 
 ## Alpha Lotus Atoll
 
@@ -38,29 +42,37 @@ Newly released - https://hypixel.net/threads/hypixel-skyblock-0-24-5-assorted-qo
 
  GOOD CATCH! You caught a Flexbone!
  GOOD CATCH! You caught a Shinyfish Shard!
+§a §r§lACID RAIN BONUS! §r§fYou caught a bonus §r§aRusty Coin§r§f!
 
+- Remove old SC - NIGHT SQUID, SEA_GUARDIAN (as well as fix tracker logic that hides but still counts them as Total)
+- Treasure shards that go to the inventory, such as salmon, counted twice (because chat message + inventory pickup)
+- Scrollable overlays
+- Mobs nametag looks different, may cause some issues?
+- Send a message like this "BAD JUNK CATCH! You caught a Salmon!" when catching a non-treasure while treasure/junk fishing
+- You cannot send same message twice when sharing Isopods
+- For level 100 pets, would be cool to change their item name to be aligned with Level 1 pets. This also causes Lvl 100 pets being not easily found ny name via /get command.
+- Drake sound not muted when using Sound Controller mod
+- integrate medal clipping for rare drops / dyes? have seen it in sbo and its pretty neat  https://medal.tv/developer/auto-clipping#api-reference
+- Default party drop on-screen alert ragebaits some people :(
+- Hotspot nametag hider + overlay with hotspot perk
+- Custom msg in catch message which can be shown in title (e.g. I KILL OWN)
+- Editing the format of feesh titles (summoned creature name, dropped rare item, price of an item, name of the player who did it etc) to change their order, color, duration, location(on title or subtitle) or to add some custom texts in it and so on.
+- Mod name is copied as [ Feesh]
+- Spooky features
 - Toggle for PBs, rework trackPersonalBestFishingFestival
 - Max MF PB
 - Xp/h
-- SMILE! Polizei111 has sprinkled some joy your way! You feel a little happier. :)
-- Add All option for drops list in settings
 - Share Nessie with coords to all chat?
-- With the release of Minecraft version 26.2 on June 16th, we'll drop support for 1.21.11 in a few weeks.
 - Personal blacklist + party sharing
 - Runic sea creatures - alert or highlight
 - Pickups from trade menu
 - Sea Creature Tracker where it says "Total" could you change that to "Total Sea Creatures"
 - Some legion counting radius logic reported
-- Catches/h for treasures
-- Improve link to changelog in settings, and update announcement
 - Work on various events sounds to make them more unique
-- 1.21 Fishing Hook armorstand flickering
 - Ragnarok immunity timer
 - Manual "set tracker drops" command does not reset "sc since last" for that drop.
 - Fished coins to add via the command.
-- Carmine dye into tracker
 - Autoupdates
-- Settings are not saved after exiting the game, probably because user closes window using X button to exit
 
 ## Tech Debt
 

@@ -3,7 +3,7 @@ package com.github.sleepypanda.feesh.features.rendering
 import com.github.sleepypanda.feesh.FeeshMod
 import com.github.sleepypanda.feesh.constants.SeaCreatures
 import com.github.sleepypanda.feesh.events.EventBus
-import com.github.sleepypanda.feesh.events.models.ArmorStandDetailsLoadedEvent
+import com.github.sleepypanda.feesh.events.models.ArmorStandCustomNameChangedEvent
 import com.github.sleepypanda.feesh.events.models.ClientTickEvent
 import com.github.sleepypanda.feesh.events.models.WorldChangedEvent
 import com.github.sleepypanda.feesh.settings.categories.WorldRendering
@@ -34,7 +34,7 @@ object RareMobHighlight {
     fun init() {
         EventBus.subscribe(WorldChangedEvent::class, ::onWorldChange)
         EventBus.subscribe(ClientTickEvent::class, ::onClientTick)
-        EventBus.subscribe(ArmorStandDetailsLoadedEvent::class, ::onArmorStandDetailsLoaded)
+        EventBus.subscribe(ArmorStandCustomNameChangedEvent::class, ::onArmorStandCustomNameChanged)
         updateEnabledMobTypes()
     }
 
@@ -54,10 +54,20 @@ object RareMobHighlight {
         enabledMobTypes = WorldRendering.highlightSeaCreaturesList.map { it.displayName }.distinct().toList()
     }
 
-    private fun onArmorStandDetailsLoaded(event: ArmorStandDetailsLoadedEvent) {
+    private fun onArmorStandCustomNameChanged(event: ArmorStandCustomNameChangedEvent) {
+        if (!event.isFirstLoaded) return
         if (!WorldRendering.highlightSeaCreatures || !WorldUtils.isInSkyblock() || !WorldUtils.isInFishingWorld()) return
-        val entity = event.entity
-        val cleanName = EntityUtils.parseSeaCreatureNametag(entity, enabledMobTypes)?.baseMobName ?: return
+
+        val world = FeeshMod.mc.level ?: return
+        val cleanName = EntityUtils.parseSeaCreatureNametag(
+            entityId = event.entityId,
+            customNameFormatted = event.customName.formatted,
+            customNameUnformatted = event.customName.unformatted,
+            x = event.position.x,
+            y = event.position.y,
+            z = event.position.z,
+            includedSeaCreatureNames = enabledMobTypes,
+        )?.baseMobName ?: return
         if (!enabledMobTypes.contains(cleanName)) return
 
         val scInfo = SeaCreatures.allSeaCreatures.find { it.name == cleanName }
@@ -75,11 +85,11 @@ object RareMobHighlight {
         val entities: MutableList<Entity> = mutableListOf()
 
         // Volcanic Snail and Jumpin Jack are ItemDisplay entities instead of LivingEntity
-        val potentialMobEntity = entity.level().getEntity(entity.id - mobEntityShift)
+        val potentialMobEntity = world.getEntity(event.entityId - mobEntityShift)
         var mobEntity = if (potentialMobEntity is LivingEntity || potentialMobEntity is ItemDisplay) potentialMobEntity else return
 
         if (cleanName == HighlightableSeaCreatureTypes.JAWBUS_FOLLOWER.displayName && mobEntity is Slime && mobEntity !is MagmaCube) { // Fire Eel
-            mobEntity = entity.level().getEntity(entity.id - 11) as? LivingEntity ?: return // -1 is for tail, we want to find Fire Eel's head
+            mobEntity = world.getEntity(event.entityId - 11) as? LivingEntity ?: return // -1 is for tail, we want to find Fire Eel's head
         }
 
         if (mobEntity is LivingEntity && !mobEntity.isAlive) return
@@ -88,18 +98,18 @@ object RareMobHighlight {
         entities.add(mobEntity)
 
         val color = when {
-            scInfo?.rarityColorCode == ColorCodes.COMMON.code -> HexColorCodes.COMMON.colorCode
-            scInfo?.rarityColorCode == ColorCodes.UNCOMMON.code -> HexColorCodes.UNCOMMON.colorCode
-            scInfo?.rarityColorCode == ColorCodes.RARE.code -> HexColorCodes.RARE.colorCode
-            scInfo?.rarityColorCode == ColorCodes.EPIC.code -> HexColorCodes.EPIC.colorCode
-            scInfo?.rarityColorCode == ColorCodes.LEGENDARY.code -> HexColorCodes.LEGENDARY.colorCode
-            scInfo?.rarityColorCode == ColorCodes.MYTHIC.code -> HexColorCodes.MYTHIC.colorCode
-            scInfo?.rarityColorCode == ColorCodes.DIVINE.code -> HexColorCodes.DIVINE.colorCode
-            scInfo?.rarityColorCode == ColorCodes.SPECIAL.code -> HexColorCodes.SPECIAL.colorCode
+            scInfo?.rarityColorCode == ColorCodes.COMMON.code -> HexColorCodes.COMMON.rgbColorCode
+            scInfo?.rarityColorCode == ColorCodes.UNCOMMON.code -> HexColorCodes.UNCOMMON.rgbColorCode
+            scInfo?.rarityColorCode == ColorCodes.RARE.code -> HexColorCodes.RARE.rgbColorCode
+            scInfo?.rarityColorCode == ColorCodes.EPIC.code -> HexColorCodes.EPIC.rgbColorCode
+            scInfo?.rarityColorCode == ColorCodes.LEGENDARY.code -> HexColorCodes.LEGENDARY.rgbColorCode
+            scInfo?.rarityColorCode == ColorCodes.MYTHIC.code -> HexColorCodes.MYTHIC.rgbColorCode
+            scInfo?.rarityColorCode == ColorCodes.DIVINE.code -> HexColorCodes.DIVINE.rgbColorCode
+            scInfo?.rarityColorCode == ColorCodes.SPECIAL.code -> HexColorCodes.SPECIAL.rgbColorCode
             cleanName == HighlightableSeaCreatureTypes.FLIPFLOPPER.displayName || cleanName == HighlightableSeaCreatureTypes.SEASHINE.displayName ->
-                HexColorCodes.DIVINE.colorCode
+                HexColorCodes.DIVINE.rgbColorCode
             cleanName == HighlightableSeaCreatureTypes.JAWBUS_FOLLOWER.displayName || cleanName == HighlightableSeaCreatureTypes.WIKI_TIKI_LASER_TOTEM.displayName ->
-                HexColorCodes.SPECIAL.colorCode
+                HexColorCodes.SPECIAL.rgbColorCode
             else -> 0x00FFFF
         }
 
@@ -117,7 +127,15 @@ object RareMobHighlight {
         if (cleanName == HighlightableSeaCreatureTypes.WIKI_TIKI.displayName) {
             val wikiTikiEntitiesShifts = listOf(3, 5, 7)
             wikiTikiEntitiesShifts.forEach { shift ->
-                val prevEntity = entity.level().getEntity(entity.id - shift) as? LivingEntity ?: return@forEach
+                val prevEntity = world.getEntity(event.entityId - shift) as? LivingEntity ?: return@forEach
+                entities.add(prevEntity)
+            }
+        }
+
+        // Magma Pillar consists of 9 magma cube entities
+        if (cleanName == HighlightableSeaCreatureTypes.MAGMA_PILLAR.displayName) {
+            (2..9).forEach { shift ->
+                val prevEntity = world.getEntity(event.entityId - shift) as? LivingEntity ?: return@forEach
                 entities.add(prevEntity)
             }
         }

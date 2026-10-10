@@ -3,6 +3,7 @@ package com.github.sleepypanda.feesh
 import com.github.sleepypanda.feesh.features.alerts.*
 import com.github.sleepypanda.feesh.features.chat.*
 import com.github.sleepypanda.feesh.features.commands.*
+import com.github.sleepypanda.feesh.features.commands.debug.*
 import com.github.sleepypanda.feesh.features.help.*
 import com.github.sleepypanda.feesh.features.items.background.*
 import com.github.sleepypanda.feesh.features.items.slottext.*
@@ -74,20 +75,26 @@ class FeeshMod : ClientModInitializer {
 
         // Event publishers
         SeaCreaturesPublisher.init()
+        CatchPublisher.init()
         SeaCreaturesCocoonPublisher.init()
         RareDropsPublisher.init()
         PartyChatPublisher.init()
-        TrophyDiscoveredPublisher.init()
+        TrophyCatchPublisher.init()
         PetLevelUpPublisher.init()
+        ReindrakeSummonedPublisher.init()
         SacksItemPickupPublisher.init()
+        InventoryItemPickupPublisher.init()
+        ShardsCaughtPublisher.init()
         IceEssenceStatusBarPublisher.init()
         ArmorStandPublisher.init()
         ItemEntityPublisher.init()
         ConsumablesPublishers.init()
+        ShurikenUsedPublisher.init()
 
         // Rendering
         RareMobHighlight.init()
         HidePlayersNearBobber.init()
+        HideTadgangNametags.init()
 
         // Alerts
         RareCatchAlert.init()
@@ -98,19 +105,22 @@ class FeeshMod : ClientModInitializer {
         ThunderBottleChargedAlert.init()
         AnyReindrakeAlert.init()
         NonFishingArmorAlert.init()
+        OutOfAirAlert.init()
         GoldenFishSpawnAlert.init()
         HotspotGoneAlert.init()
         WormholeGoneAlert.init()
         SaltExpiredAlert.init()
         PlayerDeathAlert.init()
         LootshareAlert.init()
-        FishingBagDisabledAlert.init()
+        FishingBaitSackDisabledAlert.init()
         BaitAlert.init()
+        SackDropsIntoInventoryAlert.init()
         WormTheFishCaughtAlert.init()
         NessieDestinationAlert.init()
         PuddleJumperTimerAlert.init()
         TrophyFrogDiscoveredAlert.init()
         TrophyFishDiscoveredAlert.init()
+        DayNightStartedAlert.init()
 
         // Chat
         RareCatchMessage.init()
@@ -122,11 +132,14 @@ class FeeshMod : ClientModInitializer {
         LootshareMessage.init()
         TrophyFrogDiscoveredMessage.init()
         TrophyFishDiscoveredMessage.init()
+        HideTrophyCatchMessages.init()
+        HideLootshareMessages.init()
 
         // PB
         DoubleHookPersonalBest.init()
+        TreasureCatchesStreakPersonalBest.init()
+        GreatOrOutstandingTreasuresStreakPersonalBest.init()
         MobyDuckPersonalBest.init()
-        BlizzardPersonalBest.init()
 
         // Overlays
         JerryWorkshopTracker.init()
@@ -142,14 +155,15 @@ class FeeshMod : ClientModInitializer {
         BayouTracker.init()
         WaterHotspotsTracker.init()
         CrimsonIsleTracker.init()
-        GalateaWaterTracker.init()
+        MoongladeMarshWaterTracker.init()
+        TorrhusCanyonTracker.init()
         LotusAtollTracker.init()
         ArchfiendDiceProfitTracker.init()
         FishingFestivalTracker.init()
         FishingProfitTracker.init()
         MagmaCoreFishingTracker.init()
-        SeaCreaturesPerHourTracker.init()
-        RainTimer.init()
+        EfficiencyTracker.init()
+        WeatherTimer.init()
         MuteReindrakeGifts.init()
 
         MoveGuis.init() // After all overlays are initialized and registered FeeshGui objects
@@ -162,6 +176,7 @@ class FeeshMod : ClientModInitializer {
         ThunderBottleProgress.init()
         MobyDuckProgress.init()
         AutoRecombFlag.init()
+        FishingRodPartsAbbreviations.init()
         SlotTextRendererManager.init() // After all slot text renderers are initialized and registered
 
         ExpertiseTooltip.init()
@@ -170,16 +185,18 @@ class FeeshMod : ClientModInitializer {
 
         // Commands
         PersonalBestsCommand.init()
-        SpiderDenRainScheduleCommand.init()
+        WeatherScheduleCommand.init()
         PetLevelUpPricesCommand.init()
         GearCraftPricesCommand.init()
         FearMongererShopPricesCommand.init()
         JunkerJoelShopPricesCommand.init()
         TerryShopPricesCommand.init()
         PlayTestSoundCommand.init()
+        LogSoundsCommand.init()
+        LogPartyChatMessagesCommand.init()
         SetTrackerDropsCommand.init()
         PauseAllTrackersCommand.init()
-        BulkResetTrackersCommand.init()
+        BulkResetFishingSessionCommand.init()
 
         LOGGER.info("$MOD_NAME loaded successfully!")
     }

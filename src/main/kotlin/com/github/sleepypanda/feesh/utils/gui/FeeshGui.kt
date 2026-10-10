@@ -6,6 +6,7 @@ import com.github.sleepypanda.feesh.events.models.AfterMouseClickEvent
 import com.github.sleepypanda.feesh.events.EventBus
 import com.github.sleepypanda.feesh.settings.categories.Overlays
 import com.github.sleepypanda.feesh.utils.GuiUtils
+import com.github.sleepypanda.feesh.utils.InputUtils
 import com.github.sleepypanda.feesh.utils.WorldUtils
 import com.github.sleepypanda.feesh.utils.getScreenCompat
 import com.github.sleepypanda.feesh.utils.enums.Alignment
@@ -14,11 +15,7 @@ import com.github.sleepypanda.feesh.utils.data.PersistentDataManager
 import net.minecraft.network.chat.Component
 import net.minecraft.client.gui.screens.inventory.InventoryScreen
 import net.minecraft.client.gui.screens.ChatScreen
-//#if MC >= 26.1
-//$$ import net.minecraft.client.gui.GuiGraphicsExtractor as GuiGraphics
-//#else
-import net.minecraft.client.gui.GuiGraphics
-//#endif
+import net.minecraft.client.gui.GuiGraphicsExtractor as GuiGraphics
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.Font
 import java.awt.Color
@@ -320,7 +317,7 @@ class FeeshGui {
         if (!isClickable) return
         if (!WorldUtils.isInSkyblock()) return
         if (!GuiUtils.isInInventoryOrChat()) return
-        if (event.button != 0) return
+        if (!InputUtils.isLeftMouseButton(event.button)) return
         if (event.screen !is InventoryScreen && event.screen !is ChatScreen) return
         if (Overlays.overlayButtonsRequireCtrlClick && !event.hasControlDown) return
 
@@ -820,11 +817,7 @@ class FeeshGui {
     }
 
     private fun drawStringCompat(drawContext: GuiGraphics, textRenderer: Font, text: Component, x: Int, y: Int, color: Int, shadow: Boolean) {
-        //#if MC >= 26.1
-        //$$ drawContext.text(textRenderer, text, x, y, color, shadow)
-        //#else
-        drawContext.drawString(textRenderer, text, x, y, color, shadow)
-        //#endif
+        drawContext.text(textRenderer, text, x, y, color, shadow)
     }
 
     /**

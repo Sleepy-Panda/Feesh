@@ -6,6 +6,9 @@ import com.github.sleepypanda.feesh.events.models.ClientTickEvent
 import com.github.sleepypanda.feesh.events.models.WorldChangedEvent
 import com.github.sleepypanda.feesh.utils.ChatUtils.getUnformattedString
 import java.util.Date
+import net.minecraft.tags.FluidTags
+import net.minecraft.world.entity.projectile.FishingHook
+import net.minecraft.world.level.block.Blocks
 import net.minecraft.world.phys.Vec3
 
 /** 
@@ -99,6 +102,12 @@ object FishingHookUtils {
         return now.time - lastSeen.time <= minutes * 60 * 1000
     }
 
+    fun wasFishingHookSubmergedMillisecondsAgo(milliseconds: Int): Boolean {
+        val lastSeen = lastSubmergedFishingHookSeenAt() ?: return false
+        val now = Date()
+        return now.time - lastSeen.time <= milliseconds
+    }
+
     fun wasFishingHookSubmergedSecondsAgo(seconds: Int): Boolean {
         val lastSeen = lastSubmergedFishingHookSeenAt() ?: return false
         val now = Date()
@@ -112,46 +121,49 @@ object FishingHookUtils {
     }
 
     private fun onClientTick(@Suppress("UNUSED_PARAMETER") event: ClientTickEvent) {
-        if (!WorldUtils.isInSkyblock() ||
-            !WorldUtils.isInFishingWorld() ||
-            !PlayerUtils.hasFishingRodInHotbar()
-        ) {
-            activeFishingHook = null
-            lastActiveFishingHook = null
-            submergedFishingHook = null
-            return
-        }
-
-        val fishingHookEntity = EntityUtils.getPlayersFishingHookEntity() ?: run {
-            activeFishingHook = null
-            submergedFishingHook = null
-            return@onClientTick
-        }
-
-        activeFishingHook = ActiveFishingHookInfo(
-            x = fishingHookEntity.x,
-            y = fishingHookEntity.y,
-            z = fishingHookEntity.z,
-            age = fishingHookEntity.tickCount,
-        )
-        lastActiveFishingHook = activeFishingHook
-        activeFishingHookSeenAt = Date()
-
-        if (isOwnFishingHookSubmerged()) {
-            submergedFishingHookSeenAt = Date()
-
-            val closestHotspot = if (WorldUtils.isInHotspotFishingWorld()) HotspotUtils.findClosestHotspotInRange(Vec3(activeFishingHook!!.x, activeFishingHook!!.y, activeFishingHook!!.z), 5.0) else null
-            if (closestHotspot != null) submergedFishingHookInHotspotSeenAt = Date()
-
-            submergedFishingHook = SubmergedFishingHookInfo(
+        CommonUtils.runWithCatching("Failed to update fishing hook utils") {
+            if (!WorldUtils.isInSkyblock() ||
+                !WorldUtils.isInFishingWorld() ||
+                !PlayerUtils.hasFishingRodInHotbar()
+            ) {
+                activeFishingHook = null
+                lastActiveFishingHook = null
+                submergedFishingHook = null
+                return@onClientTick
+            }
+    
+            val fishingHookEntity = EntityUtils.getPlayersFishingHookEntity() ?: run {
+                activeFishingHook = null
+                submergedFishingHook = null
+                return@onClientTick
+            }
+    
+            activeFishingHook = ActiveFishingHookInfo(
                 x = fishingHookEntity.x,
                 y = fishingHookEntity.y,
                 z = fishingHookEntity.z,
                 age = fishingHookEntity.tickCount,
-                isInHotspot = closestHotspot != null,
             )
-        } else {
-            submergedFishingHook = null
+            lastActiveFishingHook = activeFishingHook
+            activeFishingHookSeenAt = Date()
+    
+            if (isOwnFishingHookSubmerged()) {
+                submergedFishingHookSeenAt = Date()
+    
+                val closestHotspot = if (WorldUtils.isInHotspotFishingWorld()) HotspotUtils.findClosestHotspotInRange(Vec3(activeFishingHook!!.x, activeFishingHook!!.y, activeFishingHook!!.z), 5.0) else null
+                if (closestHotspot != null) submergedFishingHookInHotspotSeenAt = Date()
+    
+                submergedFishingHook = SubmergedFishingHookInfo(
+                    x = fishingHookEntity.x,
+                    y = fishingHookEntity.y,
+                    z = fishingHookEntity.z,
+                    age = fishingHookEntity.tickCount,
+                    isInHotspot = closestHotspot != null,
+                )
+            } else {
+                submergedFishingHook = null
+            }
+
         }
     }
 
@@ -165,18 +177,46 @@ object FishingHookUtils {
     }
 
     private fun isOwnFishingHookSubmerged(): Boolean {
-        if (!WorldUtils.isInSkyblock()) return false
-        val player = FeeshMod.mc.player ?: return false
-
-        val heldItem = player.mainHandItem
-        if (!ItemUtils.isFishingRod(heldItem)) return false
-
-        val fishingHook = EntityUtils.getPlayersFishingHookEntity() ?: return false
-        if (fishingHook.isInLava || fishingHook.isInWater) return true
-
-        val isDirtRod = heldItem.hoverName.getUnformattedString().contains("Dirt Rod")
-        if (isDirtRod) return true // For dirt rod, the player's hook can be in dirt
-
+        CommonUtils.runWithCatching("Failed to check if own fishing hook is submerged") {
+            if (!WorldUtils.isInSkyblock()) return false
+            val player = FeeshMod.mc.player ?: return false
+    
+            val heldItem = player.mainHandItem
+            if (!ItemUtils.isFishingRod(heldItem)) return false
+    
+            val isDirtRod = heldItem.hoverName.getUnformattedString().contains("Dirt Rod")
+            val fishingHook = EntityUtils.getPlayersFishingHookEntity() ?: return false
+    
+            if (!isDirtRod) {
+                if (isFishingHookInFluid(fishingHook)) return true
+            } else {
+                if (isFishingHookInDirt(fishingHook)) return true
+            }
+    
+            return false
+        }
         return false
+    }
+
+    /**
+     * Entity.isInWater/isInLava can be false when the bobber sits in/on waterlogged plants (seagrass, kelp, etc.)
+     */
+    private fun isFishingHookInFluid(fishingHook: FishingHook): Boolean {
+        if (fishingHook.isInWater || fishingHook.isInLava) return true
+
+        val level = fishingHook.level()
+        val basePos = fishingHook.blockPosition()
+        val fluid = level.getFluidState(basePos)
+        if (fluid.`is`(FluidTags.WATER) || fluid.`is`(FluidTags.LAVA)) return true
+        val block = level.getBlockState(basePos)
+        return block.`is`(Blocks.KELP) || block.`is`(Blocks.KELP_PLANT) || block.`is`(Blocks.SEAGRASS) || block.`is`(Blocks.TALL_SEAGRASS)
+    }
+
+    private fun isFishingHookInDirt(fishingHook: FishingHook): Boolean {
+        val level = fishingHook.level()
+        val basePos = fishingHook.blockPosition()
+        val block = level.getBlockState(basePos)
+        val belowBlock = level.getBlockState(basePos.below())
+        return block.`is`(Blocks.DIRT) || block.`is`(Blocks.COARSE_DIRT) || belowBlock.`is`(Blocks.DIRT) || belowBlock.`is`(Blocks.COARSE_DIRT)
     }
 }

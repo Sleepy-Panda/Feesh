@@ -11,7 +11,9 @@ data class PersonalBestData(
     val sharksCaught: PersonalBestEntry = PersonalBestEntry(),
     val greatWhiteSharksCaught: PersonalBestEntry = PersonalBestEntry(),
     val doubleHookStreak: PersonalBestEntry = PersonalBestEntry(),
+    val treasureCatchesStreak: PersonalBestEntry = PersonalBestEntry(),
+    val greatTreasuresStreak: PersonalBestEntry = PersonalBestEntry(),
+    val outstandingTreasuresStreak: PersonalBestEntry = PersonalBestEntry(),
     val totalMobyDucksConsumed: PersonalBestEntry = PersonalBestEntry(),
-    val totalBlizzardsStarted: PersonalBestEntry = PersonalBestEntry(),
 )
 

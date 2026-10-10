@@ -12,8 +12,8 @@ import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
 import com.github.sleepypanda.feesh.features.help.VersionChecker
 import com.teamresourceful.resourcefulconfig.api.types.options.TranslatableValue
+import com.github.sleepypanda.feesh.utils.openUriCompat
 import com.teamresourceful.resourcefulconfigkt.api.ConfigKt
-import net.minecraft.util.Util
 
 object Settings : ConfigKt("${FeeshMod.MOD_ID}/config") {
     override val name: TranslatableValue
@@ -64,7 +64,7 @@ object Settings : ConfigKt("${FeeshMod.MOD_ID}/config") {
             description = "Big fishing community with guides, discussions and more. Check out #feesh-mod / #mod-discussion channels for mod news & discussions!"
             text = "Join Casters"
             onClick {
-                openLink("https://discord.gg/vn3RzuyJz")
+                openLink("https://discord.gg/fishing")
             }
         }
 
@@ -95,6 +95,15 @@ object Settings : ConfigKt("${FeeshMod.MOD_ID}/config") {
             }
         }
 
+        button {
+            title = "Hypixel Skyblock's bazaar API"
+            description = "API used by Feesh for getting bazaar prices."
+            text = "Open API"
+            onClick {
+                openLink("https://api.hypixel.net/skyblock/bazaar?product")
+            }
+        }
+
         // Settings categories
         category(General)
         category(Alerts)        
@@ -108,6 +117,6 @@ object Settings : ConfigKt("${FeeshMod.MOD_ID}/config") {
     fun save() = FeeshMod.INSTANCE.settings.save()
 
     private fun openLink(url: String) {
-        Util.getPlatform().openUri(url)
+        openUriCompat(url)
     }
 }

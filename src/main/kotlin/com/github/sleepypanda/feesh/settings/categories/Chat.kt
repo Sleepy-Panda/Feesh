@@ -3,16 +3,18 @@ package com.github.sleepypanda.feesh.settings.categories
 import com.github.sleepypanda.feesh.FeeshMod
 import com.github.sleepypanda.feesh.settings.models.AlertableSeaCreatureTypes
 import com.github.sleepypanda.feesh.settings.models.RareSeaCreatureTypesAllChat
+import com.github.sleepypanda.feesh.settings.models.TrophyRarityTypes
+import com.github.sleepypanda.feesh.constants.ModVersionConstants
 import com.github.sleepypanda.feesh.constants.RareDropTypes
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
 import com.github.sleepypanda.feesh.features.chat.CompactCatchMessages
+import com.github.sleepypanda.feesh.utils.openUriCompat
 import com.github.sleepypanda.feesh.utils.getScreenCompat
 import com.github.sleepypanda.feesh.utils.setScreenCompat
 import com.teamresourceful.resourcefulconfigkt.api.CategoryKt
 import com.teamresourceful.resourcefulconfig.api.types.options.TranslatableValue
 import net.minecraft.client.gui.screens.options.controls.KeyBindsScreen
-import net.minecraft.util.Util
 
 enum class HotspotChatSource(val displayName: String) {
     PARTY_CHAT("Party Chat"),
@@ -41,6 +43,7 @@ object Chat : CategoryKt("Chat") {
     var compactSeaCreaturesMessagesUseGradientColors by boolean(false) {
         this.name = Translated("Gradient for sea creature rarity")
         this.description = Translated("Colors the sea creature name in your custom message with a gradient instead of the default solid color.")
+        this.searchTerms = listOf(ModVersionConstants.VERSION_1_11_0)
     }
 
     var compactDoubleHookMessageTemplate by strings(CompactCatchMessages.DEFAULT_DOUBLE_HOOK_TEMPLATE) {
@@ -59,7 +62,7 @@ object Chat : CategoryKt("Chat") {
             description = "For using custom text templates above, please explore the guide explaining color codes and formatting codes."
             text = "Click to open"
             onClick {
-                Util.getPlatform().openUri("https://github.com/Sleepy-Panda/Feesh/blob/develop/docs/Colors%20and%20formatting%20guide.md")
+                openUriCompat("https://github.com/Sleepy-Panda/Feesh/blob/develop/docs/Colors%20and%20formatting%20guide.md")
             }
         }
 
@@ -188,5 +191,35 @@ object Chat : CategoryKt("Chat") {
     var shareTrophyFishDiscovered by boolean(true) {
         this.name = Translated("Share Trophy Fish discovery to the PARTY chat")
         this.description = Translated("Sends a PARTY chat message when you discovered a new Trophy Fish.")
+    }
+
+    var hideTrophyFrogCatches by boolean(false) {
+        this.name = Translated("Hide Trophy Frog catch messages")
+        this.description = Translated("Hides Trophy Frog catch messages from chat for the selected rarities. You will still see chat messages for newly discovered frogs!")
+        this.searchTerms = listOf(ModVersionConstants.VERSION_1_13_0)
+    }
+
+    var hideTrophyFishCatches by boolean(false) {
+        this.name = Translated("Hide Trophy Fish catch messages")
+        this.description = Translated("Hides Trophy Fish catch messages from chat for the selected rarities. You will still see chat messages for newly discovered fish!")
+        this.searchTerms = listOf(ModVersionConstants.VERSION_1_13_0)
+    }
+
+    var hideTrophyCatchRarities by select(TrophyRarityTypes.BRONZE, TrophyRarityTypes.SILVER) {
+        this.name = Translated("Trophy rarities to hide")
+        this.description = Translated("Catch messages for these rarities are hidden when hide option(s) above is enabled.")
+        this.searchTerms = TrophyRarityTypes.values().map { it.displayName }.toList() + ModVersionConstants.VERSION_1_13_0
+    }
+
+    init {
+        separator {
+            this.title = "${AQUA}${BOLD}Chat cleanup"
+        }
+    }
+
+    var hideLootshareMessagesInFrozenBlaze by boolean(false) {
+        this.name = Translated("Hide lootshare messages when in Frozen Blaze armor")
+        this.description = Translated("Hides LOOT SHARE chat messages while wearing Frozen Blaze armor.")
+        this.searchTerms = listOf(ModVersionConstants.VERSION_1_13_0)
     }
 }

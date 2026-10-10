@@ -1,13 +1,14 @@
 package com.github.sleepypanda.feesh.utils
 
 import com.github.sleepypanda.feesh.FeeshMod
-import net.minecraft.world.entity.Entity
-import net.minecraft.world.entity.decoration.ArmorStand
-import net.minecraft.world.entity.projectile.FishingHook
+import com.github.sleepypanda.feesh.constants.SeaCreatureNames
 import com.github.sleepypanda.feesh.utils.ChatUtils.getFormattedString
 import com.github.sleepypanda.feesh.utils.ChatUtils.getUnformattedString
 import com.github.sleepypanda.feesh.utils.ChatUtils.removeFormatting
 import net.minecraft.world.phys.Vec3
+import net.minecraft.world.entity.Entity
+import net.minecraft.world.entity.decoration.ArmorStand
+import net.minecraft.world.entity.projectile.FishingHook
 import kotlin.math.sqrt
 
 object EntityUtils {
@@ -130,20 +131,14 @@ object EntityUtils {
     data class SeaCreatureParsedNametagInfo(
         val mcEntityId: Int,
         val baseMobName: String,
-        val shortNametag: String,
         val currentHpNumber: Double,
         val maxHpNumber: Double,
-        val renderPos: Triple<Double, Double, Double>
+        val renderPos: Triple<Double, Double, Double>,
+        val formattedHp: String,
+        val isCorrupted: Boolean,
+        val hasShuriken: Boolean,
     )
 
-    // Original nametag samples:
-    // §r§8[§r§7Lv1§r§8] §r§9⚓§r§a☮ §r§cSquid§r §r§a100§r§f/§r§a100§r§c❤
-	// §r§8[§r§7Lv1§r§8] §r§9⚓§r§a☮ §r§k§5a§r§5Corrupted Squid§r§k§5a§r §r§a300§r§f/§r§a300§r§c❤
-    // §e﴾ §8[§7Lv600§8] §c♆§7⚙§d♣ §c§lLord Jawbus§r§r §a69M§f/§a100M§c❤ §e﴿
-    // §e﴾ §8[§7Lv600§8] §c♆§7⚙§d♣ §c§lLord Jawbus§r§r §e6.3M§f/§a100M§c❤ §e﴿ §b✯
-    // §8[§7Lv250§8] §c♆§e✰§a☮ §cJawbus Follower§r §a3M§f/§a3M§c❤
-	// MC 1.21.5: §r§8[§r§7Lv150§r§8] §r§9⚓§r§f🦴§r§5♃ §r§5§ka§r§5Corrupted The Loch Emperor§r§5§ka§r §r§e521.8k§r§f/§r§a2.4M§r§c❤ §r§b✯
-	// MC 1.21.5: §r§8[§r§7Lv14§r§8] §r§2⸙§r§9⚓ §r§5§ka§r§5Corrupted Ent§r§5§ka§r §r§e1§r§f/§r§a75,000§r§c❤
     /**
      * Parses an ArmorStand nametag and returns a SeaCreatureParsedNametagInfo object.
      * @param entity The ArmorStand to parse.
@@ -152,49 +147,82 @@ object EntityUtils {
      */
     fun parseSeaCreatureNametag(entity: ArmorStand, includedSeaCreatureNames: List<String>? = null): SeaCreatureParsedNametagInfo? {
         val customName = entity.customName ?: return null
-        val plainName = customName.getUnformattedString()
-
-        if (plainName.isEmpty() ||
-            !plainName.contains("[Lv") ||
-            !plainName.contains("]") ||
-            (!plainName.contains("❤") && !plainName.contains("Puddle Jumper")) || // Jumper has no health indicator
-            (includedSeaCreatureNames != null && !includedSeaCreatureNames.any { plainName.contains(it) })
-        ) return null
-
-        val formattedText = customName.getFormattedString()
-        var name = formattedText
-            .replace("§e﴾ ", "")
-            .replace(" §e﴿", "")
-            .replace("§5§ka", "")
-            .trim()
-
-        val shortName = name.split("] ").getOrNull(1)?.replace("Corrupted ", "") ?: return null
-        
-        val nameParts = shortName.split(" ")
-        val namePartIndex = nameParts.indexOfFirst { it.contains("/") }
-        val baseMobNameParts = if (namePartIndex >= 0) {
-            nameParts.take(namePartIndex)
-        } else {
-            nameParts
-        }
-        
-        val baseMobName = baseMobNameParts.joinToString(" ")
-            .removeFormatting()
-            .replace(Regex("[^a-zA-Z\\s'-]"), "")
-            .trim()
-
-        val unformattedShortName = shortName.removeFormatting()
-        val hpMatch = Regex("([0-9.,]+[kKmMbB]?)\\/([0-9.,]+[kKmMbB]?)\\s*❤").find(unformattedShortName)
-        val currentHpNumber = if (hpMatch != null) CommonUtils.parseShortNumber(hpMatch.groupValues[1]) else 0.0
-        val maxHpNumber = if (hpMatch != null) CommonUtils.parseShortNumber(hpMatch.groupValues[2]) else 0.0
-
-        return SeaCreatureParsedNametagInfo(
-            mcEntityId = entity.id,
-            baseMobName = baseMobName, // "Lord Jawbus" or "Squid"
-            shortNametag = shortName, // §c♆§7⚙§d♣ §c§lLord Jawbus§r§r §a69M§f/§a100M§c❤ §b✯
-            currentHpNumber = currentHpNumber,
-            maxHpNumber = maxHpNumber,
-            renderPos = Triple(entity.x, entity.y, entity.z)
+        return parseSeaCreatureNametag(
+            entityId = entity.id,
+            customNameFormatted = customName.getFormattedString(),
+            customNameUnformatted = customName.getUnformattedString(),
+            x = entity.x,
+            y = entity.y,
+            z = entity.z,
+            includedSeaCreatureNames = includedSeaCreatureNames,
         )
     }
+
+    fun parseSeaCreatureNametag(
+        entityId: Int,
+        customNameFormatted: String,
+        customNameUnformatted: String,
+        x: Double,
+        y: Double,
+        z: Double,
+        includedSeaCreatureNames: List<String>? = null,
+    ): SeaCreatureParsedNametagInfo? {
+        if (customNameFormatted.isEmpty() ||
+            customNameUnformatted.isEmpty() ||
+            !customNameUnformatted.contains("[Lv") ||
+            (!customNameUnformatted.contains("❤") && !customNameUnformatted.contains(SeaCreatureNames.PUDDLE_JUMPER)) ||
+            (includedSeaCreatureNames != null && !includedSeaCreatureNames.any { customNameUnformatted.contains(it) })
+        ) return null
+
+        val match = SEA_CREATURE_NAMETAG.matchEntire(customNameFormatted) ?: return null
+        val baseMobName = match.groups["name"]?.value
+            ?.removeFormatting()
+            ?.replace(Regex("[^a-zA-Z\\s'-]"), "")
+            ?.trim()
+            ?.takeIf { it.isNotEmpty() }
+            ?: return null
+
+        return SeaCreatureParsedNametagInfo(
+            mcEntityId = entityId,
+            baseMobName = baseMobName,
+            currentHpNumber = parseHpGroup(match, "currentHp"),
+            maxHpNumber = parseHpGroup(match, "maxHp"),
+            renderPos = Triple(x, y, z),
+            formattedHp = match.groups["hp"]?.value.orEmpty(),
+            isCorrupted = match.groups["corrupted"]?.value != null,
+            hasShuriken = match.groups["trailingIcons"]?.value?.contains("✯") == true,
+        )
+    }
+
+    private fun parseHpGroup(match: MatchResult, group: String): Double {
+        val value = match.groups[group]?.value?.removeFormatting() ?: return 0.0
+        return CommonUtils.parseShortNumber(value)
+    }
+
+    // Original nametag samples:
+    // §r§8[§r§7Lv1§r§8] §r§9⚓§r§a☮ §r§cSquid§r §r§a100§r§f/§r§a100§r§c❤
+	// §r§8[§r§7Lv1§r§8] §r§9⚓§r§a☮ §r§k§5a§r§5Corrupted Squid§r§k§5a§r §r§a300§r§f/§r§a300§r§c❤
+    // §8[§7Lv600§8] §c♆§7⚙§d♣ §c§lLord Jawbus§r§r §a69M§f/§a100M§c❤
+    // §8[§7Lv600§8] §c♆§7⚙§d♣ §c§lLord Jawbus§r§r §e6.3M§f/§a100M§c❤ §b✯
+    // §8[§7Lv600§8] §c♆§7⚙§d♣ §c§lLord Jawbus§r§r §e6.3M§f/§a100M§c❤ §b✯§b✯§aЖ
+    // §8[§7Lv250§8] §c♆§e✰§a☮ §cJawbus Follower§r §a3M§f/§a3M§c❤
+
+    private const val FORMAT_CODES = "(?:§.)*"
+    private const val NON_OBFUSCATED_FORMAT_CODES = "(?:§[^k])*"
+    private const val OBFUSCATED_CHARACTER = "(?:§.)*§k(?:§.)*a(?:§.)*" // §r§k§5a
+    private const val MOB_NAME_WORD = "[A-Za-z][A-Za-z'-]*"
+    private const val MOB_TYPE_ICON = "${NON_OBFUSCATED_FORMAT_CODES}[^§\\p{L}\\d\\s]" // §r§9⚓ or §r§a☮
+    private const val HP_NUMBER = "[0-9]+(?:[.,][0-9]+)*[kKmMbB]?"
+    private const val CURRENT_AND_MAX_HP = "${FORMAT_CODES}(?<currentHp>${HP_NUMBER})${FORMAT_CODES}/${FORMAT_CODES}(?<maxHp>${HP_NUMBER})${FORMAT_CODES}\\s*${FORMAT_CODES}❤"
+    private val SEA_CREATURE_NAMETAG = Regex(
+        "^${FORMAT_CODES}\\[${FORMAT_CODES}Lv\\d+${FORMAT_CODES}]" +
+            "(?:\\s*${MOB_TYPE_ICON})*\\s*" +
+            "(?:${OBFUSCATED_CHARACTER})?" +
+            "(?<corrupted>${FORMAT_CODES}Corrupted${FORMAT_CODES}\\s+)?" +
+            "(?<name>${NON_OBFUSCATED_FORMAT_CODES}${MOB_NAME_WORD}(?:${NON_OBFUSCATED_FORMAT_CODES}\\s+${NON_OBFUSCATED_FORMAT_CODES}${MOB_NAME_WORD})*)${NON_OBFUSCATED_FORMAT_CODES}" +
+            "(?:${OBFUSCATED_CHARACTER})?" +
+            "(?:\\s+(?<hp>${CURRENT_AND_MAX_HP}))?" +
+            "(?<trailingIcons>(?:\\s*${FORMAT_CODES}[^\\s])*)" +
+            "${FORMAT_CODES}\\s*$"
+    )
 }

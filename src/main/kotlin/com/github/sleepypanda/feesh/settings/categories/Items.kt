@@ -1,9 +1,11 @@
 package com.github.sleepypanda.feesh.settings.categories
 
+import com.github.sleepypanda.feesh.constants.ModVersionConstants
 import com.github.sleepypanda.feesh.features.items.background.BackgroundHighlighterManager
 import com.github.sleepypanda.feesh.features.items.background.TrashBooksHighlighter
 import com.github.sleepypanda.feesh.features.items.slottext.SlotTextRendererManager
 import com.github.sleepypanda.feesh.features.items.tooltip.TooltipManager
+import com.github.sleepypanda.feesh.settings.models.RodPartTypes
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
 import com.teamresourceful.resourcefulconfigkt.api.CategoryKt
@@ -83,6 +85,22 @@ object Items : CategoryKt("Items") {
         }
     }
 
+    var showRodPartsSlotText by ObservableEntry(boolean(false) {
+        this.name = Translated("Rod parts")
+        this.description = Translated("Renders abbreviations of equipped fishing rod parts in the item slot.")
+        this.searchTerms = listOf(ModVersionConstants.VERSION_1_15_0)
+    }) { prev, new ->
+        if (prev != new) {
+            SlotTextRendererManager.refreshEnabledRenderers()
+        }
+    }
+
+    var showRodPartsSlotTextList by select(*RodPartTypes.values()) {
+        this.name = Translated("Select rod parts")
+        this.description = Translated("Which fishing rod parts should be shown in the item slot.")
+        this.searchTerms = RodPartTypes.values().map { it.displayName }.toList() + ModVersionConstants.VERSION_1_15_0
+    }
+
     init {
         separator {
             this.title = "${AQUA}${BOLD}Tooltip"
@@ -101,6 +119,7 @@ object Items : CategoryKt("Items") {
     var compactRodPartTooltip by ObservableEntry(boolean(false) {
         this.name = Translated("Compact rod parts")
         this.description = Translated("Hides descriptions for fishing rod parts (Hook, Line, and Sinker), keeping only the part name.")
+        this.searchTerms = listOf(ModVersionConstants.VERSION_1_11_0)
     }) { prev, new ->
         if (prev != new) {
             TooltipManager.refreshEnabledAdders()
