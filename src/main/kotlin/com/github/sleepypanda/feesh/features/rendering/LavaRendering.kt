@@ -1,60 +1,73 @@
 package com.github.sleepypanda.feesh.features.rendering
 
 import com.github.sleepypanda.feesh.FeeshMod
+import com.github.sleepypanda.feesh.events.EventBus
+import com.github.sleepypanda.feesh.events.models.ClientTickEvent
+import com.github.sleepypanda.feesh.events.models.WorldChangedEvent
 import com.github.sleepypanda.feesh.settings.categories.WorldRendering
+import com.github.sleepypanda.feesh.settings.models.LavaReplacementWorlds
 import com.github.sleepypanda.feesh.utils.WorldUtils
-//#if MC >= 26.1
-//$$ import net.minecraft.client.color.block.BlockTintSource
-//$$ import net.minecraft.client.renderer.BiomeColors
-//$$ import net.minecraft.client.renderer.block.BlockAndTintGetter
-//$$ import net.minecraft.client.renderer.block.FluidModel
-//$$ import net.minecraft.client.resources.model.ModelDebugName
-//$$ import net.minecraft.client.resources.model.sprite.Material
-//$$ import net.minecraft.client.resources.model.sprite.MaterialBaker
-//$$ import net.minecraft.core.BlockPos
-//$$ import net.minecraft.resources.Identifier
-//$$ import net.minecraft.util.ARGB
-//$$ import net.minecraft.world.level.block.state.BlockState
-//#endif
+import net.minecraft.client.color.block.BlockTintSource
+import net.minecraft.client.renderer.BiomeColors
+import net.minecraft.client.renderer.block.BlockAndTintGetter
+import net.minecraft.client.renderer.block.FluidModel
+import net.minecraft.client.resources.model.ModelDebugName
+import net.minecraft.client.resources.model.sprite.Material
+import net.minecraft.client.resources.model.sprite.MaterialBaker
+import net.minecraft.core.BlockPos
+import net.minecraft.resources.Identifier
+import net.minecraft.util.ARGB
+import net.minecraft.world.level.block.state.BlockState
 
 object LavaRendering {
-    //#if MC >= 26.1
-    //$$ @Volatile
-    //$$ private var lavaReplacementModel: FluidModel? = null
-    //#endif
+    @Volatile
+    private var lavaReplacementModel: FluidModel? = null
 
-    @JvmStatic
-    fun shouldReplaceLavaWithWater(): Boolean {
-        if (!WorldUtils.isInSkyblock() || WorldUtils.getWorldName() != WorldUtils.CRIMSON_ISLE) return false
-        if (!WorldRendering.replaceLavaWithWater) return false
+    /** Chunks already rebuilt for the current world while replacement is on. */
+    private var appliedInWorld = false
 
-        return true
+    fun init() {
+        EventBus.subscribe(ClientTickEvent::class, ::onClientTick)
+        EventBus.subscribe(WorldChangedEvent::class, ::onWorldChanged)
     }
 
+    /** Tint only colors the water replacement, so replacement has to be on. */
     @JvmStatic
-    fun shouldTintLava(): Boolean {
-        if (!WorldUtils.isInSkyblock() || WorldUtils.getWorldName() != WorldUtils.CRIMSON_ISLE) return false
-        if (!WorldRendering.replaceLavaWithTinted) return false
-
-        return true
+    fun isActive(): Boolean {
+        if (!WorldUtils.isInSkyblock() || !WorldRendering.replaceLavaWithWater) return false
+        return isSelectedWorld()
     }
 
-    @JvmStatic
-    fun getLavaTintColor(): Int {
-        if (!WorldUtils.isInSkyblock() || WorldUtils.getWorldName() != WorldUtils.CRIMSON_ISLE) return 0
-        if (!WorldRendering.replaceLavaWithTinted) return 0
-
-        return WorldRendering.lavaTintColor
+    private fun isSelectedWorld(): Boolean {
+        val worldName = WorldUtils.getWorldName() ?: return false
+        return WorldRendering.lavaReplacementWorlds.any { it.worldName == worldName }
     }
 
     /**
-     * Schedules chunks rebuild around the player so lava/tinted water updates.
+     * Scoreboard area arrives after some chunks mesh. Rebuild once the world is known.
      */
+    private fun onClientTick(@Suppress("UNUSED_PARAMETER") event: ClientTickEvent) {
+        if (!isActive() || appliedInWorld) return
+        reloadRenderedLava()
+    }
+
+    private fun onWorldChanged(@Suppress("UNUSED_PARAMETER") event: WorldChangedEvent) {
+        appliedInWorld = false
+    }
+
     @JvmStatic
     fun reloadRenderedLava() {
-        if (!WorldUtils.isInSkyblock() || WorldUtils.getWorldName() != WorldUtils.CRIMSON_ISLE) return
+        if (!WorldUtils.isInSkyblock()) return
+        val worldName = WorldUtils.getWorldName() ?: return
+        val affectsThisWorld = LavaReplacementWorlds.values().any { it.worldName == worldName }
+        if (!affectsThisWorld && !appliedInWorld) return
+        appliedInWorld = isActive()
 
         FeeshMod.mc.schedule {
+            if (FeeshMod.mc.level == null) {
+                appliedInWorld = false
+                return@schedule
+            }
             //#if MC >= 26.2
             //$$ FeeshMod.mc.levelExtractor.allChanged()
             //#else
@@ -63,50 +76,35 @@ object LavaRendering {
         }
     }
 
-    //#if MC >= 26.1
-    //$$ @JvmStatic
-    //$$ fun bakeLavaReplacementModel(materials: MaterialBaker) {
-    //$$     val unbaked = FluidModel.Unbaked(
-    //$$         Material(Identifier.withDefaultNamespace("block/water_still"), false),
-    //$$         Material(Identifier.withDefaultNamespace("block/water_flow"), false),
-    //$$         Material(Identifier.withDefaultNamespace("block/water_overlay"), false),
-    //$$         LavaTintSource,
-    //$$     )
-    //$$     lavaReplacementModel = unbaked.bake(materials, ModelDebugName { "Feesh Lava Replacement" })
-    //$$ }
-    //$$
-    //$$ @JvmStatic
-    //$$ fun getLavaReplacementModel(): FluidModel? = lavaReplacementModel
-    //$$
-    //$$ @JvmStatic
-    //$$ fun isLavaReplacementModel(model: FluidModel): Boolean = model === lavaReplacementModel
-    //$$
-    //$$ /**
-    //$$  * Dynamic tint: custom color when tint mode is on, otherwise biome water color.
-    //$$  * Matches 1.21 priority: plain water replace wins over tint.
-    //$$  */
-    //$$ private object LavaTintSource : BlockTintSource {
-    //$$     override fun colorInWorld(state: BlockState, level: BlockAndTintGetter, pos: BlockPos): Int {
-    //$$         if (shouldReplaceLavaWithWater()) {
-    //$$             return BiomeColors.getAverageWaterColor(level, pos)
-    //$$         }
-    //$$         if (shouldTintLava()) {
-    //$$             val tint = getLavaTintColor()
-    //$$             if (tint != 0) return ARGB.opaque(tint)
-    //$$         }
-    //$$         return BiomeColors.getAverageWaterColor(level, pos)
-    //$$     }
-    //$$
-    //$$     override fun color(state: BlockState): Int {
-    //$$         if (shouldReplaceLavaWithWater()) {
-    //$$             return ARGB.opaque(0x3F76E4)
-    //$$         }
-    //$$         if (shouldTintLava()) {
-    //$$             val tint = getLavaTintColor()
-    //$$             if (tint != 0) return ARGB.opaque(tint)
-    //$$         }
-    //$$         return ARGB.opaque(0x3F76E4)
-    //$$     }
-    //$$ }
-    //#endif
+    @JvmStatic
+    fun bakeLavaReplacementModel(materials: MaterialBaker) {
+        val unbaked = FluidModel.Unbaked(
+            waterMaterial("block/water_still"),
+            waterMaterial("block/water_flow"),
+            waterMaterial("block/water_overlay"),
+            LavaTintSource,
+        )
+        lavaReplacementModel = unbaked.bake(materials, ModelDebugName { "Feesh Lava Replacement" })
+    }
+
+    @JvmStatic
+    fun getLavaReplacementModel(): FluidModel? = lavaReplacementModel
+
+    /** Water sprites on the translucent chunk layer, so lava is see-through like water. */
+    private fun waterMaterial(path: String): Material =
+        Material(Identifier.withDefaultNamespace(path)).withForceTranslucent(true)
+
+    private object LavaTintSource : BlockTintSource {
+        override fun color(state: BlockState): Int {
+            if (WorldRendering.tintReplacedLava) return tintColor()
+            return ARGB.opaque(0x3F76E4)
+        }
+
+        override fun colorInWorld(state: BlockState, level: BlockAndTintGetter, pos: BlockPos): Int {
+            if (WorldRendering.tintReplacedLava) return tintColor()
+            return BiomeColors.getAverageWaterColor(level, pos)
+        }
+
+        private fun tintColor(): Int = ARGB.opaque(WorldRendering.lavaTintColor)
+    }
 }

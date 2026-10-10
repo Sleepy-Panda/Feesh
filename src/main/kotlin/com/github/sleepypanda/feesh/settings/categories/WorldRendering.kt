@@ -1,36 +1,24 @@
 package com.github.sleepypanda.feesh.settings.categories
 
-import com.github.sleepypanda.feesh.constants.ModVersionConstants
-
 import com.github.sleepypanda.feesh.FeeshMod
+import com.github.sleepypanda.feesh.constants.ModVersionConstants
 import com.github.sleepypanda.feesh.features.rendering.LavaRendering
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
 import com.github.sleepypanda.feesh.features.rendering.HidePlayersNearBobber
 import com.github.sleepypanda.feesh.features.rendering.RareMobHighlight
 import com.github.sleepypanda.feesh.settings.models.HighlightableSeaCreatureTypes
+import com.github.sleepypanda.feesh.settings.models.LavaReplacementWorlds
 import com.teamresourceful.resourcefulconfig.api.types.options.TranslatableValue
 import com.teamresourceful.resourcefulconfigkt.api.CategoryKt
 import com.teamresourceful.resourcefulconfigkt.api.ObservableEntry
 import java.awt.Color
 
-// TODO: Reload lava after Crimson Isle detected as some lava is loaded before the world name is known
 object WorldRendering : CategoryKt("World Rendering") {
     override val description: TranslatableValue
         get() = Literal(
             "Features that modify the world and entities."
         )
-
-    init {
-        separator {
-            this.title = "${AQUA}${BOLD}Fishing hooks"
-        }
-    }
-
-    var hideOtherPlayersFishingHooks by boolean(false) {
-        this.name = Translated("Hide other players' fishing hooks")
-        this.description = Translated("Hides fishing hooks that belong to other players.")
-    }
 
     init {
         separator {
@@ -40,31 +28,44 @@ object WorldRendering : CategoryKt("World Rendering") {
 
     var replaceLavaWithWater by ObservableEntry(
         boolean(false) {
-            this.name = Translated("Replace lava with defaultwater texture")
-            this.description = Translated("Replaces lava texture with water texture when in the Crimson Isle.")
+            this.name = Translated("Replace lava with water")
+            this.description = Translated("Replaces lava with transparent water and removes fog when under lava in the selected worlds.")
+            this.searchTerms = listOf(ModVersionConstants.VERSION_1_16_0)
         }
     ) { prev, new ->
         if (prev != new) {
             LavaRendering.reloadRenderedLava()
         }
     }
+   
+    var lavaReplacementWorlds by ObservableEntry(select(LavaReplacementWorlds.CRIMSON_ISLE) {
+        this.name = Translated("Worlds to replace lava")
+        this.description = Translated("Worlds where lava is replaced with water.")
+        this.searchTerms = LavaReplacementWorlds.values().map { it.worldName } + ModVersionConstants.VERSION_1_16_0
+    }) { prev, new ->
+        if (!prev.contentEquals(new)) {
+            LavaRendering.reloadRenderedLava()
+        }
+    }
 
-    var replaceLavaWithTinted by ObservableEntry(
+    var tintReplacedLava by ObservableEntry(
         boolean(false) {
-            this.name = Translated("Replace lava with tinted water texture")
-            this.description = Translated("Shows water blocks with your chosen color instead of lava when in the Crimson Isle.")
+            this.name = Translated("Tint water")
+            this.description = Translated("Adds a custom color to the water that replaces lava. Used together with \"Replace lava with water\".")
+            this.searchTerms = listOf(ModVersionConstants.VERSION_1_16_0)
         }
     ) { prev, new ->
         if (prev != new) {
             LavaRendering.reloadRenderedLava()
         }
     }
-
+  
     var lavaTintColor by ObservableEntry(
-        color(Color(0xD9A7B8).rgb) {
-            this.name = Translated("Tinted water color")
-            this.description = Translated("Color of the water that replaces lava. Only applies when \"Replace lava with tinted water texture\" is enabled.")
+        color(Color(0x470405).rgb) {
+            this.name = Translated("Tint water color")
+            this.description = Translated("Color applied to the water that replaces lava when \"Tint water\" is on.")
             this.allowAlpha = false
+            this.searchTerms = listOf(ModVersionConstants.VERSION_1_16_0)
         }
     ) { prev, new ->
         if (prev != new) {

@@ -13,7 +13,8 @@
 		"EntityAccessor",
 		"SoundEngineMixin",
 		"AbstractSoundInstanceAccessor",
-		${fluid_mixins} // processed from build.common.gradle
+		"FluidStateModelSetMixin",
+		"CameraMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1
