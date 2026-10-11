@@ -233,6 +233,33 @@ object SeaCreaturesTracker : IResettableViewModeTracker {
         }
     }
 
+    private fun findKnownSeaCreature(nameOrKey: String): SeaCreatures.SeaCreatureInfo? {
+        val normalized = nameOrKey.trim()
+        return SeaCreatures.allSeaCreatures.find { it.name.equals(normalized, ignoreCase = true) }
+    }
+
+    private fun findPersistedCatchKey(name: String): String? {
+        val normalized = name.trim()
+        return (data.session.catches.keys.asSequence() + data.total.catches.keys.asSequence())
+            .find { it.equals(normalized, ignoreCase = true) }
+    }
+
+    private fun unknownSeaCreatureInfo(key: String): SeaCreatures.SeaCreatureInfo {
+        val name = key.lowercase().split(" ").joinToString(" ") { word ->
+            word.replaceFirstChar { char -> char.titlecase() }
+        }
+        return SeaCreatures.SeaCreatureInfo(
+            name = name,
+            rarityColorCode = GRAY.code,
+            pattern = Regex("\\b\\B"),
+            isRare = false,
+        )
+    }
+
+    private fun getSeaCreatureInfo(key: String): SeaCreatures.SeaCreatureInfo {
+        return findKnownSeaCreature(key) ?: unknownSeaCreatureInfo(key)
+    }
+
     private fun onGameClosed(@Suppress("UNUSED_PARAMETER") event: GameClosedEvent) {
         if (Overlays.resetSeaCreaturesTrackerSessionOnGameClosed) {
             resetOnGameClosed()
@@ -296,7 +323,9 @@ object SeaCreaturesTracker : IResettableViewModeTracker {
         }
 
         fun findSeaCreatureInfoByName(name: String): SeaCreatures.SeaCreatureInfo? {
-            return SeaCreatures.allSeaCreatures.find { it.name.equals(name.trim(), ignoreCase = true) }
+            findKnownSeaCreature(name)?.let { return it }
+            val key = findPersistedCatchKey(name) ?: return null
+            return unknownSeaCreatureInfo(key)
         }
 
         CommonUtils.runWithCatching("Failed to change sea creature count in Sea creatures tracker") {
@@ -461,13 +490,13 @@ object SeaCreaturesTracker : IResettableViewModeTracker {
             }
 
             val entry = sourceObj.catches[key] ?: return
-            val seaCreatureInfo = SeaCreatures.allSeaCreatures.find { it.name.uppercase() == key }
-            val displayName = seaCreatureInfo?.displayName ?: key
+            val seaCreatureInfo = getSeaCreatureInfo(key)
+            val displayName = seaCreatureInfo.displayName
             val viewModeText = getViewModeDisplayText(viewMode)
             if (!isConfirmed) {
                 val command = when (viewMode) {
-                    TrackerViewMode.SESSION -> "$DELETE_SEA_CREATURE_COMMAND ${seaCreatureInfo?.name ?: key} noconfirm"
-                    TrackerViewMode.TOTAL -> "$DELETE_SEA_CREATURE_TOTAL_COMMAND ${seaCreatureInfo?.name ?: key} noconfirm"
+                    TrackerViewMode.SESSION -> "$DELETE_SEA_CREATURE_COMMAND ${seaCreatureInfo.name} noconfirm"
+                    TrackerViewMode.TOTAL -> "$DELETE_SEA_CREATURE_TOTAL_COMMAND ${seaCreatureInfo.name} noconfirm"
                 }
                 ChatUtils.sendLocalChat("${WHITE}Do you want to delete ${displayName}${WHITE} from Sea creatures tracker ${viewModeText}${WHITE}?", true)
                 ChatUtils.sendLocalChatWithCommand(
@@ -498,7 +527,7 @@ object SeaCreaturesTracker : IResettableViewModeTracker {
     private fun onDeleteSeaCreatureInline(seaCreatureKey: String) {
         CommonUtils.runWithCatching("Failed to delete sea creature from Sea creatures tracker") {
             val viewMode = getCurrentViewMode()
-            val seaCreatureInfo = SeaCreatures.allSeaCreatures.find { it.name.uppercase() == seaCreatureKey } ?: return
+            val seaCreatureInfo = getSeaCreatureInfo(seaCreatureKey)
             onDeleteSeaCreatureCommand(arrayOf(seaCreatureInfo.name), viewMode)
         }
     }
@@ -521,9 +550,9 @@ object SeaCreaturesTracker : IResettableViewModeTracker {
             val sorting = Overlays.seaCreaturesTrackerSorting
 
             val entries = sourceObj.catches.mapNotNull { (key, value) ->
-                val seaCreatureInfo = SeaCreatures.allSeaCreatures.find { it.name.uppercase() == key }
-                if (seaCreatureInfo == null) return@mapNotNull null
-                if (displayMode == SeaCreaturesTrackerDisplayMode.ONLY_RARE && !seaCreatureInfo.isRare) return@mapNotNull null
+                val known = findKnownSeaCreature(key)
+                val seaCreatureInfo = known ?: unknownSeaCreatureInfo(key)
+                if (known != null && displayMode == SeaCreaturesTrackerDisplayMode.ONLY_RARE && !known.isRare) return@mapNotNull null
 
                 val caughtAmount = value.amount
                 val totalAmount = caughtAmount + value.cocoonedAmount
@@ -739,7 +768,7 @@ object SeaCreaturesTracker : IResettableViewModeTracker {
         fun getDoubleHookCatches(catches: MutableMap<String, SeaCreatureCatchData>): Int {
             var doubleHookSum = 0
             for ((key, catchData) in catches) {
-                val info = SeaCreatures.allSeaCreatures.find { it.name.uppercase() == key } ?: continue
+                val info = getSeaCreatureInfo(key)
                 if (!info.canBeDoubleHooked) continue
                 doubleHookSum += catchData.doubleHookAmount
             }
