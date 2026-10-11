@@ -44,9 +44,10 @@ Newly released - https://hypixel.net/threads/hypixel-skyblock-0-24-5-assorted-qo
  GOOD CATCH! You caught a Shinyfish Shard!
 §a §r§lACID RAIN BONUS! §r§fYou caught a bonus §r§aRusty Coin§r§f!
 
+- Bait refund arrives to sack and gets counted
+- Remove old SC - NIGHT SQUID, SEA_GUARDIAN (as well as fix tracker logic that hides but still counts them as Total)
 - Treasure shards that go to the inventory, such as salmon, counted twice (because chat message + inventory pickup)
 - Scrollable overlays
-- Mobs nametag looks different, may cause some issues?
 - Send a message like this "BAD JUNK CATCH! You caught a Salmon!" when catching a non-treasure while treasure/junk fishing
 - You cannot send same message twice when sharing Isopods
 - For level 100 pets, would be cool to change their item name to be aligned with Level 1 pets. This also causes Lvl 100 pets being not easily found ny name via /get command.

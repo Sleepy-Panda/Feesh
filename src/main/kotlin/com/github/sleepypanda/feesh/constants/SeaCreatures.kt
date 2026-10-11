@@ -251,7 +251,8 @@ class SeaCreatures {
         val isRare: Boolean,
         val canBeDoubleHooked: Boolean = true,
         val types: List<String> = emptyList(),
-        val worlds: List<String> = emptyList()
+        val worlds: List<String> = emptyList(),
+        val hasSpawnImmunity: Boolean = false,
     ) {
         val displayName: String get() = rarityColorCode + name
         val boldDisplayName: String get() = rarityColorCode + BOLD + name
@@ -269,6 +270,7 @@ class SeaCreatures {
                 LEGENDARY.code,
                 Regex(SeaCreatureMessages.WATER_HYDRA_MESSAGE),
                 true,
+                hasSpawnImmunity = true,
             ),
             SeaCreatureInfo(
                 SeaCreatureNames.CARROT_KING,
@@ -379,12 +381,14 @@ class SeaCreatures {
                 LEGENDARY.code,
                 Regex(SeaCreatureMessages.BLUE_RINGED_OCTOPUS_MESSAGE),
                 true,
+                hasSpawnImmunity = true,
             ),
             SeaCreatureInfo(
                 SeaCreatureNames.WIKI_TIKI,
                 MYTHIC.code,
                 Regex(SeaCreatureMessages.WIKI_TIKI_MESSAGE),
                 true,
+                hasSpawnImmunity = true,
             ),
 
             // FISHING FESTIVAL
@@ -393,6 +397,7 @@ class SeaCreatures {
                 LEGENDARY.code,
                 Regex(SeaCreatureMessages.GREAT_WHITE_SHARK_MESSAGE),
                 true,
+                hasSpawnImmunity = true,
             ),
             SeaCreatureInfo(
                 SeaCreatureNames.NURSE_SHARK,
@@ -427,6 +432,7 @@ class SeaCreatures {
                 Regex(SeaCreatureMessages.YETI_MESSAGE),
                 true,
                 worlds = listOf(WorldUtils.JERRY_WORKSHOP),
+                hasSpawnImmunity = true,
             ),
             SeaCreatureInfo(
                 SeaCreatureNames.NUTCRACKER,
@@ -463,12 +469,14 @@ class SeaCreatures {
                 LEGENDARY.code,
                 Regex(SeaCreatureMessages.PHANTOM_FISHER_MESSAGE),
                 true,
+                hasSpawnImmunity = true,
             ),
             SeaCreatureInfo(
                 SeaCreatureNames.GRIM_REAPER,
                 MYTHIC.code,
                 Regex(SeaCreatureMessages.GRIM_REAPER_MESSAGE),
                 true,
+                hasSpawnImmunity = true,
             ),
             SeaCreatureInfo(
                 SeaCreatureNames.SCARECROW,
@@ -591,6 +599,7 @@ class SeaCreatures {
                 true,
                 types = listOf(TYPE_CRIMSON_ISLE_LAVA),
                 worlds = listOf(WorldUtils.CRIMSON_ISLE),
+                hasSpawnImmunity = true,
             ),
             SeaCreatureInfo(
                 SeaCreatureNames.THUNDER,
@@ -599,6 +608,7 @@ class SeaCreatures {
                 true,
                 types = listOf(TYPE_CRIMSON_ISLE_LAVA),
                 worlds = listOf(WorldUtils.CRIMSON_ISLE),
+                hasSpawnImmunity = true,
             ),
             SeaCreatureInfo(
                 SeaCreatureNames.LORD_JAWBUS,
@@ -632,6 +642,7 @@ class SeaCreatures {
                 canBeDoubleHooked = false,
                 types = listOf(TYPE_CRIMSON_ISLE_LAVA),
                 worlds = listOf(WorldUtils.CRIMSON_ISLE),
+                hasSpawnImmunity = true,
             ),
 
             SeaCreatureInfo(
@@ -656,6 +667,7 @@ class SeaCreatures {
                 Regex(SeaCreatureMessages.ABYSSAL_MINER_MESSAGE),
                 true,
                 worlds = listOf(WorldUtils.CRYSTAL_HOLLOWS),
+                hasSpawnImmunity = true,
             ),
             SeaCreatureInfo(
                 SeaCreatureNames.WATER_WORM,
@@ -758,6 +770,7 @@ class SeaCreatures {
                 Regex(SeaCreatureMessages.ALLIGATOR_MESSAGE),
                 true,
                 worlds = listOf(WorldUtils.BACKWATER_BAYOU),
+                hasSpawnImmunity = true,
             ),
             SeaCreatureInfo(
                 SeaCreatureNames.TITANOBOA,
@@ -765,6 +778,7 @@ class SeaCreatures {
                 Regex(SeaCreatureMessages.TITANOBOA_MESSAGE),
                 true,
                 worlds = listOf(WorldUtils.BACKWATER_BAYOU),
+                hasSpawnImmunity = true,
             ),
 
             // MOONGLADE MARSH
@@ -774,6 +788,7 @@ class SeaCreatures {
                 Regex(SeaCreatureMessages.NESSIE_MESSAGE),
                 true,
                 worlds = listOf(WorldUtils.MOONGLADE_MARSH),
+                hasSpawnImmunity = true,
             ),
             SeaCreatureInfo(
                 SeaCreatureNames.THE_LOCH_EMPEROR,
@@ -781,6 +796,7 @@ class SeaCreatures {
                 Regex(SeaCreatureMessages.THE_LOCH_EMPEROR_MESSAGE),
                 true,
                 worlds = listOf(WorldUtils.MOONGLADE_MARSH),
+                hasSpawnImmunity = true,
             ),
             SeaCreatureInfo(
                 SeaCreatureNames.BOGGED,
@@ -862,6 +878,7 @@ class SeaCreatures {
                 Regex(SeaCreatureMessages.FROG_PRINCE_MESSAGE),
                 true,
                 worlds = listOf(WorldUtils.LOTUS_ATOLL),
+                hasSpawnImmunity = true,
             ),
 
             // TORRHUS CANYON
@@ -899,6 +916,7 @@ class SeaCreatures {
                 Regex(SeaCreatureMessages.SILKBREEZE_MESSAGE),
                 true,
                 worlds = listOf(WorldUtils.TORRHUS_CANYON),
+                hasSpawnImmunity = true,
             ),
             SeaCreatureInfo(
                 SeaCreatureNames.GIANT_ISOPOD,
@@ -906,6 +924,7 @@ class SeaCreatures {
                 Regex(SeaCreatureMessages.GIANT_ISOPOD_MESSAGE),
                 true,
                 worlds = listOf(WorldUtils.TORRHUS_CANYON),
+                hasSpawnImmunity = true,
             ),
         )
 
