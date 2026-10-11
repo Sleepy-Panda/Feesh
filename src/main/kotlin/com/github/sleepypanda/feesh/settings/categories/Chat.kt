@@ -140,6 +140,24 @@ object Chat : CategoryKt("Chat") {
         this.name = Translated("Include Magic Find")
         this.description = Translated("Send the drop's ✯ Magic Find value as part of the party chat message.")
     }
+  
+    init {
+        separator {
+            this.title = "${AQUA}${BOLD}Party commands"
+        }
+    }
+
+    var enablePartyCommands by boolean(true) {
+        this.name = Translated("Enable party commands")
+        this.description = Translated(
+"""Lets your party explore your mod data. Responds in party chat when someone sends !feesh commands:
+!feesh profit - shows the current session profit
+!feesh totalprofit - shows the total profit
+!feesh profit <item name> - session item match
+!feesh totalprofit <item name> - total item match
+""")
+        this.searchTerms = listOf(ModVersionConstants.VERSION_1_16_0)
+    }
 
     init {
         separator {
