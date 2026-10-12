@@ -12,8 +12,6 @@ https://hypixel.net/threads/september-21st-minister-update-mob-level-improvement
 - Adjusted all EPIC Phoenix Pets -> SPECIAL, Adjusted all LEGENDARY Phoenix Pets -> VERY SPECIAL
   New pet drop message? New Pet IDs / pet price issues for leveled up pet? "PHOENIX;0+100", "PHOENIX;4+100"
 - Precursor Drone became Legendary. New ID? "PRECURSOR_DRONE;4+100"
-- Maybe disable nutcracker alert by default
-- Check Ice Essence catch msg
 
 ## Torrus Canyon
 
