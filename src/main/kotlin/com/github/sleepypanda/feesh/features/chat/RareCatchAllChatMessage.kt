@@ -11,12 +11,23 @@ import com.github.sleepypanda.feesh.utils.WorldUtils
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.FeeshMod
 import com.github.sleepypanda.feesh.events.EventBus
+import com.github.sleepypanda.feesh.events.models.ClientTickEvent
 import com.github.sleepypanda.feesh.events.models.OwnSeaCreatureCaughtEvent
+import com.github.sleepypanda.feesh.events.models.WorldUnloadEvent
 import net.minecraft.world.entity.decoration.ArmorStand
 
 object RareCatchAllChatMessage {
+    // Chat is handled mid-tick, before the isopod nametag exists. Skip this tick's END and search on the next one.
+    // A double hook sends two catch messages. One share is enough — coords of a single isopod.
+    private var pendingIsopodDoubleHook: Boolean? = null
+    private var isopodSearchDelayTicks = 0
+    private var isopodShareLockTicks = 0
+    private const val ISOPOD_SHARE_LOCK_TICKS = 20
+
     fun init() {
         EventBus.subscribe(OwnSeaCreatureCaughtEvent::class, ::onSeaCreature)
+        EventBus.subscribe(ClientTickEvent::class, ::onClientTick)
+        EventBus.subscribe(WorldUnloadEvent::class, ::onWorldUnload)
     }
 
     private fun onSeaCreature(event: OwnSeaCreatureCaughtEvent) {
@@ -32,6 +43,53 @@ object RareCatchAllChatMessage {
         if (!Chat.shareRareSeaCreaturesTypesAllChat.contains(type)) return
 
         val isDoubleHook = event.isDoubleHook
+        if (seaCreatureName.equals(SeaCreatureNames.GIANT_ISOPOD, ignoreCase = true)) {
+            scheduleIsopodShare(isDoubleHook)
+            return
+        }
+
+        sendShare(seaCreatureName, isDoubleHook)
+    }
+
+    private fun scheduleIsopodShare(isDoubleHook: Boolean) {
+        if (pendingIsopodDoubleHook != null) {
+            pendingIsopodDoubleHook = pendingIsopodDoubleHook == true || isDoubleHook
+            isopodSearchDelayTicks = 1
+            debugIsopod("${YELLOW}another isopod catch, still sending one share")
+            return
+        }
+        if (isopodShareLockTicks > 0) {
+            debugIsopod("${YELLOW}skipped extra isopod share (${isopodShareLockTicks} ticks left on lock)")
+            return
+        }
+
+        pendingIsopodDoubleHook = isDoubleHook
+        isopodSearchDelayTicks = 1
+        isopodShareLockTicks = ISOPOD_SHARE_LOCK_TICKS
+        debugIsopod("${YELLOW}chat received, searching next tick")
+    }
+
+    private fun onClientTick(@Suppress("UNUSED_PARAMETER") event: ClientTickEvent) {
+        if (isopodShareLockTicks > 0) isopodShareLockTicks--
+
+        if (pendingIsopodDoubleHook == null) return
+        if (isopodSearchDelayTicks > 0) {
+            isopodSearchDelayTicks--
+            return
+        }
+
+        val isDoubleHook = pendingIsopodDoubleHook ?: return
+        pendingIsopodDoubleHook = null
+        sendShare(SeaCreatureNames.GIANT_ISOPOD, isDoubleHook)
+    }
+
+    private fun onWorldUnload(@Suppress("UNUSED_PARAMETER") event: WorldUnloadEvent) {
+        pendingIsopodDoubleHook = null
+        isopodSearchDelayTicks = 0
+        isopodShareLockTicks = 0
+    }
+
+    private fun sendShare(seaCreatureName: String, isDoubleHook: Boolean) {
         val message = getAllChatMessage(seaCreatureName, isDoubleHook)
         //ChatUtils.sendAllChat(message) // TODO: Uncomment this when we are ready to send the message to all chat
         ChatUtils.sendLocalChat(message)
