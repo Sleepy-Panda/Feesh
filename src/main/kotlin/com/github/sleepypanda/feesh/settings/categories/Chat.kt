@@ -152,9 +152,9 @@ object Chat : CategoryKt("Chat") {
         this.description = Translated(
 """Lets your party explore your mod data. Responds in party chat when someone sends !feesh commands:
 !feesh profit - shows the current session profit
-!feesh totalprofit - shows the total profit
+!feesh profittotal - shows the total profit
 !feesh profit <item name> - session item match
-!feesh totalprofit <item name> - total item match
+!feesh profittotal <item name> - total item match
 """)
         this.searchTerms = listOf(ModVersionConstants.VERSION_1_16_0)
     }

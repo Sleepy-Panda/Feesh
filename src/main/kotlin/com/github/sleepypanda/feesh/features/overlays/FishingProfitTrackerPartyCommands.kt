@@ -1,4 +1,4 @@
-package com.github.sleepypanda.feesh.features.chat
+package com.github.sleepypanda.feesh.features.overlays
 
 import com.github.sleepypanda.feesh.features.overlays.FishingProfitTracker
 import com.github.sleepypanda.feesh.features.overlays.base.TrackerViewMode
@@ -8,7 +8,8 @@ import com.github.sleepypanda.feesh.utils.CommonUtils
 import com.github.sleepypanda.feesh.utils.enums.PricingModeWithNpc
 
 object FishingProfitTrackerPartyCommands {
-    fun profitMessage(viewMode: TrackerViewMode): String? {
+    fun getProfitChatMessage(viewMode: TrackerViewMode): String? {
+        if (!Overlays.fishingProfitTrackerOverlay || !WorldUtils.isInSkyblock()) return null
         val source = FishingProfitTracker.getSourceObject(viewMode)
         val useNetProfit = Overlays.shouldShowNetProfitInFishingProfitTracker
         val profit = if (useNetProfit) source.totalProfit - source.totalCost else source.totalProfit
@@ -19,13 +20,14 @@ object FishingProfitTrackerPartyCommands {
         val amountStr = CommonUtils.toShortNumber(profit) ?: return null
         val perHourStr = CommonUtils.toShortNumber(perHour) ?: "0"
         val timeStr = CommonUtils.formatTimeElapsed(elapsedSeconds)
-        val scope = scopeLabel(viewMode)
+        val viewModeLabel = getViewModeLabel(viewMode)
         val label = if (useNetProfit) "Net profit" else "Profit"
 
-        return "$scope $label is $amountStr ($perHourStr/h) for $timeStr ${priceModeTag()}"
+        return "$viewModeLabel $label is $amountStr ($perHourStr/h) for $timeStr ${getPriceModeLabel()}"
     }
 
-    fun profitItemMessage(viewMode: TrackerViewMode, query: String): String? {
+    fun getProfitItemChatMessage(viewMode: TrackerViewMode, query: String): String? {
+        if (!Overlays.fishingProfitTrackerOverlay || !WorldUtils.isInSkyblock()) return null
         if (query.isEmpty()) return null
 
         val match = FishingProfitTracker.getSourceObject(viewMode).profitTrackerItems.values
@@ -37,14 +39,14 @@ object FishingProfitTrackerPartyCommands {
         val countStr = CommonUtils.formatNumberWithSpaces(match.amount)
         val profitStr = CommonUtils.toShortNumber(match.totalItemProfit) ?: "0"
 
-        return "${scopeLabel(viewMode)}: ${countStr}x $displayName: $profitStr ${priceModeTag()}"
+        return "${getViewModeLabel(viewMode)}: ${countStr}x $displayName: $profitStr ${getPriceModeLabel()}"
     }
 
-    private fun scopeLabel(viewMode: TrackerViewMode): String {
+    private fun getViewModeLabel(viewMode: TrackerViewMode): String {
         return if (viewMode == TrackerViewMode.SESSION) "Session" else "Total"
     }
 
-    private fun priceModeTag(): String {
+    private fun getPriceModeLabel(): String {
         val mode = when (Overlays.fishingProfitTrackerPriceMode) {
             PricingModeWithNpc.SELL_OFFER -> "sell offer"
             PricingModeWithNpc.INSTA_SELL -> "insta sell"
