@@ -17,7 +17,6 @@ import com.github.sleepypanda.feesh.utils.RegisterUtils
 import com.github.sleepypanda.feesh.utils.gui.FeeshGui
 import com.github.sleepypanda.feesh.utils.gui.LineInfo
 import com.github.sleepypanda.feesh.utils.gui.GuiButton
-import com.github.sleepypanda.feesh.utils.enums.ColorCodes
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
 import com.github.sleepypanda.feesh.utils.data.PersistentDataManager
@@ -341,9 +340,9 @@ object TreasureFishingTracker : IResettableViewModeTracker {
 
         val lines = mutableListOf<LineInfo>()
         lines.add(LineInfo("$baseTitle $viewModeText"))
-        lines.add(LineInfo(getCatchLine(DARK_PURPLE, "Good catch", catches.good, total)))
-        lines.add(LineInfo(getCatchLine(GOLD, "Great catch", catches.great, total)))
-        lines.add(LineInfo(getCatchLine(LIGHT_PURPLE, "Outstanding catch", catches.outstanding, total)))
+        lines.add(LineInfo(getCatchLine("${DARK_PURPLE}Good catch", catches.good, total)))
+        lines.add(LineInfo(getCatchLine("${GOLD}Great catch", catches.great, total)))
+        lines.add(LineInfo(getCatchLine("${LIGHT_PURPLE}Outstanding catch", catches.outstanding, total)))
         lines.add(LineInfo("${GRAY}Total Treasures: ${WHITE}${CommonUtils.formatNumberWithSpaces(total)}"))
         lines.add(LineInfo(""))
         lines.addAll(data.total.treasureDyes.getOverlayLines(treasureDye.displayName, "treasure"))
@@ -378,9 +377,9 @@ object TreasureFishingTracker : IResettableViewModeTracker {
         return lines.map { Component.literal(it) }
     }
 
-    private fun getCatchLine(color: ColorCodes, label: String, count: Int, total: Int): String {
+    private fun getCatchLine(label: String, count: Int, total: Int): String {
         val percent = if (total > 0) count * 100.0 / total else 0.0
-        return "${GRAY}- ${color}${label}${GRAY}: ${WHITE}${CommonUtils.formatNumberWithSpaces(count)} ${GRAY}${catchPercentFormat.format(percent)}%"
+        return "${GRAY}- ${label}${GRAY}: ${WHITE}${CommonUtils.formatNumberWithSpaces(count)} ${GRAY}${catchPercentFormat.format(percent)}%"
     }
 
     private fun formatTooltipPercent(percent: Double): String {
