@@ -7,6 +7,7 @@ Released on: ???
 - Added option to replace lava with water and remove orange lava fog for Crimson Isle/CH [disabled by default].
   - You can also tint the water with any color.
 - Made sea creatures HP display more compact and colored sea creature names according to their rarity.
+- Added % to catch types in Treasure fishing tracker.
 
 # 1.15.1
 
