@@ -150,11 +150,13 @@ object Chat : CategoryKt("Chat") {
     var enablePartyCommands by boolean(true) {
         this.name = Translated("Enable party commands")
         this.description = Translated(
-"""Lets your party explore your mod data. Responds in party chat when someone sends !feesh commands:
-!feesh profit - shows the current session profit
-!feesh profittotal - shows the total profit
-!feesh profit <item name> - session item match
-!feesh profittotal <item name> - total item match
+"""Lets your party explore data from your enabled trackers. Responds in party chat when someone sends !feesh commands:
+!feesh profit - shows the profit for [Session] tracker
+!feesh profittotal - shows the profit for [Total] tracker
+!feesh profit top1 - shows the top profit item for [Session] tracker
+!feesh profittotal top1 - shows the top profit item for [Total] tracker
+!feesh profit <item name> - first item match for [Session] tracker
+!feesh profittotal <item name> - first item match for [Total] tracker
 """)
         this.searchTerms = listOf(ModVersionConstants.VERSION_1_16_0)
     }
