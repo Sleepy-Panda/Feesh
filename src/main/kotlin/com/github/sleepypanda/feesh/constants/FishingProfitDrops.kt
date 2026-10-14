@@ -15,7 +15,7 @@ data class FishingProfitDropInfo(
     val itemAlternateNames: List<String> = listOf(), // Alternate names for the item, to support some popular item renamings by mods, or item renamings by SB
     val itemDisplayName: String, // Formatted item name
     val npcPrice: Double?,
-    val ignoreFromInventory: Boolean = false, // If the item should be ignored from inventory tracking
+    val ignoreItemPickup: Boolean = false, // If the item should be ignored from inventory/sacks tracking
     val shouldAnnounceRareDrop: Boolean = false, // If the item should be announced as a rare drop in player's chat (for valuable drops which have no standart RARE DROP! message from Hypixel)
     val amountOfMagmaFish: Int? = null, // Amount of Magma Fish to exchange a Trophy Fish at Odger
     val amountOfLotus: Int? = null, // Amount of Lotus to exchange a Trophy Frog
@@ -129,6 +129,7 @@ class FishingProfitDrops {
                 itemName = "Golden Bait",
                 itemDisplayName = "${UNCOMMON}Golden Bait", // From Seal pet
                 npcPrice = 100.0,
+                ignoreItemPickup = true, // Disabled until Hypixel fixes bait refund bug
                 categories = listOf(BAIT_CATEGORY),
             ),
             FishingProfitDropInfo(
@@ -136,6 +137,7 @@ class FishingProfitDrops {
                 itemName = "Treasure Bait",
                 itemDisplayName = "${RARE}Treasure Bait", // From Seal pet
                 npcPrice = 500.0,
+                ignoreItemPickup = true, // Disabled until Hypixel fixes bait refund bug
                 categories = listOf(BAIT_CATEGORY),
             ),
             FishingProfitDropInfo(
@@ -1493,14 +1495,14 @@ class FishingProfitDrops {
                 itemName = "Agatha's Coupon",
                 itemDisplayName = "${UNCOMMON}Agatha's Coupon",
                 npcPrice = 10_000.0,
-                ignoreFromInventory = true,
+                ignoreItemPickup = true, // Counted from contest chat message
             ),
             FishingProfitDropInfo(
                 itemId = "ESSENCE_FOREST",
                 itemName = "Forest Essence",
                 itemDisplayName = "${COMMON}Forest Essence",
                 npcPrice = null,
-                ignoreFromInventory = true,
+                ignoreItemPickup = true, // Counted from contest chat message
             ),
             FishingProfitDropInfo(
                 itemId = "SWAMP_THE_FISH",
@@ -1673,7 +1675,7 @@ class FishingProfitDrops {
                 itemName = "Miria's Coupon",
                 itemDisplayName = "${RARE}Miria's Coupon",
                 npcPrice = 15_000.0,
-                ignoreFromInventory = true,
+                ignoreItemPickup = true, // Counted from contest chat message
             ),
             FishingProfitDropInfo(
                 itemId = "HELIX_LOG",
