@@ -8,6 +8,8 @@ import com.github.sleepypanda.feesh.events.models.ChatCancellableEvent
 import com.github.sleepypanda.feesh.events.models.ClientTickEvent
 import com.github.sleepypanda.feesh.events.models.GuiClosedEvent
 import com.github.sleepypanda.feesh.events.models.InventoryProfitItemPickupEvent
+import com.github.sleepypanda.feesh.events.models.ShardCaughtEvent
+import com.github.sleepypanda.feesh.events.models.ShardCaughtSource
 import com.github.sleepypanda.feesh.events.models.WorldChangedEvent
 import com.github.sleepypanda.feesh.utils.ChatUtils.getFormattedString
 import com.github.sleepypanda.feesh.utils.ChatUtils.removeFormatting
@@ -89,11 +91,23 @@ object InventoryItemPickupPublisher {
     private val TRADE_CANCELLED_PATTERN = Regex("^.* cancelled the trade!$") // refunded items go back to inventory
     private var lastTradeAt: Date? = null
 
+    // If there was Treasure catch then it counts the shard; the same item might be added to the inventory instead of huntingbox so we ignore it.
+    private var lastTreasureShardName: String? = null
+    private var lastTreasureShardAt: Date? = null
+
     fun init() {
         EventBus.subscribe(ClientTickEvent::class, ::onClientTick)
         EventBus.subscribe(ChatCancellableEvent::class, ::onChat)
         EventBus.subscribe(GuiClosedEvent::class, ::onGuiClosed)
         EventBus.subscribe(WorldChangedEvent::class, ::onWorldChanged)
+        EventBus.subscribe(ShardCaughtEvent::class, ::onShardCaught)
+    }
+
+    private fun onShardCaught(event: ShardCaughtEvent) {
+        if (event.source != ShardCaughtSource.TREASURE) return
+        if (event.shardName.isBlank() || event.count <= 0) return
+        lastTreasureShardName = event.shardName
+        lastTreasureShardAt = Date()
     }
 
     private fun onChat(event: ChatCancellableEvent) {
@@ -390,10 +404,18 @@ object InventoryItemPickupPublisher {
             return false
         }
 
-        fun wasPotentiallyClaimedFromHuntingBox(chestName: String?, fishingProfitItemName: String): Boolean {
+        fun wasPotentiallyClaimedFromHuntingBox(chestName: String?, categories: List<String>): Boolean {
             if (chestName == null) return false
-            if (chestName.contains("Hunting Box", ignoreCase = true) && fishingProfitItemName.endsWith("Shard")) return true
+            if (chestName.contains("Hunting Box", ignoreCase = true) && categories.contains(FishingProfitDrops.SHARD_CATEGORY)) return true
             return false
+        }
+
+        fun wasPotentiallyCaughtAsTreasureShard(dropInfo: FishingProfitDropInfo): Boolean {
+            if (!dropInfo.categories.contains(FishingProfitDrops.SHARD_CATEGORY)) return false
+            val now = Date()
+            val shardName = lastTreasureShardName ?: return false
+            if (lastTreasureShardAt == null || now.time - lastTreasureShardAt!!.time >= 1_000) return false
+            return dropInfo.itemName.equals(shardName, ignoreCase = true) || dropInfo.itemAlternateNames.any { it.equals(shardName, ignoreCase = true) }
         }
 
         fun wasPotentiallyClaimedFromFishingBag(chestName: String?, categories: List<String>): Boolean {
@@ -482,7 +504,8 @@ object InventoryItemPickupPublisher {
 
         if (wasPotentiallyClaimedFromBazaar(dropInfo)) return true
         if (wasPotentiallyClaimedFromPetMenu(chestName, dropInfo.itemName)) return true
-        if (wasPotentiallyClaimedFromHuntingBox(chestName, dropInfo.itemName)) return true
+        if (wasPotentiallyClaimedFromHuntingBox(chestName, dropInfo.categories)) return true
+        if (wasPotentiallyCaughtAsTreasureShard(dropInfo)) return true
         if (wasPotentiallyClaimedFromFishingBag(chestName, dropInfo.categories)) return true
         if (wasPotentiallyClaimedFromAccessoryBag(chestName, dropInfo.categories)) return true
         if (wasPotentiallyClaimedFromTimePocket(chestName, dropInfo.categories)) return true
