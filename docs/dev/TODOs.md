@@ -44,7 +44,6 @@ Newly released - https://hypixel.net/threads/hypixel-skyblock-0-24-5-assorted-qo
 
 - Bait refund arrives to sack and gets counted (temporary disabled bait tracking).
 - Remove old SC - NIGHT SQUID, SEA_GUARDIAN (as well as fix tracker logic that hides but still counts them as Total)
-- Treasure shards that go to the inventory, such as salmon, counted twice (because chat message + inventory pickup)
 - Scrollable overlays
 - Send a message like this "BAD JUNK CATCH! You caught a Salmon!" when catching a non-treasure while treasure/junk fishing
 - You cannot send same message twice when sharing Isopods

@@ -13,6 +13,7 @@ Released on: ???
 
 - Disabled Treasure/Golden Bait being counted in the profit tracker (until Hypixel fixes bug or I fugure out workaround).
   - It's intended to be counted as profit when bait is added by Seal pet, but in fact Hypixel sends both refunded baits and new baits in sacks pickup message, so I can't easily distinguish source.
+- Fixed double counting of Treasure shards that go to the inventory instead of hunting box (e.g. Salmon Shard).
 
 # 1.15.1
 
