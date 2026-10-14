@@ -20,12 +20,10 @@ object PartyChatCommands {
     private const val OWN_COMMAND_RESPONSE_DELAY_MS = 1_000L
 
     private val COMMAND_PATTERN = Regex("^${COMMAND_PREFIX}\\s+(?<args>.+)$", RegexOption.IGNORE_CASE)
-    private val TOTAL_PROFIT_ITEM_PATTERN = Regex("^profittotal\\s+(?<query>.+)$", RegexOption.IGNORE_CASE)
-    private val SESSION_PROFIT_ITEM_PATTERN = Regex("^profit\\s+(?<query>.+)$", RegexOption.IGNORE_CASE)
 
     private var cooldownUntil = 0L
-    private var pendingMessage: String? = null
-    private var pendingSendAt = 0L
+    private var scheduledMessage: String? = null
+    private var scheduledMessageSendAt = 0L
 
     fun init() {
         EventBus.subscribe(PartyChatEvent::class, ::onPartyChat)
@@ -54,25 +52,21 @@ object PartyChatCommands {
                 commandWithArgs == "profittotal" -> FishingProfitTrackerPartyCommands.getProfitChatMessage(TrackerViewMode.TOTAL)
                 commandWithArgs == "profit top1" -> FishingProfitTrackerPartyCommands.getTopProfitItemChatMessage(TrackerViewMode.SESSION)
                 commandWithArgs == "profittotal top1" -> FishingProfitTrackerPartyCommands.getTopProfitItemChatMessage(TrackerViewMode.TOTAL)
-                commandWithArgs.startsWith("profittotal ") -> TOTAL_PROFIT_ITEM_PATTERN.matchEntire(args)?.let {
-                    FishingProfitTrackerPartyCommands.getProfitItemChatMessage(
-                        TrackerViewMode.TOTAL,
-                        it.groups["query"]?.value?.trim().orEmpty()
-                    )
-                }
-                commandWithArgs.startsWith("profit ") -> SESSION_PROFIT_ITEM_PATTERN.matchEntire(args)?.let {
-                    FishingProfitTrackerPartyCommands.getProfitItemChatMessage(
-                        TrackerViewMode.SESSION,
-                        it.groups["query"]?.value?.trim().orEmpty()
-                    )
-                }
+                commandWithArgs.startsWith("profittotal ") -> FishingProfitTrackerPartyCommands.getProfitItemChatMessage(
+                    TrackerViewMode.TOTAL,
+                    args.substringAfter(' ').trim()
+                )
+                commandWithArgs.startsWith("profit ") -> FishingProfitTrackerPartyCommands.getProfitItemChatMessage(
+                    TrackerViewMode.SESSION,
+                    args.substringAfter(' ').trim()
+                )
                 else -> null
             } ?: return
     
-            cooldownUntil = now + RESPONSE_COOLDOWN_MS
+            cooldownUntil = now + RESPONSE_COOLDOWN_MS // Prevent spamming back to the pchat if someone sends a lot of commands
             if (isOwnPartyMessage(event.rankAndPlayer)) { // !feesh command message is just sent and player can't send another message right away
-                pendingMessage = message
-                pendingSendAt = now + OWN_COMMAND_RESPONSE_DELAY_MS
+            scheduledMessage = message
+            scheduledMessageSendAt = now + OWN_COMMAND_RESPONSE_DELAY_MS
                 return
             }
     
@@ -81,18 +75,18 @@ object PartyChatCommands {
     }
 
     private fun onClientTick(@Suppress("UNUSED_PARAMETER") event: ClientTickEvent) {
-        val message = pendingMessage ?: return
-        if (System.currentTimeMillis() < pendingSendAt) return
+        val message = scheduledMessage ?: return
+        if (System.currentTimeMillis() < scheduledMessageSendAt) return
 
-        pendingMessage = null
+        scheduledMessage = null
         if (!WorldUtils.isInSkyblock()) return
         ChatUtils.sendPartyChat(message)
     }
 
     private fun onWorldChanged(@Suppress("UNUSED_PARAMETER") event: WorldChangedEvent) {
         cooldownUntil = 0L
-        pendingMessage = null
-        pendingSendAt = 0L
+        scheduledMessage = null
+        scheduledMessageSendAt = 0L
     }
 
     private fun isOwnPartyMessage(rankAndPlayer: String): Boolean {

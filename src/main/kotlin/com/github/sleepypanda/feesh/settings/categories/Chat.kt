@@ -150,13 +150,13 @@ object Chat : CategoryKt("Chat") {
     var enablePartyCommands by boolean(true) {
         this.name = Translated("Enable party commands")
         this.description = Translated(
-"""Lets your party explore data from your enabled trackers. Responds in party chat when someone sends !feesh commands:
-!feesh profit - shows the profit for [Session] tracker
-!feesh profittotal - shows the profit for [Total] tracker
-!feesh profit top1 - shows the top profit item for [Session] tracker
-!feesh profittotal top1 - shows the top profit item for [Total] tracker
-!feesh profit <item name> - first item match for [Session] tracker
-!feesh profittotal <item name> - first item match for [Total] tracker
+"""${GRAY}Lets your party explore data from your enabled trackers. Responds in party chat when someone sends ${AQUA}!feesh ${GRAY}commands:
+${AQUA}!feesh profit ${GRAY}- shows the profit for Fishing profit tracker [Session]
+${AQUA}!feesh profittotal ${GRAY}- shows the profit for Fishing profit tracker [Total]
+${AQUA}!feesh profit top1 ${GRAY}- shows the top profit item for Fishing profit tracker [Session]
+${AQUA}!feesh profittotal top1 ${GRAY}- shows the top profit item for Fishing profit tracker [Total]
+${AQUA}!feesh profit <item name> ${GRAY}- first match by full/partial item name for Fishing profit tracker [Session]
+${AQUA}!feesh profittotal <item name> ${GRAY}- first match by full/partial item name for Fishing profit tracker [Total]
 """)
         this.searchTerms = listOf(ModVersionConstants.VERSION_1_16_0)
     }
