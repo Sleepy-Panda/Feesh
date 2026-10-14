@@ -7,6 +7,12 @@ Released on: ???
 - Added option to replace lava with water and remove orange lava fog for Crimson Isle/CH [disabled by default].
   - You can also tint the water with any color.
 - Made sea creatures HP display more compact and colored sea creature names according to their rarity.
+- Added % to catch types in Treasure fishing tracker.
+
+## Bugfixes
+
+- Disabled Treasure/Golden Bait being counted in the profit tracker (until Hypixel fixes bug or I fugure out workaround).
+  - It's intended to be counted as profit when bait is added by Seal pet, but in fact Hypixel sends both refunded baits and new baits in sacks pickup message, so I can't easily distinguish source.
 
 # 1.15.1
 

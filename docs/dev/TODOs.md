@@ -12,8 +12,6 @@ https://hypixel.net/threads/september-21st-minister-update-mob-level-improvement
 - Adjusted all EPIC Phoenix Pets -> SPECIAL, Adjusted all LEGENDARY Phoenix Pets -> VERY SPECIAL
   New pet drop message? New Pet IDs / pet price issues for leveled up pet? "PHOENIX;0+100", "PHOENIX;4+100"
 - Precursor Drone became Legendary. New ID? "PRECURSOR_DRONE;4+100"
-- Maybe disable nutcracker alert by default
-- Check Ice Essence catch msg
 
 ## Torrus Canyon
 
@@ -44,6 +42,7 @@ Newly released - https://hypixel.net/threads/hypixel-skyblock-0-24-5-assorted-qo
  GOOD CATCH! You caught a Shinyfish Shard!
 §a §r§lACID RAIN BONUS! §r§fYou caught a bonus §r§aRusty Coin§r§f!
 
+- Bait refund arrives to sack and gets counted (temporary disabled bait tracking).
 - Remove old SC - NIGHT SQUID, SEA_GUARDIAN (as well as fix tracker logic that hides but still counts them as Total)
 - Treasure shards that go to the inventory, such as salmon, counted twice (because chat message + inventory pickup)
 - Scrollable overlays
