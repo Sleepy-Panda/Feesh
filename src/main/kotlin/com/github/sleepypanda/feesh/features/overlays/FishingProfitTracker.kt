@@ -993,7 +993,7 @@ object FishingProfitTracker : IResettableViewModeTracker {
         }
     }
 
-    private data class DisplayTrackerData(
+    internal data class DisplayTrackerData(
         val entriesToShow: List<ItemEntryData>,
         val entriesToHide: List<ItemEntryData>,
         val hiddenItemsCount: Int,
@@ -1012,9 +1012,9 @@ object FishingProfitTracker : IResettableViewModeTracker {
         val netProfitPerCatch: Double
     )
 
-    private data class ItemEntryData(val itemId: String, val item: String, val amount: Int, val profit: Double)
+    internal data class ItemEntryData(val itemId: String, val item: String, val amount: Int, val profit: Double)
 
-    private data class CostEntryData(val itemId: String, val item: String, val amount: Int, val cost: Double)
+    internal data class CostEntryData(val itemId: String, val item: String, val amount: Int, val cost: Double)
 
     private data class TrackerLineColumns(val item: String, val price: String) {
         fun toCells(): List<String> = listOf(item, price)
@@ -1039,7 +1039,7 @@ object FishingProfitTracker : IResettableViewModeTracker {
         }
     }
 
-    private fun getDisplayTrackerData(viewMode: TrackerViewMode): DisplayTrackerData {
+    internal fun getDisplayTrackerData(viewMode: TrackerViewMode): DisplayTrackerData {
 
         fun isDyeDrop(itemId: String): Boolean {
             return FishingProfitDrops.items.find { it.itemId == itemId }?.categories?.contains(FishingProfitDrops.DYE_CATEGORY) == true

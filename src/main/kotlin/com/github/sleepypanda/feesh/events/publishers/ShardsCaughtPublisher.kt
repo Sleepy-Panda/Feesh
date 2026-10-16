@@ -3,6 +3,7 @@ package com.github.sleepypanda.feesh.events.publishers
 import com.github.sleepypanda.feesh.events.EventBus
 import com.github.sleepypanda.feesh.events.models.ChatCancellableEvent
 import com.github.sleepypanda.feesh.events.models.ShardCaughtEvent
+import com.github.sleepypanda.feesh.events.models.ShardCaughtSource
 import com.github.sleepypanda.feesh.utils.CommonUtils
 import com.github.sleepypanda.feesh.utils.WorldUtils
 
@@ -50,35 +51,35 @@ object ShardsCaughtPublisher {
             SHARD_CATCH_PATTERN.find(text)?.run {
                 val shard = groups["shardName"]?.value ?: return@onChat
                 val shardName = "$shard Shard"
-                publish(shardName, 1)
+                publish(shardName, 1, ShardCaughtSource.TREASURE)
                 return@onChat
             }
 
             SHARDS_CATCH_PATTERN.find(text)?.run {
                 val shard = groups["shardName"]?.value ?: return@onChat
                 val count = groups["count"]?.value?.replace(",", "")?.toIntOrNull() ?: return@onChat
-                publish("$shard Shard", count)
+                publish("$shard Shard", count, ShardCaughtSource.TREASURE)
                 return@onChat
             }
 
             SHARDS_BLACK_HOLE_PATTERN.find(text)?.run {
                 val shardsText = groups["shardsText"]?.value ?: return@onChat
                 val (shardName, count) = parseCountAndName(shardsText, hasXPrefix = true)
-                publish(shardName, count)
+                publish(shardName, count, ShardCaughtSource.BLACK_HOLE)
                 return@onChat
             }
 
             SHARDS_CHARMED_PATTERN.find(text)?.run {
                 val shard = groups["shardName"]?.value ?: return@onChat
                 val count = groups["count"]?.value?.toIntOrNull() ?: return@onChat
-                publish("$shard Shard", count)
+                publish("$shard Shard", count, ShardCaughtSource.CHARM)
                 return@onChat
             }
 
             SHARDS_LOOTSHARED_PATTERN.find(text)?.run {
                 val shardsText = groups["shardsText"]?.value ?: return@onChat
                 val (shardName, count) = parseCountAndName(shardsText, hasXPrefix = false)
-                publish(shardName, count)
+                publish(shardName, count, ShardCaughtSource.LOOTSHARE)
                 return@onChat
             }
         }
@@ -99,8 +100,8 @@ object ShardsCaughtPublisher {
         return shardName to count
     }
 
-    private fun publish(shardName: String, count: Int) {
+    private fun publish(shardName: String, count: Int, source: ShardCaughtSource) {
         if (shardName.isBlank() || count <= 0) return
-        EventBus.publish(ShardCaughtEvent(shardName = shardName, count = count))
+        EventBus.publish(ShardCaughtEvent(shardName = shardName, count = count, source = source))
     }
 }
