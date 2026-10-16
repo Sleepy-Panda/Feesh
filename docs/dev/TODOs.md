@@ -12,13 +12,13 @@ New potential drops that have alerts:
 - 1x Severed Pincer (0.5%)
 - 1x Chain of the End Times (2%)
 - 1x Brimstone Handle (1.5%)
-- 1x COMMON Baby Yeti Pet (2%)
+- 1x COMMON Baby Yeti Pet (2%) - PET DROP! COMMON Baby Yeti
 - 1x RARE Flying Fish (4%)
-1x EPIC Flying Fish (2%)
+- 1x EPIC Flying Fish (2%)
 - 1x Mound of Seagrass (2.5%)
 
 New drops:
-1x Pumpkin Guts (0.5%)
+- 1x Pumpkin Guts (0.5%)
 
 Deleted drops (unintentionally)?
 https://hypixel.net/threads/some-more-notable-things-i-noticed-from-the-drop-table-changes.6163341/
