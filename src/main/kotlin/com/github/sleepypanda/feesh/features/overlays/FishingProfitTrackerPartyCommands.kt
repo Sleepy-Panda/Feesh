@@ -52,7 +52,7 @@ object FishingProfitTrackerPartyCommands {
         val profitStr = CommonUtils.toShortNumber(top.profit) ?: "0"
         val viewModeLabel = getViewModeLabel(viewMode)
 
-        return "${countStr}x ${top.item.removeFormatting()}: $profitStr [$viewModeLabel, ${getPriceModeLabel()} ]"
+        return "${countStr}x ${top.item.removeFormatting()}: $profitStr [$viewModeLabel, ${getPriceModeLabel()}]"
     }
 
     private fun getViewModeLabel(viewMode: TrackerViewMode): String {

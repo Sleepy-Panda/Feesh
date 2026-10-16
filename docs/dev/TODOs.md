@@ -4,6 +4,31 @@
 
 - Test each release in 26.x
 
+## MF update
+
+New potential drops that have alerts:
+- 1x Piscary VI (2%)
+- 1x Great White Shark Tooth (5%)
+- 1x Severed Pincer (0.5%)
+- 1x Chain of the End Times (2%)
+- 1x Brimstone Handle (1.5%)
+- 1x COMMON Baby Yeti Pet (2%)
+- 1x RARE Flying Fish (4%)
+1x EPIC Flying Fish (2%)
+- 1x Mound of Seagrass (2.5%)
+
+New drops:
+1x Pumpkin Guts (0.5%)
+
+Deleted drops (unintentionally)?
+https://hypixel.net/threads/some-more-notable-things-i-noticed-from-the-drop-table-changes.6163341/
+- Luck of the Sea VI (readded)
+- Lily Pad
+- Dark bait
+- Enchanted Rotten Flesh and Enchanted Feathers
+- Enchanted Ink Sacs or Squid Boots
+- 
+
 ## Minister update
 
 https://hypixel.net/threads/september-21st-minister-update-mob-level-improvements-testing-2.6150078/
