@@ -4,6 +4,31 @@
 
 - Test each release in 26.x
 
+## MF update
+
+New potential drops that have alerts:
+- 1x Piscary VI (2%)
+- 1x Great White Shark Tooth (5%)
+- 1x Severed Pincer (0.5%)
+- 1x Chain of the End Times (2%)
+- 1x Brimstone Handle (1.5%)
+- 1x COMMON Baby Yeti Pet (2%)
+- 1x RARE Flying Fish (4%)
+1x EPIC Flying Fish (2%)
+- 1x Mound of Seagrass (2.5%)
+
+New drops:
+1x Pumpkin Guts (0.5%)
+
+Deleted drops (unintentionally)?
+https://hypixel.net/threads/some-more-notable-things-i-noticed-from-the-drop-table-changes.6163341/
+- Luck of the Sea VI (readded)
+- Lily Pad
+- Dark bait
+- Enchanted Rotten Flesh and Enchanted Feathers
+- Enchanted Ink Sacs or Squid Boots
+- 
+
 ## Minister update
 
 https://hypixel.net/threads/september-21st-minister-update-mob-level-improvements-testing-2.6150078/
@@ -47,7 +72,7 @@ Newly released - https://hypixel.net/threads/hypixel-skyblock-0-24-5-assorted-qo
 - Scrollable overlays
 - Send a message like this "BAD JUNK CATCH! You caught a Salmon!" when catching a non-treasure while treasure/junk fishing
 - You cannot send same message twice when sharing Isopods
-- For level 100 pets, would be cool to change their item name to be aligned with Level 1 pets. This also causes Lvl 100 pets being not easily found ny name via /get command.
+- For level 100 pets, would be cool to change their item name to be aligned with Level 1 pets. This also causes Lvl 100 pets being not easily found ny name via /get command or party command item search.
 - Drake sound not muted when using Sound Controller mod
 - integrate medal clipping for rare drops / dyes? have seen it in sbo and its pretty neat  https://medal.tv/developer/auto-clipping#api-reference
 - Default party drop on-screen alert ragebaits some people :(

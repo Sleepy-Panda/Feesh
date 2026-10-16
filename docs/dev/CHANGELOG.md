@@ -6,6 +6,13 @@ Released on: ???
 
 - Added option to replace lava with water and remove orange lava fog for Crimson Isle/CH [disabled by default].
   - You can also tint the water with any color.
+- Added party chat commands to let your party explore mod data from the trackers. Responds in party chat when someone sends `!feesh` commands:
+  - `!feesh profit` - shows the profit for Fishing profit tracker [Session]
+  - `!feesh profittotal` - shows the profit for Fishing profit tracker [Total]
+  - `!feesh profit top1` - shows the top profit item for Fishing profit tracker [Session]
+  - `!feesh profittotal top1` - shows the top profit item for Fishing profit tracker [Total]
+  - `!feesh profit <item name>` - first match by full/partial item name for Fishing profit tracker [Session]
+  - `!feesh profittotal <item name>` - first match by full/partial item name for Fishing profit tracker [Total]
 - Made sea creatures HP display more compact and colored sea creature names according to their rarity.
 - Added % to catch types in Treasure fishing tracker.
 

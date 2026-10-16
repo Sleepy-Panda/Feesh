@@ -140,6 +140,26 @@ object Chat : CategoryKt("Chat") {
         this.name = Translated("Include Magic Find")
         this.description = Translated("Send the drop's ✯ Magic Find value as part of the party chat message.")
     }
+  
+    init {
+        separator {
+            this.title = "${AQUA}${BOLD}Party commands"
+        }
+    }
+
+    var enablePartyCommands by boolean(true) {
+        this.name = Translated("Enable party commands")
+        this.description = Translated(
+"""${GRAY}Lets your party explore data from your enabled trackers. Responds in party chat when someone sends ${AQUA}!feesh ${GRAY}commands:
+${AQUA}!feesh profit ${GRAY}- shows the profit for Fishing profit tracker [Session]
+${AQUA}!feesh profittotal ${GRAY}- shows the profit for Fishing profit tracker [Total]
+${AQUA}!feesh profit top1 ${GRAY}- shows the top profit item for Fishing profit tracker [Session]
+${AQUA}!feesh profittotal top1 ${GRAY}- shows the top profit item for Fishing profit tracker [Total]
+${AQUA}!feesh profit <item name> ${GRAY}- first match by full/partial item name for Fishing profit tracker [Session]
+${AQUA}!feesh profittotal <item name> ${GRAY}- first match by full/partial item name for Fishing profit tracker [Total]
+""")
+        this.searchTerms = listOf(ModVersionConstants.VERSION_1_16_0)
+    }
 
     init {
         separator {
