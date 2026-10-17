@@ -39,7 +39,7 @@ object SeaCreatureHpTracker {
     private const val IMMUNITY_TICKS = 20 * 5 // ~5 seconds
     private const val IMMUNITY_MS = 5000L
 
-    private val rarityColorByMobName = SeaCreatures.allSeaCreatures.associate { it.name to it.rarityColorCode } + mapOf(
+    private val rarityColorByMobName = SeaCreatures.allSeaCreaturesAndOtherMobs.associate { it.name to it.rarityColorCode } + mapOf(
         HpTrackableSeaCreatureTypes.JAWBUS_FOLLOWER.displayName to RED.code,
         HpTrackableSeaCreatureTypes.WIKI_TIKI_LASER_TOTEM.displayName to RED.code,
         HpTrackableSeaCreatureTypes.FLIPFLOPPER.displayName to AQUA.code,
@@ -137,7 +137,7 @@ object SeaCreatureHpTracker {
             if (!Overlays.seaCreaturesHpOverlay || !WorldUtils.isInSkyblock()) return
 
             val world = WorldUtils.getWorldName() ?: return
-            val knownSeaCreatureByName = SeaCreatures.allSeaCreatures.associateBy { it.name }
+            val knownSeaCreatureByName = SeaCreatures.allSeaCreaturesAndOtherMobs.associateBy { it.name }
             val possibleScNames = enabledMobTypes.filter { enabledName ->
                 val knownSeaCreature = knownSeaCreatureByName[enabledName]
                 knownSeaCreature == null || knownSeaCreature.worlds.isEmpty() || knownSeaCreature.worlds.contains(world)

@@ -5,6 +5,8 @@ import com.github.sleepypanda.feesh.constants.SeaCreatures
 import com.github.sleepypanda.feesh.events.EventBus
 import com.github.sleepypanda.feesh.events.models.ClientTickEvent
 import com.github.sleepypanda.feesh.events.models.GameClosedEvent
+import com.github.sleepypanda.feesh.events.models.VanquisherCocoonedByYouEvent
+import com.github.sleepypanda.feesh.events.models.VanquisherSpawnedEvent
 import com.github.sleepypanda.feesh.events.models.OwnSeaCreatureCaughtEvent
 import com.github.sleepypanda.feesh.events.models.SeaCreatureCocoonedByYouEvent
 import com.github.sleepypanda.feesh.settings.categories.Overlays
@@ -105,6 +107,8 @@ object SeaCreaturesTracker : IResettableViewModeTracker {
 
         EventBus.subscribe(OwnSeaCreatureCaughtEvent::class, ::onSeaCreatureCaught)
         EventBus.subscribe(SeaCreatureCocoonedByYouEvent::class, ::onSeaCreatureCocooned)
+        EventBus.subscribe(VanquisherSpawnedEvent::class, ::onVanquisherSpawned)
+        EventBus.subscribe(VanquisherCocoonedByYouEvent::class, ::onVanquisherCocooned)
         EventBus.subscribe(ClientTickEvent::class, ::onClientTick)
         EventBus.subscribe(GameClosedEvent::class, ::onGameClosed)
     }
@@ -156,54 +160,57 @@ object SeaCreaturesTracker : IResettableViewModeTracker {
     }
 
     private fun onSeaCreatureCaught(event: OwnSeaCreatureCaughtEvent) {
-
-        fun trackSeaCreatureCatch(sourceObj: SeaCreaturesData, seaCreatureName: String, valueToAdd: Int, isDoubleHook: Boolean) {
-            val key = getSeaCreatureKey(seaCreatureName)
-            val catchData = sourceObj.catches.getOrPut(key) { SeaCreatureCatchData() }
-            catchData.amount += valueToAdd
-            if (isDoubleHook) {
-                catchData.doubleHookAmount++
-            }
-            recalculateTotalCaughtCount(sourceObj)
-        }
-
         if (!isTrackerEnabledInWorld()) return
+        trackCatch(event.seaCreatureName, event.isDoubleHook)
+    }
 
-        val seaCreatureName = event.seaCreatureName
-        val isDoubleHook = event.isDoubleHook
+    private fun onVanquisherSpawned(event: VanquisherSpawnedEvent) {
+        if (!isTrackerVisible()) return
+        trackCatch(event.vanquisher.name, isDoubleHook = false)
+    }
+
+    private fun trackCatch(name: String, isDoubleHook: Boolean) {
         val valueToAdd = if (isDoubleHook) 2 else 1
+        trackSeaCreatureCatch(data.session, name, valueToAdd, isDoubleHook)
+        trackSeaCreatureCatch(data.total, name, valueToAdd, isDoubleHook)
+        updateGuiLines()
+        saveData()
+    }
 
-        // Do not track Vanquishers if not fishing
-        if (seaCreatureName == "Vanquisher" && !isTrackerVisible()) return
+    private fun trackSeaCreatureCatch(sourceObj: SeaCreaturesData, seaCreatureName: String, valueToAdd: Int, isDoubleHook: Boolean) {
+        val key = getSeaCreatureKey(seaCreatureName)
+        val catchData = sourceObj.catches.getOrPut(key) { SeaCreatureCatchData() }
+        catchData.amount += valueToAdd
+        if (isDoubleHook) {
+            catchData.doubleHookAmount++
+        }
+        recalculateTotalCaughtCount(sourceObj)
+    }
 
-        trackSeaCreatureCatch(data.session, seaCreatureName, valueToAdd, isDoubleHook)
-        trackSeaCreatureCatch(data.total, seaCreatureName, valueToAdd, isDoubleHook)
+    private fun onSeaCreatureCocooned(event: SeaCreatureCocoonedByYouEvent) {
+        trackCocoon(event.seaCreatureName)
+    }
+
+    private fun onVanquisherCocooned(event: VanquisherCocoonedByYouEvent) {
+        trackCocoon(event.vanquisher.name)
+    }
+
+    private fun trackCocoon(name: String) {
+        if (!isTrackerVisible()) return
+        if (!Overlays.countCocoonedSeaCreatures) return
+
+        trackSeaCreatureCocoon(data.session, name)
+        trackSeaCreatureCocoon(data.total, name)
 
         updateGuiLines()
         saveData()
     }
 
-    private fun onSeaCreatureCocooned(event: SeaCreatureCocoonedByYouEvent) {
-
-        fun trackSeaCreatureCocoon(sourceObj: SeaCreaturesData, seaCreatureName: String) {
-            val key = seaCreatureName.uppercase()
-            val catchData = sourceObj.catches.getOrPut(key) { SeaCreatureCatchData() }
-            catchData.cocoonedAmount += 1
-            recalculateTotalCocoonedCount(sourceObj)
-        }
-
-        if (!isTrackerVisible()) return
-        if (!Overlays.countCocoonedSeaCreatures) return
-
-        val seaCreatureName = event.seaCreatureName
-
-        if (seaCreatureName == "Vanquisher" && !isTrackerVisible()) return
-
-        trackSeaCreatureCocoon(data.session, seaCreatureName)
-        trackSeaCreatureCocoon(data.total, seaCreatureName)
-
-        updateGuiLines()
-        saveData()
+    private fun trackSeaCreatureCocoon(sourceObj: SeaCreaturesData, seaCreatureName: String) {
+        val key = seaCreatureName.uppercase()
+        val catchData = sourceObj.catches.getOrPut(key) { SeaCreatureCatchData() }
+        catchData.cocoonedAmount += 1
+        recalculateTotalCocoonedCount(sourceObj)
     }
 
     private fun getSeaCreatureKey(seaCreatureName: String): String {
@@ -243,7 +250,7 @@ object SeaCreaturesTracker : IResettableViewModeTracker {
  
         fun getKnownSeaCreatureInfo(nameOrKey: String): SeaCreatures.SeaCreatureInfo? {
             val normalized = nameOrKey.trim()
-            return SeaCreatures.allSeaCreatures.find { it.name.equals(normalized, ignoreCase = true) }
+            return SeaCreatures.allSeaCreaturesAndOtherMobs.find { it.name.equals(normalized, ignoreCase = true) }
         }
     
         fun getUnknownSeaCreatureInfo(key: String): SeaCreatures.SeaCreatureInfo {
@@ -325,7 +332,7 @@ object SeaCreaturesTracker : IResettableViewModeTracker {
         }
 
         fun findKnownSeaCreatureInfoByName(name: String): SeaCreatures.SeaCreatureInfo? {
-            return SeaCreatures.allSeaCreatures.find { it.name.equals(name.trim(), ignoreCase = true) }
+            return SeaCreatures.allSeaCreaturesAndOtherMobs.find { it.name.equals(name.trim(), ignoreCase = true) }
         }
 
         CommonUtils.runWithCatching("Failed to change sea creature count in Sea creatures tracker") {
@@ -773,7 +780,7 @@ object SeaCreaturesTracker : IResettableViewModeTracker {
         }
 
         fun getRareCatches(sourceObj: SeaCreaturesData): MutableMap<String, SeaCreatureCatchData>  {
-            return sourceObj.catches.filter { (k, v) -> SeaCreatures.allSeaCreatures.find { getSeaCreatureKey(it.name) == k }?.isRare == true }.toMutableMap()
+            return sourceObj.catches.filter { (k, v) -> SeaCreatures.allSeaCreaturesAndOtherMobs.find { getSeaCreatureKey(it.name) == k }?.isRare == true }.toMutableMap()
         }
 
         val totalCaughtAmount = sourceObj.totalCount

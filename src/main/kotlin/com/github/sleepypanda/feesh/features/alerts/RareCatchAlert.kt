@@ -3,6 +3,8 @@ package com.github.sleepypanda.feesh.features.alerts
 import com.github.sleepypanda.feesh.constants.SeaCreatures
 import com.github.sleepypanda.feesh.constants.SeaCreatureNames
 import com.github.sleepypanda.feesh.events.EventBus
+import com.github.sleepypanda.feesh.events.models.VanquisherCocoonedByYouEvent
+import com.github.sleepypanda.feesh.events.models.VanquisherSpawnedEvent
 import com.github.sleepypanda.feesh.events.models.OwnSeaCreatureCaughtEvent
 import com.github.sleepypanda.feesh.events.models.SeaCreatureCocoonedByYouEvent
 import com.github.sleepypanda.feesh.events.models.PartyChatEvent
@@ -32,24 +34,40 @@ object RareCatchAlert {
 
     fun init() {
         EventBus.subscribe(OwnSeaCreatureCaughtEvent::class, ::onOwnSeaCreature)
+        EventBus.subscribe(VanquisherSpawnedEvent::class, ::onVanquisherSpawned)
         EventBus.subscribe(PartyChatEvent::class, ::onPartyChatSeaCreature)
         EventBus.subscribe(SeaCreatureCocoonedByYouEvent::class, ::onSeaCreatureCocooned)
+        EventBus.subscribe(VanquisherCocoonedByYouEvent::class, ::onVanquisherCocooned)
     }
 
     private fun onOwnSeaCreature(event: OwnSeaCreatureCaughtEvent) {
+        showOwnSpawnAlert(event.seaCreatureName, event.isDoubleHook)
+    }
+
+    private fun onVanquisherSpawned(event: VanquisherSpawnedEvent) {
+        showOwnSpawnAlert(event.vanquisher.name, isDoubleHook = false)
+    }
+
+    private fun showOwnSpawnAlert(name: String, isDoubleHook: Boolean) {
         if (!WorldUtils.isInSkyblock() || !Alerts.alertOnRareSeaCreatures) return
 
         val playerName = PlayerUtils.getFormattedNameWithoutPrefix() ?: return
-        val seaCreatureName = event.seaCreatureName
-        val isDoubleHook = event.isDoubleHook
-        showCaughtAlert(seaCreatureName, isDoubleHook, playerName)
+        showCaughtAlert(name, isDoubleHook, playerName)
     }
 
     private fun onSeaCreatureCocooned(event: SeaCreatureCocoonedByYouEvent) {
+        showOwnCocoonAlert(event.seaCreatureName)
+    }
+
+    private fun onVanquisherCocooned(event: VanquisherCocoonedByYouEvent) {
+        showOwnCocoonAlert(event.vanquisher.name)
+    }
+
+    private fun showOwnCocoonAlert(name: String) {
         if (!WorldUtils.isInSkyblock() || !Alerts.alertOnRareSeaCreatures || !Alerts.alertOnSeaCreaturesIncludeCocooned) return
 
         val playerName = PlayerUtils.getFormattedNameWithoutPrefix() ?: return
-        showCocoonAlert(event.seaCreatureName, playerName)
+        showCocoonAlert(name, playerName)
     }
 
     private fun onPartyChatSeaCreature(event: PartyChatEvent) {
@@ -102,7 +120,7 @@ object RareCatchAlert {
         val enabledScNames = Alerts.alertOnSeaCreaturesList.map { it.displayName }
         if (!enabledScNames.any { it.equals(seaCreatureName, ignoreCase = true) }) return
 
-        val seaCreatureInfo = SeaCreatures.allSeaCreatures.find { it.name.equals(seaCreatureName, ignoreCase = true) } ?: return
+        val seaCreatureInfo = SeaCreatures.allSeaCreaturesAndOtherMobs.find { it.name.equals(seaCreatureName, ignoreCase = true) } ?: return
 
         val title = SeaCreatures.getTitle(seaCreatureInfo.name, isDoubleHook)
         CommonUtils.showTitle(title, playerName)
@@ -124,7 +142,7 @@ object RareCatchAlert {
         val enabledScNames = Alerts.alertOnSeaCreaturesList.map { it.displayName }
         if (!enabledScNames.any { it.equals(seaCreatureName, ignoreCase = true) }) return
 
-        val seaCreatureInfo = SeaCreatures.allSeaCreatures.find { it.name.equals(seaCreatureName, ignoreCase = true) } ?: return
+        val seaCreatureInfo = SeaCreatures.allSeaCreaturesAndOtherMobs.find { it.name.equals(seaCreatureName, ignoreCase = true) } ?: return
 
         val title = "${seaCreatureInfo.boldDisplayName} ${RED}cocooned"
         CommonUtils.showTitle(title, playerName)

@@ -43,7 +43,6 @@ object BarnFishingTimer : IResettableTracker {
 
     private val allSeaCreaturesNames = SeaCreatures.allSeaCreatures
         .map { it.name }
-        .filter { it != "Vanquisher" }
         .plus("Mithril Grubber") // A sea creature is called Small Mithril Grubber, but corrupted one is Corrupted Mithril Grubber (without "Small")
         .plus("Jawbus Follower")
 

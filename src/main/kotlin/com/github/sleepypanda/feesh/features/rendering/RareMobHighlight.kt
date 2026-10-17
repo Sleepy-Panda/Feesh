@@ -70,7 +70,7 @@ object RareMobHighlight {
         )?.baseMobName ?: return
         if (!enabledMobTypes.contains(cleanName)) return
 
-        val scInfo = SeaCreatures.allSeaCreatures.find { it.name == cleanName }
+        val scInfo = SeaCreatures.allSeaCreaturesAndOtherMobs.find { it.name == cleanName }
 
         val mobEntityShift = when (cleanName) {
             HighlightableSeaCreatureTypes.WEREWOLF.displayName -> 2 // Player entity shifted from its armor stand

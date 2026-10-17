@@ -1,7 +1,6 @@
 package com.github.sleepypanda.feesh.events.publishers
 
 import com.github.sleepypanda.feesh.FeeshMod
-import com.github.sleepypanda.feesh.constants.SeaCreatureNames
 import com.github.sleepypanda.feesh.events.EventBus
 import com.github.sleepypanda.feesh.events.models.CatchEvent
 import com.github.sleepypanda.feesh.events.models.ChatCancellableEvent
@@ -71,7 +70,6 @@ object CatchPublisher {
     private fun onSeaCreatureCaught(event: OwnSeaCreatureCaughtEvent) {
         CommonUtils.runWithCatching("Failed to track sea creature catch in CatchPublisher") {
             if (!WorldUtils.isInSkyblock() || !WorldUtils.isInFishingWorld()) return
-            if (event.seaCreatureName == SeaCreatureNames.VANQUISHER) return
 
             lastSeaCreatureAt = Date()
             tryPublishCatchFromChat()

@@ -118,7 +118,7 @@ object SeaCreatureNames {
     const val SILKBREEZE = "Silkbreeze"
     const val GIANT_ISOPOD = "Giant Isopod"
 
-    // EXTRA
+    // OTHER MOBS
     const val VANQUISHER = "Vanquisher"
 }
 
@@ -184,7 +184,6 @@ object SeaCreatureMessages {
     const val LORD_JAWBUS_MESSAGE = "^You have angered a legendary creature\\.\\.\\. Lord Jawbus has arrived\\.$"
     const val PLHLEGBLAST_MESSAGE = "^WOAH\\! A Plhlegblast appeared\\.$"
     const val RAGNAROK_MESSAGE = "^The sky darkens and the air thickens\\. The end times are upon us: Ragnarok is here\\.$"
-    const val VANQUISHER_MESSAGE = "^A Vanquisher is spawning nearby\\!$"
 
     // OASIS
     const val OASIS_RABBIT_MESSAGE = "^An Oasis Rabbit appears from the water\\.$"
@@ -237,6 +236,9 @@ object SeaCreatureMessages {
     const val TORRID_MESSAGE = "^The laughter of a Torrid echoes through the air\\.$"
     const val SILKBREEZE_MESSAGE = "^Something zips through the air - it's a Silkbreeze!$"
     const val GIANT_ISOPOD_MESSAGE = "^A Giant Isopod was dredged up from the depths!$"
+
+    // OTHER MOBS
+    const val VANQUISHER_MESSAGE = "^A Vanquisher is spawning nearby\\!$"
 }
 
 class SeaCreatures {
@@ -618,16 +620,6 @@ class SeaCreatures {
                 types = listOf(TYPE_CRIMSON_ISLE_LAVA),
                 worlds = listOf(WorldUtils.CRIMSON_ISLE),
             ),
-            SeaCreatureInfo(
-                SeaCreatureNames.VANQUISHER,
-                EPIC.code,
-                Regex(SeaCreatureMessages.VANQUISHER_MESSAGE),
-                true,
-                canBeDoubleHooked = false,
-                types = listOf(TYPE_CRIMSON_ISLE_LAVA),
-                worlds = listOf(WorldUtils.CRIMSON_ISLE),
-                hasSpawnImmunity = true,
-            ),
 
             SeaCreatureInfo(
                 SeaCreatureNames.OASIS_RABBIT,
@@ -911,10 +903,25 @@ class SeaCreatures {
                 hasSpawnImmunity = true,
             ),
         )
+     
+        val vanquisher = SeaCreatureInfo(
+            SeaCreatureNames.VANQUISHER,
+            EPIC.code,
+            Regex(SeaCreatureMessages.VANQUISHER_MESSAGE),
+            true,
+            canBeDoubleHooked = false,
+            types = listOf(TYPE_CRIMSON_ISLE_LAVA),
+            worlds = listOf(WorldUtils.CRIMSON_ISLE),
+            hasSpawnImmunity = true,
+        )
+
+        val otherMobs = listOf(vanquisher)
+
+        val allSeaCreaturesAndOtherMobs = allSeaCreatures + otherMobs
 
         @JvmStatic
         fun getTitle(seaCreatureName: String, isDoubleHook: Boolean): String {
-            val info = allSeaCreatures.find { it.name == seaCreatureName } ?: return ""
+            val info = allSeaCreaturesAndOtherMobs.find { it.name == seaCreatureName } ?: return ""
             val dh = if (isDoubleHook) " ${RESET}${RED}${BOLD}X2${RESET}" else ""
             val baseTitle = "${info.boldDisplayName}${RESET}${dh}${RESET}"
             return if (info.rarityColorCode == MYTHIC.code) "${GOLD}${OBFUSCATED}x${RESET} $baseTitle ${GOLD}${OBFUSCATED}x${RESET}"

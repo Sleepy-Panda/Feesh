@@ -1,6 +1,5 @@
 package com.github.sleepypanda.feesh.features.personalbests
 
-import com.github.sleepypanda.feesh.constants.SeaCreatureNames
 import com.github.sleepypanda.feesh.events.EventBus
 import com.github.sleepypanda.feesh.events.models.OwnSeaCreatureCaughtEvent
 import com.github.sleepypanda.feesh.events.models.WorldChangedEvent
@@ -29,7 +28,6 @@ object DoubleHookPersonalBest {
     private fun onSeaCreatureCaught(event: OwnSeaCreatureCaughtEvent) {
         if (!WorldUtils.isInSkyblock() || !WorldUtils.isInFishingWorld()) return
         if (WorldUtils.isOnAlpha()) return
-        if (event.seaCreatureName == SeaCreatureNames.VANQUISHER) return
 
         if (event.isDoubleHook) {
             currentDoubleHookStreak++

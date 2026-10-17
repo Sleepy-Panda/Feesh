@@ -120,7 +120,6 @@ object EfficiencyTracker : IResettableTracker {
 
     private fun onSeaCreatureCaught(event: OwnSeaCreatureCaughtEvent) {
         CommonUtils.runWithCatching("Failed to track sea creature catch in $trackerName") {
-            if (event.seaCreatureName == "Vanquisher") return
             if (!isTrackerActive()) return
             if (!hasAnySeaCreatureStatEnabled()) return
 
@@ -136,7 +135,6 @@ object EfficiencyTracker : IResettableTracker {
 
     private fun onSeaCreatureCocooned(event: SeaCreatureCocoonedByYouEvent) {
         CommonUtils.runWithCatching("Failed to track cocooned sea creature in $trackerName") {
-            if (event.seaCreatureName == "Vanquisher") return
             if (!isTrackerVisible()) return
             if (!hasAnySeaCreatureStatEnabled()) return
 

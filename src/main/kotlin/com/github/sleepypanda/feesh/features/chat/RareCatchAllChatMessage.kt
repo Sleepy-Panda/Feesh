@@ -8,28 +8,34 @@ import com.github.sleepypanda.feesh.utils.ChatUtils
 import com.github.sleepypanda.feesh.utils.WorldUtils
 import com.github.sleepypanda.feesh.FeeshMod
 import com.github.sleepypanda.feesh.events.EventBus
+import com.github.sleepypanda.feesh.events.models.VanquisherSpawnedEvent
 import com.github.sleepypanda.feesh.events.models.OwnSeaCreatureCaughtEvent
 
 object RareCatchAllChatMessage {
     fun init() {
         EventBus.subscribe(OwnSeaCreatureCaughtEvent::class, ::onSeaCreature)
+        EventBus.subscribe(VanquisherSpawnedEvent::class, ::onVanquisherSpawned)
     }
 
     private fun onSeaCreature(event: OwnSeaCreatureCaughtEvent) {
+        shareSpawn(event.seaCreatureName, event.isDoubleHook)
+    }
+
+    private fun onVanquisherSpawned(event: VanquisherSpawnedEvent) {
+        shareSpawn(event.vanquisher.name, isDoubleHook = false)
+    }
+
+    private fun shareSpawn(name: String, isDoubleHook: Boolean) {
         if (!WorldUtils.isInSkyblock() || !Chat.shareRareSeaCreaturesAllChat) return
 
-        val seaCreatureName = event.seaCreatureName
-
         val type = try {
-            RareSeaCreatureTypesAllChat.valueOf(seaCreatureName.uppercase().replace(" ", "_"))
+            RareSeaCreatureTypesAllChat.valueOf(name.uppercase().replace(" ", "_"))
         } catch (_: IllegalArgumentException) {
             return
         }
         if (!Chat.shareRareSeaCreaturesTypesAllChat.contains(type)) return
 
-        val isDoubleHook = event.isDoubleHook
-        val message = getAllChatMessage(seaCreatureName, isDoubleHook)
-        ChatUtils.sendAllChat(message)
+        ChatUtils.sendAllChat(getAllChatMessage(name, isDoubleHook))
     }
 
     private fun getAllChatMessage(seaCreatureName: String, isDoubleHooked: Boolean): String {
