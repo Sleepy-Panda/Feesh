@@ -13,8 +13,10 @@ Released on: ???
   - `!feesh profittotal top1` - shows the top profit item for Fishing profit tracker [Total]
   - `!feesh profit <item name>` - first match by full/partial item name for Fishing profit tracker [Session]
   - `!feesh profittotal <item name>` - first match by full/partial item name for Fishing profit tracker [Total]
+  - Planning to add more commands in the future; let me know what commands would be useful!
 - Made sea creatures HP display more compact and colored sea creature names according to their rarity.
 - Added % to catch types in Treasure fishing tracker.
+- Added Pumpkin Guts to the Fishing profit tracker (new drop on alpha).
 
 ## Bugfixes
 

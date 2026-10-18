@@ -19,15 +19,20 @@ New potential drops that have alerts:
 
 New drops:
 - 1x Pumpkin Guts (0.5%)
+- Ench cooked cod, salmot, ench wet sponge etc
+- Ench iron block, ench coal block, ench bone block
+- Ench gunpowder
+- Luck of the Sea VI (readded)
+- Dust/Ench redstone dust to sea witch
+
 
 Deleted drops (unintentionally)?
 https://hypixel.net/threads/some-more-notable-things-i-noticed-from-the-drop-table-changes.6163341/
-- Luck of the Sea VI (readded)
 - Lily Pad
 - Dark bait
-- Enchanted Rotten Flesh and Enchanted Feathers
+- Enchanted Rotten Flesh and Enchanted Feathers?
 - Enchanted Ink Sacs or Squid Boots
-- 
+- Enchanted Cooked Mutton
 
 ## Minister update
 
@@ -68,7 +73,6 @@ Newly released - https://hypixel.net/threads/hypixel-skyblock-0-24-5-assorted-qo
 §a §r§lACID RAIN BONUS! §r§fYou caught a bonus §r§aRusty Coin§r§f!
 
 - Bait refund arrives to sack and gets counted (temporary disabled bait tracking).
-- Remove old SC - NIGHT SQUID, SEA_GUARDIAN (as well as fix tracker logic that hides but still counts them as Total)
 - Scrollable overlays
 - Send a message like this "BAD JUNK CATCH! You caught a Salmon!" when catching a non-treasure while treasure/junk fishing
 - You cannot send same message twice when sharing Isopods
