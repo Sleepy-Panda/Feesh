@@ -2197,6 +2197,12 @@ class FishingProfitDrops {
                 npcPrice = 256_000.0,
             ),
             FishingProfitDropInfo(
+                itemId = "PUMPKIN_GUTS",
+                itemName = "Pumpkin Guts",
+                itemDisplayName = "${UNCOMMON}Pumpkin Guts",
+                npcPrice = null,
+            ),
+            FishingProfitDropInfo(
                 itemId = "LUCKY_HOOF",
                 itemName = "Lucky Hoof",
                 itemDisplayName = "${UNCOMMON}Lucky Hoof",
