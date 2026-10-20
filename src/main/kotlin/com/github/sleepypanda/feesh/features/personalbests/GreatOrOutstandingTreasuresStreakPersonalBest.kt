@@ -1,7 +1,8 @@
 package com.github.sleepypanda.feesh.features.personalbests
 
 import com.github.sleepypanda.feesh.events.EventBus
-import com.github.sleepypanda.feesh.events.models.ChatCancellableEvent
+import com.github.sleepypanda.feesh.events.models.TreasureCatchType
+import com.github.sleepypanda.feesh.events.models.TreasureCatchEvent
 import com.github.sleepypanda.feesh.events.models.WorldChangedEvent
 import com.github.sleepypanda.feesh.utils.ChatUtils
 import com.github.sleepypanda.feesh.utils.SoundUtils
@@ -15,13 +16,11 @@ import java.util.Date
 import net.minecraft.sounds.SoundEvents
 
 object GreatOrOutstandingTreasuresStreakPersonalBest {
-    private val PATTERN_TREASURE_CATCH = Regex("^. (GOOD|GOOD JUNK|GREAT|GREAT JUNK|OUTSTANDING|OUTSTANDING JUNK) CATCH!")
-
     private var currentGreatStreak = 0
     private var currentOutstandingStreak = 0
 
     fun init() {
-        EventBus.subscribe(ChatCancellableEvent::class, ::onChat)
+        EventBus.subscribe(TreasureCatchEvent::class, ::onTreasureCaught)
         EventBus.subscribe(WorldChangedEvent::class, ::onWorldChanged)
     }
 
@@ -30,20 +29,17 @@ object GreatOrOutstandingTreasuresStreakPersonalBest {
         currentOutstandingStreak = 0
     }
 
-    private fun onChat(event: ChatCancellableEvent) {
+    private fun onTreasureCaught(event: TreasureCatchEvent) {
         if (!WorldUtils.isInSkyblock() || !WorldUtils.isInFishingWorld()) return
         if (WorldUtils.isOnAlpha()) return
 
-        val matchResult = PATTERN_TREASURE_CATCH.find(event.unformattedText) ?: return
-        val treasureType = matchResult.groupValues[1].lowercase()
-
-        when (treasureType) {
-            "great", "great junk" -> {
+        when (event.type) {
+            TreasureCatchType.GREAT, TreasureCatchType.GREAT_JUNK -> {
                 currentGreatStreak++
                 checkAndAnnouncePersonalBest(currentOutstandingStreak, getOutstandingPbEntry(), "Outstanding treasures")
                 currentOutstandingStreak = 0
             }
-            "outstanding", "outstanding junk" -> {
+            TreasureCatchType.OUTSTANDING, TreasureCatchType.OUTSTANDING_JUNK -> {
                 currentOutstandingStreak++
                 checkAndAnnouncePersonalBest(currentGreatStreak, getGreatPbEntry(), "Great treasures")
                 currentGreatStreak = 0

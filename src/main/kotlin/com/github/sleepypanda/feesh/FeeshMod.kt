@@ -75,6 +75,7 @@ class FeeshMod : ClientModInitializer {
 
         // Event publishers
         SeaCreaturesPublisher.init()
+        TreasureCatchPublisher.init()
         CatchPublisher.init()
         SeaCreaturesCocoonPublisher.init()
         RareDropsPublisher.init()
