@@ -18,6 +18,8 @@ import com.github.sleepypanda.feesh.events.models.IceEssenceStatusBarEvent
 import com.github.sleepypanda.feesh.events.models.BaitConsumedEvent
 import com.github.sleepypanda.feesh.events.models.MobyDuckConsumedEvent
 import com.github.sleepypanda.feesh.events.models.ShurikenUsedEvent
+import com.github.sleepypanda.feesh.events.models.TreasureCatchType
+import com.github.sleepypanda.feesh.events.models.TreasureCatchEvent
 import com.github.sleepypanda.feesh.constants.Sounds
 import com.github.sleepypanda.feesh.constants.StarlynContests
 import com.github.sleepypanda.feesh.constants.TrophyFish
@@ -93,8 +95,8 @@ object FishingProfitTracker : IResettableViewModeTracker {
     const val PAUSE_COMMAND = "feeshPauseFishingProfitTracker"
     const val TOGGLE_VIEW_MODE_COMMAND = "feeshToggleFishingProfitTrackerViewMode"
 
-    private val COINS_CATCH_PATTERN = Regex("^. (?:GOOD|GREAT|OUTSTANDING) CATCH! You caught (?:(?:a|an) )?([\\d,]+) Coins!")
-    private val ICE_ESSENCE_CATCH_PATTERN = Regex("^. (?:GOOD|GREAT|OUTSTANDING) CATCH! You caught (?:(?:a|an) )?Ice Essence x([\\d,]+)!")
+    private val COINS_CATCH_PATTERN = Regex("You caught (?:(?:a|an) )?([\\d,]+) Coins!")
+    private val ICE_ESSENCE_CATCH_PATTERN = Regex("You caught (?:(?:a|an) )?Ice Essence x([\\d,]+)!")
     private val AGATHA_CONTEST_BRACKET_PATTERN = Regex("^\\[NPC] Agatha: You reached the (COMMON|UNCOMMON|RARE|EPIC|LEGENDARY|MYTHIC|DIVINE|SPECIAL) Bracket in my contest!$")
     private val MIRIA_CONTEST_BRACKET_PATTERN = Regex("^\\[NPC] Miria: You reached the (COMMON|UNCOMMON|RARE|EPIC|LEGENDARY|MYTHIC|DIVINE|SPECIAL) Bracket in my contest!$")
 
@@ -138,6 +140,7 @@ object FishingProfitTracker : IResettableViewModeTracker {
         registerViewModeResetCommands()
         registerCommands()
         EventBus.subscribe(ChatEvent::class, ::onChat)
+        EventBus.subscribe(TreasureCatchEvent::class, ::onTreasureCaught)
         EventBus.subscribe(CatchEvent::class, ::onCatch)
         EventBus.subscribe(ClientTickEvent::class, ::onClientTick)
         EventBus.subscribe(GameClosedEvent::class, ::onGameClosed)
@@ -220,11 +223,16 @@ object FishingProfitTracker : IResettableViewModeTracker {
             return@onChat
         }
 
-        // ⛃ GOOD CATCH! You caught 43,642 Coins!
+    }
+
+    private fun onTreasureCaught(event: TreasureCatchEvent) {
+        if (!Overlays.fishingProfitTrackerOverlay || !WorldUtils.isInSkyblock() || !WorldUtils.isInFishingWorld()) return
+        if (!event.type.isRegularTreasure) return
+
         //  GOOD CATCH! You caught a 47,385 Coins!
         COINS_CATCH_PATTERN.find(event.unformattedText)?.run {
             onCoinsFished(this.groupValues[1].orEmpty())
-            return@onChat
+            return
         }
 
         //  GREAT CATCH! You caught an Ice Essence x56!
@@ -232,7 +240,6 @@ object FishingProfitTracker : IResettableViewModeTracker {
             if (WorldUtils.getWorldName() == WorldUtils.JERRY_WORKSHOP) {
                 onIceEssenceFished(this.groupValues[1].orEmpty())
             }
-            return@onChat
         }
     }
 

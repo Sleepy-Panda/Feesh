@@ -10,6 +10,7 @@ import com.github.sleepypanda.feesh.events.models.OwnFishingHookDespawnedEvent
 import com.github.sleepypanda.feesh.events.models.OwnSeaCreatureCaughtEvent
 import com.github.sleepypanda.feesh.events.models.PlayerInteractEvent
 import com.github.sleepypanda.feesh.events.models.SoundPlayedEvent
+import com.github.sleepypanda.feesh.events.models.TreasureCatchEvent
 import com.github.sleepypanda.feesh.events.models.WorldChangedEvent
 import com.github.sleepypanda.feesh.utils.CommonUtils
 import com.github.sleepypanda.feesh.utils.EntityUtils
@@ -20,9 +21,6 @@ import java.util.Date
 
 object CatchPublisher {
     private const val CATCH_XP_ORB_SOUND_PATH = "entity.experience_orb.pickup"
-    // ♪ MUSICAL CATCH! You caught a Music Disc - Cat!
-    private val TREASURE_CATCH_PATTERN = Regex("^. (GOOD|GREAT|OUTSTANDING|MUSICAL) CATCH!")
-    private val JUNK_CATCH_PATTERN = Regex("^. (GOOD JUNK|GREAT JUNK|OUTSTANDING JUNK) CATCH!")
     private val TROPHY_CATCH_PATTERN = Regex("^. (TROPHY FISH|TROPHY FROG)!")
 
     private var lastCatchAt: Date? = null
@@ -34,6 +32,7 @@ object CatchPublisher {
 
     fun init() {
         EventBus.subscribe(ChatCancellableEvent::class, ::onChat)
+        EventBus.subscribe(TreasureCatchEvent::class, ::onTreasureCaught)
         EventBus.subscribe(OwnSeaCreatureCaughtEvent::class, ::onSeaCreatureCaught)
         EventBus.subscribe(OwnFishingHookDespawnedEvent::class, ::onOwnFishingHookDespawned)
         EventBus.subscribe(PlayerInteractEvent::class, ::onPlayerInteract)
@@ -98,17 +97,6 @@ object CatchPublisher {
         CommonUtils.runWithCatching("Failed to track catch chat message in CatchPublisher") {
             if (!WorldUtils.isInSkyblock() || !WorldUtils.isInFishingWorld()) return
 
-            if (TREASURE_CATCH_PATTERN.containsMatchIn(event.unformattedText)) {
-                lastTreasureChatAt = Date()
-                tryPublishCatchFromChat()
-                return
-            }
-
-            if (JUNK_CATCH_PATTERN.containsMatchIn(event.unformattedText)) {
-                lastJunkChatAt = Date()
-                tryPublishCatchFromChat()
-            }
-
             if (TROPHY_CATCH_PATTERN.containsMatchIn(event.unformattedText)) {
                 tryPublishCatchFromChat()
             }
@@ -128,6 +116,19 @@ object CatchPublisher {
             if (distanceSqr > 1.0) return // Usually sounds played with distance (non-sqr) 0.1 and 0.7
 
             lastCatchXpOrbSoundAt = Date()
+        }
+    }
+
+    private fun onTreasureCaught(event: TreasureCatchEvent) {
+        CommonUtils.runWithCatching("Failed to track treasure catch in CatchPublisher") {
+            if (!WorldUtils.isInSkyblock() || !WorldUtils.isInFishingWorld()) return
+
+            if (event.type.isJunk) {
+                lastJunkChatAt = Date()
+            } else {
+                lastTreasureChatAt = Date()
+            }
+            tryPublishCatchFromChat()
         }
     }
 

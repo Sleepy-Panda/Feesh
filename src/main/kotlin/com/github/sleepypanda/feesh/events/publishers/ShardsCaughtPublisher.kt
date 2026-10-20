@@ -4,6 +4,8 @@ import com.github.sleepypanda.feesh.events.EventBus
 import com.github.sleepypanda.feesh.events.models.ChatCancellableEvent
 import com.github.sleepypanda.feesh.events.models.ShardCaughtEvent
 import com.github.sleepypanda.feesh.events.models.ShardCaughtSource
+import com.github.sleepypanda.feesh.events.models.TreasureCatchType
+import com.github.sleepypanda.feesh.events.models.TreasureCatchEvent
 import com.github.sleepypanda.feesh.utils.CommonUtils
 import com.github.sleepypanda.feesh.utils.WorldUtils
 
@@ -13,13 +15,13 @@ object ShardsCaughtPublisher {
     //  GREAT CATCH! You caught a Giant Water Bug Shard!
     //  GOOD CATCH! You caught Solar Shard!
     //  GOOD CATCH! You caught a Water Snake Shard!
-    private val SHARD_CATCH_PATTERN = Regex("^. (?:GOOD|GREAT|OUTSTANDING) CATCH! You caught (?:(?:a|an) )?(?<shardName>.+) Shard!")
+    private val SHARD_CATCH_PATTERN = Regex("You caught (?:(?:a|an) )?(?<shardName>.+) Shard!")
 
     //  OUTSTANDING CATCH! You caught a Giant Water Bug Shard x7!
     //  GOOD CATCH! You caught an Ember Shard x2!
     //  GOOD CATCH! You caught a Shinyfish Shard x2!
     //  GOOD CATCH! You caught a Piranha Shard x3!
-    private val SHARDS_CATCH_PATTERN = Regex("^. (?:GOOD|GREAT|OUTSTANDING) CATCH! You caught (?:(?:a|an) )?(?<shardName>.+) Shard x(?<count>[\\d]+)!")
+    private val SHARDS_CATCH_PATTERN = Regex("You caught (?:(?:a|an) )?(?<shardName>.+) Shard x(?<count>[\\d]+)!")
 
     // You caught a Sea Archer Shard!
     // You caught x4 Sea Archer Shards!
@@ -40,6 +42,7 @@ object ShardsCaughtPublisher {
 
     fun init() {
         EventBus.subscribe(ChatCancellableEvent::class, ::onChat)
+        EventBus.subscribe(TreasureCatchEvent::class, ::onTreasureCaught)
     }
 
     private fun onChat(event: ChatCancellableEvent) {
@@ -47,20 +50,6 @@ object ShardsCaughtPublisher {
 
         CommonUtils.runWithCatching("Failed to handle Shard catch in publisher.") {
             val text = event.unformattedText
-
-            SHARD_CATCH_PATTERN.find(text)?.run {
-                val shard = groups["shardName"]?.value ?: return@onChat
-                val shardName = "$shard Shard"
-                publish(shardName, 1, ShardCaughtSource.TREASURE)
-                return@onChat
-            }
-
-            SHARDS_CATCH_PATTERN.find(text)?.run {
-                val shard = groups["shardName"]?.value ?: return@onChat
-                val count = groups["count"]?.value?.replace(",", "")?.toIntOrNull() ?: return@onChat
-                publish("$shard Shard", count, ShardCaughtSource.TREASURE)
-                return@onChat
-            }
 
             SHARDS_BLACK_HOLE_PATTERN.find(text)?.run {
                 val shardsText = groups["shardsText"]?.value ?: return@onChat
@@ -81,6 +70,27 @@ object ShardsCaughtPublisher {
                 val (shardName, count) = parseCountAndName(shardsText, hasXPrefix = false)
                 publish(shardName, count, ShardCaughtSource.LOOTSHARE)
                 return@onChat
+            }
+        }
+    }
+
+    private fun onTreasureCaught(event: TreasureCatchEvent) {
+        if (!event.type.isRegularTreasure) return
+        if (!WorldUtils.isInSkyblock() || !WorldUtils.isInFishingWorld()) return
+
+        CommonUtils.runWithCatching("Failed to handle treasure Shard catch in ShardsCaughtPublisher.") {
+            val text = event.unformattedText
+
+            SHARDS_CATCH_PATTERN.find(text)?.run {
+                val shard = groups["shardName"]?.value ?: return
+                val count = groups["count"]?.value?.replace(",", "")?.toIntOrNull() ?: return
+                publish("$shard Shard", count, ShardCaughtSource.TREASURE)
+                return
+            }
+
+            SHARD_CATCH_PATTERN.find(text)?.run {
+                val shard = groups["shardName"]?.value ?: return
+                publish("$shard Shard", 1, ShardCaughtSource.TREASURE)
             }
         }
     }
