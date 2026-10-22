@@ -166,7 +166,7 @@ class FishingProfitDrops {
                 itemName = "Raw Cod",
                 itemDisplayName = "${COMMON}Raw Cod",
                 npcPrice = 6.0,
-                compactedItemName = "Enchanted Raw Fish",
+                compactedItemName = "Enchanted Raw Cod",
             ),
             FishingProfitDropInfo(
                 itemId = "ENCHANTED_RAW_FISH",
@@ -1269,8 +1269,8 @@ class FishingProfitDrops {
             ),
             FishingProfitDropInfo(
                 itemId = "MUTTON",
-                itemName = "Mutton",
-                itemDisplayName = "${COMMON}Mutton",
+                itemName = "Raw Mutton",
+                itemDisplayName = "${COMMON}Raw Mutton",
                 npcPrice = 5.0,
             ),
             FishingProfitDropInfo(
