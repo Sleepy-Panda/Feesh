@@ -6,6 +6,10 @@ Released on: ???
 
 -
 
+## Bugfixes
+
+- Fixed "supercraft" chat button not working when Raw Cod overflows into the inventory.
+
 # 1.16.0
 
 Released on: 2026-10-18
