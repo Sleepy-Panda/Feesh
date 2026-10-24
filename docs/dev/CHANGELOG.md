@@ -4,7 +4,6 @@ Released on: ???
 
 ## Features
 
-- Added party chat commands `!feesh c/h` (`!feesh catches/h`) and `!feesh sc/h`.
 - Added new drops from Magic Find rework Alpha to be recognized by Fishing profit tracker.
 
 ## Bugfixes
