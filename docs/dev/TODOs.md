@@ -22,21 +22,16 @@ PET DROP! COMMON Baby Yeti
 RARE DROP! Enchanted Book (Piscary VI) (+176  Magic Find)
 
 New drops:
-- 1x Pumpkin Guts (0.5%)
-- Ench cooked cod, salmot, ench wet sponge etc
-- Ench iron block, ench coal block, ench bone block
-- Ench gunpowder
-- Luck of the Sea VI (readded)
-- Dust/Ench redstone dust to sea witch
-- Box of junk (alligator) - BOX_OF_JUNK, Rare, no npc price?
-- Combat exp boost (epic) from Pyro worm (???)
+- Luck of the Sea VI (readded) ???
+- Combat exp boost (epic) from Pyro worm
 - Foraging Exp Boost +50% from ent (again)
 
 Deleted drops (unintentionally)?
 https://hypixel.net/threads/some-more-notable-things-i-noticed-from-the-drop-table-changes.6163341/
 - Dark bait
 - Squid Boots
-- Enchanted Cooked Mutton
+- Enchanted Cooked Mutton from oasis sheep
+- Foraging exp boost 30% from ent
 
 ## Minister update
 

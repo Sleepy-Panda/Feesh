@@ -43,6 +43,18 @@ object FishingProfitTrackerPartyCommands {
         return "${countStr}x $displayName: $profitStr [$viewModeLabel, ${getPriceModeLabel()}]"
     }
 
+    fun getCatchesPerHourChatMessage(): String? {
+        if (!Overlays.fishingProfitTrackerOverlay || !WorldUtils.isInSkyblock()) return null
+
+        val data = FishingProfitTracker.getDisplayTrackerData(TrackerViewMode.SESSION)
+        if (data.catchesCount <= 0 || data.catchesPerHour <= 0 || data.elapsedSeconds <= 0) return null
+
+        val perHourStr = CommonUtils.formatNumberWithSpaces(data.catchesPerHour)
+        val totalStr = CommonUtils.formatNumberWithSpaces(data.catchesCount)
+        val timeStr = CommonUtils.formatTimeElapsed(data.elapsedSeconds)
+        return "$perHourStr catches/h ($totalStr total in $timeStr)"
+    }
+
     fun getTopProfitItemChatMessage(viewMode: TrackerViewMode): String? {
         if (!Overlays.fishingProfitTrackerOverlay || !WorldUtils.isInSkyblock()) return null
 

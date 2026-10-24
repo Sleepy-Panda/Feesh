@@ -94,6 +94,7 @@ Required Java version is 25+.
 
 ### Chat
 
+- **Party chat commands** — Lets your party explore data from your enabled trackers. Responds in party chat when someone sends !feesh commands.
 - **Compact sea creature messages** — Shortens double hook and catch messages in your chat.
 - **Share sea creatures** — Sends to PARTY chat when you catch/cocoon a specific sea creature.
 - **Share sea creatures location - ALL chat** — Sends to ALL chat with coordinates when you catch specific rare creatures (big bosses).
