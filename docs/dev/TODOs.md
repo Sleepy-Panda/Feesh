@@ -16,6 +16,7 @@ New potential drops that have alerts:
 - 1x RARE Flying Fish (4%)
 - 1x EPIC Flying Fish (2%)
 - 1x Mound of Seagrass (2.5%)
+- Isopod Husk 2%
 
 PET DROP! COMMON Baby Yeti
 RARE DROP! Enchanted Book (Piscary VI) (+176  Magic Find)
@@ -28,6 +29,8 @@ New drops:
 - Luck of the Sea VI (readded)
 - Dust/Ench redstone dust to sea witch
 - Box of junk (alligator) - BOX_OF_JUNK, Rare, no npc price?
+- Combat exp boost (epic) from Pyro worm (???)
+- Foraging Exp Boost +50% from ent (again)
 
 Deleted drops (unintentionally)?
 https://hypixel.net/threads/some-more-notable-things-i-noticed-from-the-drop-table-changes.6163341/
