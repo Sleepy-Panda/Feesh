@@ -4,7 +4,7 @@ Released on: ???
 
 ## Features
 
--
+- Added new drops from Magic Find rework Alpha to be recognized by Fishing profit tracker.
 
 ## Bugfixes
 
