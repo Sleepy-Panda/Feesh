@@ -10,6 +10,7 @@ Released on: ???
 ## Bugfixes
 
 - Fixed "supercraft" chat button not working when Raw Cod overflows into the inventory.
+- Fixed broken Deployables tracker/alerts for Umberella that has a skin.
 
 # 1.16.0
 
