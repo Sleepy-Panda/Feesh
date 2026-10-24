@@ -161,7 +161,7 @@ object DeployablesTimer {
             val heldItemName = heldItem.hoverName.getUnformattedString()
             val heldItemDisplayName = heldItem.hoverName.getFormattedString()
             
-            if (isUmberellaTrackingEnabled() && heldItemName == "Umberella") {
+            if (isUmberellaTrackingEnabled() && heldItemName.startsWith("Umberella")) { // Umberella or Umberella ◆ (with skin)
                 lastUmberellaInteractTimeMs = System.currentTimeMillis()
             }
 
