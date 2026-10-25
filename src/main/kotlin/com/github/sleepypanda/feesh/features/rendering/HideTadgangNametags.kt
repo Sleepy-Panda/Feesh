@@ -22,19 +22,19 @@ object HideTadgangNametags {
     @JvmStatic
     fun shouldHide(entityId: Int): Boolean {
         if (!WorldRendering.hideTadgangNametags) return false
-        if (!WorldUtils.isInSkyblock() || WorldUtils.getWorldName() != WorldUtils.GALATEA) return false
+        if (!WorldUtils.isInSkyblock() || WorldUtils.getWorldName() != WorldUtils.MOONGLADE_MARSH) return false
         return entityId in hiddenNametagIds
     }
 
     private fun onArmorStandCustomNameChanged(event: ArmorStandCustomNameChangedEvent) {
         if (!event.isFirstLoaded) return
         if (!WorldRendering.hideTadgangNametags) return
-        if (!WorldUtils.isInSkyblock() || WorldUtils.getWorldName() != WorldUtils.GALATEA) return
+        if (!WorldUtils.isInSkyblock() || WorldUtils.getWorldName() != WorldUtils.MOONGLADE_MARSH) return
 
         CommonUtils.runWithCatching("Failed to check Tadgang nametag") {
             val name = event.customName.unformatted
-            // Tadpoles are level 8, frogs are level 10
-            if (!(name.contains("[Lv8]") && name.contains(SeaCreatureNames.TADGANG))) return
+            if (!name.contains(SeaCreatureNames.TADGANG)) return
+            if (!name.contains("[Lv1]")) return
             hiddenNametagIds.add(event.entityId)
         }
     }

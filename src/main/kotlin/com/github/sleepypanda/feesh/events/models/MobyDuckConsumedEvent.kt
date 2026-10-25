@@ -1,3 +1,6 @@
 package com.github.sleepypanda.feesh.events.models
 
-class MobyDuckConsumedEvent
+data class MobyDuckConsumedEvent(
+    val itemId: String,
+    val itemName: String,
+)

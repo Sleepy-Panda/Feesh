@@ -154,13 +154,11 @@ object CustomSoundsManager {
     private fun initResourcePackStructure() {
         CommonUtils.runWithCatching("Failed to initialize resource pack structure") {
             if (resourcePackDir.exists()) {
-                FeeshMod.LOGGER.warn("[Feesh] Resource pack sounds directory already exists. Skipping initialization.")
+                FeeshMod.LOGGER.warn("[Feesh] Resource pack top-level directory already exists. Skipping folder structure initialization.")
                 return
             }
 
             resourcePackSoundsDir.mkdirs()
-            // 69.0 for 1.21.10
-            // 75.0 for 1.21.11
             // https://minecraft.wiki/w/Pack_format
             val packFormat = SharedConstants.getCurrentVersion().packVersion(PackType.CLIENT_RESOURCES)
             
@@ -195,7 +193,7 @@ object CustomSoundsManager {
     private fun generateSoundsJsonFromFiles() {
         CommonUtils.runWithCatching("Failed to generate sounds.json for custom user resource pack") {
             if (!resourcePackSoundsDir.exists()) {
-                FeeshMod.LOGGER.info("[Feesh] Resource pack sounds directory does not exist. Please create it and add your .ogg files to it.")
+                FeeshMod.LOGGER.info("[Feesh] Resource pack's sounds directory does not exist. Please regenerate resource pack to have correct folder structure!")
                 return
             }
             
@@ -233,7 +231,7 @@ object CustomSoundsManager {
             resourcePackSoundsJsonFile.parentFile?.mkdirs()
             resourcePackSoundsJsonFile.writeText(json)
             
-            FeeshMod.LOGGER.info("[Feesh] Generated sounds.json with ${soundsMap.size} sound entries")
+            FeeshMod.LOGGER.info("[Feesh] Generated sounds.json with ${soundsMap.size} sound entries.")
         }
     }
 }

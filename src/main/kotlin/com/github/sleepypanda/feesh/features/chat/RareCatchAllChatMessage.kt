@@ -2,6 +2,7 @@ package com.github.sleepypanda.feesh.features.chat
 
 import com.github.sleepypanda.feesh.settings.models.RareSeaCreatureTypesAllChat
 import com.github.sleepypanda.feesh.settings.categories.Chat
+import com.github.sleepypanda.feesh.constants.SeaCreatureNames
 import com.github.sleepypanda.feesh.utils.CommonUtils
 import com.github.sleepypanda.feesh.utils.ChatUtils
 import com.github.sleepypanda.feesh.utils.WorldUtils
@@ -33,12 +34,20 @@ object RareCatchAllChatMessage {
 
     private fun getAllChatMessage(seaCreatureName: String, isDoubleHooked: Boolean): String {
         val player = FeeshMod.mc.player ?: return ""
-        val location = CommonUtils.getFormattedLocation(player.getX(), player.getY(), player.getZ())
+        val isGiantIsopod = seaCreatureName.equals(SeaCreatureNames.GIANT_ISOPOD, ignoreCase = true)
+        val location = when {
+            isGiantIsopod -> CommonUtils.getFormattedLocation(-642.0, 157.0, 183.0)
+            else -> CommonUtils.getFormattedLocation(player.getX(), player.getY(), player.getZ())
+        }
         val scMessage = if (isDoubleHooked) "${seaCreatureName} x2" else "${seaCreatureName}"
-        val zone = if (WorldUtils.getWorldName() == WorldUtils.BACKWATER_BAYOU) null else WorldUtils.getZoneName() // Bayou has single zone so no need to show it
+        val zone = when {
+            isGiantIsopod -> WorldUtils.TORRHUS_SPRINGS
+            WorldUtils.getWorldName() == WorldUtils.BACKWATER_BAYOU -> null // Bayou has single zone so no need to show it
+            else -> WorldUtils.getZoneName()
+        }
         val zoneText = if (!zone.isNullOrEmpty()) " at $zone" else ""
         val messageId = CommonUtils.getMessageId()
-    
+
         var message = "${location} | ${scMessage}${zoneText} | ${messageId}"
         return message
     }

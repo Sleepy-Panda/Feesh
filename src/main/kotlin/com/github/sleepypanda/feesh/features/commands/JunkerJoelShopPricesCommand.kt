@@ -68,11 +68,6 @@ object JunkerJoelShopPricesCommand {
             ShopItemCost(baseItemCosts = listOf(BaseItemCost(BUSTED_BELT_BUCKLE, 8)))
         ),
         ShopItem(
-            "BAYOU_TRAVEL_SCROLL",
-            "${RARE}Travel Scroll to the Bayou",
-            ShopItemCost(baseItemCosts = listOf(BaseItemCost(BUSTED_BELT_BUCKLE, 8)))
-        ),
-        ShopItem(
             "GOLD_BOTTLE_CAP",
             "${LEGENDARY}Gold Bottle Cap",
             ShopItemCost(

@@ -4,7 +4,6 @@ import com.github.sleepypanda.feesh.utils.ChatUtils.removeFormatting
 import com.github.sleepypanda.feesh.FeeshMod
 import com.github.sleepypanda.feesh.utils.getScreenCompat
 import com.github.sleepypanda.feesh.events.EventBus
-import com.github.sleepypanda.feesh.events.models.ChatEvent
 import com.github.sleepypanda.feesh.events.models.GuiClosedEvent
 import com.github.sleepypanda.feesh.utils.ChatUtils.getUnformattedString
 import net.minecraft.client.gui.screens.ChatScreen
@@ -13,16 +12,6 @@ import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen
 import java.util.Date
 import java.util.Timer
 import kotlin.concurrent.timerTask
-
-data class LastKatUpgrade(
-    var lastPetClaimedAt: Date? = null,
-    var petName: String? = null
-)
-
-data class LastGfsCommand(
-    var executedAt: Date? = null,
-    var itemName: String? = null
-)
 
 data class LastGuisClosed(
     var lastSacksGuiClosedAt: Date? = null,
@@ -34,52 +23,20 @@ data class LastGuisClosed(
     var lastStorageGuiClosedAt: Date? = null,
     var lastBazaarGuiClosedAt: Date? = null,
     var lastPetItemSwapGuiClosedAt: Date? = null,
+    var lastKatGuiClosedAt: Date? = null,
+    var lastGeorgeGuiClosedAt: Date? = null,
     var lastHotmGuiClosedAt: Date? = null
 )
 
 object GuiUtils {
-    private val KAT_UPGRADE_PATTERN = Regex("^\\[NPC\\] Kat: I was able to upgrade your pet (.+) to .*")
-    private val ABIPHONE_CALL_PATTERN = Regex("^\\[NPC\\] Kat: ✆ Hi! I've finished training your (.+)!.*")
-    private val GFS_COMMAND_PATTERN = Regex("^Moved [\\d,]+ (.+) from your Sacks to your inventory\\.$")
-
     private var cachedIsInInventoryOrChat: Boolean = false
     private var timer: Timer? = null
 
     val lastGuisClosed = LastGuisClosed()
-    val lastKatUpgrade = LastKatUpgrade()
-    val lastGfsCommand = LastGfsCommand()
 
     fun init() {
         startTimer()
-        EventBus.subscribe(ChatEvent::class, ::onChat)
         EventBus.subscribe(GuiClosedEvent::class, ::onGuiClosed)
-    }
-
-    private fun onChat(event: ChatEvent) {
-        if (!WorldUtils.isInSkyblock()) return
-
-        // When talking to NPC.
-        // [NPC] Kat: I was able to upgrade your pet Guardian to LEGENDARY.
-        KAT_UPGRADE_PATTERN.find(event.unformattedText)?.run {
-            lastKatUpgrade.lastPetClaimedAt = Date()
-            lastKatUpgrade.petName = this.groupValues[1].removeFormatting()
-            return@onChat
-        }
-
-        // Abiphone call.
-        // [NPC] Kat: ✆ Hi! I've finished training your Guardian!
-        ABIPHONE_CALL_PATTERN.find(event.unformattedText)?.run {
-            lastKatUpgrade.lastPetClaimedAt = Date()
-            lastKatUpgrade.petName = this.groupValues[1].removeFormatting()
-            return@onChat
-        }
-
-        // Moved 3,900 Enchanted Sea Lumies from your Sacks to your inventory.        // Moved 3,900 Enchanted Sea Lumies from your Sacks to your inventory.
-        GFS_COMMAND_PATTERN.find(event.unformattedText)?.run {
-            lastGfsCommand.executedAt = Date()
-            lastGfsCommand.itemName = this.groupValues[1].removeFormatting()
-            return@onChat
-        }
     }
 
     private fun onGuiClosed(event: GuiClosedEvent) {
@@ -91,17 +48,17 @@ object GuiUtils {
             chestName.contains("Sack") -> lastGuisClosed.lastSacksGuiClosedAt = now
             chestName.contains("Trophy Fish") -> lastGuisClosed.lastOdgerGuiClosedAt = now
             chestName.contains("Trophy Frogs") -> lastGuisClosed.lastTrophyFrogsGuiClosedAt = now
-            chestName.contains("Manage Auctions") || chestName.contains("Confirm Purchase") ||
-            chestName.contains("BIN Auction View") || chestName.contains("Your Bids") ->
+            chestName.contains("Manage Auctions") || chestName.contains("Confirm Purchase") || chestName.contains("BIN Auction View") || chestName.contains("Your Bids") ->
                 lastGuisClosed.lastAuctionGuiClosedAt = now
             chestName.endsWith("Recipe") -> lastGuisClosed.lastSupercraftGuiClosedAt = now
             chestName.contains("Craft Item") -> lastGuisClosed.lastCraftGuiClosedAt = now
             chestName.contains("Backpack") || chestName.contains("Chest") || chestName.contains("Ender Chest") ->
                 lastGuisClosed.lastStorageGuiClosedAt = now
-            chestName.contains("Bazaar Orders") || chestName.contains("Order options") || chestName.contains("Instant Buy") ->
-                lastGuisClosed.lastBazaarGuiClosedAt = now
+            isBazaarChestName(chestName) -> lastGuisClosed.lastBazaarGuiClosedAt = now
             chestName == "Swap Pet Item" || chestName == "Remove Pet Item" -> 
                 lastGuisClosed.lastPetItemSwapGuiClosedAt = now
+            chestName.contains("Offer Pets") -> lastGuisClosed.lastGeorgeGuiClosedAt = now
+            chestName.contains("Pet Sitter") -> lastGuisClosed.lastKatGuiClosedAt = now
             chestName.contains("Heart of the Mountain") -> lastGuisClosed.lastHotmGuiClosedAt = now
         }
     }
@@ -149,38 +106,26 @@ object GuiUtils {
         return screen.title.getUnformattedString()
     }
 
-    /*
-     * Check if the player is a GUI which is non-storage (you can't take fishing profit items from it).
-     * This is used to check if to ignore inventory changes when in some GUI.
-     * @returns {Boolean}
-     */
-    fun isInNonStorageGui(): Boolean {
-        val guiName = getCurrentChestName() ?: return false
-        return guiName.contains("Loadouts") || guiName.contains("Equipment Sets") || guiName.contains("Armor Sets") ||
-            guiName.contains("Collections") || 
-            guiName.contains("Skill") || // Your Skills, Fishing Skill, etc.
-            guiName.startsWith("Abiphone") || 
-            guiName.startsWith("Chocolate") ||
-            guiName.startsWith("Hoppity") || 
-            guiName == "Slayer" || 
-            guiName == "Accessory Bag Thaumaturgy" ||
-            guiName == "Select Power Stone" ||
-            guiName == "Stats Tuning" ||
-            guiName == "Stat Tuning Template" ||
-            guiName == "SkyBlock Menu" ||
-            guiName == "Your Stats Breakdown" ||
-            guiName == "Stats & Equipment" ||
-            guiName == "Calendar and Events" ||
-            guiName == "Fast Travel"
+    fun isInBazaarGui(): Boolean {
+        val title = getCurrentChestName() ?: return false
+        return isBazaarChestName(title)
+    }
+
+    private fun isBazaarChestName(chestName: String): Boolean {
+        return chestName.contains("Bazaar") ||
+            chestName.contains("Order options") ||
+            chestName.contains("Instant Buy") ||
+            chestName.contains("Bazaar Orders") ||
+            chestName.contains("➜") // Viewing specific item
     }
 
     fun isInSacksGui(): Boolean {
-        val title = GuiUtils.getCurrentChestName() ?: return false
+        val title = getCurrentChestName() ?: return false
         return (title.endsWith("Sack"))
     }
 
     fun isInSupercraftGui(): Boolean {
-        val title = GuiUtils.getCurrentChestName() ?: return false
+        val title = getCurrentChestName() ?: return false
         return (title.endsWith("Recipe"))
     }
 }

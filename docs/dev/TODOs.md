@@ -2,13 +2,55 @@
 
 ## Reminders
 
-- Test each release in 1.21.* and 26.x
+- Test each release in 26.x
 
-## Alpha Torrus Canyon
+## MF update
+
+New potential drops that have alerts:
+- 1x Piscary VI (2%)
+- 1x Great White Shark Tooth (5%)
+- 1x Severed Pincer (0.5%)
+- 1x Chain of the End Times (2%)
+- 1x Brimstone Handle (1.5%)
+- 1x COMMON Baby Yeti Pet (2%) - PET DROP! COMMON Baby Yeti
+- 1x RARE Flying Fish (4%)
+- 1x EPIC Flying Fish (2%)
+- 1x Mound of Seagrass (2.5%)
+- Isopod Husk 2%
+
+PET DROP! COMMON Baby Yeti
+RARE DROP! Enchanted Book (Piscary VI) (+176  Magic Find)
+
+New drops:
+- 1x Pumpkin Guts (0.5%)
+- Ench cooked cod, salmot, ench wet sponge etc
+- Ench iron block, ench coal block, ench bone block
+- Ench gunpowder
+- Luck of the Sea VI (readded)
+- Dust/Ench redstone dust to sea witch
+- Box of junk (alligator) - BOX_OF_JUNK, Rare, no npc price?
+- Combat exp boost (epic) from Pyro worm (???)
+- Foraging Exp Boost +50% from ent (again)
+
+Deleted drops (unintentionally)?
+https://hypixel.net/threads/some-more-notable-things-i-noticed-from-the-drop-table-changes.6163341/
+- Dark bait
+- Squid Boots
+- Enchanted Cooked Mutton
+
+## Minister update
+
+https://hypixel.net/threads/september-21st-minister-update-mob-level-improvements-testing-2.6150078/
+
+- You ran out of Whale Bait in your Bait Sacks! [DISMISS] - could be used for out of bait detection?
+- Adjusted all EPIC Phoenix Pets -> SPECIAL, Adjusted all LEGENDARY Phoenix Pets -> VERY SPECIAL
+  New pet drop message? New Pet IDs / pet price issues for leveled up pet? "PHOENIX;0+100", "PHOENIX;4+100"
+- Precursor Drone became Legendary. New ID? "PRECURSOR_DRONE;4+100"
+
+## Torrus Canyon
 
 - Giant Isopod acts like a Nessie, implement immunity?
 - Giant Isopod highlight looks weird
-- Test large black hole
 
 ## Alpha Lotus Atoll
 
@@ -32,29 +74,36 @@ Newly released - https://hypixel.net/threads/hypixel-skyblock-0-24-5-assorted-qo
 
  GOOD CATCH! You caught a Flexbone!
  GOOD CATCH! You caught a Shinyfish Shard!
+§a §r§lACID RAIN BONUS! §r§fYou caught a bonus §r§aRusty Coin§r§f!
 
-- Issues with setting RNG meter before first dye in Treasure tracker (0 as drops count)
+- Bait refund arrives to sack and gets counted (temporary disabled bait tracking).
+- Easier sounds setup.
+- Scrollable overlays
+- Send a message like this "BAD JUNK CATCH! You caught a Salmon!" when catching a non-treasure while treasure/junk fishing
+- You cannot send same message twice when sharing Isopods
+- For level 100 pets, would be cool to change their item name to be aligned with Level 1 pets. This also causes Lvl 100 pets being not easily found ny name via /get command or party command item search.
+- Drake sound not muted when using Sound Controller mod
+- integrate medal clipping for rare drops / dyes? have seen it in sbo and its pretty neat  https://medal.tv/developer/auto-clipping#api-reference
+- Default party drop on-screen alert ragebaits some people :(
+- Hotspot nametag hider + overlay with hotspot perk
+- Custom msg in catch message which can be shown in title (e.g. I KILL OWN)
+- Editing the format of feesh titles (summoned creature name, dropped rare item, price of an item, name of the player who did it etc) to change their order, color, duration, location(on title or subtitle) or to add some custom texts in it and so on.
+- Mod name is copied as [ Feesh]
+- Spooky features
 - Toggle for PBs, rework trackPersonalBestFishingFestival
 - Max MF PB
 - Xp/h
-- SMILE! Polizei111 has sprinkled some joy your way! You feel a little happier. :)
-- Add All option for drops list in settings
 - Share Nessie with coords to all chat?
-- With the release of Minecraft version 26.2 on June 16th, we'll drop support for 1.21.11 in a few weeks.
 - Personal blacklist + party sharing
 - Runic sea creatures - alert or highlight
 - Pickups from trade menu
 - Sea Creature Tracker where it says "Total" could you change that to "Total Sea Creatures"
 - Some legion counting radius logic reported
-- Improve link to changelog in settings, and update announcement
 - Work on various events sounds to make them more unique
-- 1.21 Fishing Hook armorstand flickering
 - Ragnarok immunity timer
 - Manual "set tracker drops" command does not reset "sc since last" for that drop.
 - Fished coins to add via the command.
-- Carmine dye into tracker
 - Autoupdates
-- Settings are not saved after exiting the game, probably because user closes window using X button to exit
 
 ## Tech Debt
 

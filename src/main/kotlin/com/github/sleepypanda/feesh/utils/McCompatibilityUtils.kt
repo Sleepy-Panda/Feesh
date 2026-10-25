@@ -23,10 +23,8 @@ fun Minecraft.setScreenCompat(screen: Screen?) {
 fun Minecraft.addClientChatMessageCompat(message: Component) {
     //#if MC >= 26.2
     //$$ gui.hud.getChat().addClientSystemMessage(message)
-    //#elseif MC >= 26.1
-    //$$ gui.chat.addClientSystemMessage(message)
     //#else
-    gui.chat.addMessage(message)
+    gui.chat.addClientSystemMessage(message)
     //#endif
 }
 
@@ -43,5 +41,21 @@ fun Minecraft.showTitleCompat(title: Component, subtitle: Component, fadeIn: Int
         setTitle(title)
         setSubtitle(subtitle)
     }
+    //#endif
+}
+
+fun openUriCompat(url: String) {
+    //#if MC >= 26.3
+    //$$ com.mojang.blaze3d.Blaze3D.openUri(java.net.URI.create(url))
+    //#else
+    net.minecraft.util.Util.getPlatform().openUri(url)
+    //#endif
+}
+
+fun openPathCompat(path: java.nio.file.Path) {
+    //#if MC >= 26.3
+    //$$ com.mojang.blaze3d.Blaze3D.openPath(path)
+    //#else
+    net.minecraft.util.Util.getPlatform().openUri(path.toUri().toString())
     //#endif
 }

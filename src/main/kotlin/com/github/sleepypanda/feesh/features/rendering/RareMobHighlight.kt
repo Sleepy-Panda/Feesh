@@ -98,18 +98,18 @@ object RareMobHighlight {
         entities.add(mobEntity)
 
         val color = when {
-            scInfo?.rarityColorCode == ColorCodes.COMMON.code -> HexColorCodes.COMMON.colorCode
-            scInfo?.rarityColorCode == ColorCodes.UNCOMMON.code -> HexColorCodes.UNCOMMON.colorCode
-            scInfo?.rarityColorCode == ColorCodes.RARE.code -> HexColorCodes.RARE.colorCode
-            scInfo?.rarityColorCode == ColorCodes.EPIC.code -> HexColorCodes.EPIC.colorCode
-            scInfo?.rarityColorCode == ColorCodes.LEGENDARY.code -> HexColorCodes.LEGENDARY.colorCode
-            scInfo?.rarityColorCode == ColorCodes.MYTHIC.code -> HexColorCodes.MYTHIC.colorCode
-            scInfo?.rarityColorCode == ColorCodes.DIVINE.code -> HexColorCodes.DIVINE.colorCode
-            scInfo?.rarityColorCode == ColorCodes.SPECIAL.code -> HexColorCodes.SPECIAL.colorCode
+            scInfo?.rarityColorCode == ColorCodes.COMMON.code -> HexColorCodes.COMMON.rgbColorCode
+            scInfo?.rarityColorCode == ColorCodes.UNCOMMON.code -> HexColorCodes.UNCOMMON.rgbColorCode
+            scInfo?.rarityColorCode == ColorCodes.RARE.code -> HexColorCodes.RARE.rgbColorCode
+            scInfo?.rarityColorCode == ColorCodes.EPIC.code -> HexColorCodes.EPIC.rgbColorCode
+            scInfo?.rarityColorCode == ColorCodes.LEGENDARY.code -> HexColorCodes.LEGENDARY.rgbColorCode
+            scInfo?.rarityColorCode == ColorCodes.MYTHIC.code -> HexColorCodes.MYTHIC.rgbColorCode
+            scInfo?.rarityColorCode == ColorCodes.DIVINE.code -> HexColorCodes.DIVINE.rgbColorCode
+            scInfo?.rarityColorCode == ColorCodes.SPECIAL.code -> HexColorCodes.SPECIAL.rgbColorCode
             cleanName == HighlightableSeaCreatureTypes.FLIPFLOPPER.displayName || cleanName == HighlightableSeaCreatureTypes.SEASHINE.displayName ->
-                HexColorCodes.DIVINE.colorCode
+                HexColorCodes.DIVINE.rgbColorCode
             cleanName == HighlightableSeaCreatureTypes.JAWBUS_FOLLOWER.displayName || cleanName == HighlightableSeaCreatureTypes.WIKI_TIKI_LASER_TOTEM.displayName ->
-                HexColorCodes.SPECIAL.colorCode
+                HexColorCodes.SPECIAL.rgbColorCode
             else -> 0x00FFFF
         }
 
@@ -127,6 +127,14 @@ object RareMobHighlight {
         if (cleanName == HighlightableSeaCreatureTypes.WIKI_TIKI.displayName) {
             val wikiTikiEntitiesShifts = listOf(3, 5, 7)
             wikiTikiEntitiesShifts.forEach { shift ->
+                val prevEntity = world.getEntity(event.entityId - shift) as? LivingEntity ?: return@forEach
+                entities.add(prevEntity)
+            }
+        }
+
+        // Magma Pillar consists of 9 magma cube entities
+        if (cleanName == HighlightableSeaCreatureTypes.MAGMA_PILLAR.displayName) {
+            (2..9).forEach { shift ->
                 val prevEntity = world.getEntity(event.entityId - shift) as? LivingEntity ?: return@forEach
                 entities.add(prevEntity)
             }

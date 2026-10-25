@@ -2,26 +2,20 @@ package com.github.sleepypanda.feesh.features.overlays
 
 import com.github.sleepypanda.feesh.FeeshMod
 import com.github.sleepypanda.feesh.events.EventBus
-import com.github.sleepypanda.feesh.events.models.ChatEvent
+import com.github.sleepypanda.feesh.events.models.CatchEvent
 import com.github.sleepypanda.feesh.events.models.ClientTickEvent
 import com.github.sleepypanda.feesh.events.models.FishingXpGainedEvent
-import com.github.sleepypanda.feesh.events.models.InteractActionType
-import com.github.sleepypanda.feesh.events.models.OwnFishingHookDespawnedEvent
 import com.github.sleepypanda.feesh.events.models.OwnSeaCreatureCaughtEvent
-import com.github.sleepypanda.feesh.events.models.PlayerInteractEvent
 import com.github.sleepypanda.feesh.events.models.SeaCreatureCocoonedByYouEvent
-import com.github.sleepypanda.feesh.events.models.SoundPlayedEvent
 import com.github.sleepypanda.feesh.events.models.WorldChangedEvent
 import com.github.sleepypanda.feesh.settings.categories.Overlays
 import com.github.sleepypanda.feesh.settings.models.EfficiencyStatTypes
 import com.github.sleepypanda.feesh.utils.CommonUtils
-import com.github.sleepypanda.feesh.utils.ItemUtils
 import com.github.sleepypanda.feesh.utils.WorldUtils
 import com.github.sleepypanda.feesh.utils.PlayerUtils
 import com.github.sleepypanda.feesh.utils.FishingHookUtils
 import com.github.sleepypanda.feesh.utils.ChatUtils
 import com.github.sleepypanda.feesh.utils.RegisterUtils
-import com.github.sleepypanda.feesh.utils.EntityUtils
 import com.github.sleepypanda.feesh.utils.gui.FeeshGui
 import com.github.sleepypanda.feesh.utils.gui.LineInfo
 import com.github.sleepypanda.feesh.utils.gui.GuiButton
@@ -40,10 +34,6 @@ object EfficiencyTracker : IResettableTracker {
 
     private const val TICKS_PER_UPDATE = 20
     private const val HIDE_OVERLAY_MINUTES = 5
-    private const val CATCH_XP_ORB_SOUND_PATH = "entity.experience_orb.pickup"
-    // ♪ MUSICAL CATCH! You caught a Music Disc - Cat!
-    private val TREASURE_OR_JUNK_CATCH_PATTERN = Regex("^. (GOOD|GOOD JUNK|GREAT|GREAT JUNK|OUTSTANDING|OUTSTANDING JUNK|MUSICAL) CATCH!")
-    private val TROPHY_CATCH_PATTERN = Regex("^. (TROPHY FISH|TROPHY FROG)!")
 
     private var catchesCount = 0
     private var seaCreatureCatchesCount = 0
@@ -53,9 +43,6 @@ object EfficiencyTracker : IResettableTracker {
     private var elapsedSeconds = 0
 
     private var isSessionActive = false
-    private var lastRodRightClickedAt: Date? = null
-    private var lastCatchAt: Date? = null
-    private var lastCatchXpOrbSoundAt: Date? = null
 
     private var tickCounter = 0
     private val baseTitle = "${AQUA}${BOLD}${trackerName}"
@@ -84,13 +71,10 @@ object EfficiencyTracker : IResettableTracker {
         RegisterUtils.command(PAUSE_COMMAND) {
             pause()
         }
+        EventBus.subscribe(CatchEvent::class, ::onCatch)
         EventBus.subscribe(OwnSeaCreatureCaughtEvent::class, ::onSeaCreatureCaught)
         EventBus.subscribe(SeaCreatureCocoonedByYouEvent::class, ::onSeaCreatureCocooned)
-        EventBus.subscribe(OwnFishingHookDespawnedEvent::class, ::onOwnFishingHookDespawned)
         EventBus.subscribe(ClientTickEvent::class, ::onClientTick)
-        EventBus.subscribe(PlayerInteractEvent::class, ::onPlayerInteract)
-        EventBus.subscribe(ChatEvent::class, ::onChat)
-        EventBus.subscribe(SoundPlayedEvent::class, ::onSoundPlayed)
         EventBus.subscribe(FishingXpGainedEvent::class, ::onFishingXpGained)
         EventBus.subscribe(WorldChangedEvent::class, ::onWorldChanged)
     }
@@ -107,10 +91,6 @@ object EfficiencyTracker : IResettableTracker {
         fishingXpTotal = 0.0
         isSessionActive = false
         elapsedSeconds = 0
-
-        lastRodRightClickedAt = null
-        lastCatchAt = null
-        lastCatchXpOrbSoundAt = null
     }
 
     override fun refreshGui() {
@@ -123,35 +103,13 @@ object EfficiencyTracker : IResettableTracker {
 
             pauseInternal()
             updateGuiLines()
-            ChatUtils.sendLocalChat("${WHITE}$trackerName is paused. Continue fishing to resume it.", true)
+            ChatUtils.sendLocalChat("${WHITE}$trackerName is paused.", true)
         }
     }
 
     private fun onWorldChanged(@Suppress("UNUSED_PARAMETER") event: WorldChangedEvent) {
         pauseInternal()
-        lastRodRightClickedAt = null
-        lastCatchAt = null
-        lastCatchXpOrbSoundAt = null
         gui.clearLines()
-    }
-
-    // This function is a backup method for catches that do not have chat message (sea creatures, treasure, trophy, etc.)
-    // Chat message appears before fishing hook despawns, so those catches are tracked in chat message handlers.
-    // Some successful catches (raw fish, log, etc) do not have chat message, so we detect them by
-    // - reel in fishing rod with right click while it's in fluid
-    // - hear XP orb sound
-    private fun onOwnFishingHookDespawned(@Suppress("UNUSED_PARAMETER") event: OwnFishingHookDespawnedEvent) {
-        CommonUtils.runWithCatching("Failed to track fishing hook despawned in $trackerName") {
-            if (!isTrackerActive()) return
-            if (!isStatEnabled(EfficiencyStatTypes.CATCHES_PER_HOUR)) return
-            if (isSomethingCaughtRecently()) return
-
-            if (!wasWithinMs(lastRodRightClickedAt, 500L)) return
-            if (!FishingHookUtils.wasFishingHookSubmergedMillisecondsAgo(500)) return
-            if (!wasWithinMs(lastCatchXpOrbSoundAt, 300L)) return
-
-            addCatch()
-        }
     }
 
     private fun onClientTick(@Suppress("UNUSED_PARAMETER") event: ClientTickEvent) {
@@ -169,9 +127,6 @@ object EfficiencyTracker : IResettableTracker {
         CommonUtils.runWithCatching("Failed to track sea creature catch in $trackerName") {
             if (event.seaCreatureName == "Vanquisher") return
             if (!isTrackerActive()) return
-
-            tryAddCatchFromChat() // For catches/h stat
-
             if (!hasAnySeaCreatureStatEnabled()) return
 
             val isDoubleHooked = event.isDoubleHook
@@ -195,18 +150,11 @@ object EfficiencyTracker : IResettableTracker {
         }
     }
 
-    private fun onPlayerInteract(event: PlayerInteractEvent) {
-        CommonUtils.runWithCatching("Failed to handle fishing rod interaction in $trackerName") {
+    private fun onCatch(@Suppress("UNUSED_PARAMETER") event: CatchEvent) {
+        CommonUtils.runWithCatching("Failed to track catch in $trackerName") {
             if (!isTrackerActive()) return
             if (!isStatEnabled(EfficiencyStatTypes.CATCHES_PER_HOUR)) return
-            if (!event.isMainHand || (event.actionType != InteractActionType.USE_ITEM && event.actionType != InteractActionType.USE_BLOCK)) return
-            if (FishingHookUtils.getActiveFishingHook() == null) return
-
-            val heldItem = FeeshMod.mc.player?.mainHandItem
-            if (heldItem == null || heldItem.isEmpty) return
-            if (!ItemUtils.isFishingRod(heldItem)) return
-
-            lastRodRightClickedAt = Date()
+            addCatch()
         }
     }
 
@@ -255,19 +203,19 @@ object EfficiencyTracker : IResettableTracker {
         addCatch()
     }
 
+    private fun onFishingXpGained(event: FishingXpGainedEvent) {
+        CommonUtils.runWithCatching("Failed to track Fishing XP gain in $trackerName") {
+            if (!isTrackerActive()) return
+            if (!isStatEnabled(EfficiencyStatTypes.XP_PER_HOUR)) return
+
+            fishingXpTotal += event.amount
+            updateGuiLines()
+        }
+    }
+
     private fun addCatch() {
         catchesCount += 1
-        lastCatchAt = Date()
         updateGuiLines()
-    }
-
-    private fun isSomethingCaughtRecently(): Boolean {
-        return wasWithinMs(lastCatchAt, 750L) // Flash V proc might be ~1s
-    }
-
-    private fun wasWithinMs(timestamp: Date?, windowMs: Long): Boolean {
-        if (timestamp == null) return false
-        return Date().time - timestamp.time <= windowMs
     }
 
     private fun isTrackerEnabledInWorld(): Boolean {
@@ -309,14 +257,24 @@ object EfficiencyTracker : IResettableTracker {
                 return
             }
 
+            val prevIsActive = isSessionActive
             val isHookActive = FishingHookUtils.isFishingHookSubmerged()
 
             // Start fishing timer after pause or when tracker was empty
             if (isHookActive) {
                 isSessionActive = true
+                if (elapsedSeconds == 0) {
+                    elapsedSeconds = 1
+                }
+                if (!prevIsActive) {
+                    return
+                }
             }
 
-            if (!isTrackerActive()) return
+            if (!isTrackerActive()) {
+                pauseInternal()
+                return
+            }
 
             val lastHookSeenAt = FishingHookUtils.lastSubmergedFishingHookSeenAt() ?: return
             val elapsedSinceHook = (Date().time - lastHookSeenAt.time) / 1000

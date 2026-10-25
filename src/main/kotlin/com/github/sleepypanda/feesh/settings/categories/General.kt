@@ -4,13 +4,14 @@ import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
 import com.github.sleepypanda.feesh.utils.PriceUtils
 import com.github.sleepypanda.feesh.utils.data.PersistentDataManager
+import com.github.sleepypanda.feesh.utils.openPathCompat
+import com.github.sleepypanda.feesh.utils.openUriCompat
 import com.teamresourceful.resourcefulconfig.api.annotations.Category
 import com.teamresourceful.resourcefulconfig.api.annotations.Comment
 import com.teamresourceful.resourcefulconfig.api.annotations.ConfigEntry
 import com.teamresourceful.resourcefulconfig.api.types.options.EntryType
 import com.teamresourceful.resourcefulconfigkt.api.CategoryKt
 import com.teamresourceful.resourcefulconfigkt.api.ObservableEntry
-import net.minecraft.util.Util
 
 enum class AuctionPriceApiMode(val displayName: String) {
     ELITE_SKYBLOCK_NEU("Elite (lowest BIN)"),
@@ -45,7 +46,7 @@ object General : CategoryKt("General") {
             description = "Opens the guide for setting up custom sounds for Meme sound mode."
             text = "Open"
             onClick {
-                Util.getPlatform().openUri("https://github.com/Sleepy-Panda/Feesh/blob/develop/docs/Custom%20sounds%20guide.md")
+                openUriCompat("https://github.com/Sleepy-Panda/Feesh/blob/develop/docs/Custom%20sounds%20guide.md")
             }
         }
     }
@@ -79,7 +80,7 @@ object General : CategoryKt("General") {
             onClick {
                 val dir = PersistentDataManager.backupDir
                 if (!dir.exists()) dir.mkdirs()
-                Util.getPlatform().openUri(dir.toURI().toString())
+                openPathCompat(dir.toPath())
             }
         }
     }

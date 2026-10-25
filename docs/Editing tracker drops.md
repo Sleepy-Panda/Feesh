@@ -8,8 +8,9 @@
 
 ## Intro
 
-Several area-specific trackers show **rare drops statistics** alongside sea creature catch stats. Examples of those trackers are Bayou, Water Hotspots, Crimson Isle, Lotus Atoll, Treasure fishing.
-You can use `/feeshSetTrackerDrops` chat command to initialize drop count, sea creatures/treasures since last drop, and the last drop date.
+Several area-specific trackers show **rare drops statistics** alongside sea creature catch stats - when was the last drop and how many you got overall. Examples of those trackers are Bayou, Water Hotspots, Crimson Isle, Lotus Atoll trackers.
+
+You can use `/feeshSetTrackerDrops` chat command to initialize drop count, sea creatures since last drop, and the last drop date.
 
 Each drop line in the tracker typically shows:
 
@@ -42,23 +43,6 @@ Make sure the relevant tracker is **enabled** and **visible** to verify the resu
 | Crimson Isle | Radioactive Vial | `RADIOACTIVE_VIAL` |
 | Lotus Atoll | Prince's Crown Jewel | `PRINCE_CROWN_JEWEL` |
 
-### Treasure fishing (Treasure Dye)
-
-Treasure fishing tracker uses a different third argument: good/great/outstanding catches breakdown to show RNG meter.
-
-```
-/feeshSetTrackerDrops DYE_TREASURE <DROP_COUNT> <GOOD>/<GREAT>/<OUTSTANDING> [LAST_ON_DATE]
-```
-
-| Argument | Required | Description |
-|----------|----------|-------------|
-| `DROP_ID` | Yes | `DYE_TREASURE` |
-| `DROP_COUNT` | Yes | Total Treasure Dyes obtained. Must be **> 0** |
-| `GOOD/GREAT/OUTSTANDING` | Yes | Treasure catches since last dye, split by type (e.g. `12/123/1234`). Each part must be **>= 0** |
-| `LAST_ON_DATE` | No | When the last drop happened. Format: `YYYY-MM-DD hh:mm:ss`. Cannot be in the future. |
-
-Treasures since last drop (shown as "N treasures ago") is the **sum** of good + great + outstanding. The breakdown also allows showing the RNG meter percentage.
-
 ## Examples
 
 ```text
@@ -67,6 +51,4 @@ Treasures since last drop (shown as "N treasures ago") is the **sum** of good + 
 /feeshSetTrackerDrops SNAKE_EYES 2 1500 2024-03-18 14:05:00
 /feeshSetTrackerDrops TIKI_MASK 5 500
 /feeshSetTrackerDrops PRINCE_CROWN_JEWEL 2 0 2025-01-01 12:00:00
-/feeshSetTrackerDrops DYE_TREASURE 2 1234/123/12 2025-05-30 23:59:00
-/feeshSetTrackerDrops DYE_TREASURE 2 0/0/0
 ```

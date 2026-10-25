@@ -40,6 +40,10 @@ public class SoundEngineMixin {
     }
 
     private boolean shouldCancel(SoundInstance sound) {
-        return MuteJadeDragonSound.shouldCancel(sound.getIdentifier()) || MuteReindrakeGifts.shouldCancel(sound.getIdentifier());
+        float volume = sound instanceof AbstractSoundInstance
+                ? ((AbstractSoundInstanceAccessor) sound).feesh$getRawVolume()
+                : 1.0f;
+        return MuteJadeDragonSound.shouldCancel(sound.getIdentifier())
+                || MuteReindrakeGifts.shouldCancel(sound.getIdentifier(), volume);
     }
 }

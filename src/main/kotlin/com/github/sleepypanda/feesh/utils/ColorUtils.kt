@@ -4,6 +4,7 @@ import com.github.sleepypanda.feesh.events.EventBus
 import com.github.sleepypanda.feesh.events.models.WorldChangedEvent
 import com.github.sleepypanda.feesh.utils.ChatUtils.removeFormatting
 import net.minecraft.network.chat.Component
+import net.minecraft.network.chat.MutableComponent
 import net.minecraft.network.chat.Style
 import net.minecraft.network.chat.TextColor
 
@@ -22,6 +23,19 @@ object ColorUtils {
 
     private fun onWorldChanged(@Suppress("UNUSED_PARAMETER") event: WorldChangedEvent) {
         gradientCache.clear()
+    }
+
+    /**
+     * Creates text component colored with a single RGB hex [color] (0xRRGGBB).
+     * @param text The unformatted text to color (formatting codes are removed).
+     */
+    fun buildColoredTextComponent(text: String, color: Int, bold: Boolean = false): MutableComponent {
+        val clean = text.removeFormatting()
+        if (clean.isEmpty()) return Component.empty()
+
+        var style = Style.EMPTY.withColor(TextColor.fromRgb(color and 0xFFFFFF))
+        if (bold) style = style.withBold(true)
+        return Component.literal(clean).setStyle(style)
     }
 
     /**

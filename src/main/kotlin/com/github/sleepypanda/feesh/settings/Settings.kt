@@ -11,9 +11,10 @@ import com.github.sleepypanda.feesh.settings.categories.Items
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
 import com.github.sleepypanda.feesh.features.help.VersionChecker
+import com.github.sleepypanda.feesh.utils.openUriCompat
+import com.teamresourceful.resourcefulconfig.api.types.info.ResourcefulConfigLink
 import com.teamresourceful.resourcefulconfig.api.types.options.TranslatableValue
 import com.teamresourceful.resourcefulconfigkt.api.ConfigKt
-import net.minecraft.util.Util
 
 object Settings : ConfigKt("${FeeshMod.MOD_ID}/config") {
     override val name: TranslatableValue
@@ -21,42 +22,30 @@ object Settings : ConfigKt("${FeeshMod.MOD_ID}/config") {
         
     override val description: TranslatableValue
         get() = Literal(
-            "QOL mod for Hypixel Skyblock fishing. ${if (VersionChecker.cachedLatestVersion.isNullOrEmpty()) "" else "${WHITE}Latest on Modrinth: ${if (VersionChecker.isLatestVersion) "${WHITE}${VersionChecker.cachedLatestVersion} - ${GREEN}${BOLD}Up to date" else "${WHITE}${VersionChecker.cachedLatestVersion} - ${RED}${BOLD}Update available"}"}"
+            "Fishing QOL mod for Hypixel Skyblock. ${if (VersionChecker.cachedLatestVersion.isNullOrEmpty()) "" else "${WHITE}Latest on Modrinth: ${if (VersionChecker.isLatestVersion) "${WHITE}${VersionChecker.cachedLatestVersion} - ${GREEN}${BOLD}Up to date" else "${WHITE}${VersionChecker.cachedLatestVersion} - ${RED}${BOLD}Update available"}"}"
         )
     
+    override val links: Array<ResourcefulConfigLink> = arrayOf(
+        ResourcefulConfigLink.create(
+            "https://modrinth.com/project/feesh/versions",
+            "modrinth",
+            TranslatableValue("Modrinth"),
+        ),
+        ResourcefulConfigLink.create(
+            "https://github.com/Sleepy-Panda/Feesh",
+            "code",
+            TranslatableValue("GitHub"),
+        ),
+    )
+
     init {
         separator {
             title = "Welcome to ${FeeshMod.MOD_NAME}!"
-            description = "${GRAY}Fishing enhancements mod for Hypixel Skyblock. From ${AQUA}MoonTheSadFisher ${GRAY}with ${RED}❤"
-        }
-        
-        button {
-            title = "Modrinth"
-            description = "Find official releases and changelogs here. Open a specific version to check its changelog."
-            text = "Open"
-            onClick {
-                openLink("https://modrinth.com/project/feesh/versions")
-            }
-        }
-
-        button {
-            title = "GitHub"
-            description = "Find source code and docs here."
-            text = "Open"
-            onClick {
-                openLink("https://github.com/Sleepy-Panda/Feesh")
-            }
-        }
-
-        button {
-            title = "My Discord"
-            description = "m00nlight_sky - feel free to contact me if you have any questions, feedback, or suggestions."
-            text = "Button does nothing"
-            onClick { }
+            description = "${GRAY}Made by ${AQUA}MoonTheSadFisher ${GRAY}with ${RED}❤\n${GRAY}My Discord: m00nlight_sky"
         }
 
         separator {
-            this.title = "${AQUA}${BOLD}Credits"
+            this.title = "${AQUA}${BOLD}Credits & Links"
         }
 
         button {
@@ -64,7 +53,7 @@ object Settings : ConfigKt("${FeeshMod.MOD_ID}/config") {
             description = "Big fishing community with guides, discussions and more. Check out #feesh-mod / #mod-discussion channels for mod news & discussions!"
             text = "Join Casters"
             onClick {
-                openLink("https://discord.gg/vn3RzuyJz")
+                openLink("https://discord.gg/fishing")
             }
         }
 
@@ -95,6 +84,15 @@ object Settings : ConfigKt("${FeeshMod.MOD_ID}/config") {
             }
         }
 
+        button {
+            title = "Hypixel Skyblock's bazaar API"
+            description = "API used by Feesh for getting bazaar prices."
+            text = "Open API"
+            onClick {
+                openLink("https://api.hypixel.net/skyblock/bazaar?product")
+            }
+        }
+
         // Settings categories
         category(General)
         category(Alerts)        
@@ -108,6 +106,6 @@ object Settings : ConfigKt("${FeeshMod.MOD_ID}/config") {
     fun save() = FeeshMod.INSTANCE.settings.save()
 
     private fun openLink(url: String) {
-        Util.getPlatform().openUri(url)
+        openUriCompat(url)
     }
 }

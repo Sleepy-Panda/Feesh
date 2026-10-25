@@ -27,7 +27,7 @@ object DoubleHookPersonalBest {
     }
 
     private fun onSeaCreatureCaught(event: OwnSeaCreatureCaughtEvent) {
-        if (!WorldUtils.isInSkyblock()) return
+        if (!WorldUtils.isInSkyblock() || !WorldUtils.isInFishingWorld()) return
         if (WorldUtils.isOnAlpha()) return
         if (event.seaCreatureName == SeaCreatureNames.VANQUISHER) return
 
@@ -56,7 +56,7 @@ object DoubleHookPersonalBest {
                 "${LIGHT_PURPLE}${BOLD}PERSONAL BEST!${RESET} Double Hook streak: ${WHITE}${BOLD}${previousBest} ${GRAY}-> ${GREEN}${BOLD}$currentStreak",
                 true
             )
-            CommonUtils.showTitle("${LIGHT_PURPLE}${BOLD}PERSONAL BEST!", "DH streak: ${GREEN}$currentStreak")
+            CommonUtils.showTitle("${LIGHT_PURPLE}${BOLD}PERSONAL BEST!", "DH streak: ${GREEN}$currentStreak", stay = 60)
             SoundUtils.playSound(SoundEvents.PLAYER_LEVELUP)
         }
     }

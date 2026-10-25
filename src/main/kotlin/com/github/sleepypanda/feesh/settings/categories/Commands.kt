@@ -5,7 +5,7 @@ import com.github.sleepypanda.feesh.features.commands.GearCraftPricesCommand
 import com.github.sleepypanda.feesh.features.commands.JunkerJoelShopPricesCommand
 import com.github.sleepypanda.feesh.features.commands.PersonalBestsCommand
 import com.github.sleepypanda.feesh.features.commands.PetLevelUpPricesCommand
-import com.github.sleepypanda.feesh.features.commands.SpiderDenRainScheduleCommand
+import com.github.sleepypanda.feesh.features.commands.WeatherScheduleCommand
 import com.github.sleepypanda.feesh.features.commands.TerryShopPricesCommand
 import com.github.sleepypanda.feesh.utils.ChatUtils
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
@@ -109,15 +109,15 @@ object Commands : CategoryKt("Commands") {
 
     init {
         separator {
-            this.title = "${AQUA}${BOLD}Spider's Den rain schedule"
+            this.title = "${AQUA}${BOLD}Weather schedule"
         }
 
         button {
-            title = "Spider's Den rain schedule"
-            description = "Displays the nearest Spider's Den Rain / Thunderstorm events in the chat. Executes ${WHITE}/${SpiderDenRainScheduleCommand.COMMAND_NAME}"
+            title = "Weather schedule"
+            description = "Displays 3 upcoming weather conditions (Mild / Extreme) schedule in the chat. Executes ${WHITE}/${WeatherScheduleCommand.COMMAND_NAME}"
             text = "Click to execute"
             onClick {
-                ChatUtils.command(SpiderDenRainScheduleCommand.COMMAND_NAME)
+                ChatUtils.command(WeatherScheduleCommand.COMMAND_NAME)
             }
         }
 
