@@ -10,7 +10,7 @@ object FishingXpGainedPublisher {
     // Example: "+2,696.4 Fishing (2,811,372,886/0)"
     private val FISHING_XP_GAIN_PATTERN = Regex("\\+(?<amount>[\\d,]+\\.?\\d*)\\s+Fishing\\s+\\((?<total>[\\d,]+)/0\\)")
 
-    private var lastGainState = null as Double?
+    private var lastGainText = null
 
     fun init() {
         EventBus.subscribe(ActionBarCancellableEvent::class, ::onActionBarMessage)
@@ -22,19 +22,19 @@ object FishingXpGainedPublisher {
         CommonUtils.runWithCatching("Failed to handle Fishing XP gain from action bar.") {
             val actionBarText = event.unformattedText
             val match = FISHING_XP_GAIN_PATTERN.find(actionBarText) ?: run {
-                lastGainState = null
+                lastGainText = null
                 return@onActionBarMessage
             }
 
             val amount = match.groups["amount"]?.value?.replace(",", "")?.toDoubleOrNull() ?: run {
-                lastGainState = null
+                lastGainText = null
                 return@onActionBarMessage
             }
 
             // Same message change is triggered for a few seconds per one gain
-            if (amount == lastGainState) return@onActionBarMessage
+            if (actionBarText == lastGainText) return@onActionBarMessage
 
-            lastGainState = amount
+            lastGainText = actionBarText
 
             EventBus.publish(FishingXpGainedEvent(amount))
         }
