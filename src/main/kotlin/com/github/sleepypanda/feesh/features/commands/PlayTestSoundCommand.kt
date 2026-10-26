@@ -5,7 +5,6 @@ import com.github.sleepypanda.feesh.utils.SoundUtils
 import com.github.sleepypanda.feesh.utils.ChatUtils
 import com.github.sleepypanda.feesh.utils.CommonUtils
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
-import com.github.sleepypanda.feesh.FeeshMod
 import net.minecraft.resources.Identifier
 import net.minecraft.sounds.SoundEvent
 
@@ -31,8 +30,8 @@ object PlayTestSoundCommand {
             return
         }
         
-        val soundParam = args[0]
-        
+        val soundParam = args.joinToString(" ")
+
         when {
             soundParam.endsWith(".ogg", ignoreCase = true) -> {
                 CommonUtils.runWithCatching(

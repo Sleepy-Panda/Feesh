@@ -1,9 +1,11 @@
 package com.github.sleepypanda.feesh.utils
 
 import com.github.sleepypanda.feesh.FeeshMod
-import com.github.sleepypanda.feesh.utils.CommonUtils
+import com.github.sleepypanda.feesh.constants.Sounds
 import com.github.sleepypanda.feesh.settings.categories.General
 import com.github.sleepypanda.feesh.settings.categories.SoundMode
+import com.github.sleepypanda.feesh.utils.data.CustomSoundsManager
+import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import net.minecraft.client.resources.sounds.SimpleSoundInstance
 import net.minecraft.sounds.SoundEvents
 import net.minecraft.sounds.SoundEvent
@@ -24,8 +26,24 @@ object SoundUtils {
 
         if (fileName.isNullOrBlank()) return
         
+        val file = CustomSoundsManager.resolveUserSoundFile(fileName)
+        if (file != null) {
+            CommonUtils.runWithCatching("Failed to play sound file: ${file.name}") {
+                FeeshMod.mc.soundManager.play(FileSoundInstance(file))
+            }
+            return
+        }
+
+        val bundled = Sounds.BUNDLED_FILE_NAMES.any { it.equals(fileName, ignoreCase = true) }
+        if (!bundled) {
+            ChatUtils.sendLocalChat(
+                "${RED}Sound ${YELLOW}$fileName${RED} not found. Put the .ogg file in ${YELLOW}${CustomSoundsManager.soundsDir.absolutePath}",
+                true,
+            )
+            return
+        }
+
         CommonUtils.runWithCatching("Failed to play sound from file name: $fileName") {
-            // Use file name as-is (remove .ogg extension)
             val nameWithoutExtension = fileName.removeSuffix(".ogg")
             val identifier = Identifier.fromNamespaceAndPath(SOUNDS_IDENTIFIER_PREFIX, nameWithoutExtension)
             val soundEvent = SoundEvent.createVariableRangeEvent(identifier)
