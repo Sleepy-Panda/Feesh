@@ -14,11 +14,9 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundSource;
 
 /**
- * Plays .ogg file through Minecraft's sound engine.
- *
+ * Plays .ogg file through Minecraft's sound engine. No resource pack needed.
  * SoundEngine only opens a stream when the resolved sound has "stream": true.
- * USER_FILE_ID is that single entry in the mod sounds.json. Fabric redirects the
- * stream load to getAudioStream, so the file never has to be in a resource pack.
+ * DUMMY_FILE_ID is that entry in the mod sounds.json.
  */
 public class FileSoundInstance extends AbstractSoundInstance {
     // This is a dummy stream for custom sounds placed in a folder.
@@ -36,8 +34,8 @@ public class FileSoundInstance extends AbstractSoundInstance {
         this.relative = true;
     }
 
-    // No @Override: Fabric injects getAudioStream onto SoundInstance at runtime, and that injection is not visible to javac.
-    // The signature still overrides FabricSoundInstance.getAudioStream.
+    // Fabric adds getAudioStream to SoundInstance at runtime (mixin).
+    // This method replaces Fabric's method and is what the sound engine calls.
     public CompletableFuture<AudioStream> getAudioStream(SoundBufferLibrary library, Identifier id, boolean repeatInstantly) {
         CompletableFuture<AudioStream> future = new CompletableFuture<>();
         CompletableFuture.runAsync(() -> {
