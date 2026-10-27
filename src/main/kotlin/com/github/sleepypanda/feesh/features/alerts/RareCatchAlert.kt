@@ -111,7 +111,7 @@ object RareCatchAlert {
         val soundFileName = soundData?.source
 
         if (General.soundMode == SoundMode.MEME) SoundUtils.playCustomSound(soundFileName)
-        else SoundUtils.playSound()
+        else SoundUtils.playMcSound()
 
         if (seaCreatureInfo.name == SeaCreatureNames.NESSIE) {
             ChatUtils.sendLocalChatWithCommand("Click to warp to Murkwater Loch!", "warp murk", true)
@@ -129,6 +129,6 @@ object RareCatchAlert {
         val title = "${seaCreatureInfo.boldDisplayName} ${RED}cocooned"
         CommonUtils.showTitle(title, playerName)
 
-        SoundUtils.playSound()
+        SoundUtils.playMcSound()
     }
 }

@@ -54,7 +54,7 @@ object ThunderBottleChargedAlert {
 
     private fun playAlertOnBottleCharged(entry: BottleChargedTrigger) {
         CommonUtils.showTitle("${entry.rarityColorCode}${entry.bottleName} ${WHITE}is full")
-        SoundUtils.playSound()
+        SoundUtils.playMcSound()
     }
 
     private fun resetTimer() {

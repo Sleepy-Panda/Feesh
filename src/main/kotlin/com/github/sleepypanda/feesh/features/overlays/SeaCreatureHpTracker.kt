@@ -189,7 +189,7 @@ object SeaCreatureHpTracker {
 
             if (currentMobs.size > mobs.size && !addedMobNames.all { it.baseMobName == HpTrackableSeaCreatureTypes.REINDRAKE.displayName }) {
                 // Reindrake flies around and goes out of nametags render distance periodically
-                SoundUtils.playSound()
+                SoundUtils.playMcSound()
             }
 
             mobs = currentMobs.toMutableList()

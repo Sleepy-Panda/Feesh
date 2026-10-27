@@ -26,7 +26,7 @@ object AnyReindrakeAlert {
 
             CommonUtils.showTitle(SeaCreatures.getTitle(reindrake.name, event.isDoubleHook), name)
             ChatUtils.sendLocalChatWithCommand("Click to warp to Jerry's Workshop spawn point!", "warp jerry", true)
-            SoundUtils.playSound()
+            SoundUtils.playMcSound()
        }
     }
 }

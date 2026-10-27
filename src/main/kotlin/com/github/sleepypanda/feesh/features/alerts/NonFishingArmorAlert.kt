@@ -71,7 +71,7 @@ object NonFishingArmorAlert {
             hasAlertedForCurrentArmor = true
 
             CommonUtils.showTitle("${RED}Equip fishing armor!")
-            SoundUtils.playSound()
+            SoundUtils.playMcSound()
         }
     }
 

@@ -29,6 +29,6 @@ object LootshareAlert {
 
         CommonUtils.showTitle("${GREEN}${BOLD}Lootshare!")
         if (General.soundMode == SoundMode.MEME) SoundUtils.playCustomSound(Sounds.FEESH_NOTIFICATION_BELL)
-        else SoundUtils.playSound()
+        else SoundUtils.playMcSound()
     }
 }

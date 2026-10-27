@@ -582,7 +582,7 @@ object DeployablesTimer {
         CommonUtils.showTitle("$itemDisplayName ${RED}expires soon")
         ChatUtils.sendLocalChat("${WHITE}Your $itemDisplayName ${WHITE}expires soon.", true)
         if (General.soundMode == SoundMode.MEME) SoundUtils.playCustomSound(Sounds.FEESH_NOTIFICATION_BELL)
-        else SoundUtils.playSound()
+        else SoundUtils.playMcSound()
     }
 
     private fun updateGuiLines() {

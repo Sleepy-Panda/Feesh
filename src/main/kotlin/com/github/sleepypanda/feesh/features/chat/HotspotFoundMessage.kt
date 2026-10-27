@@ -150,7 +150,7 @@ object HotspotFoundMessage {
             announceNearestHotspot(x, y, z, perk, isParty)
         }
 
-        SoundUtils.playSound()
+        SoundUtils.playMcSound()
     }
 
     private fun announceNearestHotspot(x: Double, y: Double, z: Double, perk: String?, isParty: Boolean) {
