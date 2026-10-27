@@ -2,9 +2,11 @@
 
 Released on: ???
 
+TODO: Update Custom sounds guide!
+
 ## Features
 
-- **Simplified way of customizing sounds for catch/drop alerts, no resource pack is needed anymore.**
+- Simplified way of customizing sounds for catch/drop alerts. No resource pack is needed anymore!
   - Now .ogg sounds should be just copied directly to the `config/feesh/sounds` folder, instead of resource pack. No game restart needed.
   - Editing of `userCatchSounds.json` and `userDropSounds.json` also requires no game restart.
   - If you had resource pack, sounds from it should work for now, but you can remove it and migrate to new approach.

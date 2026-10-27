@@ -1,41 +1,63 @@
 # Custom Sounds
 
-This guide allows you to change custom sounds for the alerts when you catch a rare sea creature, or drop a rare item. Sounds are played for the sea creatures and drops which are enabled in the Alerts settings.
+This guide allows you to set custom sounds when you catch a rare sea creature, or drop a rare item. List of sea creatures and rare drops matches the alerts available in the module settings.
 
 ## Table of Contents
 
 - [Quick Start](#quick-start)
 - [Reset to default](#reset-to-default)
 - [Detailed Guide](#detailed-guide)
-  - [Sound Files](#sound-files)
-  - [Alert Configuration Files](#sound-configuration-files)
+    - [Custom Resource Pack](#custom-resource-pack)
+    - [Sound Configuration Files](#sound-configuration-files)
 
 ## Quick Start
 
 1. Make sure `Meme` sound mode is selected in the module settings.
 1. Prepare your custom sounds converted to the `.ogg` format.
-1. Copy them into `<MC>/config/feesh/sounds/` (the folder is created on MC launch).
-1. Test files in-game using `/feeshPlayTestSound filename.ogg`.
-1. Update `<MC>/config/feesh/userCatchSounds.json` or `<MC>/config/feesh/userDropSounds.json` to select which custom sound to use for specific alerts (see [Alert Configuration Files](#alert-configuration-files)). Changes are applied on file save; no game restart is needed.
+1. For custom sounds:
+   - Prepare ResourcePack with your .ogg sounds and install it in Minecraft (see [Custom Resource Pack](#custom-resource-pack)).
+   - If you wish, test the custom sounds ingame using `/feeshPlayTestSound <filename.ogg>`.
+1. Update `<MC>/config/feesh/userCatchSounds.json` or `<MC>/config/feesh/userDropSounds.json` to use your custom sounds or embedded mod sounds (see [Sound Configuration Files](#sound-configuration-files)).
 
 ## Reset to default
 
-- Close the game.
 - Navigate to the mod's config folder - `<MC>/config/feesh/`.
-- Remove `userCatchSounds.json` and/or `userDropSounds.json` files.
-- Restart your game, it will regenerate the files with default embedded sounds.
+- Remove `userCatchSounds.json` or `userDropSounds.json` files.
+- Restart your game, it will regenerate the files with default sounds.
 
 ## Detailed Guide
 
-### Sound Files
+### Custom Resource Pack
 
-The folder `<MC>/config/feesh/sounds/` is created the first time the mod launches. Put your custom `.ogg` files there. You can add more files while game is open, no need to exit/restart.
+The modern Minecraft requires you to package custom sounds as a resource pack, to make them available ingame.
 
-Default built-in game sounds (`feesh_*.ogg`) are already inside the mod. They do not need to be copied into this folder.
+1. The mod automatically creates a ResourcePack folder structure at:
+```
+<MC>/config/feesh/feesh-custom-sounds/
+```
 
-### Alert Configuration Files
+1. Make sure `Meme` sound mode is selected in the Feesh module settings.
 
-The alert configuration files are located at:
+1. Exit the game.
+
+1. Copy your `.ogg` files into the `feesh-custom-sounds/assets/feesh/sounds/` folder. **IMPORTANT: Use only lowercase letters (a-z), numbers (0-9), `-` and `_` in file names** (`my-custom-sound_123.ogg` instead of `My custom sound.ogg`).
+
+1. Run the game. As the result, the `sounds.json` file describing the Resource Pack sounds will be automatically generated.
+
+1. Package all files/folders inside of `feesh-custom-sounds` folder to `feesh-custom-sounds.zip` (note: there should be no subfolder named `feesh-custom-sounds` inside of zip, zip should contain resource pack files directly).
+
+1. Install the Resource Pack in Minecraft:
+  - Open Minecraft Settings (Options)
+  - Go to Resource Packs
+  - Click "Open Pack Folder"
+  - Copy your Resource Pack zip file to this folder
+  - Return to the game and move the ResourcePack to the Selected resource packs list
+
+1. Now you may want to test the custom sounds ingame using `/feeshPlayTestSound <my-custom-sound.ogg>`.
+
+### Sound Configuration Files
+
+The sound configuration files are located at:
 
 ```
 <MC>/config/feesh/userCatchSounds.json
@@ -47,9 +69,7 @@ and
 <MC>/config/feesh/userDropSounds.json
 ```
 
-Those files define which sound should be played for each rare catch / rare drop alert. They contain default embedded sound names, which can be replaced with the custom files you have in the folder.
-
-Both json files are automatically created on game launch. Then you can edit them while the game is open, changes are applied on save.
+Those files are automatically created on first mod launch and contain default embedded mod sounds. **Exit the game before modifying them!**
 
 #### userCatchSounds.json File Structure
 
@@ -64,17 +84,17 @@ The file has the following structure:
         "source": "feesh_notification.ogg"
     },
     "THE LOCH EMPEROR": {
-        "source": "custom-sound.ogg"
+        "source": "custom-emperor-sound.ogg"
     },
 }
 ```
 
-Each key is the name of a sea creature in uppercase (e.g., "YETI", "REINDRAKE", "THE LOCH EMPEROR").
+Each key is the name of a rare sea creature in uppercase (e.g., "YETI", "REINDRAKE", "THE LOCH EMPEROR").
 
 The `source` field contains the sound file name:
 
-- For custom sounds: use the file name from `config/feesh/sounds` (e.g., `"my-custom-emperor-sound.ogg"`)
-- For embedded mod sounds: keep the built-in file name (e.g., `"feesh_notification.ogg"`)
+- For custom sounds: use your file name from the Resource Pack (e.g., `"my-custom-emperor-sound.ogg"`)
+- For embedded mod sounds: keep original sound file name existing in the mod by default (e.g., `"feesh_notification.ogg"`)
 
 #### userDropSounds.json File Structure
 
@@ -99,5 +119,5 @@ For pet IDs, `;4` suffix means Legendary, `;3` - Epic, `;2` - Rare, `;2` - Uncom
 
 The `source` field contains the sound file name:
 
-- For custom sounds: use the file name from `config/feesh/sounds` (e.g., `"my-custom-dye-sound.ogg"`)
-- For embedded mod sounds: keep the built-in file name (e.g., `"feesh_notification.ogg"`)
+- For custom sounds: use your file name from the Resource Pack (e.g., `"my-custom-dye-sound.ogg"`)
+- For embedded mod sounds: keep original sound file name existing in the mod by default (e.g., `"feesh_notification.ogg"`)
