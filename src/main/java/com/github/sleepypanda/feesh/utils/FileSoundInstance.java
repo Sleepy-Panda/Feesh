@@ -14,7 +14,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundSource;
 
 /**
- * Plays one .ogg file through Minecraft's sound engine.
+ * Plays .ogg file through Minecraft's sound engine.
  *
  * SoundEngine only opens a stream when the resolved sound has "stream": true.
  * USER_FILE_ID is that single entry in the mod sounds.json. Fabric redirects the
@@ -30,7 +30,7 @@ public class FileSoundInstance extends AbstractSoundInstance {
     public FileSoundInstance(File file) {
         super(DUMMY_FILE_ID, SoundSource.UI, SoundInstance.createUnseededRandom());
         this.file = file;
-        this.volume = 1f;
+        this.volume = 0.8f;
         this.pitch = 1f;
         this.attenuation = SoundInstance.Attenuation.NONE;
         this.relative = true;
@@ -39,12 +39,14 @@ public class FileSoundInstance extends AbstractSoundInstance {
     // No @Override: Fabric injects getAudioStream onto SoundInstance at runtime, and that injection is not visible to javac.
     // The signature still overrides FabricSoundInstance.getAudioStream.
     public CompletableFuture<AudioStream> getAudioStream(SoundBufferLibrary library, Identifier id, boolean repeatInstantly) {
-        return CompletableFuture.supplyAsync(() -> {
+        CompletableFuture<AudioStream> future = new CompletableFuture<>();
+        CompletableFuture.runAsync(() -> {
             try {
-                return new JOrbisAudioStream(new FileInputStream(file));
+                future.complete(new JOrbisAudioStream(new FileInputStream(file)));
             } catch (IOException e) {
-                throw new RuntimeException("Failed to open sound file: " + file.getAbsolutePath(), e);
+                future.completeExceptionally(new RuntimeException("Failed to get stream for sound file: " + file.getAbsolutePath(), e));
             }
         });
+        return future;
     }
 }

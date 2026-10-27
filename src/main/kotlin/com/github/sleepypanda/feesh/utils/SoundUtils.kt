@@ -26,24 +26,24 @@ object SoundUtils {
 
         if (fileName.isNullOrBlank()) return
         
-        val file = CustomSoundsManager.resolveUserSoundFile(fileName)
-        if (file != null) {
-            CommonUtils.runWithCatching("Failed to play sound file: ${file.name}") {
-                FeeshMod.mc.soundManager.play(FileSoundInstance(file))
+        val customUserFile = CustomSoundsManager.resolveUserSoundFile(fileName)
+        if (customUserFile != null) {
+            CommonUtils.runWithCatching("Failed to play custom user sound file: ${customUserFile.name}") {
+                FeeshMod.mc.soundManager.play(FileSoundInstance(customUserFile))
             }
             return
         }
 
-        val bundled = Sounds.BUNDLED_FILE_NAMES.any { it.equals(fileName, ignoreCase = true) }
-        if (!bundled) {
+        val bundledModFile = Sounds.BUNDLED_FILE_NAMES.any { it.equals(fileName, ignoreCase = true) }
+        if (!bundledModFile) {
             ChatUtils.sendLocalChat(
-                "${RED}Sound ${YELLOW}$fileName${RED} not found. Put the .ogg file in ${YELLOW}${CustomSoundsManager.soundsDir.absolutePath}",
+                "${RED}Sound ${YELLOW}$fileName${RED} not found. Make sure to put the .ogg file in ${YELLOW}${CustomSoundsManager.soundsDir.path}${RED}!",
                 true,
             )
             return
         }
 
-        CommonUtils.runWithCatching("Failed to play sound from file name: $fileName") {
+        CommonUtils.runWithCatching("Failed to play bundled mod sound file: $fileName") {
             val nameWithoutExtension = fileName.removeSuffix(".ogg")
             val identifier = Identifier.fromNamespaceAndPath(SOUNDS_IDENTIFIER_PREFIX, nameWithoutExtension)
             val soundEvent = SoundEvent.createVariableRangeEvent(identifier)
