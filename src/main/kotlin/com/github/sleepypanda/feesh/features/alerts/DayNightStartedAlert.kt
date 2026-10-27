@@ -70,6 +70,6 @@ object DayNightStartedAlert {
                 ChatUtils.sendLocalChat("${YELLOW}${nightIcon} ${DARK_BLUE}Nighttime started!", true)
             }
         }
-        SoundUtils.playSound()
+        SoundUtils.playMcSound()
     }
 }

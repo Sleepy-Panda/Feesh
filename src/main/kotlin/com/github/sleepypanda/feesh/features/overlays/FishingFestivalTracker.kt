@@ -180,7 +180,7 @@ object FishingFestivalTracker : IResettableTracker {
         CommonUtils.showTitle("${YELLOW}Fishing Festival ended")
 
         if (General.soundMode != SoundMode.OFF) {
-            SoundUtils.playSound()
+            SoundUtils.playMcSound()
         }
 
         val countsText = sharkInfos.zip(SHARK_NAMES.map { sharksCaught[it] ?: 0 }).joinToString(" ") { (info, count) ->
@@ -231,7 +231,7 @@ object FishingFestivalTracker : IResettableTracker {
         }
 
         if (isNewTotalPb || isNewGwPb) {
-            SoundUtils.playSound(SoundEvents.PLAYER_LEVELUP)
+            SoundUtils.playMcSound(SoundEvents.PLAYER_LEVELUP)
             PersistentDataManager.saveFeeshDataToFileAsync()
         }
     }

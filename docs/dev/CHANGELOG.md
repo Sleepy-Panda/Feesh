@@ -4,11 +4,12 @@ Released on: ???
 
 ## Features
 
+- **Simplified way of customizing sounds for catch/drop alerts, no resource pack is needed anymore.**
+  - Now .ogg sounds should be just copied directly to the `config/feesh/sounds` folder, instead of resource pack. No game restart needed.
+  - Editing of `userCatchSounds.json` and `userDropSounds.json` also requires no game restart.
+  - If you had resource pack, sounds from it should work for now, but you can remove it and migrate to new approach.
+  - Updated guide: [Custom sounds guide](https://github.com/Sleepy-Panda/Feesh/blob/develop/docs/Custom%20sounds%20guide.md)
 - Added new drops from Magic Find rework Alpha to be recognized by Fishing profit tracker.
-- Custom catch and drop sounds play from `.ogg` files in `config/feesh/sounds`.
-  - You can remove resource pack now.
-  - On first launch, `.ogg` files from `config/feesh/feesh-custom-sounds/assets/feesh/sounds` are copied into the new folder.
-  - Edits to `userCatchSounds.json` and `userDropSounds.json` apply on the next alert after the file is saved.
 
 ## Bugfixes
 

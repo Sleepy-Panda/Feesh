@@ -21,7 +21,7 @@ import net.minecraft.sounds.SoundSource;
  * stream load to getAudioStream, so the file never has to be in a resource pack.
  */
 public class FileSoundInstance extends AbstractSoundInstance {
-    // This is a dummy stream for custom sounds placed in a folder. It is used to prevent the sound from being loaded from a resource pack.
+    // This is a dummy stream for custom sounds placed in a folder.
     // Must have stream: true in the sounds.json to work.
     public static final Identifier DUMMY_FILE_ID = Identifier.fromNamespaceAndPath(SoundUtils.SOUNDS_IDENTIFIER_PREFIX, "feesh_dummy_stream_for_custom_sounds");
 

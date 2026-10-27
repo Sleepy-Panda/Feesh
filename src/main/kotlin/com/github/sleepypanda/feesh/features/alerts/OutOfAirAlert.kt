@@ -52,7 +52,7 @@ object OutOfAirAlert {
             hasAlerted = true
             ChatUtils.sendLocalChat("${WHITE}You are almost out of air!", true)
             CommonUtils.showTitle("${RED}Out of air soon!")
-            SoundUtils.playSound(SoundEvents.PLAYER_HURT_DROWN)
+            SoundUtils.playMcSound(SoundEvents.PLAYER_HURT_DROWN)
         }
     }
 }

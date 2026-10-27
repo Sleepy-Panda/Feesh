@@ -20,6 +20,6 @@ object ChumBucketAutoPickupAlert {
         if (!PATTERN.matches(event.unformattedText)) return
 
         CommonUtils.showTitle("${GREEN}Chum Bucket ${YELLOW}is gone")
-        SoundUtils.playSound()
+        SoundUtils.playMcSound()
     }
 }
