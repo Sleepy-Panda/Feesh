@@ -49,8 +49,14 @@ object SoundUtils {
         CommonUtils.runWithCatching("Failed to play sound file: $fileName") {
             val nameWithoutExtension = fileName.removeSuffix(".ogg")
             val identifier = Identifier.fromNamespaceAndPath(SOUNDS_IDENTIFIER_PREFIX, nameWithoutExtension)
-            val soundEvent = SoundEvent.createVariableRangeEvent(identifier)
-            playMcSound(soundEvent, volume = 0.8f)
+            if (FeeshMod.mc.soundManager.getSoundEvent(identifier) == null) {
+                ChatUtils.sendLocalChat(
+                    "${RED}Sound ${YELLOW}$fileName${RED} not found. Make sure to put the .ogg file into the /sounds folder!",
+                    true,
+                )
+                return
+            }
+            playMcSound(SoundEvent.createVariableRangeEvent(identifier), volume = 0.8f)
         }
     }
 }
