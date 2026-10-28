@@ -28,7 +28,7 @@ object PlayerDeathAlert {
         val matchResult = YOU_DIED_PATTERN.matchEntire(event.unformattedText) ?: return
 
         CommonUtils.showTitle("${RED}You were killed ☠")
-        SoundUtils.playSound(SoundEvents.VILLAGER_DEATH)
+        SoundUtils.playMcSound(SoundEvents.VILLAGER_DEATH)
 
         if (matchResult.groups[1]?.value == "Nessie") {
             ChatUtils.sendLocalChatWithCommand("Click to warp to Murkwater Loch!", "warp murk", true)
@@ -46,6 +46,6 @@ object PlayerDeathAlert {
 
         val title = "${playerName} ${RED}was killed ☠";
 		CommonUtils.showTitle(title, "Wait for them to come back");
-		SoundUtils.playSound(SoundEvents.VILLAGER_DEATH)
+		SoundUtils.playMcSound(SoundEvents.VILLAGER_DEATH)
     }
 }

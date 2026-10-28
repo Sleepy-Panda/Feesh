@@ -56,7 +56,7 @@ object SackDropsIntoInventoryAlert {
                 )
             ChatUtils.sendLocalChat(compactText.append(orText).append(bazaarText))
 
-            SoundUtils.playSound(SoundEvents.CHEST_OPEN, 2.0f, 0.5f)
+            SoundUtils.playMcSound(SoundEvents.CHEST_OPEN, 2.0f, 0.5f)
         }
     }
 }

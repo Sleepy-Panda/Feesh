@@ -221,7 +221,7 @@ object WeatherTimer {
         val eventColor = getWeatherEventColor(label)
         CommonUtils.showTitle("${eventColor}${BOLD}$label ${WHITE}$suffix")
         ChatUtils.sendLocalChat("${eventColor}${BOLD}$label ${WHITE}$suffix!", true)
-        SoundUtils.playSound()
+        SoundUtils.playMcSound()
     }
 
     private fun getWeatherEventColor(eventName: String?): ColorCodes {

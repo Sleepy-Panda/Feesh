@@ -89,7 +89,7 @@ object FishingBaitSackDisabledAlert {
             if (!isHookActive) return
 
             CommonUtils.showTitle("${RED}Bait usage disabled!")
-            SoundUtils.playSound()
+            SoundUtils.playMcSound()
             isAlerted = true 
             ChatUtils.sendLocalChatWithCommand("${WHITE}Using baits from Bait Sack is disabled. Click to open Bait Sack!", "baitsack", true)
         }

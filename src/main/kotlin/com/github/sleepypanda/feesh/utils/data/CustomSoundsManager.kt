@@ -6,15 +6,11 @@ import com.github.sleepypanda.feesh.settings.models.AlertableSeaCreatureTypes
 import com.github.sleepypanda.feesh.constants.Sounds
 import com.github.sleepypanda.feesh.utils.CommonUtils
 import com.github.sleepypanda.feesh.utils.FileUtils
-import com.github.sleepypanda.feesh.utils.SoundUtils
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
 import net.fabricmc.loader.api.FabricLoader
-import net.minecraft.SharedConstants
-import net.minecraft.server.packs.PackType
 import java.io.File
-import java.io.FileOutputStream
 import java.util.concurrent.Executors
 
 data class UserCatchSoundData(
@@ -31,14 +27,13 @@ object CustomSoundsManager {
 
     private var catchSoundsData: MutableMap<String, UserCatchSoundData> = mutableMapOf()
     private val catchSoundsFile: File = File(feeshConfigDir, "userCatchSounds.json")
+    private var catchSoundsLastModifiedTimestamp = Long.MIN_VALUE
     
     private var dropSoundsData: MutableMap<String, UserDropSoundData> = mutableMapOf()
     private val dropSoundsFile: File = File(feeshConfigDir, "userDropSounds.json")
-    
-    val resourcePackDir: File = File(feeshConfigDir, "feesh-custom-sounds")
-    private val resourcePackSoundsDir: File = File(resourcePackDir, "assets/feesh/sounds")
-    private val resourcePackSoundsJsonFile: File = File(resourcePackDir, "assets/feesh/sounds.json")
-    private val resourcePackMcmetaFile: File = File(resourcePackDir, "pack.mcmeta")
+    private var dropSoundsLastModifiedTimestamp = Long.MIN_VALUE
+
+    val soundsDir: File = File(feeshConfigDir, "sounds")
 
     private val saveLock = Any()
     private val gson: Gson = GsonBuilder().setPrettyPrinting().create()
@@ -49,10 +44,19 @@ object CustomSoundsManager {
     }
     
     fun init() {
-        initUserCatchSoundsData()
-        initUserDropSoundsData()
-        initResourcePackStructure() // Custom user sounds resource pack structure
-        generateSoundsJsonFromFiles() // Generate sounds.json from all .ogg files in the sounds directory (for resource pack)
+        CommonUtils.runWithCatching("Failed to initialize custom user sounds.") {
+            initUserCatchSoundsData()
+            initUserDropSoundsData()
+            initSoundsFolder()
+        }
+    }
+
+    private fun initSoundsFolder() {
+        val created = !soundsDir.exists()
+        soundsDir.mkdirs()
+        if (created) {
+            FeeshMod.LOGGER.info("[Feesh] Created custom sounds folder: ${soundsDir.absolutePath}")
+        }
     }
 
     private fun initUserCatchSoundsData() {
@@ -67,7 +71,7 @@ object CustomSoundsManager {
     private fun addDefaultCatchSoundForMissingSeaCreatures(): Boolean {
         var updated = false
         
-        AlertableSeaCreatureTypes.values().forEach { seaCreature ->
+        AlertableSeaCreatureTypes.entries.forEach { seaCreature ->
             val key = seaCreature.displayName.uppercase()
             if (!catchSoundsData.containsKey(key)) {
                 catchSoundsData[key] = UserCatchSoundData(Sounds.FEESH_NOTIFICATION)
@@ -79,6 +83,7 @@ object CustomSoundsManager {
     }
     
     fun getCatchSoundData(seaCreatureName: String): UserCatchSoundData? {
+        reloadCatchSoundsIfChanged()
         val key = seaCreatureName.uppercase()
         return catchSoundsData[key]
     }
@@ -107,17 +112,34 @@ object CustomSoundsManager {
     }
     
     fun getDropSoundData(dropId: String): UserDropSoundData? {
+        reloadDropSoundsIfChanged()
         val key = dropId.uppercase()
         return dropSoundsData[key]
+    }
+
+    fun resolveUserSoundFile(fileName: String): File? {
+        val name = fileName.trim()
+        if (name.isEmpty() || name == "." || name == ".." || name.contains('/') || name.contains('\\') || name.contains(':')) {
+            return null
+        }
+        val file = File(soundsDir, name)
+        return if (file.isFile) file else null
     }
     
     private fun loadUserDropSoundsDataFromFile() {
         val type = object : TypeToken<Map<String, UserDropSoundData>>() {}.type
         val loaded: Map<String, UserDropSoundData>? = FileUtils.loadJsonFromFile(dropSoundsFile, type, gson, "Drop sounds")
-        dropSoundsData = loaded?.toMutableMap() ?: mutableMapOf()
+        dropSoundsLastModifiedTimestamp = getLastModifiedTimestamp(dropSoundsFile)
+
         if (loaded != null) {
+            dropSoundsData = loaded.toMutableMap()
             FeeshMod.LOGGER.info("[Feesh] Loaded ${dropSoundsData.size} drop sounds entries")
         }
+    }
+
+    private fun reloadDropSoundsIfChanged() {
+        if (getLastModifiedTimestamp(dropSoundsFile) == dropSoundsLastModifiedTimestamp) return
+        loadUserDropSoundsDataFromFile()
     }
     
     private fun saveDropSoundsDataToFileAsync() {
@@ -130,15 +152,24 @@ object CustomSoundsManager {
             "Drop sounds"
         )
     }
-        
+
     private fun loadUserCatchSoundsDataFromFile() {
         val type = object : TypeToken<Map<String, UserCatchSoundData>>() {}.type
         val loaded: Map<String, UserCatchSoundData>? = FileUtils.loadJsonFromFile(catchSoundsFile, type, gson, "Catch sounds")
-        catchSoundsData = loaded?.toMutableMap() ?: mutableMapOf()
+        catchSoundsLastModifiedTimestamp = getLastModifiedTimestamp(catchSoundsFile)
+
         if (loaded != null) {
+            catchSoundsData = loaded.toMutableMap()
             FeeshMod.LOGGER.info("[Feesh] Loaded ${catchSoundsData.size} catch sounds entries")
         }
     }
+
+    private fun reloadCatchSoundsIfChanged() {
+        if (getLastModifiedTimestamp(catchSoundsFile) == catchSoundsLastModifiedTimestamp) return
+        loadUserCatchSoundsDataFromFile()
+    }
+
+    private fun getLastModifiedTimestamp(file: File): Long = if (file.isFile) file.lastModified() else 0L
     
     private fun saveCatchSoundsDataToFileAsync() {
         FileUtils.saveJsonToFileAsync(
@@ -149,89 +180,5 @@ object CustomSoundsManager {
             saveLock, 
             "Catch sounds"
         )
-    }
-    
-    private fun initResourcePackStructure() {
-        CommonUtils.runWithCatching("Failed to initialize resource pack structure") {
-            if (resourcePackDir.exists()) {
-                FeeshMod.LOGGER.warn("[Feesh] Resource pack top-level directory already exists. Skipping folder structure initialization.")
-                return
-            }
-
-            resourcePackSoundsDir.mkdirs()
-            // https://minecraft.wiki/w/Pack_format
-            val packFormat = SharedConstants.getCurrentVersion().packVersion(PackType.CLIENT_RESOURCES)
-            
-            if (!resourcePackMcmetaFile.exists()) {
-                val packMcmetaContent = """
-{
-    "pack": {
-        "pack_format": ${packFormat},
-        "min_format": 65,
-        "max_format": 999,
-        "description": "Custom sounds for Feesh mod"
-    }
-}
-"""
-                resourcePackMcmetaFile.writeText(packMcmetaContent)
-                FeeshMod.LOGGER.info("[Feesh] Created pack.mcmeta in resource pack directory")
-            }
-
-            // Copy mod icon as pack icon (pack.png)
-            val packIconFile = File(resourcePackDir, "pack.png")
-            CustomSoundsManager::class.java.classLoader.getResourceAsStream("assets/feesh/icon.png")?.use { input ->
-                FileOutputStream(packIconFile).use { output -> input.copyTo(output) }
-                FeeshMod.LOGGER.info("[Feesh] Copied pack icon to resource pack directory")
-            }
-                   
-            if (resourcePackDir.exists()) {
-                FeeshMod.LOGGER.info("[Feesh] Resource pack directory ready: ${resourcePackDir.absolutePath}")
-            }
-        }
-    }
-    
-    private fun generateSoundsJsonFromFiles() {
-        CommonUtils.runWithCatching("Failed to generate sounds.json for custom user resource pack") {
-            if (!resourcePackSoundsDir.exists()) {
-                FeeshMod.LOGGER.info("[Feesh] Resource pack's sounds directory does not exist. Please regenerate resource pack to have correct folder structure!")
-                return
-            }
-            
-            val oggFiles = resourcePackSoundsDir.listFiles { file ->
-                file.isFile && file.name.endsWith(".ogg", ignoreCase = true)
-            } ?: emptyArray()
-            
-            if (oggFiles.isEmpty()) {
-                // Create empty sounds.json if no files exist
-                resourcePackSoundsJsonFile.parentFile?.mkdirs()
-                resourcePackSoundsJsonFile.writeText("{\n}\n")
-                return
-            }
-            
-            // Build sounds.json structure
-            val soundsMap = mutableMapOf<String, Map<String, Any>>()
-            
-            oggFiles.forEach { file ->
-                val soundName = file.name.removeSuffix(".ogg")
-                if (!soundName.matches(Regex("[a-z0-9_-]+"))) {
-                    FeeshMod.LOGGER.warn("[Feesh] Invalid filename: $soundName. Only lowercase letters (a-z), numbers (0-9), `-` and `_` are allowed.")
-                    return@forEach
-                }
-
-                // File structure: https://minecraft.wiki/w/Sounds.json
-                soundsMap[soundName] = mapOf(
-                    "sounds" to listOf(mapOf(
-                        "name" to "${SoundUtils.SOUNDS_IDENTIFIER_PREFIX}:$soundName",
-                        "stream" to true
-                    ))
-                )
-            }
-     
-            val json = gson.toJson(soundsMap)
-            resourcePackSoundsJsonFile.parentFile?.mkdirs()
-            resourcePackSoundsJsonFile.writeText(json)
-            
-            FeeshMod.LOGGER.info("[Feesh] Generated sounds.json with ${soundsMap.size} sound entries.")
-        }
     }
 }

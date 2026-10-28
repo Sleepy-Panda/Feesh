@@ -56,8 +56,8 @@ object PuddleJumperTimerAlert {
 
         CommonUtils.showTitle("${GOLD}Puddle Jumper ${WHITE}arrives soon!")
         ChatUtils.sendLocalChat("Your ${GOLD}Puddle Jumper ${WHITE}arrives soon.", true)
-        SoundUtils.playSound(SoundEvents.FROG_HURT)
-        SoundUtils.playSound()
+        SoundUtils.playMcSound(SoundEvents.FROG_HURT)
+        SoundUtils.playMcSound()
     }
 
     private fun onWorldChanged(@Suppress("UNUSED_PARAMETER") event: WorldChangedEvent) {
