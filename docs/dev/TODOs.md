@@ -72,10 +72,11 @@ Newly released - https://hypixel.net/threads/hypixel-skyblock-0-24-5-assorted-qo
 §a §r§lACID RAIN BONUS! §r§fYou caught a bonus §r§aRusty Coin§r§f!
 
 - Bait refund arrives to sack and gets counted (temporary disabled bait tracking).
-- Easier sounds setup.
 - Scrollable overlays
 - Send a message like this "BAD JUNK CATCH! You caught a Salmon!" when catching a non-treasure while treasure/junk fishing
 - You cannot send same message twice when sharing Isopods
+  - x: -642, y: 157, z: 183 | Giant Isopod at Torrhus Spring | @80fds838 
+  - y: 157, z: 183, x: -642 | Giant Isopod reeled @ Torrhus Spring | @9wolsfv03w
 - For level 100 pets, would be cool to change their item name to be aligned with Level 1 pets. This also causes Lvl 100 pets being not easily found ny name via /get command or party command item search.
 - Drake sound not muted when using Sound Controller mod
 - integrate medal clipping for rare drops / dyes? have seen it in sbo and its pretty neat  https://medal.tv/developer/auto-clipping#api-reference
