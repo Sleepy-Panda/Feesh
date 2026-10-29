@@ -102,6 +102,15 @@ object EfficiencyTracker : IResettableTracker {
         }
     }
 
+    fun getEfficiencyStatDetails(stat: EfficiencyStatTypes): EfficiencyStatDetails? {
+        if (!isStatEnabled(stat)) return null
+        val total = getTotalForStat(stat)
+        if (total <= 0 || elapsedSeconds <= 0) return null
+        val perHour = calculatePerHour(total)
+        if (perHour <= 0) return null
+        return EfficiencyStatDetails(perHour, total, elapsedSeconds)
+    }
+
     private fun onWorldChanged(@Suppress("UNUSED_PARAMETER") event: WorldChangedEvent) {
         pauseInternal()
         gui.clearLines()
@@ -172,6 +181,12 @@ object EfficiencyTracker : IResettableTracker {
     private fun isTrackerActive(): Boolean {
         return isTrackerVisible() && isSessionActive
     }
+
+    data class EfficiencyStatDetails(
+        val perHour: Int,
+        val total: Int,
+        val elapsedSeconds: Int,
+    )
 
     private fun isStatEnabled(stat: EfficiencyStatTypes): Boolean {
         if (!Overlays.efficiencyTrackerOverlay || !Overlays.efficiencyTrackerStats.contains(stat)) return false

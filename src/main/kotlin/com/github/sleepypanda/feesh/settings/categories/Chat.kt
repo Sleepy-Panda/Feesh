@@ -157,6 +157,8 @@ ${AQUA}!feesh profit top1 ${GRAY}- shows the top profit item for Fishing profit 
 ${AQUA}!feesh profittotal top1 ${GRAY}- shows the top profit item for Fishing profit tracker [Total]
 ${AQUA}!feesh profit <item name> ${GRAY}- first match by full/partial item name for Fishing profit tracker [Session]
 ${AQUA}!feesh profittotal <item name> ${GRAY}- first match by full/partial item name for Fishing profit tracker [Total]
+${AQUA}!feesh c/h ${GRAY}or ${AQUA}!feesh catches/h ${GRAY}- shows catches/h from Efficiency tracker or Fishing profit tracker [Session]
+${AQUA}!feesh sc/h ${GRAY}- shows sea creatures/h from Efficiency tracker
 """)
         this.searchTerms = listOf(ModVersionConstants.VERSION_1_16_0)
     }

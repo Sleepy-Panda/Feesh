@@ -4,6 +4,7 @@ import com.github.sleepypanda.feesh.events.EventBus
 import com.github.sleepypanda.feesh.events.models.ClientTickEvent
 import com.github.sleepypanda.feesh.events.models.PartyChatEvent
 import com.github.sleepypanda.feesh.events.models.WorldChangedEvent
+import com.github.sleepypanda.feesh.features.overlays.EfficiencyTrackerPartyCommands
 import com.github.sleepypanda.feesh.features.overlays.FishingProfitTrackerPartyCommands
 import com.github.sleepypanda.feesh.features.overlays.base.TrackerViewMode
 import com.github.sleepypanda.feesh.settings.categories.Chat
@@ -48,6 +49,9 @@ object PartyChatCommands {
             val commandWithArgs = args.lowercase()
     
             val message = when {
+                commandWithArgs == "c/h" || commandWithArgs == "catches/h" -> EfficiencyTrackerPartyCommands.getCatchesPerHourChatMessage()
+                    ?: FishingProfitTrackerPartyCommands.getCatchesPerHourChatMessage()
+                commandWithArgs == "sc/h" -> EfficiencyTrackerPartyCommands.getSeaCreaturesPerHourChatMessage()
                 commandWithArgs == "profit" -> FishingProfitTrackerPartyCommands.getProfitChatMessage(TrackerViewMode.SESSION)
                 commandWithArgs == "profittotal" -> FishingProfitTrackerPartyCommands.getProfitChatMessage(TrackerViewMode.TOTAL)
                 commandWithArgs == "profit top1" -> FishingProfitTrackerPartyCommands.getTopProfitItemChatMessage(TrackerViewMode.SESSION)

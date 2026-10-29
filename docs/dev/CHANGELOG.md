@@ -6,6 +6,7 @@ TODO: Update Custom sounds guide!
 
 ## Features
 
+- Added party chat commands `!feesh c/h` (`!feesh catches/h`) and `!feesh sc/h`.
 - Simplified way of customizing sounds for catch/drop alerts. No resource pack is needed anymore!
   - Now .ogg sounds should be just copied directly to the `config/feesh/sounds` folder, instead of resource pack. No game restart needed.
   - Editing of `userCatchSounds.json` and `userDropSounds.json` also requires no game restart.

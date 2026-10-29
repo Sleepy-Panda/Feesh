@@ -22,21 +22,16 @@ PET DROP! COMMON Baby Yeti
 RARE DROP! Enchanted Book (Piscary VI) (+176  Magic Find)
 
 New drops:
-- 1x Pumpkin Guts (0.5%)
-- Ench cooked cod, salmot, ench wet sponge etc
-- Ench iron block, ench coal block, ench bone block
-- Ench gunpowder
-- Luck of the Sea VI (readded)
-- Dust/Ench redstone dust to sea witch
-- Box of junk (alligator) - BOX_OF_JUNK, Rare, no npc price?
-- Combat exp boost (epic) from Pyro worm (???)
+- Luck of the Sea VI (readded) ???
+- Combat exp boost (epic) from Pyro worm
 - Foraging Exp Boost +50% from ent (again)
 
 Deleted drops (unintentionally)?
 https://hypixel.net/threads/some-more-notable-things-i-noticed-from-the-drop-table-changes.6163341/
 - Dark bait
 - Squid Boots
-- Enchanted Cooked Mutton
+- Enchanted Cooked Mutton from oasis sheep
+- Foraging exp boost 30% from ent
 
 ## Minister update
 
@@ -77,10 +72,11 @@ Newly released - https://hypixel.net/threads/hypixel-skyblock-0-24-5-assorted-qo
 §a §r§lACID RAIN BONUS! §r§fYou caught a bonus §r§aRusty Coin§r§f!
 
 - Bait refund arrives to sack and gets counted (temporary disabled bait tracking).
-- Easier sounds setup.
 - Scrollable overlays
 - Send a message like this "BAD JUNK CATCH! You caught a Salmon!" when catching a non-treasure while treasure/junk fishing
 - You cannot send same message twice when sharing Isopods
+  - x: -642, y: 157, z: 183 | Giant Isopod at Torrhus Spring | @80fds838 
+  - y: 157, z: 183, x: -642 | Giant Isopod reeled @ Torrhus Spring | @9wolsfv03w
 - For level 100 pets, would be cool to change their item name to be aligned with Level 1 pets. This also causes Lvl 100 pets being not easily found ny name via /get command or party command item search.
 - Drake sound not muted when using Sound Controller mod
 - integrate medal clipping for rare drops / dyes? have seen it in sbo and its pretty neat  https://medal.tv/developer/auto-clipping#api-reference
