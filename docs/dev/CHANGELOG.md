@@ -1,6 +1,6 @@
 # 1.17.0
 
-Released on: ???
+Released on: 2026-11-01
 
 TODO: Update Custom sounds guide!
 
