@@ -84,7 +84,7 @@ object Chat : CategoryKt("Chat") {
 
     var shareRareSeaCreatures by boolean(true) {
         this.name = Translated("Share sea creatures to the PARTY chat")
-        this.description = Translated("Sends a PARTY chat message when a sea creature is caught by you. Please enable ${YELLOW}Skyblock Settings -> Personal -> Fishing Settings -> Sea Creature Chat")
+        this.description = Translated("Sends a PARTY chat message when a sea creature is caught by you. Make sure to enable ${YELLOW}Skyblock Settings -> Personal -> Fishing Settings -> Sea Creature Chat")
     }
 
     var shareSeaCreaturesList by select(
@@ -101,7 +101,11 @@ object Chat : CategoryKt("Chat") {
 
     var shareRareSeaCreaturesAllChat by boolean(false) {
         this.name = Translated("Share rare sea creatures location to the ALL chat")
-        this.description = Translated("Sends an ALL chat message with coordinates when a rare sea creature is caught by you. Please enable ${YELLOW}Skyblock Settings -> Personal -> Fishing Settings -> Sea Creature Chat")
+        this.description = Translated("""
+${GRAY}Sends an ALL chat message with coordinates when a rare sea creature is caught by you. Can be used if you need help to kill big bosses.
+${RED}Please remember that people may not like spamming and may report you if it becomes annoying!
+${YELLOW}Make sure to enable ${YELLOW}Skyblock Settings -> Personal -> Fishing Settings -> Sea Creature Chat
+""")
     }
 
     var shareRareSeaCreaturesTypesAllChat by select(RareSeaCreatureTypesAllChat.THUNDER, *RareSeaCreatureTypesAllChat.values()) {

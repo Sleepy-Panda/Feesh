@@ -20,6 +20,7 @@ TODO: Update Custom sounds guide!
 - Fixed broken Deployables tracker/alerts for Umberella that has a skin.
 - Fixed hatched Dragon pet eggs (level 100) being added to the Profit tracker.
   - Basically they were counting twice, at level 100 and then 200.
+- Slightly randomized achat messages to see if it helps with avoiding "you cannot send the same message twice" when sharing boss coords.
 
 # 1.16.0
 

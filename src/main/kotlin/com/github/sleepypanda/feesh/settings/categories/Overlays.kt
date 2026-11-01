@@ -586,6 +586,7 @@ ${GRAY}To pause: ${WHITE}/${EfficiencyTracker.PAUSE_COMMAND}
     }
 
     var efficiencyTrackerStats by select(
+        EfficiencyStatTypes.CATCHES_PER_HOUR,
         EfficiencyStatTypes.SC_PER_HOUR,
     ) {
         this.name = Translated("Efficiency stats to display")
