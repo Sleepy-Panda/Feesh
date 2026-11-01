@@ -1,8 +1,14 @@
-# 1.17.0
+# 1.18.0
 
 Released on: ???
 
-TODO: Update Custom sounds guide!
+## Features
+
+-
+
+# 1.17.0
+
+Released on: 2026-11-01
 
 ## Features
 
