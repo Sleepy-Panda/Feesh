@@ -33,4 +33,12 @@ object InputUtils {
     fun isMinusKey(keyCode: Int): Boolean = keyCode == InputConstants.KEY_MINUS
 
     fun isZeroKey(keyCode: Int): Boolean = keyCode == InputConstants.KEY_0
+
+    fun isUpKey(keyCode: Int): Boolean = keyCode == InputConstants.KEY_UP
+
+    fun isDownKey(keyCode: Int): Boolean = keyCode == InputConstants.KEY_DOWN
+
+    fun isLeftKey(keyCode: Int): Boolean = keyCode == InputConstants.KEY_LEFT
+
+    fun isRightKey(keyCode: Int): Boolean = keyCode == InputConstants.KEY_RIGHT
 }
