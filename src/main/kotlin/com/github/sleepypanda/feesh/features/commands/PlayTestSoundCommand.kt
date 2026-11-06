@@ -5,7 +5,6 @@ import com.github.sleepypanda.feesh.utils.SoundUtils
 import com.github.sleepypanda.feesh.utils.ChatUtils
 import com.github.sleepypanda.feesh.utils.CommonUtils
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
-import com.github.sleepypanda.feesh.FeeshMod
 import net.minecraft.resources.Identifier
 import net.minecraft.sounds.SoundEvent
 
@@ -21,6 +20,9 @@ import net.minecraft.sounds.SoundEvent
 object PlayTestSoundCommand {
     const val COMMAND_NAME = "feeshPlayTestSound"
 
+    // Any language letters/digits, space, - _ ( ) . ' !
+    private val OGG_FILE_NAME = Regex("""^[\p{L}\p{N} _\-().'!]+\.ogg$""", RegexOption.IGNORE_CASE)
+
     fun init() {
         RegisterUtils.command(COMMAND_NAME, ::handleCommand)
     }
@@ -31,17 +33,17 @@ object PlayTestSoundCommand {
             return
         }
         
-        val soundParam = args[0]
-        
+        val soundParam = args.joinToString(" ")
+
         when {
-            soundParam.endsWith(".ogg", ignoreCase = true) -> {
+            OGG_FILE_NAME.matches(soundParam) -> {
                 CommonUtils.runWithCatching(
                     message = "Failed to play custom sound: $soundParam",
                     onError = {
                         ChatUtils.sendLocalChat("${RED}Failed to play custom sound: ${YELLOW}$soundParam${RED}. Check logs for details.", true)
                     }
                 ) {
-                    SoundUtils.playCustomSound(soundParam, skipSoundModeCheck = true)
+                    SoundUtils.playCustomSound(soundParam, bypassSoundModeCheck = true)
                 }
             }
             soundParam.startsWith("mc:") -> {
@@ -53,11 +55,14 @@ object PlayTestSoundCommand {
                     }
                 ) {
                     val soundEvent = getSoundEvent(soundName)
-                    SoundUtils.playSound(soundEvent, skipSoundModeCheck = true)
+                    SoundUtils.playMcSound(soundEvent, bypassSoundModeCheck = true)
                 }
             }
             else -> {
-                ChatUtils.sendLocalChat("${RED}Invalid format. Use ${YELLOW}fileName.ogg${RED} or ${YELLOW}mc:soundName", true)
+                ChatUtils.sendLocalChat(
+                    "${RED}Invalid argument: ${YELLOW}$soundParam${RED}. Use ${YELLOW}file name.ogg${RED} for custom sounds or ${YELLOW}mc:soundName${RED} for Minecraft sounds.",
+                    true,
+                )
             }
         }
     } 

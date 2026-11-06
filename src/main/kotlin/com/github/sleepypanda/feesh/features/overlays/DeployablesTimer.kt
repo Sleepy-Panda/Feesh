@@ -161,7 +161,7 @@ object DeployablesTimer {
             val heldItemName = heldItem.hoverName.getUnformattedString()
             val heldItemDisplayName = heldItem.hoverName.getFormattedString()
             
-            if (isUmberellaTrackingEnabled() && heldItemName == "Umberella") {
+            if (isUmberellaTrackingEnabled() && heldItemName.startsWith("Umberella")) { // Umberella or Umberella ◆ (with skin)
                 lastUmberellaInteractTimeMs = System.currentTimeMillis()
             }
 
@@ -582,7 +582,7 @@ object DeployablesTimer {
         CommonUtils.showTitle("$itemDisplayName ${RED}expires soon")
         ChatUtils.sendLocalChat("${WHITE}Your $itemDisplayName ${WHITE}expires soon.", true)
         if (General.soundMode == SoundMode.MEME) SoundUtils.playCustomSound(Sounds.FEESH_NOTIFICATION_BELL)
-        else SoundUtils.playSound()
+        else SoundUtils.playMcSound()
     }
 
     private fun updateGuiLines() {

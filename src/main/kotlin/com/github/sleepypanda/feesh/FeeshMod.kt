@@ -75,6 +75,7 @@ class FeeshMod : ClientModInitializer {
 
         // Event publishers
         SeaCreaturesPublisher.init()
+        TreasureCatchPublisher.init()
         CatchPublisher.init()
         SeaCreaturesCocoonPublisher.init()
         RareDropsPublisher.init()
@@ -92,6 +93,7 @@ class FeeshMod : ClientModInitializer {
         ShurikenUsedPublisher.init()
 
         // Rendering
+        ReplaceAndTintLava.init()
         RareMobHighlight.init()
         HidePlayersNearBobber.init()
         HideTadgangNametags.init()
@@ -134,6 +136,7 @@ class FeeshMod : ClientModInitializer {
         TrophyFishDiscoveredMessage.init()
         HideTrophyCatchMessages.init()
         HideLootshareMessages.init()
+        PartyChatCommands.init()
 
         // PB
         DoubleHookPersonalBest.init()

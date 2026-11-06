@@ -1,4 +1,12 @@
 {
+  "feesh_dummy_stream_for_custom_sounds": {
+    "sounds": [
+      {
+        "name": "fabric-sound-api-v1:empty",
+        "stream": true
+      }
+    ]
+  },
   "feesh_augh": {
     "sounds": [
       "feesh:feesh_augh"

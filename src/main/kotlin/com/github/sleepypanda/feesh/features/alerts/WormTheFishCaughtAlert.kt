@@ -10,7 +10,6 @@ import com.github.sleepypanda.feesh.utils.PlayerUtils
 import com.github.sleepypanda.feesh.utils.SoundUtils
 import com.github.sleepypanda.feesh.utils.WorldUtils
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
-import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
 import net.minecraft.sounds.SoundEvents
 import java.util.Timer
 import java.util.TimerTask
@@ -62,7 +61,7 @@ object WormTheFishCaughtAlert {
         processedEntityIds[entityId] = System.currentTimeMillis()
 
         CommonUtils.showTitle("${WHITE}Pickup ${RED}Worm the Fish")
-        SoundUtils.playSound(SoundEvents.GENERIC_SPLASH)
+        SoundUtils.playMcSound(SoundEvents.GENERIC_SPLASH)
     }
 
     private fun cleanupOutdatedEntries() {

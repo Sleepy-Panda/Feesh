@@ -94,6 +94,7 @@ Required Java version is 25+.
 
 ### Chat
 
+- **Party chat commands** — Lets your party explore data from your enabled trackers. Responds in party chat when someone sends !feesh commands.
 - **Compact sea creature messages** — Shortens double hook and catch messages in your chat.
 - **Share sea creatures** — Sends to PARTY chat when you catch/cocoon a specific sea creature.
 - **Share sea creatures location - ALL chat** — Sends to ALL chat with coordinates when you catch specific rare creatures (big bosses).
@@ -146,6 +147,7 @@ Required Java version is 25+.
 
 ### World Rendering
 
+- **Replace lava with water** — Replaces lava with transparent water and removes fog when under lava in the selected worlds. Water can be tinted using any color.
 - **Hide other players' hooks** — Hides other players' bobbers and fishing lines, so you can see only your own hook.
 - **Highlight rare sea creatures** — Applies glowing border to the rare sea creatures. Not visible through walls.
 - **Hide other players near bobber** — Hides other players near your bobber when a fishing rod is casted.

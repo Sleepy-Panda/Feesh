@@ -4,14 +4,43 @@
 
 - Test each release in 26.x
 
+## MF update
+
+New potential drops that have alerts:
+- 1x Piscary VI (2%)
+- 1x Great White Shark Tooth (5%)
+- 1x Severed Pincer (0.5%)
+- 1x Chain of the End Times (2%)
+- 1x Brimstone Handle (1.5%)
+- 1x COMMON Baby Yeti Pet (2%) - PET DROP! COMMON Baby Yeti
+- 1x RARE Flying Fish (4%)
+- 1x EPIC Flying Fish (2%)
+- 1x Mound of Seagrass (2.5%)
+- Isopod Husk 2%
+
+PET DROP! COMMON Baby Yeti
+RARE DROP! Enchanted Book (Piscary VI) (+176  Magic Find)
+
+New drops:
+- Luck of the Sea VI (readded) ???
+- Combat exp boost (epic) from Pyro worm
+- Foraging Exp Boost +50% from ent (again)
+
+Deleted drops (unintentionally)?
+https://hypixel.net/threads/some-more-notable-things-i-noticed-from-the-drop-table-changes.6163341/
+- Dark bait
+- Squid Boots
+- Enchanted Cooked Mutton from oasis sheep
+- Foraging exp boost 30% from ent
+
 ## Minister update
 
 https://hypixel.net/threads/september-21st-minister-update-mob-level-improvements-testing-2.6150078/
 
 - You ran out of Whale Bait in your Bait Sacks! [DISMISS] - could be used for out of bait detection?
 - Adjusted all EPIC Phoenix Pets -> SPECIAL, Adjusted all LEGENDARY Phoenix Pets -> VERY SPECIAL
-  New pet drop message? New Pet IDs / pet price issues for leveled up pet?
-- Precursor Drone became Legendary. New ID?
+  New pet drop message? New Pet IDs / pet price issues for leveled up pet? "PHOENIX;0+100", "PHOENIX;4+100"
+- Precursor Drone became Legendary. New ID? "PRECURSOR_DRONE;4+100"
 
 ## Torrus Canyon
 
@@ -40,11 +69,17 @@ Newly released - https://hypixel.net/threads/hypixel-skyblock-0-24-5-assorted-qo
 
  GOOD CATCH! You caught a Flexbone!
  GOOD CATCH! You caught a Shinyfish Shard!
+§a §r§lACID RAIN BONUS! §r§fYou caught a bonus §r§aRusty Coin§r§f!
 
-- Cleanup Fishing Bag features after Fishing Bait Sack release. /baitsack command.
+- Display bait price as craft costs (optionally - selection between sell offer, insta sell, craft cost)
+- NPC sell prices change https://hypixel.net/threads/october-29-accessory-bag-revamp-economy-changes.6165308/
+- Bait refund arrives to sack and gets counted (temporary disabled bait tracking).
+- Scrollable overlays
 - Send a message like this "BAD JUNK CATCH! You caught a Salmon!" when catching a non-treasure while treasure/junk fishing
 - You cannot send same message twice when sharing Isopods
-- For level 100 pets, would be cool to change their item name to be aligned with Level 1 pets. This also causes Lvl 100 pets being not easily found ny name via /get command.
+  - x: -642, y: 157, z: 183 | Giant Isopod at Torrhus Spring | @80fds838 
+  - y: 157, z: 183, x: -642 | Giant Isopod reeled @ Torrhus Spring | @9wolsfv03w
+- For level 100 pets, would be cool to change their item name to be aligned with Level 1 pets. This also causes Lvl 100 pets being not easily found ny name via /get command or party command item search.
 - Drake sound not muted when using Sound Controller mod
 - integrate medal clipping for rare drops / dyes? have seen it in sbo and its pretty neat  https://medal.tv/developer/auto-clipping#api-reference
 - Default party drop on-screen alert ragebaits some people :(

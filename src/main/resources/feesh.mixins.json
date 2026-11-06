@@ -12,7 +12,9 @@
 		"SynchedEntityDataMixin",
 		"EntityAccessor",
 		"SoundEngineMixin",
-		"AbstractSoundInstanceAccessor"
+		"AbstractSoundInstanceAccessor",
+		"FluidStateModelSetMixin",
+		"CameraMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

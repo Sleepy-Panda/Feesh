@@ -37,7 +37,7 @@ object BaitAlert {
 
             ChatUtils.sendLocalChat("${WHITE}Bait changed from ${event.oldBaitDisplayName} ${WHITE}to ${event.newBaitDisplayName}${WHITE}.", true)
             CommonUtils.showTitle("${YELLOW}Bait changed")
-            SoundUtils.playSound()
+            SoundUtils.playMcSound()
         }
     }
 
@@ -70,7 +70,7 @@ object BaitAlert {
             }
 
             CommonUtils.showTitle("${YELLOW}Out of bait soon")
-            SoundUtils.playSound()
+            SoundUtils.playMcSound()
         }
     }
 

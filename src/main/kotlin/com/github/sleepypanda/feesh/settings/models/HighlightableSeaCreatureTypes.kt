@@ -56,7 +56,7 @@ enum class HighlightableSeaCreatureTypes(val displayName: String, val isEnabledB
     NESSIE(SeaCreatureNames.NESSIE, true),
     NIGHTMARE(SeaCreatureNames.NIGHTMARE, false),
     NURSE_SHARK(SeaCreatureNames.NURSE_SHARK, false),
-    NUTCRACKER(SeaCreatureNames.NUTCRACKER, true),
+    NUTCRACKER(SeaCreatureNames.NUTCRACKER, false),
     OASIS_RABBIT(SeaCreatureNames.OASIS_RABBIT, false),
     OASIS_SHEEP(SeaCreatureNames.OASIS_SHEEP, false),
     PHANTOM_FISHER(SeaCreatureNames.PHANTOM_FISHER, true),

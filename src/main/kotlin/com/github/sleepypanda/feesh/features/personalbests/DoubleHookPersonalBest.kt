@@ -57,7 +57,7 @@ object DoubleHookPersonalBest {
                 true
             )
             CommonUtils.showTitle("${LIGHT_PURPLE}${BOLD}PERSONAL BEST!", "DH streak: ${GREEN}$currentStreak", stay = 60)
-            SoundUtils.playSound(SoundEvents.PLAYER_LEVELUP)
+            SoundUtils.playMcSound(SoundEvents.PLAYER_LEVELUP)
         }
     }
 }

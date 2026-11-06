@@ -22,7 +22,7 @@ object PetLevelUpAlert {
 
         if (Alerts.alertOnPetLevelUp) {
             CommonUtils.showTitle("${event.petDisplayName} ${RESET}${WHITE}is maxed", "${WHITE}Level ${event.level}")
-            SoundUtils.playSound()    
+            SoundUtils.playMcSound()
         }
 
         if (Alerts.showPetLevelUpPrice) {

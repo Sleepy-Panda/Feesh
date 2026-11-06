@@ -165,7 +165,7 @@ object NessieDestinationAlert {
         val alertMessage = "${LIGHT_PURPLE}${BOLD}Nessie ${WHITE}is swimming to the ${GREEN}${BOLD}${destination}${WHITE} cave."
 
         CommonUtils.showTitle("", "${LIGHT_PURPLE}Nessie ${WHITE}goes to ${GREEN}${BOLD}${destination}${WHITE} cave!")
-        SoundUtils.playSound()
+        SoundUtils.playMcSound()
         ChatUtils.sendLocalChat(alertMessage, true)
 
         if (Alerts.autoShareNessieDestination) {

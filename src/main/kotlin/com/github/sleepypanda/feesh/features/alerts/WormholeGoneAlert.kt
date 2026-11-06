@@ -20,6 +20,6 @@ object WormholeGoneAlert {
         if (!PATTERN.matches(event.unformattedText)) return
 
         CommonUtils.showTitle("${LIGHT_PURPLE}Wormhole ${RED}is gone")
-        SoundUtils.playSound()
+        SoundUtils.playMcSound()
     }
 }

@@ -11,6 +11,11 @@ import com.github.sleepypanda.feesh.events.EventBus
 import com.github.sleepypanda.feesh.events.models.OwnSeaCreatureCaughtEvent
 
 object RareCatchAllChatMessage {
+    private var lastSentCoords: Triple<Long, Long, Long>? = null
+
+    private val randomMessageParts = listOf("spawned", "appeared", "summoned")
+    private val randomZonePrefixes = listOf("at", "@")
+
     fun init() {
         EventBus.subscribe(OwnSeaCreatureCaughtEvent::class, ::onSeaCreature)
     }
@@ -35,20 +40,42 @@ object RareCatchAllChatMessage {
     private fun getAllChatMessage(seaCreatureName: String, isDoubleHooked: Boolean): String {
         val player = FeeshMod.mc.player ?: return ""
         val isGiantIsopod = seaCreatureName.equals(SeaCreatureNames.GIANT_ISOPOD, ignoreCase = true)
-        val location = when {
-            isGiantIsopod -> CommonUtils.getFormattedLocation(-642.0, 157.0, 183.0)
-            else -> CommonUtils.getFormattedLocation(player.getX(), player.getY(), player.getZ())
+        val (x, y, z) = when {
+            isGiantIsopod -> getCoords(-642.0, 157.0, 183.0) // Center of Springs lake
+            else -> getCoords(player.getX(), player.getY(), player.getZ())
         }
-        val scMessage = if (isDoubleHooked) "${seaCreatureName} x2" else "${seaCreatureName}"
+        val xyzPosition = CommonUtils.getFormattedLocation(x.toDouble(), y.toDouble(), z.toDouble())
+        val scMessage = if (isDoubleHooked) "$seaCreatureName x2" else seaCreatureName
         val zone = when {
             isGiantIsopod -> WorldUtils.TORRHUS_SPRINGS
             WorldUtils.getWorldName() == WorldUtils.BACKWATER_BAYOU -> null // Bayou has single zone so no need to show it
             else -> WorldUtils.getZoneName()
         }
-        val zoneText = if (!zone.isNullOrEmpty()) " at $zone" else ""
         val messageId = CommonUtils.getMessageId()
 
-        var message = "${location} | ${scMessage}${zoneText} | ${messageId}"
-        return message
+        return "$xyzPosition | ${getRandomizedSeaCreatureText(scMessage, zone)} | $messageId"
+    }
+
+    // Slightly randomize the coords if they are the same as the last sent, to avoid Hypixel rejecting duplicated messages
+    private fun getCoords(x: Double, y: Double, z: Double): Triple<Long, Long, Long> {
+        val rounded = Triple(Math.round(x), Math.round(y), Math.round(z))
+        val coords = if (lastSentCoords == rounded) getRandomizedCoords(rounded) else rounded
+        lastSentCoords = coords
+        return coords
+    }
+
+    private fun getRandomizedCoords(coords: Triple<Long, Long, Long>): Triple<Long, Long, Long> {
+        val adjusted = Triple(
+            coords.first + (-5..5).random(),
+            coords.second + (-5..5).random(),
+            coords.third + (-5..5).random(),
+        )
+        return adjusted
+    }
+
+    private fun getRandomizedSeaCreatureText(name: String, zone: String?): String {
+        val text = "$name ${randomMessageParts.random()}"
+        if (zone.isNullOrEmpty()) return text
+        return "$text ${randomZonePrefixes.random()} $zone"
     }
 }
