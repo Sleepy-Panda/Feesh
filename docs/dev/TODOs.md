@@ -71,6 +71,7 @@ Newly released - https://hypixel.net/threads/hypixel-skyblock-0-24-5-assorted-qo
  GOOD CATCH! You caught a Shinyfish Shard!
 §a §r§lACID RAIN BONUS! §r§fYou caught a bonus §r§aRusty Coin§r§f!
 
+- Display bait price as craft costs (optionally - selection between sell offer, insta sell, craft cost)
 - NPC sell prices change https://hypixel.net/threads/october-29-accessory-bag-revamp-economy-changes.6165308/
 - Bait refund arrives to sack and gets counted (temporary disabled bait tracking).
 - Scrollable overlays
