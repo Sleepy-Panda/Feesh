@@ -4,7 +4,7 @@ Released on: ???
 
 ## Features
 
--
+- Added ability to move GUIs using arrow keys in `/feeshMoveAllGuis`.
 
 # 1.17.0
 

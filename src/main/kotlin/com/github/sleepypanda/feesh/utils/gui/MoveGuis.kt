@@ -78,7 +78,7 @@ class MoveGuisScreen : Screen(Component.literal("Feesh Move Guis")) {
         val hint1 = Component.literal("${RED}${BOLD}Enable GUIs in settings to see them here!")
         val x1 = mc.window.guiScaledWidth / 2 - textRenderer.width(hint1) / 2
         drawStringCompat(context, textRenderer, hint1, x1, 10, color, true)
-        val hint2 = Component.literal("${YELLOW}Move them using your mouse. Press +/- or scroll to scale. Press 0 to change alignment. Press ESC to exit.")
+        val hint2 = Component.literal("${YELLOW}Move them with the mouse or arrows. Press +/- or scroll to scale. Press 0 to change alignment. Press ESC to exit.")
         val x2 = mc.window.guiScaledWidth / 2 - textRenderer.width(hint2) / 2
         drawStringCompat(context, textRenderer, hint2, x2, 20, color, true)
         
@@ -107,16 +107,7 @@ class MoveGuisScreen : Screen(Component.literal("Feesh Move Guis")) {
                 isDraggingGui = gui
                 lastDraggedGui = gui
                 
-                // Calculate left edge for drag offset
-                val linesToUse = gui.getSampleLines()
-                val maxWidth = linesToUse.maxOfOrNull { textRenderer.width(Component.literal(it)) } ?: 0
-                val leftEdge = when (gui.getAlignment()) {
-                    Alignment.LEFT -> gui.getX()
-                    Alignment.CENTER -> gui.getX() - maxWidth / 2
-                    Alignment.RIGHT -> gui.getX() - maxWidth
-                }
-                
-                dragOffsetX = (mouseX - leftEdge).toInt()
+                dragOffsetX = (mouseX - getLeftEdge(gui)).toInt()
                 dragOffsetY = (mouseY - gui.getY()).toInt()
                 return true
             }
@@ -127,28 +118,11 @@ class MoveGuisScreen : Screen(Component.literal("Feesh Move Guis")) {
     
     override fun mouseDragged(mouseButtonEvent: MouseButtonEvent, deltaX: Double, deltaY: Double): Boolean {
         if (InputUtils.isLeftMouseButton(mouseButtonEvent.button()) && isDraggingGui != null) {
-            val gui = isDraggingGui!!
-            val mc = minecraft ?: return super.mouseDragged(mouseButtonEvent, deltaX, deltaY)
-            val textRenderer = mc.font
-            val mouseX = mouseButtonEvent.x()
-            val mouseY = mouseButtonEvent.y()
-            
-            // Calculate the left edge of the overlay based on current alignment
-            val linesToUse = gui.getSampleLines()
-            val maxWidth = linesToUse.maxOfOrNull { textRenderer.width(Component.literal(it)) } ?: 0
-            
-            // Calculate new left edge from mouse position
-            val newLeftEdge = (mouseX - dragOffsetX).toInt().coerceAtLeast(0)
-            
-            // Convert new left edge back to x coordinate based on alignment
-            val newX = when (gui.getAlignment()) {
-                Alignment.LEFT -> newLeftEdge
-                Alignment.CENTER -> newLeftEdge + maxWidth / 2
-                Alignment.RIGHT -> newLeftEdge + maxWidth
-            }
-            
-            val newY = ((mouseY - dragOffsetY).toInt().coerceAtLeast(0))
-            gui.setX(newX).setY(newY)
+            if (minecraft == null) return super.mouseDragged(mouseButtonEvent, deltaX, deltaY)
+
+            val newX = (mouseButtonEvent.x() - dragOffsetX).toInt()
+            val newY = (mouseButtonEvent.y() - dragOffsetY).toInt()
+            setPosition(isDraggingGui!!, newX, newY)
             return true
         }
         return super.mouseDragged(mouseButtonEvent, deltaX, deltaY)
@@ -175,23 +149,41 @@ class MoveGuisScreen : Screen(Component.literal("Feesh Move Guis")) {
     override fun keyPressed(keyEvent: KeyEvent): Boolean {
         val mc = minecraft ?: return super.keyPressed(keyEvent)
         val keyCode = keyEvent.key()
+        
         if (InputUtils.isEscapeKey(keyCode)) {
             mc.setScreenCompat(null)
             return true
         }
         
         if (lastDraggedGui != null) {
+            val gui = lastDraggedGui!!
             when {
+                InputUtils.isLeftKey(keyCode) -> {
+                    changePosition(gui, -1, 0)
+                    return true
+                }
+                InputUtils.isRightKey(keyCode) -> {
+                    changePosition(gui, 1, 0)
+                    return true
+                }
+                InputUtils.isUpKey(keyCode) -> {
+                    changePosition(gui, 0, -1)
+                    return true
+                }
+                InputUtils.isDownKey(keyCode) -> {
+                    changePosition(gui, 0, 1)
+                    return true
+                }
                 InputUtils.isPlusKey(keyCode) -> {
-                    changeScale(lastDraggedGui!!, 0.1f)
+                    changeScale(gui, 0.1f)
                     return true
                 }
                 InputUtils.isMinusKey(keyCode) -> {
-                    changeScale(lastDraggedGui!!, -0.1f)
+                    changeScale(gui, -0.1f)
                     return true
                 }
                 InputUtils.isZeroKey(keyCode) -> {
-                    changeAlignment(lastDraggedGui!!)
+                    changeAlignment(gui)
                     return true
                 }
             }
@@ -207,6 +199,38 @@ class MoveGuisScreen : Screen(Component.literal("Feesh Move Guis")) {
             return true
         }
         return super.mouseScrolled(mouseX, mouseY, horizontalAmount, verticalAmount)
+    }
+
+    private fun changePosition(gui: FeeshGui, dx: Int, dy: Int) {
+        if (minecraft == null) return
+        setPosition(gui, getLeftEdge(gui) + dx, gui.getY() + dy)
+        saveGuiCoords(gui)
+    }
+
+    private fun setPosition(gui: FeeshGui, leftEdge: Int, y: Int) {
+        val renderedWidth = getSampleWidth(gui)
+        val newLeftEdge = leftEdge.coerceAtLeast(0)
+        val newX = when (gui.getAlignment()) {
+            Alignment.LEFT -> newLeftEdge
+            Alignment.CENTER -> newLeftEdge + renderedWidth / 2
+            Alignment.RIGHT -> newLeftEdge + renderedWidth
+        }
+        gui.setX(newX).setY(y.coerceAtLeast(0))
+    }
+
+    private fun getLeftEdge(gui: FeeshGui): Int {
+        val renderedWidth = getSampleWidth(gui)
+        return when (gui.getAlignment()) {
+            Alignment.LEFT -> gui.getX()
+            Alignment.CENTER -> gui.getX() - renderedWidth / 2
+            Alignment.RIGHT -> gui.getX() - renderedWidth
+        }
+    }
+
+    private fun getSampleWidth(gui: FeeshGui): Int {
+        val mc = minecraft ?: return 0
+        val maxWidth = gui.getSampleLines().maxOfOrNull { mc.font.width(Component.literal(it)) } ?: 0
+        return (maxWidth * gui.getScale()).toInt()
     }
 
     private fun changeScale(gui: FeeshGui, delta: Float) {
