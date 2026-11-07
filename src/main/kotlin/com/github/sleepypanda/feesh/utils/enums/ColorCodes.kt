@@ -27,7 +27,8 @@ enum class ColorCodes(val code: String) {
     LEGENDARY(GOLD.code),
     MYTHIC(LIGHT_PURPLE.code),
     DIVINE(AQUA.code),
-    SPECIAL(RED.code);
+    SPECIAL(RED.code),
+    VERY_SPECIAL(DARK_RED.code);
 
     override fun toString(): String = code
 }

@@ -9,12 +9,12 @@ import com.github.sleepypanda.feesh.constants.RareDropTypes
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
 import com.github.sleepypanda.feesh.features.chat.CompactCatchMessages
+import com.github.sleepypanda.feesh.utils.openUriCompat
 import com.github.sleepypanda.feesh.utils.getScreenCompat
 import com.github.sleepypanda.feesh.utils.setScreenCompat
 import com.teamresourceful.resourcefulconfigkt.api.CategoryKt
 import com.teamresourceful.resourcefulconfig.api.types.options.TranslatableValue
 import net.minecraft.client.gui.screens.options.controls.KeyBindsScreen
-import net.minecraft.util.Util
 
 enum class HotspotChatSource(val displayName: String) {
     PARTY_CHAT("Party Chat"),
@@ -62,7 +62,7 @@ object Chat : CategoryKt("Chat") {
             description = "For using custom text templates above, please explore the guide explaining color codes and formatting codes."
             text = "Click to open"
             onClick {
-                Util.getPlatform().openUri("https://github.com/Sleepy-Panda/Feesh/blob/develop/docs/Colors%20and%20formatting%20guide.md")
+                openUriCompat("https://github.com/Sleepy-Panda/Feesh/blob/develop/docs/Colors%20and%20formatting%20guide.md")
             }
         }
 
@@ -84,7 +84,7 @@ object Chat : CategoryKt("Chat") {
 
     var shareRareSeaCreatures by boolean(true) {
         this.name = Translated("Share sea creatures to the PARTY chat")
-        this.description = Translated("Sends a PARTY chat message when a sea creature is caught by you. Please enable ${YELLOW}Skyblock Settings -> Personal -> Fishing Settings -> Sea Creature Chat")
+        this.description = Translated("Sends a PARTY chat message when a sea creature is caught by you. Make sure to enable ${YELLOW}Skyblock Settings -> Personal -> Fishing Settings -> Sea Creature Chat")
     }
 
     var shareSeaCreaturesList by select(
@@ -101,7 +101,11 @@ object Chat : CategoryKt("Chat") {
 
     var shareRareSeaCreaturesAllChat by boolean(false) {
         this.name = Translated("Share rare sea creatures location to the ALL chat")
-        this.description = Translated("Sends an ALL chat message with coordinates when a rare sea creature is caught by you. Please enable ${YELLOW}Skyblock Settings -> Personal -> Fishing Settings -> Sea Creature Chat")
+        this.description = Translated("""
+${GRAY}Sends an ALL chat message with coordinates when a rare sea creature is caught by you. Can be used if you need help to kill big bosses.
+${RED}Please remember that people may not like spamming and may report you if it becomes annoying!
+${YELLOW}Make sure to enable ${YELLOW}Skyblock Settings -> Personal -> Fishing Settings -> Sea Creature Chat
+""")
     }
 
     var shareRareSeaCreaturesTypesAllChat by select(RareSeaCreatureTypesAllChat.THUNDER, *RareSeaCreatureTypesAllChat.values()) {
@@ -139,6 +143,28 @@ object Chat : CategoryKt("Chat") {
     var includeMagicFindIntoRareDropMessage by boolean(true) {
         this.name = Translated("Include Magic Find")
         this.description = Translated("Send the drop's ✯ Magic Find value as part of the party chat message.")
+    }
+  
+    init {
+        separator {
+            this.title = "${AQUA}${BOLD}Party commands"
+        }
+    }
+
+    var enablePartyCommands by boolean(true) {
+        this.name = Translated("Enable party commands")
+        this.description = Translated(
+"""${GRAY}Lets your party explore data from your enabled trackers. Responds in party chat when someone sends ${AQUA}!feesh ${GRAY}commands:
+${AQUA}!feesh profit ${GRAY}- shows the profit for Fishing profit tracker [Session]
+${AQUA}!feesh profittotal ${GRAY}- shows the profit for Fishing profit tracker [Total]
+${AQUA}!feesh profit top1 ${GRAY}- shows the top profit item for Fishing profit tracker [Session]
+${AQUA}!feesh profittotal top1 ${GRAY}- shows the top profit item for Fishing profit tracker [Total]
+${AQUA}!feesh profit <item name> ${GRAY}- first match by full/partial item name for Fishing profit tracker [Session]
+${AQUA}!feesh profittotal <item name> ${GRAY}- first match by full/partial item name for Fishing profit tracker [Total]
+${AQUA}!feesh c/h ${GRAY}or ${AQUA}!feesh catches/h ${GRAY}- shows catches/h from Efficiency tracker or Fishing profit tracker [Session]
+${AQUA}!feesh sc/h ${GRAY}- shows sea creatures/h from Efficiency tracker
+""")
+        this.searchTerms = listOf(ModVersionConstants.VERSION_1_16_0)
     }
 
     init {

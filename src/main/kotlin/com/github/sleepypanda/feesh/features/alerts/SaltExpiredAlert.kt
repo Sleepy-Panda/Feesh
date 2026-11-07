@@ -32,7 +32,7 @@ object SaltExpiredAlert {
             CommonUtils.showTitle("${RED}${cleanSaltName} ${RED}has expired")
 
             if (General.soundMode == SoundMode.MEME) SoundUtils.playCustomSound(Sounds.FEESH_NOTIFICATION_BELL)
-            else SoundUtils.playSound()
+            else SoundUtils.playMcSound()
         }
     }
 }

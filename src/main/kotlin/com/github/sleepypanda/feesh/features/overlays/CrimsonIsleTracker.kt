@@ -217,7 +217,7 @@ object CrimsonIsleTracker : IResettableTracker {
             CommonUtils.showTitle("", "${RED}No ${LIGHT_PURPLE}Lord Jawbus ${RED}for ${data.lordJawbus.catchesSinceLast} catches");
             ChatUtils.sendLocalChat("${RED}${BOLD}Yikes! ${RESET}${RED}No ${LIGHT_PURPLE}Lord Jawbus ${RED}for ${data.lordJawbus.catchesSinceLast} catches...", true);
             if (General.soundMode == SoundMode.MEME) SoundUtils.playCustomSound(Sounds.FEESH_SAD_TROMBONE)
-            else SoundUtils.playSound()
+            else SoundUtils.playMcSound()
         }
     }
 

@@ -100,7 +100,7 @@ object BarnFishingTimer : IResettableTracker {
             if (PERSONAL_CAP_PATTERN.matches(event.unformattedText)) {
                 CommonUtils.showTitle("${RED}Kill sea creatures", "${WHITE}Personal cap reached")
                 if (General.soundMode == SoundMode.MEME) SoundUtils.playCustomSound(Sounds.FEESH_NOTIFICATION_BELL)
-                else SoundUtils.playSound()
+                else SoundUtils.playMcSound()
             }
         }
     }
@@ -178,7 +178,7 @@ object BarnFishingTimer : IResettableTracker {
             countNotificationShownAt = Date()
             CommonUtils.showTitle("${RED}Kill sea creatures", "${WHITE}${seaCreaturesCountThreshold}+ mobs")
             if (General.soundMode == SoundMode.MEME) SoundUtils.playCustomSound(Sounds.FEESH_NOTIFICATION_BELL)
-            else SoundUtils.playSound()
+            else SoundUtils.playMcSound()
         } else if (mobsCount < seaCreaturesCountThreshold && countNotificationShownAt != null) {
             countNotificationShownAt = null
         }
@@ -202,7 +202,7 @@ object BarnFishingTimer : IResettableTracker {
             timerNotificationShownAt = Date()
             CommonUtils.showTitle("${RED}Kill sea creatures", "${WHITE}${TIMER_THRESHOLD_IN_MINUTES}+ minutes")
             if (General.soundMode == SoundMode.MEME) SoundUtils.playCustomSound(Sounds.FEESH_NOTIFICATION_BELL)
-            else SoundUtils.playSound()
+            else SoundUtils.playMcSound()
         } else if (deltaInSeconds < thresholdInSeconds && timerNotificationShownAt != null) {
             timerNotificationShownAt = null
         }

@@ -12,4 +12,18 @@ object Sounds {
     const val FEESH_SAD_TROMBONE = "feesh_sad-trombone.ogg"
     const val FEESH_SHEESH = "feesh_sheesh.ogg"
     const val FEESH_WOW = "feesh_wow.ogg"
+
+    val BUNDLED_FILE_NAMES = setOf(
+        FEESH_AUGH,
+        FEESH_GIGA_CHAD,
+        FEESH_GOOFY_LAUGH,
+        FEESH_MINECRAFT_CHALLENGE_COMPLETED,
+        FEESH_NOTIFICATION_BELL,
+        FEESH_NOTIFICATION,
+        FEESH_OH_MY_GOD,
+        FEESH_RARE_DROP,
+        FEESH_SAD_TROMBONE,
+        FEESH_SHEESH,
+        FEESH_WOW,
+    )
 }

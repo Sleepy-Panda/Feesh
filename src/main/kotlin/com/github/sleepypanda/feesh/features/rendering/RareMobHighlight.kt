@@ -98,18 +98,18 @@ object RareMobHighlight {
         entities.add(mobEntity)
 
         val color = when {
-            scInfo?.rarityColorCode == ColorCodes.COMMON.code -> HexColorCodes.COMMON.colorCode
-            scInfo?.rarityColorCode == ColorCodes.UNCOMMON.code -> HexColorCodes.UNCOMMON.colorCode
-            scInfo?.rarityColorCode == ColorCodes.RARE.code -> HexColorCodes.RARE.colorCode
-            scInfo?.rarityColorCode == ColorCodes.EPIC.code -> HexColorCodes.EPIC.colorCode
-            scInfo?.rarityColorCode == ColorCodes.LEGENDARY.code -> HexColorCodes.LEGENDARY.colorCode
-            scInfo?.rarityColorCode == ColorCodes.MYTHIC.code -> HexColorCodes.MYTHIC.colorCode
-            scInfo?.rarityColorCode == ColorCodes.DIVINE.code -> HexColorCodes.DIVINE.colorCode
-            scInfo?.rarityColorCode == ColorCodes.SPECIAL.code -> HexColorCodes.SPECIAL.colorCode
+            scInfo?.rarityColorCode == ColorCodes.COMMON.code -> HexColorCodes.COMMON.rgbColorCode
+            scInfo?.rarityColorCode == ColorCodes.UNCOMMON.code -> HexColorCodes.UNCOMMON.rgbColorCode
+            scInfo?.rarityColorCode == ColorCodes.RARE.code -> HexColorCodes.RARE.rgbColorCode
+            scInfo?.rarityColorCode == ColorCodes.EPIC.code -> HexColorCodes.EPIC.rgbColorCode
+            scInfo?.rarityColorCode == ColorCodes.LEGENDARY.code -> HexColorCodes.LEGENDARY.rgbColorCode
+            scInfo?.rarityColorCode == ColorCodes.MYTHIC.code -> HexColorCodes.MYTHIC.rgbColorCode
+            scInfo?.rarityColorCode == ColorCodes.DIVINE.code -> HexColorCodes.DIVINE.rgbColorCode
+            scInfo?.rarityColorCode == ColorCodes.SPECIAL.code -> HexColorCodes.SPECIAL.rgbColorCode
             cleanName == HighlightableSeaCreatureTypes.FLIPFLOPPER.displayName || cleanName == HighlightableSeaCreatureTypes.SEASHINE.displayName ->
-                HexColorCodes.DIVINE.colorCode
+                HexColorCodes.DIVINE.rgbColorCode
             cleanName == HighlightableSeaCreatureTypes.JAWBUS_FOLLOWER.displayName || cleanName == HighlightableSeaCreatureTypes.WIKI_TIKI_LASER_TOTEM.displayName ->
-                HexColorCodes.SPECIAL.colorCode
+                HexColorCodes.SPECIAL.rgbColorCode
             else -> 0x00FFFF
         }
 

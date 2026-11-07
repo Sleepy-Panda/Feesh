@@ -1,6 +1,6 @@
 # Feesh Mod
 
-`Feesh` is a Fabric 26.1 / 26.2 mod for Hypixel Skyblock. It introduces many fishing-related QOL features. Do `/feesh`, set up the mod, and enjoy fishing! <3
+`Feesh` is a Fabric 26.1 / 26.2 / 26.3 mod for Hypixel Skyblock. It introduces many fishing-related QOL features. Do `/feesh`, set up the mod, and enjoy fishing! <3
 
 This mod is an evolution of [FeeshNotifier ChatTriggers module](https://chattriggers.com/modules/v/FeeshNotifier) made for earlier MC versions.
 
@@ -15,7 +15,15 @@ This mod is an evolution of [FeeshNotifier ChatTriggers module](https://chattrig
 
 ## Releases
 
-[Modrinth](https://modrinth.com/project/feesh)
+[Feesh on Modrinth](https://modrinth.com/project/feesh)
+
+>**SOURCES:**
+>The only relevant source to download releases is Modrinth and linked GitHub. Feesh does not own any website and does not distribute releases through other sources.
+
+### Pre-releases
+
+If you want early access to the pre-releases, GitHub automatically builds every version pushed to `develop` branch. They can be found in Actions - (select latest action) - Artifacts - find attached `.zip` which contains `.jar` file(s).
+> **THOSE MAY BE UNSTABLE** as they are features in active development, probably not tested enough/subject to change. So I don't recommend it unless you are absolutely not patient :)
 
 ### Pre-releases
 
@@ -37,6 +45,13 @@ Required Minecraft version is **26.2** (Fabric loader 0.19.3+).
 This mod requires [Fabric API](https://modrinth.com/mod/fabric-api) and [Fabric Language Kotlin](https://modrinth.com/mod/fabric-language-kotlin) mods for 26.2.
 Required Java version is 25+.
 
+### 26.3
+
+Required Minecraft version is **26.3** (Fabric loader 0.19.5+).
+
+This mod requires [Fabric API](https://modrinth.com/mod/fabric-api) and [Fabric Language Kotlin](https://modrinth.com/mod/fabric-language-kotlin) mods for 26.3.
+Required Java version is 25+.
+
 ## Features
 
 ### General
@@ -56,7 +71,7 @@ Required Java version is 25+.
 - **Pet level up** — Alerts when a pet reaches max level. Can show estimated leveling price in chat.
 - **Hotspot found or gone** — Alerts when a hotspot is found or is gone.
 - **Wormhole gone** — Alerts when a wormhole is gone.
-- **Fishing Bag disabled** — Alerts when you start fishing with Fishing Bag disabled.
+- **Fishing Bag/Bait Sack disabled** — Alerts when you start fishing with Fishing Bag/Bait Sack disabled.
 - **Bait changed/running out of bait** — Alerts when active bait has changed or almost no bait remaining.
 - **No fishing armor** — Alerts when fishing without fishing armor equipped.
 - **Lootshare** — Alerts when "Lootshare!" message appears in party chat.
@@ -67,6 +82,7 @@ Required Java version is 25+.
 - **Salt expired** — Alerts when a Salt has expired.
 - **Worm the Fish** — Alerts when Worm the Fish is caught (Dirt Rod fishing).
 - **Fishing Festival** — Alerts when the Fishing Festival ends, and posts amounts of sharks caught in chat. Also has option to track personal best per festival.
+- **Weather starts soon** — Alerts when weather event starts soon while in relevant areas.
 - **Weather ends soon** — Alerts when weather event ends soon while in relevant areas.
 - **Day/Night started** — Alerts when day starts (6:00am) or night starts (7:00pm).
 - **Nessie destination alert** — Alerts destination when a Nessie decides into which cave to swim - to Jade Dragon or to Driptoad Delve.
@@ -78,6 +94,7 @@ Required Java version is 25+.
 
 ### Chat
 
+- **Party chat commands** — Lets your party explore data from your enabled trackers. Responds in party chat when someone sends !feesh commands.
 - **Compact sea creature messages** — Shortens double hook and catch messages in your chat.
 - **Share sea creatures** — Sends to PARTY chat when you catch/cocoon a specific sea creature.
 - **Share sea creatures location - ALL chat** — Sends to ALL chat with coordinates when you catch specific rare creatures (big bosses).
@@ -94,10 +111,10 @@ Required Java version is 25+.
 ### Overlays
 
 > You can change position, scale and alignment (Left, Center, Right) for each overlay in **/feeshMoveAllGuis**
-> You can setup custom background & border style, and enable this style on each overlay level.
+> You can setup custom background & border style, and enable/disable this style on each overlay level.
 
-- **Fishing profit tracker** - Shows how many coins you earned in total and per hour, with Session/Total modes.
-- **Sea creatures tracker** — Overview of caught sea creatures with Session/Total modes, percentages, and double hook statistics.
+- **Fishing profit tracker** - Shows which items you dropped and how many coins you earned in total and per hour, with Session/Total modes. Offers extra information: costs spent, net profit, catches.
+- **Sea creatures tracker** — Overview of caught sea creatures with Session/Total modes, percentages, double hook and Bloodshot (cocoon) statistics.
 - **Nearby entities counter tracker** — Shows players, fishing hooks, and Chumcap buckets count within 30 blocks.
 - **Barn fishing timer** — Shows count of sea creatures nearby and how long they've been alive.
 - **Deployables timer** — Shows remaining time of your deployable items placed nearby.
@@ -126,9 +143,11 @@ Required Java version is 25+.
 - **Thunder Bottle charge progress** — Renders Thunder / Storm / Hurricane Bottle charge percentage in the item slot.
 - **Moby-Duck progress** — Renders Moby-Duck evolving percentage in the item slot.
 - **Auto-recomb flag** — Renders recomb upgrade flag (`R`) for auto-recombobulated fishing drops in the item slot.
+- **Rod parts** — Renders abbreviations of equipped fishing rod parts (Hook, Line, Sinker) in the item slot. You can choose which parts to show.
 
 ### World Rendering
 
+- **Replace lava with water** — Replaces lava with transparent water and removes fog when under lava in the selected worlds. Water can be tinted using any color.
 - **Hide other players' hooks** — Hides other players' bobbers and fishing lines, so you can see only your own hook.
 - **Highlight rare sea creatures** — Applies glowing border to the rare sea creatures. Not visible through walls.
 - **Hide other players near bobber** — Hides other players near your bobber when a fishing rod is casted.
@@ -139,6 +158,15 @@ Required Java version is 25+.
 ### Personal Best
 
 - **/feeshPersonalBests** — Displays all your personal best records tracked by the mod.
+
+What's tracked:
+
+- **Total sharks per festival** — Tracks biggest count of sharks caught within a single fishing festival.
+- **Great White Sharks per festival** — Tracks biggest count of Great White sharks caught within a single fishing festival.
+- **Double Hook streak** — Tracks longest chain of Double Hook sea creature catches.
+- **Treasure catch streak** — Tracks longest chain of treasure/junk catches.
+- **Great / Outstanding treasure streak** — Tracks longest chain of caught treasures/junk being Great / Outstanding.
+- **Total Moby-Ducks consumed**
 
 ### Commands
 
@@ -152,6 +180,13 @@ Required Java version is 25+.
 - **/feeshWeatherSchedule** — Displays 3 upcoming weather conditions (Mild / Extreme) schedule.
 
 Also, each overlay has individual commands to reset or pause.
+
+#### Debug commands
+
+Useful for mod developers only.
+
+- **feeshDebugLogSounds** — Print every sound played within 5 seconds to the logs.
+- **feeshDebugLogPartyChatMessages** — Toggle duplicating outgoing party chat message into local chat.
 
 ## Guides
 
@@ -197,6 +232,7 @@ In case of questions, bug reports, feature requests - please feel free to contac
 ### Credits
 
 - [Casters discord](https://discord.gg/fishing), for supporting the mod
+- [ResourcefulConfig](https://github.com/Team-Resourceful/Resourceful-Config), used as a library for `/feesh` config
 - [Elite Skyblock](https://eliteskyblock.com/) and their APIs, for providing auction lbin prices
   - [Elite Skyblock Lowest Bin API](https://api.eliteskyblock.com/resources/auctions/neu)
   - [Elite Skyblock 7-days average API](https://api.eliteskyblock.com/resources/auctions/neu/average-lbin/7day)

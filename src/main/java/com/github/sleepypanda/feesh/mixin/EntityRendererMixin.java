@@ -25,7 +25,17 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public abstract class EntityRendererMixin<T extends Entity, S extends EntityRenderState> {
 
     @Inject(method = "shouldRender", at = @At("HEAD"), cancellable = true)
-    private void feesh$onShouldRender(T entity, Frustum frustum, double camX, double camY, double camZ, CallbackInfoReturnable<Boolean> cir) {
+    private void feesh$onShouldRender(
+        T entity,
+        Frustum frustum,
+        double camX,
+        double camY,
+        double camZ,
+        //#if MC >= 26.3
+        //$$ float tickProgress,
+        //#endif
+        CallbackInfoReturnable<Boolean> cir
+    ) {
         switch (entity) {
             case ArmorStand armorStand -> {
                 if (FishingHookTimer.shouldCancelArmorStandRendering(armorStand.getUUID()) ||

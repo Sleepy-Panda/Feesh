@@ -15,7 +15,7 @@ data class FishingProfitDropInfo(
     val itemAlternateNames: List<String> = listOf(), // Alternate names for the item, to support some popular item renamings by mods, or item renamings by SB
     val itemDisplayName: String, // Formatted item name
     val npcPrice: Double?,
-    val ignoreFromInventory: Boolean = false, // If the item should be ignored from inventory tracking
+    val ignoreItemPickup: Boolean = false, // If the item should be ignored from inventory/sacks tracking
     val shouldAnnounceRareDrop: Boolean = false, // If the item should be announced as a rare drop in player's chat (for valuable drops which have no standart RARE DROP! message from Hypixel)
     val amountOfMagmaFish: Int? = null, // Amount of Magma Fish to exchange a Trophy Fish at Odger
     val amountOfLotus: Int? = null, // Amount of Lotus to exchange a Trophy Frog
@@ -32,6 +32,7 @@ class FishingProfitDrops {
         const val EVOLVING_IN_TIME_BAG_CATEGORY = "Evolving"
         const val BAIT_CATEGORY = "Bait"
         const val DYE_CATEGORY = "Dye"
+        const val SHARD_CATEGORY = "Shard"
 
         fun getFishingProfitItemByName(itemName: String): FishingProfitDropInfo? {
             if (itemName.isEmpty()) return null
@@ -129,6 +130,7 @@ class FishingProfitDrops {
                 itemName = "Golden Bait",
                 itemDisplayName = "${UNCOMMON}Golden Bait", // From Seal pet
                 npcPrice = 100.0,
+                ignoreItemPickup = true, // Disabled until Hypixel fixes bait refund bug
                 categories = listOf(BAIT_CATEGORY),
             ),
             FishingProfitDropInfo(
@@ -136,6 +138,7 @@ class FishingProfitDrops {
                 itemName = "Treasure Bait",
                 itemDisplayName = "${RARE}Treasure Bait", // From Seal pet
                 npcPrice = 500.0,
+                ignoreItemPickup = true, // Disabled until Hypixel fixes bait refund bug
                 categories = listOf(BAIT_CATEGORY),
             ),
             FishingProfitDropInfo(
@@ -159,17 +162,35 @@ class FishingProfitDrops {
                 compactedItemName = "Enchanted Prismarine Shard",
             ),
             FishingProfitDropInfo(
+                itemId = "ENCHANTED_PRISMARINE_CRYSTALS",
+                itemName = "Enchanted Prismarine Crystals",
+                itemDisplayName = "${UNCOMMON}Enchanted Prismarine Crystals",
+                npcPrice = 400.0,
+            ),
+            FishingProfitDropInfo(
+                itemId = "ENCHANTED_PRISMARINE_SHARD",
+                itemName = "Enchanted Prismarine Shard",
+                itemDisplayName = "${UNCOMMON}Enchanted Prismarine Shard",
+                npcPrice = 400.0,
+            ),
+            FishingProfitDropInfo(
                 itemId = "RAW_FISH",
                 itemName = "Raw Cod",
                 itemDisplayName = "${COMMON}Raw Cod",
                 npcPrice = 6.0,
-                compactedItemName = "Enchanted Raw Fish",
+                compactedItemName = "Enchanted Raw Cod",
             ),
             FishingProfitDropInfo(
                 itemId = "ENCHANTED_RAW_FISH",
                 itemName = "Enchanted Raw Cod",
                 itemDisplayName = "${UNCOMMON}Enchanted Raw Cod",
                 npcPrice = 960.0,
+            ),
+            FishingProfitDropInfo(
+                itemId = "ENCHANTED_COOKED_FISH",
+                itemName = "Enchanted Cooked Cod",
+                itemDisplayName = "${RARE}Enchanted Cooked Cod",
+                npcPrice = 150_000.0,
             ),
             FishingProfitDropInfo(
                 itemId = "RAW_FISH:1",
@@ -183,6 +204,12 @@ class FishingProfitDrops {
                 itemName = "Enchanted Raw Salmon",
                 itemDisplayName = "${UNCOMMON}Enchanted Raw Salmon",
                 npcPrice = 1_600.0,
+            ),
+            FishingProfitDropInfo(
+                itemId = "ENCHANTED_COOKED_SALMON",
+                itemName = "Enchanted Cooked Salmon",
+                itemDisplayName = "${RARE}Enchanted Cooked Salmon",
+                npcPrice = 256_000.0,
             ),
             FishingProfitDropInfo(
                 itemId = "RAW_FISH:2",
@@ -286,6 +313,12 @@ class FishingProfitDrops {
                 npcPrice = 320.0,
             ),
             FishingProfitDropInfo(
+                itemId = "ENCHANTED_COAL_BLOCK",
+                itemName = "Enchanted Coal Block",
+                itemDisplayName = "${RARE}Enchanted Coal Block",
+                npcPrice = 25_600.0,
+            ),
+            FishingProfitDropInfo(
                 itemId = "MYCEL",
                 itemName = "Mycelium",
                 itemDisplayName = "${COMMON}Mycelium",
@@ -326,6 +359,24 @@ class FishingProfitDrops {
                 itemName = "Enchanted Glowstone",
                 itemDisplayName = "${UNCOMMON}Enchanted Glowstone",
                 npcPrice = 51_200.0,
+            ),
+            FishingProfitDropInfo(
+                itemId = "ENCHANTED_GUNPOWDER",
+                itemName = "Enchanted Gunpowder",
+                itemDisplayName = "${UNCOMMON}Enchanted Gunpowder",
+                npcPrice = 640.0,
+            ),
+            FishingProfitDropInfo(
+                itemId = "REDSTONE",
+                itemName = "Redstone Dust",
+                itemDisplayName = "${COMMON}Redstone Dust",
+                npcPrice = 1.0,
+            ),
+            FishingProfitDropInfo(
+                itemId = "ENCHANTED_REDSTONE",
+                itemName = "Enchanted Redstone Dust",
+                itemDisplayName = "${UNCOMMON}Enchanted Redstone Dust",
+                npcPrice = 160.0,
             ),
             FishingProfitDropInfo(
                 itemId = "QUARTZ",
@@ -676,294 +727,343 @@ class FishingProfitDrops {
                 itemName = "Cod Shard",
                 itemDisplayName = "${COMMON}Cod ${WHITE}Shard",
                 npcPrice = null,
+                categories = listOf(SHARD_CATEGORY),
             ),
             FishingProfitDropInfo(
                 itemId = "SHARD_AZURE",
                 itemName = "Azure Shard",
                 itemDisplayName = "${COMMON}Azure ${WHITE}Shard",
                 npcPrice = null,
+                categories = listOf(SHARD_CATEGORY),
             ),
             FishingProfitDropInfo(
                 itemId = "SHARD_VERDANT",
                 itemName = "Verdant Shard",
                 itemDisplayName = "${COMMON}Verdant ${WHITE}Shard",
                 npcPrice = null,
+                categories = listOf(SHARD_CATEGORY),
             ),
             FishingProfitDropInfo(
                 itemId = "SHARD_SALMON",
                 itemName = "Salmon Shard",
                 itemDisplayName = "${UNCOMMON}Salmon ${WHITE}Shard",
                 npcPrice = null,
+                categories = listOf(SHARD_CATEGORY),
             ),
             FishingProfitDropInfo(
                 itemId = "SHARD_INFERNO_KOI",
                 itemName = "Inferno Koi Shard",
                 itemDisplayName = "${RARE}Inferno Koi ${WHITE}Shard",
                 npcPrice = null,
+                categories = listOf(SHARD_CATEGORY),
             ),
             FishingProfitDropInfo(
                 itemId = "SHARD_PIRANHA",
                 itemName = "Piranha Shard",
                 itemDisplayName = "${RARE}Piranha ${WHITE}Shard",
                 npcPrice = null,
+                categories = listOf(SHARD_CATEGORY),
             ),
             FishingProfitDropInfo(
                 itemId = "SHARD_ABYSSAL_LANTERN",
                 itemName = "Abyssal Lanternfish Shard",
                 itemDisplayName = "${RARE}Abyssal Lanternfish ${WHITE}Shard",
                 npcPrice = null,
+                categories = listOf(SHARD_CATEGORY),
             ),
             FishingProfitDropInfo(
                 itemId = "SHARD_SILENTDEPTH",
                 itemName = "Silentdepth Shard",
                 itemDisplayName = "${RARE}Silentdepth ${WHITE}Shard",
                 npcPrice = null,
+                categories = listOf(SHARD_CATEGORY),
             ),
             FishingProfitDropInfo(
                 itemId = "SHARD_EEL",
                 itemName = "Eel Shard",
                 itemDisplayName = "${RARE}Eel ${WHITE}Shard",
                 npcPrice = null,
+                categories = listOf(SHARD_CATEGORY),
             ),
             FishingProfitDropInfo(
                 itemId = "SHARD_TADGANG",
                 itemName = "Tadgang Shard",
                 itemDisplayName = "${COMMON}Tadgang ${WHITE}Shard",
                 npcPrice = null,
+                categories = listOf(SHARD_CATEGORY),
             ),
             FishingProfitDropInfo(
                 itemId = "SHARD_ENT",
                 itemName = "Ent Shard",
                 itemDisplayName = "${UNCOMMON}Ent ${WHITE}Shard",
                 npcPrice = null,
+                categories = listOf(SHARD_CATEGORY),
             ),
             FishingProfitDropInfo(
                 itemId = "SHARD_NIGHT_SQUID",
                 itemName = "Inkling Shard",
                 itemDisplayName = "${COMMON}Inkling ${WHITE}Shard",
                 npcPrice = null,
+                categories = listOf(SHARD_CATEGORY),
             ),
             FishingProfitDropInfo(
                 itemId = "SHARD_SEA_ARCHER",
                 itemName = "Bogged Shard",
                 itemDisplayName = "${COMMON}Bogged ${WHITE}Shard",
                 npcPrice = null,
+                categories = listOf(SHARD_CATEGORY),
             ),
             FishingProfitDropInfo(
                 itemId = "SHARD_MAGMA_SLUG",
                 itemName = "Magma Slug Shard",
                 itemDisplayName = "${UNCOMMON}Magma Slug ${WHITE}Shard",
                 npcPrice = null,
+                categories = listOf(SHARD_CATEGORY),
             ),
             FishingProfitDropInfo(
                 itemId = "SHARD_LAVA_FLAME",
                 itemName = "Lava Flame Shard",
                 itemDisplayName = "${RARE}Lava Flame ${WHITE}Shard",
                 npcPrice = null,
+                categories = listOf(SHARD_CATEGORY),
             ),
             FishingProfitDropInfo(
                 itemId = "SHARD_FIRE_EEL",
                 itemName = "Fire Eel Shard",
                 itemDisplayName = "${EPIC}Fire Eel ${WHITE}Shard",
                 npcPrice = null,
+                categories = listOf(SHARD_CATEGORY),
             ),
             FishingProfitDropInfo(
                 itemId = "SHARD_TAURUS",
                 itemName = "Taurus Shard",
                 itemDisplayName = "${LEGENDARY}Taurus ${WHITE}Shard",
                 npcPrice = null,
+                categories = listOf(SHARD_CATEGORY),
             ),
             FishingProfitDropInfo(
                 itemId = "SHARD_WATER_HYDRA",
                 itemName = "Water Hydra Shard",
                 itemDisplayName = "${EPIC}Water Hydra ${WHITE}Shard",
                 npcPrice = null,
+                categories = listOf(SHARD_CATEGORY),
             ),
             FishingProfitDropInfo(
                 itemId = "SHARD_CARROT_KING",
                 itemName = "Carrot King Shard",
                 itemDisplayName = "${RARE}Carrot King ${WHITE}Shard",
                 npcPrice = null,
+                categories = listOf(SHARD_CATEGORY),
             ),
             FishingProfitDropInfo(
                 itemId = "SHARD_SEA_EMPEROR",
                 itemName = "Loch Emperor Shard",
                 itemDisplayName = "${EPIC}Loch Emperor ${WHITE}Shard",
                 npcPrice = null,
+                categories = listOf(SHARD_CATEGORY),
             ),
             FishingProfitDropInfo(
                 itemId = "SHARD_LORD_JAWBUS",
                 itemName = "Lord Jawbus Shard",
                 itemDisplayName = "${LEGENDARY}Lord Jawbus ${WHITE}Shard",
                 npcPrice = null,
+                categories = listOf(SHARD_CATEGORY),
             ),
             FishingProfitDropInfo(
                 itemId = "SHARD_SHINYFISH",
                 itemName = "Shinyfish Shard",
                 itemDisplayName = "${LEGENDARY}Shinyfish ${WHITE}Shard",
                 npcPrice = null,
+                categories = listOf(SHARD_CATEGORY),
             ),
             FishingProfitDropInfo(
                 itemId = "SHARD_TITANOBOA",
                 itemName = "Titanoboa Shard",
                 itemDisplayName = "${LEGENDARY}Titanoboa ${WHITE}Shard",
                 npcPrice = null,
+                categories = listOf(SHARD_CATEGORY),
             ),
             FishingProfitDropInfo(
                 itemId = "SHARD_ALLIGATOR",
                 itemName = "Alligator Shard",
                 itemDisplayName = "${EPIC}Alligator ${WHITE}Shard",
                 npcPrice = null,
+                categories = listOf(SHARD_CATEGORY),
             ),
             FishingProfitDropInfo(
                 itemId = "SHARD_NESSIE",
                 itemName = "Nessie Shard",
                 itemDisplayName = "${LEGENDARY}Nessie ${WHITE}Shard",
                 npcPrice = null,
+                categories = listOf(SHARD_CATEGORY),
             ),
             FishingProfitDropInfo(
                 itemId = "SHARD_SEA_SHINE",
                 itemName = "Seashine Shard",
                 itemDisplayName = "${RARE}Seashine ${WHITE}Shard",
                 npcPrice = null,
+                categories = listOf(SHARD_CATEGORY),
             ),
             FishingProfitDropInfo(
                 itemId = "SHARD_FLIP_FLOPPER",
                 itemName = "Flipflopper Shard",
                 itemDisplayName = "${UNCOMMON}Flipflopper ${WHITE}Shard",
                 npcPrice = null,
+                categories = listOf(SHARD_CATEGORY),
             ),
             FishingProfitDropInfo(
                 itemId = "SHARD_STRIDER_SURFER",
                 itemName = "Stridersurfer Shard",
                 itemDisplayName = "${UNCOMMON}Stridersurfer ${WHITE}Shard",
                 npcPrice = null,
+                categories = listOf(SHARD_CATEGORY),
             ),
             FishingProfitDropInfo(
                 itemId = "SHARD_DUMPSTER_DIVER",
                 itemName = "Dumpster Diver Shard",
                 itemDisplayName = "${COMMON}Dumpster Diver ${WHITE}Shard",
                 npcPrice = null,
+                categories = listOf(SHARD_CATEGORY),
             ),
             FishingProfitDropInfo(
                 itemId = "SHARD_WETWING",
                 itemName = "Wetwing Shard",
                 itemDisplayName = "${UNCOMMON}Wetwing ${WHITE}Shard",
                 npcPrice = null,
+                categories = listOf(SHARD_CATEGORY),
             ),
             FishingProfitDropInfo(
                 itemId = "SHARD_SEA_WITCH",
                 itemName = "Sea Witch Shard",
                 itemDisplayName = "${UNCOMMON}Sea Witch ${WHITE}Shard",
                 npcPrice = null,
+                categories = listOf(SHARD_CATEGORY),
             ),
             FishingProfitDropInfo(
                 itemId = "SHARD_BAYOU_SLUDGE",
                 itemName = "Bayou Sludge Shard",
                 itemDisplayName = "${UNCOMMON}Bayou Sludge ${WHITE}Shard",
                 npcPrice = null,
+                categories = listOf(SHARD_CATEGORY),
             ),
             FishingProfitDropInfo(
                 itemId = "SHARD_WIKI_TIKI",
                 itemName = "Wiki Tiki Shard",
                 itemDisplayName = "${RARE}Wiki Tiki ${WHITE}Shard",
                 npcPrice = null,
+                categories = listOf(SHARD_CATEGORY),
             ),
             FishingProfitDropInfo(
                 itemId = "SHARD_LAVA_LEECH",
                 itemName = "Lava Leech Shard",
                 itemDisplayName = "${RARE}Lava Leech ${WHITE}Shard",
                 npcPrice = null,
+                categories = listOf(SHARD_CATEGORY),
             ),
             FishingProfitDropInfo(
                 itemId = "SHARD_THUNDER",
                 itemName = "Thunder Shard",
                 itemDisplayName = "${RARE}Thunder ${WHITE}Shard",
                 npcPrice = null,
+                categories = listOf(SHARD_CATEGORY),
             ),
             FishingProfitDropInfo(
                 itemId = "SHARD_ABYSSAL_MINER",
                 itemName = "Abyssal Miner Shard",
                 itemDisplayName = "${EPIC}Abyssal Miner ${WHITE}Shard",
                 npcPrice = null,
+                categories = listOf(SHARD_CATEGORY),
             ),
             FishingProfitDropInfo(
                 itemId = "SHARD_STINGRAY",
                 itemName = "Stingray Shard",
                 itemDisplayName = "${RARE}Stingray ${WHITE}Shard",
                 npcPrice = null,
+                categories = listOf(SHARD_CATEGORY),
             ),
             FishingProfitDropInfo(
                 itemId = "SHARD_WATER_SNAKE",
                 itemName = "Water Snake Shard",
                 itemDisplayName = "${UNCOMMON}Water Snake ${WHITE}Shard",
                 npcPrice = null,
+                categories = listOf(SHARD_CATEGORY),
             ),
             FishingProfitDropInfo(
                 itemId = "SHARD_EMBER",
                 itemName = "Ember Shard",
                 itemDisplayName = "${UNCOMMON}Ember ${WHITE}Shard",
                 npcPrice = null,
+                categories = listOf(SHARD_CATEGORY),
             ),
             FishingProfitDropInfo(
                 itemId = "SHARD_SOLAR",
                 itemName = "Solar Shard",
                 itemDisplayName = "${UNCOMMON}Solar ${WHITE}Shard",
                 npcPrice = null,
+                categories = listOf(SHARD_CATEGORY),
             ),
             FishingProfitDropInfo(
                 itemId = "SHARD_SEPIALOT",
                 itemName = "Sepialot Shard",
                 itemDisplayName = "${UNCOMMON}Sepialot ${WHITE}Shard",
                 npcPrice = null,
+                categories = listOf(SHARD_CATEGORY),
             ),
             FishingProfitDropInfo(
                 itemId = "SHARD_GOLDOLOT",
                 itemName = "Goldolot Shard",
                 itemDisplayName = "${RARE}Goldolot ${WHITE}Shard",
                 npcPrice = null,
+                categories = listOf(SHARD_CATEGORY),
             ),
             FishingProfitDropInfo(
                 itemId = "SHARD_HAGGARD",
                 itemName = "Haggard Shard",
                 itemDisplayName = "${COMMON}Haggard ${WHITE}Shard",
                 npcPrice = null,
+                categories = listOf(SHARD_CATEGORY),
             ),
             FishingProfitDropInfo(
                 itemId = "SHARD_BRINELING",
                 itemName = "Brineling Shard",
                 itemDisplayName = "${COMMON}Brineling ${WHITE}Shard",
                 npcPrice = null,
+                categories = listOf(SHARD_CATEGORY),
             ),
             FishingProfitDropInfo(
                 itemId = "SHARD_SPRAWL",
                 itemName = "Sprawl Shard",
                 itemDisplayName = "${UNCOMMON}Sprawl ${WHITE}Shard",
                 npcPrice = null,
+                categories = listOf(SHARD_CATEGORY),
             ),
             FishingProfitDropInfo(
                 itemId = "SHARD_SILKBREEZE",
                 itemName = "Silkbreeze Shard",
                 itemDisplayName = "${EPIC}Silkbreeze ${WHITE}Shard",
                 npcPrice = null,
+                categories = listOf(SHARD_CATEGORY),
             ),
             FishingProfitDropInfo(
                 itemId = "SHARD_GIANT_ISOPOD",
                 itemName = "Giant Isopod Shard",
                 itemDisplayName = "${EPIC}Giant Isopod ${WHITE}Shard",
                 npcPrice = null,
+                categories = listOf(SHARD_CATEGORY),
             ),
             FishingProfitDropInfo(
                 itemId = "SHARD_TORRID",
                 itemName = "Torrid Shard",
                 itemDisplayName = "${RARE}Torrid ${WHITE}Shard",
                 npcPrice = null,
+                categories = listOf(SHARD_CATEGORY),
             ),
             FishingProfitDropInfo(
                 itemId = "SHARD_GIANT_WATER_BUG",
                 itemName = "Giant Water Bug Shard",
                 itemDisplayName = "${RARE}Giant Water Bug ${WHITE}Shard",
                 npcPrice = null,
+                categories = listOf(SHARD_CATEGORY),
             ),
 
             // Water
@@ -1025,18 +1125,6 @@ class FishingProfitDrops {
                 npcPrice = 25_000.0,
             ),
             FishingProfitDropInfo(
-                itemId = "ENCHANTED_PRISMARINE_CRYSTALS",
-                itemName = "Enchanted Prismarine Crystals",
-                itemDisplayName = "${UNCOMMON}Enchanted Prismarine Crystals",
-                npcPrice = 400.0,
-            ),
-            FishingProfitDropInfo(
-                itemId = "ENCHANTED_PRISMARINE_SHARD",
-                itemName = "Enchanted Prismarine Shard",
-                itemDisplayName = "${UNCOMMON}Enchanted Prismarine Shard",
-                npcPrice = 400.0,
-            ),
-            FishingProfitDropInfo(
                 itemId = "BONE",
                 itemName = "Bone",
                 itemDisplayName = "${COMMON}Bone",
@@ -1048,6 +1136,12 @@ class FishingProfitDrops {
                 itemName = "Enchanted Bone",
                 itemDisplayName = "${UNCOMMON}Enchanted Bone",
                 npcPrice = 320.0,
+            ),
+            FishingProfitDropInfo(
+                itemId = "ENCHANTED_BONE_BLOCK",
+                itemName = "Enchanted Bone Block",
+                itemDisplayName = "${RARE}Enchanted Bone Block",
+                npcPrice = 51_200.0,
             ),
             FishingProfitDropInfo(
                 itemId = "SEA_LANTERN",
@@ -1079,6 +1173,12 @@ class FishingProfitDrops {
                 itemName = "Enchanted Iron Ingot",
                 itemDisplayName = "${UNCOMMON}Enchanted Iron Ingot",
                 npcPrice = 480.0,
+            ),
+            FishingProfitDropInfo(
+                itemId = "ENCHANTED_IRON_BLOCK",
+                itemName = "Enchanted Iron Block",
+                itemDisplayName = "${RARE}Enchanted Iron Block",
+                npcPrice = 51_200.0,
             ),
             FishingProfitDropInfo(
                 itemId = "GOLD_INGOT",
@@ -1217,8 +1317,8 @@ class FishingProfitDrops {
             ),
             FishingProfitDropInfo(
                 itemId = "MUTTON",
-                itemName = "Mutton",
-                itemDisplayName = "${COMMON}Mutton",
+                itemName = "Raw Mutton",
+                itemDisplayName = "${COMMON}Raw Mutton",
                 npcPrice = 5.0,
             ),
             FishingProfitDropInfo(
@@ -1250,6 +1350,12 @@ class FishingProfitDrops {
                 itemName = "Rabbit Hide",
                 itemDisplayName = "${COMMON}Rabbit Hide",
                 npcPrice = 5.0,
+            ),
+            FishingProfitDropInfo(
+                itemId = "ENCHANTED_RABBIT_HIDE",
+                itemName = "Enchanted Rabbit Hide",
+                itemDisplayName = "${UNCOMMON}Enchanted Rabbit Hide",
+                npcPrice = 800.0,
             ),
             FishingProfitDropInfo(
                 itemId = "RABBIT_FOOT",
@@ -1460,6 +1566,12 @@ class FishingProfitDrops {
                 npcPrice = 500.0,
             ),
             FishingProfitDropInfo(
+                itemId = "BOX_OF_JUNK",
+                itemName = "Box of Junk",
+                itemDisplayName = "${RARE}Box of Junk",
+                npcPrice = null,
+            ),
+            FishingProfitDropInfo(
                 itemId = "ALLIGATOR_SKIN",
                 itemName = "Alligator Skin",
                 itemDisplayName = "${EPIC}Alligator Skin",
@@ -1493,14 +1605,14 @@ class FishingProfitDrops {
                 itemName = "Agatha's Coupon",
                 itemDisplayName = "${UNCOMMON}Agatha's Coupon",
                 npcPrice = 10_000.0,
-                ignoreFromInventory = true,
+                ignoreItemPickup = true, // Counted from contest chat message
             ),
             FishingProfitDropInfo(
                 itemId = "ESSENCE_FOREST",
                 itemName = "Forest Essence",
                 itemDisplayName = "${COMMON}Forest Essence",
                 npcPrice = null,
-                ignoreFromInventory = true,
+                ignoreItemPickup = true, // Counted from contest chat message
             ),
             FishingProfitDropInfo(
                 itemId = "SWAMP_THE_FISH",
@@ -1603,6 +1715,13 @@ class FishingProfitDrops {
                 categories = listOf(PET_ITEM_CATEGORY),
             ),
             FishingProfitDropInfo(
+                itemId = "PET_ITEM_FORAGING_SKILL_BOOST_EPIC",
+                itemName = "Foraging Exp Boost (EPIC)", // From Ent
+                itemDisplayName = "${EPIC}Foraging Exp Boost +50%",
+                npcPrice = null,
+                categories = listOf(PET_ITEM_CATEGORY),
+            ),
+            FishingProfitDropInfo(
                 itemId = "MOUND_OF_SEAGRASS",
                 itemName = "Mound of Seagrass",
                 itemDisplayName = "${EPIC}Mound of Seagrass",
@@ -1673,7 +1792,7 @@ class FishingProfitDrops {
                 itemName = "Miria's Coupon",
                 itemDisplayName = "${RARE}Miria's Coupon",
                 npcPrice = 15_000.0,
-                ignoreFromInventory = true,
+                ignoreItemPickup = true, // Counted from contest chat message
             ),
             FishingProfitDropInfo(
                 itemId = "HELIX_LOG",
@@ -1847,6 +1966,13 @@ class FishingProfitDrops {
                 itemName = "Pyroclastic Scale",
                 itemDisplayName = "${UNCOMMON}Pyroclastic Scale",
                 npcPrice = 50.0,
+            ),
+            FishingProfitDropInfo(
+                itemId = "PET_ITEM_COMBAT_SKILL_BOOST_EPIC", // From Pyroclastic Worm
+                itemName = "Combat Exp Boost (EPIC)",
+                itemDisplayName = "${EPIC}Combat Exp Boost +50%",
+                npcPrice = null,
+                categories = listOf(PET_ITEM_CATEGORY),
             ),
             FishingProfitDropInfo(
                 itemId = "FLAMING_HEART",
@@ -2145,6 +2271,12 @@ class FishingProfitDrops {
                 npcPrice = 256_000.0,
             ),
             FishingProfitDropInfo(
+                itemId = "PUMPKIN_GUTS",
+                itemName = "Pumpkin Guts",
+                itemDisplayName = "${UNCOMMON}Pumpkin Guts",
+                npcPrice = null,
+            ),
+            FishingProfitDropInfo(
                 itemId = "LUCKY_HOOF",
                 itemName = "Lucky Hoof",
                 itemDisplayName = "${UNCOMMON}Lucky Hoof",
@@ -2248,7 +2380,6 @@ class FishingProfitDrops {
                 itemName = "Walnut",
                 itemDisplayName = "${UNCOMMON}Walnut",
                 npcPrice = 200.0,
-                shouldAnnounceRareDrop = true,
             ),
             FishingProfitDropInfo(
                 itemId = "WHITE_GIFT",
@@ -2285,6 +2416,7 @@ class FishingProfitDrops {
                 itemName = "Hunk of Blue Ice",
                 itemDisplayName = "${RARE}Hunk of Blue Ice",
                 npcPrice = 25_000.0,
+                shouldAnnounceRareDrop = true,
             ),
             FishingProfitDropInfo(
                 itemId = "HILT_OF_TRUE_ICE",
@@ -2341,6 +2473,12 @@ class FishingProfitDrops {
                 itemDisplayName = "${RARE}Shark Fin",
                 npcPrice = 200.0,
                 compactedItemName = "Enchanted Shark Fin",
+            ),
+            FishingProfitDropInfo(
+                itemId = "ENCHANTED_SHARK_FIN",
+                itemName = "Enchanted Shark Fin",
+                itemDisplayName = "${EPIC}Enchanted Shark Fin",
+                npcPrice = 32_000.0,
             ),
             FishingProfitDropInfo(
                 itemId = "MEGALODON;3",

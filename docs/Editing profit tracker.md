@@ -5,6 +5,7 @@
 - [Intro](#intro)
 - [Getting tracker items](#getting-tracker-items)
 - [Editing tracker items](#editing-tracker-items)
+- [Editing catches](#editing-catches)
 - [Editing elapsed time](#editing-elapsed-time)
 
 ## Intro
@@ -114,6 +115,34 @@ Examples:
 - Legendary Flying Fish level 100: `FLYING_FISH;4+100`
 - Epic Squid level 100: `SQUID;3+100`
 - Legendary Golden Dragon level 200: `GOLDEN_DRAGON;4+200`
+
+## Editing catches
+
+When **Track catches** is enabled, the overlay shows a **Catches** line. You can manage it with the following commands.
+
+| Action | [Session] | [Total] |
+|--------|-----------|---------|
+| Reset catches (with confirmation) | `/feeshResetCatchesFishingProfitTracker` | `/feeshResetCatchesFishingProfitTrackerTotal` |
+| Set / adjust catches | `/feeshSetCatchesFishingProfitTracker <COUNT>` | `/feeshSetCatchesFishingProfitTrackerTotal <COUNT>` |
+
+**`<COUNT>` formats**
+
+| Format | Meaning |
+|--------|---------|
+| `1234` | Set catches count to **1234** |
+| `+1` | Add **1** to current catches count |
+| `-1` | Subtract **1** from current catches count |
+
+Result must be more than or equal to 0. Invalid input shows an error in chat.
+
+Examples:
+
+```text
+/feeshSetCatchesFishingProfitTracker 1234
+/feeshSetCatchesFishingProfitTrackerTotal +100
+/feeshSetCatchesFishingProfitTracker -10
+/feeshResetCatchesFishingProfitTracker
+```
 
 ## Editing elapsed time
 

@@ -1,6 +1,10 @@
 package com.github.sleepypanda.feesh.constants
 
 object ModVersionConstants {
+    const val VERSION_1_18_0 = "1.18.0"
+    const val VERSION_1_17_0 = "1.17.0"
+    const val VERSION_1_16_0 = "1.16.0"
+    const val VERSION_1_15_0 = "1.15.0"
     const val VERSION_1_14_0 = "1.14.0"
     const val VERSION_1_13_0 = "1.13.0"
     const val VERSION_1_12_0 = "1.12.0"

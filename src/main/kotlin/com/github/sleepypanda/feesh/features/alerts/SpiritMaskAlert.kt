@@ -26,7 +26,7 @@ object SpiritMaskAlert {
         if (!SPIRIT_MASK_USED_PATTERN.matches(event.unformattedText)) return
 
         CommonUtils.showTitle("${DARK_PURPLE}Spirit Mask ${YELLOW}used")
-        SoundUtils.playSound()
+        SoundUtils.playMcSound()
 
         resetTimer()
 
@@ -43,7 +43,7 @@ object SpiritMaskAlert {
 
         if (!Alerts.alertOnSpiritMaskBack) return
         CommonUtils.showTitle("${DARK_PURPLE}Spirit Mask ${GREEN}is ready")
-        SoundUtils.playSound()
+        SoundUtils.playMcSound()
     }
 
     private fun onWorldChanged(event: WorldChangedEvent) {

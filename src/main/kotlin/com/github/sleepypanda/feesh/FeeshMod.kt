@@ -77,6 +77,8 @@ class FeeshMod : ClientModInitializer {
 
         // Event publishers
         SeaCreaturesPublisher.init()
+        TreasureCatchPublisher.init()
+        CatchPublisher.init()
         SeaCreaturesCocoonPublisher.init()
         RareDropsPublisher.init()
         PartyChatPublisher.init()
@@ -94,6 +96,7 @@ class FeeshMod : ClientModInitializer {
         ShurikenUsedPublisher.init()
 
         // Rendering
+        ReplaceAndTintLava.init()
         RareMobHighlight.init()
         HidePlayersNearBobber.init()
         HideTadgangNametags.init()
@@ -115,7 +118,7 @@ class FeeshMod : ClientModInitializer {
         SaltExpiredAlert.init()
         PlayerDeathAlert.init()
         LootshareAlert.init()
-        FishingBagDisabledAlert.init()
+        FishingBaitSackDisabledAlert.init()
         BaitAlert.init()
         SackDropsIntoInventoryAlert.init()
         WormTheFishCaughtAlert.init()
@@ -137,9 +140,12 @@ class FeeshMod : ClientModInitializer {
         TrophyFishDiscoveredMessage.init()
         HideTrophyCatchMessages.init()
         HideLootshareMessages.init()
+        PartyChatCommands.init()
 
         // PB
         DoubleHookPersonalBest.init()
+        TreasureCatchesStreakPersonalBest.init()
+        GreatOrOutstandingTreasuresStreakPersonalBest.init()
         MobyDuckPersonalBest.init()
 
         // Overlays
@@ -178,6 +184,7 @@ class FeeshMod : ClientModInitializer {
         ThunderBottleProgress.init()
         MobyDuckProgress.init()
         AutoRecombFlag.init()
+        FishingRodPartsAbbreviations.init()
         SlotTextRendererManager.init() // After all slot text renderers are initialized and registered
 
         ExpertiseTooltip.init()
@@ -194,9 +201,10 @@ class FeeshMod : ClientModInitializer {
         TerryShopPricesCommand.init()
         PlayTestSoundCommand.init()
         LogSoundsCommand.init()
+        LogPartyChatMessagesCommand.init()
         SetTrackerDropsCommand.init()
         PauseAllTrackersCommand.init()
-        BulkResetTrackersCommand.init()
+        BulkResetFishingSessionCommand.init()
 
         LOGGER.info("$MOD_NAME loaded successfully!")
     }

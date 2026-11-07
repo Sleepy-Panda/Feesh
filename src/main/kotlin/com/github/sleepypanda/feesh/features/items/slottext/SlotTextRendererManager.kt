@@ -4,6 +4,8 @@ import com.github.sleepypanda.feesh.FeeshMod
 import com.github.sleepypanda.feesh.events.EventBus
 import com.github.sleepypanda.feesh.events.models.ScreenBeforeInitEvent
 import com.github.sleepypanda.feesh.events.models.AfterSlotRenderedEvent
+import com.github.sleepypanda.feesh.features.items.slottext.models.SlotTextLine
+import com.github.sleepypanda.feesh.features.items.slottext.models.SlotTextPosition
 import com.github.sleepypanda.feesh.utils.ChatUtils.getUnformattedString
 import com.github.sleepypanda.feesh.utils.WorldUtils
 import net.minecraft.client.gui.Font
@@ -22,14 +24,9 @@ import net.minecraft.world.inventory.Slot
 object SlotTextRendererManager {
 
     private const val DEFAULT_SLOT_SIZE = 16
-    private const val SLOT_TEXT_SCALE = 0.7f
 
     private val renderers: MutableList<BaseSlotTextRenderer> = mutableListOf()
     private val enabledRenderers: MutableList<BaseSlotTextRenderer> = mutableListOf()
-
-    private fun drawStringCompat(context: GuiGraphics, textRenderer: Font, text: String, x: Int, y: Int, color: Int, shadow: Boolean) {
-        context.text(textRenderer, text, x, y, color, shadow)
-    }
 
     fun init() {
         EventBus.subscribe(AfterSlotRenderedEvent::class, ::onSlotRendered)
@@ -47,7 +44,7 @@ object SlotTextRendererManager {
     }
 
     private fun onScreenBeforeInit(@Suppress("UNUSED_PARAMETER") event: ScreenBeforeInitEvent) {
-        renderers.forEach { it.clearCache() }
+        clearAllCaches()
     }
 
     private fun onSlotRendered(event: AfterSlotRenderedEvent) {
@@ -64,49 +61,72 @@ object SlotTextRendererManager {
         val context = event.drawContext
 
         for (renderer in enabledRenderers) {
-            val text = renderer.itemTextCache.getOrPut(identifier) {
-                renderer.getItemStackSlotText(stack, screen, slot)
+            val lines = renderer.itemTextCache.getOrPut(identifier) {
+                renderer.getItemStackSlotLines(stack, screen, slot)
             } ?: continue
 
-            drawBottomLeftText(context, textRenderer, slot, text, renderer.getTextColor(), renderer.drawShadow())
+            drawSlotText(
+                context,
+                textRenderer,
+                slot,
+                lines,
+                renderer.drawShadow(),
+                renderer.getPosition(),
+                renderer.getTextScale()
+            )
         }
     }
 
-    private fun drawBottomLeftText(
+    private fun clearAllCaches() {
+        renderers.forEach { it.clearCache() }
+    }
+
+    private fun drawSlotText(
         context: GuiGraphics,
         textRenderer: Font,
         slot: Slot,
-        text: String,
-        color: Int,
-        shadow: Boolean
+        lines: List<SlotTextLine>,
+        shadow: Boolean,
+        position: SlotTextPosition,
+        scale: Float
     ) {
-        val scaledTextHeight = textRenderer.lineHeight * SLOT_TEXT_SCALE
-        val x = slot.x + 1
-        val y = slot.y + DEFAULT_SLOT_SIZE - scaledTextHeight
+        if (lines.isEmpty()) return
+
+        val scaledTextHeight = textRenderer.lineHeight * scale
 
         context.pose().pushMatrix()
-        context.pose().scale(SLOT_TEXT_SCALE, SLOT_TEXT_SCALE)
-        drawStringCompat(context, textRenderer, text, (x / SLOT_TEXT_SCALE).toInt(), (y / SLOT_TEXT_SCALE).toInt(), color, shadow)
+        context.pose().scale(scale, scale)
+
+        lines.forEachIndexed { index, line ->
+            val x = slot.x + 1
+            val y = when (position) {
+                SlotTextPosition.TOP_LEFT -> slot.y + 1 + index * scaledTextHeight
+                SlotTextPosition.BOTTOM_LEFT ->
+                    slot.y + 1 + DEFAULT_SLOT_SIZE - scaledTextHeight * (lines.size - index)
+            }
+
+            drawStringCompat(
+                context,
+                textRenderer,
+                line,
+                (x / scale).toInt(),
+                (y / scale).toInt(),
+                shadow
+            )
+        }
+
         context.pose().popMatrix()
     }
 
-    private fun drawBottomRightText(
+    private fun drawStringCompat(
         context: GuiGraphics,
         textRenderer: Font,
-        slot: Slot,
-        text: String,
-        color: Int,
+        line: SlotTextLine,
+        x: Int,
+        y: Int,
         shadow: Boolean
     ) {
-        val scaledTextWidth = textRenderer.width(text) * SLOT_TEXT_SCALE
-        val scaledTextHeight = textRenderer.lineHeight * SLOT_TEXT_SCALE
-        val x = slot.x + DEFAULT_SLOT_SIZE - scaledTextWidth - 1
-        val y = slot.y + DEFAULT_SLOT_SIZE - scaledTextHeight
-
-        context.pose().pushMatrix()
-        context.pose().scale(SLOT_TEXT_SCALE, SLOT_TEXT_SCALE)
-        drawStringCompat(context, textRenderer, text, (x / SLOT_TEXT_SCALE).toInt(), (y / SLOT_TEXT_SCALE).toInt(), color, shadow)
-        context.pose().popMatrix()
+        context.text(textRenderer, line.component, x, y, line.color, shadow)
     }
 
     private fun getStackIdentifier(stack: ItemStack): String {

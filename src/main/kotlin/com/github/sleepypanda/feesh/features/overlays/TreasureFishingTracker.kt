@@ -4,8 +4,9 @@ import com.github.sleepypanda.feesh.constants.RareDrops
 import com.github.sleepypanda.feesh.features.overlays.base.IResettableViewModeTracker
 import com.github.sleepypanda.feesh.features.overlays.base.TrackerViewMode
 import com.github.sleepypanda.feesh.events.EventBus
-import com.github.sleepypanda.feesh.events.models.ChatEvent
 import com.github.sleepypanda.feesh.events.models.ClientTickEvent
+import com.github.sleepypanda.feesh.events.models.TreasureCatchType
+import com.github.sleepypanda.feesh.events.models.TreasureCatchEvent
 import com.github.sleepypanda.feesh.events.models.GameClosedEvent
 import com.github.sleepypanda.feesh.events.models.RareDropEvent
 import com.github.sleepypanda.feesh.events.models.WorldChangedEvent
@@ -21,6 +22,7 @@ import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
 import com.github.sleepypanda.feesh.utils.data.PersistentDataManager
 import net.minecraft.network.chat.Component
+import java.text.DecimalFormat
 import java.util.Date
 
 object TreasureFishingTracker : IResettableViewModeTracker {
@@ -65,15 +67,13 @@ object TreasureFishingTracker : IResettableViewModeTracker {
     const val GUIDE_URL = "https://github.com/Sleepy-Panda/Feesh/blob/develop/docs/Editing%20treasure%20fishing%20tracker.md"
     private const val TOGGLE_VIEW_MODE_COMMAND = "feeshToggleTreasureFishingTrackerViewMode"
 
-    //  GOOD JUNK CATCH! You caught a Rusty Coin!
-    private val PATTERN_TREASURE_CATCH = Regex("^. (GOOD|GOOD JUNK|GREAT|GREAT JUNK|OUTSTANDING|OUTSTANDING JUNK) CATCH!")
-
     private val data: TreasureFishingData
         get() = PersistentDataManager.feeshData.treasureFishing
     private var lastTreasureCaughtAt: Date? = null
     private var tickCounter = 0
     private const val TICKS_PER_UPDATE = 20
     private val baseTitle = "${AQUA}${BOLD}Treasure fishing tracker"
+    private val catchPercentFormat = DecimalFormat("#.##")
     private val treasureDye = RareDrops.rareDrops.find { it.itemName == "Treasure Dye" }!!
 
     private val gui = FeeshGui()
@@ -81,9 +81,9 @@ object TreasureFishingTracker : IResettableViewModeTracker {
         .setClickable(true)
         .setSampleLines(listOf(
             "$baseTitle ${GRAY}[${GREEN}Session${GRAY}]",
-            "${GRAY}- ${DARK_PURPLE}Good catch${GRAY}: ${WHITE}100",
-            "${GRAY}- ${GOLD}Great catch${GRAY}: ${WHITE}50",
-            "${GRAY}- ${LIGHT_PURPLE}Outstanding catch${GRAY}: ${WHITE}10",
+            "${GRAY}- ${DARK_PURPLE}Good catch${GRAY}: ${WHITE}100 ${GRAY}62.5%",
+            "${GRAY}- ${GOLD}Great catch${GRAY}: ${WHITE}50 ${GRAY}31.25%",
+            "${GRAY}- ${LIGHT_PURPLE}Outstanding catch${GRAY}: ${WHITE}10 ${GRAY}6.25%",
             "${GRAY}Total Treasures: ${WHITE}160",
             "",
             "${GOLD}Treasure Dyes${GRAY}: ${WHITE}2",
@@ -100,7 +100,7 @@ object TreasureFishingTracker : IResettableViewModeTracker {
     fun init() {
         registerViewModeResetCommands()
         registerCommands()
-        EventBus.subscribe(ChatEvent::class, ::onChat)
+        EventBus.subscribe(TreasureCatchEvent::class, ::onTreasureCaught)
         EventBus.subscribe(ClientTickEvent::class, ::onClientTick)
         EventBus.subscribe(WorldChangedEvent::class, ::onWorldChanged)
         EventBus.subscribe(RareDropEvent::class, ::onRareDrop)
@@ -149,13 +149,11 @@ object TreasureFishingTracker : IResettableViewModeTracker {
         }
     }
 
-    private fun onChat(event: ChatEvent) {
+    private fun onTreasureCaught(event: TreasureCatchEvent) {
         if (!Overlays.treasureFishingTrackerOverlay || !WorldUtils.isInSkyblock() || !WorldUtils.isInFishingWorld()) return
+        if (event.type == TreasureCatchType.MUSICAL) return
 
-        CommonUtils.runWithCatching("Failed to track treasure catch") {
-            val matchResult = PATTERN_TREASURE_CATCH.find(event.unformattedText) ?: return@onChat
-            trackTreasureCatch(matchResult.groupValues[1].lowercase())
-        }
+        trackTreasureCatch(event.type)
     }
 
     private fun onClientTick(@Suppress("UNUSED_PARAMETER") event: ClientTickEvent) {
@@ -275,27 +273,28 @@ object TreasureFishingTracker : IResettableViewModeTracker {
         }
     }
 
-    private fun trackTreasureCatch(treasureType: String) {
+    private fun trackTreasureCatch(treasureType: TreasureCatchType) {
         CommonUtils.runWithCatching("Failed to track treasure catch") {
             if (!Overlays.treasureFishingTrackerOverlay || !WorldUtils.isInSkyblock() || !WorldUtils.isInFishingWorld()) return
 
             lastTreasureCaughtAt = Date()
-            when (treasureType.lowercase()) {
-                "good", "good junk" -> {
+            when (treasureType) {
+                TreasureCatchType.GOOD, TreasureCatchType.GOOD_JUNK -> {
                     data.total.catches.good++
                     data.session.catches.good++
                     data.total.treasureDyes.catchesBreakdown.good++
                 }
-                "great", "great junk" -> {
+                TreasureCatchType.GREAT, TreasureCatchType.GREAT_JUNK -> {
                     data.total.catches.great++
                     data.session.catches.great++
                     data.total.treasureDyes.catchesBreakdown.great++
                 }
-                "outstanding", "outstanding junk" -> {
+                TreasureCatchType.OUTSTANDING, TreasureCatchType.OUTSTANDING_JUNK -> {
                     data.total.catches.outstanding++
                     data.session.catches.outstanding++
                     data.total.treasureDyes.catchesBreakdown.outstanding++
                 }
+                else -> return
             }
             data.total.treasureDyes.updateAfterCatch(false)
             updateGuiLines()
@@ -334,13 +333,14 @@ object TreasureFishingTracker : IResettableViewModeTracker {
         val viewModeText = getViewModeDisplayText(viewMode)
         val nextMode = if (viewMode == TrackerViewMode.SESSION) TrackerViewMode.TOTAL else TrackerViewMode.SESSION
         val nextModeText = getViewModeDisplayText(nextMode)
+        val total = catches.totalCatches()
 
         val lines = mutableListOf<LineInfo>()
         lines.add(LineInfo("$baseTitle $viewModeText"))
-        lines.add(LineInfo("${GRAY}- ${DARK_PURPLE}Good catch${GRAY}: ${WHITE}${CommonUtils.formatNumberWithSpaces(catches.good)}"))
-        lines.add(LineInfo("${GRAY}- ${GOLD}Great catch${GRAY}: ${WHITE}${CommonUtils.formatNumberWithSpaces(catches.great)}"))
-        lines.add(LineInfo("${GRAY}- ${LIGHT_PURPLE}Outstanding catch${GRAY}: ${WHITE}${CommonUtils.formatNumberWithSpaces(catches.outstanding)}"))
-        lines.add(LineInfo("${GRAY}Total Treasures: ${WHITE}${CommonUtils.formatNumberWithSpaces(catches.totalCatches())}"))
+        lines.add(LineInfo(getCatchLine("${DARK_PURPLE}Good catch", catches.good, total)))
+        lines.add(LineInfo(getCatchLine("${GOLD}Great catch", catches.great, total)))
+        lines.add(LineInfo(getCatchLine("${LIGHT_PURPLE}Outstanding catch", catches.outstanding, total)))
+        lines.add(LineInfo("${GRAY}Total Treasures: ${WHITE}${CommonUtils.formatNumberWithSpaces(total)}"))
         lines.add(LineInfo(""))
         lines.addAll(data.total.treasureDyes.getOverlayLines(treasureDye.displayName, "treasure"))
         val catchesSinceLastDye = data.total.treasureDyes.catchesBreakdown
@@ -372,6 +372,11 @@ object TreasureFishingTracker : IResettableViewModeTracker {
             "  ${DARK_PURPLE}Good${GRAY}: ${WHITE}${CommonUtils.formatNumberWithSpaces(catches.good)} ${GRAY}-> ${WHITE}${formatTooltipPercent(catches.good / 1_000_000.0 * 100.0)}",
         )
         return lines.map { Component.literal(it) }
+    }
+
+    private fun getCatchLine(label: String, count: Int, total: Int): String {
+        val percent = if (total > 0) count * 100.0 / total else 0.0
+        return "${GRAY}- ${label}${GRAY}: ${WHITE}${CommonUtils.formatNumberWithSpaces(count)} ${GRAY}${catchPercentFormat.format(percent)}%"
     }
 
     private fun formatTooltipPercent(percent: Double): String {

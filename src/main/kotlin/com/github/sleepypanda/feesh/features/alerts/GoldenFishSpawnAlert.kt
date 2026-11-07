@@ -21,6 +21,6 @@ object GoldenFishSpawnAlert {
         if (!PATTERN.matches(event.unformattedText)) return
 
         CommonUtils.showTitle("${WHITE}Catch the ${GOLD}Golden Fish")
-        SoundUtils.playSound(SoundEvents.FISH_SWIM)
+        SoundUtils.playMcSound(SoundEvents.FISH_SWIM)
     }
 }

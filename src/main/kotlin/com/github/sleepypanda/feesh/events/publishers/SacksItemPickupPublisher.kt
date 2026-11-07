@@ -79,7 +79,7 @@ object SacksItemPickupPublisher {
 
         val cleanName = ItemUtils.getCleanItemName(itemName)
         val dropInfo = FishingProfitDrops.getFishingProfitItemByName(cleanName) ?: return null
-        if (dropInfo.ignoreFromInventory) return null
+        if (dropInfo.ignoreItemPickup) return null
         if (shouldSkipItem(dropInfo)) return null
 
         return SacksProfitItemsPickupEvent.SacksProfitPickupItem(

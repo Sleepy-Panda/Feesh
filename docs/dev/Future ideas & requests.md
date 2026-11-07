@@ -25,7 +25,6 @@
 
 ## Fishing profit tracker
 
-- Track Moby Duck, bought rain, consumed bait (exclude from profits).
 - Add levelled Magma Necklaces as some people level them for profits. Vanquished Magma Necklace upgraded to +10☠! Vanquished Magma Necklace upgraded to +1☠!
 - Use drop # in the chat message based on current profit tracker.
 - Option to render icons instead of item names
@@ -127,16 +126,6 @@ It might be not 100% correct due to how Hypixel API works, the person who reques
 - Leaderboards tracker, to see if someone passed your position.
 
 ## Inventory features
-
-- Full amount of expertise kills on your rod: rn i use skyhanni for that but it only says "Expertise Kills: 1M (Maxed)" while badlion used to display the whole number
-- Offer supercrafting or BZ sell when items like raw fish goes to inventory (sacks are full).
-
-## Baits
-
-- SB added the functionality of your current bait being slown in slot #9 while fishing
-- Bait changed alert
-- No bait used alert
-- Track baits cost in Fishing profit tracker
 
 ## Fishing bosses
 

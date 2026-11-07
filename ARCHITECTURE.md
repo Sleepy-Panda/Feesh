@@ -8,6 +8,7 @@ The project supports multiple Minecraft versions through a multi-module Gradle s
 
 - `26.1-fabric`
 - `26.2-fabric`
+- `26.3-fabric`
 
 Each version module uses the same root build script and shares the same source tree.
 

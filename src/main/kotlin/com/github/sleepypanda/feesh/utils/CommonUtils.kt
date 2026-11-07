@@ -9,6 +9,14 @@ import net.minecraft.network.chat.Component
 import kotlin.math.abs
 
 object CommonUtils {
+    /**
+     * Shows a title with an optional subtitle.
+     * @param title The title to show.
+     * @param subtitle The optional subtitle to show.
+     * @param fadeIn The fade in time in ticks.
+     * @param stay The stay time in ticks.
+     * @param fadeOut The fade out time in ticks.
+     */
     fun showTitle(title: String, subtitle: String? = null, fadeIn: Int = 0, stay: Int = 40, fadeOut: Int = 10) {      
         val mc = FeeshMod.mc
         mc.showTitleCompat(Component.literal(title), Component.literal(subtitle ?: " "), fadeIn, stay, fadeOut)
@@ -98,7 +106,8 @@ object CommonUtils {
     }
 
     /**
-     * Formats a number to a short representation (e.g., 1000 -> "1k", 1000000 -> "1M", 100500 -> "100.5k", 1500000 -> "1.5M")
+     * Formats a number to a short representation (e.g., 1000 -> "1k", 1000000 -> "1M", 100500 -> "100.5k", 1500000 -> "1.5M", 1560000000 -> "1.56B")
+     * Can use . or , as a separator depending on locale.
      * @param number The number to format.
      * @return The formatted string or null if the number is 0 or invalid.
      */
@@ -110,9 +119,10 @@ object CommonUtils {
  
         var formattedNumber = when {
             absNumber >= 1_000_000_000 -> {
-                String.format("%.1fB", absNumber / 1_000_000_000.0)
-                    .replace(".0B", "B")
-                    .replace(",0B", "B")
+                val billions = String.format("%.2f", absNumber / 1_000_000_000.0)
+                    .trimEnd('0')
+                    .trimEnd('.', ',')
+                "${billions}B"
             }
             absNumber >= 1_000_000 -> {
                 String.format("%.1fM", absNumber / 1_000_000.0)
@@ -177,6 +187,7 @@ object CommonUtils {
             MYTHIC.code -> 5
             DIVINE.code -> 6
             SPECIAL.code -> 7
+            VERY_SPECIAL.code -> 8
             else -> 0
         }
     }
@@ -196,6 +207,7 @@ object CommonUtils {
             5 -> MYTHIC.code
             6 -> DIVINE.code
             7 -> SPECIAL.code
+            8 -> VERY_SPECIAL.code
             else -> COMMON.code
         }
     }
@@ -215,6 +227,7 @@ object CommonUtils {
             MYTHIC.code -> "Mythic"
             DIVINE.code -> "Divine"
             SPECIAL.code -> "Special"
+            VERY_SPECIAL.code -> "Very Special"
             else -> ""
         }
     }

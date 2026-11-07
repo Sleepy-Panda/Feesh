@@ -125,7 +125,7 @@ object ConsumablesTimer {
             mobyDuckData.isAlerted = true
             CommonUtils.showTitle("${DARK_PURPLE}Moby-Duck ${RED}expires soon")
             if (General.soundMode == SoundMode.MEME) SoundUtils.playCustomSound(Sounds.FEESH_NOTIFICATION_BELL)
-            else SoundUtils.playSound()
+            else SoundUtils.playMcSound()
         }
 
         mobyDuckData.isActive = true

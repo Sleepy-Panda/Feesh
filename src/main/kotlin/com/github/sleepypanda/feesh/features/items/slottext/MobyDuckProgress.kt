@@ -1,7 +1,7 @@
 package com.github.sleepypanda.feesh.features.items.slottext
 
 import com.github.sleepypanda.feesh.settings.categories.Items
-import com.github.sleepypanda.feesh.utils.ChatUtils.removeFormatting
+import com.github.sleepypanda.feesh.features.items.slottext.models.SlotTextLine
 import com.github.sleepypanda.feesh.utils.ChatUtils.getFormattedString
 import com.github.sleepypanda.feesh.utils.ItemUtils
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen
@@ -20,7 +20,7 @@ object MobyDuckProgress : BaseSlotTextRenderer() {
 
     override fun isEnabled(): Boolean = Items.showMobyDuckProgress
 
-    override fun getItemStackSlotText(stack: ItemStack, screen: AbstractContainerScreen<*>, slot: Slot): String? {
+    override fun getItemStackSlotLines(stack: ItemStack, screen: AbstractContainerScreen<*>, slot: Slot): List<SlotTextLine>? {
         if (stack.isEmpty) return null
         val name = ItemUtils.getCleanItemName(stack.hoverName.getFormattedString())
         if (name != "Moby-Duck") return null
@@ -30,9 +30,6 @@ object MobyDuckProgress : BaseSlotTextRenderer() {
         val secondsHeld = obj.get("seconds_held")?.asInt ?: 0
         val percent = truncate(secondsHeld.toDouble() / MAX_PROGRESS_SECONDS.toDouble() * 100.0).toInt()
         val percentSafe = percent.coerceIn(0, 100)
-        val slotText = "${percentSafe}%"
-        return slotText
+        return listOf(SlotTextLine("${percentSafe}%", PROGRESS_COLOR))
     }
-
-    override fun getTextColor(): Int = PROGRESS_COLOR
 }

@@ -180,7 +180,7 @@ object FishingFestivalTracker : IResettableTracker {
         CommonUtils.showTitle("${YELLOW}Fishing Festival ended")
 
         if (General.soundMode != SoundMode.OFF) {
-            SoundUtils.playSound()
+            SoundUtils.playMcSound()
         }
 
         val countsText = sharkInfos.zip(SHARK_NAMES.map { sharksCaught[it] ?: 0 }).joinToString(" ") { (info, count) ->
@@ -216,7 +216,7 @@ object FishingFestivalTracker : IResettableTracker {
                 "${LIGHT_PURPLE}${BOLD}PERSONAL BEST!${RESET} You caught ${WHITE}${BOLD}${previousTotalPb} ${GRAY}-> ${GREEN}${BOLD}$total${RESET} sharks during the Fishing Festival!",
                 true
             )
-            CommonUtils.showTitle("${LIGHT_PURPLE}${BOLD}PERSONAL BEST!", "Sharks: ${GREEN}$total")
+            CommonUtils.showTitle("${LIGHT_PURPLE}${BOLD}PERSONAL BEST!", "Sharks: ${GREEN}$total", stay = 60)
         }
 
         if (greatWhiteCount > previousGwPb) {
@@ -227,11 +227,11 @@ object FishingFestivalTracker : IResettableTracker {
                 "${LIGHT_PURPLE}${BOLD}PERSONAL BEST!${RESET} You caught ${WHITE}${BOLD}${previousGwPb} ${GRAY}-> ${GREEN}${BOLD}$greatWhiteCount${RESET} Great White Sharks during the Fishing Festival!",
                 true
             )
-            CommonUtils.showTitle("${LIGHT_PURPLE}${BOLD}PERSONAL BEST!", "Great White Sharks: ${GREEN}$greatWhiteCount")
+            CommonUtils.showTitle("${LIGHT_PURPLE}${BOLD}PERSONAL BEST!", "Great White Sharks: ${GREEN}$greatWhiteCount", stay = 60)
         }
 
         if (isNewTotalPb || isNewGwPb) {
-            SoundUtils.playSound(SoundEvents.PLAYER_LEVELUP)
+            SoundUtils.playMcSound(SoundEvents.PLAYER_LEVELUP)
             PersistentDataManager.saveFeeshDataToFileAsync()
         }
     }

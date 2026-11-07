@@ -158,7 +158,7 @@ object SeaCreaturesTracker : IResettableViewModeTracker {
     private fun onSeaCreatureCaught(event: OwnSeaCreatureCaughtEvent) {
 
         fun trackSeaCreatureCatch(sourceObj: SeaCreaturesData, seaCreatureName: String, valueToAdd: Int, isDoubleHook: Boolean) {
-            val key = seaCreatureName.uppercase()
+            val key = getSeaCreatureKey(seaCreatureName)
             val catchData = sourceObj.catches.getOrPut(key) { SeaCreatureCatchData() }
             catchData.amount += valueToAdd
             if (isDoubleHook) {
@@ -206,6 +206,10 @@ object SeaCreaturesTracker : IResettableViewModeTracker {
         saveData()
     }
 
+    private fun getSeaCreatureKey(seaCreatureName: String): String {
+        return seaCreatureName.uppercase()
+    }
+
     private fun isTrackerEnabledInWorld(): Boolean {
         if (!Overlays.seaCreaturesTrackerOverlay || !WorldUtils.isInSkyblock() || !WorldUtils.isInFishingWorld()) return false
         return true
@@ -231,6 +235,31 @@ object SeaCreaturesTracker : IResettableViewModeTracker {
             TrackerViewMode.SESSION -> data.session
             TrackerViewMode.TOTAL -> data.total
         }
+    }
+    
+    // Used to get the SeaCreatureInfo for a given key (if sea creature name exists in game),
+    // or mock details for unknown/legacy entries where sea creature is deleted from the game
+    private fun getSeaCreatureInfo(key: String): SeaCreatures.SeaCreatureInfo {
+ 
+        fun getKnownSeaCreatureInfo(nameOrKey: String): SeaCreatures.SeaCreatureInfo? {
+            val normalized = nameOrKey.trim()
+            return SeaCreatures.allSeaCreatures.find { it.name.equals(normalized, ignoreCase = true) }
+        }
+    
+        fun getUnknownSeaCreatureInfo(key: String): SeaCreatures.SeaCreatureInfo {
+            val name = key.lowercase().split(" ").joinToString(" ") { word ->
+                word.replaceFirstChar { char -> char.titlecase() }
+            }
+            return SeaCreatures.SeaCreatureInfo(
+                name = name,
+                rarityColorCode = GRAY.code,
+                pattern = Regex("\\b\\B"),
+                isRare = false,
+                canBeDoubleHooked = true,
+            )
+        }
+
+        return getKnownSeaCreatureInfo(key) ?: getUnknownSeaCreatureInfo(key)
     }
 
     private fun onGameClosed(@Suppress("UNUSED_PARAMETER") event: GameClosedEvent) {
@@ -295,7 +324,7 @@ object SeaCreaturesTracker : IResettableViewModeTracker {
             return newCount
         }
 
-        fun findSeaCreatureInfoByName(name: String): SeaCreatures.SeaCreatureInfo? {
+        fun findKnownSeaCreatureInfoByName(name: String): SeaCreatures.SeaCreatureInfo? {
             return SeaCreatures.allSeaCreatures.find { it.name.equals(name.trim(), ignoreCase = true) }
         }
 
@@ -334,14 +363,14 @@ object SeaCreaturesTracker : IResettableViewModeTracker {
                 return
             }
 
-            val seaCreatureInfo = findSeaCreatureInfoByName(seaCreatureName)
+            val seaCreatureInfo = findKnownSeaCreatureInfoByName(seaCreatureName)
             if (seaCreatureInfo == null) {
                 ChatUtils.sendLocalChat("${RED}Sea creature name is not supported: $seaCreatureName", true)
                 return
             }
 
             val sourceObj = getSourceObject(viewMode)
-            val key = seaCreatureInfo.name.uppercase()
+            val key = getSeaCreatureKey(seaCreatureInfo.name)
             val existing = sourceObj.catches[key]
 
             val previousCaught = existing?.amount ?: 0
@@ -446,28 +475,26 @@ object SeaCreaturesTracker : IResettableViewModeTracker {
 
             val sourceObj = getSourceObject(viewMode)
             val isConfirmed = args.isNotEmpty() && args.last() == "noconfirm"
-            val seaCreatureName = if (isConfirmed) args.dropLast(1).joinToString(" ") else args.joinToString(" ")
-            val normalizedName = seaCreatureName.trim()
-            if (normalizedName.isBlank()) {
+            val seaCreatureName = if (isConfirmed) args.dropLast(1).joinToString(" ").trim() else args.joinToString(" ").trim()
+            if (seaCreatureName.isBlank()) {
                 ChatUtils.sendLocalChat("${RED}Sea creature name is required.", true)
                 return
             }
 
-            val key = sourceObj.catches.keys.find { it.equals(normalizedName, ignoreCase = true) }
-                ?: SeaCreatures.allSeaCreatures.find { it.name.equals(normalizedName, ignoreCase = true) }?.name?.uppercase()
+            val key = sourceObj.catches.keys.find { it.equals(seaCreatureName, ignoreCase = true) }
             if (key == null || !sourceObj.catches.containsKey(key)) {
-                ChatUtils.sendLocalChat("${RED}Sea creature is not found in Sea creatures tracker, nothing to delete: $normalizedName", true)
+                ChatUtils.sendLocalChat("${RED}Sea creature is not found in Sea creatures tracker, nothing to delete: $seaCreatureName", true)
                 return
             }
 
             val entry = sourceObj.catches[key] ?: return
-            val seaCreatureInfo = SeaCreatures.allSeaCreatures.find { it.name.uppercase() == key }
-            val displayName = seaCreatureInfo?.displayName ?: key
+            val seaCreatureInfo = getSeaCreatureInfo(key)
+            val displayName = seaCreatureInfo.displayName
             val viewModeText = getViewModeDisplayText(viewMode)
             if (!isConfirmed) {
                 val command = when (viewMode) {
-                    TrackerViewMode.SESSION -> "$DELETE_SEA_CREATURE_COMMAND ${seaCreatureInfo?.name ?: key} noconfirm"
-                    TrackerViewMode.TOTAL -> "$DELETE_SEA_CREATURE_TOTAL_COMMAND ${seaCreatureInfo?.name ?: key} noconfirm"
+                    TrackerViewMode.SESSION -> "$DELETE_SEA_CREATURE_COMMAND ${seaCreatureInfo.name} noconfirm"
+                    TrackerViewMode.TOTAL -> "$DELETE_SEA_CREATURE_TOTAL_COMMAND ${seaCreatureInfo.name} noconfirm"
                 }
                 ChatUtils.sendLocalChat("${WHITE}Do you want to delete ${displayName}${WHITE} from Sea creatures tracker ${viewModeText}${WHITE}?", true)
                 ChatUtils.sendLocalChatWithCommand(
@@ -498,7 +525,7 @@ object SeaCreaturesTracker : IResettableViewModeTracker {
     private fun onDeleteSeaCreatureInline(seaCreatureKey: String) {
         CommonUtils.runWithCatching("Failed to delete sea creature from Sea creatures tracker") {
             val viewMode = getCurrentViewMode()
-            val seaCreatureInfo = SeaCreatures.allSeaCreatures.find { it.name.uppercase() == seaCreatureKey } ?: return
+            val seaCreatureInfo = getSeaCreatureInfo(seaCreatureKey)
             onDeleteSeaCreatureCommand(arrayOf(seaCreatureInfo.name), viewMode)
         }
     }
@@ -521,8 +548,7 @@ object SeaCreaturesTracker : IResettableViewModeTracker {
             val sorting = Overlays.seaCreaturesTrackerSorting
 
             val entries = sourceObj.catches.mapNotNull { (key, value) ->
-                val seaCreatureInfo = SeaCreatures.allSeaCreatures.find { it.name.uppercase() == key }
-                if (seaCreatureInfo == null) return@mapNotNull null
+                val seaCreatureInfo = getSeaCreatureInfo(key)
                 if (displayMode == SeaCreaturesTrackerDisplayMode.ONLY_RARE && !seaCreatureInfo.isRare) return@mapNotNull null
 
                 val caughtAmount = value.amount
@@ -739,7 +765,7 @@ object SeaCreaturesTracker : IResettableViewModeTracker {
         fun getDoubleHookCatches(catches: MutableMap<String, SeaCreatureCatchData>): Int {
             var doubleHookSum = 0
             for ((key, catchData) in catches) {
-                val info = SeaCreatures.allSeaCreatures.find { it.name.uppercase() == key } ?: continue
+                val info = getSeaCreatureInfo(key)
                 if (!info.canBeDoubleHooked) continue
                 doubleHookSum += catchData.doubleHookAmount
             }
@@ -747,7 +773,7 @@ object SeaCreaturesTracker : IResettableViewModeTracker {
         }
 
         fun getRareCatches(sourceObj: SeaCreaturesData): MutableMap<String, SeaCreatureCatchData>  {
-            return sourceObj.catches.filter { (k, v) -> SeaCreatures.allSeaCreatures.find { it.name.uppercase() == k }?.isRare == true }.toMutableMap()
+            return sourceObj.catches.filter { (k, v) -> SeaCreatures.allSeaCreatures.find { getSeaCreatureKey(it.name) == k }?.isRare == true }.toMutableMap()
         }
 
         val totalCaughtAmount = sourceObj.totalCount

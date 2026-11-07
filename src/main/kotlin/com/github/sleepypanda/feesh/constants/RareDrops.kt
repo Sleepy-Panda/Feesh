@@ -156,7 +156,7 @@ class RareDrops {
                 itemName = RareDropTypes.BURNT_TEXTS.displayName,
                 rarityColorCode = LEGENDARY.code,
                 npcPrice = 1_000_000,
-                isExtremelyRare = false,
+                isExtremelyRare = true,
                 defaultSoundFileName = Sounds.FEESH_OH_MY_GOD
             ),
             RareDropInfo(

@@ -1,10 +1,105 @@
-# 1.15.0
+# 1.18.0
 
 Released on: ???
 
 ## Features
 
+- Added ability to move GUIs using arrow keys in `/feeshMoveAllGuis`.
+
+# 1.17.0
+
+Released on: 2026-11-01
+
+## Features
+
+- Added party chat commands `!feesh c/h` (`!feesh catches/h`) and `!feesh sc/h`.
+- Simplified way of customizing sounds for catch/drop alerts. No resource pack is needed anymore!
+  - Now .ogg sounds should be just copied directly to the `config/feesh/sounds` folder, instead of resource pack. No game restart needed.
+  - Editing of `userCatchSounds.json` and `userDropSounds.json` also requires no game restart.
+  - If you had resource pack, sounds from it should work for now, but you can remove it and migrate to new approach.
+  - Updated guide: [Custom sounds guide](https://github.com/Sleepy-Panda/Feesh/blob/develop/docs/Custom%20sounds%20guide.md)
+- Added new drops from Magic Find rework Alpha to be recognized by Fishing profit tracker.
+
 ## Bugfixes
+
+- Fixed "supercraft" chat button not working when Raw Cod overflows into the inventory.
+- Fixed broken Deployables tracker/alerts for Umberella that has a skin.
+- Fixed hatched Dragon pet eggs (level 100) being added to the Profit tracker.
+  - Basically they were counting twice, at level 100 and then 200.
+- Slightly randomized achat messages to see if it helps with avoiding "you cannot send the same message twice" when sharing boss coords.
+
+# 1.16.0
+
+Released on: 2026-10-18
+
+## Features
+
+- Added option to replace lava with water and remove orange lava fog for Crimson Isle/CH [disabled by default].
+  - You can also tint the water with any color.
+- Added party chat commands to let your party explore mod data from the trackers. Responds in party chat when someone sends `!feesh` commands:
+  - `!feesh profit` - shows the profit for Fishing profit tracker [Session]
+  - `!feesh profittotal` - shows the profit for Fishing profit tracker [Total]
+  - `!feesh profit top1` - shows the top profit item for Fishing profit tracker [Session]
+  - `!feesh profittotal top1` - shows the top profit item for Fishing profit tracker [Total]
+  - `!feesh profit <item name>` - first match by full/partial item name for Fishing profit tracker [Session]
+  - `!feesh profittotal <item name>` - first match by full/partial item name for Fishing profit tracker [Total]
+  - Planning to add more commands in the future; let me know what commands would be useful!
+- Made sea creatures HP display more compact and colored sea creature names according to their rarity.
+- Added % to catch types in Treasure fishing tracker.
+- Added Pumpkin Guts to the Fishing profit tracker (new drop on alpha).
+
+## Bugfixes
+
+- Disabled Treasure/Golden Bait being counted in the profit tracker (until Hypixel fixes bug or I fugure out workaround).
+  - It's intended to be counted as profit when bait is added by Seal pet, but in fact Hypixel sends both refunded baits and new baits in sacks pickup message, so I can't easily distinguish source.
+- Fixed double counting of Treasure shards that go to the inventory instead of hunting box (e.g. Salmon Shard).
+
+# 1.15.1
+
+Released on: 2026-10-07
+
+## Features
+
+- Changed Nutcracker to not be enabled in alert/highlight/HP tracker by default for new users.
+
+## Bugfixes
+
+- Fixed shards caught as a Treasure not going into Fishing profit tracker.
+- Fixed coins caught as a Treasure not going into Fishing profit tracker.
+
+# 1.15.0
+
+Released on: 2026-10-06
+
+## Features
+
+- Added Minecraft 26.3 support.
+- Added option to toggle showing profit lines (Profit, Costs, Net profit) in Fishing profit tracker.
+  - By default, Costs and Net profit is shown.
+  - New settings replace previous "Track costs" setting! If you had Costs disabled, turn off Show Costs and Show Net profit.
+- Added option to track Catches & Catches/hour in Fishing profit tracker. You can disable it in settings.
+  - Hover over the Catches line while in inventory to see details such as profit per catch.
+  - You can initialize your past [Total] counter, using the commands from [the guide](https://github.com/Sleepy-Panda/Feesh/blob/develop/docs/Editing%20profit%20tracker.md#editing-catches).
+- Renamed command which resets data in the current fishing session - from `/feeshBulkResetTrackers` to `/feeshBulkResetFishingSession`.
+- Added option to show fishing rod parts abbreviations (Hook, Line, Sinker) in the item slot [disabled by default].
+- Added support of new Fishing Bait Sack for existing Alert when bait usage is disabled.
+- Added alert on weather event starting soon [disabled by default]. Also now you can select weather types for starts soon/ends soon alerts.
+- Personal Bests:
+  - Adjusted output of `/feeshPersonalBests` command to show PB date and description when hovering.
+  - Added Personal Best for Treasure catch streak (longest streak of treasure/junk catches in a row until a non-treasure catch).
+  - Added Personal Bests for Great treasure streak and Outstanding treasure streak.
+  - Made PB title stay a bit longer on the screen.
+- Made Magma Pillar shown in "Only rare" sea creatures tracker view.
+- Announce pickup of Hunk of Blue Ice into Fishing profit tracker (as they are somehow expensive), removed it for Walnut.
+- Show 2 decimals instead of 1 for big profit numbers (billions).
+
+## Bugfixes
+
+- Fixed maxed T-Rex pet not triggering alert and not going into Fishing profit tracker.
+
+## Other
+
+- Added `/feeshDebugLogPartyChatMessages` command to toggle duplicating outgoing party chat message into local chat.
 
 # 1.14.0
 

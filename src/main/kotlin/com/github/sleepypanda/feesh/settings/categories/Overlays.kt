@@ -5,18 +5,18 @@ import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
 import com.github.sleepypanda.feesh.utils.enums.DeployableTypes
 import com.github.sleepypanda.feesh.utils.enums.PricingModeWithNpc
-import com.github.sleepypanda.feesh.utils.ChatUtils
 import com.github.sleepypanda.feesh.utils.getScreenCompat
 import com.github.sleepypanda.feesh.utils.setScreenCompat
 import com.teamresourceful.resourcefulconfigkt.api.ObservableEntry
 import com.teamresourceful.resourcefulconfigkt.api.CategoryKt
 import com.github.sleepypanda.feesh.features.commands.PauseAllTrackersCommand
-import com.github.sleepypanda.feesh.features.commands.BulkResetTrackersCommand
+import com.github.sleepypanda.feesh.features.commands.BulkResetFishingSessionCommand
 import com.github.sleepypanda.feesh.settings.models.BulkResettableTrackerTypes
 import com.github.sleepypanda.feesh.features.commands.SetTrackerDropsCommand
 import com.github.sleepypanda.feesh.features.overlays.ArchfiendDiceProfitTracker
 import com.github.sleepypanda.feesh.features.overlays.BarnFishingTimer
 import com.github.sleepypanda.feesh.features.overlays.FishingProfitTracker
+import com.github.sleepypanda.feesh.features.overlays.FishingProfitTrackerCommands
 import com.github.sleepypanda.feesh.features.overlays.CrimsonIsleTracker
 import com.github.sleepypanda.feesh.features.overlays.FishingFestivalTracker
 import com.github.sleepypanda.feesh.features.overlays.JerryWorkshopTracker
@@ -34,8 +34,8 @@ import com.github.sleepypanda.feesh.settings.models.HpTrackableSeaCreatureTypes
 import com.github.sleepypanda.feesh.constants.ModVersionConstants
 import com.github.sleepypanda.feesh.settings.models.EfficiencyStatTypes
 import com.github.sleepypanda.feesh.utils.gui.MoveGuis
+import com.github.sleepypanda.feesh.utils.openUriCompat
 import net.minecraft.client.gui.screens.options.controls.KeyBindsScreen
-import net.minecraft.util.Util
 import java.awt.Color
 
 enum class SeaCreaturesTrackerDisplayMode(val displayName: String) {
@@ -126,8 +126,8 @@ object Overlays : CategoryKt("Overlays") {
 
     init {
         button {
-            title = "Bulk reset trackers keybind"
-            description = "Set a keybind in Minecraft's Controls menu to reset multiple trackers on button pressed (with confirmation). Resets [Session] only for trackers with Session/Total view modes.\nExecutes ${WHITE}/${BulkResetTrackersCommand.COMMAND_NAME}"
+            title = "Bulk reset fishing session data keybind"
+            description = "Set a keybind in Minecraft's Controls menu to reset different trackers/data in the current fishing session on button pressed (with confirmation). Resets [Session] only for trackers with Session/Total view modes.\nExecutes ${WHITE}/${BulkResetFishingSessionCommand.COMMAND_NAME}"
             text = "Click to open"
             onClick {
                 val mc = FeeshMod.mc
@@ -142,8 +142,8 @@ object Overlays : CategoryKt("Overlays") {
     var bulkResetTrackersList by select(
         *BulkResettableTrackerTypes.values().filter { it.isEnabledByDefault }.toTypedArray()
     ) {
-        this.name = Translated("Trackers to bulk reset on keybind")
-        this.description = Translated("Select which trackers' data to bulk reset when the keybind is pressed.")
+        this.name = Translated("Data to bulk reset when keybind is pressed")
+        this.description = Translated("Select which trackers/data to reset when the bulk reset fishing session data keybind is pressed.")
         this.searchTerms = BulkResettableTrackerTypes.values().map { it.displayName }.toList()
     }
 
@@ -253,7 +253,7 @@ ${GRAY}To reset [Total]: ${WHITE}/${SeaCreaturesTracker.RESET_TOTAL}
             description = "Opens a guide on how to adjust sea creature counts and statistics in Sea creatures tracker [Session] and [Total]."
             text = "Click to open"
             onClick {
-                Util.getPlatform().openUri("https://github.com/Sleepy-Panda/Feesh/blob/develop/docs/Editing%20sea%20creatures%20tracker.md")
+                openUriCompat("https://github.com/Sleepy-Panda/Feesh/blob/develop/docs/Editing%20sea%20creatures%20tracker.md")
             }
         }
     }
@@ -274,10 +274,10 @@ ${GRAY}To reset [Total]: ${WHITE}/${SeaCreaturesTracker.RESET_TOTAL}
         this.description = Translated("""
 ${GRAY}Shows an overlay with your profits you gained while fishing. This overlay has [Session] and [Total] view mode.
 ${GRAY}To count items added to your sacks, make sure to enable ${YELLOW}Skyblock Settings -> Personal -> Chat Feedback -> Sack Notifications
-${GRAY}To reset [Session]: ${WHITE}/${FishingProfitTracker.RESET_COMMAND}
-${GRAY}To reset [Total]: ${WHITE}/${FishingProfitTracker.RESET_TOTAL_COMMAND}
-${GRAY}To reset costs [Session]: ${WHITE}/${FishingProfitTracker.RESET_COSTS_COMMAND}
-${GRAY}To reset costs [Total]: ${WHITE}/${FishingProfitTracker.RESET_COSTS_TOTAL_COMMAND}
+
+${GRAY}To reset: ${WHITE}/${FishingProfitTracker.RESET_COMMAND} ${GRAY}for [Session] or ${WHITE}/${FishingProfitTracker.RESET_TOTAL_COMMAND} ${GRAY}for [Total]
+${GRAY}To reset Costs only: ${WHITE}/${FishingProfitTrackerCommands.RESET_COSTS_COMMAND} ${GRAY}for [Session] or ${WHITE}/${FishingProfitTrackerCommands.RESET_COSTS_TOTAL_COMMAND} ${GRAY}for [Total]
+${GRAY}To reset Catches only: ${WHITE}/${FishingProfitTrackerCommands.RESET_CATCHES_COMMAND} ${GRAY}for [Session] or ${WHITE}/${FishingProfitTrackerCommands.RESET_CATCHES_TOTAL_COMMAND} ${GRAY}for [Total]
 ${GRAY}To pause: ${WHITE}/${FishingProfitTracker.PAUSE_COMMAND}
         """.trimIndent())
     }
@@ -309,7 +309,7 @@ ${GRAY}To pause: ${WHITE}/${FishingProfitTracker.PAUSE_COMMAND}
         this.description = Translated("Items which are cheaper than the specified threshold in coins will be hidden in the fishing profit tracker [Session]. They will be grouped under 'Other items' section. Set to 0 to show all items.")
     }
 
-    var fishingProfitTrackerHideCheaperThanTotal by int(1_000_000) {
+    var fishingProfitTrackerHideCheaperThanTotal by int(10_000_000) {
         this.name = Translated("Hide cheap items [Total]")
         this.description = Translated("Items which are cheaper than the specified threshold in coins will be hidden in the fishing profit tracker [Total]. They will be grouped under 'Other items' section. Set to 0 to show all items.")
     }
@@ -321,10 +321,28 @@ ${GRAY}To pause: ${WHITE}/${FishingProfitTracker.PAUSE_COMMAND}
         this.slider = true
     }
 
-    var shouldTrackCostsInFishingProfitTracker by boolean(true) {
-        this.name = Translated("Track costs")
-        this.description = Translated("Track and show costs of the items spent while fishing - fishing bait, shurikens, or Moby-Duck used. Also shows net profit after subtracting costs from total profit. Not shown if price mode is set to NPC price!")
-        this.searchTerms = listOf(ModVersionConstants.VERSION_1_14_0)
+    var shouldShowTotalProfitInFishingProfitTracker by boolean(false) {
+        this.name = Translated("Show Profit line")
+        this.description = Translated("Show the Profit line (sum value of all drops without costs subtraction) in the Fishing profit tracker.")
+        this.searchTerms = listOf(ModVersionConstants.VERSION_1_15_0)
+    }
+
+    var shouldShowCostsInFishingProfitTracker by boolean(true) {
+        this.name = Translated("Show Costs line")
+        this.description = Translated("Show the Costs line (cost of the bait, shurikens, and Moby-Ducks spent while fishing) in the Fishing profit tracker. Counted as 0 when price mode is NPC price!")
+        this.searchTerms = listOf(ModVersionConstants.VERSION_1_14_0, ModVersionConstants.VERSION_1_15_0)
+    }
+
+    var shouldShowNetProfitInFishingProfitTracker by boolean(true) {
+        this.name = Translated("Show Net profit line")
+        this.description = Translated("Show the Net profit line (Profit minus Costs) in the Fishing profit tracker.")
+        this.searchTerms = listOf(ModVersionConstants.VERSION_1_14_0, ModVersionConstants.VERSION_1_15_0)
+    }
+
+    var shouldShowCatchesInFishingProfitTracker by boolean(true) {
+        this.name = Translated("Show catches line")
+        this.description = Translated("Track and show catches and catches/hour (times you successfully reeled in) in the Fishing profit tracker.")
+        this.searchTerms = listOf(ModVersionConstants.VERSION_1_15_0)
     }
 
     var shouldAnnounceRareDropsWhenPickup by boolean(true) {
@@ -338,8 +356,8 @@ ${GRAY}To pause: ${WHITE}/${FishingProfitTracker.PAUSE_COMMAND}
     }
 
     var shouldHideTimerInTotal by boolean(false) {
-        this.name = Translated("Hide timer and coins/h in [Total] view")
-        this.description = Translated("Hide timer and coins/h in the fishing profit tracker [Total] view. Useful if you want to add past drops to the tracker but do not know the elapsed time.")
+        this.name = Translated("Hide timer and metrics/h in [Total] view")
+        this.description = Translated("Hide timer and metrics/hour in the fishing profit tracker [Total] view. Useful if you added past drops to the tracker but do not know the elapsed time to set.")
     }
 
     var resetFishingProfitTrackerOnGameClosed by boolean(true) {
@@ -350,10 +368,10 @@ ${GRAY}To pause: ${WHITE}/${FishingProfitTracker.PAUSE_COMMAND}
     init {
         button {
             title = "Editing Fishing profit tracker guide"
-            description = "Opens a guide on how to adjust item counts and elapsed time in the Fishing profit tracker [Session] and [Total]."
+            description = "Opens a guide on how to initialize or fix data in the Fishing profit tracker [Session] and [Total]."
             text = "Click to open"
             onClick {
-                Util.getPlatform().openUri("https://github.com/Sleepy-Panda/Feesh/blob/develop/docs/Editing%20profit%20tracker.md")
+                openUriCompat("https://github.com/Sleepy-Panda/Feesh/blob/develop/docs/Editing%20profit%20tracker.md")
             }
         }
     }
@@ -525,7 +543,7 @@ Hidden if you have no fishing rod in your hotbar!""".trimIndent())
             description = "For settings above with custom text templates, please explore color codes and formatting codes."
             text = "Click to open"
             onClick {
-                Util.getPlatform().openUri("https://github.com/Sleepy-Panda/Feesh/blob/develop/docs/Colors%20and%20formatting%20guide.md")
+                openUriCompat("https://github.com/Sleepy-Panda/Feesh/blob/develop/docs/Colors%20and%20formatting%20guide.md")
             }
         }
     }
@@ -584,6 +602,7 @@ ${GRAY}To pause: ${WHITE}/${EfficiencyTracker.PAUSE_COMMAND}
     }
 
     var efficiencyTrackerStats by select(
+        EfficiencyStatTypes.CATCHES_PER_HOUR,
         EfficiencyStatTypes.SC_PER_HOUR,
     ) {
         this.name = Translated("Efficiency stats to display")
@@ -689,7 +708,7 @@ ${GRAY}To reset: ${WHITE}/${BayouTracker.RESET_COMMAND}
             description = "Opens a guide on how to initialize drop statistics for the Bayou tracker."
             text = "Click to open"
             onClick {
-                Util.getPlatform().openUri(SetTrackerDropsCommand.GUIDE_URL)
+                openUriCompat(SetTrackerDropsCommand.GUIDE_URL)
             }
         }
     }
@@ -724,7 +743,7 @@ ${GRAY}To reset: ${WHITE}/${WaterHotspotsTracker.RESET_COMMAND}
             description = "Opens a guide on how to initialize drop statistics for the Water Hotspots tracker."
             text = "Click to open"
             onClick {
-                Util.getPlatform().openUri(SetTrackerDropsCommand.GUIDE_URL)
+                openUriCompat(SetTrackerDropsCommand.GUIDE_URL)
             }
         }
     }
@@ -759,7 +778,7 @@ ${GRAY}To reset: ${WHITE}/${CrimsonIsleTracker.RESET_COMMAND}
             description = "Opens a guide on how to initialize drop statistics for the Crimson Isle tracker."
             text = "Click to open"
             onClick {
-                Util.getPlatform().openUri(SetTrackerDropsCommand.GUIDE_URL)
+                openUriCompat(SetTrackerDropsCommand.GUIDE_URL)
             }
         }
     }
@@ -845,7 +864,7 @@ ${GRAY}To reset: ${WHITE}/${LotusAtollTracker.RESET_COMMAND}
             description = "Opens a guide on how to initialize drop statistics for the Lotus Atoll tracker."
             text = "Click to open"
             onClick {
-                Util.getPlatform().openUri(SetTrackerDropsCommand.GUIDE_URL)
+                openUriCompat(SetTrackerDropsCommand.GUIDE_URL)
             }
         }
     }
@@ -881,7 +900,7 @@ ${GRAY}Reset total: ${WHITE}/${TreasureFishingTracker.RESET_TOTAL_COMMAND}
             description = "Opens a guide on how to set treasure catch counts and Treasure Dye drop statistics."
             text = "Click to open"
             onClick {
-                Util.getPlatform().openUri(TreasureFishingTracker.GUIDE_URL)
+                openUriCompat(TreasureFishingTracker.GUIDE_URL)
             }
         }
     }
