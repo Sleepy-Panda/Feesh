@@ -14,7 +14,8 @@
 		"SoundEngineMixin",
 		"AbstractSoundInstanceAccessor",
 		"FluidStateModelSetMixin",
-		"CameraMixin"
+		"CameraMixin",
+		"WaypointLabelMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

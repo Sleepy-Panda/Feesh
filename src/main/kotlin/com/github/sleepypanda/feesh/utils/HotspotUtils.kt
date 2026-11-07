@@ -64,12 +64,18 @@ object HotspotUtils {
                 alpha = 0.4f,
                 durationMillis = 30_000L,
                 throughWalls = true,
+                text = event.perk,
             )
         }
     }
 
     private fun onArmorStandDespawned(event: ArmorStandDespawnedEvent) {
+        val removed = knownHotspots.filter { it.entity.id == event.armorStand.id }
+        if (removed.isEmpty()) return
         knownHotspots.removeAll { it.entity.id == event.armorStand.id }
+        for (hotspot in removed) {
+            WaypointUtils.remove(hotspot.x, hotspot.y - 1, hotspot.z)
+        }
     }
 
     private fun onClientTick(@Suppress("UNUSED_PARAMETER") event: ClientTickEvent) {
