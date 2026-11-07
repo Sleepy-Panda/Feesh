@@ -5,9 +5,11 @@ import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
 import com.github.sleepypanda.feesh.settings.models.AlertableSeaCreatureTypes
 import com.github.sleepypanda.feesh.constants.ModVersionConstants
 import com.github.sleepypanda.feesh.constants.RareDropTypes
+import com.github.sleepypanda.feesh.features.alerts.RareCatchAlert
 import com.github.sleepypanda.feesh.utils.enums.DeployableTypes
 import com.github.sleepypanda.feesh.utils.enums.PricingModeWithNpc
 import com.github.sleepypanda.feesh.utils.enums.WeatherEventTypes
+import com.github.sleepypanda.feesh.utils.openUriCompat
 import com.teamresourceful.resourcefulconfigkt.api.CategoryKt
 import com.teamresourceful.resourcefulconfig.api.types.options.TranslatableValue
 
@@ -68,6 +70,103 @@ object Alerts : CategoryKt("Alerts") {
     var alertOnPlayerDeath by boolean(true) {
         this.name = Translated("Alert when you or your party members are killed by a fishing boss")
         this.description = Translated("Shows a title and plays a sound when you or your party members are killed by a fishing boss.")
+    }
+
+    init {
+        separator {
+            this.title = "${AQUA}${BOLD}Sea creature alert customization"
+        }
+    }
+
+    val rareCatchOwnAlert by obj(RareCatchTitleSettings(
+        title = RareCatchAlert.DEFAULT_TITLE,
+        subtitle = RareCatchAlert.DEFAULT_SUBTITLE,
+    )) {
+        this.name = Translated("Own catch")
+        this.description = Translated("Title and subtitle when you catch a selected sea creature and it is not a double hook.")
+        this.searchTerms = listOf("title", "subtitle", ModVersionConstants.VERSION_1_18_0)
+    }
+
+    val rareCatchOwnDoubleHookAlert by obj(RareCatchTitleSettings(
+        title = RareCatchAlert.DEFAULT_TITLE_DOUBLE_HOOK,
+        subtitle = RareCatchAlert.DEFAULT_SUBTITLE_DOUBLE_HOOK,
+    )) {
+        this.name = Translated("Own double hook")
+        this.description = Translated("Title and subtitle when you catch a selected sea creature as a double hook.")
+        this.searchTerms = listOf("title", "subtitle", "double hook", ModVersionConstants.VERSION_1_18_0)
+    }
+
+    val rareCatchPartyAlert by obj(RareCatchTitleSettings(
+        title = RareCatchAlert.DEFAULT_TITLE,
+        subtitle = RareCatchAlert.DEFAULT_SUBTITLE,
+    )) {
+        this.name = Translated("Party catch")
+        this.description = Translated("Title and subtitle when a party member catches a selected sea creature and it is not a double hook.")
+        this.searchTerms = listOf("title", "subtitle", "party", ModVersionConstants.VERSION_1_18_0)
+    }
+
+    val rareCatchPartyDoubleHookAlert by obj(RareCatchTitleSettings(
+        title = RareCatchAlert.DEFAULT_TITLE_DOUBLE_HOOK,
+        subtitle = RareCatchAlert.DEFAULT_SUBTITLE_DOUBLE_HOOK,
+    )) {
+        this.name = Translated("Party double hook")
+        this.description = Translated("Title and subtitle when a party member catches a selected sea creature as a double hook.")
+        this.searchTerms = listOf("title", "subtitle", "party", "double hook", ModVersionConstants.VERSION_1_18_0)
+    }
+
+    val rareCatchOwnCocoonAlert by obj(RareCatchTitleSettings(
+        title = RareCatchAlert.DEFAULT_COCOON_TITLE,
+        subtitle = RareCatchAlert.DEFAULT_SUBTITLE,
+    )) {
+        this.name = Translated("Own cocooned")
+        this.description = Translated("Title and subtitle when you cocoon a selected sea creature.")
+        this.searchTerms = listOf("title", "subtitle", "cocoon", ModVersionConstants.VERSION_1_18_0)
+    }
+
+    val rareCatchPartyCocoonAlert by obj(RareCatchTitleSettings(
+        title = RareCatchAlert.DEFAULT_COCOON_TITLE,
+        subtitle = RareCatchAlert.DEFAULT_SUBTITLE,
+    )) {
+        this.name = Translated("Party cocooned")
+        this.description = Translated("Title and subtitle when a party member cocoons a selected sea creature.")
+        this.searchTerms = listOf("title", "subtitle", "party", "cocoon", ModVersionConstants.VERSION_1_18_0)
+    }
+
+    var rareCatchAlertDurationSeconds by int(RareCatchAlert.DEFAULT_DURATION_SECONDS) {
+        this.name = Translated("Duration (seconds)")
+        this.description = Translated("How long the sea creature title stays on screen.")
+        this.range = 1..10
+        this.slider = true
+        this.searchTerms = listOf(ModVersionConstants.VERSION_1_18_0)
+    }
+
+    var rareCatchChatMessage by boolean(false) {
+        this.name = Translated("Rare catch chat message")
+        this.description = Translated("Sends a local chat message when a selected sea creature is caught. Uses the templates below.")
+        this.searchTerms = listOf(ModVersionConstants.VERSION_1_18_0)
+    }
+
+    var rareCatchChatMessageTemplate by string(RareCatchAlert.DEFAULT_CHAT_MESSAGE) {
+        this.name = Translated("Rare catch (no double hook)")
+        this.description = Translated("${GRAY}Local chat message for a rare catch that is not a double hook. Leave empty to use default. Ignored if the chat message is disabled. Placeholders: ${RareCatchTitleSettings.placeholders()}")
+        this.searchTerms = listOf(ModVersionConstants.VERSION_1_18_0)
+    }
+
+    var rareCatchChatMessageDoubleHookTemplate by string(RareCatchAlert.DEFAULT_CHAT_MESSAGE_DOUBLE_HOOK) {
+        this.name = Translated("Rare catch (double hook)")
+        this.description = Translated("${GRAY}Local chat message for a rare double hook catch. Leave empty to use default. Ignored if the chat message is disabled. Placeholders: ${RareCatchTitleSettings.placeholders()}")
+        this.searchTerms = listOf(ModVersionConstants.VERSION_1_18_0)
+    }
+
+    init {
+        button {
+            title = "Colors & formatting guide"
+            description = "For using custom text templates above, please explore the guide explaining color codes and formatting codes."
+            text = "Click to open"
+            onClick {
+                openUriCompat("https://github.com/Sleepy-Panda/Feesh/blob/develop/docs/Colors%20and%20formatting%20guide.md")
+            }
+        }
     }
 
     init {
