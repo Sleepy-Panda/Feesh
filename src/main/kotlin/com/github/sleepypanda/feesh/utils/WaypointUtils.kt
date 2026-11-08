@@ -19,18 +19,22 @@ import net.minecraft.world.phys.AABB
 import net.minecraft.world.phys.Vec3
 
 object WaypointUtils {
+    enum class RenderMode {
+        BOX,
+        BOX_AND_TEXT,
+        TEXT,
+    }
+
     data class Waypoint(
         val x: Double,
         val y: Double,
         val z: Double,
-        val red: Float,
-        val green: Float,
-        val blue: Float,
-        val alpha: Float,
+        val colorArgb: Int,
         val expiresAtMillis: Long,
         val size: Double,
         val throughWalls: Boolean,
         val text: String?,
+        val renderMode: RenderMode,
         val removeDistance: Double,
     )
 
@@ -60,47 +64,45 @@ object WaypointUtils {
         if (tickCounter < TICKS_PER_CHECK) return
         tickCounter = 0
 
-        removeCloseWaypoints()
-        removeExpiredWaypoints()
+        CommonUtils.runWithCatching("Failed to cleanup waypoints") {
+            removeCloseWaypoints()
+            removeExpiredWaypoints()    
+        }
     }
 
     /**
-     * Adds a filled-box waypoint at the given world position.
-     * @param boxColorRgb 0xRRGGBB box color.
+     * Adds a waypoint at the given world position.
+     * @param boxColorArgb 0xAARRGGBB box color. Used when [renderMode] includes a box.
      * @param durationMilliseconds How long the waypoint should be visible (in milliseconds). Long.MAX_VALUE for no expiry.
-     * @param text Optional formatted text drawn above the box.
+     * @param text Formatted text drawn when [renderMode] includes text.
      * @param throughWalls If true, the box and text are drawn through blocks.
+     * @param renderMode [RenderMode.BOX], [RenderMode.BOX_AND_TEXT], or [RenderMode.TEXT].
      * @param removeDistance The waypoint is removed when the player gets close. Use 0 to disable that.
      */
     fun add(
         x: Double,
         y: Double,
         z: Double,
-        boxColorRgb: Int = 0xFC54FC,
-        alpha: Float = 0.4f,
+        boxColorArgb: Long = 0x66FC54FC,
         durationMilliseconds: Long = 30_000L,
         size: Double = 1.0,
         throughWalls: Boolean = false,
         text: String? = null,
+        renderMode: RenderMode,
         removeDistance: Double = DEFAULT_REMOVE_DISTANCE,
     ) {
-        val red = ((boxColorRgb shr 16) and 0xFF) / 255f
-        val green = ((boxColorRgb shr 8) and 0xFF) / 255f
-        val blue = (boxColorRgb and 0xFF) / 255f
         val expiresAt = if (durationMilliseconds == Long.MAX_VALUE) Long.MAX_VALUE else System.currentTimeMillis() + durationMilliseconds
         waypoints.add(
             Waypoint(
                 x = x,
                 y = y,
                 z = z,
-                red = red,
-                green = green,
-                blue = blue,
-                alpha = alpha,
+                colorArgb = boxColorArgb.toInt(),
                 expiresAtMillis = expiresAt,
                 size = size,
                 throughWalls = throughWalls,
                 text = text?.takeIf { it.isNotBlank() },
+                renderMode = renderMode,
                 removeDistance = removeDistance,
             )
         )
@@ -114,15 +116,19 @@ object WaypointUtils {
         if (waypoints.isEmpty()) return
         CommonUtils.runWithCatching("Failed to render waypoints") {
             for (waypoint in waypoints) {
-                drawBox(gizmos, waypoint)
+                if (waypoint.renderMode != RenderMode.TEXT) {
+                    renderBox(gizmos, waypoint)
+                }
+                if (waypoint.renderMode == RenderMode.BOX) continue
                 val text = waypoint.text ?: continue
-                val anchor = Vec3(waypoint.x, waypoint.y + waypoint.size, waypoint.z)
-                drawDistanceScaledText(collector, camera, anchor, legacyText(text), waypoint.throughWalls)
+                val anchorY = if (waypoint.renderMode == RenderMode.TEXT) waypoint.y else waypoint.y + waypoint.size
+                val anchor = Vec3(waypoint.x, anchorY, waypoint.z)
+                renderScaledText(collector, camera, anchor, fromFormattedTextToStyledComponent(text), waypoint.throughWalls)
             }
         }
     }
 
-    private fun drawBox(gizmos: SimpleGizmoCollector, waypoint: Waypoint) {
+    private fun renderBox(gizmos: SimpleGizmoCollector, waypoint: Waypoint) {
         val half = waypoint.size / 2.0
         val box = AABB(
             waypoint.x - half,
@@ -132,19 +138,11 @@ object WaypointUtils {
             waypoint.y + waypoint.size,
             waypoint.z + half,
         )
-        val properties = gizmos.add(CuboidGizmo(box, GizmoStyle.fill(argb(waypoint)), false))
+        val properties = gizmos.add(CuboidGizmo(box, GizmoStyle.fill(waypoint.colorArgb), false))
         if (waypoint.throughWalls) properties.setAlwaysOnTop()
     }
 
-    private fun argb(waypoint: Waypoint): Int {
-        val alpha = (waypoint.alpha * 255f).toInt().coerceIn(0, 255)
-        val red = (waypoint.red * 255f).toInt().coerceIn(0, 255)
-        val green = (waypoint.green * 255f).toInt().coerceIn(0, 255)
-        val blue = (waypoint.blue * 255f).toInt().coerceIn(0, 255)
-        return (alpha shl 24) or (red shl 16) or (green shl 8) or blue
-    }
-
-    private fun drawDistanceScaledText(
+    private fun renderScaledText(
         collector: SubmitNodeCollector,
         camera: CameraRenderState,
         pos: Vec3,
@@ -163,6 +161,7 @@ object WaypointUtils {
         text: Component,
         scale: Float,
         throughWalls: Boolean,
+        shadow: Boolean = true,
     ) {
         val cameraPos = camera.pos
         val matrices = PoseStack()
@@ -175,7 +174,7 @@ object WaypointUtils {
             -FeeshMod.mc.font.width(text) / 2f,
             1f,
             text.visualOrderText,
-            true,
+            shadow,
             mode,
             LightCoordsUtil.FULL_BRIGHT,
             LABEL_COLOR,
@@ -188,7 +187,7 @@ object WaypointUtils {
         return this == ChatFormatting.RESET || this.toString().last() in '0'..'9' || this.toString().last() in 'a'..'f'
     }
 
-    private fun legacyText(text: String): Component {
+    private fun fromFormattedTextToStyledComponent(text: String): Component {
         if (!text.contains('§')) return Component.literal(text)
         val root = Component.empty()
         var style = Style.EMPTY
@@ -222,15 +221,12 @@ object WaypointUtils {
     }
 
     private fun removeCloseWaypoints() {
-        CommonUtils.runWithCatching("Failed to remove close waypoints") {
-            val player = FeeshMod.mc.player ?: return
-            waypoints.removeAll {
-                it.removeDistance > 0.0 &&
-                    EntityUtils.getDistance(player.x, player.y, player.z, it.x, it.y, it.z) <= it.removeDistance
-            }
+        val player = FeeshMod.mc.player ?: return
+        waypoints.removeAll {
+            it.removeDistance > 0.0 &&
+                EntityUtils.getDistance(player.x, player.y, player.z, it.x, it.y, it.z) <= it.removeDistance
         }
     }
-
     
     private fun removeExpiredWaypoints() {
         val now = System.currentTimeMillis()

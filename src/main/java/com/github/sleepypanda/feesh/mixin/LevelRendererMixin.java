@@ -25,7 +25,8 @@ public abstract class LevelRendererMixin {
     private SimpleGizmoCollector collectedGizmos;
     //#endif
 
-    // Before gizmos are finalized, including the early return when nothing is breaking.
+    // The method exists in 26.1, 26.2 and 26.3. Used as timing hook, there is nothing to deal with block breaking.
+    // Can be replaced with submitFeatures probably after 26.1 is gone?
     @Inject(method = "submitBlockDestroyAnimation", at = @At("TAIL"))
     private void feesh$submitWaypoints(PoseStack poseStack, SubmitNodeCollector collector, LevelRenderState levelRenderState, CallbackInfo ci) {
         //#if MC >= 26.2

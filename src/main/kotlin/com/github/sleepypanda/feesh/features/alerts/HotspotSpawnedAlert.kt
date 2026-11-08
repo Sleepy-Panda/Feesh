@@ -39,17 +39,17 @@ object HotspotSpawnedAlert {
         CommonUtils.runWithCatching("Failed to render Hotspot waypoint") {
             removeRenderedWaypoint(event.hotspotArmorStandId)
             val x = event.position.x
-            val y = event.position.y + 1.5
+            val y = event.position.y + 0.5
             val z = event.position.z
             WaypointUtils.add(
                 x = x,
                 y = y,
                 z = z,
-                boxColorRgb = 0x54FCFC,
-                alpha = 0.4f,
+                boxColorArgb = 0x6654FCFC,
                 durationMilliseconds = 30_000L,
                 throughWalls = true,
                 text = "${event.perkFormatted} ${RESET}${LIGHT_PURPLE}Hotspot",
+                renderMode = WaypointUtils.RenderMode.BOX_AND_TEXT,
             )
             renderedHotspotWaypoints.add(RenderedHotspotWaypoint(event.hotspotArmorStandId, x, y, z))
         }
