@@ -31,62 +31,63 @@ object WaypointUtils {
         val size: Double,
         val throughWalls: Boolean,
         val text: String?,
+        val removeDistance: Double,
     )
 
     private val waypoints = mutableListOf<Waypoint>()
     private var tickCounter = 0
 
-    private const val TICKS_PER_PROXIMITY_CHECK = 10
-    private const val REMOVE_DISTANCE = 5.0
-    private const val LABEL_BASE_SCALE = 0.05f
-    private const val LABEL_DISTANCE_SCALING = 0.1f
+    private const val TICKS_PER_CHECK = 10
+    private const val DEFAULT_REMOVE_DISTANCE = 5.0
+    private const val LABEL_SCALE_PER_BLOCK = 0.008f
+    private const val LABEL_MIN_SCALE = 0.012f
+    private const val LABEL_MAX_SCALE = 1.5f
     private const val LABEL_COLOR = -1
 
     fun init() {
         EventBus.subscribe(WorldChangedEvent::class, ::onWorldChanged)
         EventBus.subscribe(ClientTickEvent::class, ::onClientTick)
     }
+  
+    private fun onWorldChanged(@Suppress("UNUSED_PARAMETER") event: WorldChangedEvent) {
+        waypoints.clear()
+        tickCounter = 0
+    }
 
-    /**
-     * Submits the box and label while level features are still being collected.
-     * Far labels are drawn larger and lifted so they stay above the box.
-     */
-    fun submit(collector: SubmitNodeCollector, gizmos: SimpleGizmoCollector, camera: CameraRenderState) {
-        expire()
+    private fun onClientTick(@Suppress("UNUSED_PARAMETER") event: ClientTickEvent) {
         if (waypoints.isEmpty()) return
-        CommonUtils.runWithCatching("Failed to render waypoints") {
-            for (waypoint in waypoints) {
-                drawBox(gizmos, waypoint)
-                val text = waypoint.text ?: continue
-                val anchor = Vec3(waypoint.x, waypoint.y + waypoint.size, waypoint.z)
-                drawDistanceScaledText(collector, camera, anchor, legacyText(text), waypoint.throughWalls)
-            }
-        }
+        tickCounter++
+        if (tickCounter < TICKS_PER_CHECK) return
+        tickCounter = 0
+
+        removeCloseWaypoints()
+        removeExpiredWaypoints()
     }
 
     /**
      * Adds a filled-box waypoint at the given world position.
-     * @param colorRgb 0xRRGGBB box color.
-     * @param durationMillis Lifetime from now. Use [Long.MAX_VALUE] for no expiry.
-     * @param throughWalls If true, the box is drawn through terrain.
-     * @param text Optional label drawn above the box. `§` formatting is kept.
-     * Far labels are drawn larger and close ones smaller, so the text stays readable.
+     * @param boxColorRgb 0xRRGGBB box color.
+     * @param durationMilliseconds How long the waypoint should be visible (in milliseconds). Long.MAX_VALUE for no expiry.
+     * @param text Optional formatted text drawn above the box.
+     * @param throughWalls If true, the box and text are drawn through blocks.
+     * @param removeDistance The waypoint is removed when the player gets close. Use 0 to disable that.
      */
     fun add(
         x: Double,
         y: Double,
         z: Double,
-        colorRgb: Int = 0xFC54FC,
+        boxColorRgb: Int = 0xFC54FC,
         alpha: Float = 0.4f,
-        durationMillis: Long = 30_000L,
+        durationMilliseconds: Long = 30_000L,
         size: Double = 1.0,
         throughWalls: Boolean = false,
         text: String? = null,
+        removeDistance: Double = DEFAULT_REMOVE_DISTANCE,
     ) {
-        val red = ((colorRgb shr 16) and 0xFF) / 255f
-        val green = ((colorRgb shr 8) and 0xFF) / 255f
-        val blue = (colorRgb and 0xFF) / 255f
-        val expiresAt = if (durationMillis == Long.MAX_VALUE) Long.MAX_VALUE else System.currentTimeMillis() + durationMillis
+        val red = ((boxColorRgb shr 16) and 0xFF) / 255f
+        val green = ((boxColorRgb shr 8) and 0xFF) / 255f
+        val blue = (boxColorRgb and 0xFF) / 255f
+        val expiresAt = if (durationMilliseconds == Long.MAX_VALUE) Long.MAX_VALUE else System.currentTimeMillis() + durationMilliseconds
         waypoints.add(
             Waypoint(
                 x = x,
@@ -100,12 +101,25 @@ object WaypointUtils {
                 size = size,
                 throughWalls = throughWalls,
                 text = text?.takeIf { it.isNotBlank() },
+                removeDistance = removeDistance,
             )
         )
     }
 
     fun remove(x: Double, y: Double, z: Double) {
         waypoints.removeAll { it.x == x && it.y == y && it.z == z }
+    }
+
+    fun render(collector: SubmitNodeCollector, gizmos: SimpleGizmoCollector, camera: CameraRenderState) {
+        if (waypoints.isEmpty()) return
+        CommonUtils.runWithCatching("Failed to render waypoints") {
+            for (waypoint in waypoints) {
+                drawBox(gizmos, waypoint)
+                val text = waypoint.text ?: continue
+                val anchor = Vec3(waypoint.x, waypoint.y + waypoint.size, waypoint.z)
+                drawDistanceScaledText(collector, camera, anchor, legacyText(text), waypoint.throughWalls)
+            }
+        }
     }
 
     private fun drawBox(gizmos: SimpleGizmoCollector, waypoint: Waypoint) {
@@ -130,11 +144,6 @@ object WaypointUtils {
         return (alpha shl 24) or (red shl 16) or (green shl 8) or blue
     }
 
-    private fun expire() {
-        val now = System.currentTimeMillis()
-        waypoints.removeAll { it.expiresAtMillis <= now }
-    }
-
     private fun drawDistanceScaledText(
         collector: SubmitNodeCollector,
         camera: CameraRenderState,
@@ -142,9 +151,9 @@ object WaypointUtils {
         text: Component,
         throughWalls: Boolean,
     ) {
-        val distance = camera.pos.distanceTo(pos)
-        val scale = LABEL_BASE_SCALE * (1f + distance.toFloat() * LABEL_DISTANCE_SCALING)
-        drawText(collector, camera, pos.add(0.0, distance * LABEL_BASE_SCALE, 0.0), text, scale, throughWalls)
+        val distance = camera.pos.distanceTo(pos).toFloat()
+        val scale = (distance * LABEL_SCALE_PER_BLOCK).coerceIn(LABEL_MIN_SCALE, LABEL_MAX_SCALE)
+        drawText(collector, camera, pos.add(0.0, scale * 9.0, 0.0), text, scale, throughWalls)
     }
 
     private fun drawText(
@@ -212,21 +221,19 @@ object WaypointUtils {
         return root
     }
 
-    private fun onWorldChanged(@Suppress("UNUSED_PARAMETER") event: WorldChangedEvent) {
-        waypoints.clear()
-        tickCounter = 0
+    private fun removeCloseWaypoints() {
+        CommonUtils.runWithCatching("Failed to remove close waypoints") {
+            val player = FeeshMod.mc.player ?: return
+            waypoints.removeAll {
+                it.removeDistance > 0.0 &&
+                    EntityUtils.getDistance(player.x, player.y, player.z, it.x, it.y, it.z) <= it.removeDistance
+            }
+        }
     }
 
-    private fun onClientTick(@Suppress("UNUSED_PARAMETER") event: ClientTickEvent) {
-        if (waypoints.isEmpty()) return
-
-        tickCounter++
-        if (tickCounter < TICKS_PER_PROXIMITY_CHECK) return
-        tickCounter = 0
-
-        val player = FeeshMod.mc.player ?: return
-        waypoints.removeAll {
-            EntityUtils.getDistance(player.x, player.y, player.z, it.x, it.y, it.z) <= REMOVE_DISTANCE
-        }
+    
+    private fun removeExpiredWaypoints() {
+        val now = System.currentTimeMillis()
+        waypoints.removeAll { it.expiresAtMillis <= now }
     }
 }

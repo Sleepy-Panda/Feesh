@@ -295,8 +295,8 @@ object Alerts : CategoryKt("Alerts") {
     }
 
     var alertOnHotspotSeen by boolean(false) {
-        this.name = Translated("Alert when a hotspot is spawned")
-        this.description = Translated("Sends a chat message when a hotspot nametag is loaded, with its perk and coordinates.")
+        this.name = Translated("Alert when a Hotspot is spawned")
+        this.description = Translated("Alerts when a new hotspot nametag is seen, and shows a temporary waypoint for it.")
     }
 
     var alertOnHotspotGone by boolean(true) {

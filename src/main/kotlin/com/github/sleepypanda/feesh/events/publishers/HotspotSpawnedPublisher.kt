@@ -5,6 +5,7 @@ import com.github.sleepypanda.feesh.events.models.ArmorStandCustomNameChangedEve
 import com.github.sleepypanda.feesh.events.models.HotspotSpawnedEvent
 import com.github.sleepypanda.feesh.events.models.WorldChangedEvent
 import com.github.sleepypanda.feesh.utils.ChatUtils.getFormattedString
+import com.github.sleepypanda.feesh.utils.ChatUtils.removeFormatting
 import com.github.sleepypanda.feesh.utils.CommonUtils
 import com.github.sleepypanda.feesh.utils.EntityUtils
 import com.github.sleepypanda.feesh.utils.WorldUtils
@@ -45,12 +46,14 @@ object HotspotSpawnedPublisher {
             pendingHotspotIds.remove(hotspotId)
             EventBus.publish(
                 HotspotSpawnedEvent(
+                    id = HotspotSpawnedEvent.getHotspotId(hotspotStand.x, hotspotStand.y, hotspotStand.z, perk.removeFormatting()),
                     position = HotspotSpawnedEvent.Position(
                         x = hotspotStand.x,
                         y = hotspotStand.y,
                         z = hotspotStand.z,
                     ),
-                    perk = perk,
+                    perkFormatted = perk,
+                    perkUnformatted = perk.removeFormatting(),
                     hotspotArmorStandId = hotspotId,
                 )
             )

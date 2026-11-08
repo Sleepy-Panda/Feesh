@@ -14,7 +14,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(LevelRenderer.class)
-public abstract class WaypointLabelMixin {
+public abstract class LevelRendererMixin {
     //#if MC >= 26.2
     //$$ @Shadow
     //$$ @Final
@@ -33,6 +33,6 @@ public abstract class WaypointLabelMixin {
         //#else
         SimpleGizmoCollector gizmos = this.collectedGizmos;
         //#endif
-        WaypointUtils.INSTANCE.submit(collector, gizmos, levelRenderState.cameraRenderState);
+        WaypointUtils.INSTANCE.render(collector, gizmos, levelRenderState.cameraRenderState);
     }
 }

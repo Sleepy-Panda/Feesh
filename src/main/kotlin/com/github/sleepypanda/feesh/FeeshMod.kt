@@ -155,7 +155,6 @@ class FeeshMod : ClientModInitializer {
         SeaCreatureHpTracker.init()
         TreasureFishingTracker.init()
         FishingHookTimer.init()
-        HotspotTracker.init()
         BaitTracker.init()
         BarnFishingTimer.init()
         DeployablesTimer.init()

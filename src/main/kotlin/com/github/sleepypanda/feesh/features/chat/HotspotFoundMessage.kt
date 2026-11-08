@@ -65,14 +65,14 @@ object HotspotFoundMessage {
         if (!WorldUtils.isInSkyblock() || !WorldUtils.isInHotspotFishingWorld() || !PlayerUtils.hasFishingRodInHotbar()) return
 
         val hotspotId = event.armorStand.uuid
-        if (!lastFoundHotspotIds.contains(hotspotId) && lastClosestHotspot?.entity?.uuid != hotspotId) return
+        if (!lastFoundHotspotIds.contains(hotspotId) && lastClosestHotspot?.armorStandUuid != hotspotId) return
 
         val player = FeeshMod.mc.player ?: return
         val distance = event.armorStand.distanceTo(player)
         if (distance > 30.0) return // Probably user just moved away so the nametag is not rendered anymore
 
         lastFoundHotspotIds.remove(hotspotId)
-        if (lastClosestHotspot != null && lastClosestHotspot!!.entity.uuid == hotspotId) {
+        if (lastClosestHotspot != null && lastClosestHotspot!!.armorStandUuid == hotspotId) {
             lastClosestHotspot = null
         }
     }
@@ -100,11 +100,11 @@ object HotspotFoundMessage {
             val player = FeeshMod.mc.player ?: return
             val closestHotspot = HotspotUtils.findClosestHotspotInRange(Vec3(player.x, player.y, player.z), NEAREST_HOTSPOT_RANGE_FROM_PLAYER) ?: return
 
-            val closestHotspotId = closestHotspot.entity.uuid
+            val closestHotspotId = closestHotspot.armorStandUuid
 
             if (lastFoundHotspotIds.contains(closestHotspotId)) return
 
-            if (lastClosestHotspot == null || lastClosestHotspot!!.entity.uuid != closestHotspotId) {
+            if (lastClosestHotspot == null || lastClosestHotspot!!.armorStandUuid != closestHotspotId) {
                 announceFoundHotspot(closestHotspot.x, closestHotspot.y, closestHotspot.z, closestHotspot.perk)
 
                 lastFoundHotspotIds.add(0, closestHotspotId)
@@ -173,4 +173,3 @@ object HotspotFoundMessage {
         return "${location} | ${perkText}Hotspot${zoneText}${messageId}"
     }
 }
-
