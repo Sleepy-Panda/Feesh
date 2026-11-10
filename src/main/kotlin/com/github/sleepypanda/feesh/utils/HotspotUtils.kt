@@ -52,6 +52,8 @@ object HotspotUtils {
     }
 
     private fun onHotspotSpawned(event: HotspotSpawnedEvent) {
+        if (!WorldUtils.isInSkyblock() || !WorldUtils.isInHotspotFishingWorld()) return
+
         CommonUtils.runWithCatching("Failed to handle Hotspot spawned event") {
             val entity = EntityUtils.getMcEntityById(event.hotspotArmorStandId) as? ArmorStand ?: return@runWithCatching
             knownHotspots.removeAll { it.armorStandId == event.hotspotArmorStandId }
@@ -107,7 +109,7 @@ object HotspotUtils {
      * @param hotspotStand The hotspot armor stand.
      * @return true if the candidate is a perk for the hotspot.
      */
-    private fun isPerkForHotspot(perkCandidate: ArmorStand, hotspotStand: ArmorStand): Boolean {
+    fun isPerkForHotspot(perkCandidate: ArmorStand, hotspotStand: ArmorStand): Boolean {
         return perkCandidate.x == hotspotStand.x &&
                perkCandidate.y < hotspotStand.y &&
                hotspotStand.y - perkCandidate.y <= 1.0 &&

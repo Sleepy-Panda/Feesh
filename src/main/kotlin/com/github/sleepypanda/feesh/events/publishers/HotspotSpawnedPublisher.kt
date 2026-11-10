@@ -8,6 +8,7 @@ import com.github.sleepypanda.feesh.utils.ChatUtils.getFormattedString
 import com.github.sleepypanda.feesh.utils.ChatUtils.removeFormatting
 import com.github.sleepypanda.feesh.utils.CommonUtils
 import com.github.sleepypanda.feesh.utils.EntityUtils
+import com.github.sleepypanda.feesh.utils.HotspotUtils
 import com.github.sleepypanda.feesh.utils.WorldUtils
 import net.minecraft.world.entity.decoration.ArmorStand
 
@@ -38,7 +39,7 @@ object HotspotSpawnedPublisher {
 
             val hotspotStand = EntityUtils.getMcEntityById(hotspotId) as? ArmorStand ?: return@runWithCatching
             val perkStand = EntityUtils.getMcEntityById(event.entityId) as? ArmorStand ?: return@runWithCatching
-            if (!isPerkForHotspot(perkStand, hotspotStand)) return@runWithCatching
+            if (!HotspotUtils.isPerkForHotspot(perkStand, hotspotStand)) return@runWithCatching
 
             val perk = perkStand.customName.getFormattedString()
             if (perk.isEmpty()) return@runWithCatching
@@ -58,13 +59,5 @@ object HotspotSpawnedPublisher {
                 )
             )
         }
-    }
-
-    private fun isPerkForHotspot(perkCandidate: ArmorStand, hotspotStand: ArmorStand): Boolean {
-        return perkCandidate.x == hotspotStand.x &&
-                perkCandidate.y < hotspotStand.y &&
-                hotspotStand.y - perkCandidate.y <= 1.0 &&
-                perkCandidate.z == hotspotStand.z &&
-                perkCandidate.xRot == hotspotStand.xRot
     }
 }

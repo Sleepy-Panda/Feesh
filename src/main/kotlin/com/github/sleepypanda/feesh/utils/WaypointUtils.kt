@@ -45,10 +45,10 @@ object WaypointUtils {
 
     private const val TICKS_PER_CHECK = 10
     private const val DEFAULT_REMOVE_DISTANCE = 5.0
-    private const val LABEL_SCALE_PER_BLOCK = 0.008f
-    private const val LABEL_MIN_SCALE = 0.012f
-    private const val LABEL_MAX_SCALE = 1.5f
-    private const val LABEL_COLOR = -1
+    private const val TEXT_SCALE_PER_BLOCK = 0.008f
+    private const val TEXT_MIN_SCALE = 0.012f
+    private const val TEXT_MAX_SCALE = 1.5f
+    private const val TEXT_COLOR = -1
 
     fun init() {
         EventBus.subscribe(WorldChangedEvent::class, ::onWorldChanged)
@@ -156,7 +156,7 @@ object WaypointUtils {
         throughWalls: Boolean,
     ) {
         val distance = camera.pos.distanceTo(pos).toFloat()
-        val scale = (distance * LABEL_SCALE_PER_BLOCK).coerceIn(LABEL_MIN_SCALE, LABEL_MAX_SCALE)
+        val scale = (distance * TEXT_SCALE_PER_BLOCK).coerceIn(TEXT_MIN_SCALE, TEXT_MAX_SCALE)
         drawText(collector, camera, pos.add(0.0, scale * 9.0, 0.0), text, scale, throughWalls)
     }
 
@@ -184,7 +184,7 @@ object WaypointUtils {
             shadow,
             mode,
             LightCoordsUtil.FULL_BRIGHT,
-            LABEL_COLOR,
+            TEXT_COLOR,
             0,
             0,
         )
@@ -192,10 +192,9 @@ object WaypointUtils {
 
     private fun removeCloseWaypoints() {
         val player = FeeshMod.mc.player ?: return
-        val sqrDistance = it.removeDistance * it.removeDistance
         waypoints.removeAll {
             it.removeDistance > 0.0 &&
-                EntityUtils.getDistance(player.x, player.y, player.z, it.x, it.y, it.z) <= sqrDistance
+                EntityUtils.getDistanceSqr(player.x, player.y, player.z, it.x, it.y, it.z) <= it.removeDistance * it.removeDistance
         }
     }
     
