@@ -38,7 +38,7 @@ object HotspotUtils {
         EventBus.subscribe(WorldChangedEvent::class, ::onWorldChanged)
     }
 
-    fun getKnownHotspots(): List<HotspotData> = knownHotspots // Have their armor stands loaded in the world
+    fun getKnownHotspots(): List<HotspotData> = knownHotspots
 
     fun getLastFishedHotspot(): HotspotData? = knownHotspots.find { it.isLastFished }
 
@@ -86,16 +86,17 @@ object HotspotUtils {
         CommonUtils.runWithCatching("Failed to track fishing in hotspot") {
             if (!FishingHookUtils.isFishingHookSubmerged()) return
             val playerHook = FishingHookUtils.getSubmergedFishingHook() ?: return
-            val closestKnown = knownHotspots
+            val sqrDistance = NEAREST_HOTSPOT_RANGE_FROM_HOOK * NEAREST_HOTSPOT_RANGE_FROM_HOOK
+            val closestHotspotInRange = knownHotspots
                 .filter {
-                    EntityUtils.getDistance(it.x, it.y, it.z, playerHook.x, playerHook.y, playerHook.z) <= NEAREST_HOTSPOT_RANGE_FROM_HOOK
+                    EntityUtils.getDistanceSqr(it.x, it.y, it.z, playerHook.x, playerHook.y, playerHook.z) <= sqrDistance
                 }
                 .minByOrNull {
-                    EntityUtils.getDistance(it.x, it.y, it.z, playerHook.x, playerHook.y, playerHook.z)
+                    EntityUtils.getDistanceSqr(it.x, it.y, it.z, playerHook.x, playerHook.y, playerHook.z)
                 } ?: return
 
-            knownHotspots.forEach { it.isLastFished = it.armorStandId == closestKnown.armorStandId }
-            lastFishedHotspot = closestKnown
+            knownHotspots.forEach { it.isLastFished = it.armorStandId == closestHotspotInRange.armorStandId }
+            lastFishedHotspot = closestHotspotInRange
         }
     }
 
@@ -121,10 +122,11 @@ object HotspotUtils {
      * @returns HotspotData, or null if not found.
      */
     fun findClosestHotspotInRange(entityPosition: Vec3, distance: Double): HotspotData? {
-        val closestKnown = knownHotspots
-            .filter { EntityUtils.getDistance(it.x, it.y, it.z, entityPosition.x, entityPosition.y, entityPosition.z) <= distance }
-            .minByOrNull { EntityUtils.getDistance(it.x, it.y, it.z, entityPosition.x, entityPosition.y, entityPosition.z) }
-        if (closestKnown != null) return closestKnown
+        val sqrDistance = distance * distance
+        val closestHotspotInRange = knownHotspots
+            .filter { EntityUtils.getDistanceSqr(it.x, it.y, it.z, entityPosition.x, entityPosition.y, entityPosition.z) <= sqrDistance }
+            .minByOrNull { EntityUtils.getDistanceSqr(it.x, it.y, it.z, entityPosition.x, entityPosition.y, entityPosition.z) }
+        if (closestHotspotInRange != null) return closestHotspotInRange
 
         return findClosestHotspotArmorStandInRange(entityPosition, distance)
     }
@@ -136,10 +138,11 @@ object HotspotUtils {
      * @returns List of HotspotData
      */
     fun findHotspotsInRange(entity: Entity, distance: Double): List<HotspotData> {
-        val closeKnown = knownHotspots
-            .filter { EntityUtils.getDistance(entity, it.x, it.y, it.z) <= distance }
-            .sortedBy { EntityUtils.getDistance(entity, it.x, it.y, it.z) }
-        if (closeKnown.isNotEmpty()) return closeKnown
+        val sqrDistance = distance * distance
+        val hotspotsInRange = knownHotspots
+            .filter { EntityUtils.getDistanceSqr(entity.x, entity.y, entity.z, it.x, it.y, it.z) <= sqrDistance }
+            .sortedBy { EntityUtils.getDistanceSqr(entity.x, entity.y, entity.z, it.x, it.y, it.z) }
+        if (hotspotsInRange.isNotEmpty()) return hotspotsInRange
 
         return findHotspotArmorStandsInRange(entity, distance)
     }
@@ -150,7 +153,7 @@ object HotspotUtils {
 
         val closestHotspotArmorStand = armorStands
             .filter { it.customName.getUnformattedString() == "HOTSPOT" }
-            .minByOrNull { EntityUtils.getDistance(it, entityPosition.x, entityPosition.y, entityPosition.z) }
+            .minByOrNull { EntityUtils.getDistanceSqr(it.x, it.y, it.z, entityPosition.x, entityPosition.y, entityPosition.z) }
 
         if (closestHotspotArmorStand == null) return null
 
@@ -172,7 +175,7 @@ object HotspotUtils {
         val armorStands = EntityUtils.getArmorStandsInRange(Vec3(entity.x, entity.y, entity.z), distance)
         return armorStands
             .filter { it.customName.getUnformattedString() == "HOTSPOT" }
-            .sortedBy { EntityUtils.getDistance(entity, it) }
+            .sortedBy { EntityUtils.getDistanceSqr(entity.x, entity.y, entity.z, it.x, it.y, it.z) }
             .map { asEntity ->
                 val perkArmorStand = armorStands.find { e ->
                     isPerkForHotspot(e, asEntity)

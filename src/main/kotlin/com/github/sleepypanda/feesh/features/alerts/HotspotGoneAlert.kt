@@ -46,7 +46,7 @@ object HotspotGoneAlert {
 
     private fun playAlert(perk: String?) {
         CommonUtils.showTitle("${LIGHT_PURPLE}Hotspot ${RED}is gone")
-        ChatUtils.sendLocalChat("${perk ?: ""} ${RESET}${LIGHT_PURPLE}Hotspot ${WHITE}is gone, time to find another one!", true)
+        ChatUtils.sendLocalChat("${perk ?: ""} ${RESET}${LIGHT_PURPLE}Hotspot ${WHITE}is gone!", true)
         SoundUtils.playMcSound()
     }
 }

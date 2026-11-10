@@ -9,7 +9,6 @@ import com.github.sleepypanda.feesh.utils.PlayerUtils
 import com.github.sleepypanda.feesh.utils.HotspotUtils
 import com.github.sleepypanda.feesh.utils.ChatUtils
 import com.github.sleepypanda.feesh.utils.ChatUtils.removeFormatting
-import com.github.sleepypanda.feesh.utils.SoundUtils
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
 import com.github.sleepypanda.feesh.events.EventBus
@@ -149,8 +148,6 @@ object HotspotFoundMessage {
             val isParty = Chat.autoMessageOnHotspotFoundSource == HotspotChatSource.PARTY_CHAT
             announceNearestHotspot(x, y, z, perk, isParty)
         }
-
-        SoundUtils.playMcSound()
     }
 
     private fun announceNearestHotspot(x: Double, y: Double, z: Double, perk: String?, isParty: Boolean) {

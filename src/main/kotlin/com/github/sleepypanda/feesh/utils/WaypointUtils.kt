@@ -5,16 +5,16 @@ import com.github.sleepypanda.feesh.events.EventBus
 import com.github.sleepypanda.feesh.events.models.ClientTickEvent
 import com.github.sleepypanda.feesh.events.models.WorldChangedEvent
 import com.mojang.blaze3d.vertex.PoseStack
-import net.minecraft.ChatFormatting
 import net.minecraft.client.gui.Font
 import net.minecraft.client.renderer.SubmitNodeCollector
 import net.minecraft.client.renderer.state.level.CameraRenderState
 import net.minecraft.gizmos.CuboidGizmo
 import net.minecraft.gizmos.GizmoStyle
 import net.minecraft.gizmos.SimpleGizmoCollector
-import net.minecraft.network.chat.Component
 import net.minecraft.network.chat.Style
+import net.minecraft.util.FormattedCharSequence
 import net.minecraft.util.LightCoordsUtil
+import net.minecraft.util.StringDecomposer
 import net.minecraft.world.phys.AABB
 import net.minecraft.world.phys.Vec3
 
@@ -26,6 +26,7 @@ object WaypointUtils {
     }
 
     data class Waypoint(
+        val id: Long,
         val x: Double,
         val y: Double,
         val z: Double,
@@ -39,6 +40,7 @@ object WaypointUtils {
     )
 
     private val waypoints = mutableListOf<Waypoint>()
+    private var nextWaypointId = 1L
     private var tickCounter = 0
 
     private const val TICKS_PER_CHECK = 10
@@ -78,6 +80,7 @@ object WaypointUtils {
      * @param throughWalls If true, the box and text are drawn through blocks.
      * @param renderMode [RenderMode.BOX], [RenderMode.BOX_AND_TEXT], or [RenderMode.TEXT].
      * @param removeDistance The waypoint is removed when the player gets close. Use 0 to disable that.
+     * @return ID which can be used to remove the waypoint.
      */
     fun add(
         x: Double,
@@ -90,10 +93,12 @@ object WaypointUtils {
         text: String? = null,
         renderMode: RenderMode,
         removeDistance: Double = DEFAULT_REMOVE_DISTANCE,
-    ) {
+    ): Long {
+        val id = nextWaypointId++
         val expiresAt = if (durationMilliseconds == Long.MAX_VALUE) Long.MAX_VALUE else System.currentTimeMillis() + durationMilliseconds
         waypoints.add(
             Waypoint(
+                id = id,
                 x = x,
                 y = y,
                 z = z,
@@ -106,10 +111,11 @@ object WaypointUtils {
                 removeDistance = removeDistance,
             )
         )
+        return id
     }
 
-    fun remove(x: Double, y: Double, z: Double) {
-        waypoints.removeAll { it.x == x && it.y == y && it.z == z }
+    fun remove(id: Long) {
+        waypoints.removeAll { it.id == id }
     }
 
     fun render(collector: SubmitNodeCollector, gizmos: SimpleGizmoCollector, camera: CameraRenderState) {
@@ -123,7 +129,7 @@ object WaypointUtils {
                 val text = waypoint.text ?: continue
                 val anchorY = if (waypoint.renderMode == RenderMode.TEXT) waypoint.y else waypoint.y + waypoint.size
                 val anchor = Vec3(waypoint.x, anchorY, waypoint.z)
-                renderScaledText(collector, camera, anchor, fromFormattedTextToStyledComponent(text), waypoint.throughWalls)
+                renderScaledText(collector, camera, anchor, text, waypoint.throughWalls)
             }
         }
     }
@@ -146,7 +152,7 @@ object WaypointUtils {
         collector: SubmitNodeCollector,
         camera: CameraRenderState,
         pos: Vec3,
-        text: Component,
+        text: String,
         throughWalls: Boolean,
     ) {
         val distance = camera.pos.distanceTo(pos).toFloat()
@@ -158,7 +164,7 @@ object WaypointUtils {
         collector: SubmitNodeCollector,
         camera: CameraRenderState,
         pos: Vec3,
-        text: Component,
+        text: String,
         scale: Float,
         throughWalls: Boolean,
         shadow: Boolean = true,
@@ -169,11 +175,12 @@ object WaypointUtils {
         matrices.rotateAround(camera.orientation, 0f, 0f, 0f)
         matrices.scale(scale, -scale, scale)
         val mode = if (throughWalls) Font.DisplayMode.SEE_THROUGH else Font.DisplayMode.NORMAL
+        val formatted = FormattedCharSequence { sink -> StringDecomposer.iterateFormatted(text, Style.EMPTY, sink) }
         collector.submitText(
             matrices,
             -FeeshMod.mc.font.width(text) / 2f,
             1f,
-            text.visualOrderText,
+            formatted,
             shadow,
             mode,
             LightCoordsUtil.FULL_BRIGHT,
@@ -183,48 +190,12 @@ object WaypointUtils {
         )
     }
 
-    private fun ChatFormatting.isColorCode(): Boolean {
-        return this == ChatFormatting.RESET || this.toString().last() in '0'..'9' || this.toString().last() in 'a'..'f'
-    }
-
-    private fun fromFormattedTextToStyledComponent(text: String): Component {
-        if (!text.contains('§')) return Component.literal(text)
-        val root = Component.empty()
-        var style = Style.EMPTY
-        val part = StringBuilder()
-        fun flush() {
-            if (part.isNotEmpty()) {
-                root.append(Component.literal(part.toString()).withStyle(style))
-                part.clear()
-            }
-        }
-        var index = 0
-        while (index < text.length) {
-            if (text[index] == '§' && index + 1 < text.length) {
-                flush()
-                val formatting = ChatFormatting.getByCode(text[index + 1])
-                if (formatting != null) {
-                    style = if (formatting.isColorCode()) {
-                        Style.EMPTY.applyFormat(formatting)
-                    } else {
-                        style.applyFormat(formatting)
-                    }
-                }
-                index += 2
-                continue
-            }
-            part.append(text[index])
-            index++
-        }
-        flush()
-        return root
-    }
-
     private fun removeCloseWaypoints() {
         val player = FeeshMod.mc.player ?: return
+        val sqrDistance = it.removeDistance * it.removeDistance
         waypoints.removeAll {
             it.removeDistance > 0.0 &&
-                EntityUtils.getDistance(player.x, player.y, player.z, it.x, it.y, it.z) <= it.removeDistance
+                EntityUtils.getDistance(player.x, player.y, player.z, it.x, it.y, it.z) <= sqrDistance
         }
     }
     

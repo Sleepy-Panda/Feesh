@@ -14,11 +14,12 @@ import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
 import com.github.sleepypanda.feesh.utils.SoundUtils
 import com.github.sleepypanda.feesh.utils.PlayerUtils
 
+// Hotspot gone overlaps with hotspot found
+// Remove debug logging of cleanup in HotspotUtils
+// What if perk is loaded after hotspot armor stand?
 object HotspotSpawnedAlert {
-    private data class RenderedHotspotWaypoint(val armorStandId: Int, val x: Double, val y: Double, val z: Double)
-
     private val handledHotspotIds = mutableSetOf<String>() // To avoid duplicated alerts when same hotspot armor stand is loaded/unloaded multiple times
-    private val renderedHotspotWaypoints = mutableListOf<RenderedHotspotWaypoint>()
+    private val renderedWaypointIds = mutableMapOf<Int, Long>() // Hotspot armor stand id -> waypoint id
 
     fun init() {
         EventBus.subscribe(HotspotSpawnedEvent::class, ::onHotspotSpawned)
@@ -38,38 +39,39 @@ object HotspotSpawnedAlert {
 
         CommonUtils.runWithCatching("Failed to render Hotspot waypoint") {
             removeRenderedWaypoint(event.hotspotArmorStandId)
-            val x = event.position.x
-            val y = event.position.y + 0.5
-            val z = event.position.z
-            WaypointUtils.add(
-                x = x,
-                y = y,
-                z = z,
+            val waypointId = WaypointUtils.add(
+                x = event.position.x,
+                y = event.position.y,
+                z = event.position.z,
                 boxColorArgb = 0x6654FCFC,
                 durationMilliseconds = 30_000L,
                 throughWalls = true,
                 text = "${event.perkFormatted} ${RESET}${LIGHT_PURPLE}Hotspot",
                 renderMode = WaypointUtils.RenderMode.BOX_AND_TEXT,
             )
-            renderedHotspotWaypoints.add(RenderedHotspotWaypoint(event.hotspotArmorStandId, x, y, z))
+            renderedWaypointIds[event.hotspotArmorStandId] = waypointId
         }
     }
 
     private fun onArmorStandDespawned(event: ArmorStandDespawnedEvent) {
-        removeRenderedWaypoint(event.armorStand.id)
+        if (!Alerts.alertOnHotspotSeen || !WorldUtils.isInSkyblock() || !WorldUtils.isInHotspotFishingWorld() || !PlayerUtils.hasFishingRodInHotbar()) return
+        if (!renderedWaypointIds.containsKey(event.armorStand.id)) return
+
+        val hotspot = event.armorStand
+        val player = FeeshMod.mc.player ?: return
+        val distanceSqr = EntityUtils.getDistanceSqr(player.x, player.y, player.z, hotspot.x, hotspot.y, hotspot.z)
+        if (distanceSqr > 30.0 * 30.0) return // Do not remove waypoint if hotspot nametag was unloaded because player went too far away
+
+        removeRenderedWaypoint(hotspot.id)
     }
 
     private fun onWorldChanged(@Suppress("UNUSED_PARAMETER") event: WorldChangedEvent) {
-        renderedHotspotWaypoints.clear()
+        renderedWaypointIds.clear()
         handledHotspotIds.clear()
     }
 
     private fun removeRenderedWaypoint(armorStandId: Int) {
-        val rendered = renderedHotspotWaypoints.filter { it.armorStandId == armorStandId }
-        if (rendered.isEmpty()) return
-        renderedHotspotWaypoints.removeAll { it.armorStandId == armorStandId }
-        for (hotspot in rendered) {
-            WaypointUtils.remove(hotspot.x, hotspot.y, hotspot.z)
-        }
+        val waypointId = renderedWaypointIds.remove(armorStandId) ?: return
+        WaypointUtils.remove(waypointId)
     }
 }
