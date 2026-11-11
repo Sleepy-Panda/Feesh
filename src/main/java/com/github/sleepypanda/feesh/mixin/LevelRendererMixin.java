@@ -25,9 +25,9 @@ public abstract class LevelRendererMixin {
     private SimpleGizmoCollector collectedGizmos;
     //#endif
 
-    // The method exists in 26.1, 26.2 and 26.3. Used as timing hook, there is nothing to deal with block breaking.
-    // Can be replaced with submitFeatures probably after 26.1 is gone?
-    @Inject(method = "submitBlockDestroyAnimation", at = @At("TAIL"))
+    // The method exists in 26.1, 26.2 and 26.3. Used as a timing hook, there is nothing to do with block breaking.
+    // 26.2 and 26.3 return immediately when nothing is breaking. TAIL only runs before the final return, so use RETURN
+    @Inject(method = "submitBlockDestroyAnimation", at = @At("RETURN"))
     private void feesh$submitWaypoints(PoseStack poseStack, SubmitNodeCollector collector, LevelRenderState levelRenderState, CallbackInfo ci) {
         //#if MC >= 26.2
         //$$ SimpleGizmoCollector gizmos = this.renderThreadGizmos;

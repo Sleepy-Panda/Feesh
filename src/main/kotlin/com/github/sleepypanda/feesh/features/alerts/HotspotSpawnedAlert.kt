@@ -19,6 +19,7 @@ import com.github.sleepypanda.feesh.utils.PlayerUtils
 // Hotspot gone overlaps with hotspot found
 // Remove debug logging of cleanup in HotspotUtils
 // What if perk is loaded after hotspot armor stand?
+// No box, half missing nametags in 26.2
 object HotspotSpawnedAlert {
     private val handledHotspotIds = mutableSetOf<String>() // To avoid duplicated alerts when same hotspot armor stand is loaded/unloaded multiple times
     private val renderedWaypointIds = mutableMapOf<Int, Long>() // Hotspot armor stand id -> waypoint id
