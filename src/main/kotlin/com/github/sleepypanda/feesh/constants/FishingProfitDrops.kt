@@ -406,7 +406,7 @@ class FishingProfitDrops {
                 itemId = "ENCHANTED_NETHER_STALK",
                 itemName = "Enchanted Nether Wart",
                 itemDisplayName = "${UNCOMMON}Enchanted Nether Wart",
-                npcPrice = 640.0,
+                npcPrice = 240.0,
             ),
             FishingProfitDropInfo(
                 itemId = "SULPHUR_ORE",
@@ -1202,7 +1202,7 @@ class FishingProfitDrops {
                 itemId = "RED_MUSHROOM",
                 itemName = "Red Mushroom",
                 itemDisplayName = "${COMMON}Red Mushroom",
-                npcPrice = 10.0,
+                npcPrice = 3.5,
             ),
             FishingProfitDropInfo(
                 itemId = "FAIRY_HELMET",
@@ -1288,7 +1288,6 @@ class FishingProfitDrops {
                 itemAlternateNames = listOf("Enchanted Book (Caster 6)"),
                 itemDisplayName = "${RARE}Caster VI ${WHITE}Book",
                 npcPrice = null,
-                shouldAnnounceRareDrop = true,
             ),
             FishingProfitDropInfo(
                 itemId = "ENCHANTMENT_BLESSING_6",
@@ -1298,16 +1297,23 @@ class FishingProfitDrops {
                 npcPrice = null,
             ),
             FishingProfitDropInfo(
+                itemId = "ENCHANTMENT_LUCK_OF_THE_SEA_6",
+                itemName = "Enchanted Book (Luck of the Sea VI)",
+                itemAlternateNames = listOf("Enchanted Book (Luck of the Sea 6)"),
+                itemDisplayName = "${RARE}Luck of the Sea VI ${WHITE}Book",
+                npcPrice = null,
+            ),
+            FishingProfitDropInfo(
                 itemId = "CARROT_ITEM",
                 itemName = "Carrot",
                 itemDisplayName = "${COMMON}Carrot",
-                npcPrice = 3.0,
+                npcPrice = 1.5,
             ),
             FishingProfitDropInfo(
                 itemId = "ENCHANTED_CARROT",
                 itemName = "Enchanted Carrot",
                 itemDisplayName = "${UNCOMMON}Enchanted Carrot",
-                npcPrice = 480.0,
+                npcPrice = 240.0,
             ),
             FishingProfitDropInfo(
                 itemId = "WOOL",
@@ -1326,12 +1332,6 @@ class FishingProfitDrops {
                 itemName = "Enchanted Raw Mutton",
                 itemDisplayName = "${UNCOMMON}Enchanted Raw Mutton",
                 npcPrice = 800.0,
-            ),
-            FishingProfitDropInfo(
-                itemId = "ENCHANTED_COOKED_MUTTON",
-                itemName = "Enchanted Cooked Mutton",
-                itemDisplayName = "${RARE}Enchanted Cooked Mutton",
-                npcPrice = 128_000.0,
             ),
             FishingProfitDropInfo(
                 itemId = "RABBIT",
@@ -1435,14 +1435,12 @@ class FishingProfitDrops {
                 itemName = "[Lvl 1] Flying Fish (RARE)",
                 itemDisplayName = "${GRAY}[Lvl 1] ${RARE}Flying Fish",
                 npcPrice = 1_000.0,
-                shouldAnnounceRareDrop = true,
             ),
             FishingProfitDropInfo(
                 itemId = "FLYING_FISH;3",
                 itemName = "[Lvl 1] Flying Fish (EPIC)",
                 itemDisplayName = "${GRAY}[Lvl 1] ${EPIC}Flying Fish",
                 npcPrice = 100_000.0,
-                shouldAnnounceRareDrop = true,
             ),
             FishingProfitDropInfo(
                 itemId = "FLYING_FISH;4",
@@ -1708,13 +1706,6 @@ class FishingProfitDrops {
                 npcPrice = 204_800.0,
             ),
             FishingProfitDropInfo(
-                itemId = "PET_ITEM_FORAGING_SKILL_BOOST_UNCOMMON",
-                itemName = "Foraging Exp Boost (UNCOMMON)",
-                itemDisplayName = "${UNCOMMON}Foraging Exp Boost +30%",
-                npcPrice = 25_000.0,
-                categories = listOf(PET_ITEM_CATEGORY),
-            ),
-            FishingProfitDropInfo(
                 itemId = "PET_ITEM_FORAGING_SKILL_BOOST_EPIC",
                 itemName = "Foraging Exp Boost (EPIC)", // From Ent
                 itemDisplayName = "${EPIC}Foraging Exp Boost +50%",
@@ -1726,7 +1717,6 @@ class FishingProfitDrops {
                 itemName = "Mound of Seagrass",
                 itemDisplayName = "${EPIC}Mound of Seagrass",
                 npcPrice = null,
-                shouldAnnounceRareDrop = true,
             ),
             FishingProfitDropInfo(
                 itemId = "VIBRANT_CORAL",
@@ -1928,7 +1918,6 @@ class FishingProfitDrops {
                 itemName = "Brimstone Handle",
                 itemDisplayName = "${EPIC}Brimstone Handle",
                 npcPrice = 25_000.0,
-                shouldAnnounceRareDrop = true,
             ),
             FishingProfitDropInfo(
                 itemId = "BURNT_TEXTS",
@@ -2094,7 +2083,6 @@ class FishingProfitDrops {
                 itemName = "Seared Escargot",
                 itemDisplayName = "${RARE}Seared Escargot",
                 npcPrice = 25_000.0,
-                shouldAnnounceRareDrop = true
             ),
             FishingProfitDropInfo(
                 itemId = "MAGMA_LORD_FRAGMENT",
@@ -2174,7 +2162,6 @@ class FishingProfitDrops {
                 itemAlternateNames = listOf("Enchanted Book (Piscary 6)"),
                 itemDisplayName = "${RARE}Piscary VI ${WHITE}Book",
                 npcPrice = null,
-                shouldAnnounceRareDrop = true,
             ),
             FishingProfitDropInfo(
                 itemId = "WORM_MEMBRANE",
@@ -2192,49 +2179,79 @@ class FishingProfitDrops {
                 itemId = "ROUGH_JADE_GEM",
                 itemName = "Rough Jade Gemstone",
                 itemDisplayName = "${COMMON}Rough Jade Gemstone",
-                npcPrice = 3.0,
+                npcPrice = 4.0,
             ),
             FishingProfitDropInfo(
                 itemId = "ROUGH_AMETHYST_GEM",
                 itemName = "Rough Amethyst Gemstone",
                 itemDisplayName = "${COMMON}Rough Amethyst Gemstone",
-                npcPrice = 3.0,
+                npcPrice = 4.0,
             ),
             FishingProfitDropInfo(
                 itemId = "ROUGH_AMBER_GEM",
                 itemName = "Rough Amber Gemstone",
                 itemDisplayName = "${COMMON}Rough Amber Gemstone",
-                npcPrice = 3.0,
+                npcPrice = 4.0,
             ),
             FishingProfitDropInfo(
                 itemId = "ROUGH_SAPPHIRE_GEM",
                 itemName = "Rough Sapphire Gemstone",
                 itemDisplayName = "${COMMON}Rough Sapphire Gemstone",
-                npcPrice = 3.0,
+                npcPrice = 4.0,
             ),
             FishingProfitDropInfo(
                 itemId = "ROUGH_TOPAZ_GEM",
                 itemName = "Rough Topaz Gemstone",
                 itemDisplayName = "${COMMON}Rough Topaz Gemstone",
-                npcPrice = 3.0,
+                npcPrice = 5.0,
             ),
             FishingProfitDropInfo(
                 itemId = "FLAWED_JADE_GEM",
                 itemName = "Flawed Jade Gemstone",
                 itemDisplayName = "${UNCOMMON}Flawed Jade Gemstone",
-                npcPrice = 3.0,
+                npcPrice = 320.0,
             ),
             FishingProfitDropInfo(
                 itemId = "FLAWED_SAPPHIRE_GEM",
                 itemName = "Flawed Sapphire Gemstone",
                 itemDisplayName = "${UNCOMMON}Flawed Sapphire Gemstone",
-                npcPrice = 3.0,
+                npcPrice = 320.0,
             ),
             FishingProfitDropInfo(
                 itemId = "FLAWED_AMETHYST_GEM",
                 itemName = "Flawed Amethyst Gemstone",
                 itemDisplayName = "${UNCOMMON}Flawed Amethyst Gemstone",
-                npcPrice = 3.0,
+                npcPrice = 320.0,
+            ),
+            FishingProfitDropInfo(
+                itemId = "FLAWED_AMBER_GEM",
+                itemName = "Flawed Amber Gemstone",
+                itemDisplayName = "${UNCOMMON}Flawed Amber Gemstone",
+                npcPrice = 320.0,
+            ),
+            FishingProfitDropInfo(
+                itemId = "FINE_AMETHYST_GEM",
+                itemName = "Fine Amethyst Gemstone",
+                itemDisplayName = "${RARE}Fine Amethyst Gemstone",
+                npcPrice = 25_600.0,
+            ),
+            FishingProfitDropInfo(
+                itemId = "FINE_JADE_GEM",
+                itemName = "Fine Jade Gemstone",
+                itemDisplayName = "${RARE}Fine Jade Gemstone",
+                npcPrice = 25_600.0,
+            ),
+            FishingProfitDropInfo(
+                itemId = "FINE_SAPPHIRE_GEM",
+                itemName = "Fine Sapphire Gemstone",
+                itemDisplayName = "${RARE}Fine Sapphire Gemstone",
+                npcPrice = 25_600.0,
+            ),
+            FishingProfitDropInfo(
+                itemId = "FINE_AMBER_GEM",
+                itemName = "Fine Amber Gemstone",
+                itemDisplayName = "${RARE}Fine Amber Gemstone",
+                npcPrice = 25_600.0,
             ),
 
             // Spooky
@@ -2255,20 +2272,20 @@ class FishingProfitDrops {
                 itemId = "PUMPKIN",
                 itemName = "Pumpkin",
                 itemDisplayName = "${COMMON}Pumpkin",
-                npcPrice = 10.0,
+                npcPrice = 3.0,
                 compactedItemName = "Enchanted Pumpkin",
             ),
             FishingProfitDropInfo(
                 itemId = "ENCHANTED_PUMPKIN",
                 itemName = "Enchanted Pumpkin",
                 itemDisplayName = "${UNCOMMON}Enchanted Pumpkin",
-                npcPrice = 1_600.0,
+                npcPrice = 480.0,
             ),
             FishingProfitDropInfo(
                 itemId = "POLISHED_PUMPKIN",
                 itemName = "Polished Pumpkin",
                 itemDisplayName = "${RARE}Polished Pumpkin",
-                npcPrice = 256_000.0,
+                npcPrice = 76_800.0,
             ),
             FishingProfitDropInfo(
                 itemId = "PUMPKIN_GUTS",
@@ -2307,7 +2324,6 @@ class FishingProfitDrops {
                 itemName = "Vampire Fang",
                 itemDisplayName = "${MYTHIC}Vampire Fang",
                 npcPrice = 500_000.0,
-                shouldAnnounceRareDrop = true,
             ),
             FishingProfitDropInfo(
                 itemId = "PHANTOM_HOOK",
@@ -2437,7 +2453,6 @@ class FishingProfitDrops {
                 itemName = "[Lvl 1] Baby Yeti (COMMON)",
                 itemDisplayName = "${GRAY}[Lvl 1] ${COMMON}Baby Yeti",
                 npcPrice = 1_000_000.0,
-                shouldAnnounceRareDrop = true,
             ),
 
             // Fishing Festival
