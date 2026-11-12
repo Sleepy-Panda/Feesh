@@ -6,10 +6,10 @@ import com.github.sleepypanda.feesh.events.models.ClientTickEvent
 import com.github.sleepypanda.feesh.events.models.ArmorStandCustomNameChangedEvent
 import com.github.sleepypanda.feesh.events.models.WorldChangedEvent
 import com.github.sleepypanda.feesh.settings.categories.Alerts
+import com.github.sleepypanda.feesh.utils.AlertUtils
 import com.github.sleepypanda.feesh.utils.ChatUtils
 import com.github.sleepypanda.feesh.utils.CommonUtils
 import com.github.sleepypanda.feesh.utils.EntityUtils
-import com.github.sleepypanda.feesh.utils.SoundUtils
 import com.github.sleepypanda.feesh.utils.WorldUtils
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
@@ -164,12 +164,14 @@ object NessieDestinationAlert {
         trackedNessieMobIds[nessieEntityId] = trackedInfo.copy(isDestinationSent = true)
         val alertMessage = "${LIGHT_PURPLE}${BOLD}Nessie ${WHITE}is swimming to the ${GREEN}${BOLD}${destination}${WHITE} cave."
 
-        CommonUtils.showTitle("", "${LIGHT_PURPLE}Nessie ${WHITE}goes to ${GREEN}${BOLD}${destination}${WHITE} cave!")
-        SoundUtils.playMcSound()
         ChatUtils.sendLocalChat(alertMessage, true)
-
         if (Alerts.autoShareNessieDestination) {
             ChatUtils.sendPartyChat(alertMessage.removeFormatting())
         }
+        
+        AlertUtils.alert(
+            title = AlertUtils.TitleConfig("", "${LIGHT_PURPLE}Nessie ${WHITE}goes to ${GREEN}${BOLD}${destination}${WHITE} cave!"),
+            sound = AlertUtils.SoundConfig.McSound(),
+        )
     }
 }

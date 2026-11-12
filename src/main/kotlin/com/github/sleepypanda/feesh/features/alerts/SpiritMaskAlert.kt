@@ -3,8 +3,7 @@ package com.github.sleepypanda.feesh.features.alerts
 import com.github.sleepypanda.feesh.settings.categories.Alerts
 import com.github.sleepypanda.feesh.events.EventBus
 import com.github.sleepypanda.feesh.events.models.ChatEvent
-import com.github.sleepypanda.feesh.utils.CommonUtils
-import com.github.sleepypanda.feesh.utils.SoundUtils
+import com.github.sleepypanda.feesh.utils.AlertUtils
 import com.github.sleepypanda.feesh.utils.ChatUtils
 import com.github.sleepypanda.feesh.utils.WorldUtils
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
@@ -25,8 +24,10 @@ object SpiritMaskAlert {
         if (!WorldUtils.isInSkyblock() || !Alerts.alertOnSpiritMaskUsed) return
         if (!SPIRIT_MASK_USED_PATTERN.matches(event.unformattedText)) return
 
-        CommonUtils.showTitle("${DARK_PURPLE}Spirit Mask ${YELLOW}used")
-        SoundUtils.playMcSound()
+        AlertUtils.alert(
+            title = AlertUtils.TitleConfig("${DARK_PURPLE}Spirit Mask ${YELLOW}used"),
+            sound = AlertUtils.SoundConfig.McSound(),
+        )
 
         resetTimer()
 
@@ -42,8 +43,10 @@ object SpiritMaskAlert {
         ChatUtils.sendLocalChat("${DARK_PURPLE}Spirit Mask ${WHITE}is ready!", true)
 
         if (!Alerts.alertOnSpiritMaskBack) return
-        CommonUtils.showTitle("${DARK_PURPLE}Spirit Mask ${GREEN}is ready")
-        SoundUtils.playMcSound()
+        AlertUtils.alert(
+            title = AlertUtils.TitleConfig("${DARK_PURPLE}Spirit Mask ${GREEN}is ready"),
+            sound = AlertUtils.SoundConfig.McSound(),
+        )
     }
 
     private fun onWorldChanged(event: WorldChangedEvent) {

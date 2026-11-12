@@ -68,6 +68,7 @@ class FeeshMod : ClientModInitializer {
         FishingHookUtils.init()
         BaitUtils.init()
         ChatUtils.init()
+        AlertUtils.init()
         ColorUtils.init()
         GuiUtils.init()
         PriceUtils.init()

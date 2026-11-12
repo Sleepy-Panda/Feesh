@@ -3,10 +3,10 @@ package com.github.sleepypanda.feesh.features.alerts
 import com.github.sleepypanda.feesh.events.EventBus
 import com.github.sleepypanda.feesh.events.models.ClientTickEvent
 import com.github.sleepypanda.feesh.settings.categories.Alerts
+import com.github.sleepypanda.feesh.utils.AlertUtils
 import com.github.sleepypanda.feesh.utils.ChatUtils
 import com.github.sleepypanda.feesh.utils.CommonUtils
 import com.github.sleepypanda.feesh.utils.FishingHookUtils
-import com.github.sleepypanda.feesh.utils.SoundUtils
 import com.github.sleepypanda.feesh.utils.TabListAndScoreboardUtils
 import com.github.sleepypanda.feesh.utils.WorldUtils
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
@@ -60,16 +60,19 @@ object DayNightStartedAlert {
     private fun playAlert(phase: SkyblockTimePhase) {
         val dayIcon = "☀"
         val nightIcon = ".✦⋆⁺"
-        when (phase) {
+        val title = when (phase) {
             SkyblockTimePhase.DAY -> {
-                CommonUtils.showTitle("${GOLD}${dayIcon} ${YELLOW}${BOLD}Day started")
                 ChatUtils.sendLocalChat("${GOLD}${dayIcon} ${YELLOW}Daytime started!", true)
+                "${GOLD}${dayIcon} ${YELLOW}${BOLD}Day started"
             }
             SkyblockTimePhase.NIGHT -> {
-                CommonUtils.showTitle("${YELLOW}${nightIcon} ${DARK_BLUE}${BOLD}Night started")
                 ChatUtils.sendLocalChat("${YELLOW}${nightIcon} ${DARK_BLUE}Nighttime started!", true)
+                "${YELLOW}${nightIcon} ${DARK_BLUE}${BOLD}Night started"
             }
         }
-        SoundUtils.playMcSound()
+        AlertUtils.alert(
+            title = AlertUtils.TitleConfig(title),
+            sound = AlertUtils.SoundConfig.McSound(),
+        )
     }
 }

@@ -9,6 +9,8 @@ import com.github.sleepypanda.feesh.events.models.PlayerInteractEvent
 import com.github.sleepypanda.feesh.events.models.WorldChangedEvent
 import com.github.sleepypanda.feesh.settings.categories.Overlays
 import com.github.sleepypanda.feesh.settings.categories.Alerts
+import com.github.sleepypanda.feesh.settings.categories.General
+import com.github.sleepypanda.feesh.settings.categories.SoundMode
 import com.github.sleepypanda.feesh.utils.enums.DeployableTypes
 import com.github.sleepypanda.feesh.utils.WorldUtils
 import com.github.sleepypanda.feesh.utils.PlayerUtils
@@ -18,13 +20,11 @@ import com.github.sleepypanda.feesh.utils.ChatUtils.getFormattedString
 import com.github.sleepypanda.feesh.utils.ChatUtils.getUnformattedString
 import com.github.sleepypanda.feesh.utils.gui.FeeshGui
 import com.github.sleepypanda.feesh.utils.gui.LineInfo
+import com.github.sleepypanda.feesh.utils.AlertUtils
 import com.github.sleepypanda.feesh.utils.CommonUtils
-import com.github.sleepypanda.feesh.utils.SoundUtils
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
 import com.github.sleepypanda.feesh.constants.Sounds
-import com.github.sleepypanda.feesh.settings.categories.General
-import com.github.sleepypanda.feesh.settings.categories.SoundMode
 import com.github.sleepypanda.feesh.events.models.InteractActionType
 import net.minecraft.world.entity.decoration.ArmorStand
 import net.minecraft.world.entity.projectile.FireworkRocketEntity
@@ -579,10 +579,16 @@ object DeployablesTimer {
         data.isAlerted = true
         data.lastAlertAt = Date()
 
-        CommonUtils.showTitle("$itemDisplayName ${RED}expires soon")
+        val sound = when (General.soundMode) {
+            SoundMode.MEME -> AlertUtils.SoundConfig.CustomSound(Sounds.FEESH_NOTIFICATION_BELL)
+            SoundMode.NORMAL -> AlertUtils.SoundConfig.McSound()
+            else -> null
+        }
         ChatUtils.sendLocalChat("${WHITE}Your $itemDisplayName ${WHITE}expires soon.", true)
-        if (General.soundMode == SoundMode.MEME) SoundUtils.playCustomSound(Sounds.FEESH_NOTIFICATION_BELL)
-        else SoundUtils.playMcSound()
+        AlertUtils.alert(
+            title = AlertUtils.TitleConfig("$itemDisplayName ${RED}expires soon"),
+            sound = sound,
+        )
     }
 
     private fun updateGuiLines() {

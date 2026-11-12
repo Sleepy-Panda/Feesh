@@ -33,6 +33,8 @@ https://hypixel.net/threads/some-more-notable-things-i-noticed-from-the-drop-tab
 - Enchanted Cooked Mutton from oasis sheep
 - Foraging exp boost 30% from ent
 
+The Fishing Hotspot faded away...
+
 ## Minister update
 
 https://hypixel.net/threads/september-21st-minister-update-mob-level-improvements-testing-2.6150078/
@@ -71,6 +73,7 @@ Newly released - https://hypixel.net/threads/hypixel-skyblock-0-24-5-assorted-qo
  GOOD CATCH! You caught a Shinyfish Shard!
 §a §r§lACID RAIN BONUS! §r§fYou caught a bonus §r§aRusty Coin§r§f!
 
+-  TROPHY FROG! You caught Reality Hopper BRONZE x2!
 - Display bait price as craft costs (optionally - selection between sell offer, insta sell, craft cost)
 - NPC sell prices change https://hypixel.net/threads/october-29-accessory-bag-revamp-economy-changes.6165308/
 - Bait refund arrives to sack and gets counted (temporary disabled bait tracking).
@@ -84,6 +87,7 @@ Newly released - https://hypixel.net/threads/hypixel-skyblock-0-24-5-assorted-qo
 - integrate medal clipping for rare drops / dyes? have seen it in sbo and its pretty neat  https://medal.tv/developer/auto-clipping#api-reference
 - Default party drop on-screen alert ragebaits some people :(
 - Hotspot nametag hider + overlay with hotspot perk
+- Hotspot radius, hotspot text laying on the water
 - Custom msg in catch message which can be shown in title (e.g. I KILL OWN)
 - Editing the format of feesh titles (summoned creature name, dropped rare item, price of an item, name of the player who did it etc) to change their order, color, duration, location(on title or subtitle) or to add some custom texts in it and so on.
 - Mod name is copied as [ Feesh]

@@ -7,9 +7,9 @@ import com.github.sleepypanda.feesh.events.models.WorldChangedEvent
 import com.github.sleepypanda.feesh.settings.categories.Overlays
 import com.github.sleepypanda.feesh.settings.categories.Alerts
 import com.github.sleepypanda.feesh.utils.WorldUtils
+import com.github.sleepypanda.feesh.utils.AlertUtils
 import com.github.sleepypanda.feesh.utils.ChatUtils
 import com.github.sleepypanda.feesh.utils.CommonUtils
-import com.github.sleepypanda.feesh.utils.SoundUtils
 import com.github.sleepypanda.feesh.utils.TabListAndScoreboardUtils
 import com.github.sleepypanda.feesh.utils.gui.FeeshGui
 import com.github.sleepypanda.feesh.utils.gui.LineInfo
@@ -219,9 +219,11 @@ object WeatherTimer {
     private fun playWeatherAlert(suffix: String) {
         val label = eventName ?: "Weather event"
         val eventColor = getWeatherEventColor(label)
-        CommonUtils.showTitle("${eventColor}${BOLD}$label ${WHITE}$suffix")
+        AlertUtils.alert(
+            title = AlertUtils.TitleConfig("${eventColor}${BOLD}$label ${WHITE}$suffix"),
+            sound = AlertUtils.SoundConfig.McSound(),
+        )
         ChatUtils.sendLocalChat("${eventColor}${BOLD}$label ${WHITE}$suffix!", true)
-        SoundUtils.playMcSound()
     }
 
     private fun getWeatherEventColor(eventName: String?): ColorCodes {

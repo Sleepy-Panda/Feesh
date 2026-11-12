@@ -5,9 +5,9 @@ import com.github.sleepypanda.feesh.events.EventBus
 import com.github.sleepypanda.feesh.events.models.ClientTickEvent
 import com.github.sleepypanda.feesh.events.models.WorldChangedEvent
 import com.github.sleepypanda.feesh.settings.categories.Alerts
+import com.github.sleepypanda.feesh.utils.AlertUtils
 import com.github.sleepypanda.feesh.utils.ChatUtils
 import com.github.sleepypanda.feesh.utils.CommonUtils
-import com.github.sleepypanda.feesh.utils.SoundUtils
 import com.github.sleepypanda.feesh.utils.WorldUtils
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import net.minecraft.sounds.SoundEvents
@@ -51,8 +51,10 @@ object OutOfAirAlert {
 
             hasAlerted = true
             ChatUtils.sendLocalChat("${WHITE}You are almost out of air!", true)
-            CommonUtils.showTitle("${RED}Out of air soon!")
-            SoundUtils.playMcSound(SoundEvents.PLAYER_HURT_DROWN)
+            AlertUtils.alert(
+                title = AlertUtils.TitleConfig("${RED}Out of air soon!"),
+                sound = AlertUtils.SoundConfig.McSound(SoundEvents.PLAYER_HURT_DROWN),
+            )
         }
     }
 }

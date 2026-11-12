@@ -9,8 +9,8 @@ import com.github.sleepypanda.feesh.settings.categories.Alerts
 import com.github.sleepypanda.feesh.settings.categories.General
 import com.github.sleepypanda.feesh.settings.categories.SoundMode
 import com.github.sleepypanda.feesh.events.models.PartyChatEvent
+import com.github.sleepypanda.feesh.utils.AlertUtils
 import com.github.sleepypanda.feesh.utils.CommonUtils
-import com.github.sleepypanda.feesh.utils.SoundUtils
 import com.github.sleepypanda.feesh.utils.PlayerUtils
 import com.github.sleepypanda.feesh.utils.WorldUtils
 import com.github.sleepypanda.feesh.utils.PriceUtils
@@ -73,13 +73,17 @@ object RareDropAlert {
         val price = if (showPrice) getPrice(dropInfo.id, dropInfo.npcPrice) else 0.0
         val priceStr = if (price > 0.0) " ${GRAY}(${GREEN}+${GOLD}${CommonUtils.toShortNumber(price)}${GRAY})" else ""
 
-        CommonUtils.showTitle(title + priceStr, playerName)
-        
-        val soundData = CustomSoundsManager.getDropSoundData(dropInfo.id)
-        val soundFileName = soundData?.source
+        val soundFileName = CustomSoundsManager.getDropSoundData(dropInfo.id)?.source
+        val sound = when {
+            General.soundMode == SoundMode.MEME -> AlertUtils.SoundConfig.CustomSound(soundFileName)
+            General.soundMode == SoundMode.NORMAL && !isOwnDrop -> AlertUtils.SoundConfig.McSound() // SkyBlock already plays the rare drop sound for own drops.
+            else -> null
+        }
 
-        if (General.soundMode == SoundMode.MEME) SoundUtils.playCustomSound(soundFileName)
-        // Do not play MC sound in other cases because SB already plays rare drop sound for those items
+        AlertUtils.alert(
+            title = AlertUtils.TitleConfig(title + priceStr, playerName),
+            sound = sound,
+        )
     }
 
     // TODO: Move this into PriceUtils and reuse

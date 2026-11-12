@@ -13,9 +13,9 @@ import com.github.sleepypanda.feesh.utils.ChatUtils.getFormattedString
 import com.github.sleepypanda.feesh.utils.ChatUtils.removeFormatting
 import com.github.sleepypanda.feesh.utils.gui.FeeshGui
 import com.github.sleepypanda.feesh.utils.gui.LineInfo
+import com.github.sleepypanda.feesh.utils.AlertUtils
 import com.github.sleepypanda.feesh.utils.CommonUtils
 import com.github.sleepypanda.feesh.utils.RegisterUtils
-import com.github.sleepypanda.feesh.utils.SoundUtils
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.constants.SeaCreatures
 import com.github.sleepypanda.feesh.constants.Sounds
@@ -98,9 +98,10 @@ object BarnFishingTimer : IResettableTracker {
 
         CommonUtils.runWithCatching("Failed to handle personal cap chat message") {
             if (PERSONAL_CAP_PATTERN.matches(event.unformattedText)) {
-                CommonUtils.showTitle("${RED}Kill sea creatures", "${WHITE}Personal cap reached")
-                if (General.soundMode == SoundMode.MEME) SoundUtils.playCustomSound(Sounds.FEESH_NOTIFICATION_BELL)
-                else SoundUtils.playMcSound()
+                AlertUtils.alert(
+                    title = AlertUtils.TitleConfig("${RED}Kill sea creatures", "${WHITE}Personal cap reached"),
+                    sound = getNotificationSound(),
+                )
             }
         }
     }
@@ -176,9 +177,10 @@ object BarnFishingTimer : IResettableTracker {
 
         if (mobsCount >= seaCreaturesCountThreshold && countNotificationShownAt == null) {
             countNotificationShownAt = Date()
-            CommonUtils.showTitle("${RED}Kill sea creatures", "${WHITE}${seaCreaturesCountThreshold}+ mobs")
-            if (General.soundMode == SoundMode.MEME) SoundUtils.playCustomSound(Sounds.FEESH_NOTIFICATION_BELL)
-            else SoundUtils.playMcSound()
+            AlertUtils.alert(
+                title = AlertUtils.TitleConfig("${RED}Kill sea creatures", "${WHITE}${seaCreaturesCountThreshold}+ mobs"),
+                sound = getNotificationSound(),
+            )
         } else if (mobsCount < seaCreaturesCountThreshold && countNotificationShownAt != null) {
             countNotificationShownAt = null
         }
@@ -200,12 +202,19 @@ object BarnFishingTimer : IResettableTracker {
 
         if (deltaInSeconds >= thresholdInSeconds && timerNotificationShownAt == null) {
             timerNotificationShownAt = Date()
-            CommonUtils.showTitle("${RED}Kill sea creatures", "${WHITE}${TIMER_THRESHOLD_IN_MINUTES}+ minutes")
-            if (General.soundMode == SoundMode.MEME) SoundUtils.playCustomSound(Sounds.FEESH_NOTIFICATION_BELL)
-            else SoundUtils.playMcSound()
+            AlertUtils.alert(
+                title = AlertUtils.TitleConfig("${RED}Kill sea creatures", "${WHITE}${TIMER_THRESHOLD_IN_MINUTES}+ minutes"),
+                sound = getNotificationSound(),
+            )
         } else if (deltaInSeconds < thresholdInSeconds && timerNotificationShownAt != null) {
             timerNotificationShownAt = null
         }
+    }
+
+    private fun getNotificationSound(): AlertUtils.SoundConfig? = when (General.soundMode) {
+        SoundMode.MEME -> AlertUtils.SoundConfig.CustomSound(Sounds.FEESH_NOTIFICATION_BELL)
+        SoundMode.NORMAL -> AlertUtils.SoundConfig.McSound()
+        else -> null
     }
 
     private fun updateGuiLines() {

@@ -1,11 +1,10 @@
 package com.github.sleepypanda.feesh.features.alerts
 
 import com.github.sleepypanda.feesh.settings.categories.Alerts
+import com.github.sleepypanda.feesh.utils.AlertUtils
 import com.github.sleepypanda.feesh.utils.ChatUtils
-import com.github.sleepypanda.feesh.utils.SoundUtils
 import com.github.sleepypanda.feesh.utils.PlayerUtils
 import com.github.sleepypanda.feesh.utils.WorldUtils
-import com.github.sleepypanda.feesh.utils.CommonUtils
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.events.EventBus
 import com.github.sleepypanda.feesh.events.models.ChatEvent
@@ -27,8 +26,10 @@ object PlayerDeathAlert {
 
         val matchResult = YOU_DIED_PATTERN.matchEntire(event.unformattedText) ?: return
 
-        CommonUtils.showTitle("${RED}You were killed ☠")
-        SoundUtils.playMcSound(SoundEvents.VILLAGER_DEATH)
+        AlertUtils.alert(
+            title = AlertUtils.TitleConfig("${RED}You were killed ☠"),
+            sound = AlertUtils.SoundConfig.McSound(SoundEvents.VILLAGER_DEATH),
+        )
 
         if (matchResult.groups[1]?.value == "Nessie") {
             ChatUtils.sendLocalChatWithCommand("Click to warp to Murkwater Loch!", "warp murk", true)
@@ -44,8 +45,10 @@ object PlayerDeathAlert {
         val playerName = PlayerUtils.getFormattedPlayerNameFromPartyChat(event.rankAndPlayer) ?: return
         if (!playerName.isNullOrEmpty() && playerName.removeFormatting().contains(me)) return
 
-        val title = "${playerName} ${RED}was killed ☠";
-		CommonUtils.showTitle(title, "Wait for them to come back");
-		SoundUtils.playMcSound(SoundEvents.VILLAGER_DEATH)
+        val title = "${playerName} ${RED}was killed ☠"
+        AlertUtils.alert(
+            title = AlertUtils.TitleConfig(title, "Wait for them to come back"),
+            sound = AlertUtils.SoundConfig.McSound(SoundEvents.VILLAGER_DEATH),
+        )
     }
 }

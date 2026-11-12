@@ -3,8 +3,8 @@ package com.github.sleepypanda.feesh.features.personalbests
 import com.github.sleepypanda.feesh.events.EventBus
 import com.github.sleepypanda.feesh.events.models.CatchEvent
 import com.github.sleepypanda.feesh.events.models.WorldChangedEvent
+import com.github.sleepypanda.feesh.utils.AlertUtils
 import com.github.sleepypanda.feesh.utils.ChatUtils
-import com.github.sleepypanda.feesh.utils.SoundUtils
 import com.github.sleepypanda.feesh.utils.WorldUtils
 import com.github.sleepypanda.feesh.utils.CommonUtils
 import com.github.sleepypanda.feesh.utils.data.PersistentDataManager
@@ -54,8 +54,10 @@ object TreasureCatchesStreakPersonalBest {
                 "${LIGHT_PURPLE}${BOLD}PERSONAL BEST!${RESET} Treasure catch streak: ${WHITE}${BOLD}${previousBest} ${GRAY}-> ${GREEN}${BOLD}$currentStreak",
                 true
             )
-            CommonUtils.showTitle("${LIGHT_PURPLE}${BOLD}PERSONAL BEST!", "Treasure catch streak: ${GREEN}$currentStreak", stay = 60)
-            SoundUtils.playMcSound(SoundEvents.PLAYER_LEVELUP)
+            AlertUtils.alert(
+                title = AlertUtils.TitleConfig("${LIGHT_PURPLE}${BOLD}PERSONAL BEST!", "Treasure catch streak: ${GREEN}$currentStreak", stay = 60),
+                sound = AlertUtils.SoundConfig.McSound(SoundEvents.PLAYER_LEVELUP),
+            )
         }
     }
 }

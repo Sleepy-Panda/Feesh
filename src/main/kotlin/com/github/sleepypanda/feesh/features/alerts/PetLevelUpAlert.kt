@@ -3,8 +3,8 @@ package com.github.sleepypanda.feesh.features.alerts
 import com.github.sleepypanda.feesh.events.EventBus
 import com.github.sleepypanda.feesh.events.models.PetLevelUpEvent
 import com.github.sleepypanda.feesh.settings.categories.Alerts
+import com.github.sleepypanda.feesh.utils.AlertUtils
 import com.github.sleepypanda.feesh.utils.CommonUtils
-import com.github.sleepypanda.feesh.utils.SoundUtils
 import com.github.sleepypanda.feesh.utils.WorldUtils
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
@@ -21,8 +21,10 @@ object PetLevelUpAlert {
         if (!WorldUtils.isInSkyblock() || (!Alerts.alertOnPetLevelUp && !Alerts.showPetLevelUpPrice)) return
 
         if (Alerts.alertOnPetLevelUp) {
-            CommonUtils.showTitle("${event.petDisplayName} ${RESET}${WHITE}is maxed", "${WHITE}Level ${event.level}")
-            SoundUtils.playMcSound()
+            AlertUtils.alert(
+                title = AlertUtils.TitleConfig("${event.petDisplayName} ${RESET}${WHITE}is maxed", "${WHITE}Level ${event.level}"),
+                sound = AlertUtils.SoundConfig.McSound(),
+            )
         }
 
         if (Alerts.showPetLevelUpPrice) {

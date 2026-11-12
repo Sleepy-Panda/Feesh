@@ -3,6 +3,7 @@ package com.github.sleepypanda.feesh.features.alerts
 import com.github.sleepypanda.feesh.events.EventBus
 import com.github.sleepypanda.feesh.events.models.TrophyFrogDiscoveredEvent
 import com.github.sleepypanda.feesh.settings.categories.Alerts
+import com.github.sleepypanda.feesh.utils.AlertUtils
 import com.github.sleepypanda.feesh.utils.CommonUtils
 import com.github.sleepypanda.feesh.utils.WorldUtils
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
@@ -18,7 +19,9 @@ object TrophyFrogDiscoveredAlert {
             if (!WorldUtils.isInSkyblock() || WorldUtils.getWorldName() != WorldUtils.LOTUS_ATOLL) return
             if (!Alerts.alertOnTrophyFrogDiscovered) return
 
-            CommonUtils.showTitle(event.detailsFormatted, "${GREEN}${BOLD}FROG DISCOVERED!")
+            AlertUtils.alert(
+                title = AlertUtils.TitleConfig(event.detailsFormatted, "${GREEN}${BOLD}FROG DISCOVERED!"),
+            )
             // It has sound played by SB so no need to play our own
         }
     }
