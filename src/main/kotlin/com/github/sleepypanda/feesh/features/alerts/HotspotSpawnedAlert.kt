@@ -3,7 +3,7 @@ package com.github.sleepypanda.feesh.features.alerts
 import com.github.sleepypanda.feesh.FeeshMod
 import com.github.sleepypanda.feesh.events.EventBus
 import com.github.sleepypanda.feesh.events.models.ArmorStandDespawnedEvent
-import com.github.sleepypanda.feesh.events.models.HotspotSpawnedEvent
+import com.github.sleepypanda.feesh.events.models.HotspotNametagLoadedEvent
 import com.github.sleepypanda.feesh.events.models.WorldChangedEvent
 import com.github.sleepypanda.feesh.settings.categories.Alerts
 import com.github.sleepypanda.feesh.utils.ChatUtils
@@ -25,12 +25,12 @@ object HotspotSpawnedAlert {
     private val renderedWaypointIds = mutableMapOf<Int, Long>() // Hotspot armor stand id -> waypoint id
 
     fun init() {
-        EventBus.subscribe(HotspotSpawnedEvent::class, ::onHotspotSpawned)
+        EventBus.subscribe(HotspotNametagLoadedEvent::class, ::onHotspotSpawned)
         EventBus.subscribe(ArmorStandDespawnedEvent::class, ::onArmorStandDespawned)
         EventBus.subscribe(WorldChangedEvent::class, ::onWorldChanged)
     }
 
-    private fun onHotspotSpawned(event: HotspotSpawnedEvent) {
+    private fun onHotspotSpawned(event: HotspotNametagLoadedEvent) {
         if (!Alerts.alertOnHotspotSeen || !WorldUtils.isInSkyblock() || !WorldUtils.isInHotspotFishingWorld() || !PlayerUtils.hasFishingRodInHotbar()) return
         if (!handledHotspotIds.add(event.id)) return
 

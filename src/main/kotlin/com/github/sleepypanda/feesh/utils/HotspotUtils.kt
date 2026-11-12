@@ -3,7 +3,7 @@ package com.github.sleepypanda.feesh.utils
 import com.github.sleepypanda.feesh.events.EventBus
 import com.github.sleepypanda.feesh.events.models.ArmorStandDespawnedEvent
 import com.github.sleepypanda.feesh.events.models.ClientTickEvent
-import com.github.sleepypanda.feesh.events.models.HotspotSpawnedEvent
+import com.github.sleepypanda.feesh.events.models.HotspotNametagLoadedEvent
 import com.github.sleepypanda.feesh.events.models.WorldChangedEvent
 import net.minecraft.world.entity.decoration.ArmorStand
 import net.minecraft.world.entity.Entity
@@ -32,7 +32,7 @@ object HotspotUtils {
     private const val NEAREST_HOTSPOT_RANGE_FROM_HOOK = 5.0
 
     fun init() {
-        EventBus.subscribe(HotspotSpawnedEvent::class, ::onHotspotSpawned)
+        EventBus.subscribe(HotspotNametagLoadedEvent::class, ::onHotspotSpawned)
         EventBus.subscribe(ArmorStandDespawnedEvent::class, ::onArmorStandDespawned)
         EventBus.subscribe(ClientTickEvent::class, ::onClientTick)
         EventBus.subscribe(WorldChangedEvent::class, ::onWorldChanged)
@@ -51,7 +51,7 @@ object HotspotUtils {
         tickCounter = 0
     }
 
-    private fun onHotspotSpawned(event: HotspotSpawnedEvent) {
+    private fun onHotspotSpawned(event: HotspotNametagLoadedEvent) {
         if (!WorldUtils.isInSkyblock() || !WorldUtils.isInHotspotFishingWorld()) return
 
         CommonUtils.runWithCatching("Failed to handle Hotspot spawned event") {

@@ -10,7 +10,7 @@ import kotlin.math.floor
  * @param perkUnformatted Unformatted perk nametag (the stand at hotspot ID + 1).
  * @param hotspotArmorStandId Numeric entity ID of the HOTSPOT armor stand.
  */
-data class HotspotSpawnedEvent(
+data class HotspotNametagLoadedEvent(
     val id: String,
     val position: Position,
     val perkFormatted: String,

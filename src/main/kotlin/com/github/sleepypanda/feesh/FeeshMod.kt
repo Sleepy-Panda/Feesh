@@ -91,7 +91,7 @@ class FeeshMod : ClientModInitializer {
         IceEssenceStatusBarPublisher.init()
         ArmorStandPublisher.init()
         ItemEntityPublisher.init()
-        HotspotSpawnedPublisher.init()
+        HotspotNametagLoadedPublisher.init()
         ConsumablesPublishers.init()
         ShurikenUsedPublisher.init()
 

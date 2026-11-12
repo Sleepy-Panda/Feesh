@@ -2,7 +2,7 @@ package com.github.sleepypanda.feesh.events.publishers
 
 import com.github.sleepypanda.feesh.events.EventBus
 import com.github.sleepypanda.feesh.events.models.ArmorStandCustomNameChangedEvent
-import com.github.sleepypanda.feesh.events.models.HotspotSpawnedEvent
+import com.github.sleepypanda.feesh.events.models.HotspotNametagLoadedEvent
 import com.github.sleepypanda.feesh.events.models.WorldChangedEvent
 import com.github.sleepypanda.feesh.utils.ChatUtils.getFormattedString
 import com.github.sleepypanda.feesh.utils.ChatUtils.removeFormatting
@@ -12,7 +12,7 @@ import com.github.sleepypanda.feesh.utils.HotspotUtils
 import com.github.sleepypanda.feesh.utils.WorldUtils
 import net.minecraft.world.entity.decoration.ArmorStand
 
-object HotspotSpawnedPublisher {
+object HotspotNametagLoadedPublisher {
     private val pendingHotspotIds = mutableSetOf<Int>()
 
     fun init() {
@@ -28,7 +28,7 @@ object HotspotSpawnedPublisher {
         if (!WorldUtils.isInSkyblock() || !WorldUtils.isInHotspotFishingWorld()) return
         if (!event.isFirstLoaded) return
 
-        CommonUtils.runWithCatching("Failed to publish hotspot spawned") {
+        CommonUtils.runWithCatching("Failed to publish hotspot nametag loaded") {
             if (event.customName.unformatted == "HOTSPOT") {
                 pendingHotspotIds.add(event.entityId)
                 return@runWithCatching
@@ -46,9 +46,9 @@ object HotspotSpawnedPublisher {
 
             pendingHotspotIds.remove(hotspotId)
             EventBus.publish(
-                HotspotSpawnedEvent(
-                    id = HotspotSpawnedEvent.getHotspotId(hotspotStand.x, hotspotStand.y, hotspotStand.z, perk.removeFormatting()),
-                    position = HotspotSpawnedEvent.Position(
+                HotspotNametagLoadedEvent(
+                    id = HotspotNametagLoadedEvent.getHotspotId(hotspotStand.x, hotspotStand.y, hotspotStand.z, perk.removeFormatting()),
+                    position = HotspotNametagLoadedEvent.Position(
                         x = hotspotStand.x,
                         y = hotspotStand.y,
                         z = hotspotStand.z,

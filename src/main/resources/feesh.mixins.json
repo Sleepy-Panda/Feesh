@@ -14,10 +14,7 @@
 		"SoundEngineMixin",
 		"AbstractSoundInstanceAccessor",
 		"FluidStateModelSetMixin",
-		"CameraMixin",
-		"LevelRendererMixin",
-		"RenderTypeInvoker",
-		"RenderPipelinesInvoker"
+		"CameraMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

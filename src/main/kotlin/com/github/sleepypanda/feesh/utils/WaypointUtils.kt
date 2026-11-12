@@ -3,35 +3,20 @@ package com.github.sleepypanda.feesh.utils
 import com.github.sleepypanda.feesh.FeeshMod
 import com.github.sleepypanda.feesh.events.EventBus
 import com.github.sleepypanda.feesh.events.models.ClientTickEvent
+import com.github.sleepypanda.feesh.events.models.LevelCollectSubmitsEvent
 import com.github.sleepypanda.feesh.events.models.WorldChangedEvent
-import com.github.sleepypanda.feesh.mixin.RenderPipelinesInvoker
-import com.github.sleepypanda.feesh.mixin.RenderTypeInvoker
-import com.mojang.blaze3d.vertex.DefaultVertexFormat
 import com.mojang.blaze3d.vertex.PoseStack
 import net.minecraft.client.gui.Font
-//#if MC >= 26.3
-//$$ import com.mojang.renderpearl.api.pipeline.PrimitiveTopology
-//$$ import com.mojang.renderpearl.api.pipeline.RenderPipeline
-//#elseif MC >= 26.2
-//$$ import com.mojang.blaze3d.PrimitiveTopology
-//$$ import com.mojang.blaze3d.pipeline.RenderPipeline
-//#endif
 //#if MC >= 26.2
-//$$ import com.mojang.blaze3d.vertex.VertexConsumer
 //$$ import net.fabricmc.fabric.api.client.rendering.v1.FabricOrderedSubmitNodeCollector
 //$$ import net.fabricmc.fabric.api.client.rendering.v1.SubmitRenderPhases
 //$$ import net.minecraft.client.renderer.feature.TextFeatureRenderer
-//$$ import net.minecraft.client.renderer.rendertype.RenderSetup
-//$$ import net.minecraft.client.renderer.rendertype.RenderType
-//$$ import net.minecraft.resources.Identifier
 //$$ import org.joml.Matrix4f
-//$$ import java.util.Optional
 //#endif
 import net.minecraft.client.renderer.SubmitNodeCollector
 import net.minecraft.client.renderer.state.level.CameraRenderState
-import net.minecraft.gizmos.CuboidGizmo
 import net.minecraft.gizmos.GizmoStyle
-import net.minecraft.gizmos.SimpleGizmoCollector
+import net.minecraft.gizmos.Gizmos
 import net.minecraft.network.chat.Style
 import net.minecraft.util.FormattedCharSequence
 import net.minecraft.util.LightCoordsUtil
@@ -71,14 +56,15 @@ object WaypointUtils {
     private const val TEXT_MAX_SCALE = 1.5f
     private const val TEXT_COLOR = -1
 
-    //#if MC >= 26.2
-    //$$ private val xrayFill: RenderType by lazy { createFill(throughWalls = true) }
-    //$$ private val depthFill: RenderType by lazy { createFill(throughWalls = false) }
-    //#endif
-
     fun init() {
         EventBus.subscribe(WorldChangedEvent::class, ::onWorldChanged)
         EventBus.subscribe(ClientTickEvent::class, ::onClientTick)
+        EventBus.subscribe(LevelCollectSubmitsEvent::class, ::onLevelCollectSubmits)
+    }
+
+    private fun onLevelCollectSubmits(event: LevelCollectSubmitsEvent) {
+        val context = event.context
+        render(context.submitNodeCollector(), context.levelState().cameraRenderState)
     }
   
     private fun onWorldChanged(@Suppress("UNUSED_PARAMETER") event: WorldChangedEvent) {
@@ -144,12 +130,12 @@ object WaypointUtils {
         waypoints.removeAll { it.id == id }
     }
 
-    fun render(collector: SubmitNodeCollector, gizmos: SimpleGizmoCollector, camera: CameraRenderState) {
+    private fun render(collector: SubmitNodeCollector, camera: CameraRenderState) {
         if (waypoints.isEmpty()) return
         CommonUtils.runWithCatching("Failed to render waypoints") {
             for (waypoint in waypoints) {
                 if (waypoint.renderMode != RenderMode.TEXT) {
-                    renderBox(collector, gizmos, camera, waypoint)
+                    renderBox(waypoint)
                 }
                 if (waypoint.renderMode == RenderMode.BOX) continue
                 val text = waypoint.text ?: continue
@@ -160,12 +146,7 @@ object WaypointUtils {
         }
     }
 
-    private fun renderBox(
-        collector: SubmitNodeCollector,
-        gizmos: SimpleGizmoCollector,
-        camera: CameraRenderState,
-        waypoint: Waypoint,
-    ) {
+    private fun renderBox(waypoint: Waypoint) {
         val half = waypoint.size / 2.0
         val box = AABB(
             waypoint.x - half,
@@ -175,12 +156,8 @@ object WaypointUtils {
             waypoint.y - 1.0 + waypoint.size,
             waypoint.z + half,
         )
-        //#if MC >= 26.2
-        //$$ renderFillBox(collector, camera, box, waypoint.colorArgb, waypoint.throughWalls)
-        //#else
-        val properties = gizmos.add(CuboidGizmo(box, GizmoStyle.fill(waypoint.colorArgb), false))
+        val properties = Gizmos.cuboid(box, GizmoStyle.fill(waypoint.colorArgb))
         if (waypoint.throughWalls) properties.setAlwaysOnTop()
-        //#endif
     }
 
     private fun renderScaledText(
@@ -258,107 +235,6 @@ object WaypointUtils {
         //#endif
     }
 
-    //#if MC >= 26.2
-    //$$ private fun renderFillBox(
-    //$$     collector: SubmitNodeCollector,
-    //$$     camera: CameraRenderState,
-    //$$     box: AABB,
-    //$$     color: Int,
-    //$$     throughWalls: Boolean,
-    //$$ ) {
-    //$$     val cameraPos = camera.pos
-    //$$     val layer = if (throughWalls) xrayFill else depthFill
-    //$$     collector.submitCustomGeometry(PoseStack(), layer) { pose, consumer ->
-    //$$         addFilledBoxVertices(
-    //$$             pose,
-    //$$             consumer,
-    //$$             (box.minX - cameraPos.x).toFloat(),
-    //$$             (box.minY - cameraPos.y).toFloat(),
-    //$$             (box.minZ - cameraPos.z).toFloat(),
-    //$$             (box.maxX - cameraPos.x).toFloat(),
-    //$$             (box.maxY - cameraPos.y).toFloat(),
-    //$$             (box.maxZ - cameraPos.z).toFloat(),
-    //$$             color,
-    //$$         )
-    //$$     }
-    //$$ }
-    //$$
-    //$$ private fun createFill(throughWalls: Boolean): RenderType {
-    //$$     val name = if (throughWalls) "waypoint_fill_xray" else "waypoint_fill"
-    //$$     val pipeline = RenderPipelinesInvoker.feeshRegister(
-    //$$         RenderPipeline.builder(RenderPipelinesInvoker.feeshDebugFilledSnippet())
-    //$$             .withLocation(Identifier.fromNamespaceAndPath("feesh", name))
-    //$$             .withVertexBinding(0, DefaultVertexFormat.POSITION_COLOR)
-    //$$             .withPrimitiveTopology(PrimitiveTopology.TRIANGLE_STRIP)
-    //$$             .withCull(false)
-    //$$             .apply { if (throughWalls) withDepthStencilState(Optional.empty()) }
-    //$$             .build(),
-    //$$     )
-    //$$     assignIrisPipeline(pipeline)
-    //$$     return RenderTypeInvoker.feeshCreate("feesh_$name", RenderSetup.builder(pipeline).createRenderSetup())
-    //$$ }
-    //$$
-    //$$ private fun assignIrisPipeline(pipeline: RenderPipeline) {
-    //$$     val api = runCatching {
-    //$$         Class.forName("net.irisshaders.iris.api.v0.IrisApi").getMethod("getInstance").invoke(null)
-    //$$     }.getOrNull() ?: return
-    //$$     val programClass = Class.forName("net.irisshaders.iris.api.v0.IrisProgram")
-    //$$     val basic = java.lang.Enum.valueOf(programClass.asSubclass(Enum::class.java), "BASIC")
-    //$$     val assign = api.javaClass.methods.firstOrNull { method ->
-    //$$         method.name == "assignPipeline" &&
-    //$$             method.parameterCount == 2 &&
-    //$$             method.parameterTypes[0].isAssignableFrom(pipeline.javaClass)
-    //$$     } ?: return
-    //$$     assign.invoke(api, pipeline, basic)
-    //$$ }
-    //$$
-    //$$ private fun addFilledBoxVertices(
-    //$$     pose: PoseStack.Pose,
-    //$$     consumer: VertexConsumer,
-    //$$     minX: Float,
-    //$$     minY: Float,
-    //$$     minZ: Float,
-    //$$     maxX: Float,
-    //$$     maxY: Float,
-    //$$     maxZ: Float,
-    //$$     color: Int,
-    //$$ ) {
-    //$$     fun vertex(x: Float, y: Float, z: Float) {
-    //$$         consumer.addVertex(pose, x, y, z).setColor(color)
-    //$$     }
-    //$$     vertex(minX, minY, minZ)
-    //$$     vertex(minX, minY, minZ)
-    //$$     vertex(minX, minY, minZ)
-    //$$     vertex(minX, minY, maxZ)
-    //$$     vertex(minX, maxY, minZ)
-    //$$     vertex(minX, maxY, maxZ)
-    //$$     vertex(minX, maxY, maxZ)
-    //$$     vertex(minX, minY, maxZ)
-    //$$     vertex(maxX, maxY, maxZ)
-    //$$     vertex(maxX, minY, maxZ)
-    //$$     vertex(maxX, minY, maxZ)
-    //$$     vertex(maxX, minY, minZ)
-    //$$     vertex(maxX, maxY, maxZ)
-    //$$     vertex(maxX, maxY, minZ)
-    //$$     vertex(maxX, maxY, minZ)
-    //$$     vertex(maxX, minY, minZ)
-    //$$     vertex(minX, maxY, minZ)
-    //$$     vertex(minX, minY, minZ)
-    //$$     vertex(minX, minY, minZ)
-    //$$     vertex(maxX, minY, minZ)
-    //$$     vertex(minX, minY, maxZ)
-    //$$     vertex(maxX, minY, maxZ)
-    //$$     vertex(maxX, minY, maxZ)
-    //$$     vertex(minX, maxY, minZ)
-    //$$     vertex(minX, maxY, minZ)
-    //$$     vertex(minX, maxY, maxZ)
-    //$$     vertex(maxX, maxY, minZ)
-    //$$     vertex(maxX, maxY, maxZ)
-    //$$     vertex(maxX, maxY, maxZ)
-    //$$     vertex(maxX, maxY, maxZ)
-    //$$ }
-    //#endif
-
     private fun removeCloseWaypoints() {
         val player = FeeshMod.mc.player ?: return
         waypoints.removeAll {
@@ -366,7 +242,7 @@ object WaypointUtils {
                 EntityUtils.getDistanceSqr(player.x, player.y, player.z, it.x, it.y, it.z) <= it.removeDistance * it.removeDistance
         }
     }
-    
+
     private fun removeExpiredWaypoints() {
         val now = System.currentTimeMillis()
         waypoints.removeAll { it.expiresAtMillis <= now }
