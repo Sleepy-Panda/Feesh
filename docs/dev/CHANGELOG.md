@@ -6,6 +6,10 @@ Released on: ???
 
 - Added ability to move GUIs using arrow keys in `/feeshMoveAllGuis`.
 
+## Bugfixes
+
+- Adjusted alerts be played with a delay, when a few of them happen at the same time. Before, they were overlapping.
+
 # 1.17.0
 
 Released on: 2026-11-01

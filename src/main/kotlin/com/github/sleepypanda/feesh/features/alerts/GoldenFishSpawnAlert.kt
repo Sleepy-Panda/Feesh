@@ -3,8 +3,7 @@ package com.github.sleepypanda.feesh.features.alerts
 import com.github.sleepypanda.feesh.settings.categories.Alerts
 import com.github.sleepypanda.feesh.events.EventBus
 import com.github.sleepypanda.feesh.events.models.ChatEvent
-import com.github.sleepypanda.feesh.utils.CommonUtils
-import com.github.sleepypanda.feesh.utils.SoundUtils
+import com.github.sleepypanda.feesh.utils.AlertUtils
 import com.github.sleepypanda.feesh.utils.WorldUtils
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import net.minecraft.sounds.SoundEvents
@@ -20,7 +19,9 @@ object GoldenFishSpawnAlert {
         if (!WorldUtils.isInSkyblock() || !Alerts.alertOnGoldenFishSpawn) return
         if (!PATTERN.matches(event.unformattedText)) return
 
-        CommonUtils.showTitle("${WHITE}Catch the ${GOLD}Golden Fish")
-        SoundUtils.playMcSound(SoundEvents.FISH_SWIM)
+        AlertUtils.alert(
+            title = AlertUtils.TitleConfig("${WHITE}Catch the ${GOLD}Golden Fish"),
+            sound = AlertUtils.SoundConfig.McSound(SoundEvents.FISH_SWIM),
+        )
     }
 }

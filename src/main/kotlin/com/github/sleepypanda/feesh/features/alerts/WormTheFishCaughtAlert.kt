@@ -5,9 +5,8 @@ import com.github.sleepypanda.feesh.events.EventBus
 import com.github.sleepypanda.feesh.events.models.ItemEntityDetailsLoadedEvent
 import com.github.sleepypanda.feesh.events.models.WorldChangedEvent
 import com.github.sleepypanda.feesh.settings.categories.Alerts
-import com.github.sleepypanda.feesh.utils.CommonUtils
+import com.github.sleepypanda.feesh.utils.AlertUtils
 import com.github.sleepypanda.feesh.utils.PlayerUtils
-import com.github.sleepypanda.feesh.utils.SoundUtils
 import com.github.sleepypanda.feesh.utils.WorldUtils
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import net.minecraft.sounds.SoundEvents
@@ -60,8 +59,10 @@ object WormTheFishCaughtAlert {
 
         processedEntityIds[entityId] = System.currentTimeMillis()
 
-        CommonUtils.showTitle("${WHITE}Pickup ${RED}Worm the Fish")
-        SoundUtils.playMcSound(SoundEvents.GENERIC_SPLASH)
+        AlertUtils.alert(
+            title = AlertUtils.TitleConfig("${WHITE}Pickup ${RED}Worm the Fish"),
+            sound = AlertUtils.SoundConfig.McSound(SoundEvents.GENERIC_SPLASH),
+        )
     }
 
     private fun cleanupOutdatedEntries() {

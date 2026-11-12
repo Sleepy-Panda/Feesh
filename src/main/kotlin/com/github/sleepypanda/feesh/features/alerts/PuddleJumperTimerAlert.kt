@@ -5,9 +5,9 @@ import com.github.sleepypanda.feesh.events.EventBus
 import com.github.sleepypanda.feesh.events.models.OwnSeaCreatureCaughtEvent
 import com.github.sleepypanda.feesh.events.models.WorldChangedEvent
 import com.github.sleepypanda.feesh.settings.categories.Alerts
+import com.github.sleepypanda.feesh.utils.AlertUtils
 import com.github.sleepypanda.feesh.utils.ChatUtils
 import com.github.sleepypanda.feesh.utils.CommonUtils
-import com.github.sleepypanda.feesh.utils.SoundUtils
 import com.github.sleepypanda.feesh.utils.WorldUtils
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import net.minecraft.sounds.SoundEvents
@@ -54,10 +54,14 @@ object PuddleJumperTimerAlert {
     private fun onPuddleJumperTimerFinished() {
         if (!WorldUtils.isInSkyblock() || WorldUtils.getWorldName() != WorldUtils.LOTUS_ATOLL || !Alerts.alertOnPuddleJumperTimer) return
 
-        CommonUtils.showTitle("${GOLD}Puddle Jumper ${WHITE}arrives soon!")
         ChatUtils.sendLocalChat("Your ${GOLD}Puddle Jumper ${WHITE}arrives soon.", true)
-        SoundUtils.playMcSound(SoundEvents.FROG_HURT)
-        SoundUtils.playMcSound()
+        AlertUtils.alert(
+            title = AlertUtils.TitleConfig("${GOLD}Puddle Jumper ${WHITE}arrives soon!"),
+            sounds = listOf(
+                AlertUtils.SoundConfig.McSound(SoundEvents.FROG_HURT),
+                AlertUtils.SoundConfig.McSound(),
+            ),
+        )
     }
 
     private fun onWorldChanged(@Suppress("UNUSED_PARAMETER") event: WorldChangedEvent) {

@@ -7,8 +7,8 @@ import com.github.sleepypanda.feesh.settings.categories.Alerts
 import com.github.sleepypanda.feesh.settings.categories.General
 import com.github.sleepypanda.feesh.settings.categories.Overlays
 import com.github.sleepypanda.feesh.settings.categories.SoundMode
+import com.github.sleepypanda.feesh.utils.AlertUtils
 import com.github.sleepypanda.feesh.utils.CommonUtils
-import com.github.sleepypanda.feesh.utils.SoundUtils
 import com.github.sleepypanda.feesh.utils.WorldUtils
 import com.github.sleepypanda.feesh.constants.Sounds
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
@@ -123,9 +123,15 @@ object ConsumablesTimer {
         if (isAlertEnabled() && remainingSeconds <= SECONDS_BEFORE_EXPIRATION && !mobyDuckData.isAlerted
         ) {
             mobyDuckData.isAlerted = true
-            CommonUtils.showTitle("${DARK_PURPLE}Moby-Duck ${RED}expires soon")
-            if (General.soundMode == SoundMode.MEME) SoundUtils.playCustomSound(Sounds.FEESH_NOTIFICATION_BELL)
-            else SoundUtils.playMcSound()
+            val sound = when (General.soundMode) {
+                SoundMode.MEME -> AlertUtils.SoundConfig.CustomSound(Sounds.FEESH_NOTIFICATION_BELL)
+                SoundMode.NORMAL -> AlertUtils.SoundConfig.McSound()
+                else -> null
+            }
+            AlertUtils.alert(
+                title = AlertUtils.TitleConfig("${DARK_PURPLE}Moby-Duck ${RED}expires soon"),
+                sound = sound,
+            )
         }
 
         mobyDuckData.isActive = true

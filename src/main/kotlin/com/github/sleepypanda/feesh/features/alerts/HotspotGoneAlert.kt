@@ -3,8 +3,8 @@ package com.github.sleepypanda.feesh.features.alerts
 import com.github.sleepypanda.feesh.FeeshMod
 import com.github.sleepypanda.feesh.settings.categories.Alerts
 import com.github.sleepypanda.feesh.utils.ChatUtils.getUnformattedString
+import com.github.sleepypanda.feesh.utils.AlertUtils
 import com.github.sleepypanda.feesh.utils.CommonUtils
-import com.github.sleepypanda.feesh.utils.SoundUtils
 import com.github.sleepypanda.feesh.utils.PlayerUtils
 import com.github.sleepypanda.feesh.utils.WorldUtils
 import com.github.sleepypanda.feesh.utils.HotspotUtils
@@ -88,8 +88,10 @@ object HotspotGoneAlert {
     }
 
     private fun playAlert(perk: String?) {
-        CommonUtils.showTitle("${LIGHT_PURPLE}Hotspot ${RED}is gone")
+        AlertUtils.alert(
+            title = AlertUtils.TitleConfig("${LIGHT_PURPLE}Hotspot ${RED}is gone"),
+            sound = AlertUtils.SoundConfig.McSound(),
+        )
         ChatUtils.sendLocalChat("${perk ?: ""} ${RESET}${LIGHT_PURPLE}Hotspot ${WHITE}is gone, time to find another one!", true)
-        SoundUtils.playMcSound()
     }
 }

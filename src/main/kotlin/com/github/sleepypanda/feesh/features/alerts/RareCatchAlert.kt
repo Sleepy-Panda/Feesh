@@ -6,17 +6,16 @@ import com.github.sleepypanda.feesh.events.EventBus
 import com.github.sleepypanda.feesh.events.models.OwnSeaCreatureCaughtEvent
 import com.github.sleepypanda.feesh.events.models.SeaCreatureCocoonedByYouEvent
 import com.github.sleepypanda.feesh.events.models.PartyChatEvent
+import com.github.sleepypanda.feesh.utils.ChatUtils
 import com.github.sleepypanda.feesh.utils.ChatUtils.removeFormatting
 import com.github.sleepypanda.feesh.settings.categories.AlertSource
 import com.github.sleepypanda.feesh.settings.categories.Alerts
-import com.github.sleepypanda.feesh.utils.ChatUtils
-import com.github.sleepypanda.feesh.utils.CommonUtils
-import com.github.sleepypanda.feesh.utils.SoundUtils
+import com.github.sleepypanda.feesh.settings.categories.General
+import com.github.sleepypanda.feesh.settings.categories.SoundMode
+import com.github.sleepypanda.feesh.utils.AlertUtils
 import com.github.sleepypanda.feesh.utils.PlayerUtils
 import com.github.sleepypanda.feesh.utils.WorldUtils
 import com.github.sleepypanda.feesh.utils.data.CustomSoundsManager
-import com.github.sleepypanda.feesh.settings.categories.General
-import com.github.sleepypanda.feesh.settings.categories.SoundMode
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 
 object RareCatchAlert {
@@ -105,19 +104,21 @@ object RareCatchAlert {
         val seaCreatureInfo = SeaCreatures.allSeaCreatures.find { it.name.equals(seaCreatureName, ignoreCase = true) } ?: return
 
         val title = SeaCreatures.getTitle(seaCreatureInfo.name, isDoubleHook)
-        CommonUtils.showTitle(title, playerName)
-        
-        val soundData = CustomSoundsManager.getCatchSoundData(seaCreatureInfo.name)
-        val soundFileName = soundData?.source
-
-        if (General.soundMode == SoundMode.MEME) SoundUtils.playCustomSound(soundFileName)
-        else SoundUtils.playMcSound()
-
-        if (seaCreatureInfo.name == SeaCreatureNames.NESSIE) {
-            ChatUtils.sendLocalChatWithCommand("Click to warp to Murkwater Loch!", "warp murk", true)
-        } else if (seaCreatureInfo.name == SeaCreatureNames.GIANT_ISOPOD) {
-            ChatUtils.sendLocalChatWithCommand("Click to warp to Torrhus Springs!", "warp springs", true)
+        val soundFileName = CustomSoundsManager.getCatchSoundData(seaCreatureInfo.name)?.source
+        val sound = when (General.soundMode) {
+            SoundMode.MEME -> AlertUtils.SoundConfig.CustomSound(soundFileName)
+            SoundMode.NORMAL -> AlertUtils.SoundConfig.McSound()
+            else -> null
         }
+        when (seaCreatureInfo.name) {
+            SeaCreatureNames.NESSIE -> ChatUtils.sendLocalChatWithCommand("Click to warp to Murkwater Loch!", "warp murk", true)
+            SeaCreatureNames.GIANT_ISOPOD -> ChatUtils.sendLocalChatWithCommand("Click to warp to Torrhus Springs!", "warp springs", true)
+        }
+
+        AlertUtils.alert(
+            title = AlertUtils.TitleConfig(title, playerName),
+            sound = sound,
+        )
     }
 
     private fun showCocoonAlert(seaCreatureName: String, playerName: String) {
@@ -127,8 +128,9 @@ object RareCatchAlert {
         val seaCreatureInfo = SeaCreatures.allSeaCreatures.find { it.name.equals(seaCreatureName, ignoreCase = true) } ?: return
 
         val title = "${seaCreatureInfo.boldDisplayName} ${RED}cocooned"
-        CommonUtils.showTitle(title, playerName)
-
-        SoundUtils.playMcSound()
+        AlertUtils.alert(
+            title = AlertUtils.TitleConfig(title, playerName),
+            sound = AlertUtils.SoundConfig.McSound(),
+        )
     }
 }
