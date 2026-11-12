@@ -8,11 +8,11 @@
 
 New potential drops that have alerts:
 - 1x Piscary VI (2%)
-- 1x Great White Shark Tooth (5%)
+- 1x Great White Shark Tooth (5%) - maybe 7.5
 - 1x Severed Pincer (0.5%)
 - 1x Chain of the End Times (2%)
 - 1x Brimstone Handle (1.5%)
-- 1x COMMON Baby Yeti Pet (2%) - PET DROP! COMMON Baby Yeti
+- 1x COMMON Baby Yeti Pet (3.5%) - PET DROP! COMMON Baby Yeti
 - 1x RARE Flying Fish (4%)
 - 1x EPIC Flying Fish (2%)
 - 1x Mound of Seagrass (2.5%)
@@ -34,6 +34,10 @@ https://hypixel.net/threads/some-more-notable-things-i-noticed-from-the-drop-tab
 - Foraging exp boost 30% from ent
 
 The Fishing Hotspot faded away...
+JACKPOT! You just DOUBLED a Enchanted Raw Cod!
+JACKPOT! You just DOUBLED a Enchanted Prismarine Crystals!
+WOMP WOMP! You just DELETED a Enchanted Pufferfish!
+WOMP WOMP! You just DELETED a Plasma x2!
 
 ## Minister update
 
