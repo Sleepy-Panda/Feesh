@@ -3,8 +3,8 @@ package com.github.sleepypanda.feesh.features.alerts
 import com.github.sleepypanda.feesh.settings.categories.Alerts
 import com.github.sleepypanda.feesh.events.EventBus
 import com.github.sleepypanda.feesh.events.models.ChatEvent
+import com.github.sleepypanda.feesh.utils.AlertUtils
 import com.github.sleepypanda.feesh.utils.CommonUtils
-import com.github.sleepypanda.feesh.utils.SoundUtils
 import com.github.sleepypanda.feesh.utils.WorldUtils
 import com.github.sleepypanda.feesh.utils.ChatUtils.removeFormatting
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
@@ -29,10 +29,15 @@ object SaltExpiredAlert {
             if (saltName.isNullOrEmpty()) return@onChat
 
             val cleanSaltName = saltName.removeFormatting()
-            CommonUtils.showTitle("${RED}${cleanSaltName} ${RED}has expired")
-
-            if (General.soundMode == SoundMode.MEME) SoundUtils.playCustomSound(Sounds.FEESH_NOTIFICATION_BELL)
-            else SoundUtils.playMcSound()
+            val sound = when (General.soundMode) {
+                SoundMode.MEME -> AlertUtils.SoundConfig.CustomSound(Sounds.FEESH_NOTIFICATION_BELL)
+                SoundMode.NORMAL -> AlertUtils.SoundConfig.McSound()
+                else -> null
+            }
+            AlertUtils.alert(
+                title = AlertUtils.TitleConfig("${RED}${cleanSaltName} ${RED}has expired"),
+                sound = sound,
+            )
         }
     }
 }

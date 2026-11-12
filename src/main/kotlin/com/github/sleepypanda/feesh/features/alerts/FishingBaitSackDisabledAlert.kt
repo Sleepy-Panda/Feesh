@@ -4,8 +4,8 @@ import com.github.sleepypanda.feesh.FeeshMod
 import com.github.sleepypanda.feesh.events.EventBus
 import com.github.sleepypanda.feesh.events.models.ChatCancellableEvent
 import com.github.sleepypanda.feesh.settings.categories.Alerts
+import com.github.sleepypanda.feesh.utils.AlertUtils
 import com.github.sleepypanda.feesh.utils.CommonUtils
-import com.github.sleepypanda.feesh.utils.SoundUtils
 import com.github.sleepypanda.feesh.utils.getScreenCompat
 import com.github.sleepypanda.feesh.utils.PlayerUtils
 import com.github.sleepypanda.feesh.utils.WorldUtils
@@ -88,8 +88,10 @@ object FishingBaitSackDisabledAlert {
             val isHookActive = FishingHookUtils.isFishingHookSubmerged()
             if (!isHookActive) return
 
-            CommonUtils.showTitle("${RED}Bait usage disabled!")
-            SoundUtils.playMcSound()
+            AlertUtils.alert(
+                title = AlertUtils.TitleConfig("${RED}Bait usage disabled!"),
+                sound = AlertUtils.SoundConfig.McSound(),
+            )
             isAlerted = true 
             ChatUtils.sendLocalChatWithCommand("${WHITE}Using baits from Bait Sack is disabled. Click to open Bait Sack!", "baitsack", true)
         }

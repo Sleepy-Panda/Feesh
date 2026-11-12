@@ -11,9 +11,9 @@ import com.github.sleepypanda.feesh.settings.categories.General
 import com.github.sleepypanda.feesh.settings.categories.Overlays
 import com.github.sleepypanda.feesh.settings.categories.Alerts
 import com.github.sleepypanda.feesh.settings.categories.SoundMode
+import com.github.sleepypanda.feesh.utils.AlertUtils
 import com.github.sleepypanda.feesh.utils.ChatUtils
 import com.github.sleepypanda.feesh.utils.CommonUtils
-import com.github.sleepypanda.feesh.utils.SoundUtils
 import com.github.sleepypanda.feesh.utils.WorldUtils
 import com.github.sleepypanda.feesh.utils.data.PersonalBestData
 import com.github.sleepypanda.feesh.utils.data.PersistentDataManager
@@ -177,11 +177,10 @@ object FishingFestivalTracker : IResettableTracker {
         val total = getTotalSharks()
         if (total == 0) return
 
-        CommonUtils.showTitle("${YELLOW}Fishing Festival ended")
-
-        if (General.soundMode != SoundMode.OFF) {
-            SoundUtils.playMcSound()
-        }
+        AlertUtils.alert(
+            title = AlertUtils.TitleConfig("${YELLOW}Fishing Festival ended"),
+            sound = AlertUtils.SoundConfig.McSound(),
+        )
 
         val countsText = sharkInfos.zip(SHARK_NAMES.map { sharksCaught[it] ?: 0 }).joinToString(" ") { (info, count) ->
             "${RESET}${info.rarityColorCode}${CommonUtils.formatNumberWithSpaces(count)}"
@@ -207,6 +206,7 @@ object FishingFestivalTracker : IResettableTracker {
         var isNewGwPb = false
         val previousTotalPb = personalBest.sharksCaught.amount
         val previousGwPb = personalBest.greatWhiteSharksCaught.amount
+        val levelUpSound = AlertUtils.SoundConfig.McSound(SoundEvents.PLAYER_LEVELUP)
 
         if (total > previousTotalPb) {
             personalBest.sharksCaught.amount = total
@@ -216,7 +216,10 @@ object FishingFestivalTracker : IResettableTracker {
                 "${LIGHT_PURPLE}${BOLD}PERSONAL BEST!${RESET} You caught ${WHITE}${BOLD}${previousTotalPb} ${GRAY}-> ${GREEN}${BOLD}$total${RESET} sharks during the Fishing Festival!",
                 true
             )
-            CommonUtils.showTitle("${LIGHT_PURPLE}${BOLD}PERSONAL BEST!", "Sharks: ${GREEN}$total", stay = 60)
+            AlertUtils.alert(
+                title = AlertUtils.TitleConfig("${LIGHT_PURPLE}${BOLD}PERSONAL BEST!", "Sharks: ${GREEN}$total", stay = 60),
+                sound = levelUpSound,
+            )
         }
 
         if (greatWhiteCount > previousGwPb) {
@@ -227,11 +230,13 @@ object FishingFestivalTracker : IResettableTracker {
                 "${LIGHT_PURPLE}${BOLD}PERSONAL BEST!${RESET} You caught ${WHITE}${BOLD}${previousGwPb} ${GRAY}-> ${GREEN}${BOLD}$greatWhiteCount${RESET} Great White Sharks during the Fishing Festival!",
                 true
             )
-            CommonUtils.showTitle("${LIGHT_PURPLE}${BOLD}PERSONAL BEST!", "Great White Sharks: ${GREEN}$greatWhiteCount", stay = 60)
+            AlertUtils.alert(
+                title = AlertUtils.TitleConfig("${LIGHT_PURPLE}${BOLD}PERSONAL BEST!", "Great White Sharks: ${GREEN}$greatWhiteCount", stay = 60),
+                sound = if (isNewTotalPb) null else levelUpSound,
+            )
         }
 
         if (isNewTotalPb || isNewGwPb) {
-            SoundUtils.playMcSound(SoundEvents.PLAYER_LEVELUP)
             PersistentDataManager.saveFeeshDataToFileAsync()
         }
     }

@@ -1,8 +1,8 @@
 package com.github.sleepypanda.feesh.features.alerts
 
 import com.github.sleepypanda.feesh.settings.categories.Alerts
+import com.github.sleepypanda.feesh.utils.AlertUtils
 import com.github.sleepypanda.feesh.utils.CommonUtils
-import com.github.sleepypanda.feesh.utils.SoundUtils
 import com.github.sleepypanda.feesh.utils.PlayerUtils
 import com.github.sleepypanda.feesh.utils.WorldUtils
 import com.github.sleepypanda.feesh.utils.FishingHookUtils
@@ -70,8 +70,10 @@ object NonFishingArmorAlert {
             lastAlertAt = Date()
             hasAlertedForCurrentArmor = true
 
-            CommonUtils.showTitle("${RED}Equip fishing armor!")
-            SoundUtils.playMcSound()
+            AlertUtils.alert(
+                title = AlertUtils.TitleConfig("${RED}Equip fishing armor!"),
+                sound = AlertUtils.SoundConfig.McSound(),
+            )
         }
     }
 

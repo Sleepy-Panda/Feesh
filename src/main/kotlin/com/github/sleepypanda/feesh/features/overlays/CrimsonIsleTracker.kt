@@ -4,9 +4,9 @@ import com.github.sleepypanda.feesh.constants.SeaCreatures
 import com.github.sleepypanda.feesh.constants.RareDrops
 import com.github.sleepypanda.feesh.utils.WorldUtils
 import com.github.sleepypanda.feesh.utils.PlayerUtils
+import com.github.sleepypanda.feesh.utils.AlertUtils
 import com.github.sleepypanda.feesh.utils.ChatUtils
 import com.github.sleepypanda.feesh.utils.CommonUtils
-import com.github.sleepypanda.feesh.utils.SoundUtils
 import com.github.sleepypanda.feesh.utils.FishingHookUtils
 import com.github.sleepypanda.feesh.settings.categories.General
 import com.github.sleepypanda.feesh.settings.categories.SoundMode
@@ -214,10 +214,16 @@ object CrimsonIsleTracker : IResettableTracker {
         updateGuiLines()
 
         if (data.lordJawbus.catchesSinceLast > 0 && data.lordJawbus.catchesSinceLast % 1000 == 0) {
-            CommonUtils.showTitle("", "${RED}No ${LIGHT_PURPLE}Lord Jawbus ${RED}for ${data.lordJawbus.catchesSinceLast} catches");
-            ChatUtils.sendLocalChat("${RED}${BOLD}Yikes! ${RESET}${RED}No ${LIGHT_PURPLE}Lord Jawbus ${RED}for ${data.lordJawbus.catchesSinceLast} catches...", true);
-            if (General.soundMode == SoundMode.MEME) SoundUtils.playCustomSound(Sounds.FEESH_SAD_TROMBONE)
-            else SoundUtils.playMcSound()
+            val sound = when (General.soundMode) {
+                SoundMode.MEME -> AlertUtils.SoundConfig.CustomSound(Sounds.FEESH_SAD_TROMBONE)
+                SoundMode.NORMAL -> AlertUtils.SoundConfig.McSound()
+                else -> null
+            }
+            AlertUtils.alert(
+                title = AlertUtils.TitleConfig("", "${RED}No ${LIGHT_PURPLE}Lord Jawbus ${RED}for ${data.lordJawbus.catchesSinceLast} catches"),
+                sound = sound,
+            )
+            ChatUtils.sendLocalChat("${RED}${BOLD}Yikes! ${RESET}${RED}No ${LIGHT_PURPLE}Lord Jawbus ${RED}for ${data.lordJawbus.catchesSinceLast} catches...", true)
         }
     }
 

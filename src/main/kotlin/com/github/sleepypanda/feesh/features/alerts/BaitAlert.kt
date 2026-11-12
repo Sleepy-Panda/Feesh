@@ -8,9 +8,9 @@ import com.github.sleepypanda.feesh.settings.categories.Alerts
 import com.github.sleepypanda.feesh.utils.ChatUtils
 import com.github.sleepypanda.feesh.utils.ChatUtils.getUnformattedString
 import com.github.sleepypanda.feesh.utils.WorldUtils
+import com.github.sleepypanda.feesh.utils.AlertUtils
 import com.github.sleepypanda.feesh.utils.CommonUtils
 import com.github.sleepypanda.feesh.utils.FishingHookUtils
-import com.github.sleepypanda.feesh.utils.SoundUtils
 import com.github.sleepypanda.feesh.utils.getScreenCompat
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
@@ -36,8 +36,10 @@ object BaitAlert {
             if (isInFishingBag()) return
 
             ChatUtils.sendLocalChat("${WHITE}Bait changed from ${event.oldBaitDisplayName} ${WHITE}to ${event.newBaitDisplayName}${WHITE}.", true)
-            CommonUtils.showTitle("${YELLOW}Bait changed")
-            SoundUtils.playMcSound()
+            AlertUtils.alert(
+                title = AlertUtils.TitleConfig("${YELLOW}Bait changed"),
+                sound = AlertUtils.SoundConfig.McSound(),
+            )
         }
     }
 
@@ -69,8 +71,10 @@ object BaitAlert {
                 ChatUtils.sendLocalChat(supercraftText.append(orText).append(bazaarText))
             }
 
-            CommonUtils.showTitle("${YELLOW}Out of bait soon")
-            SoundUtils.playMcSound()
+            AlertUtils.alert(
+                title = AlertUtils.TitleConfig("${YELLOW}Out of bait soon"),
+                sound = AlertUtils.SoundConfig.McSound(),
+            )
         }
     }
 
