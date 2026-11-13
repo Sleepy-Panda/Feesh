@@ -3,7 +3,7 @@ package com.github.sleepypanda.feesh.events.publishers
 import com.github.sleepypanda.feesh.constants.FishingProfitDrops
 import com.github.sleepypanda.feesh.constants.FishingProfitDropInfo
 import com.github.sleepypanda.feesh.events.EventBus
-import com.github.sleepypanda.feesh.events.models.ChatCancellableEvent
+import com.github.sleepypanda.feesh.events.models.ChatEvent
 import com.github.sleepypanda.feesh.events.models.SacksProfitItemsPickupEvent
 import com.github.sleepypanda.feesh.utils.ChatUtils.getUnformattedString
 import com.github.sleepypanda.feesh.utils.ChatUtils.removeFormatting
@@ -32,10 +32,10 @@ object SacksItemPickupPublisher {
     private var lastStashToSacksAt: Date? = null
 
     fun init() {
-        EventBus.subscribe(ChatCancellableEvent::class, ::onChat) // Message might be cancelled by sacks hider e.g. from SH
+        EventBus.subscribe(ChatEvent::class, ::onChat) // Message might be cancelled by sacks hider e.g. from SH
     }
 
-    private fun onChat(event: ChatCancellableEvent) {
+    private fun onChat(event: ChatEvent) {
         if (!WorldUtils.isInSkyblock() || !WorldUtils.isInFishingWorld()) return
 
         CommonUtils.runWithCatching("Failed to handle chat message in sacks item pickup publisher.") {

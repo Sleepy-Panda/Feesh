@@ -2,7 +2,7 @@ package com.github.sleepypanda.feesh.features.alerts
 
 import com.github.sleepypanda.feesh.FeeshMod
 import com.github.sleepypanda.feesh.events.EventBus
-import com.github.sleepypanda.feesh.events.models.ChatCancellableEvent
+import com.github.sleepypanda.feesh.events.models.ChatEvent
 import com.github.sleepypanda.feesh.settings.categories.Alerts
 import com.github.sleepypanda.feesh.utils.AlertUtils
 import com.github.sleepypanda.feesh.utils.CommonUtils
@@ -37,7 +37,7 @@ object FishingBaitSackDisabledAlert {
     private const val TICKS_PER_CHECK = 20
 
     fun init() {
-        EventBus.subscribe(ChatCancellableEvent::class, ::onChat)
+        EventBus.subscribe(ChatEvent::class, ::onChat)
         EventBus.subscribe(ClientTickEvent::class, ::onClientTick)
         EventBus.subscribe(WorldChangedEvent::class, ::onWorldChanged)
         EventBus.subscribe(GuiOpenedEvent::class, ::onGuiOpened)
@@ -47,7 +47,7 @@ object FishingBaitSackDisabledAlert {
         isAlerted = false
     }
 
-    private fun onChat(event: ChatCancellableEvent) {
+    private fun onChat(event: ChatEvent) {
         if (!Alerts.alertOnFishingBagDisabled || !WorldUtils.isInSkyblock()) return
 
         if (USE_BAITS_DISABLED_PATTERN.matches(event.unformattedText)) {
