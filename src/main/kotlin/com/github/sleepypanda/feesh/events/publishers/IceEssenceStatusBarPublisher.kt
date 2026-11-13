@@ -1,7 +1,7 @@
 package com.github.sleepypanda.feesh.events.publishers
 
 import com.github.sleepypanda.feesh.events.EventBus
-import com.github.sleepypanda.feesh.events.models.ActionBarCancellableEvent
+import com.github.sleepypanda.feesh.events.models.ActionBarEvent
 import com.github.sleepypanda.feesh.events.models.IceEssenceStatusBarEvent
 import com.github.sleepypanda.feesh.utils.ChatUtils.removeFormatting
 import com.github.sleepypanda.feesh.utils.CommonUtils
@@ -14,10 +14,10 @@ object IceEssenceStatusBarPublisher {
     private var lastGainState = null as Int?
 
     fun init() {
-        EventBus.subscribe(ActionBarCancellableEvent::class, ::onActionBarMessage)
+        EventBus.subscribe(ActionBarEvent::class, ::onActionBarMessage)
     }
 
-    private fun onActionBarMessage(event: ActionBarCancellableEvent) {
+    private fun onActionBarMessage(event: ActionBarEvent) {
         if (!WorldUtils.isInSkyblock() || WorldUtils.getWorldName() != WorldUtils.JERRY_WORKSHOP) return
 
         CommonUtils.runWithCatching("Failed to handle Ice Essence gain from action bar.") {

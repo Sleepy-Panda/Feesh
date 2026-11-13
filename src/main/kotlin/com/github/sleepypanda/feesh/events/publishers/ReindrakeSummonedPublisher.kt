@@ -1,7 +1,7 @@
 package com.github.sleepypanda.feesh.events.publishers
 
 import com.github.sleepypanda.feesh.events.EventBus
-import com.github.sleepypanda.feesh.events.models.ChatCancellableEvent
+import com.github.sleepypanda.feesh.events.models.ChatEvent
 import com.github.sleepypanda.feesh.events.models.ReindrakeSummonedEvent
 import com.github.sleepypanda.feesh.utils.CommonUtils
 import com.github.sleepypanda.feesh.utils.WorldUtils
@@ -15,10 +15,10 @@ object ReindrakeSummonedPublisher {
     private val PATTERN = Regex("^§c§lWOAH! (?<playerNameAndRank>.+?) §csummoned (?:§4)?(?<count>a|(?i:two)) (?:§4)?Reindrakes? §cfrom the depths!$")
 
     fun init() {
-        EventBus.subscribe(ChatCancellableEvent::class, ::onChat)
+        EventBus.subscribe(ChatEvent::class, ::onChat)
     }
 
-    private fun onChat(event: ChatCancellableEvent) {
+    private fun onChat(event: ChatEvent) {
         if (!WorldUtils.isInSkyblock() || WorldUtils.getWorldName() != WorldUtils.JERRY_WORKSHOP) return
 
         CommonUtils.runWithCatching("Failed to handle Reindrake summoned chat") {
