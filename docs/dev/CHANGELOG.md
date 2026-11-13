@@ -8,6 +8,7 @@ Released on: ???
 
 ## Bugfixes
 
+- Fixed "Hide Trophy Frog/Trophy Fish catch messages" feature not working after Hypixel changed chat message format.
 - Adjusted alerts be played with a delay, when a few of them happen at the same time. Before, they were overlapping.
 
 # 1.17.0
