@@ -139,23 +139,24 @@ object WaypointUtils {
         if (waypoints.isEmpty()) return
         CommonUtils.runWithCatching("Failed to render waypoints") {
             for (waypoint in waypoints) {
-                val box = waypointBox(waypoint)
+                val box = getWaypointBox(waypoint)
                 if (RenderMode.BOX in waypoint.renderModes) {
                     renderBox(waypoint, box)
                 }
                 if (RenderMode.BEAM in waypoint.renderModes) {
                     renderBeam(collector, camera, waypoint, box)
                 }
-                if (RenderMode.TEXT !in waypoint.renderModes) continue
-                val text = waypoint.text ?: continue
-                val anchorY = if (RenderMode.BOX in waypoint.renderModes) waypoint.y + waypoint.size + 0.5 else waypoint.y
-                val anchor = Vec3(waypoint.x, anchorY, waypoint.z)
-                renderScaledText(collector, camera, anchor, text, waypoint.throughWalls)
+                if (RenderMode.TEXT in waypoint.renderModes) {
+                    val text = waypoint.text ?: continue
+                    val anchorY = if (RenderMode.BOX in waypoint.renderModes) waypoint.y + waypoint.size + 0.5 else waypoint.y
+                    val anchor = Vec3(waypoint.x, anchorY, waypoint.z)
+                    renderScaledText(collector, camera, anchor, text, waypoint.throughWalls)    
+                }
             }
         }
     }
 
-    private fun waypointBox(waypoint: Waypoint): AABB {
+    private fun getWaypointBox(waypoint: Waypoint): AABB {
         val half = waypoint.size / 2.0
         val minY = waypoint.y - 1.0
         return AABB(
@@ -170,7 +171,10 @@ object WaypointUtils {
 
     private fun renderBox(waypoint: Waypoint, box: AABB) {
         val properties = Gizmos.cuboid(box, GizmoStyle.fill(waypoint.colorArgb))
-        if (waypoint.throughWalls) properties.setAlwaysOnTop()
+        // Commented out for 26.3 because it breaks with some shaders
+        //#if MC <= 26.2
+        //$$ if (waypoint.throughWalls) properties.setAlwaysOnTop()
+        //#endif
     }
 
     private fun renderBeam(
