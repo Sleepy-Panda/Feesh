@@ -1,8 +1,8 @@
 package com.github.sleepypanda.feesh.events
 
 import com.github.sleepypanda.feesh.events.models.AfterMouseClickEvent
-import com.github.sleepypanda.feesh.events.models.ActionBarEvent
 import com.github.sleepypanda.feesh.events.models.ActionBarCancellableEvent
+import com.github.sleepypanda.feesh.events.models.ActionBarEvent
 import com.github.sleepypanda.feesh.events.models.ChatCancellableEvent
 import com.github.sleepypanda.feesh.events.models.ChatEvent
 import com.github.sleepypanda.feesh.events.models.ClientTickEvent
@@ -36,6 +36,7 @@ import net.fabricmc.fabric.api.client.screen.v1.ScreenMouseEvents
 import net.minecraft.world.entity.item.ItemEntity
 import net.minecraft.world.entity.decoration.ArmorStand
 import net.minecraft.world.entity.projectile.FishingHook
+
 object EventBus {
     private val subscribers = mutableMapOf<KClass<*>, MutableList<(Any) -> Unit>>()
 
@@ -49,23 +50,23 @@ object EventBus {
     }
 
     fun init() {
-        ClientReceiveMessageEvents.GAME.register { message, isOverlay ->
-            if (isOverlay) {
-                publish(ActionBarEvent(message, message.getFormattedString(), message.getUnformattedString()))
-            } else {
-                publish(ChatEvent(message, message.getFormattedString(), message.getUnformattedString()))
-            }
-        }
-
         ClientReceiveMessageEvents.ALLOW_GAME.register { message, isOverlay ->
             if (isOverlay) {
-                val event = ActionBarCancellableEvent(message, message.getFormattedString(), message.getUnformattedString(), false)
-                publish(event)
-                !event.isCancelled
+                val formatted = message.getFormattedString()
+                val unformatted = message.getUnformattedString()
+                publish(ActionBarEvent(message, formatted, unformatted))
+
+                val cancellableEvent = ActionBarCancellableEvent(message, formatted, unformatted, false)
+                publish(cancellableEvent)
+                !cancellableEvent.isCancelled
             } else {
-                val event = ChatCancellableEvent(message, message.getFormattedString(), message.getUnformattedString(), false)
-                publish(event)
-                !event.isCancelled
+                val formatted = message.getFormattedString()
+                val unformatted = message.getUnformattedString()
+                publish(ChatEvent(message, formatted, unformatted))
+
+                val cancellableEvent = ChatCancellableEvent(message, formatted, unformatted, false)
+                publish(cancellableEvent)
+                !cancellableEvent.isCancelled
             }
         }
 
@@ -135,4 +136,3 @@ object EventBus {
         }
     }
 }
-

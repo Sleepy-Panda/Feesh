@@ -17,12 +17,14 @@ object TrophyCatchPublisher {
     private val NEW_FISH_DISCOVERY_PATTERN = Regex("^NEW DISCOVERY: (?<details>.+?)$")
 
     // TROPHY FROG! You caught a Bullfrog BRONZE!
-    // TROPHY FROG! You caught a Wetlands Frog GOLD!
-    val TROPHY_FROG_CATCH_PATTERN = Regex("^. TROPHY FROG! You caught (a|an) (?<name>.+?) (?<rarity>BRONZE|SILVER|GOLD|DIAMOND)!$")
+    // TROPHY FROG! You caught Common Frog GOLD!
+    // TROPHY FROG! You caught Reality Hopper BRONZE x2!
+    val TROPHY_FROG_CATCH_PATTERN = Regex("^. TROPHY FROG! You caught (?:(?:a|an) )?(?<name>.+?) (?<rarity>BRONZE|SILVER|GOLD|DIAMOND)(?: x\\d+)?!$")
 
     // TROPHY FISH! You caught a Lavahorse BRONZE!
-    // TROPHY FISH! You caught a Steaming-Hot Flounder GOLD!
-    val TROPHY_FISH_CATCH_PATTERN = Regex("^. TROPHY FISH! You caught (a|an) (?<name>.+?) (?<rarity>BRONZE|SILVER|GOLD|DIAMOND)!$")
+    // TROPHY FISH! You caught Steaming-Hot Flounder GOLD!
+    // TROPHY FISH! You caught Mana Ray BRONZE x2!
+    val TROPHY_FISH_CATCH_PATTERN = Regex("^. TROPHY FISH! You caught (?:(?:a|an) )?(?<name>.+?) (?<rarity>BRONZE|SILVER|GOLD|DIAMOND)(?: x\\d+)?!$")
 
     fun init() {
         EventBus.subscribe(ChatCancellableEvent::class, ::onChat)

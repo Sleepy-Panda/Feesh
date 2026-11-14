@@ -1,7 +1,7 @@
 package com.github.sleepypanda.feesh.events.publishers
 
 import com.github.sleepypanda.feesh.events.EventBus
-import com.github.sleepypanda.feesh.events.models.ChatCancellableEvent
+import com.github.sleepypanda.feesh.events.models.ChatEvent
 import com.github.sleepypanda.feesh.events.models.RareDropEvent
 import com.github.sleepypanda.feesh.utils.WorldUtils
 import com.github.sleepypanda.feesh.utils.PlayerUtils
@@ -43,10 +43,10 @@ object RareDropsPublisher {
     val PET_CATCH_PATTERN = Regex("^(§6. (§r)?§6§lGREAT CATCH!|§d. (§r)?§d§lOUTSTANDING CATCH!) (§r)?§fYou caught a (§r)?(§r)?§7\\[Lvl 1] (?<shRarity>(§6§lLEGENDARY |§5§lEPIC |§9§lRARE |§a§lUNCOMMON |§f§lCOMMON ))?+(?<pet>.+?)§f!$")
 
     fun init() {
-        EventBus.subscribe(ChatCancellableEvent::class, ::onChat)
+        EventBus.subscribe(ChatEvent::class, ::onChat)
     }
 
-    private fun onChat(event: ChatCancellableEvent) {
+    private fun onChat(event: ChatEvent) {
         if (!WorldUtils.isInSkyblock()) return
         
         CommonUtils.runWithCatching("Failed to handle rare drop in publisher.") {
