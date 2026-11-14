@@ -43,6 +43,7 @@ object AlertUtils {
     private data class QueuedAlert(
         val title: TitleConfig?,
         val sounds: List<SoundConfig>?,
+        val delayNext: Boolean,
     )
 
     private val alertQueue = ArrayDeque<QueuedAlert>()
@@ -55,12 +56,13 @@ object AlertUtils {
 
     /**
      * Queues a title and its sounds.
-     * The next alert waits [COOLDOWN_MS] after the previous one started, to avoid overlapping.
+     * The next alert waits [COOLDOWN_MS] after this one started, unless [delayNext] is false.
      */
     fun alert(
         title: TitleConfig? = null,
         sound: SoundConfig? = null,
         sounds: List<SoundConfig>? = null,
+        delayNext: Boolean = true,
     ) {
         val queuedSounds = when {
             sounds != null && sounds.isNotEmpty() -> sounds
@@ -70,7 +72,7 @@ object AlertUtils {
 
         if (title == null && queuedSounds == null) return
 
-        alertQueue.add(QueuedAlert(title, queuedSounds))
+        alertQueue.add(QueuedAlert(title, queuedSounds, delayNext))
     }
 
     private fun onClientTick(@Suppress("UNUSED_PARAMETER") event: ClientTickEvent) {
@@ -90,7 +92,7 @@ object AlertUtils {
         if (lastPlayTime != null && now - lastPlayTime!! < COOLDOWN_MS) return
 
         alertQueue.removeFirst()
-        lastPlayTime = now
+        if (next.delayNext) lastPlayTime = now
         play(next)
     }
 
