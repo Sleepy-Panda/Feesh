@@ -120,10 +120,10 @@ object HotspotFoundMessage {
         if (Chat.messageOnHotspotFound) {
             val perkText = if (perk != null) "${perk} " else ""
             
-            ChatUtils.sendLocalChat("${WHITE}You found ${perkText}${LIGHT_PURPLE}Hotspot${WHITE}.", true)
+            ChatUtils.sendLocalChat("${WHITE}Share ${perkText}${LIGHT_PURPLE}Hotspot${WHITE}:", true)
             
             val partyMessage = getMessage(x, y, z, perk, false)   
-            val partyChatText = Component.literal("${WHITE}${BOLD}[Share to ${BLUE}${BOLD}PARTY ${WHITE}${BOLD}chat]")
+            val partyChatText = Component.literal("${WHITE}${BOLD}[To ${BLUE}${BOLD}PARTY ${WHITE}${BOLD}chat]")
                 .setStyle(
                     Style.EMPTY
                         .withClickEvent(RunCommand("/pchat $partyMessage"))
@@ -133,7 +133,7 @@ object HotspotFoundMessage {
             val orText = Component.literal(" ${RESET}${GRAY}or ")
             
             val allMessage = getMessage(x, y, z, perk, true)
-            val allChatText = Component.literal("${WHITE}${BOLD}[Share to ${YELLOW}${BOLD}ALL ${WHITE}${BOLD}chat]")
+            val allChatText = Component.literal("${WHITE}${BOLD}[To ${YELLOW}${BOLD}ALL ${WHITE}${BOLD}chat]")
                 .setStyle(
                     Style.EMPTY
                         .withClickEvent(RunCommand("/achat $allMessage"))

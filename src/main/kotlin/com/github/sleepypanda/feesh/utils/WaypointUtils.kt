@@ -14,10 +14,12 @@ import net.minecraft.client.gui.Font
 //$$ import org.joml.Matrix4f
 //#endif
 import net.minecraft.client.renderer.SubmitNodeCollector
+import net.minecraft.client.renderer.blockentity.BeaconRenderer
 import net.minecraft.client.renderer.state.level.CameraRenderState
 import net.minecraft.gizmos.GizmoStyle
 import net.minecraft.gizmos.Gizmos
 import net.minecraft.network.chat.Style
+import net.minecraft.util.ARGB
 import net.minecraft.util.FormattedCharSequence
 import net.minecraft.util.LightCoordsUtil
 import net.minecraft.util.StringDecomposer
@@ -27,8 +29,8 @@ import net.minecraft.world.phys.Vec3
 object WaypointUtils {
     enum class RenderMode {
         BOX,
-        BOX_AND_TEXT,
         TEXT,
+        BEAM,
     }
 
     data class Waypoint(
@@ -41,7 +43,7 @@ object WaypointUtils {
         val size: Double,
         val throughWalls: Boolean,
         val text: String?,
-        val renderMode: RenderMode,
+        val renderModes: Set<RenderMode>,
         val removeDistance: Double,
     )
 
@@ -55,6 +57,9 @@ object WaypointUtils {
     private const val TEXT_MIN_SCALE = 0.012f
     private const val TEXT_MAX_SCALE = 1.5f
     private const val TEXT_COLOR = -1
+    private const val BEAM_HEIGHT = 320
+    private const val BEAM_RADIUS = 0.25f
+    private const val BEAM_GLOW_RADIUS = 0.25f
 
     fun init() {
         EventBus.subscribe(WorldChangedEvent::class, ::onWorldChanged)
@@ -86,11 +91,11 @@ object WaypointUtils {
 
     /**
      * Adds a waypoint at the given world position.
-     * @param boxColorArgb 0xAARRGGBB box color. Used when [renderMode] includes a box.
+     * @param colorArgb 0xAARRGGBB color for the box and the beacon beam. The beam uses the same RGB at full alpha.
      * @param durationMilliseconds How long the waypoint should be visible (in milliseconds). Long.MAX_VALUE for no expiry.
-     * @param text Formatted text drawn when [renderMode] includes text.
-     * @param throughWalls If true, the box and text are drawn through blocks.
-     * @param renderMode [RenderMode.BOX], [RenderMode.BOX_AND_TEXT], or [RenderMode.TEXT].
+     * @param text Formatted text drawn when [renderModes] includes [RenderMode.TEXT].
+     * @param throughWalls If true, the box and text are drawn through blocks. The beam is not.
+     * @param renderModes Any of [RenderMode.BOX], [RenderMode.TEXT], and [RenderMode.BEAM].
      * @param removeDistance The waypoint is removed when the player gets close. Use 0 to disable that.
      * @return ID which can be used to remove the waypoint.
      */
@@ -98,12 +103,12 @@ object WaypointUtils {
         x: Double,
         y: Double,
         z: Double,
-        boxColorArgb: Long = 0x66FC54FC,
+        colorArgb: Long = 0x66FC54FC,
         durationMilliseconds: Long = 30_000L,
         size: Double = 1.0,
         throughWalls: Boolean = false,
         text: String? = null,
-        renderMode: RenderMode,
+        renderModes: Set<RenderMode>,
         removeDistance: Double = DEFAULT_REMOVE_DISTANCE,
     ): Long {
         val id = nextWaypointId++
@@ -114,12 +119,12 @@ object WaypointUtils {
                 x = x,
                 y = y,
                 z = z,
-                colorArgb = boxColorArgb.toInt(),
+                colorArgb = colorArgb.toInt(),
                 expiresAtMillis = expiresAt,
                 size = size,
                 throughWalls = throughWalls,
                 text = text?.takeIf { it.isNotBlank() },
-                renderMode = renderMode,
+                renderModes = renderModes.toSet(),
                 removeDistance = removeDistance,
             )
         )
@@ -134,30 +139,66 @@ object WaypointUtils {
         if (waypoints.isEmpty()) return
         CommonUtils.runWithCatching("Failed to render waypoints") {
             for (waypoint in waypoints) {
-                if (waypoint.renderMode != RenderMode.TEXT) {
-                    renderBox(waypoint)
+                val box = waypointBox(waypoint)
+                if (RenderMode.BOX in waypoint.renderModes) {
+                    renderBox(waypoint, box)
                 }
-                if (waypoint.renderMode == RenderMode.BOX) continue
+                if (RenderMode.BEAM in waypoint.renderModes) {
+                    renderBeam(collector, camera, waypoint, box)
+                }
+                if (RenderMode.TEXT !in waypoint.renderModes) continue
                 val text = waypoint.text ?: continue
-                val anchorY = if (waypoint.renderMode == RenderMode.TEXT) waypoint.y else waypoint.y + waypoint.size + 0.5
+                val anchorY = if (RenderMode.BOX in waypoint.renderModes) waypoint.y + waypoint.size + 0.5 else waypoint.y
                 val anchor = Vec3(waypoint.x, anchorY, waypoint.z)
                 renderScaledText(collector, camera, anchor, text, waypoint.throughWalls)
             }
         }
     }
 
-    private fun renderBox(waypoint: Waypoint) {
+    private fun waypointBox(waypoint: Waypoint): AABB {
         val half = waypoint.size / 2.0
-        val box = AABB(
+        val minY = waypoint.y - 1.0
+        return AABB(
             waypoint.x - half,
-            waypoint.y - 1.0,
+            minY,
             waypoint.z - half,
             waypoint.x + half,
-            waypoint.y - 1.0 + waypoint.size,
+            minY + waypoint.size,
             waypoint.z + half,
         )
+    }
+
+    private fun renderBox(waypoint: Waypoint, box: AABB) {
         val properties = Gizmos.cuboid(box, GizmoStyle.fill(waypoint.colorArgb))
         if (waypoint.throughWalls) properties.setAlwaysOnTop()
+    }
+
+    private fun renderBeam(
+        collector: SubmitNodeCollector,
+        camera: CameraRenderState,
+        waypoint: Waypoint,
+        box: AABB,
+    ) {
+        val level = FeeshMod.mc.level ?: return
+        val partialTick = FeeshMod.mc.deltaTracker.getGameTimeDeltaPartialTick(true)
+        val animationTime = Math.floorMod(level.gameTime, 40) + partialTick
+        val cameraPos = camera.pos
+        val center = box.center
+        val matrices = PoseStack()
+        // Vanilla beam recenters with +(0.5, 0, 0.5), so start half a block back, on the top face.
+        matrices.translate(center.x - 0.5 - cameraPos.x, box.maxY - cameraPos.y, center.z - 0.5 - cameraPos.z)
+        BeaconRenderer.submitBeaconBeam(
+            matrices,
+            collector,
+            BeaconRenderer.BEAM_LOCATION,
+            1f,
+            animationTime,
+            0,
+            BEAM_HEIGHT,
+            ARGB.opaque(waypoint.colorArgb),
+            BEAM_RADIUS,
+            BEAM_GLOW_RADIUS,
+        )
     }
 
     private fun renderScaledText(

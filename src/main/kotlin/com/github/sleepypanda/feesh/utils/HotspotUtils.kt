@@ -5,12 +5,13 @@ import com.github.sleepypanda.feesh.events.models.ArmorStandDespawnedEvent
 import com.github.sleepypanda.feesh.events.models.ClientTickEvent
 import com.github.sleepypanda.feesh.events.models.HotspotNametagLoadedEvent
 import com.github.sleepypanda.feesh.events.models.WorldChangedEvent
+import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
+import com.github.sleepypanda.feesh.utils.EntityUtils
 import net.minecraft.world.entity.decoration.ArmorStand
 import net.minecraft.world.entity.Entity
 import com.github.sleepypanda.feesh.utils.ChatUtils.getFormattedString
 import com.github.sleepypanda.feesh.utils.ChatUtils.getUnformattedString
 import net.minecraft.world.phys.Vec3
-import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import java.util.UUID
 
 object HotspotUtils {
@@ -32,7 +33,7 @@ object HotspotUtils {
     private const val NEAREST_HOTSPOT_RANGE_FROM_HOOK = 5.0
 
     fun init() {
-        EventBus.subscribe(HotspotNametagLoadedEvent::class, ::onHotspotSpawned)
+        EventBus.subscribe(HotspotNametagLoadedEvent::class, ::onHotspotNametagLoaded)
         EventBus.subscribe(ArmorStandDespawnedEvent::class, ::onArmorStandDespawned)
         EventBus.subscribe(ClientTickEvent::class, ::onClientTick)
         EventBus.subscribe(WorldChangedEvent::class, ::onWorldChanged)
@@ -45,22 +46,20 @@ object HotspotUtils {
     fun getRetainedLastFishedHotspot(): HotspotData? = lastFishedHotspot
 
     private fun onWorldChanged(@Suppress("UNUSED_PARAMETER") event: WorldChangedEvent) {
-        ChatUtils.sendLocalChat("${RED}World changed, clearing ${knownHotspots.size} hotspots") // TODO
         knownHotspots.clear()
         lastFishedHotspot = null
         tickCounter = 0
     }
 
-    private fun onHotspotSpawned(event: HotspotNametagLoadedEvent) {
+    private fun onHotspotNametagLoaded(event: HotspotNametagLoadedEvent) {
         if (!WorldUtils.isInSkyblock() || !WorldUtils.isInHotspotFishingWorld()) return
 
         CommonUtils.runWithCatching("Failed to handle Hotspot spawned event") {
-            val entity = EntityUtils.getMcEntityById(event.hotspotArmorStandId) as? ArmorStand ?: return@runWithCatching
             knownHotspots.removeAll { it.armorStandId == event.hotspotArmorStandId }
             knownHotspots.add(
                 HotspotData(
-                    armorStandId = entity.id,
-                    armorStandUuid = entity.uuid,
+                    armorStandId = event.hotspotArmorStandId,
+                    armorStandUuid = event.hotspotArmorStandUuid,
                     x = event.position.x,
                     y = event.position.y,
                     z = event.position.z,

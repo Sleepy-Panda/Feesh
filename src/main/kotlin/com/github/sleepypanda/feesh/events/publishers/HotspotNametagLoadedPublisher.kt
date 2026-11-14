@@ -56,6 +56,7 @@ object HotspotNametagLoadedPublisher {
                     perkFormatted = perk,
                     perkUnformatted = perk.removeFormatting(),
                     hotspotArmorStandId = hotspotId,
+                    hotspotArmorStandUuid = hotspotStand.uuid,
                 )
             )
         }

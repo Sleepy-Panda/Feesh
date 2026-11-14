@@ -1,5 +1,6 @@
 package com.github.sleepypanda.feesh.events.models
 
+import java.util.UUID
 import kotlin.math.floor
 
 /**
@@ -8,7 +9,8 @@ import kotlin.math.floor
  * @param position World position of the HOTSPOT armor stand.
  * @param perkFormatted Formatted perk nametag (the stand at hotspot ID + 1).
  * @param perkUnformatted Unformatted perk nametag (the stand at hotspot ID + 1).
- * @param hotspotArmorStandId Numeric entity ID of the HOTSPOT armor stand.
+ * @param hotspotArmorStandId Numeric ID of the HOTSPOT armor stand.
+ * @param hotspotArmorStandUuid UUID of the HOTSPOT armor stand.
  */
 data class HotspotNametagLoadedEvent(
     val id: String,
@@ -16,6 +18,7 @@ data class HotspotNametagLoadedEvent(
     val perkFormatted: String,
     val perkUnformatted: String,
     val hotspotArmorStandId: Int,
+    val hotspotArmorStandUuid: UUID,
 ) {
     data class Position(
         val x: Double,
