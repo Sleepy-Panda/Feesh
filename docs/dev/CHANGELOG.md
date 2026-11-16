@@ -5,12 +5,14 @@ Released on: ???
 ## Features
 
 - Added ability to move GUIs using arrow keys in `/feeshMoveAllGuis`.
+- Added option to alert on a new Hotspot & draw a waypoint when nametag is loaded [disabled by default].
 
 ## Bugfixes
 
 - Fixed "Hide Trophy Frog/Trophy Fish catch messages" feature not working after Hypixel changed chat message format.
 - Adjusted alerts be played with a delay, when a few of them happen at the same time. Before, they were overlapping.
 - Fixed double alert played for own Reindrake, when both "Alert on any Reindrake" and "Rare catch alert" enabled.
+- Made all features consume original chat messages, to avoid conflicts when other mods cancel chat message before Feesh handles it.
 
 # 1.17.0
 

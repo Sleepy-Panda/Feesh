@@ -69,7 +69,8 @@ Required Java version is 25+.
 - **Cap reached** — Alerts after personal SC cap is reached.
 - **Deployables** — Alerts when your deployable item is about to expire.
 - **Pet level up** — Alerts when a pet reaches max level. Can show estimated leveling price in chat.
-- **Hotspot found or gone** — Alerts when a hotspot is found or is gone.
+- **Hotspot spawned** — Alerts & shows a waypoint when a hotspot is spawned.
+- **Hotspot gone** — Alerts when a hotspot you fished in is gone.
 - **Wormhole gone** — Alerts when a wormhole is gone.
 - **Fishing Bag/Bait Sack disabled** — Alerts when you start fishing with Fishing Bag/Bait Sack disabled.
 - **Bait changed/running out of bait** — Alerts when active bait has changed or almost no bait remaining.
