@@ -174,7 +174,7 @@ ${AQUA}!feesh sc/h ${GRAY}- shows sea creatures/h from Efficiency tracker
     }
 
     var messageOnHotspotFound by boolean(true) {
-        this.name = Translated("Offer sharing the found hotspots on click")
+        this.name = Translated("Offer sharing nearby found hotspots on click")
         this.description = Translated("Shows clickable chat message that offers sharing Hotspot location and its perk to ALL chat or PARTY chat. You need to be close to the hotspot in order to trigger it.")
     }
 

@@ -27,5 +27,25 @@ enum class HexColorCodes(val rgbColorCode: Int, val argbColorCode: Long, val gra
             ColorCodes.VERY_SPECIAL.code -> VERY_SPECIAL
             else -> null
         }
+
+        fun getHexColorCodeForFormattingCode(formattingColorCode: String): Long? = when (formattingColorCode) {
+            ColorCodes.BLACK.code -> 0xFF000000
+            ColorCodes.DARK_BLUE.code -> 0xFF0000AA
+            ColorCodes.DARK_GREEN.code -> 0xFF00AA00
+            ColorCodes.DARK_AQUA.code -> 0xFF00AAAA
+            ColorCodes.DARK_RED.code -> VERY_SPECIAL.argbColorCode
+            ColorCodes.DARK_PURPLE.code -> EPIC.argbColorCode
+            ColorCodes.GOLD.code -> LEGENDARY.argbColorCode
+            ColorCodes.GRAY.code -> 0xFFAAAAAA
+            ColorCodes.DARK_GRAY.code -> 0xFF555555
+            ColorCodes.BLUE.code -> RARE.argbColorCode
+            ColorCodes.GREEN.code -> UNCOMMON.argbColorCode
+            ColorCodes.AQUA.code -> DIVINE.argbColorCode
+            ColorCodes.RED.code -> SPECIAL.argbColorCode
+            ColorCodes.LIGHT_PURPLE.code -> MYTHIC.argbColorCode
+            ColorCodes.YELLOW.code -> 0xFFFFFF55
+            ColorCodes.WHITE.code -> COMMON.argbColorCode
+            else -> null
+        }
     }
 }
