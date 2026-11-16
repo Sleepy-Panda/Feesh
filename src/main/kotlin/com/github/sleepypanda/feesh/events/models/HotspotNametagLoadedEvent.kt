@@ -5,7 +5,6 @@ import kotlin.math.floor
 
 /**
  * Fired when a fishing Hotspot armor stand and its perk nametag are both loaded.
- * @param id Stable ID made from hotspot position and perk.
  * @param position World position of the HOTSPOT armor stand.
  * @param perkFormatted Formatted perk nametag (the stand at hotspot ID + 1).
  * @param perkUnformatted Unformatted perk nametag (the stand at hotspot ID + 1).
@@ -13,7 +12,6 @@ import kotlin.math.floor
  * @param hotspotArmorStandUuid UUID of the HOTSPOT armor stand.
  */
 data class HotspotNametagLoadedEvent(
-    val id: String,
     val position: Position,
     val perkFormatted: String,
     val perkUnformatted: String,

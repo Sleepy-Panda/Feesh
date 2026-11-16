@@ -47,7 +47,6 @@ object HotspotNametagLoadedPublisher {
             pendingHotspotIds.remove(hotspotId)
             EventBus.publish(
                 HotspotNametagLoadedEvent(
-                    id = HotspotNametagLoadedEvent.getHotspotId(hotspotStand.x, hotspotStand.y, hotspotStand.z, perk.removeFormatting()),
                     position = HotspotNametagLoadedEvent.Position(
                         x = hotspotStand.x,
                         y = hotspotStand.y,
