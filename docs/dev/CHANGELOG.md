@@ -9,6 +9,7 @@ Released on: ???
 
 ## Bugfixes
 
+- Fixed Shuriken not showing in "Sea creatures HP" tracker.
 - Fixed "Hide Trophy Frog/Trophy Fish catch messages" feature not working after Hypixel changed chat message format.
 - Adjusted alerts be played with a delay, when a few of them happen at the same time. Before, they were overlapping.
 - Fixed double alert played for own Reindrake, when both "Alert on any Reindrake" and "Rare catch alert" enabled.

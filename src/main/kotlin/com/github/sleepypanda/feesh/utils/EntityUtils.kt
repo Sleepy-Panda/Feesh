@@ -190,7 +190,7 @@ object EntityUtils {
             renderPos = Triple(x, y, z),
             formattedHp = match.groups["hp"]?.value.orEmpty(),
             isCorrupted = match.groups["corrupted"]?.value != null,
-            hasShuriken = match.groups["trailingIcons"]?.value?.contains("✯") == true,
+            hasShuriken = match.groups["trailingIcons"]?.value?.contains("") == true,
         )
     }
 
