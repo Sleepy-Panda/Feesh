@@ -1713,6 +1713,13 @@ class FishingProfitDrops {
                 categories = listOf(PET_ITEM_CATEGORY),
             ),
             FishingProfitDropInfo(
+                itemId = "PET_ITEM_FORAGING_SKILL_BOOST_EPIC",
+                itemName = "Foraging Exp Boost (EPIC)", // From Ent
+                itemDisplayName = "${EPIC}Foraging Exp Boost +50%",
+                npcPrice = null,
+                categories = listOf(PET_ITEM_CATEGORY),
+            ),
+            FishingProfitDropInfo(
                 itemId = "MOUND_OF_SEAGRASS",
                 itemName = "Mound of Seagrass",
                 itemDisplayName = "${EPIC}Mound of Seagrass",
