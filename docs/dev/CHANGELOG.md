@@ -4,11 +4,16 @@ Released on: ???
 
 ## Features
 
+- Added option to alert on a new Hotspot & draw a waypoint when nametag is loaded [disabled by default].
 - Added ability to move GUIs using arrow keys in `/feeshMoveAllGuis`.
 
 ## Bugfixes
 
+- Fixed Shuriken not showing in "Sea creatures HP" tracker.
+- Fixed "Hide Trophy Frog/Trophy Fish catch messages" feature not working after Hypixel changed chat message format.
 - Adjusted alerts be played with a delay, when a few of them happen at the same time. Before, they were overlapping.
+- Fixed double alert played for own Reindrake, when both "Alert on any Reindrake" and "Rare catch alert" enabled.
+- Made all features consume original chat messages, to avoid conflicts when other mods cancel chat message before Feesh handles it.
 
 # 1.17.0
 
@@ -26,6 +31,7 @@ Released on: 2026-11-01
 
 ## Bugfixes
 
+- **Fixed features not working with new rare drop chat message format.**
 - Fixed "supercraft" chat button not working when Raw Cod overflows into the inventory.
 - Fixed broken Deployables tracker/alerts for Umberella that has a skin.
 - Fixed hatched Dragon pet eggs (level 100) being added to the Profit tracker.

@@ -22,7 +22,7 @@ import com.github.sleepypanda.feesh.utils.ChatUtils.removeFormatting
 
 object RareDropAlert {
     // §9Компания §8> §b[MVP] PivoTheSadFisher§f: --> A Deep Sea Orb has dropped <--
-    // §9Party §8> §6[MVP§3++§6] vadim31§f: --> A Deep Sea Orb has dropped (#10, +365 ✯ Magic Find) <--
+    // §9Party §8> §6[MVP§3++§6] vadim31§f: --> A Deep Sea Orb has dropped (#10, +365✯ Magic Find) <--
     val FEESH_PCHAT_PATTERN = Regex("^--> (?:A|An) (?<itemName>.+?) has dropped(?: \\([^)]*\\))? <--$")
 
     fun init() {
@@ -83,6 +83,7 @@ object RareDropAlert {
         AlertUtils.alert(
             title = AlertUtils.TitleConfig(title + priceStr, playerName),
             sound = sound,
+            priority = AlertUtils.AlertPriority.HIGH,
         )
     }
 

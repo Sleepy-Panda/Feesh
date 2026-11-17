@@ -1,7 +1,7 @@
 package com.github.sleepypanda.feesh.events.publishers
 
 import com.github.sleepypanda.feesh.events.EventBus
-import com.github.sleepypanda.feesh.events.models.ChatCancellableEvent
+import com.github.sleepypanda.feesh.events.models.ChatEvent
 import com.github.sleepypanda.feesh.events.models.ShardCaughtEvent
 import com.github.sleepypanda.feesh.events.models.ShardCaughtSource
 import com.github.sleepypanda.feesh.events.models.TreasureCatchType
@@ -41,11 +41,11 @@ object ShardsCaughtPublisher {
     private val SHARDS_LOOTSHARED_PATTERN = Regex("^LOOT SHARE You received (?<shardsText>.+) Shard.*")
 
     fun init() {
-        EventBus.subscribe(ChatCancellableEvent::class, ::onChat)
+        EventBus.subscribe(ChatEvent::class, ::onChat)
         EventBus.subscribe(TreasureCatchEvent::class, ::onTreasureCaught)
     }
 
-    private fun onChat(event: ChatCancellableEvent) {
+    private fun onChat(event: ChatEvent) {
         if (!WorldUtils.isInSkyblock() || !WorldUtils.isInFishingWorld()) return
 
         CommonUtils.runWithCatching("Failed to handle Shard catch in publisher.") {

@@ -4,13 +4,14 @@ import com.github.sleepypanda.feesh.FeeshMod
 import com.github.sleepypanda.feesh.constants.SeaCreatureNames
 import com.github.sleepypanda.feesh.events.EventBus
 import com.github.sleepypanda.feesh.events.models.CatchEvent
-import com.github.sleepypanda.feesh.events.models.ChatCancellableEvent
 import com.github.sleepypanda.feesh.events.models.InteractActionType
 import com.github.sleepypanda.feesh.events.models.OwnFishingHookDespawnedEvent
 import com.github.sleepypanda.feesh.events.models.OwnSeaCreatureCaughtEvent
 import com.github.sleepypanda.feesh.events.models.PlayerInteractEvent
 import com.github.sleepypanda.feesh.events.models.SoundPlayedEvent
 import com.github.sleepypanda.feesh.events.models.TreasureCatchEvent
+import com.github.sleepypanda.feesh.events.models.TrophyFishCaughtEvent
+import com.github.sleepypanda.feesh.events.models.TrophyFrogCaughtEvent
 import com.github.sleepypanda.feesh.events.models.WorldChangedEvent
 import com.github.sleepypanda.feesh.utils.CommonUtils
 import com.github.sleepypanda.feesh.utils.EntityUtils
@@ -21,7 +22,6 @@ import java.util.Date
 
 object CatchPublisher {
     private const val CATCH_XP_ORB_SOUND_PATH = "entity.experience_orb.pickup"
-    private val TROPHY_CATCH_PATTERN = Regex("^. (TROPHY FISH|TROPHY FROG)!")
 
     private var lastCatchAt: Date? = null
     private var lastRodRightClickedAt: Date? = null
@@ -31,7 +31,8 @@ object CatchPublisher {
     private var lastSeaCreatureAt: Date? = null
 
     fun init() {
-        EventBus.subscribe(ChatCancellableEvent::class, ::onChat)
+        EventBus.subscribe(TrophyFishCaughtEvent::class, ::onTrophyFishCaught)
+        EventBus.subscribe(TrophyFrogCaughtEvent::class, ::onTrophyFrogCaught)
         EventBus.subscribe(TreasureCatchEvent::class, ::onTreasureCaught)
         EventBus.subscribe(OwnSeaCreatureCaughtEvent::class, ::onSeaCreatureCaught)
         EventBus.subscribe(OwnFishingHookDespawnedEvent::class, ::onOwnFishingHookDespawned)
@@ -91,15 +92,18 @@ object CatchPublisher {
         }
     }
 
-    // Note: Treasure catch might happen together with SC catch if Precursor Drone pet equipped.
-    // No double CatchEvent should happen in this case.
-    private fun onChat(event: ChatCancellableEvent) {
-        CommonUtils.runWithCatching("Failed to track catch chat message in CatchPublisher") {
-            if (!WorldUtils.isInSkyblock() || !WorldUtils.isInFishingWorld()) return
+    private fun onTrophyFishCaught(@Suppress("UNUSED_PARAMETER") event: TrophyFishCaughtEvent) {
+        onTrophyCaught()
+    }
 
-            if (TROPHY_CATCH_PATTERN.containsMatchIn(event.unformattedText)) {
-                tryPublishCatchFromChat()
-            }
+    private fun onTrophyFrogCaught(@Suppress("UNUSED_PARAMETER") event: TrophyFrogCaughtEvent) {
+        onTrophyCaught()
+    }
+
+    private fun onTrophyCaught() {
+        CommonUtils.runWithCatching("Failed to track trophy catch in CatchPublisher") {
+            if (!WorldUtils.isInSkyblock() || !WorldUtils.isInFishingWorld()) return
+            tryPublishCatchFromChat()
         }
     }
 
@@ -119,6 +123,8 @@ object CatchPublisher {
         }
     }
 
+    // Note: Treasure catch might happen together with SC catch if Precursor Drone pet equipped.
+    // No double CatchEvent should happen in this case.
     private fun onTreasureCaught(event: TreasureCatchEvent) {
         CommonUtils.runWithCatching("Failed to track treasure catch in CatchPublisher") {
             if (!WorldUtils.isInSkyblock() || !WorldUtils.isInFishingWorld()) return

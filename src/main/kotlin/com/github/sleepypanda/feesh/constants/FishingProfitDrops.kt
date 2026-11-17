@@ -1566,7 +1566,7 @@ class FishingProfitDrops {
             FishingProfitDropInfo(
                 itemId = "BOX_OF_JUNK",
                 itemName = "Box of Junk",
-                itemDisplayName = "${RARE}Box of Junk",
+                itemDisplayName = "${RARE}Box of Junk", // Actually is also counted when opening and gaining junk from it
                 npcPrice = null,
             ),
             FishingProfitDropInfo(

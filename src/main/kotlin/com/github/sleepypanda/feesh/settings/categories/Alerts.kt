@@ -294,6 +294,12 @@ object Alerts : CategoryKt("Alerts") {
         }
     }
 
+    var alertOnHotspotSeen by boolean(false) {
+        this.name = Translated("Alert when a Hotspot is spawned")
+        this.description = Translated("Shows a title and plays a sound when a new hotspot nametag appeared, and draws a temporary waypoint for it.")
+        this.searchTerms = listOf(ModVersionConstants.VERSION_1_18_0)
+    }
+
     var alertOnHotspotGone by boolean(true) {
         this.name = Translated("Alert when the hotspot is gone")
         this.description = Translated("Shows a title and plays a sound when the hotspot you recently fished in, is gone.")

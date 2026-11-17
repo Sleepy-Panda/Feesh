@@ -588,6 +588,7 @@ object DeployablesTimer {
         AlertUtils.alert(
             title = AlertUtils.TitleConfig("$itemDisplayName ${RED}expires soon"),
             sound = sound,
+            priority = AlertUtils.AlertPriority.LOW,
         )
     }
 

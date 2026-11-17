@@ -7,7 +7,6 @@ import com.github.sleepypanda.feesh.events.models.WorldChangedEvent
 import net.minecraft.network.chat.Component
 import net.minecraft.sounds.SoundEvent
 import net.minecraft.sounds.SoundEvents
-import java.util.ArrayDeque
 
 object AlertUtils {
     private const val COOLDOWN_MS = 1000L
@@ -40,12 +39,20 @@ object AlertUtils {
         ) : SoundConfig()
     }
 
+    enum class AlertPriority {
+        LOW,
+        MEDIUM,
+        HIGH,
+    }
+
     private data class QueuedAlert(
         val title: TitleConfig?,
         val sounds: List<SoundConfig>?,
+        val delayNext: Boolean,
+        val priority: AlertPriority,
     )
 
-    private val alertQueue = ArrayDeque<QueuedAlert>()
+    private val prioritizedAlertsQueue = mutableListOf<QueuedAlert>() // Sorted by priority, from highest to lowest.
     private var lastPlayTime: Long? = null
 
     fun init() {
@@ -55,12 +62,14 @@ object AlertUtils {
 
     /**
      * Queues a title and its sounds.
-     * The next alert waits [COOLDOWN_MS] after the previous one started, to avoid overlapping.
+     * The next alert waits [COOLDOWN_MS] after this one started, unless [delayNext] is false.
      */
     fun alert(
         title: TitleConfig? = null,
         sound: SoundConfig? = null,
         sounds: List<SoundConfig>? = null,
+        delayNext: Boolean = true,
+        priority: AlertPriority = AlertPriority.MEDIUM,
     ) {
         val queuedSounds = when {
             sounds != null && sounds.isNotEmpty() -> sounds
@@ -70,7 +79,7 @@ object AlertUtils {
 
         if (title == null && queuedSounds == null) return
 
-        alertQueue.add(QueuedAlert(title, queuedSounds))
+        enqueueAlert(QueuedAlert(title, queuedSounds, delayNext, priority))
     }
 
     private fun onClientTick(@Suppress("UNUSED_PARAMETER") event: ClientTickEvent) {
@@ -78,19 +87,24 @@ object AlertUtils {
     }
 
     private fun onWorldChanged(@Suppress("UNUSED_PARAMETER") event: WorldChangedEvent) {
-        alertQueue.clear()
+        prioritizedAlertsQueue.clear()
         lastPlayTime = null
+    }
+
+    private fun enqueueAlert(alert: QueuedAlert) {
+        val insertAt = prioritizedAlertsQueue.indexOfFirst { it.priority < alert.priority }
+        if (insertAt == -1) prioritizedAlertsQueue.add(alert) else prioritizedAlertsQueue.add(insertAt, alert)
     }
 
     private fun processQueue() {
         if (!WorldUtils.isInSkyblock()) return
 
-        val next = alertQueue.firstOrNull() ?: return
+        val next = prioritizedAlertsQueue.firstOrNull() ?: return
         val now = System.currentTimeMillis()
         if (lastPlayTime != null && now - lastPlayTime!! < COOLDOWN_MS) return
 
-        alertQueue.removeFirst()
-        lastPlayTime = now
+        prioritizedAlertsQueue.removeAt(0)
+        if (next.delayNext) lastPlayTime = now
         play(next)
     }
 
