@@ -21,6 +21,7 @@ object ChumBucketAutoPickupAlert {
         AlertUtils.alert(
             title = AlertUtils.TitleConfig("${GREEN}Chum Bucket ${YELLOW}is gone"),
             sound = AlertUtils.SoundConfig.McSound(),
+            priority = AlertUtils.AlertPriority.LOW,
         )
     }
 }

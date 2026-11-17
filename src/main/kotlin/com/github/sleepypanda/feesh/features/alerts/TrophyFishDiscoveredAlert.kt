@@ -21,6 +21,7 @@ object TrophyFishDiscoveredAlert {
 
             AlertUtils.alert(
                 title = AlertUtils.TitleConfig(event.detailsFormatted, "${GREEN}${BOLD}TROPHY FISH DISCOVERED!"),
+                priority = AlertUtils.AlertPriority.HIGH,
             )
             // It has sound played by SB so no need to play our own
         }

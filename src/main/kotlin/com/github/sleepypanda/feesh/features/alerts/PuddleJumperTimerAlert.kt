@@ -61,6 +61,7 @@ object PuddleJumperTimerAlert {
                 AlertUtils.SoundConfig.McSound(SoundEvents.FROG_HURT),
                 AlertUtils.SoundConfig.McSound(),
             ),
+            priority = AlertUtils.AlertPriority.LOW,
         )
     }
 

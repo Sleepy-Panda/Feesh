@@ -29,6 +29,7 @@ object PlayerDeathAlert {
         AlertUtils.alert(
             title = AlertUtils.TitleConfig("${RED}You were killed ☠"),
             sound = AlertUtils.SoundConfig.McSound(SoundEvents.VILLAGER_DEATH),
+            priority = AlertUtils.AlertPriority.HIGH,
         )
 
         if (matchResult.groups[1]?.value == "Nessie") {
@@ -49,6 +50,7 @@ object PlayerDeathAlert {
         AlertUtils.alert(
             title = AlertUtils.TitleConfig(title, "Wait for them to come back"),
             sound = AlertUtils.SoundConfig.McSound(SoundEvents.VILLAGER_DEATH),
+            priority = AlertUtils.AlertPriority.HIGH,
         )
     }
 }

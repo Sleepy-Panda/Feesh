@@ -39,6 +39,7 @@ object ThunderBottleChargedAlert {
         AlertUtils.alert(
             title = AlertUtils.TitleConfig("${entry.rarityColorCode}${entry.bottleName} ${WHITE}is full"),
             sound = AlertUtils.SoundConfig.McSound(),
+            priority = AlertUtils.AlertPriority.LOW,
         )
     }
 }

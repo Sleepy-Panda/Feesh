@@ -37,6 +37,7 @@ object SaltExpiredAlert {
             AlertUtils.alert(
                 title = AlertUtils.TitleConfig("${RED}${cleanSaltName} ${RED}has expired"),
                 sound = sound,
+                priority = AlertUtils.AlertPriority.LOW,
             )
         }
     }

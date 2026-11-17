@@ -101,6 +101,7 @@ object BarnFishingTimer : IResettableTracker {
                 AlertUtils.alert(
                     title = AlertUtils.TitleConfig("${RED}Kill sea creatures", "${WHITE}Personal cap reached"),
                     sound = getNotificationSound(),
+                    priority = AlertUtils.AlertPriority.HIGH,
                 )
             }
         }
@@ -180,6 +181,7 @@ object BarnFishingTimer : IResettableTracker {
             AlertUtils.alert(
                 title = AlertUtils.TitleConfig("${RED}Kill sea creatures", "${WHITE}${seaCreaturesCountThreshold}+ mobs"),
                 sound = getNotificationSound(),
+                priority = AlertUtils.AlertPriority.LOW,
             )
         } else if (mobsCount < seaCreaturesCountThreshold && countNotificationShownAt != null) {
             countNotificationShownAt = null
@@ -205,6 +207,7 @@ object BarnFishingTimer : IResettableTracker {
             AlertUtils.alert(
                 title = AlertUtils.TitleConfig("${RED}Kill sea creatures", "${WHITE}${TIMER_THRESHOLD_IN_MINUTES}+ minutes"),
                 sound = getNotificationSound(),
+                priority = AlertUtils.AlertPriority.LOW,
             )
         } else if (deltaInSeconds < thresholdInSeconds && timerNotificationShownAt != null) {
             timerNotificationShownAt = null
