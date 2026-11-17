@@ -10,6 +10,7 @@ Released on: ???
 
 ## Bugfixes
 
+- **Fixed features not working with new rare drop chat message format.**
 - Fixed Shuriken not showing in "Sea creatures HP" tracker.
 - Fixed "Hide Trophy Frog/Trophy Fish catch messages" feature not working after Hypixel changed chat message format.
 - Adjusted alerts be played with a delay, when a few of them happen at the same time. Before, they were overlapping.
@@ -32,7 +33,6 @@ Released on: 2026-11-01
 
 ## Bugfixes
 
-- **Fixed features not working with new rare drop chat message format.**
 - Fixed "supercraft" chat button not working when Raw Cod overflows into the inventory.
 - Fixed broken Deployables tracker/alerts for Umberella that has a skin.
 - Fixed hatched Dragon pet eggs (level 100) being added to the Profit tracker.
