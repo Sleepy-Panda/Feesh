@@ -10,16 +10,12 @@ import com.github.sleepypanda.feesh.utils.ChatUtils.removeFormatting
 import com.github.sleepypanda.feesh.utils.CommonUtils
 
 object RareDropsPublisher {
-    // §6§lRARE DROP! §dRadioactive Vial §b(+§b236 §b✯ Magic Find§b)
-    // §6§lRARE DROP! §6Tiki Mask §b(+§b236 §b✯ Magic Find§b)
-    //  can be used instead of ✯ as the Magic Find symbol:
-    // §6§lRARE DROP! §dRadioactive Vial §b(+§b236 §b Magic Find§b)
-    val RARE_DROP_PATTERN = Regex("^§6§lRARE DROP! (?<item>.+?)( §b\\(\\+§b(?<mf>\\d+) §b. Magic Find§b\\))?$")
+    // §6§lRARE DROP! §dRadioactive Vial §b(§b+178 Magic Find§b)
+    val RARE_DROP_PATTERN = Regex("^§6§lRARE DROP! (?<item>.+?)( §b\\(§b\\+(?<mf>\\d+). Magic Find§b\\))?$")
 
-    // §6§lRARE DROP! §fEnchanted Book (Charm 1§f) §b(+§b293 §b✯ Magic Find§b)
-    // §6§lRARE DROP! §fEnchanted Book (§d§lFlash 1§f) §b(+§b392 §b✯ Magic Find§b)
-    // §6§lRARE DROP! §fEnchanted Book (§d§lFlash I§f) §b(+§b392 §b✯ Magic Find§b)
-    val RARE_DROP_BOOK_PATTERN = Regex("^§6§lRARE DROP! §fEnchanted Book \\((?<bookName>.+?)§f\\)( §b\\(\\+§b(?<mf>\\d+) §b. Magic Find§b\\))?$")
+    // §6§lRARE DROP! §fEnchanted Book (Caster VI§f) §b(§b+162 Magic Find§b)
+    // §6§lRARE DROP! §fEnchanted Book (§d§lFlash 1§f) §b(§b+162 Magic Find§b)
+    val RARE_DROP_BOOK_PATTERN = Regex("^§6§lRARE DROP! §fEnchanted Book \\((?<bookName>.+?)§f\\)( §b\\(§b\\+(?<mf>\\d+). Magic Find§b\\))?$")
 
     // §6§lPET DROP! §6§lLEGENDARY §6Baby Yeti (SH format)
     // §6§lPET DROP! §6Baby Yeti
