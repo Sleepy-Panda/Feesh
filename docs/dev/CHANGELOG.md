@@ -1,6 +1,6 @@
 # 1.18.0
 
-Released on: ???
+Released on: 2026-11-17
 
 ## Features
 
