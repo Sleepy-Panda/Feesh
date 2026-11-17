@@ -31,6 +31,7 @@ Released on: 2026-11-01
 
 ## Bugfixes
 
+- **Fixed features not working with new rare drop chat message format.**
 - Fixed "supercraft" chat button not working when Raw Cod overflows into the inventory.
 - Fixed broken Deployables tracker/alerts for Umberella that has a skin.
 - Fixed hatched Dragon pet eggs (level 100) being added to the Profit tracker.

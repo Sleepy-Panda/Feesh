@@ -47,7 +47,7 @@ object RareDropMessage {
                 metadata += "#$dropNumber"
             }
             if (event.magicFind != null && Chat.includeMagicFindIntoRareDropMessage) {
-                metadata += "+${event.magicFind} ✯ Magic Find"
+                metadata += "+${event.magicFind}✯ Magic Find"
             }
     
             val message = getDropMessage(dropInfo.itemName, metadata)
