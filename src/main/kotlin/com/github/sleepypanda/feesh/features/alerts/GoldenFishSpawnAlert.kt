@@ -22,6 +22,7 @@ object GoldenFishSpawnAlert {
         AlertUtils.alert(
             title = AlertUtils.TitleConfig("${WHITE}Catch the ${GOLD}Golden Fish"),
             sound = AlertUtils.SoundConfig.McSound(SoundEvents.FISH_SWIM),
+            priority = AlertUtils.AlertPriority.LOW,
         )
     }
 }

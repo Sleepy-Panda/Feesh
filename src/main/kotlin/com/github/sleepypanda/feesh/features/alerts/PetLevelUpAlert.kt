@@ -24,6 +24,7 @@ object PetLevelUpAlert {
             AlertUtils.alert(
                 title = AlertUtils.TitleConfig("${event.petDisplayName} ${RESET}${WHITE}is maxed", "${WHITE}Level ${event.level}"),
                 sound = AlertUtils.SoundConfig.McSound(),
+                priority = AlertUtils.AlertPriority.LOW,
             )
         }
 

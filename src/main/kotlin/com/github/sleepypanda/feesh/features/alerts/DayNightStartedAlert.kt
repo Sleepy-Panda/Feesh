@@ -73,6 +73,7 @@ object DayNightStartedAlert {
         AlertUtils.alert(
             title = AlertUtils.TitleConfig(title),
             sound = AlertUtils.SoundConfig.McSound(),
+            priority = AlertUtils.AlertPriority.LOW,
         )
     }
 }

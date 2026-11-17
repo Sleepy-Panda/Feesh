@@ -118,6 +118,7 @@ object RareCatchAlert {
         AlertUtils.alert(
             title = AlertUtils.TitleConfig(title, playerName),
             sound = sound,
+            priority = AlertUtils.AlertPriority.HIGH,
         )
     }
 
@@ -131,6 +132,7 @@ object RareCatchAlert {
         AlertUtils.alert(
             title = AlertUtils.TitleConfig(title, playerName),
             sound = AlertUtils.SoundConfig.McSound(),
+            priority = AlertUtils.AlertPriority.HIGH,
         )
     }
 }

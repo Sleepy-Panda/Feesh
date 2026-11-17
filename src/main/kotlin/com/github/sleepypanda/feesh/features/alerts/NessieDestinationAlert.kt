@@ -172,6 +172,7 @@ object NessieDestinationAlert {
         AlertUtils.alert(
             title = AlertUtils.TitleConfig("", "${LIGHT_PURPLE}Nessie ${WHITE}goes to ${GREEN}${BOLD}${destination}${WHITE} cave!"),
             sound = AlertUtils.SoundConfig.McSound(),
+            priority = AlertUtils.AlertPriority.LOW,
         )
     }
 }

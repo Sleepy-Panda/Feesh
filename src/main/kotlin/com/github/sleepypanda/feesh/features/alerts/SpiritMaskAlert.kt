@@ -27,6 +27,7 @@ object SpiritMaskAlert {
         AlertUtils.alert(
             title = AlertUtils.TitleConfig("${DARK_PURPLE}Spirit Mask ${YELLOW}used"),
             sound = AlertUtils.SoundConfig.McSound(),
+            priority = AlertUtils.AlertPriority.HIGH,
         )
 
         resetTimer()

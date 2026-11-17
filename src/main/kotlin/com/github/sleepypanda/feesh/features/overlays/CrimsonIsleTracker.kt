@@ -222,6 +222,7 @@ object CrimsonIsleTracker : IResettableTracker {
             AlertUtils.alert(
                 title = AlertUtils.TitleConfig("", "${RED}No ${LIGHT_PURPLE}Lord Jawbus ${RED}for ${data.lordJawbus.catchesSinceLast} catches"),
                 sound = sound,
+                priority = AlertUtils.AlertPriority.LOW,
             )
             ChatUtils.sendLocalChat("${RED}${BOLD}Yikes! ${RESET}${RED}No ${LIGHT_PURPLE}Lord Jawbus ${RED}for ${data.lordJawbus.catchesSinceLast} catches...", true)
         }

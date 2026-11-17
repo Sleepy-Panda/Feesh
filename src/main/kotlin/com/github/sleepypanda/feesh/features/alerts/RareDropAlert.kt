@@ -83,6 +83,7 @@ object RareDropAlert {
         AlertUtils.alert(
             title = AlertUtils.TitleConfig(title + priceStr, playerName),
             sound = sound,
+            priority = AlertUtils.AlertPriority.HIGH,
         )
     }
 

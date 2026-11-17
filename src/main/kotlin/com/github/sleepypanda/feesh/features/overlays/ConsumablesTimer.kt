@@ -131,6 +131,7 @@ object ConsumablesTimer {
             AlertUtils.alert(
                 title = AlertUtils.TitleConfig("${DARK_PURPLE}Moby-Duck ${RED}expires soon"),
                 sound = sound,
+                priority = AlertUtils.AlertPriority.LOW,
             )
         }
 
