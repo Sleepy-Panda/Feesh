@@ -21,13 +21,20 @@ enum class RareDropTypes(val displayName: String) {
     BURNT_TEXTS("Burnt Texts"),
     FLASH_1("Flash 1"),
     MAGMARIZER_6("Pyroclasm 6"),
+    PISCARY_6("Piscary 6"),
     VIBRANT_CORAL("Vibrant Coral"),
     TRUE_ICE("True Ice"),
     PRINCES_CROWN_JEWEL("Prince's Crown Jewel"),
     DISTANT_ECHO("Distant Echo"),
     REINFORCED_NETTING("Reinforced Netting"),
     WATER_HYACINTH("Water Hyacinth"),
+    SEVERED_PINCER("Severed Pincer"),
+    CHAIN_OF_THE_END_TIMES("Chain of the End Times"),
+    BRIMSTONE_HANDLE("Brimstone Handle"),
+    MOUND_OF_SEAGRASS("Mound of Seagrass"),
+    ISOPOD_HUSK("Isopod Husk"),
 
+    BABY_YETI_COMMON("Baby Yeti (Common)"),
     MEGALODON_LEGENDARY("Megalodon (Legendary)"),
     MEGALODON_EPIC("Megalodon (Epic)"),
     FLYING_FISH_LEGENDARY("Flying Fish (Legendary)"),
@@ -178,6 +185,15 @@ class RareDrops {
                 alternateNames = listOf("Pyroclasm VI")
             ),
             RareDropInfo(
+                id = "ENCHANTMENT_PISCARY_6",
+                itemName = RareDropTypes.PISCARY_6.displayName,
+                rarityColorCode = RARE.code,
+                npcPrice = 0,
+                isExtremelyRare = false,
+                defaultSoundFileName = Sounds.FEESH_OH_MY_GOD,
+                alternateNames = listOf("Piscary VI")
+            ),
+            RareDropInfo(
                 id = "VIBRANT_CORAL",
                 itemName = RareDropTypes.VIBRANT_CORAL.displayName,
                 rarityColorCode = LEGENDARY.code,
@@ -218,12 +234,60 @@ class RareDrops {
                 defaultSoundFileName = Sounds.FEESH_OH_MY_GOD
             ),
             RareDropInfo(
+                id = "SEVERED_PINCER",
+                itemName = RareDropTypes.SEVERED_PINCER.displayName,
+                rarityColorCode = LEGENDARY.code,
+                npcPrice = 1_000_000,
+                isExtremelyRare = false,
+                defaultSoundFileName = Sounds.FEESH_OH_MY_GOD
+            ),
+            RareDropInfo(
+                id = "CHAIN_END_TIMES",
+                itemName = RareDropTypes.CHAIN_OF_THE_END_TIMES.displayName,
+                rarityColorCode = LEGENDARY.code,
+                npcPrice = 1_000_000,
+                isExtremelyRare = false,
+                defaultSoundFileName = Sounds.FEESH_OH_MY_GOD
+            ),
+            RareDropInfo(
+                id = "BRIMSTONE_HANDLE",
+                itemName = RareDropTypes.BRIMSTONE_HANDLE.displayName,
+                rarityColorCode = EPIC.code,
+                npcPrice = 25_000,
+                isExtremelyRare = false,
+                defaultSoundFileName = Sounds.FEESH_OH_MY_GOD
+            ),
+            RareDropInfo(
+                id = "MOUND_OF_SEAGRASS",
+                itemName = RareDropTypes.MOUND_OF_SEAGRASS.displayName,
+                rarityColorCode = EPIC.code,
+                npcPrice = null,
+                isExtremelyRare = false,
+                defaultSoundFileName = Sounds.FEESH_OH_MY_GOD
+            ),
+            RareDropInfo(
+                id = "ISOPOD_HUSK",
+                itemName = RareDropTypes.ISOPOD_HUSK.displayName,
+                rarityColorCode = EPIC.code,
+                npcPrice = 250_000,
+                isExtremelyRare = false,
+                defaultSoundFileName = Sounds.FEESH_OH_MY_GOD
+            ),
+            RareDropInfo(
                 id = "PRINCE_CROWN_JEWEL",
                 itemName = RareDropTypes.PRINCES_CROWN_JEWEL.displayName,
                 rarityColorCode = LEGENDARY.code,
                 npcPrice = 1_000_000,
                 isExtremelyRare = true,
                 defaultSoundFileName = Sounds.FEESH_MINECRAFT_CHALLENGE_COMPLETED
+            ),
+            RareDropInfo(
+                id = "BABY_YETI;0",
+                itemName = RareDropTypes.BABY_YETI_COMMON.displayName,
+                rarityColorCode = COMMON.code,
+                npcPrice = 1_000_000,
+                isExtremelyRare = false,
+                defaultSoundFileName = Sounds.FEESH_GOOFY_LAUGH
             ),
             RareDropInfo(
                 id = "FLYING_FISH;4",

@@ -1,6 +1,7 @@
 package com.github.sleepypanda.feesh.settings
 
 import com.github.sleepypanda.feesh.FeeshMod
+import com.github.sleepypanda.feesh.constants.RareDropTypes
 import com.github.sleepypanda.feesh.settings.categories.General
 import com.github.sleepypanda.feesh.settings.categories.Alerts
 import com.github.sleepypanda.feesh.settings.categories.Chat
@@ -12,9 +13,11 @@ import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
 import com.github.sleepypanda.feesh.features.help.VersionChecker
 import com.github.sleepypanda.feesh.utils.openUriCompat
+import com.google.gson.JsonObject
 import com.teamresourceful.resourcefulconfig.api.types.info.ResourcefulConfigLink
 import com.teamresourceful.resourcefulconfig.api.types.options.TranslatableValue
 import com.teamresourceful.resourcefulconfigkt.api.ConfigKt
+import java.util.function.UnaryOperator
 
 object Settings : ConfigKt("${FeeshMod.MOD_ID}/config") {
     override val name: TranslatableValue
@@ -37,6 +40,25 @@ object Settings : ConfigKt("${FeeshMod.MOD_ID}/config") {
             TranslatableValue("GitHub"),
         ),
     )
+
+    override val patches: Map<Int, UnaryOperator<JsonObject>> = mapOf(
+        1 to UnaryOperator { json ->
+            val names = listOf(
+                RareDropTypes.PISCARY_6,
+                RareDropTypes.BABY_YETI_COMMON,
+                RareDropTypes.SEVERED_PINCER,
+                RareDropTypes.CHAIN_OF_THE_END_TIMES,
+                RareDropTypes.BRIMSTONE_HANDLE,
+                RareDropTypes.MOUND_OF_SEAGRASS,
+                RareDropTypes.ISOPOD_HUSK,
+            ).map { it.name }
+            addSelectOptions(json, "Alerts", "alertOnRareDropTypes", names)
+            addSelectOptions(json, "Chat", "messageOnRareDropTypes", names)
+            json
+        },
+    )
+
+    override val version = patches.maxOf { it.key } + 1
 
     init {
         separator {
@@ -107,5 +129,12 @@ object Settings : ConfigKt("${FeeshMod.MOD_ID}/config") {
 
     private fun openLink(url: String) {
         openUriCompat(url)
+    }
+
+    private fun addSelectOptions(json: JsonObject, category: String, entry: String, names: List<String>) {
+        val categoryJson = json.get(category)?.takeIf { it.isJsonObject }?.asJsonObject ?: return
+        val selected = categoryJson.get(entry)?.takeIf { it.isJsonArray }?.asJsonArray ?: return
+        val existing = selected.map { it.asString }.toSet()
+        names.filter { it !in existing }.forEach { selected.add(it) }
     }
 }
