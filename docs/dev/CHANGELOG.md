@@ -5,6 +5,7 @@ Released on: ???
 ## Features
 
 - Added option to alert on a new Hotspot & draw a waypoint when nametag is loaded [disabled by default].
+- Added new rare drops for alert/pchat feature.
 - Added ability to move GUIs using arrow keys in `/feeshMoveAllGuis`.
 
 ## Bugfixes
