@@ -37,7 +37,6 @@ object AutoRecombFlag : BaseSlotTextRenderer() {
             name == "Squid Boots" ||
             name == "Rabbit Hat" ||
             name == "Water Hydra Head" ||
-            name == "Fish Affinity Talisman" ||
             name == "Lucky Hoof" ||
             name == "Tiki Mask"
 

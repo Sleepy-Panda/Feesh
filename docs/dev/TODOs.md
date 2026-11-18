@@ -8,6 +8,33 @@
 
 https://hypixel.net/threads/november-18-sven-packmaster-tier-5-fishing-outpost-revamp-alpha-testing.6172091/#-%E2%96%BA-fishing-outpost-revamp
 
+- Renamed Enchanted Clay Block -> Enchanted Clay. Enchanted Clay -> Enchanted Clay Ball
+- Walker Sinew, common, 1k coins, WALKER_SINEW
+- Soggy Skull - uncommon, 2500, SOGGY_SKULL
+- Leech Sucker - rare, 5k, 
+- Wilted Rose (Reworked Endstone Rose into Wilted Rose) - 10k, epic, ENDSTONE_ROSE
+- Glistening Scale - legendary, 25k, 
+- Hydra Heart - mythic, 50k, HYDRA_HEART
+- Added 50,000 Coin NPC Sell Price to Water Hydra Helmet
+RARE DROP! Clump of Cod (+160 Magic Find) - rare, 150k, ENCHANTED_COOKED_FISH
+
+Add compacted t3 drops?
+Ench Cooked Pufferfish
+Ench Cooked Tropical Fish
+Ench Ink Puddle
+
+ CONTRABAND! You caught 10,283 Coins!
+ CONTRABAND! You caught 664 Coins!
+
+LEGENDARY Alligator: 1000 Health, 80 Damage
+Maybe lost immunity and does not deserve pchat alerting anymore
+
+Bait IDs to check, is craftable (for out of bait alert)
+Reworked Dark Bait into Epic Bait
+Reworked Light Bait into Legendary Bait
+Need migration of consumed bait in trackers?
+Add box craft option?
+
 ## 0.24.5
 
 Newly released - https://hypixel.net/threads/hypixel-skyblock-0-24-5-assorted-qol-changes.6094244/

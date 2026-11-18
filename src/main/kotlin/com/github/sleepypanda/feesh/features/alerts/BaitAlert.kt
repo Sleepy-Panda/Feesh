@@ -53,22 +53,38 @@ object BaitAlert {
             ChatUtils.sendLocalChat("You are almost out of ${event.baitDisplayName}${WHITE}.", true)
 
             val baitName = event.baitName
-            val isCraftableOrBuyable = !baitName.contains("Obfuscated")
-            if (isCraftableOrBuyable) {
-                val supercraftText = Component.literal("${GRAY}[${YELLOW}${BOLD}Supercraft${GRAY}]")
-                    .setStyle(
-                        Style.EMPTY
-                            .withClickEvent(RunCommand("/recipe $baitName"))
-                            .withHoverEvent(ShowText(Component.literal("Click to open Supercraft menu for $baitName")))
-                    )
-                val orText = Component.literal(" ${RESET}${GRAY}or ")
-                val bazaarText = Component.literal("${GRAY}[${GOLD}${BOLD}Buy on BZ${GRAY}]")
-                    .setStyle(
-                        Style.EMPTY
-                            .withClickEvent(RunCommand("/bz $baitName"))
-                            .withHoverEvent(ShowText(Component.literal("Click to open Bazaar for $baitName")))
-                    )
-                ChatUtils.sendLocalChat(supercraftText.append(orText).append(bazaarText))
+            val isBuyable = !baitName.contains("Obfuscated")
+            val isCraftable =
+                !baitName.contains("Obfuscated") &&
+                !baitName.contains("Treasure") &&
+                !baitName.contains("Golden") &&
+                !baitName.contains("Glowy Chum") &&
+                !baitName.contains("Wooden")
+
+            if (isCraftable || isBuyable) {
+                val message = Component.empty()
+                if (isCraftable) {
+                    val supercraftText = Component.literal("${GRAY}[${YELLOW}${BOLD}Supercraft${GRAY}]")
+                        .setStyle(
+                            Style.EMPTY
+                                .withClickEvent(RunCommand("/recipe $baitName"))
+                                .withHoverEvent(ShowText(Component.literal("Click to open Supercraft menu for $baitName")))
+                        )
+                    message.append(supercraftText)
+                }
+                if (isCraftable && isBuyable) {
+                    message.append(Component.literal(" ${RESET}${GRAY}or "))
+                }
+                if (isBuyable) {
+                    val bazaarText = Component.literal("${GRAY}[${GOLD}${BOLD}Buy on BZ${GRAY}]")
+                        .setStyle(
+                            Style.EMPTY
+                                .withClickEvent(RunCommand("/bz $baitName"))
+                                .withHoverEvent(ShowText(Component.literal("Click to open Bazaar for $baitName")))
+                        )
+                    message.append(bazaarText)
+                }
+                ChatUtils.sendLocalChat(message)
             }
 
             AlertUtils.alert(

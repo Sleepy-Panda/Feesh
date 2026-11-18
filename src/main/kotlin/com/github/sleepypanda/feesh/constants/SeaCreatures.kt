@@ -6,18 +6,20 @@ import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
 
 object SeaCreatureNames {
     // WATER
-    const val WATER_HYDRA = "Water Hydra"
     const val CARROT_KING = "Carrot King"
     const val SQUID = "Squid"
-    const val SEA_WALKER = "Sea Walker"
     const val SEA_WITCH = "Sea Witch"
-    const val SEA_ARCHER = "Sea Archer"
     const val RIDER_OF_THE_DEEP = "Rider of the Deep"
     const val CATFISH = "Catfish"
-    const val SEA_LEECH = "Sea Leech"
-    const val GUARDIAN_DEFENDER = "Guardian Defender"
-    const val DEEP_SEA_PROTECTOR = "Deep Sea Protector"
     const val AGARIMOO = "Agarimoo"
+
+    // HUB
+    const val SEA_WALKER = "Sea Walker"
+    const val SEA_ARCHER = "Sea Archer"
+    const val SEA_LEECH = "Sea Leech"
+    const val DEEP_SEA_PROTECTOR = "Deep Sea Protector"
+    const val HUB_GUARDIAN = "Hub Guardian"
+    const val WATER_HYDRA = "Water Hydra"
 
     // WATER HOTSPOTS
     const val INKLING = "Inkling"
@@ -124,18 +126,20 @@ object SeaCreatureNames {
 
 object SeaCreatureMessages {
     // WATER
-    const val WATER_HYDRA_MESSAGE = "^The Water Hydra has come to test your strength\\.$"
     const val CARROT_KING_MESSAGE = "^Is this even a fish\\? It\\'s the Carrot King\\!$"
     const val SQUID_MESSAGE = "^A Squid appeared\\.$"
-    const val SEA_WALKER_MESSAGE = "^You caught a Sea Walker\\.$"
     const val SEA_WITCH_MESSAGE = "^It looks like you\\'ve disrupted the Sea Witch\\'s brewing session\\. Watch out, she\\'s furious\\!$"
-    const val SEA_ARCHER_MESSAGE = "^You reeled in a Sea Archer\\.$"
     const val RIDER_OF_THE_DEEP_MESSAGE = "^The Rider of the Deep has emerged\\.$"
     const val CATFISH_MESSAGE = "^Huh\\? A Catfish\\!$"
-    const val SEA_LEECH_MESSAGE = "^Gross\\! A Sea Leech\\!$"
-    const val GUARDIAN_DEFENDER_MESSAGE = "^You\\'ve discovered a Guardian Defender of the sea\\.$"
-    const val DEEP_SEA_PROTECTOR_MESSAGE = "^You have awoken the Deep Sea Protector, prepare for a battle\\!$"
     const val AGARIMOO_MESSAGE = "^Your Chumcap Bucket trembles, it\\'s an Agarimoo\\.$"
+
+    // HUB
+    const val SEA_WALKER_MESSAGE = "^You caught a Sea Walker\\.$"
+    const val SEA_ARCHER_MESSAGE = "^You reeled in a Sea Archer\\.$"
+    const val SEA_LEECH_MESSAGE = "^Gross\\! A Sea Leech\\!$"
+    const val DEEP_SEA_PROTECTOR_MESSAGE = "^You have awoken the Deep Sea Protector, prepare for a battle\\!$"
+    const val HUB_GUARDIAN_MESSAGE = "^You\\'ve discovered a Hub Guardian of the sea\\.$"
+    const val WATER_HYDRA_MESSAGE = "^The Water Hydra has come to test your strength\\.$"
 
     // WATER HOTSPOTS
     const val INKLING_MESSAGE = "^You get an inkling that you\\'ve caught\\.\\.\\. an Inkling!$"
@@ -262,13 +266,6 @@ class SeaCreatures {
         val allSeaCreatures = listOf(
             // WATER
             SeaCreatureInfo(
-                SeaCreatureNames.WATER_HYDRA,
-                LEGENDARY.code,
-                Regex(SeaCreatureMessages.WATER_HYDRA_MESSAGE),
-                true,
-                hasSpawnImmunity = true,
-            ),
-            SeaCreatureInfo(
                 SeaCreatureNames.CARROT_KING,
                 RARE.code,
                 Regex(SeaCreatureMessages.CARROT_KING_MESSAGE),
@@ -281,21 +278,9 @@ class SeaCreatures {
                 false,
             ),
             SeaCreatureInfo(
-                SeaCreatureNames.SEA_WALKER,
-                COMMON.code,
-                Regex(SeaCreatureMessages.SEA_WALKER_MESSAGE),
-                false,
-            ),
-            SeaCreatureInfo(
                 SeaCreatureNames.SEA_WITCH,
                 UNCOMMON.code,
                 Regex(SeaCreatureMessages.SEA_WITCH_MESSAGE),
-                false,
-            ),
-            SeaCreatureInfo(
-                SeaCreatureNames.SEA_ARCHER,
-                UNCOMMON.code,
-                Regex(SeaCreatureMessages.SEA_ARCHER_MESSAGE),
                 false,
             ),
             SeaCreatureInfo(
@@ -311,28 +296,54 @@ class SeaCreatures {
                 false,
             ),
             SeaCreatureInfo(
+                SeaCreatureNames.AGARIMOO,
+                RARE.code,
+                Regex(SeaCreatureMessages.AGARIMOO_MESSAGE),
+                false,
+            ),
+
+            // HUB
+            SeaCreatureInfo(
+                SeaCreatureNames.SEA_WALKER,
+                COMMON.code,
+                Regex(SeaCreatureMessages.SEA_WALKER_MESSAGE),
+                false,
+                worlds = listOf(WorldUtils.HUB),
+            ),
+            SeaCreatureInfo(
+                SeaCreatureNames.SEA_ARCHER,
+                UNCOMMON.code,
+                Regex(SeaCreatureMessages.SEA_ARCHER_MESSAGE),
+                false,
+                worlds = listOf(WorldUtils.HUB),
+            ),
+            SeaCreatureInfo(
                 SeaCreatureNames.SEA_LEECH,
                 RARE.code,
                 Regex(SeaCreatureMessages.SEA_LEECH_MESSAGE),
                 false,
-            ),
-            SeaCreatureInfo(
-                SeaCreatureNames.GUARDIAN_DEFENDER,
-                EPIC.code,
-                Regex(SeaCreatureMessages.GUARDIAN_DEFENDER_MESSAGE),
-                false,
+                worlds = listOf(WorldUtils.HUB),
             ),
             SeaCreatureInfo(
                 SeaCreatureNames.DEEP_SEA_PROTECTOR,
                 EPIC.code,
                 Regex(SeaCreatureMessages.DEEP_SEA_PROTECTOR_MESSAGE),
                 false,
+                worlds = listOf(WorldUtils.HUB),
             ),
             SeaCreatureInfo(
-                SeaCreatureNames.AGARIMOO,
-                RARE.code,
-                Regex(SeaCreatureMessages.AGARIMOO_MESSAGE),
-                false,
+                SeaCreatureNames.HUB_GUARDIAN,
+                LEGENDARY.code,
+                Regex(SeaCreatureMessages.HUB_GUARDIAN_MESSAGE),
+                true,
+                worlds = listOf(WorldUtils.HUB),
+            ),
+            SeaCreatureInfo(
+                SeaCreatureNames.WATER_HYDRA,
+                MYTHIC.code,
+                Regex(SeaCreatureMessages.WATER_HYDRA_MESSAGE),
+                true,
+                worlds = listOf(WorldUtils.HUB),
             ),
 
             // WATER HOTSPOTS
@@ -754,7 +765,6 @@ class SeaCreatures {
                 Regex(SeaCreatureMessages.ALLIGATOR_MESSAGE),
                 true,
                 worlds = listOf(WorldUtils.BACKWATER_BAYOU),
-                hasSpawnImmunity = true,
             ),
             SeaCreatureInfo(
                 SeaCreatureNames.TITANOBOA,
@@ -762,7 +772,6 @@ class SeaCreatures {
                 Regex(SeaCreatureMessages.TITANOBOA_MESSAGE),
                 true,
                 worlds = listOf(WorldUtils.BACKWATER_BAYOU),
-                hasSpawnImmunity = true,
             ),
 
             // MOONGLADE MARSH

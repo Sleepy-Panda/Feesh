@@ -38,6 +38,7 @@ object PetLevelUpPricesCommand {
         PetInfo("${LEGENDARY}Ammonite", 1),
         PetInfo("${LEGENDARY}Squid", 1),
         PetInfo("${LEGENDARY}Dolphin", 1),
+        PetInfo("${MYTHIC}Dolphin", 1),
         PetInfo("${LEGENDARY}Reindeer", 2), // 2x faster to level up
         PetInfo("${LEGENDARY}Hermit Crab", 1),
         PetInfo("${MYTHIC}Hermit Crab", 1),

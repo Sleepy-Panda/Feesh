@@ -265,10 +265,10 @@ class FishingProfitDrops {
             ),
             FishingProfitDropInfo(
                 itemId = "ENCHANTED_CLAY_BALL",
-                itemName = "Enchanted Clay",
-                itemDisplayName = "${UNCOMMON}Enchanted Clay",
+                itemName = "Enchanted Clay Ball",
+                itemDisplayName = "${UNCOMMON}Enchanted Clay Ball",
                 npcPrice = 480.0,
-                compactedItemName = "Enchanted Clay Block",
+                compactedItemName = "Enchanted Clay",
             ),
             FishingProfitDropInfo(
                 itemId = "SQUID;0",
@@ -1406,16 +1406,8 @@ class FishingProfitDrops {
                 itemId = "WATER_HYDRA_HEAD",
                 itemName = "Water Hydra Head",
                 itemDisplayName = "${EPIC}Water Hydra Head",
-                npcPrice = 500.0,
+                npcPrice = 50_000.0,
                 shouldAnnounceRareDrop = true,
-            ),
-            FishingProfitDropInfo(
-                itemId = "FISH_AFFINITY_TALISMAN",
-                itemName = "Fish Affinity Talisman",
-                itemDisplayName = "${RARE}Fish Affinity Talisman",
-                npcPrice = 1_000.0,
-                shouldAnnounceRareDrop = true,
-                categories = listOf(ACCESSORY_CATEGORY),
             ),
             FishingProfitDropInfo(
                 itemId = "DIVER_FRAGMENT",
@@ -1584,8 +1576,8 @@ class FishingProfitDrops {
             ),
             FishingProfitDropInfo(
                 itemId = "ENCHANTED_CLAY_BLOCK",
-                itemName = "Enchanted Clay Block",
-                itemDisplayName = "${RARE}Enchanted Clay Block",
+                itemName = "Enchanted Clay",
+                itemDisplayName = "${RARE}Enchanted Clay",
                 npcPrice = 76_800.0,
             ),
             FishingProfitDropInfo(

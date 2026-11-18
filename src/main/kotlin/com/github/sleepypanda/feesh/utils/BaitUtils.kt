@@ -41,6 +41,11 @@ object BaitUtils {
      * Example: Obfuscated-1 SILVER -> OBFUSCATED_FISH_1_SILVER
      */
     fun getBaitItemId(baitName: String): String {
+        when (baitName) {
+            "Basic Bait" -> return "MINNOW_BAIT"
+            "Epic Bait" -> return "DARK_BAIT"
+            "Legendary Bait" -> return "LIGHT_BAIT"
+        }
         if (baitName.startsWith("Obfuscated-")) {
             return baitName.replace("Obfuscated-", "OBFUSCATED_FISH_").replace(" ", "_").uppercase()
         }
