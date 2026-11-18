@@ -6,6 +6,7 @@ Released on: ???
 
 - Made party chat message for Carrot King disabled by default.
 - Show old and new bait in the title for Bait changed alert.
+- Added `/feeshPartyCommandsHelp` to see guide for available !feesh party chat commands.
 
 ## Bugfixes
 

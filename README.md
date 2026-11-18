@@ -179,6 +179,7 @@ What's tracked:
 - **/feeshFearMongererShopPrices** — Calculates profits for selling items from Fear Mongerer NPC shop.
 - **/feeshJunkerJoelShopPrices** — Calculates profits for selling items from Junker Joel NPC shop.
 - **/feeshWeatherSchedule** — Displays 3 upcoming weather conditions (Mild / Extreme) schedule.
+- **/feeshPartyCommandsHelp** — Displays !feesh party chat commands guide.
 
 Also, each overlay has individual commands to reset or pause.
 
