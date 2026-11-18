@@ -6,10 +6,12 @@ Released on: ???
 
 - Made party chat message for Carrot King disabled by default.
 - Show old and new bait in the title for Bait changed alert.
+- Added `/feeshPartyCommandsHelp` to see guide for available !feesh party chat commands.
 
 ## Bugfixes
 
 - Adjusted Out of bait alert, to not show Supercraft chat button for not craftable baits.
+- Fixed outdated sea creature rarities for Moonglade Marsh.
 
 # 1.18.1
 

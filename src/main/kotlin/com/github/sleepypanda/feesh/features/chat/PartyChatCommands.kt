@@ -12,10 +12,13 @@ import com.github.sleepypanda.feesh.utils.ChatUtils
 import com.github.sleepypanda.feesh.utils.ChatUtils.removeFormatting
 import com.github.sleepypanda.feesh.utils.CommonUtils
 import com.github.sleepypanda.feesh.utils.PlayerUtils
+import com.github.sleepypanda.feesh.utils.RegisterUtils
 import com.github.sleepypanda.feesh.utils.WorldUtils
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 
 object PartyChatCommands {
+    const val HELP_COMMAND_NAME = "feeshPartyCommandsHelp"
+
     private const val COMMAND_PREFIX = "!feesh"
     private const val RESPONSE_COOLDOWN_MS = 4_000L
     private const val OWN_COMMAND_RESPONSE_DELAY_MS = 1_000L
@@ -26,10 +29,30 @@ object PartyChatCommands {
     private var scheduledMessage: String? = null
     private var scheduledMessageSendAt = 0L
 
+    private val COMMANDS_LINES = listOf(
+        "${AQUA}!feesh profit ${GRAY}- profit for Fishing profit tracker [Session]",
+        "${AQUA}!feesh profittotal ${GRAY}- profit for Fishing profit tracker [Total]",
+        "${AQUA}!feesh profit top1 ${GRAY}- top profit item for Fishing profit tracker [Session]",
+        "${AQUA}!feesh profittotal top1 ${GRAY}- top profit item for Fishing profit tracker [Total]",
+        "${AQUA}!feesh profit <item name> ${GRAY}- first match by full/partial item name for Fishing profit tracker [Session]",
+        "${AQUA}!feesh profittotal <item name> ${GRAY}- first match by full/partial item name for Fishing profit tracker [Total]",
+        "${AQUA}!feesh c/h ${GRAY}or ${AQUA}!feesh catches/h ${GRAY}- catches/h from Efficiency tracker or Fishing profit tracker [Session]",
+        "${AQUA}!feesh sc/h ${GRAY}- sea creatures/h from Efficiency tracker",
+    )
+
     fun init() {
         EventBus.subscribe(PartyChatEvent::class, ::onPartyChat)
         EventBus.subscribe(ClientTickEvent::class, ::onClientTick)
         EventBus.subscribe(WorldChangedEvent::class, ::onWorldChanged)
+        RegisterUtils.command(HELP_COMMAND_NAME) { showHelp() }
+    }
+
+    private fun showHelp() {
+        val chatBreak = "${GRAY}${ChatUtils.getChatBreak("-")}"
+        ChatUtils.sendLocalChat(chatBreak)
+        ChatUtils.sendLocalChat("${WHITE}Possible ${AQUA}!feesh ${WHITE}party chat commands:", true)
+        COMMANDS_LINES.forEach { ChatUtils.sendLocalChat(it) }
+        ChatUtils.sendLocalChat(chatBreak)
     }
 
     private fun onPartyChat(event: PartyChatEvent) {
