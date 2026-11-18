@@ -37,7 +37,7 @@ object BaitAlert {
 
             ChatUtils.sendLocalChat("${WHITE}Bait changed from ${event.oldBaitDisplayName} ${WHITE}to ${event.newBaitDisplayName}${WHITE}.", true)
             AlertUtils.alert(
-                title = AlertUtils.TitleConfig("${YELLOW}Bait changed"),
+                title = AlertUtils.TitleConfig("${YELLOW}Bait changed", "${event.oldBaitDisplayName} ${WHITE}-> ${event.newBaitDisplayName}"),
                 sound = AlertUtils.SoundConfig.McSound(),
             )
         }
@@ -51,6 +51,11 @@ object BaitAlert {
             if (event.baitName.isNullOrBlank()) return
 
             ChatUtils.sendLocalChat("You are almost out of ${event.baitDisplayName}${WHITE}.", true)
+
+            AlertUtils.alert(
+                title = AlertUtils.TitleConfig("${YELLOW}Out of bait soon"),
+                sound = AlertUtils.SoundConfig.McSound(),
+            )
 
             val baitName = event.baitName
             val isBuyable = !baitName.contains("Obfuscated")
@@ -86,11 +91,6 @@ object BaitAlert {
                 }
                 ChatUtils.sendLocalChat(message)
             }
-
-            AlertUtils.alert(
-                title = AlertUtils.TitleConfig("${YELLOW}Out of bait soon"),
-                sound = AlertUtils.SoundConfig.McSound(),
-            )
         }
     }
 

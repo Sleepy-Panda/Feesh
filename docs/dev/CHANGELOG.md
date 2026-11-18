@@ -4,7 +4,12 @@ Released on: ???
 
 ## Features
 
+- Made party chat message for Carrot King disabled by default.
+- Show old and new bait in the title for Bait changed alert.
+
 ## Bugfixes
+
+- Adjusted Out of bait alert, to not show Supercraft chat button for not craftable baits.
 
 # 1.18.1
 

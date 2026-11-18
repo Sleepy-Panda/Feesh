@@ -88,7 +88,7 @@ object Chat : CategoryKt("Chat") {
     }
 
     var shareSeaCreaturesList by select(
-        *AlertableSeaCreatureTypes.values().filter { it.isEnabledByDefault }.toTypedArray(), // Selected by default
+        *AlertableSeaCreatureTypes.values().filter { it.isChatShareEnabledByDefault }.toTypedArray(), // Selected by default
     ) {
         this.name = Translated("Select sea creatures to share to the PARTY chat")
         this.searchTerms = AlertableSeaCreatureTypes.values().map { it.displayName }.toList()
