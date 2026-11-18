@@ -1,6 +1,6 @@
 # 1.18.1
 
-Released on: ???
+Released on: 2026-11-18
 
 ## Bugfixes
 
