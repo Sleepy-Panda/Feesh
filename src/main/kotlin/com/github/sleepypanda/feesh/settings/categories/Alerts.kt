@@ -44,7 +44,7 @@ object Alerts : CategoryKt("Alerts") {
     }
 
     var alertOnSeaCreaturesList by select(
-        *AlertableSeaCreatureTypes.values().filter { it.isEnabledByDefault }.toTypedArray(), // Selected by default
+        *AlertableSeaCreatureTypes.values().filter { it.isAlertEnabledByDefault }.toTypedArray(), // Selected by default
     ) {
         this.name = Translated("Select sea creatures to be alerted on")
         this.searchTerms = AlertableSeaCreatureTypes.values().map { it.displayName }.toList()
