@@ -10,6 +10,7 @@ Released on: ???
 ## Bugfixes
 
 - Adjusted Out of bait alert, to not show Supercraft chat button for not craftable baits.
+- Fixed outdated sea creature rarities for Moonglade Marsh.
 
 # 1.18.1
 
