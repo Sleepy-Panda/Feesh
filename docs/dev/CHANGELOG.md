@@ -2,6 +2,11 @@
 
 Released on: ???
 
+## Bugfixes
+
+- Fixed Thunder in a Bottle appearing in Fishing profit tracker when you collect Thunder sparkles.
+- Fixed Bottle charge progress slot rendering not working for Thunder bottles (after Hypixel changed bottle names).
+
 # 1.18.0
 
 Released on: 2026-11-17

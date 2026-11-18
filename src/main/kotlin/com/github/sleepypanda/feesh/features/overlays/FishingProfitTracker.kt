@@ -11,6 +11,7 @@ import com.github.sleepypanda.feesh.events.models.GameClosedEvent
 import com.github.sleepypanda.feesh.events.models.InventoryProfitItemPickupEvent
 import com.github.sleepypanda.feesh.events.models.WorldChangedEvent
 import com.github.sleepypanda.feesh.events.models.PetLevelUpEvent
+import com.github.sleepypanda.feesh.events.models.BottleFullyChargedEvent
 import com.github.sleepypanda.feesh.events.models.SacksProfitItemsPickupEvent
 import com.github.sleepypanda.feesh.events.models.ShardCaughtEvent
 import com.github.sleepypanda.feesh.events.models.PricesUpdatedEvent
@@ -146,6 +147,7 @@ object FishingProfitTracker : IResettableViewModeTracker {
         EventBus.subscribe(GameClosedEvent::class, ::onGameClosed)
         EventBus.subscribe(WorldChangedEvent::class, ::onWorldChanged)
         EventBus.subscribe(PetLevelUpEvent::class, ::onPetReachedMaxLevel)
+        EventBus.subscribe(BottleFullyChargedEvent::class, ::onBottleFullyCharged)
         EventBus.subscribe(SacksProfitItemsPickupEvent::class, ::onSacksProfitItemsPickup)
         EventBus.subscribe(InventoryProfitItemPickupEvent::class, ::onInventoryProfitItemPickup)
         EventBus.subscribe(ShardCaughtEvent::class, ::onShardCaught)
@@ -618,6 +620,13 @@ object FishingProfitTracker : IResettableViewModeTracker {
             if (!isTrackerVisible()) return@onPetReachedMaxLevel
             val itemIdMaxLevel = ItemUtils.getMaxedPetId(event.petDisplayName, event.level)
             addProfitTrackerItem(itemIdMaxLevel, event.petName, 1, null)
+        }
+    }
+
+    private fun onBottleFullyCharged(event: BottleFullyChargedEvent) {
+        CommonUtils.runWithCatching("Failed to add charged bottle to Fishing profit tracker") {
+            if (!isTrackerVisible()) return@onBottleFullyCharged
+            addProfitTrackerItem(event.itemId, event.itemName, 1, null)
         }
     }
 

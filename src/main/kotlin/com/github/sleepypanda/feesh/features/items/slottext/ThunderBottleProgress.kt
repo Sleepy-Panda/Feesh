@@ -14,7 +14,8 @@ object ThunderBottleProgress : BaseSlotTextRenderer() {
     private data class Bottle(val name: String, val maxCharge: Int)
 
     private val BOTTLES = listOf(
-        Bottle("Empty Thunder Bottle", 50000),
+        Bottle("Empty Thunder in a Bottle", 50_000),
+        Bottle("Thunder in a Bottle", 50_000), // Fully charged is named "Filled Thunder in a Bottle" which is not same for other bottle types
         Bottle("Empty Storm Bottle", 500_000),
         Bottle("Empty Hurricane Bottle", 5_000_000)
     )

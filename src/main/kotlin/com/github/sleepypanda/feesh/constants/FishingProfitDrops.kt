@@ -2106,21 +2106,24 @@ class FishingProfitDrops {
             ),
             FishingProfitDropInfo(
                 itemId = "THUNDER_IN_A_BOTTLE",
-                itemName = "Thunder in a Bottle",
-                itemDisplayName = "${EPIC}Thunder in a Bottle",
+                itemName = "Filled Thunder in a Bottle",
+                itemDisplayName = "${EPIC}Filled Thunder in a Bottle",
                 npcPrice = 5_000.0,
+                ignoreItemPickup = true, // Counted from bottle full message
             ),
             FishingProfitDropInfo(
                 itemId = "STORM_IN_A_BOTTLE",
                 itemName = "Storm in a Bottle",
                 itemDisplayName = "${EPIC}Storm in a Bottle",
                 npcPrice = 5_000.0,
+                ignoreItemPickup = true, // Counted from bottle full message
             ),
             FishingProfitDropInfo(
                 itemId = "HURRICANE_IN_A_BOTTLE",
                 itemName = "Hurricane in a Bottle",
                 itemDisplayName = "${LEGENDARY}Hurricane in a Bottle",
                 npcPrice = 5_000.0,
+                ignoreItemPickup = true, // Counted from bottle full message
             ),
             FishingProfitDropInfo(
                 itemId = "ENCHANTMENT_CHARM_1",
