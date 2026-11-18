@@ -104,7 +104,7 @@ Session: 10x Baby Yeti (Epic), 5x Baby Yeti (Legendary), 1x Level 100
 - Do not include baby magma slugs when producing cap alert.
 - Attach Vials drop number to the pchat message
 - Clean chat for spammy messages:
-  - &r&eTry clicking this &r&fThunder Spark&r&e with an &r&5Empty Thunder Bottle&r&e to collect it!&r (31)
+  - Try clicking this Thunder Spark with an Empty Thunder in a Bottle to collect it!
   - The Pocket Black Hole isn't effective against Snapping Turtle! (2) 
   - &r&cThe Pocket Black Hole isn't effective against Guardian Defender!&r
 

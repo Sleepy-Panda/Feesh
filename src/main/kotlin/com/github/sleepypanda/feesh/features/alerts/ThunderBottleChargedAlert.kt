@@ -2,44 +2,26 @@ package com.github.sleepypanda.feesh.features.alerts
 
 import com.github.sleepypanda.feesh.settings.categories.Alerts
 import com.github.sleepypanda.feesh.events.EventBus
-import com.github.sleepypanda.feesh.events.models.ChatEvent
+import com.github.sleepypanda.feesh.events.models.BottleFullyChargedEvent
 import com.github.sleepypanda.feesh.utils.AlertUtils
+import com.github.sleepypanda.feesh.utils.CommonUtils
 import com.github.sleepypanda.feesh.utils.WorldUtils
-import com.github.sleepypanda.feesh.utils.enums.ColorCodes
-import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
+import com.github.sleepypanda.feesh.utils.enums.ColorCodes.WHITE
 
 object ThunderBottleChargedAlert {
-    private val THUNDER_BOTTLE_CHARGED_MESSAGE = Regex("^> Your bottle of thunder has fully charged\\!$")
-    private val STORM_BOTTLE_CHARGED_MESSAGE = Regex("^> Your Storm in a Bottle has fully charged\\!$")
-    private val HURRICANE_BOTTLE_CHARGED_MESSAGE = Regex("^> Your Hurricane in a Bottle has fully charged\\!$")
-
-    data class BottleChargedTrigger(val trigger: Regex, val bottleName: String, val rarityColorCode: ColorCodes)
-
-    private val BOTTLE_CHARGED_TRIGGERS = listOf(
-        BottleChargedTrigger(THUNDER_BOTTLE_CHARGED_MESSAGE, "Thunder Bottle", ColorCodes.EPIC),
-        BottleChargedTrigger(STORM_BOTTLE_CHARGED_MESSAGE, "Storm Bottle", ColorCodes.EPIC),
-        BottleChargedTrigger(HURRICANE_BOTTLE_CHARGED_MESSAGE, "Hurricane Bottle", ColorCodes.LEGENDARY),
-    )
-
     fun init() {
-        EventBus.subscribe(ChatEvent::class, ::onChat)
+        EventBus.subscribe(BottleFullyChargedEvent::class, ::onBottleFullyCharged)
     }
 
-    private fun onChat(event: ChatEvent) {
+    private fun onBottleFullyCharged(event: BottleFullyChargedEvent) {
         if (!Alerts.alertOnThunderBottleCharged || !WorldUtils.isInSkyblock()) return
 
-        BOTTLE_CHARGED_TRIGGERS.forEach { entry ->
-            if (entry.trigger.matches(event.unformattedText)) {
-                playAlertOnBottleCharged(entry)
-            }
+        CommonUtils.runWithCatching("Failed to play bottle fully charged alert.") {
+            AlertUtils.alert(
+                title = AlertUtils.TitleConfig("${event.itemDisplayName} ${WHITE}is full"),
+                sound = AlertUtils.SoundConfig.McSound(),
+                priority = AlertUtils.AlertPriority.LOW,
+            )    
         }
-    }
-
-    private fun playAlertOnBottleCharged(entry: BottleChargedTrigger) {
-        AlertUtils.alert(
-            title = AlertUtils.TitleConfig("${entry.rarityColorCode}${entry.bottleName} ${WHITE}is full"),
-            sound = AlertUtils.SoundConfig.McSound(),
-            priority = AlertUtils.AlertPriority.LOW,
-        )
     }
 }
