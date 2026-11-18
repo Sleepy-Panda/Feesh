@@ -9,6 +9,7 @@ import com.github.sleepypanda.feesh.constants.RareDropTypes
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
 import com.github.sleepypanda.feesh.features.chat.CompactCatchMessages
+import com.github.sleepypanda.feesh.features.chat.PartyChatCommands
 import com.github.sleepypanda.feesh.utils.openUriCompat
 import com.github.sleepypanda.feesh.utils.getScreenCompat
 import com.github.sleepypanda.feesh.utils.setScreenCompat
@@ -153,17 +154,7 @@ ${YELLOW}Make sure to enable ${YELLOW}Skyblock Settings -> Personal -> Fishing S
 
     var enablePartyCommands by boolean(true) {
         this.name = Translated("Enable party commands")
-        this.description = Translated(
-"""${GRAY}Lets your party explore data from your enabled trackers. Responds in party chat when someone sends ${AQUA}!feesh ${GRAY}commands:
-${AQUA}!feesh profit ${GRAY}- shows the profit for Fishing profit tracker [Session]
-${AQUA}!feesh profittotal ${GRAY}- shows the profit for Fishing profit tracker [Total]
-${AQUA}!feesh profit top1 ${GRAY}- shows the top profit item for Fishing profit tracker [Session]
-${AQUA}!feesh profittotal top1 ${GRAY}- shows the top profit item for Fishing profit tracker [Total]
-${AQUA}!feesh profit <item name> ${GRAY}- first match by full/partial item name for Fishing profit tracker [Session]
-${AQUA}!feesh profittotal <item name> ${GRAY}- first match by full/partial item name for Fishing profit tracker [Total]
-${AQUA}!feesh c/h ${GRAY}or ${AQUA}!feesh catches/h ${GRAY}- shows catches/h from Efficiency tracker or Fishing profit tracker [Session]
-${AQUA}!feesh sc/h ${GRAY}- shows sea creatures/h from Efficiency tracker
-""")
+        this.description = Translated("Lets your party explore data from your enabled trackers. Commands guide: ${AQUA}/${PartyChatCommands.HELP_COMMAND_NAME}")
         this.searchTerms = listOf(ModVersionConstants.VERSION_1_16_0)
     }
 
