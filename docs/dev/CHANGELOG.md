@@ -4,6 +4,8 @@ Released on: ???
 
 ## Features
 
+- Made party chat message for Carrot King disabled by default.
+
 ## Bugfixes
 
 # 1.18.1
