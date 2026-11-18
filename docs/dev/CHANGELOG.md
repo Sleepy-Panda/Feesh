@@ -1,6 +1,14 @@
-# 1.18.1
+# 1.19.0
 
 Released on: ???
+
+## Features
+
+## Bugfixes
+
+# 1.18.1
+
+Released on: 2026-11-18
 
 ## Bugfixes
 
