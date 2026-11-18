@@ -49,10 +49,8 @@ RIBBIT! [MVP+] _etaF caught their first DIAMOND Common Frog!
 
 ## Consumables
 
-Buffs from Lotus Atoll cave donations:
-WISE! You've been granted +1⛃ Treasure Chance for 30m while on the Lotus Atoll!
-WISE! You've been granted +2.5α Sea Creature Chance for 30m while on the Lotus Atoll!
-WISE! You've been granted +10☂ Fishing Speed for 30m while on the Lotus Atoll!
+- Buffs from Lotus Atoll cave donations:
+WISE! You've been granted +1 Treasure Chance for 30m while on the Lotus Atoll!
 
 ## Party commands
 
@@ -134,6 +132,7 @@ It might be not 100% correct due to how Hypixel API works, the person who reques
 
 ## Other
 
+- Giant Isopod - fix highlight and implement immunity like for Nessie
 - Hide fire around Ragnarok
 - Hide damage nametags from Flay
 - Separate data tracking/settings for Alpha and Live server? Probably for Bingo too?

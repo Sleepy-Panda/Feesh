@@ -4,37 +4,9 @@
 
 - Test each release in 26.x
 
-## MF update
+## Fishing outpost revamp
 
-JACKPOT! You just DOUBLED a Enchanted Raw Cod!
-JACKPOT! You just DOUBLED a Enchanted Prismarine Crystals!
-WOMP WOMP! You just DELETED a Enchanted Pufferfish!
-WOMP WOMP! You just DELETED a Plasma x2!
-
-## Minister update
-
-https://hypixel.net/threads/september-21st-minister-update-mob-level-improvements-testing-2.6150078/
-
-- You ran out of Whale Bait in your Bait Sacks! [DISMISS] - could be used for out of bait detection?
-- Adjusted all EPIC Phoenix Pets -> SPECIAL, Adjusted all LEGENDARY Phoenix Pets -> VERY SPECIAL
-  New pet drop message? New Pet IDs / pet price issues for leveled up pet? "PHOENIX;0+100", "PHOENIX;4+100"
-- Precursor Drone became Legendary. New ID? "PRECURSOR_DRONE;4+100"
-
-## Torrus Canyon
-
-- Giant Isopod acts like a Nessie, implement immunity?
-- Giant Isopod highlight looks weird
-
-## Alpha Lotus Atoll
-
-https://hypixel.net/threads/may-6th-lotus-atoll-alpha-testing.6094444/
-https://hypixel.net/threads/may-14th-lotus-atoll-alpha-testing-2.6097759/
-
-WISE! You've been granted +1 Treasure Chance for 30m while on the Lotus Atoll!
-WISE! You've been granted +2.5α Sea Creature Chance for 30m while on the Lotus Atoll! - 4 perks
-WISE! You've been granted +10☂ Fishing Speed for 30m while on the Lotus Atoll!
-WISE! You've been granted +1⛃ Treasure Chance for 30m while on the Lotus Atoll!
-WISE! You've been granted +5♔ Trophy Chance for 30m while on the Lotus Atoll!
+https://hypixel.net/threads/november-18-sven-packmaster-tier-5-fishing-outpost-revamp-alpha-testing.6172091/#-%E2%96%BA-fishing-outpost-revamp
 
 ## 0.24.5
 
@@ -45,19 +17,12 @@ Newly released - https://hypixel.net/threads/hypixel-skyblock-0-24-5-assorted-qo
 
 ## Latest issues & feedback
 
- GOOD CATCH! You caught a Flexbone!
- GOOD CATCH! You caught a Shinyfish Shard!
-§a §r§lACID RAIN BONUS! §r§fYou caught a bonus §r§aRusty Coin§r§f!
-
 - Both compacted and original loot arrives as sacks message and counts twice.
 - Display bait price as craft costs (optionally - selection between sell offer, insta sell, craft cost)
 - NPC sell prices change https://hypixel.net/threads/october-29-accessory-bag-revamp-economy-changes.6165308/
 - Bait refund arrives to sack and gets counted (temporary disabled bait tracking).
 - Scrollable overlays
 - Send a message like this "BAD JUNK CATCH! You caught a Salmon!" when catching a non-treasure while treasure/junk fishing
-- You cannot send same message twice when sharing Isopods
-  - x: -642, y: 157, z: 183 | Giant Isopod at Torrhus Spring | @80fds838 
-  - y: 157, z: 183, x: -642 | Giant Isopod reeled @ Torrhus Spring | @9wolsfv03w
 - For level 100 pets, would be cool to change their item name to be aligned with Level 1 pets. This also causes Lvl 100 pets being not easily found ny name via /get command or party command item search.
 - Drake sound not muted when using Sound Controller mod
 - integrate medal clipping for rare drops / dyes? have seen it in sbo and its pretty neat  https://medal.tv/developer/auto-clipping#api-reference
@@ -88,7 +53,3 @@ Newly released - https://hypixel.net/threads/hypixel-skyblock-0-24-5-assorted-qo
 - Go through TODOs in the code
 - Rework ticks counters across all overlays
 - Version check to correctly detect newer version on Modrinth (e.g. 1.1.0 and 1.1.0-beta)
-
-## Settings
-
-Make sure newly added values in the dropdowns are selected if needed. E.g. if I add new rare drop type to Alerts, alert for this drop should be enabled.
