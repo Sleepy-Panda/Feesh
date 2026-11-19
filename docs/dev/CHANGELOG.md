@@ -19,6 +19,10 @@ Released on: ???
 - Show old and new bait in the title for Bait changed alert.
 - Added `/feeshPartyCommandsHelp` to see guide for available !feesh party chat commands.
 
+## Known issues
+
+- Compactors update brought an issue with double drops counting in Fishing profit tracker. Both original and compacted drops arrive as [Sacks] message and get counted. It needs more effort to investigate and fix carefully.
+
 # 1.18.1
 
 Released on: 2026-11-18
