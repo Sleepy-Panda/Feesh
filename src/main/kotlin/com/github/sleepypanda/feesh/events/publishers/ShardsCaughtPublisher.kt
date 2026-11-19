@@ -34,11 +34,10 @@ object ShardsCaughtPublisher {
     // CHARM! You charmed the Flaming Spider and received 2 Flaming Spider Shards!
     private val SHARDS_CHARMED_PATTERN = Regex("^CHARM! You charmed (?:a|an|the) .+ and received (?<count>[\\d]+) (?<shardName>.+) Shard[s]!")
 
-    // LOOT SHARE You received 2 Titanoboa Shards for assisting CuzImCrzz!
-    // LOOT SHARE You received 3 Magma Slug Shards for assisting OmeRuben!
-    // LOOT SHARE You received an Alligator Shard for assisting KingOFFLies!
-    // LOOT SHARE You received a Titanoboa Shard for assisting fshbowl_!
-    private val SHARDS_LOOTSHARED_PATTERN = Regex("^LOOT SHARE You received (?<shardsText>.+) Shard.*")
+    // LOOT SHARE! You received an Alligator Shard for assisting KingOFFLies!
+    // LOOT SHARE! You received a Titanoboa Shard for assisting fshbowl_!
+    // LOOT SHARE! You received 3 Torrid Shards for assisting oorryyyxx!
+    private val SHARDS_LOOTSHARED_PATTERN = Regex("^LOOT SHARE! You received (?<shardsText>.+) Shard.*")
 
     fun init() {
         EventBus.subscribe(ChatEvent::class, ::onChat)
