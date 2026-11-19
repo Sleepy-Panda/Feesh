@@ -47,6 +47,8 @@ While the tracker is **active** (visible and not paused), drop and pickup an ite
 
 Please note, if the picked up items went to a sack, it may take up to 30 seconds to be counted. Basically, sack items get counted when SkyBlock shows `[Sacks] +N items` chat message.
 
+> Please note that some drops are ignored from inventory / sacks and counted only from Hypixel chat messages. For those, please use next sections to change their count.
+
 ### 2. Overlay buttons
 
 Open your **inventory** while the overlay is visible. It makes no difference if it's paused or active. Each item line has click actions: `[+][-][x]`

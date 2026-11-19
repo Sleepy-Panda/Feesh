@@ -2,19 +2,26 @@
 
 Released on: ???
 
+## Bugfixes
+
+- Fixed sacks drops counted in Fishing profit tracker after enabling compactor.
+- Fixed lootshared shards to not appear in Fishing profit tracker.
+- Fixed "Hide lootshare messages when in Frozen Blaze" not working for shards.
+- Forcefully count Singed Powder in Fishing profit tracked based on RARE DROP message
+  - This is shitty workaround; [Sacks] +X items Hypixel message does not list some valuable items because of too many items picked up.
+  - Hoping this to be temporary...
+- Adjusted Out of bait alert, to not show Supercraft chat button for not craftable baits.
+- Fixed outdated sea creature rarities for Moonglade Marsh.
+
 ## Features
 
 - Made party chat message for Carrot King disabled by default.
 - Show old and new bait in the title for Bait changed alert.
 - Added `/feeshPartyCommandsHelp` to see guide for available !feesh party chat commands.
 
-## Bugfixes
+## Known issues
 
-- Fixed sacks drops counted in the profit tracker after enabling compactor.
-- Fixed lootshared shards to not appear in Fishing profit tracker.
-- Fixed "Hide lootshare messages when in Frozen Blaze" not working for shards.
-- Adjusted Out of bait alert, to not show Supercraft chat button for not craftable baits.
-- Fixed outdated sea creature rarities for Moonglade Marsh.
+- Compactors update brought an issue with double drops counting in Fishing profit tracker. Both original and compacted drops arrive as [Sacks] message and get counted. It needs more effort to investigate and fix carefully.
 
 # 1.18.1
 
