@@ -12,6 +12,7 @@ Released on: ???
 
 - Adjusted Out of bait alert, to not show Supercraft chat button for not craftable baits.
 - Fixed outdated sea creature rarities for Moonglade Marsh.
+- Fixed sacks drops counted in the profit tracker after enabling compactor.
 
 # 1.18.1
 
