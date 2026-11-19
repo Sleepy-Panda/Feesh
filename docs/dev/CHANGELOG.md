@@ -2,6 +2,10 @@
 
 ## Bugfixes
 
+## Other
+
+- Replaced Regex usage with more lightweight checks for sea creature catch messages.
+
 # 1.18.2
 
 Released on: 2026-11-19
