@@ -70,6 +70,7 @@ object SacksItemPickupPublisher {
         val lastGuisClosed = GuiUtils.lastGuisClosed
         val now = Date().time
         if (lastGuisClosed.lastSacksGuiClosedAt != null && now - lastGuisClosed.lastSacksGuiClosedAt!!.time < MAX_SACKS_MESSAGE_DELAY_MS) return true
+        if (lastGuisClosed.lastCompactorGuiClosedAt != null && now - lastGuisClosed.lastCompactorGuiClosedAt!!.time < MAX_SACKS_MESSAGE_DELAY_MS) return true
         if (lastStashToSacksAt != null && now - lastStashToSacksAt!!.time < MAX_SACKS_MESSAGE_DELAY_MS) return true
         return false
     }
@@ -79,7 +80,7 @@ object SacksItemPickupPublisher {
 
         val cleanName = ItemUtils.getCleanItemName(itemName)
         val dropInfo = FishingProfitDrops.getFishingProfitItemByName(cleanName) ?: return null
-        if (dropInfo.ignoreItemPickup) return null
+        if (dropInfo.ignoreItemPickup || dropInfo.pickupFromRareDropMessage) return null
         if (shouldSkipItem(dropInfo)) return null
 
         return SacksProfitItemsPickupEvent.SacksProfitPickupItem(

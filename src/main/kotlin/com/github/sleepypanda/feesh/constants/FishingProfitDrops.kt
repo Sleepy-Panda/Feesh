@@ -15,7 +15,8 @@ data class FishingProfitDropInfo(
     val itemAlternateNames: List<String> = listOf(), // Alternate names for the item, to support some popular item renamings by mods, or item renamings by SB
     val itemDisplayName: String, // Formatted item name
     val npcPrice: Double?,
-    val ignoreItemPickup: Boolean = false, // If the item should be ignored from inventory/sacks tracking
+    val ignoreItemPickup: Boolean = false, // If the item should be ignored from inventory/sacks tracking, as it's tracked from various chat messages
+    val pickupFromRareDropMessage: Boolean = false, // Count from RARE DROP! chat instead of inventory/sacks pickup
     val shouldAnnounceRareDrop: Boolean = false, // If the item should be announced as a rare drop in player's chat (for valuable drops which have no standart RARE DROP! message from Hypixel)
     val amountOfMagmaFish: Int? = null, // Amount of Magma Fish to exchange a Trophy Fish at Odger
     val amountOfLotus: Int? = null, // Amount of Lotus to exchange a Trophy Frog
@@ -1885,6 +1886,8 @@ class FishingProfitDrops {
                 itemName = "Singed Powder",
                 itemDisplayName = "${UNCOMMON}Singed Powder",
                 npcPrice = 1_000.0,
+                ignoreItemPickup = true,
+                pickupFromRareDropMessage = true, // Often missing from the [Sacks] message, so had to apply this workaround
             ),
             FishingProfitDropInfo(
                 itemId = "ENCHANTMENT_FIRE_PROTECTION_6",
