@@ -253,7 +253,7 @@ object SeaCreaturesTracker : IResettableViewModeTracker {
             return SeaCreatures.SeaCreatureInfo(
                 name = name,
                 rarityColorCode = GRAY.code,
-                pattern = Regex("\\b\\B"),
+                message = "",
                 isRare = false,
                 canBeDoubleHooked = true,
             )

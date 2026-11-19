@@ -38,7 +38,7 @@ object FishingFestivalTracker : IResettableTracker {
     override val resetCommand = RESET_COMMAND
 
     private val sharkInfos = run {
-        val byMessage = SeaCreatures.allSeaCreatures.associateBy { it.pattern.pattern }
+        val byMessage = SeaCreatures.allSeaCreatures.associateBy { it.message }
         listOfNotNull(
             byMessage[SeaCreatureMessages.GREAT_WHITE_SHARK_MESSAGE],
             byMessage[SeaCreatureMessages.TIGER_SHARK_MESSAGE],

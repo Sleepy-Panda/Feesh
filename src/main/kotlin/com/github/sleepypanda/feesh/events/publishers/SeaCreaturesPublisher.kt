@@ -8,8 +8,12 @@ import com.github.sleepypanda.feesh.settings.categories.Chat
 import com.github.sleepypanda.feesh.utils.WorldUtils
 
 object SeaCreaturesPublisher {
+    private val DOUBLE_HOOK_MESSAGES = arrayOf(
+        "It's a Double Hook!",
+        "It's a Double Hook! Woot woot!",
+    )
+
     var isDoubleHook = false
-    val doubleHookPattern = Regex("^It's a Double Hook!")
 
     fun init() {
         EventBus.subscribe(ChatCancellableEvent::class, ::onChat)
@@ -20,7 +24,7 @@ object SeaCreaturesPublisher {
         
         var chatMessage = event.unformattedText
 
-        if (doubleHookPattern.containsMatchIn(chatMessage)) {
+        if (chatMessage in DOUBLE_HOOK_MESSAGES) {
             isDoubleHook = true
             if (Chat.compactSeaCreaturesMessages) {
                 event.isCancelled = true
@@ -29,7 +33,7 @@ object SeaCreaturesPublisher {
         }
 
         SeaCreatures.allSeaCreatures
-            .find { sc -> sc.pattern.containsMatchIn(chatMessage) }
+            .find { sc -> sc.message == chatMessage }
             ?.let { sc ->
                 val doubleHooked = if (!sc.canBeDoubleHooked) false else isDoubleHook
                 EventBus.publish(OwnSeaCreatureCaughtEvent(sc.name, doubleHooked, chatMessage, sc))
