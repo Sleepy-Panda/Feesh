@@ -13,6 +13,7 @@ import com.github.sleepypanda.feesh.events.models.WorldChangedEvent
 import com.github.sleepypanda.feesh.events.models.PetLevelUpEvent
 import com.github.sleepypanda.feesh.events.models.BottleFullyChargedEvent
 import com.github.sleepypanda.feesh.events.models.SacksProfitItemsPickupEvent
+import com.github.sleepypanda.feesh.events.models.RareDropEvent
 import com.github.sleepypanda.feesh.events.models.ShardCaughtEvent
 import com.github.sleepypanda.feesh.events.models.PricesUpdatedEvent
 import com.github.sleepypanda.feesh.events.models.IceEssenceStatusBarEvent
@@ -149,6 +150,7 @@ object FishingProfitTracker : IResettableViewModeTracker {
         EventBus.subscribe(PetLevelUpEvent::class, ::onPetReachedMaxLevel)
         EventBus.subscribe(BottleFullyChargedEvent::class, ::onBottleFullyCharged)
         EventBus.subscribe(SacksProfitItemsPickupEvent::class, ::onSacksProfitItemsPickup)
+        EventBus.subscribe(RareDropEvent::class, ::onRareDrop)
         EventBus.subscribe(InventoryProfitItemPickupEvent::class, ::onInventoryProfitItemPickup)
         EventBus.subscribe(ShardCaughtEvent::class, ::onShardCaught)
         EventBus.subscribe(IceEssenceStatusBarEvent::class, ::onIceEssenceStatusBar)
@@ -556,6 +558,18 @@ object FishingProfitTracker : IResettableViewModeTracker {
                 }
             }
             refreshTotalItemsProfits()
+        }
+    }
+
+    private fun onRareDrop(event: RareDropEvent) {
+        // Some of the items are often missing from the [Sacks] message, so had to apply this workaround
+        if (!isSessionActive || !isTrackerVisible()) return
+
+        CommonUtils.runWithCatching("Failed to process rare drop event in $trackerName") {
+            val dropInfo = FishingProfitDrops.getFishingProfitItemByName(event.itemName) ?: return@runWithCatching
+            if (!dropInfo.pickupFromRareDropMessage) return@runWithCatching
+
+            addProfitTrackerItem(dropInfo.itemId, dropInfo.itemName, 1, null)
         }
     }
 

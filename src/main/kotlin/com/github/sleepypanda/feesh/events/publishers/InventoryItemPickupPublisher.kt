@@ -334,7 +334,7 @@ object InventoryItemPickupPublisher {
 
     private fun onItemAddedToInventory(itemId: String, previousCount: Int, newCount: Int) {
         val dropInfo = FishingProfitDrops.items.find { it.itemId == itemId } ?: return
-        if (dropInfo.ignoreItemPickup) return
+        if (dropInfo.ignoreItemPickup || dropInfo.pickupFromRareDropMessage) return
         
         val difference = newCount - previousCount
         if (difference <= 0) return

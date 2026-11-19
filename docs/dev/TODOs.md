@@ -17,12 +17,12 @@ Newly released - https://hypixel.net/threads/hypixel-skyblock-0-24-5-assorted-qo
 
 ## Latest issues & feedback
 
-- Singed Powder not tracked
 - Both compacted and original loot arrives as sacks message and counts twice.
 - Display bait price as craft costs (optionally - selection between sell offer, insta sell, craft cost)
 - Pchat commands: since <drop>
 - NPC sell prices change https://hypixel.net/threads/october-29-accessory-bag-revamp-economy-changes.6165308/
 - Bait refund arrives to sack and gets counted (temporary disabled bait tracking).
+- Singed Powder is forced to be tracked from RARE DROP message, being a precedent (items get hidden in Sacks message).
 - Scrollable overlays
 - Send a message like this "BAD JUNK CATCH! You caught a Salmon!" when catching a non-treasure while treasure/junk fishing
 - For level 100 pets, would be cool to change their item name to be aligned with Level 1 pets. This also causes Lvl 100 pets being not easily found ny name via /get command or party command item search.
