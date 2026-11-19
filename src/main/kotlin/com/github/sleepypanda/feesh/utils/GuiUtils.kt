@@ -15,6 +15,7 @@ import kotlin.concurrent.timerTask
 
 data class LastGuisClosed(
     var lastSacksGuiClosedAt: Date? = null,
+    var lastCompactorGuiClosedAt: Date? = null,
     var lastOdgerGuiClosedAt: Date? = null,
     var lastTrophyFrogsGuiClosedAt: Date? = null,
     var lastAuctionGuiClosedAt: Date? = null,
@@ -46,6 +47,7 @@ object GuiUtils {
         val now = Date()
         when {
             chestName.contains("Sack") -> lastGuisClosed.lastSacksGuiClosedAt = now
+            chestName.contains("Compactor") -> lastGuisClosed.lastCompactorGuiClosedAt = now
             chestName.contains("Trophy Fish") -> lastGuisClosed.lastOdgerGuiClosedAt = now
             chestName.contains("Trophy Frogs") -> lastGuisClosed.lastTrophyFrogsGuiClosedAt = now
             chestName.contains("Manage Auctions") || chestName.contains("Confirm Purchase") || chestName.contains("BIN Auction View") || chestName.contains("Your Bids") ->
