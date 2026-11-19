@@ -1,6 +1,10 @@
+# 1.18.3
+
+## Bugfixes
+
 # 1.18.2
 
-Released on: ???
+Released on: 2026-11-19
 
 ## Bugfixes
 
