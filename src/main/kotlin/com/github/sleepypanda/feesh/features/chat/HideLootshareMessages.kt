@@ -9,8 +9,8 @@ import com.github.sleepypanda.feesh.utils.WorldUtils
 
 object HideLootshareMessages {
     // LOOT SHARE You received loot for assisting Schnabbelschnutz!
-    // LOOT SHARE You received 2 Titanoboa Shards for assisting CuzImCrzz!
-    private val LOOTSHARE_ASSIST_PATTERN = Regex("^LOOT SHARE You received (?<loot>[\\w\\d ]+) for assisting (?<playerName>\\w+)!$")
+    // LOOT SHARE! You received 3 Torrid Shards for assisting oorryyyxx!
+    private val LOOTSHARE_ASSIST_PATTERN = Regex("^LOOT SHARE!? You received (?<loot>[\\w\\d ]+) for assisting (?<playerName>\\w+)!$")
 
     fun init() {
         EventBus.subscribe(ChatCancellableEvent::class, ::onChat)

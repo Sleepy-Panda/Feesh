@@ -17,6 +17,7 @@ Newly released - https://hypixel.net/threads/hypixel-skyblock-0-24-5-assorted-qo
 
 ## Latest issues & feedback
 
+- Singed Powder not tracked
 - Both compacted and original loot arrives as sacks message and counts twice.
 - Display bait price as craft costs (optionally - selection between sell offer, insta sell, craft cost)
 - Pchat commands: since <drop>

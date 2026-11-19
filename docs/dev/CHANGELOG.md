@@ -10,9 +10,11 @@ Released on: ???
 
 ## Bugfixes
 
+- Fixed sacks drops counted in the profit tracker after enabling compactor.
+- Fixed lootshared shards to not appear in Fishing profit tracker.
+- Fixed "Hide lootshare messages when in Frozen Blaze" not working for shards.
 - Adjusted Out of bait alert, to not show Supercraft chat button for not craftable baits.
 - Fixed outdated sea creature rarities for Moonglade Marsh.
-- Fixed sacks drops counted in the profit tracker after enabling compactor.
 
 # 1.18.1
 
