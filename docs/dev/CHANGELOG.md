@@ -2,6 +2,10 @@
 
 ## Bugfixes
 
+## Features
+
+- Removed alert when sack fishing drops go into inventory. It seems not needed anymore with new Compactors system.
+
 ## Other
 
 - Replaced Regex usage with more lightweight checks for sea creature catch messages.
