@@ -2,9 +2,11 @@
 
 ## Bugfixes
 
+- Removed "Rare drop" chat message for Torn Cloth, as there is one from Hypixel now.
+- Fixed double whitespace in Obfuscated trophies for Fishing profit tracker.
+
 ## Features
 
-- Removed "Rare drop" chat message for Torn Cloth, as there is one from Hypixel now.
 - Removed alert when sack fishing drops go into inventory. It seems not needed anymore with new Compactors system.
 
 ## Other
