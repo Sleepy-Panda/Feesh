@@ -1525,7 +1525,6 @@ class FishingProfitDrops {
                 itemName = "Torn Cloth",
                 itemDisplayName = "${UNCOMMON}Torn Cloth",
                 npcPrice = 5_000.0,
-                shouldAnnounceRareDrop = true,
             ),
             FishingProfitDropInfo(
                 itemId = "CALCIFIED_HEART",
