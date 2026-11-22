@@ -2,6 +2,8 @@
 
 ## Bugfixes
 
+- Fixed drops counted twice in Fishing profit tracker because of Compactor changing item type.
+
 ## Features
 
 - Removed "Rare drop" chat message for Torn Cloth, as there is one from Hypixel now.
