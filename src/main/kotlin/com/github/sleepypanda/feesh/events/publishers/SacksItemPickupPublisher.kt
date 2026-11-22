@@ -52,7 +52,7 @@ object SacksItemPickupPublisher {
 
                     if (items.isNotEmpty() || removedItems.isNotEmpty()) {
                         logSackPickup(items, removedItems)
-                        EventBus.publish(SacksProfitItemsPickupEvent(items = items, removedItems = removedItems))
+                        EventBus.publish(SacksProfitItemsPickupEvent(addedItems = items, removedItems = removedItems))
                     }
                 }
 
