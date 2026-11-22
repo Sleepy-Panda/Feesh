@@ -545,19 +545,217 @@ object FishingProfitTracker : IResettableViewModeTracker {
         }
     }
 
+    private data class CompactionLink(
+        val inputId: String,
+        val inputDisplayName: String,
+        val outputId: String,
+        val outputDisplayName: String,
+        val removedAmount: Int,
+        val outputAddedAmount: Int,
+    )
+
+    private data class RejectedCompaction(
+        val outputDisplayName: String,
+        val outputAmount: Int,
+        val inputDisplayName: String,
+        val removedAmount: Int,
+        val availableAmount: Int,
+    )
+
+    private data class SackPickupResolution(
+        val deltas: List<Triple<String, String, Int>>,
+        val acceptedAdded: Map<String, Int>,
+        val rejected: List<RejectedCompaction>,
+    )
+
     private fun onSacksProfitItemsPickup(event: SacksProfitItemsPickupEvent) {
         if (!isSessionActive || !isTrackerVisible()) return
 
         CommonUtils.runWithCatching("Failed to process sacks profit items pickup event in $trackerName") {
-            for (item in event.items) {
-                val dropInfo = FishingProfitDrops.items.find { it.itemId == item.itemId } ?: continue
-                addProfitTrackerItem(dropInfo.itemId, dropInfo.itemName, item.amount, null, true)
-
+            val resolution = resolveSackCompaction(event)
+            for ((itemId, itemName, delta) in resolution.deltas) {
+                applySackPickupDelta(itemId, itemName, delta)
+            }
+            for ((itemId, amount) in resolution.acceptedAdded) {
+                if (amount <= 0) continue
+                val dropInfo = FishingProfitDrops.items.find { it.itemId == itemId } ?: continue
                 if (Overlays.shouldAnnounceRareDropsWhenPickup && dropInfo.shouldAnnounceRareDrop) {
-                    announceRareDropInChat(dropInfo, item.amount)
+                    val netGain = resolution.deltas.find { it.first == itemId }?.third ?: 0
+                    if (netGain > 0) announceRareDropInChat(dropInfo, netGain)
                 }
             }
+            if (resolution.rejected.isNotEmpty()) {
+                alertRejectedCompactions(resolution.rejected)
+            }
             refreshTotalItemsProfits()
+        }
+    }
+
+    /**
+     * Counts sack additions, then folds compactor removals into the session when the session can cover them.
+     * Chains (Raw Cod -> Enchanted Raw Cod -> Enchanted Cooked Cod) resolve from the raw item upward.
+     * An output with several inputs is accepted only when every input link can be covered.
+     */
+    private fun resolveSackCompaction(event: SacksProfitItemsPickupEvent): SackPickupResolution {
+        val addedById = sumAmountsById(event.items)
+        val removedById = sumAmountsById(event.removedItems)
+        val namesById = (event.items + event.removedItems).associate { it.itemId to it.itemNameUnformatted }
+        val dropByName = FishingProfitDrops.items.associateBy { it.itemName }
+        val dropById = FishingProfitDrops.items.associateBy { it.itemId }
+
+        val links = removedById.mapNotNull { (inputId, removedAmount) ->
+            val inputInfo = dropById[inputId] ?: return@mapNotNull null
+            // The original does not need a "+" line. Session stock can fund the removal
+            // when the sack only reports "-Raw Cod" and "+Enchanted Raw Cod".
+            val outputInfo = findAddedCompactedOutput(inputInfo, addedById, removedById, dropByName) ?: return@mapNotNull null
+            val outputAdded = addedById[outputInfo.itemId] ?: return@mapNotNull null
+            if (removedAmount <= 0 || outputAdded <= 0) return@mapNotNull null
+            CompactionLink(
+                inputId = inputId,
+                inputDisplayName = inputInfo.itemDisplayName,
+                outputId = outputInfo.itemId,
+                outputDisplayName = outputInfo.itemDisplayName,
+                removedAmount = removedAmount,
+                outputAddedAmount = outputAdded,
+            )
+        }
+        val linksByOutput = links.groupBy { it.outputId }
+        val outputIds = linksByOutput.keys
+
+        val acceptedAdded = mutableMapOf<String, Int>()
+        for ((itemId, amount) in addedById) {
+            if (itemId !in outputIds) acceptedAdded[itemId] = amount
+        }
+        val appliedRemoval = mutableMapOf<String, Int>()
+        val rejected = mutableListOf<RejectedCompaction>()
+
+        fun available(itemId: String): Int {
+            val sessionAmount = data.session.profitTrackerItems[itemId]?.amount ?: 0
+            return sessionAmount + (acceptedAdded[itemId] ?: 0)
+        }
+
+        for (outputId in compactionOutputOrder(linksByOutput)) {
+            val group = linksByOutput.getValue(outputId)
+            val failing = group.filter { available(it.inputId) < it.removedAmount }
+            if (failing.isEmpty()) {
+                for (link in group) {
+                    appliedRemoval[link.inputId] = (appliedRemoval[link.inputId] ?: 0) + link.removedAmount
+                }
+                acceptedAdded[outputId] = addedById[outputId] ?: 0
+            } else {
+                for (link in failing) {
+                    rejected += RejectedCompaction(
+                        outputDisplayName = link.outputDisplayName,
+                        outputAmount = link.outputAddedAmount,
+                        inputDisplayName = link.inputDisplayName,
+                        removedAmount = link.removedAmount,
+                        availableAmount = available(link.inputId),
+                    )
+                }
+            }
+        }
+
+        val deltas = (acceptedAdded.keys + appliedRemoval.keys).mapNotNull { itemId ->
+            val delta = (acceptedAdded[itemId] ?: 0) - (appliedRemoval[itemId] ?: 0)
+            if (delta == 0) return@mapNotNull null
+            val itemName = namesById[itemId] ?: dropById[itemId]?.itemName ?: return@mapNotNull null
+            Triple(itemId, itemName, delta)
+        }
+        return SackPickupResolution(deltas, acceptedAdded, rejected)
+    }
+
+    /**
+     * First compacted form of [input] that this message added.
+     * Walks past a missing middle tier (Raw Cod removed, Enchanted Cooked Cod added, Enchanted Raw Cod absent).
+     * Stops if that middle tier was itself removed, so the middle tier can form its own link.
+     */
+    private fun findAddedCompactedOutput(
+        input: FishingProfitDropInfo,
+        addedById: Map<String, Int>,
+        removedById: Map<String, Int>,
+        dropByName: Map<String, FishingProfitDropInfo>,
+    ): FishingProfitDropInfo? {
+        var current = input
+        val seen = mutableSetOf<String>()
+        while (true) {
+            val nextName = current.compactedItemName ?: return null
+            if (!seen.add(nextName)) return null
+            val next = dropByName[nextName] ?: return null
+            if ((addedById[next.itemId] ?: 0) > 0) return next
+            if ((removedById[next.itemId] ?: 0) > 0) return null
+            current = next
+        }
+    }
+
+    private fun sumAmountsById(items: List<SacksProfitItemsPickupEvent.SacksProfitPickupItem>): Map<String, Int> {
+        return items.groupBy { it.itemId }.mapValues { (_, lines) -> lines.sumOf { it.amount } }
+    }
+
+    /** Outputs whose inputs are themselves compacted outputs come later, so a chain resolves bottom-up. */
+    private fun compactionOutputOrder(linksByOutput: Map<String, List<CompactionLink>>): List<String> {
+        val outputIds = linksByOutput.keys
+        val dependencies = linksByOutput.mapValues { (_, group) ->
+            group.map { it.inputId }.filter { it in outputIds }.toSet()
+        }
+        val ordered = mutableListOf<String>()
+        val visiting = mutableSetOf<String>()
+        val visited = mutableSetOf<String>()
+
+        fun visit(outputId: String) {
+            if (outputId in visited || outputId in visiting) return
+            visiting += outputId
+            dependencies[outputId].orEmpty().forEach(::visit)
+            visiting -= outputId
+            visited += outputId
+            ordered += outputId
+        }
+
+        outputIds.forEach(::visit)
+        return ordered
+    }
+
+    private fun applySackPickupDelta(itemId: String, itemName: String, delta: Int) {
+        if (delta == 0) return
+        applySackPickupDeltaInMode(TrackerViewMode.SESSION, itemId, itemName, delta)
+        applySackPickupDeltaInMode(TrackerViewMode.TOTAL, itemId, itemName, delta)
+    }
+
+    private fun applySackPickupDeltaInMode(
+        viewMode: TrackerViewMode,
+        itemId: String,
+        itemName: String,
+        delta: Int,
+    ) {
+        val sourceObj = getSourceObject(viewMode)
+        val existing = sourceObj.profitTrackerItems[itemId]
+        val newAmount = (existing?.amount ?: 0) + delta
+        if (newAmount <= 0) {
+            sourceObj.profitTrackerItems.remove(itemId)
+        } else {
+            sourceObj.profitTrackerItems[itemId] = ProfitTrackerItemEntry(
+                itemName = itemName,
+                itemId = itemId,
+                amount = newAmount,
+                totalItemProfit = existing?.totalItemProfit ?: 0.0,
+            )
+        }
+        saveData()
+    }
+
+    private fun alertRejectedCompactions(rejected: List<RejectedCompaction>) {
+        ChatUtils.sendLocalChat(
+            "${RED}Fishing profit tracker skipped compacted sack drops. The compactor used more of the original item than this session has tracked.",
+            true,
+        )
+        rejected.groupBy { it.outputDisplayName }.forEach { (outputDisplayName, links) ->
+            val outputAmount = links.first().outputAmount
+            val reasons = links.joinToString("${RED}; ") { link ->
+                "${WHITE}${link.inputDisplayName}${RED}: need ${WHITE}${link.removedAmount}x${RED}, session has ${WHITE}${link.availableAmount}x"
+            }
+            ChatUtils.sendLocalChat(
+                "${RED}Skipped ${WHITE}${outputAmount}x ${outputDisplayName}${RED} ($reasons${RED}).",
+                true,
+            )
         }
     }
 
