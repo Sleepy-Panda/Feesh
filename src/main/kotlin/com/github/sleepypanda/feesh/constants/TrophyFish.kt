@@ -17,84 +17,84 @@ class TrophyFish {
         val OBFUSCATED_1_BRONZE = TrophyFishInfo(
             itemId = "OBFUSCATED_FISH_1_BRONZE",
             itemName = "Obfuscated-1 BRONZE",
-            itemDisplayName = "${COMMON}${OBFUSCATED}Obfuscated-1 ${DARK_GRAY}${BOLD} BRONZE",
+            itemDisplayName = "${COMMON}${OBFUSCATED}Obfuscated-1 ${DARK_GRAY}${BOLD}BRONZE",
             amountOfMagmaFish = 16,
         )
         
         val OBFUSCATED_1_SILVER = TrophyFishInfo(
             itemId = "OBFUSCATED_FISH_1_SILVER",
             itemName = "Obfuscated-1 SILVER",
-            itemDisplayName = "${COMMON}${OBFUSCATED}Obfuscated-1 ${GRAY}${BOLD} SILVER",
+            itemDisplayName = "${COMMON}${OBFUSCATED}Obfuscated-1 ${GRAY}${BOLD}SILVER",
             amountOfMagmaFish = 24,
         )
         
         val OBFUSCATED_1_GOLD = TrophyFishInfo(
             itemId = "OBFUSCATED_FISH_1_GOLD",
             itemName = "Obfuscated-1 GOLD",
-            itemDisplayName = "${COMMON}${OBFUSCATED}Obfuscated-1 ${GOLD}${BOLD} GOLD",
+            itemDisplayName = "${COMMON}${OBFUSCATED}Obfuscated-1 ${GOLD}${BOLD}GOLD",
             amountOfMagmaFish = 32,
         )
         
         val OBFUSCATED_1_DIAMOND = TrophyFishInfo(
             itemId = "OBFUSCATED_FISH_1_DIAMOND",
             itemName = "Obfuscated-1 DIAMOND",
-            itemDisplayName = "${COMMON}${OBFUSCATED}Obfuscated-1 ${AQUA}${BOLD} DIAMOND",
+            itemDisplayName = "${COMMON}${OBFUSCATED}Obfuscated-1 ${AQUA}${BOLD}DIAMOND",
             amountOfMagmaFish = 48,
         )
         
         val OBFUSCATED_2_BRONZE = TrophyFishInfo(
             itemId = "OBFUSCATED_FISH_2_BRONZE",
             itemName = "Obfuscated-2 BRONZE",
-            itemDisplayName = "${UNCOMMON}${OBFUSCATED}Obfuscated-2 ${DARK_GRAY}${BOLD} BRONZE",
+            itemDisplayName = "${UNCOMMON}${OBFUSCATED}Obfuscated-2 ${DARK_GRAY}${BOLD}BRONZE",
             amountOfMagmaFish = 40,
         )
         
         val OBFUSCATED_2_SILVER = TrophyFishInfo(
             itemId = "OBFUSCATED_FISH_2_SILVER",
             itemName = "Obfuscated-2 SILVER",
-            itemDisplayName = "${UNCOMMON}${OBFUSCATED}Obfuscated-2 ${GRAY}${BOLD} SILVER",
+            itemDisplayName = "${UNCOMMON}${OBFUSCATED}Obfuscated-2 ${GRAY}${BOLD}SILVER",
             amountOfMagmaFish = 60,
         )
         
         val OBFUSCATED_2_GOLD = TrophyFishInfo(
             itemId = "OBFUSCATED_FISH_2_GOLD",
             itemName = "Obfuscated-2 GOLD",
-            itemDisplayName = "${UNCOMMON}${OBFUSCATED}Obfuscated-2 ${GOLD}${BOLD} GOLD",
+            itemDisplayName = "${UNCOMMON}${OBFUSCATED}Obfuscated-2 ${GOLD}${BOLD}GOLD",
             amountOfMagmaFish = 80,
         )
         
         val OBFUSCATED_2_DIAMOND = TrophyFishInfo(
             itemId = "OBFUSCATED_FISH_2_DIAMOND",
             itemName = "Obfuscated-2 DIAMOND",
-            itemDisplayName = "${UNCOMMON}${OBFUSCATED}Obfuscated-2 ${AQUA}${BOLD} DIAMOND",
+            itemDisplayName = "${UNCOMMON}${OBFUSCATED}Obfuscated-2 ${AQUA}${BOLD}DIAMOND",
             amountOfMagmaFish = 120,
         )
         
         val OBFUSCATED_3_BRONZE = TrophyFishInfo(
             itemId = "OBFUSCATED_FISH_3_BRONZE",
             itemName = "Obfuscated-3 BRONZE",
-            itemDisplayName = "${RARE}${OBFUSCATED}Obfuscated-3 ${DARK_GRAY}${BOLD} BRONZE",
+            itemDisplayName = "${RARE}${OBFUSCATED}Obfuscated-3 ${DARK_GRAY}${BOLD}BRONZE",
             amountOfMagmaFish = 400,
         )
         
         val OBFUSCATED_3_SILVER = TrophyFishInfo(
             itemId = "OBFUSCATED_FISH_3_SILVER",
             itemName = "Obfuscated-3 SILVER",
-            itemDisplayName = "${RARE}${OBFUSCATED}Obfuscated-3 ${GRAY}${BOLD} SILVER",
+            itemDisplayName = "${RARE}${OBFUSCATED}Obfuscated-3 ${GRAY}${BOLD}SILVER",
             amountOfMagmaFish = 700,
         )
         
         val OBFUSCATED_3_GOLD = TrophyFishInfo(
             itemId = "OBFUSCATED_FISH_3_GOLD",
             itemName = "Obfuscated-3 GOLD",
-            itemDisplayName = "${RARE}${OBFUSCATED}Obfuscated-3 ${GOLD}${BOLD} GOLD",
+            itemDisplayName = "${RARE}${OBFUSCATED}Obfuscated-3 ${GOLD}${BOLD}GOLD",
             amountOfMagmaFish = 1000,
         )
         
         val OBFUSCATED_3_DIAMOND = TrophyFishInfo(
             itemId = "OBFUSCATED_FISH_3_DIAMOND",
             itemName = "Obfuscated-3 DIAMOND",
-            itemDisplayName = "${RARE}${OBFUSCATED}Obfuscated-3 ${AQUA}${BOLD} DIAMOND",
+            itemDisplayName = "${RARE}${OBFUSCATED}Obfuscated-3 ${AQUA}${BOLD}DIAMOND",
             amountOfMagmaFish = 1300,
         )
         
