@@ -1,8 +1,10 @@
 # 1.19.0
 
+## Features
+
 ## Bugfixes
 
-## Features
+- Fixed setting toggle not being respected for Personal cap alert.
 
 # 1.18.3
 
