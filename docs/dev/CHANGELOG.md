@@ -1,3 +1,9 @@
+# 1.19.0
+
+## Bugfixes
+
+## Features
+
 # 1.18.3
 
 ## Bugfixes
