@@ -1,12 +1,16 @@
 package com.github.sleepypanda.feesh.events.models
 
 /**
- * Event for when fishing profit drop items are added to sacks (parsed from [Sacks] +... chat message).
- * Posted once per message with items that pass fishing-drop and GUI filters.
+ * Event for when fishing profit drop items move through sacks (parsed from a [Sacks] chat message).
+ * Posted once per message with [Sacks] fishing items.
  *
- * @param items List of items added: each has item ID, unformatted name, amount, and sack name (e.g. "Fishing Sack").
+ * @param addedItems Items in the "Added items" hover.
+ * @param removedItems Items in the "Removed items" hover.
  */
-data class SacksProfitItemsPickupEvent(val items: List<SacksProfitPickupItem>) {
+data class SacksProfitItemsPickupEvent(
+    val addedItems: List<SacksProfitPickupItem>,
+    val removedItems: List<SacksProfitPickupItem> = emptyList(),
+) {
     data class SacksProfitPickupItem(
         val itemId: String,
         val itemNameUnformatted: String,

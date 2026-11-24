@@ -16,8 +16,7 @@ import net.minecraft.network.chat.Component
 import java.util.Date
 
 object SacksItemPickupPublisher {
-    private val SACKS_TRIGGER = Regex("^\\[Sacks\\] \\+.*") // [Sacks] +2,362 items, -2,362 items. (Last 16s.)
-    private val ITEM_LINE_REGEX = Regex("(\\+[\\d,]+) (.+) \\((.+)\\)") // +1,344 Pufferfish (Fishing Sack)
+    private val ITEM_LINE_REGEX = Regex("([+-][\\d,]+) (.+) \\((.+)\\)") // +1,344 Pufferfish (Fishing Sack) or -12 Whale Bait (Bait Sack)
 
     // 30 seconds is the maximum time to receive "[Sacks] +..." message after items were added to the sack
     private const val MAX_SACKS_MESSAGE_DELAY_MS = 35_000L
@@ -32,7 +31,7 @@ object SacksItemPickupPublisher {
     private var lastStashToSacksAt: Date? = null
 
     fun init() {
-        EventBus.subscribe(ChatEvent::class, ::onChat) // Message might be cancelled by sacks hider e.g. from SH
+        EventBus.subscribe(ChatEvent::class, ::onChat)
     }
 
     private fun onChat(event: ChatEvent) {
@@ -41,14 +40,16 @@ object SacksItemPickupPublisher {
         CommonUtils.runWithCatching("Failed to handle chat message in sacks item pickup publisher.") {
             val text = event.unformattedText
             when {
-                SACKS_TRIGGER.matches(text) -> {
+                text.startsWith("[Sacks] +") -> { // [Sacks] +2,362 items, -678 items. (Last 16s.)
                     if (shouldSkipWholeSacksMessage()) return@onChat
     
-                    val items = parseItemsFromSacksMessage(event.message)
-                        .mapNotNull { (itemName, amount, sackName) -> toProfitPickupItem(itemName, amount, sackName) }
-    
-                    if (items.isNotEmpty()) {
-                        EventBus.publish(SacksProfitItemsPickupEvent(items = items))
+                    val added = parseItemsFromSacksMessage(event.message, "Added items:")
+                    val removed = parseItemsFromSacksMessage(event.message, "Removed items:")
+                    val items = added.mapNotNull { (itemName, amount, sackName) -> toProfitPickupItem(itemName, amount, sackName) }
+                    val removedItems = removed.mapNotNull { (itemName, amount, sackName) -> toProfitPickupItem(itemName, amount, sackName) }
+
+                    if (items.isNotEmpty() || removedItems.isNotEmpty()) {
+                        EventBus.publish(SacksProfitItemsPickupEvent(addedItems = items, removedItems = removedItems))
                     }
                 }
 
@@ -96,10 +97,10 @@ object SacksItemPickupPublisher {
         val now = Date().time
 
         fun wasPotentiallyFilletedTrophy(itemId: String): Boolean {
-            if (itemId.startsWith("MAGMA_FISH") &&
+            if (itemId.startsWith("MAGMA_FISH") && // Covers both original and compacted
                 lastGuisClosed.lastOdgerGuiClosedAt != null && now - lastGuisClosed.lastOdgerGuiClosedAt!!.time < MAX_SACKS_MESSAGE_DELAY_MS) {
                 return true
-            } else if (itemId.startsWith("LOTUS") &&
+            } else if (itemId.startsWith("LOTUS") && // Covers both original and compacted
                 lastGuisClosed.lastTrophyFrogsGuiClosedAt != null && now - lastGuisClosed.lastTrophyFrogsGuiClosedAt!!.time < MAX_SACKS_MESSAGE_DELAY_MS) {
                 return true
             }
@@ -119,9 +120,11 @@ object SacksItemPickupPublisher {
     }
 
     /**
-     * Parses sack notification hover text: "Added items:" with lines like "+1,344 Pufferfish (Fishing Sack)".
+     * Parses one sack hover. [sectionLabel] is "Added items:" or "Removed items:".
+     * Lines look like "+1,344 Pufferfish (Fishing Sack)" or "-12 Whale Bait (Bait Sack)".
      */
-    private fun parseItemsFromSacksMessage(message: Component): List<Triple<String, Int, String>> {
+    private fun parseItemsFromSacksMessage(message: Component, sectionLabel: String): List<Triple<String, Int, String>> {
+        val sign = if (sectionLabel.startsWith("Removed")) '-' else '+'
         val items = mutableListOf<Triple<String, Int, String>>()
         message.siblings.forEach { part ->
             if (!part.getUnformattedString().contains(" item")) return@forEach
@@ -130,11 +133,12 @@ object SacksItemPickupPublisher {
 
             if (hover is HoverEvent.ShowText) {
                 val line = hover.value.getUnformattedString()
-                if (!line.contains("Added items:")) return@forEach
+                if (!line.contains(sectionLabel)) return@forEach
 
                 ITEM_LINE_REGEX.findAll(line).forEach { match ->
-                    val diffStr = match.groupValues[1].replace("+", "").replace(",", "")
-                    val amount = diffStr.toIntOrNull() ?: 0
+                    val signedAmount = match.groupValues[1]
+                    if (!signedAmount.startsWith(sign)) return@forEach
+                    val amount = signedAmount.replace("+", "").replace("-", "").replace(",", "").toIntOrNull() ?: 0
                     val parsedItemName = match.groupValues[2].trim().removeFormatting()
                     val sackName = match.groupValues[3].removeFormatting()
                     if (amount > 0 && parsedItemName.isNotBlank()) {

@@ -20,7 +20,6 @@ import com.github.sleepypanda.feesh.events.models.IceEssenceStatusBarEvent
 import com.github.sleepypanda.feesh.events.models.BaitConsumedEvent
 import com.github.sleepypanda.feesh.events.models.MobyDuckConsumedEvent
 import com.github.sleepypanda.feesh.events.models.ShurikenUsedEvent
-import com.github.sleepypanda.feesh.events.models.TreasureCatchType
 import com.github.sleepypanda.feesh.events.models.TreasureCatchEvent
 import com.github.sleepypanda.feesh.constants.Sounds
 import com.github.sleepypanda.feesh.constants.StarlynContests
@@ -530,7 +529,7 @@ object FishingProfitTracker : IResettableViewModeTracker {
             val dropInfo = FishingProfitDrops.items.find { it.itemId == itemId } ?: return            
             if (difference <= 0) return
     
-            addProfitTrackerItem(itemId, dropInfo.itemName, difference, null, true)
+            addProfitTrackerItem(itemId, dropInfo.itemName, difference, null)
     
             if (Overlays.shouldAnnounceRareDropsWhenPickup && dropInfo.shouldAnnounceRareDrop) {
                 announceRareDropInChat(dropInfo, difference)
@@ -549,21 +548,63 @@ object FishingProfitTracker : IResettableViewModeTracker {
         if (!isSessionActive || !isTrackerVisible()) return
 
         CommonUtils.runWithCatching("Failed to process sacks profit items pickup event in $trackerName") {
-            for (item in event.items) {
+            val amounts = getAdjustedAmountsAfterCompactors(event)
+            
+            for (item in event.addedItems) {
+                val amount = amounts[item.itemId] ?: continue
                 val dropInfo = FishingProfitDrops.items.find { it.itemId == item.itemId } ?: continue
-                addProfitTrackerItem(dropInfo.itemId, dropInfo.itemName, item.amount, null, true)
 
-                if (Overlays.shouldAnnounceRareDropsWhenPickup && dropInfo.shouldAnnounceRareDrop) {
-                    announceRareDropInChat(dropInfo, item.amount)
+                when {
+                    amount == 0 -> continue
+                    amount > 0 -> {
+                        addProfitTrackerItem(dropInfo.itemId, dropInfo.itemName, amount, null, true)
+                        if (Overlays.shouldAnnounceRareDropsWhenPickup && dropInfo.shouldAnnounceRareDrop) {
+                            announceRareDropInChat(dropInfo, amount)
+                        }
+                    }
+                    else -> {
+                        // Compactor consumed some of the items to supercraft compacted items
+                        subtractProfitTrackerItem(dropInfo.itemId, -amount, true)
+                    }
                 }
             }
-            refreshTotalItemsProfits()
+
+            refreshTotalItemsProfits() // Once after bulk changes
         }
+    }
+
+    /**
+     * When Compactor triggers, Hypixel sends both original items and their compacted forms in the single [Sacks] message.
+     * Original items and results of compaction are shown as Added, and consumed original items shown as Removed.
+     * We do not want to count them twice, so consumed original items are subtracted from the tracker (as many as it has).
+     * Amounts of other items that did not participate in compaction are kept as is.
+     * The same applies if only original item is in Added; we do not subtract same item from Removed section because tracker does not track compacted form.
+     */
+    private fun getAdjustedAmountsAfterCompactors(event: SacksProfitItemsPickupEvent): Map<String, Int> {
+        val amounts = event.addedItems.associate { it.itemId to it.amount }.toMutableMap()
+        if (event.removedItems.isEmpty()) return amounts
+
+        for (removed in event.removedItems) {
+            val added = event.addedItems.find { it.itemId == removed.itemId } ?: continue
+            val compactedName = FishingProfitDrops.items.find { it.itemId == removed.itemId }?.compactedItemName ?: continue
+            // If no compacted form is found, it might mean that we do not track compacted form in the profit tracker
+            // So we do not want to subtract removed items used for compaction
+            val compacted = event.addedItems.find { it.itemNameUnformatted.equals(compactedName, ignoreCase = true) } ?: continue
+
+            // If delta >= 0, there was enough of original items to cover the compaction; we keep the leftover (0 if fully consumed).
+            // If delta < 0, the compactor also consumed some items obtained earlier
+            // I kept tracking the compacted form (more expensive), and as many as possible original items subtracted from session/total.
+            // This is not ideal because we may have enough items in tracker to subtract, but I want not to lose more valuable drops from tracker.
+            val delta = added.amount - removed.amount
+            amounts[added.itemId] = delta
+        }
+
+        return amounts
     }
 
     private fun onRareDrop(event: RareDropEvent) {
         // Some of the items are often missing from the [Sacks] message, so had to apply this workaround
-        if (!isSessionActive || !isTrackerVisible()) return
+        if (!isTrackerVisible()) return
 
         CommonUtils.runWithCatching("Failed to process rare drop event in $trackerName") {
             val dropInfo = FishingProfitDrops.getFishingProfitItemByName(event.itemName) ?: return@runWithCatching
@@ -668,6 +709,7 @@ object FishingProfitTracker : IResettableViewModeTracker {
         amountToAdd: Int,
         coinsToAdd: Double?
     ) {
+        if (amountToAdd <= 0) return
         val sourceObj = getSourceObject(viewMode)
         val existing = sourceObj.profitTrackerItems[itemId]
         val currentAmount = existing?.amount ?: 0
@@ -679,6 +721,33 @@ object FishingProfitTracker : IResettableViewModeTracker {
             totalItemProfit = currentProfit + (coinsToAdd ?: 0.0)
         )
         saveData()
+    }
+
+    private fun subtractProfitTrackerItem(itemId: String, amountToSubtract: Int, isBulk: Boolean = false) {
+        subtractProfitTrackerItemInMode(TrackerViewMode.SESSION, itemId, amountToSubtract)
+        subtractProfitTrackerItemInMode(TrackerViewMode.TOTAL, itemId, amountToSubtract)
+        if (!isBulk) refreshTotalItemsProfits()
+    }
+
+    private fun subtractProfitTrackerItemInMode(viewMode: TrackerViewMode, itemId: String, amountToSubtract: Int) {
+        if (amountToSubtract <= 0) return
+        val sourceObj = getSourceObject(viewMode)
+        val existing = sourceObj.profitTrackerItems[itemId] ?: return
+        val newAmount = existing.amount - amountToSubtract
+
+        when {
+            newAmount > 0 -> {
+                sourceObj.profitTrackerItems[itemId] = existing.copy(
+                    amount = newAmount,
+                )
+                saveData()
+            }
+            else -> {
+                // Tracker has less than needed; subtract as many as possible by removing the entry
+                sourceObj.profitTrackerItems.remove(itemId)
+                saveData()
+            }
+        }
     }
 
     private fun announceRareDropInChat(dropInfo: FishingProfitDropInfo, count: Int) {
