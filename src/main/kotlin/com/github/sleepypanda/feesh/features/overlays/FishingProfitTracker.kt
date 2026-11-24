@@ -563,8 +563,7 @@ object FishingProfitTracker : IResettableViewModeTracker {
                         }
                     }
                     else -> {
-                        // Compactor consumed some of the items caught earlier in the session, to supercraft compacted items
-                        // We ignore compacted items if compactor consumed more items than we had in the session, because it means it consumed some items sitting in the sacks before fishing session
+                        // Compactor consumed some of the items to supercraft compacted items
                         subtractProfitTrackerItem(dropInfo.itemId, -amount, true)
                     }
                 }
@@ -577,7 +576,7 @@ object FishingProfitTracker : IResettableViewModeTracker {
     /**
      * When Compactor triggers, Hypixel sends both original items and their compacted forms in the single [Sacks] message.
      * Original items and results of compaction are shown as Added, and consumed original items shown as Removed.
-     * We do not want to count them twice, so trying to subtract the consumed original items from the tracker (if there is enough).
+     * We do not want to count them twice, so consumed original items are subtracted from the tracker (as many as it has).
      * Amounts of other items that did not participate in compaction are kept as is.
      * The same applies if only original item is in Added; we do not subtract same item from Removed section because tracker does not track compacted form.
      */
@@ -588,25 +587,16 @@ object FishingProfitTracker : IResettableViewModeTracker {
         for (removed in event.removedItems) {
             val added = event.addedItems.find { it.itemId == removed.itemId } ?: continue
             val compactedName = FishingProfitDrops.items.find { it.itemId == removed.itemId }?.compactedItemName ?: continue
+            // If no compacted form is found, it might mean that we do not track compacted form in the profit tracker
+            // So we do not want to subtract removed items used for compaction
             val compacted = event.addedItems.find { it.itemNameUnformatted.equals(compactedName, ignoreCase = true) } ?: continue
 
+            // If delta >= 0, there was enough of original items to cover the compaction; we keep the leftover (0 if fully consumed).
+            // If delta < 0, the compactor also consumed some items obtained earlier
+            // I kept tracking the compacted form (more expensive), and as many as possible original items subtracted from session/total.
+            // This is not ideal because we may have enough items in tracker to subtract, but I want not to lose more valuable drops from tracker.
             val delta = added.amount - removed.amount
-            val sessionAmount = data.session.profitTrackerItems[added.itemId]?.amount ?: 0
-            if (delta >= 0) {
-                amounts[added.itemId] = delta
-            } else if (sessionAmount >= -delta) {
-                // Compactor consumed originals earned earlier in this session; subtract them from the tracker
-                amounts[added.itemId] = delta
-            } else {
-                // Compactor consumed too many items which are probably earned outside of this session.
-                // We can't subtract them because session has not enough; I decided to keep the added originals and ignore the compacted form to avoid double counting.
-                // This is not ideal because we could get some of the enchanted items as mob drop (not from compacting), but this requires more complex logic to use crafting recipe and properly subtract amounts.
-                amounts[compacted.itemId] = 0
-                ChatUtils.sendLocalChat( // TODO remove
-                    "${RED}Ignored ${compacted.amount}x ${compacted.itemNameUnformatted} in Fishing profit tracker: compactor used ${-delta}x ${added.itemNameUnformatted} not caught in this session.",
-                    true
-                )
-            }
+            amounts[added.itemId] = delta
         }
 
         return amounts
@@ -746,7 +736,6 @@ object FishingProfitTracker : IResettableViewModeTracker {
         val newAmount = existing.amount - amountToSubtract
 
         when {
-            newAmount < 0 -> return
             newAmount > 0 -> {
                 sourceObj.profitTrackerItems[itemId] = existing.copy(
                     amount = newAmount,
@@ -754,6 +743,7 @@ object FishingProfitTracker : IResettableViewModeTracker {
                 saveData()
             }
             else -> {
+                // Tracker has less than needed; subtract as many as possible by removing the entry
                 sourceObj.profitTrackerItems.remove(itemId)
                 saveData()
             }
