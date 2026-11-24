@@ -5,10 +5,13 @@ import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
 import com.github.sleepypanda.feesh.settings.models.AlertableSeaCreatureTypes
 import com.github.sleepypanda.feesh.constants.ModVersionConstants
 import com.github.sleepypanda.feesh.constants.RareDropTypes
+import com.github.sleepypanda.feesh.features.alerts.RareCatchAlert
 import com.github.sleepypanda.feesh.utils.enums.DeployableTypes
 import com.github.sleepypanda.feesh.utils.enums.PricingModeWithNpc
 import com.github.sleepypanda.feesh.utils.enums.WeatherEventTypes
+import com.github.sleepypanda.feesh.utils.openUriCompat
 import com.teamresourceful.resourcefulconfigkt.api.CategoryKt
+import com.teamresourceful.resourcefulconfigkt.api.ObjectKt
 import com.teamresourceful.resourcefulconfig.api.types.options.TranslatableValue
 
 enum class AlertSource(val displayName: String) {
@@ -44,10 +47,10 @@ object Alerts : CategoryKt("Alerts") {
     }
 
     var alertOnSeaCreaturesList by select(
-        *AlertableSeaCreatureTypes.values().filter { it.isAlertEnabledByDefault }.toTypedArray(), // Selected by default
+        *AlertableSeaCreatureTypes.entries.filter { it.isAlertEnabledByDefault }.toTypedArray(), // Selected by default
     ) {
         this.name = Translated("Select sea creatures to be alerted on")
-        this.searchTerms = AlertableSeaCreatureTypes.values().map { it.displayName }.toList()
+        this.searchTerms = AlertableSeaCreatureTypes.entries.map { it.displayName }.toList()
     }
 
     var alertOnSeaCreaturesIncludeCocooned by boolean(true) {
@@ -81,10 +84,10 @@ object Alerts : CategoryKt("Alerts") {
         this.description = Translated("Shows a title and plays a sound when a rare item has dropped by you or your party members. Sound can be customized for each item from the list.")
     }
 
-    var alertOnRareDropTypes by select(RareDropTypes.ALL, *RareDropTypes.values()) {
+    var alertOnRareDropTypes by select(RareDropTypes.ALL, *RareDropTypes.entries.toTypedArray()) {
         this.name = Translated("Select rare drops to be alerted on")
         this.description = Translated("ALL is equivalent of selecting all items in the list below - you can select it once, to enable all existing and future items in the list.")
-        this.searchTerms = RareDropTypes.values().map { it.displayName }.toList()
+        this.searchTerms = RareDropTypes.entries.map { it.displayName }.toList()
     }
 
     var alertOnRareDropsSource by enum(AlertSource.OWN_AND_PARTY) {
@@ -100,6 +103,97 @@ object Alerts : CategoryKt("Alerts") {
     var alertOnRareDropsPriceMode by enum(PricingModeWithNpc.SELL_OFFER) {
         this.name = Translated("Rare drop price mode")
         this.description = Translated("Defines how to calculate price for the dropped item.")
+    }
+
+    init {
+        separator {
+            this.title = "${AQUA}${BOLD}Sea creatures alert customization"
+        }
+    }
+
+    private val seaCreatureCatchPlaceholders =
+        "${WHITE}{playerName}${GRAY} - colored player name; ${WHITE}{scName}${GRAY} - sea creature name, ${WHITE}{scRarityColor}${GRAY} - sea creature's rarity color."
+
+    private val seaCreatureCocoonPlaceholders =
+        "${WHITE}{playerName}${GRAY} - colored player name; ${WHITE}{scName}${GRAY} - sea creature name, ${WHITE}{scRarityColor}${GRAY} - sea creature's rarity color."
+
+    val rareCatchOwnAlertTemplate by obj(SeaCreatureAlertTemplateSettings(
+        title = RareCatchAlert.DEFAULT_TITLE,
+        subtitle = RareCatchAlert.DEFAULT_SUBTITLE,
+        placeholders = seaCreatureCatchPlaceholders,
+    )) {
+        this.name = Translated("Sea creature alert - Own")
+        this.description = Translated("Title and subtitle for your own sea creature alert.")
+        this.searchTerms = listOf(ModVersionConstants.VERSION_1_19_0)
+    }
+
+    val rareCatchOwnDoubleHookAlertTemplate by obj(SeaCreatureAlertTemplateSettings(
+        title = RareCatchAlert.DEFAULT_TITLE_DOUBLE_HOOK,
+        subtitle = RareCatchAlert.DEFAULT_SUBTITLE_DOUBLE_HOOK,
+        placeholders = seaCreatureCatchPlaceholders,
+    )) {
+        this.name = Translated("Double hooked sea creature alert - Own")
+        this.description = Translated("Title and subtitle for your own double hooked sea creature alert.")
+        this.searchTerms = listOf(ModVersionConstants.VERSION_1_19_0)
+    }
+
+    val rareCatchPartyAlertTemplate by obj(SeaCreatureAlertTemplateSettings(
+        title = RareCatchAlert.DEFAULT_TITLE,
+        subtitle = RareCatchAlert.DEFAULT_SUBTITLE,
+        placeholders = seaCreatureCatchPlaceholders,
+    )) {
+        this.name = Translated("Sea creature alert - Party")
+        this.description = Translated("Title and subtitle for a party member's sea creature alert.")
+        this.searchTerms = listOf(ModVersionConstants.VERSION_1_19_0)
+    }
+
+    val rareCatchPartyDoubleHookAlertTemplate by obj(SeaCreatureAlertTemplateSettings(
+        title = RareCatchAlert.DEFAULT_TITLE_DOUBLE_HOOK,
+        subtitle = RareCatchAlert.DEFAULT_SUBTITLE_DOUBLE_HOOK,
+        placeholders = seaCreatureCatchPlaceholders,
+    )) {
+        this.name = Translated("Double hooked sea creature alert - Party")
+        this.description = Translated("Title and subtitle for a party member's double hooked sea creature alert.")
+        this.searchTerms = listOf(ModVersionConstants.VERSION_1_19_0)
+    }
+
+    val rareCatchOwnCocoonAlertTemplate by obj(SeaCreatureAlertTemplateSettings(
+        title = RareCatchAlert.DEFAULT_TITLE_COCOON,
+        subtitle = RareCatchAlert.DEFAULT_SUBTITLE_COCOON,
+        placeholders = seaCreatureCocoonPlaceholders,
+    )) {
+        this.name = Translated("Sea creature cocooned alert - Own")
+        this.description = Translated("Title and subtitle for your own sea creature cocooned alert.")
+        this.searchTerms = listOf(ModVersionConstants.VERSION_1_19_0)
+    }
+
+    val rareCatchPartyCocoonAlertTemplate by obj(SeaCreatureAlertTemplateSettings(
+        title = RareCatchAlert.DEFAULT_TITLE_COCOON,
+        subtitle = RareCatchAlert.DEFAULT_SUBTITLE_COCOON,
+        placeholders = seaCreatureCocoonPlaceholders,
+    )) {
+        this.name = Translated("Sea creature cocooned alert - Party")
+        this.description = Translated("Title and subtitle for a party member's sea creature cocooned alert.")
+        this.searchTerms = listOf(ModVersionConstants.VERSION_1_19_0)
+    }
+
+    var rareCatchAlertDurationTicks by int(RareCatchAlert.DEFAULT_DURATION_TICKS) {
+        this.name = Translated("Duration (ticks)")
+        this.description = Translated("How long the sea creature title stays on screen. 20 ticks = 1 second.")
+        this.range = 1..200
+        this.slider = true
+        this.searchTerms = listOf(ModVersionConstants.VERSION_1_19_0)
+    }
+
+    init {
+        button {
+            title = "Colors & formatting guide"
+            description = "For custom text templates above, please explore the guide explaining color codes and formatting codes."
+            text = "Click to open"
+            onClick {
+                openUriCompat("https://github.com/Sleepy-Panda/Feesh/blob/develop/docs/Colors%20and%20formatting%20guide.md")
+            }
+        }
     }
 
     init {
@@ -184,7 +278,7 @@ object Alerts : CategoryKt("Alerts") {
         this.description = Translated("Shows a title and plays a sound when the sea creatures nearby are alive for 5+ minutes and will despawn soon. It does not check if those are own or other people's sea creatures. Disabled if you have no fishing rod in your hotbar!")
     }
 
-    var alertOnSeaCreaturesCountThreshold by boolean(true) {
+    var alertOnSeaCreaturesCountThreshold by boolean(false) {
         this.name = Translated("Alert when own/others' sea creatures count hits threshold")
         this.description = Translated("Shows a title and plays a sound when amount of sea creatures nearby hits the specified threshold. It does not check if those are own or other people's sea creatures. Disabled if you have no fishing rod in your hotbar!")
     }
@@ -235,9 +329,9 @@ object Alerts : CategoryKt("Alerts") {
         this.description = Translated("Shows a title and plays a sound when own deployable is about to expire.")
     }
 
-    var alertOnDeployableTypes by select(DeployableTypes.TOTEM_OF_CORRUPTION, *DeployableTypes.values()) {
+    var alertOnDeployableTypes by select(DeployableTypes.TOTEM_OF_CORRUPTION, *DeployableTypes.entries.toTypedArray()) {
         this.name = Translated("Select deployables to be alerted on")
-        this.searchTerms = DeployableTypes.values().map { it.displayName }.toList()
+        this.searchTerms = DeployableTypes.entries.map { it.displayName }.toList()
     }
 
     var deployableExpiresSoonSeconds by int(10) {
@@ -328,9 +422,9 @@ object Alerts : CategoryKt("Alerts") {
         this.searchTerms = listOf(ModVersionConstants.VERSION_1_14_0)
     }
 
-    var alertOnWeatherEventTypes by select(*WeatherEventTypes.values()) {
+    var alertOnWeatherEventTypes by select(*WeatherEventTypes.entries.toTypedArray()) {
         this.name = Translated("Select weather types to be alerted on")
-        this.searchTerms = WeatherEventTypes.values().map { it.displayName }.toList() + ModVersionConstants.VERSION_1_15_0
+        this.searchTerms = WeatherEventTypes.entries.map { it.displayName }.toList() + ModVersionConstants.VERSION_1_15_0
     }
 
     init {
@@ -428,5 +522,21 @@ object Alerts : CategoryKt("Alerts") {
     var alertOnWormTheFishCaught by boolean(false) {
         this.name = Translated("Alert when a Worm the Fish is caught")
         this.description = Translated("Shows a title and plays a sound when a Worm the Fish is detected in the world (Dirt Rod fishing).")
+    }
+}
+
+class SeaCreatureAlertTemplateSettings(
+    title: String,
+    subtitle: String,
+    placeholders: String,
+) : ObjectKt() {
+    var titleTemplate by strings(title) {
+        this.name = Translated("Alert title")
+        this.description = Translated("${GRAY}Reset or leave empty to use default. Placeholders: $placeholders")
+    }
+
+    var subtitleTemplate by strings(subtitle) {
+        this.name = Translated("Alert subtitle")
+        this.description = Translated("${GRAY}Reset or leave empty to use default. Placeholders: $placeholders")
     }
 }

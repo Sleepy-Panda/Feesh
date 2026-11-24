@@ -120,7 +120,7 @@ object AlertUtils {
             Component.literal(config.title),
             Component.literal(config.subtitle ?: " "),
             config.fadeIn ?: 0,
-            config.stay ?: 40,
+            config.stay ?: 50,
             config.fadeOut ?: 10,
         )
     }
