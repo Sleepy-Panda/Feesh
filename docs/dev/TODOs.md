@@ -17,7 +17,6 @@ Newly released - https://hypixel.net/threads/hypixel-skyblock-0-24-5-assorted-qo
 
 ## Latest issues & feedback
 
-- Both compacted and original loot arrives as sacks message and counts twice.
 - Display bait price as craft costs (optionally - selection between sell offer, insta sell, craft cost)
 - Pchat commands: since <drop>
 - NPC sell prices change https://hypixel.net/threads/october-29-accessory-bag-revamp-economy-changes.6165308/

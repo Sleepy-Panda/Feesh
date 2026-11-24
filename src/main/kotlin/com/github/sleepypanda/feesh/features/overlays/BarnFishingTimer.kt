@@ -29,7 +29,7 @@ object BarnFishingTimer : IResettableTracker {
     private const val TIMER_THRESHOLD_IN_MINUTES = 5
     private const val TICKS_PER_CHECK = 10
     const val RESET_COMMAND = "feeshResetBarnFishingTimer"
-    private val PERSONAL_CAP_PATTERN = Regex("^There is not enough space for another Sea Creature! Kill some to make space for new ones!$")
+    private val PERSONAL_CAP_MESSAGE = "There is not enough space for another Sea Creature! Kill some to make space for new ones!"
 
     override val trackerName = "Barn fishing timer"
     override val resetCommand = RESET_COMMAND
@@ -94,10 +94,10 @@ object BarnFishingTimer : IResettableTracker {
     }
 
     private fun onChat(event: ChatEvent) {
-        if (!WorldUtils.isInSkyblock()) return
+        if (!Alerts.alertOnSeaCreaturesPersonalCap || !WorldUtils.isInSkyblock()) return
 
         CommonUtils.runWithCatching("Failed to handle personal cap chat message") {
-            if (PERSONAL_CAP_PATTERN.matches(event.unformattedText)) {
+            if (event.unformattedText == PERSONAL_CAP_MESSAGE) {
                 AlertUtils.alert(
                     title = AlertUtils.TitleConfig("${RED}Kill sea creatures", "${WHITE}Personal cap reached"),
                     sound = getNotificationSound(),
