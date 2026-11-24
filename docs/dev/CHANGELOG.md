@@ -1,5 +1,7 @@
 # 1.18.3
 
+Released on: 2026-11-24
+
 ## Bugfixes
 
 - Fixed drops counted twice in Fishing profit tracker because of Compactor changing item type.
