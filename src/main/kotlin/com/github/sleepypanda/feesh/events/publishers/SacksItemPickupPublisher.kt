@@ -5,11 +5,9 @@ import com.github.sleepypanda.feesh.constants.FishingProfitDropInfo
 import com.github.sleepypanda.feesh.events.EventBus
 import com.github.sleepypanda.feesh.events.models.ChatEvent
 import com.github.sleepypanda.feesh.events.models.SacksProfitItemsPickupEvent
-import com.github.sleepypanda.feesh.utils.ChatUtils
 import com.github.sleepypanda.feesh.utils.ChatUtils.getUnformattedString
 import com.github.sleepypanda.feesh.utils.ChatUtils.removeFormatting
 import com.github.sleepypanda.feesh.utils.CommonUtils
-import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.utils.GuiUtils
 import com.github.sleepypanda.feesh.utils.ItemUtils
 import com.github.sleepypanda.feesh.utils.WorldUtils
@@ -51,7 +49,6 @@ object SacksItemPickupPublisher {
                     val removedItems = removed.mapNotNull { (itemName, amount, sackName) -> toProfitPickupItem(itemName, amount, sackName) }
 
                     if (items.isNotEmpty() || removedItems.isNotEmpty()) {
-                        logSackPickup(items, removedItems)
                         EventBus.publish(SacksProfitItemsPickupEvent(addedItems = items, removedItems = removedItems))
                     }
                 }
@@ -66,20 +63,6 @@ object SacksItemPickupPublisher {
                 }
             }
         }
-    }
-
-    private fun logSackPickup(
-        items: List<SacksProfitItemsPickupEvent.SacksProfitPickupItem>,
-        removedItems: List<SacksProfitItemsPickupEvent.SacksProfitPickupItem>,
-    ) {
-        val addedText = items.joinToString("${GRAY}, ") { "${WHITE}${it.amount}x ${it.itemNameUnformatted}" }
-        val removedText = if (removedItems.isEmpty()) {
-            "${GRAY}none"
-        } else {
-            removedItems.joinToString("${GRAY}, ") { "${WHITE}${it.amount}x ${it.itemNameUnformatted}" }
-        }
-        ChatUtils.sendLocalChat("${GREEN}Sack + ${GRAY}${addedText.ifEmpty { "${GRAY}none" }}", true)
-        ChatUtils.sendLocalChat("${RED}Sack - ${GRAY}$removedText", true)
     }
 
     private fun shouldSkipWholeSacksMessage(): Boolean {
