@@ -2,6 +2,7 @@ package com.github.sleepypanda.feesh.utils
 
 import com.github.sleepypanda.feesh.FeeshMod
 import com.github.sleepypanda.feesh.features.commands.debug.LogPartyChatMessagesCommand
+import com.github.sleepypanda.feesh.settings.categories.Chat
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
 import com.github.sleepypanda.feesh.events.EventBus
@@ -18,22 +19,29 @@ import net.minecraft.ChatFormatting
 import java.util.*
 
 object ChatUtils {
-    private val MOD_NAME_COLORS = intArrayOf(0x158AB7, 0x52CC9D)
-    private val MOD_PREFIX: Component = Component.literal("${GRAY}[")
-        .append(ColorUtils.buildGradientTextComponent(" ${FeeshMod.MOD_NAME}", MOD_NAME_COLORS))
-        .append(Component.literal("${GRAY}]"))
-
     private enum class ChatType { ALL_CHAT, PARTY_CHAT }
 
     private data class QueuedChatMessage(val chatType: ChatType, val message: String)
 
     private val messageQueue = ArrayDeque<QueuedChatMessage>()
     private var lastSendTime = null as Long?
+    private var cachedModPrefix: Component = Component.empty()
     private const val COOLDOWN_MS = 1000L
 
+    private val MOD_NAME_DEFAULT_COLORS = arrayOf("#158AB7", "#52CC9D")
+    val DEFAULT_MOD_PREFIX_TEMPLATE = "${GRAY}[${ColorUtils.buildGradientVariable(MOD_NAME_DEFAULT_COLORS)} ${FeeshMod.MOD_NAME}${GRAY}]"
+
     fun init() {
+        refreshModPrefix()
         EventBus.subscribe(ClientTickEvent::class, ::onClientTick)
         EventBus.subscribe(WorldChangedEvent::class, ::onWorldChanged)
+    }
+
+    fun refreshModPrefix() {
+        CommonUtils.runWithCatching("Failed to refresh mod prefix") {
+            val template = (Chat.chatPrefixTemplate.firstOrNull() ?: "").ifEmpty { DEFAULT_MOD_PREFIX_TEMPLATE }
+            cachedModPrefix = ColorUtils.buildGradientColoredComponent(template)
+        }
     }
 
     private fun onClientTick(@Suppress("UNUSED_PARAMETER") event: ClientTickEvent) {
@@ -151,7 +159,7 @@ object ChatUtils {
 
     private fun withModPrefix(message: Component): Component {
         return Component.empty()
-            .append(MOD_PREFIX)
+            .append(cachedModPrefix)
             .append(Component.literal(" "))
             .append(message)
     }

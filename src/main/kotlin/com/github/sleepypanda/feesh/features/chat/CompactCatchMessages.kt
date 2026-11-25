@@ -4,6 +4,7 @@ import com.github.sleepypanda.feesh.utils.CommonUtils
 import com.github.sleepypanda.feesh.utils.ChatUtils
 import com.github.sleepypanda.feesh.utils.ColorUtils
 import com.github.sleepypanda.feesh.utils.WorldUtils
+import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
 import com.github.sleepypanda.feesh.utils.enums.HexColorCodes
 import com.github.sleepypanda.feesh.constants.SeaCreatureNames
 import com.github.sleepypanda.feesh.constants.SeaCreatures
@@ -74,7 +75,8 @@ object CompactCatchMessages {
 
         val hexColor = HexColorCodes.getHexColorForRarity(seaCreatureInfo.rarityColorCode)
         return if (hexColor != null) {
-            ColorUtils.buildGradientTextComponent(seaCreatureInfo.name, hexColor.gradientColorCodes, bold = true)
+            val gradient = ColorUtils.buildGradientVariable(hexColor.gradientColorCodes)
+            ColorUtils.buildGradientColoredComponent("${gradient}${BOLD}${seaCreatureInfo.name}")
         } else {
             Component.literal(seaCreatureInfo.boldDisplayName)
         }

@@ -10,10 +10,12 @@ import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 import com.github.sleepypanda.feesh.utils.enums.FormattingCodes.*
 import com.github.sleepypanda.feesh.features.chat.CompactCatchMessages
 import com.github.sleepypanda.feesh.features.chat.PartyChatCommands
+import com.github.sleepypanda.feesh.utils.ChatUtils
 import com.github.sleepypanda.feesh.utils.openUriCompat
 import com.github.sleepypanda.feesh.utils.getScreenCompat
 import com.github.sleepypanda.feesh.utils.setScreenCompat
 import com.teamresourceful.resourcefulconfigkt.api.CategoryKt
+import com.teamresourceful.resourcefulconfigkt.api.ObservableEntry
 import com.teamresourceful.resourcefulconfig.api.types.options.TranslatableValue
 import net.minecraft.client.gui.screens.options.controls.KeyBindsScreen
 
@@ -27,8 +29,37 @@ enum class HotspotChatSource(val displayName: String) {
 object Chat : CategoryKt("Chat") {
     override val description: TranslatableValue
         get() = Literal(
-            "Features that share information via party/all chat, or modify the local player's chat."
+            "Features that share information via party/all chat, or modify how local player's chat looks."
         )
+
+    init {
+        separator {
+            this.title = "${AQUA}${BOLD}Mod chat prefix"
+        }
+    }
+
+    var chatPrefixTemplate by ObservableEntry(
+        strings(ChatUtils.DEFAULT_MOD_PREFIX_TEMPLATE) {
+            this.name = Translated("Mod chat prefix template")
+            this.description = Translated("Customize [Feesh] prefix added before mod chat messages. Reset or leave empty to use default.")
+            this.searchTerms = listOf(ModVersionConstants.VERSION_1_19_0)
+        }
+    ) { prev, new ->
+        if (!prev.contentEquals(new)) {
+            ChatUtils.refreshModPrefix()
+        }
+    }
+
+    init {
+        button {
+            title = "Colors & formatting guide"
+            description = "For the chat prefix template, please explore color codes and formatting codes."
+            text = "Click to open"
+            onClick {
+                openUriCompat("https://github.com/Sleepy-Panda/Feesh/blob/develop/docs/Colors%20and%20formatting%20guide.md")
+            }
+        }
+    }
 
     init {
         separator {

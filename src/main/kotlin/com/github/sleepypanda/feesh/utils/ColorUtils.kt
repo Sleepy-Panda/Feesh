@@ -3,33 +3,63 @@ package com.github.sleepypanda.feesh.utils
 import com.github.sleepypanda.feesh.events.EventBus
 import com.github.sleepypanda.feesh.events.models.WorldChangedEvent
 import com.github.sleepypanda.feesh.utils.ChatUtils.removeFormatting
+import com.github.sleepypanda.feesh.utils.CommonUtils
+import com.github.sleepypanda.feesh.utils.enums.FormattingCodes
 import net.minecraft.network.chat.Component
 import net.minecraft.network.chat.MutableComponent
 import net.minecraft.network.chat.Style
 import net.minecraft.network.chat.TextColor
 
 object ColorUtils {
-    private data class GradientCacheKey(
-        val text: String,
-        val colors: List<Int>,
-        val bold: Boolean,
-    )
+    private val GRADIENT_VARIABLE_REGEX = Regex("""\{gradient:([^}]*)}""", RegexOption.IGNORE_CASE)
 
-    private val gradientCache = mutableMapOf<GradientCacheKey, Component>()
+    private val gradientColoredComponentsCache = mutableMapOf<String, Component>()
 
     fun init() {
         EventBus.subscribe(WorldChangedEvent::class, ::onWorldChanged)
     }
 
     private fun onWorldChanged(@Suppress("UNUSED_PARAMETER") event: WorldChangedEvent) {
-        gradientCache.clear()
+        gradientColoredComponentsCache.clear()
+    }
+
+    /** `{gradient:#158AB7>#52CC9D}` from hex color codes (#RRGGBB). */
+    fun buildGradientVariable(colors: Array<String>): String {
+        CommonUtils.runWithCatching("Failed to build gradient variable") {
+            if (colors.isEmpty()) return ""
+            return "{gradient:${colors.joinToString(">")}}"
+        }
+    }
+
+    /** `{gradient:#158AB7>#52CC9D}` from RGB colors (0xRRGGBB). */
+    fun buildGradientVariable(colors: IntArray): String {
+        CommonUtils.runWithCatching("Failed to build gradient variable") {
+            if (colors.isEmpty()) return ""
+            val colorCodes = Array(colors.size) { index -> "#%06X".format(colors[index] and 0xFFFFFF) }
+            return buildGradientVariable(colorCodes)
+        }
+    }
+
+    /**
+     * Parses gradient variable like `{gradient:#158AB7>#52CC9D}` into 0xRRGGBB colors.
+     * Returns null when the tag is missing, a part does not start with `#`, or the hex is not an int.
+     */
+    fun parseGradientColors(gradientVariable: String): IntArray? {
+        CommonUtils.runWithCatching("Failed to parse gradient colors") {
+            val match = GRADIENT_VARIABLE_REGEX.find(gradientVariable)?.groupValues?.get(1) ?: return null
+            return match.split('>').map { part ->
+                val hexColor = part.trim()
+                if (!hexColor.startsWith("#")) return null
+                hexColor.drop(1).toIntOrNull(16) ?: return null
+            }.toIntArray()
+        }
     }
 
     /**
      * Creates text component colored with a single RGB hex [color] (0xRRGGBB).
      * @param text The unformatted text to color (formatting codes are removed).
      */
-    fun buildColoredTextComponent(text: String, color: Int, bold: Boolean = false): MutableComponent {
+    fun buildSingleColoredTextComponent(text: String, color: Int, bold: Boolean = false): MutableComponent {
         val clean = text.removeFormatting()
         if (clean.isEmpty()) return Component.empty()
 
@@ -39,46 +69,115 @@ object ColorUtils {
     }
 
     /**
-     * Creates text component with a linear RGB gradient across [colors] (0xRRGGBB). Supports 2+ color steps.
-     * When there are not enough characters for all colors, uses the first N colors in order.
-     * For short text, uses fewer steps than characters so middle letters are interpolated (e.g. 3 chars use 2 colors, not 3 solid letters).
-     * Results are cached; cleared on world change. Returned components are copies so callers can append safely.
-     * @param text The unformatted text to color (formatting codes are removed).
+     * Builds a component from a template string, which can use color codes, formatting codes, and gradient variables.
+     * `{gradient:#158AB7>#52CC9D}` colors the following text until the next color code or gradient tag.
+     * Formatting codes (bold, italic etc) right after the tag apply to that gradient.
+     * Hex steps are separated by `>`. An invalid tag is left as literal text.
+     * The full component built from template is cached until the world changes.
      */
-    fun buildGradientTextComponent(text: String, colors: IntArray, bold: Boolean = false): Component {
-        val clean = text.removeFormatting()
-        if (clean.isEmpty() || colors.isEmpty()) return Component.empty()
-
-        val key = GradientCacheKey(clean, colors.toList(), bold)
-        return gradientCache.getOrPut(key) { buildGradientTextComponentUncached(clean, colors, bold) }.copy()
+    fun buildGradientColoredComponent(template: String): MutableComponent {
+        CommonUtils.runWithCatching("Failed to build gradient colored component") {
+        if (template.isEmpty()) return Component.empty()
+            return gradientColoredComponentsCache.getOrPut(template) {
+                buildGradientColoredComponentUncached(template)
+            }.copy() // Copy so we can modify component further
+        }
     }
 
-    private fun buildGradientTextComponentUncached(clean: String, colors: IntArray, bold: Boolean): Component {
-        fun styleFor(rgb: Int): Style {
-            val style = Style.EMPTY.withColor(TextColor.fromRgb(rgb and 0xFFFFFF))
-            return if (bold) style.withBold(true) else style
-        }
-
-        val maxSteps = when {
-            clean.length <= 2 -> clean.length.coerceAtMost(colors.size)
-            else -> (clean.length - 1).coerceAtMost(colors.size)
-        }
-        val steps = selectColorSteps(colors, maxSteps)
-        if (clean.length == 1 || steps.size == 1) {
-            return Component.literal(clean).setStyle(styleFor(steps[0]))
-        }
-
-        val last = clean.length - 1
+    private fun buildGradientColoredComponentUncached(template: String): Component {
         val result = Component.empty()
-        for (i in clean.indices) {
+        var cursor = 0
+
+        while (cursor < template.length) {
+            val gradient = GRADIENT_VARIABLE_REGEX.find(template, cursor)
+            if (gradient == null) {
+                result.append(Component.literal(template.substring(cursor)))
+                break
+            }
+
+            if (gradient.range.first > cursor) {
+                result.append(Component.literal(template.substring(cursor, gradient.range.first)))
+            }
+
+            val colors = parseGradientColors(gradient.value)
+            if (colors == null) {
+                result.append(Component.literal(gradient.value))
+                cursor = gradient.range.last + 1
+                continue
+            }
+
+            val format = getGradientFormat(template, gradient.range.last + 1)
+            val textEnd = getIndexOfGradientTextEnd(template, format.nextIndex)
+            val gradientText = template.substring(format.nextIndex, textEnd)
+            if (gradientText.isNotEmpty()) {
+                result.append(getGradientColoredComponent(gradientText, colors, format))
+            }
+            cursor = textEnd
+        }
+
+        return result
+    }
+
+    private data class GradientFormat(
+        val codes: Set<FormattingCodes> = emptySet(),
+        val nextIndex: Int = 0,
+    )
+
+    /** Formatting codes following a gradient tag. Color codes and `§r` are left in place so they end the run. */
+    private fun getGradientFormat(template: String, start: Int): GradientFormat {
+        var index = start
+        val codes = mutableSetOf<FormattingCodes>()
+
+        while (index + 1 < template.length) {
+            val token = template.substring(index, index + 2)
+            val code = FormattingCodes.entries.find { it != FormattingCodes.RESET && it.code.equals(token, ignoreCase = true) } ?: break
+            codes += code
+            index += 2
+        }
+
+        return GradientFormat(codes, index)
+    }
+
+    private fun Style.apply(codes: Set<FormattingCodes>): Style {
+        var style = this
+        for (code in codes) {
+            style = when (code) {
+                FormattingCodes.BOLD -> style.withBold(true)
+                FormattingCodes.ITALIC -> style.withItalic(true)
+                FormattingCodes.UNDERLINE -> style.withUnderlined(true)
+                FormattingCodes.STRIKETHROUGH -> style.withStrikethrough(true)
+                FormattingCodes.OBFUSCATED -> style.withObfuscated(true)
+                FormattingCodes.RESET -> style
+            }
+        }
+        return style
+    }
+
+    private fun getGradientColoredComponent(cleanText: String, colors: IntArray, format: GradientFormat): Component {
+        fun styleFor(rgb: Int): Style {
+            return Style.EMPTY.withColor(TextColor.fromRgb(rgb and 0xFFFFFF)).apply(format.codes)
+        }
+
+        val steps = selectColorSteps(colors, cleanText.length)
+        if (steps.size == 1) {
+            return Component.literal(cleanText).setStyle(styleFor(steps[0]))
+        }
+
+        val last = cleanText.length - 1
+        val result = Component.empty()
+        for (i in cleanText.indices) {
             val t = i.toFloat() / last
-            result.append(Component.literal(clean[i].toString()).setStyle(styleFor(interpolateAlongSteps(steps, t))))
+            result.append(Component.literal(cleanText[i].toString()).setStyle(styleFor(interpolateAlongSteps(steps, t))))
         }
         return result
     }
 
-    /** Takes the first [count] colors in order from [colors]. */
-    private fun selectColorSteps(colors: IntArray, count: Int): IntArray {
+    /** First N colors. Short text uses fewer steps than characters so middle letters stay interpolated. */
+    private fun selectColorSteps(colors: IntArray, textLength: Int): IntArray {
+        val count = when {
+            textLength <= 2 -> textLength.coerceAtMost(colors.size)
+            else -> (textLength - 1).coerceAtMost(colors.size)
+        }
         if (count >= colors.size) return colors
         if (count <= 1) return intArrayOf(colors.first())
         return colors.copyOf(count)
@@ -92,6 +191,13 @@ object ColorUtils {
         val index = scaled.toInt().coerceIn(0, steps.size - 2)
         val localT = scaled - index
         return lerpColor(steps[index], steps[index + 1], localT)
+    }
+
+    /** Index where the active gradient run ends: a `§` code, another gradient tag, or the end of the template. */
+    private fun getIndexOfGradientTextEnd(template: String, start: Int): Int {
+        val section = template.indexOf('§', start).let { if (it == -1) template.length else it }
+        val nextGradient = GRADIENT_VARIABLE_REGEX.find(template, start)?.range?.first ?: template.length
+        return minOf(section, nextGradient)
     }
 
     private fun lerpColor(color1: Int, color2: Int, t: Float): Int {
