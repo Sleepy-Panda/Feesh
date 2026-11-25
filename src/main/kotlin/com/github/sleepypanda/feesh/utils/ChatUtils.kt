@@ -44,6 +44,15 @@ object ChatUtils {
         }
     }
 
+    fun sendTestPrefixMessage() {
+        if (!WorldUtils.isInSkyblock()) return
+
+        CommonUtils.runWithCatching("Failed to send sample mod prefix message") {
+            //refreshModPrefix()
+            sendLocalChat("This is how your mod prefix looks like c:", addModPrefix = true)
+        }
+    }
+
     private fun onClientTick(@Suppress("UNUSED_PARAMETER") event: ClientTickEvent) {
         processQueue()
     }

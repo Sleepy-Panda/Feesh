@@ -52,6 +52,15 @@ object Chat : CategoryKt("Chat") {
 
     init {
         button {
+            title = "Send test message"
+            description = "Sends a sample message to your chat using your current mod prefix, so you can preview it."
+            text = "Click to send"
+            onClick {
+                ChatUtils.sendTestPrefixMessage()
+            }
+        }
+
+        button {
             title = "Colors & formatting guide"
             description = "For the chat prefix template, please explore color codes and formatting codes."
             text = "Click to open"

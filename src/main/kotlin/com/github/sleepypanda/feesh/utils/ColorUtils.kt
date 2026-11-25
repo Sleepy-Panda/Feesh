@@ -25,19 +25,25 @@ object ColorUtils {
 
     /** `{gradient:#158AB7>#52CC9D}` from hex color codes (#RRGGBB). */
     fun buildGradientVariable(colors: Array<String>): String {
+        var gradientVariable = ""
         CommonUtils.runWithCatching("Failed to build gradient variable") {
-            if (colors.isEmpty()) return ""
-            return "{gradient:${colors.joinToString(">")}}"
+            if (colors.isNotEmpty()) {
+                gradientVariable = "{gradient:${colors.joinToString(">")}}"
+            }
         }
+        return gradientVariable
     }
 
     /** `{gradient:#158AB7>#52CC9D}` from RGB colors (0xRRGGBB). */
     fun buildGradientVariable(colors: IntArray): String {
+        var gradientVariable = ""
         CommonUtils.runWithCatching("Failed to build gradient variable") {
-            if (colors.isEmpty()) return ""
-            val colorCodes = Array(colors.size) { index -> "#%06X".format(colors[index] and 0xFFFFFF) }
-            return buildGradientVariable(colorCodes)
+            if (colors.isNotEmpty()) {
+                val colorCodes = Array(colors.size) { index -> "#%06X".format(colors[index] and 0xFFFFFF) }
+                gradientVariable = buildGradientVariable(colorCodes)
+            }
         }
+        return gradientVariable
     }
 
     /**
@@ -45,14 +51,16 @@ object ColorUtils {
      * Returns null when the tag is missing, a part does not start with `#`, or the hex is not an int.
      */
     fun parseGradientColors(gradientVariable: String): IntArray? {
+        var colors: IntArray? = null
         CommonUtils.runWithCatching("Failed to parse gradient colors") {
-            val match = GRADIENT_VARIABLE_REGEX.find(gradientVariable)?.groupValues?.get(1) ?: return null
-            return match.split('>').map { part ->
+            val match = GRADIENT_VARIABLE_REGEX.find(gradientVariable)?.groupValues?.get(1) ?: return@runWithCatching
+            colors = match.split('>').map { part ->
                 val hexColor = part.trim()
-                if (!hexColor.startsWith("#")) return null
-                hexColor.drop(1).toIntOrNull(16) ?: return null
+                if (!hexColor.startsWith("#")) return@runWithCatching
+                hexColor.drop(1).toIntOrNull(16) ?: return@runWithCatching
             }.toIntArray()
         }
+        return colors
     }
 
     /**
@@ -76,12 +84,14 @@ object ColorUtils {
      * The full component built from template is cached until the world changes.
      */
     fun buildGradientColoredComponent(template: String): MutableComponent {
+        var component = Component.empty()
         CommonUtils.runWithCatching("Failed to build gradient colored component") {
-        if (template.isEmpty()) return Component.empty()
-            return gradientColoredComponentsCache.getOrPut(template) {
+            if (template.isEmpty()) return@runWithCatching
+            component = gradientColoredComponentsCache.getOrPut(template) {
                 buildGradientColoredComponentUncached(template)
             }.copy() // Copy so we can modify component further
         }
+        return component
     }
 
     private fun buildGradientColoredComponentUncached(template: String): Component {
