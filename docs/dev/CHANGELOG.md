@@ -10,6 +10,7 @@
 
 - Updated Gradle to the latest version (9.9.2).
 - Replaced Deftu (DGT) in gradle build flow.
+- Replaced a couple of Regex usages with more lightweight checks.
 
 # 1.18.3
 

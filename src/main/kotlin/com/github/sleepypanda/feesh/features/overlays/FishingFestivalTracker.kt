@@ -30,7 +30,7 @@ object FishingFestivalTracker : IResettableTracker {
     private const val FESTIVAL_DURATION_MS = 61 * 60 * 1000L // 1 hour 1 minute - how long festival usually lasts, + some extra time to be safe
     private const val TICKS_PER_UPDATE = 20
 
-    private val FESTIVAL_ENDED_PATTERN = Regex("^FISHING FESTIVAL The festival has concluded! Time to dry off and repair your rods!$")
+    private const val FESTIVAL_ENDED_MESSAGE = "FISHING FESTIVAL The festival has concluded! Time to dry off and repair your rods!"
 
     const val RESET_COMMAND = "feeshResetFishingFestivalTracker"
 
@@ -94,7 +94,7 @@ object FishingFestivalTracker : IResettableTracker {
 
     private fun onChat(event: ChatEvent) {
         if (!WorldUtils.isInSkyblock()) return
-        if (!FESTIVAL_ENDED_PATTERN.matches(event.unformattedText)) return
+        if (event.unformattedText != FESTIVAL_ENDED_MESSAGE) return
 
         alertOnFestivalResults()
         announcePersonalBest()
