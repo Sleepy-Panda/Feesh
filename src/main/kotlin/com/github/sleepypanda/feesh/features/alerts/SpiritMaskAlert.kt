@@ -12,7 +12,7 @@ import java.util.Timer
 import kotlin.concurrent.timerTask
 
 object SpiritMaskAlert {
-    val SPIRIT_MASK_USED_PATTERN = Regex("^Second Wind Activated\\! Your Spirit Mask saved your life\\!$")
+    const val SPIRIT_MASK_USED_MESSAGE = "Second Wind Activated! Your Spirit Mask saved your life!"
     private var timer: Timer? = null
 
     fun init() {
@@ -22,7 +22,7 @@ object SpiritMaskAlert {
 
     private fun onChat(event: ChatEvent) {
         if (!WorldUtils.isInSkyblock() || !Alerts.alertOnSpiritMaskUsed) return
-        if (!SPIRIT_MASK_USED_PATTERN.matches(event.unformattedText)) return
+        if (event.unformattedText != SPIRIT_MASK_USED_MESSAGE) return
 
         AlertUtils.alert(
             title = AlertUtils.TitleConfig("${DARK_PURPLE}Spirit Mask ${YELLOW}used"),
