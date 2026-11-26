@@ -1,26 +1,29 @@
 pluginManagement {
-    repositories {
-        maven("https://maven.deftu.dev/releases")
-        maven("https://maven.deftu.dev/snapshots")
-
-        maven("https://jitpack.io/")
-        maven("https://maven.fabricmc.net")
-        maven("https://maven.architectury.dev/")
-        maven("https://maven.minecraftforge.net")
-
-        maven("https://repo.essential.gg/repository/maven-public")
-
-        mavenLocal()
-        mavenCentral()
-
-        gradlePluginPortal()
-    }
+    val preprocessorVersion = providers.gradleProperty("preprocessor.version").get()
 
     plugins {
         kotlin("jvm") version("2.3.0")
-        // https://github.com/Deftu/Gradle-Toolkit
-        id("dev.deftu.gradle.multiversion-root") version("2.73.0") // Applies preprocessing for multiple versions of Minecraft and/or multiple mod loaders.
+        // https://github.com/ReplayMod/preprocessor
+        id("com.replaymod.preprocess-root") version(preprocessorVersion) // Applies preprocessing for multiple versions of Minecraft and/or multiple mod loaders.
         id("net.fabricmc.fabric-loom") version("1.17.11")
+    }
+
+    repositories {
+        gradlePluginPortal()
+
+        maven("https://jitpack.io/")
+        maven("https://maven.fabricmc.net")
+
+        mavenLocal()
+        mavenCentral()
+    }
+
+    resolutionStrategy {
+        eachPlugin {
+            if (requested.id.id == "com.replaymod.preprocess-root") {
+                useModule("com.github.replaymod:preprocessor:$preprocessorVersion")
+            }
+        }
     }
 }
 
