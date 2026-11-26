@@ -35,7 +35,7 @@ import java.util.TimerTask
 object DeployablesTimer {
     private const val TICKS_PER_CHECK = 20
 
-    private val FLARE_DISAPPEARED_PATTERN = Regex("^Your flare disappeared because you were too far away\\!$")
+    private const val FLARE_DISAPPEARED_MESSAGE = "Your flare disappeared because you were too far away!"
     private val PREVIOUS_DEPLOYABLE_REMOVED_PATTERN = Regex("^Your previous (.*) was removed\\!$")
 
     private open class BaseDeployableData(
@@ -140,7 +140,7 @@ object DeployablesTimer {
         CommonUtils.runWithCatching("Failed to handle chat event") {
             if (!WorldUtils.isInSkyblock()) return
 
-            if (FLARE_DISAPPEARED_PATTERN.matches(event.unformattedText)) {
+            if (event.unformattedText == FLARE_DISAPPEARED_MESSAGE) {
                 resetFlare()
             } else if (PREVIOUS_DEPLOYABLE_REMOVED_PATTERN.matches(event.unformattedText)) {
                 val matchResult = PREVIOUS_DEPLOYABLE_REMOVED_PATTERN.find(event.unformattedText) ?: return

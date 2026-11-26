@@ -26,8 +26,8 @@ object FishingBaitSackDisabledAlert {
     private var isAlerted = false
     private var tickCounter = 0
 
-    private val USE_BAITS_DISABLED_PATTERN = Regex("^Use Baits From Sacks are now disabled!$")
-    private val USE_BAITS_ENABLED_PATTERN = Regex("^Use Baits From Sacks are now enabled!$")
+    private const val USE_BAITS_DISABLED_MESSAGE = "Use Baits From Sacks are now disabled!"
+    private const val USE_BAITS_ENABLED_MESSAGE = "Use Baits From Sacks are now enabled!"
 
     private const val BAIT_SACK_TITLE_CONTAINS = "Bait Sack"
     private const val USE_BAITS_FROM_SACKS_ITEM_NAME = "Use Baits From Sacks"
@@ -50,9 +50,9 @@ object FishingBaitSackDisabledAlert {
     private fun onChat(event: ChatEvent) {
         if (!Alerts.alertOnFishingBagDisabled || !WorldUtils.isInSkyblock()) return
 
-        if (USE_BAITS_DISABLED_PATTERN.matches(event.unformattedText)) {
+        if (event.unformattedText == USE_BAITS_DISABLED_MESSAGE) {
             setFishingBaitSackState(false)
-        } else if (USE_BAITS_ENABLED_PATTERN.matches(event.unformattedText)) {
+        } else if (event.unformattedText == USE_BAITS_ENABLED_MESSAGE) {
             setFishingBaitSackState(true)
         }
     }

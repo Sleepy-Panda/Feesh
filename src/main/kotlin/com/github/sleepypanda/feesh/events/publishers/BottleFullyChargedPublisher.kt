@@ -10,15 +10,15 @@ import com.github.sleepypanda.feesh.utils.enums.ColorCodes.LEGENDARY
 
 object BottleFullyChargedPublisher {
     private data class BottleFullyChargedInfo(
-        val messageRegex: Regex,
+        val message: String,
         val itemId: String,
         val itemName: String,
         val itemDisplayName: String,
     )
 
-    private val THUNDER_BOTTLE_CHARGED_MESSAGE = Regex("^> Your bottle of thunder has fully charged\\!$")
-    private val STORM_BOTTLE_CHARGED_MESSAGE = Regex("^> Your Storm in a Bottle has fully charged\\!$")
-    private val HURRICANE_BOTTLE_CHARGED_MESSAGE = Regex("^> Your Hurricane in a Bottle has fully charged\\!$")
+    private const val THUNDER_BOTTLE_CHARGED_MESSAGE = "> Your bottle of thunder has fully charged!"
+    private const val STORM_BOTTLE_CHARGED_MESSAGE = "> Your Storm in a Bottle has fully charged!"
+    private const val HURRICANE_BOTTLE_CHARGED_MESSAGE = "> Your Hurricane in a Bottle has fully charged!"
 
     private val BOTTLE_CHARGED_TRIGGERS = listOf(
         BottleFullyChargedInfo(
@@ -49,7 +49,7 @@ object BottleFullyChargedPublisher {
         if (!WorldUtils.isInSkyblock()) return
 
         CommonUtils.runWithCatching("Failed to handle bottle fully charged.") {
-            val entry = BOTTLE_CHARGED_TRIGGERS.find { it.messageRegex.matches(event.unformattedText) } ?: return@onChat
+            val entry = BOTTLE_CHARGED_TRIGGERS.find { it.message == event.unformattedText } ?: return@onChat
             EventBus.publish(
                 BottleFullyChargedEvent(
                     itemId = entry.itemId,
