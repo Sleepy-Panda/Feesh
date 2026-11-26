@@ -41,7 +41,7 @@ object Chat : CategoryKt("Chat") {
     var chatPrefixTemplate by ObservableEntry(
         strings(ChatUtils.DEFAULT_MOD_PREFIX_TEMPLATE) {
             this.name = Translated("Mod chat prefix template")
-            this.description = Translated("Customize [Feesh] prefix added before mod chat messages. Reset or leave empty to use default.")
+            this.description = Translated("Customize text/colors of the [Feesh] prefix added before mod chat messages. Reset or leave empty to use default.")
             this.searchTerms = listOf(ModVersionConstants.VERSION_1_19_0)
         }
     ) { prev, new ->

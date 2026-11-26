@@ -23,20 +23,21 @@ object ColorUtils {
         gradientColoredComponentsCache.clear()
     }
 
-    /** `{gradient:#158AB7>#52CC9D}` from hex color codes (#RRGGBB). */
+    /** Builds a gradient variable like "{gradient:#158AB7>#52CC9D}", from hex color codes (#RRGGBB). */
     fun buildGradientVariable(colors: Array<String>): String {
         var gradientVariable = ""
         CommonUtils.runWithCatching("Failed to build gradient variable") {
             if (colors.isNotEmpty()) {
-                gradientVariable = "{gradient:${colors.joinToString(">")}}"
+                val joinedColors = colors.joinToString(">")
+                gradientVariable = "{gradient:${joinedColors}}"
             }
         }
         return gradientVariable
     }
 
-    /** `{gradient:#158AB7>#52CC9D}` from RGB colors (0xRRGGBB). */
+    /** Builds a gradient variable like "{gradient:#158AB7>#52CC9D}", from RGB colors (0xRRGGBB). */
     fun buildGradientVariable(colors: IntArray): String {
-        val colorCodes = Array(colors.size) { index -> "#%06X".format(colors[index] and 0xFFFFFF) }
+        val colorCodes = colors.map { it.toHexColorCode() }.toTypedArray()
         return buildGradientVariable(colorCodes)
     }
 
@@ -52,6 +53,9 @@ object ColorUtils {
         }
         return colors
     }
+
+    /** Converts 0xRRGGBB color to `#RRGGBB` code. */
+    private fun Int.toHexColorCode(): String = "#%06X".format(this and 0xFFFFFF)
 
     /** `#158AB7>#52CC9D` into 0xRRGGBB colors, keeping only valid `#` + hex parts. */
     private fun parseGradientColorSteps(spec: String): IntArray {
