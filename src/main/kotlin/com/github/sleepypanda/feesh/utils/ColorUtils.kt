@@ -36,31 +36,30 @@ object ColorUtils {
 
     /** `{gradient:#158AB7>#52CC9D}` from RGB colors (0xRRGGBB). */
     fun buildGradientVariable(colors: IntArray): String {
-        var gradientVariable = ""
-        CommonUtils.runWithCatching("Failed to build gradient variable") {
-            if (colors.isNotEmpty()) {
-                val colorCodes = Array(colors.size) { index -> "#%06X".format(colors[index] and 0xFFFFFF) }
-                gradientVariable = buildGradientVariable(colorCodes)
-            }
-        }
-        return gradientVariable
+        val colorCodes = Array(colors.size) { index -> "#%06X".format(colors[index] and 0xFFFFFF) }
+        return buildGradientVariable(colorCodes)
     }
 
     /**
      * Parses gradient variable like `{gradient:#158AB7>#52CC9D}` into 0xRRGGBB colors.
-     * Returns null when the tag is missing, a part does not start with `#`, or the hex is not an int.
+     * Keeps only valid `#` + hex parts.
      */
-    fun parseGradientColors(gradientVariable: String): IntArray? {
-        var colors: IntArray? = null
+    fun parseGradientColors(gradientVariable: String): IntArray {
+        var colors = IntArray(0)
         CommonUtils.runWithCatching("Failed to parse gradient colors") {
-            val match = GRADIENT_VARIABLE_REGEX.find(gradientVariable)?.groupValues?.get(1) ?: return@runWithCatching
-            colors = match.split('>').map { part ->
-                val hexColor = part.trim()
-                if (!hexColor.startsWith("#")) return@runWithCatching
-                hexColor.drop(1).toIntOrNull(16) ?: return@runWithCatching
-            }.toIntArray()
+            val spec = GRADIENT_VARIABLE_REGEX.find(gradientVariable)?.groupValues?.get(1) ?: return@runWithCatching
+            colors = parseGradientColorSteps(spec)
         }
         return colors
+    }
+
+    /** `#158AB7>#52CC9D` into 0xRRGGBB colors, keeping only valid `#` + hex parts. */
+    private fun parseGradientColorSteps(spec: String): IntArray {
+        return spec.split('>').mapNotNull { part ->
+            val hexColor = part.trim()
+            if (!hexColor.startsWith("#")) return@mapNotNull null
+            hexColor.drop(1).toIntOrNull(16)
+        }.toIntArray()
     }
 
     /**
@@ -100,47 +99,50 @@ object ColorUtils {
 
         while (cursor < template.length) {
             val gradient = GRADIENT_VARIABLE_REGEX.find(template, cursor)
-            if (gradient == null) {
-                result.append(Component.literal(template.substring(cursor)))
-                break
+            val plainTextEnd = gradient?.range?.first ?: template.length
+            if (plainTextEnd > cursor) {
+                result.append(Component.literal(template.substring(cursor, plainTextEnd)))
             }
-
-            if (gradient.range.first > cursor) {
-                result.append(Component.literal(template.substring(cursor, gradient.range.first)))
-            }
-
-            val colors = parseGradientColors(gradient.value)
-            if (colors == null) {
-                result.append(Component.literal(gradient.value))
-                cursor = gradient.range.last + 1
-                continue
-            }
-
-            val format = getGradientFormat(template, gradient.range.last + 1)
-            val textEnd = getIndexOfGradientTextEnd(template, format.nextIndex)
-            val gradientText = template.substring(format.nextIndex, textEnd)
-            if (gradientText.isNotEmpty()) {
-                result.append(getGradientColoredComponent(gradientText, colors, format))
-            }
-            cursor = textEnd
+            if (gradient == null) break
+            cursor = appendGradientSegment(result, template, gradient)
         }
 
         return result
     }
 
+    /** Appends one gradient segment (tag + following text) and returns the index where the next segment starts. */
+    private fun appendGradientSegment(result: MutableComponent, template: String, gradient: MatchResult): Int {
+        val colors = parseGradientColorSteps(gradient.groupValues[1])
+        if (colors.isEmpty()) {
+            result.append(Component.literal(gradient.value))
+            return gradient.range.last + 1
+        }
+
+        val format = getGradientFormat(template, gradient.range.last + 1)
+        val textEnd = getIndexOfGradientTextEnd(template, format.textStart)
+        val gradientText = template.substring(format.textStart, textEnd)
+        if (gradientText.isNotEmpty()) {
+            result.append(getGradientColoredComponent(gradientText, colors, format))
+        }
+        return textEnd
+    }
+
+    private val GRADIENT_FORMATTING_CODES = FormattingCodes.entries
+        .filter { it != FormattingCodes.RESET }
+        .associateBy { it.code }
+
+    /** Formatting codes following a gradient tag, and where the gradient text starts. Color codes and `§r` are left in place so they end the run. */
     private data class GradientFormat(
         val codes: Set<FormattingCodes> = emptySet(),
-        val nextIndex: Int = 0,
+        val textStart: Int = 0,
     )
 
-    /** Formatting codes following a gradient tag. Color codes and `§r` are left in place so they end the run. */
     private fun getGradientFormat(template: String, start: Int): GradientFormat {
         var index = start
         val codes = mutableSetOf<FormattingCodes>()
 
         while (index + 1 < template.length) {
-            val token = template.substring(index, index + 2)
-            val code = FormattingCodes.entries.find { it != FormattingCodes.RESET && it.code.equals(token, ignoreCase = true) } ?: break
+            val code = GRADIENT_FORMATTING_CODES[template.substring(index, index + 2).lowercase()] ?: break
             codes += code
             index += 2
         }
@@ -182,15 +184,14 @@ object ColorUtils {
         return result
     }
 
-    /** First N colors. Short text uses fewer steps than characters so middle letters stay interpolated. */
+    /**
+     * First N colors to spread over the text.
+     * Uses fewer steps than characters so the gradient stays visible: one color per letter looks solid, not gradient.
+     * E.g. 3 letters get 2 colors, 1-2 letters get 1 color.
+     */
     private fun selectColorSteps(colors: IntArray, textLength: Int): IntArray {
-        val count = when {
-            textLength <= 2 -> textLength.coerceAtMost(colors.size)
-            else -> (textLength - 1).coerceAtMost(colors.size)
-        }
-        if (count >= colors.size) return colors
-        if (count <= 1) return intArrayOf(colors.first())
-        return colors.copyOf(count)
+        val stepsCount = (textLength - 1).coerceIn(1, colors.size)
+        return colors.copyOf(stepsCount)
     }
 
     private fun interpolateAlongSteps(steps: IntArray, t: Float): Int {
