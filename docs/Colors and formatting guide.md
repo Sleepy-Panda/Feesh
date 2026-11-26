@@ -41,7 +41,7 @@ The following table represents formatting codes applied style to a text:
 ## How to use these codes
 
 - Insert the code directly before the text you want to format.
-- Insert formatting code after color code, e.g. §l (bold) should follow after §b (aqua) if you want aqua bold text.
+- Always use formatting code **after** color code, e.g. §l (bold) should follow after §b (aqua) if you want aqua bold text.
 - By default, white color is used if no other color codes applied.
 - Example: `§cThis text is red §land bold §rand normal again.`
 
@@ -56,5 +56,5 @@ You can combine gradients with regular color/formatting codes from the section a
 
 Examples:
 
-- `§7[{gradient:#158AB7>#52CC9D}Text§7]` - gray brackets, text fading from `#158AB7` to `#52CC9D`.
-- `{gradient:#158AB7>#52CC9D}§lText` - bold text with the same fade.
+- `§7[{gradient:#158AB7>#52CC9D}Text§7]` - gray bracket, then gradient-colored text fading from `#158AB7` to `#52CC9D`, then gray bracket again.
+- `{gradient:#158AB7>#52CC9D}§lText` - bold text with the same gradient.
