@@ -2,6 +2,8 @@
 
 ## Features
 
+- Added setting to customize [Feesh] chat message prefix (text, colors or gradient).
+
 ## Bugfixes
 
 - Fixed setting toggle not being respected for Personal cap alert.
