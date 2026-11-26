@@ -6,6 +6,10 @@
 
 - Fixed setting toggle not being respected for Personal cap alert.
 
+## Other
+
+- Replaced Deftu (DGT) in gradle build flow.
+
 # 1.18.3
 
 ## Bugfixes
