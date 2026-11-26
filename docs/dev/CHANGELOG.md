@@ -8,6 +8,7 @@
 
 ## Other
 
+- Updated Gradle to the latest version (9.9.2).
 - Replaced Deftu (DGT) in gradle build flow.
 
 # 1.18.3

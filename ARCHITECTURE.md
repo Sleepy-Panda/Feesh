@@ -88,19 +88,23 @@ For manual building the project in IDE:
 ./gradlew build
 ```
 
+or
+
+```cmd
+./gradlew build --refresh-dependencies
+```
+
 As a result, `Feesh-<version>-fabric.jar` file appears in `/build/versions` folder. It contains mod versions built for every supported Minecraft version.
-
-## Mappings (obsolete)
-
-- https://mappings.dev/1.21.11/
 
 ## Updating Gradle
 
 When bumping Gradle version, it's necessary to follow the flow to update Gradle wrapper files.
 
-https://docs.gradle.org/current/userguide/gradle_wrapper.html#sec:upgrading_wrapper
+[Upgrading Gradle Wrapper](https://docs.gradle.org/current/userguide/gradle_wrapper.html#sec:upgrading_wrapper)
 
 ```cmd
-.\gradlew.bat :wrapper --gradle-version 9.6.0
+.\gradlew.bat :wrapper --gradle-version latest
 .\gradlew :wrapper
 ```
+
+[Manually verifying the Gradle Wrapper JAR](https://docs.gradle.org/current/userguide/gradle_wrapper.html#manually_verifying_the_gradle_wrapper_jar)
