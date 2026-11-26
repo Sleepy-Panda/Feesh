@@ -2,7 +2,7 @@
 
 ## Features
 
-- Added setting to customize [Feesh] chat message prefix (text, colors or gradient).
+- Added setting to customize sea creature catch alert titles/subtitles.
 
 ## Bugfixes
 
