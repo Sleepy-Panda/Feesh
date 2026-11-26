@@ -11,7 +11,7 @@ object ConsumablesPublishers {
     private const val MOBY_DUCK_ITEM_ID = "MOBY_DUCK_COLLECTOR_EDITION"
 
     // You consumed a Moby-Duck: Collector's Edition and gained +30☯ Fishing Wisdom for 60m!
-    private val MOBY_DUCK_CONSUMED_PATTERN = Regex("^You consumed a $MOBY_DUCK_ITEM_NAME and gained \\+30☯ Fishing Wisdom for 60m!$")
+    private val MOBY_DUCK_CONSUMED_MESSAGE = "You consumed a $MOBY_DUCK_ITEM_NAME and gained +30☯ Fishing Wisdom for 60m!"
     
     fun init() {
         EventBus.subscribe(ChatEvent::class, ::onChat)
@@ -21,7 +21,7 @@ object ConsumablesPublishers {
         CommonUtils.runWithCatching("Failed to handle various chat message publisher") {
             if (!WorldUtils.isInSkyblock()) return
 
-            MOBY_DUCK_CONSUMED_PATTERN.matchEntire(event.unformattedText)?.let {
+            if (event.unformattedText == MOBY_DUCK_CONSUMED_MESSAGE) {
                 EventBus.publish(
                     MobyDuckConsumedEvent(
                         itemId = MOBY_DUCK_ITEM_ID,

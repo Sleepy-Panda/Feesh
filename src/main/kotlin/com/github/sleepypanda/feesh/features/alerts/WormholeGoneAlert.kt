@@ -8,7 +8,7 @@ import com.github.sleepypanda.feesh.utils.WorldUtils
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 
 object WormholeGoneAlert {
-    val PATTERN = Regex("^Your Wormhole closed up\\.\\.\\.$")
+    const val WORMHOLE_GONE_MESSAGE = "Your Wormhole closed up..."
 
     fun init() {
         EventBus.subscribe(ChatEvent::class, ::onChat)
@@ -16,7 +16,7 @@ object WormholeGoneAlert {
 
     private fun onChat(event: ChatEvent) {
         if (!WorldUtils.isInSkyblock() || (WorldUtils.getWorldName() != WorldUtils.LOTUS_ATOLL && WorldUtils.getWorldName() != WorldUtils.CRIMSON_ISLE) || !Alerts.alertOnWormholeGone) return
-        if (!PATTERN.matches(event.unformattedText)) return
+        if (event.unformattedText != WORMHOLE_GONE_MESSAGE) return
 
         AlertUtils.alert(
             title = AlertUtils.TitleConfig("${LIGHT_PURPLE}Wormhole ${RED}is gone"),

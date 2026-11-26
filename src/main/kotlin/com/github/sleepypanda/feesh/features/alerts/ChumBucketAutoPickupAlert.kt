@@ -8,7 +8,7 @@ import com.github.sleepypanda.feesh.utils.WorldUtils
 import com.github.sleepypanda.feesh.utils.enums.ColorCodes.*
 
 object ChumBucketAutoPickupAlert {
-    val PATTERN = Regex("^Automatically picked up the Chum Bucket you left back there\\!$")
+    const val CHUM_BUCKET_PICKED_UP_MESSAGE = "Automatically picked up the Chum Bucket you left back there!"
 
     fun init() {
         EventBus.subscribe(ChatEvent::class, ::onChat)
@@ -16,7 +16,7 @@ object ChumBucketAutoPickupAlert {
 
     private fun onChat(event: ChatEvent) {
         if (!WorldUtils.isInSkyblock() || !Alerts.alertOnChumBucketAutoPickup) return
-        if (!PATTERN.matches(event.unformattedText)) return
+        if (event.unformattedText != CHUM_BUCKET_PICKED_UP_MESSAGE) return
 
         AlertUtils.alert(
             title = AlertUtils.TitleConfig("${GREEN}Chum Bucket ${YELLOW}is gone"),

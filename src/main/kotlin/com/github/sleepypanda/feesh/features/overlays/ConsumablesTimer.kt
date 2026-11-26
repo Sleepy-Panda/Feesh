@@ -26,8 +26,7 @@ object ConsumablesTimer {
     // Moby-Duck expires in 10s
     // Repeated on 60s, 10s, 5s, etc
     private val MOBY_DUCK_EXPIRING_PATTERN = Regex("^Moby-Duck expires in (\\d+)s$")
-    // Moby-Duck has expired!
-    private val MOBY_DUCK_EXPIRED_PATTERN = Regex("^Moby-Duck has expired!$")
+    private const val MOBY_DUCK_EXPIRED_MESSAGE = "Moby-Duck has expired!"
 
     private data class MobyDuckData(
         var isActive: Boolean = false,
@@ -78,7 +77,7 @@ object ConsumablesTimer {
             if (!isOverlayEnabled() && !isAlertEnabled()) return
 
             when {
-                MOBY_DUCK_EXPIRED_PATTERN.containsMatchIn(event.unformattedText) -> {
+                event.unformattedText == MOBY_DUCK_EXPIRED_MESSAGE -> {
                     resetMobyDuck()
                     gui.clearLines()
                 }

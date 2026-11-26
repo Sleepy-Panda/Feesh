@@ -1,17 +1,14 @@
-import org.gradle.api.artifacts.Configuration
+import com.replaymod.gradle.preprocess.PreprocessTask
 import org.gradle.api.tasks.compile.JavaCompile
 import org.gradle.jvm.tasks.Jar
 import org.gradle.language.jvm.tasks.ProcessResources
-import java.io.File
-import java.net.URLClassLoader
 
 plugins {
     java
     kotlin("jvm")
     kotlin("plugin.serialization") version "2.3.0"
-    id("dev.deftu.gradle.multiversion")
-    id("dev.deftu.gradle.tools.bloom")
     id("net.fabricmc.fabric-loom") version "1.17.11"
+    id("com.replaymod.preprocess") // Must be applied after loom: it reads the loom extension to detect obfuscation
 }
 
 val mcProject = project.name
@@ -27,8 +24,17 @@ val modTargetConfiguration =
     if (configurations.findByName("modImplementation") != null) "modImplementation" else "implementation"
 
 fun includeDependency(notation: String, targetConfiguration: String) {
-    dependencies.add("include", notation)
-    dependencies.add(targetConfiguration, notation)
+    dependencies.add(targetConfiguration, dependencies.include(notation)!!)
+}
+
+// The preprocessCode task takes too long otherwise, as it has to go through kotlin analysis api.
+// With null mappings, it finishes quickly.
+// Current MC version targets (26.x) are unobfuscated anyways.
+afterEvaluate {
+    tasks.withType<PreprocessTask>().configureEach {
+        sourceMappings = null
+        destinationMappings = null
+    }
 }
 
 configurations.configureEach {
@@ -43,24 +49,12 @@ repositories {
     maven("https://maven.teamresourceful.com/repository/maven-public/")
 }
 
-val includeResolvable: Configuration = configurations.create("includeResolvable") {
-    isCanBeResolved = true
-    isCanBeConsumed = false
-    extendsFrom(configurations.getByName("include"))
-}
-
-val fabricLoomJar: Configuration = configurations.create("fabricLoomJar") {
-    isCanBeResolved = true
-    isCanBeConsumed = false
-}
-
 dependencies {
-    fabricLoomJar("net.fabricmc:fabric-loom:1.17.11")
     add("minecraft", "com.mojang:minecraft:$mcVersion")
     add(modTargetConfiguration, "net.fabricmc:fabric-loader:${propertyByMcVersion("fabricloader.version")}")
     add(modTargetConfiguration, "net.fabricmc.fabric-api:fabric-api:${propertyByMcVersion("fabric-api.version")}")
     add("implementation", "net.fabricmc:fabric-language-kotlin:${property("fabriclanguagekotlin.version")}")
-    add("implementation", "net.fabricmc:sponge-mixin:0.17.0+mixin.0.8.7")
+
     when (mcProject) {
         "26.1-fabric" -> {
             includeDependency(
@@ -140,13 +134,4 @@ tasks.named<ProcessResources>("processResources").configure {
 tasks.named<Jar>("jar").configure {
     destinationDirectory.set(rootProject.layout.buildDirectory.dir("versions"))
     archiveBaseName.set(jarName)
-    doLast {
-        val nestedJars = includeResolvable.files.filter { it.name.contains("resourcefulconfig", ignoreCase = true) }
-        if (nestedJars.isEmpty()) return@doLast
-
-        val loader = URLClassLoader(fabricLoomJar.files.map { it.toURI().toURL() }.toTypedArray(), javaClass.classLoader)
-        val jarNester = loader.loadClass("net.fabricmc.loom.build.nesting.JarNester")
-        jarNester.getMethod("nestJars", Collection::class.java, File::class.java)
-            .invoke(null, nestedJars, archiveFile.get().asFile)
-    }
 }
